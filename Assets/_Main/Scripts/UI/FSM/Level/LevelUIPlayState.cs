@@ -4,22 +4,15 @@ namespace _Main.Scripts.UI.FSM.Level
 {
     public class LevelUIPlayState<T> : LevelUIBaseState<T>
     {
-        private GameObject canvasPanel;
-        
         private float _elapsedTime;
         private int _targetPoints;
         private float _displayedPoints;
         private const float Increase_Time = GameValues.PointsTextTimeToIncrease;
         private bool _isCountingPoints = false;
 
-        public LevelUIPlayState(GameObject canvasPanel)
-        {
-            this.canvasPanel = canvasPanel;
-        }
-
         public override void Awake()
         {
-            Controller.ChangeCurrentPanel(canvasPanel);
+            Controller.SetActivePlayPanel();
             Controller.OnPointsChanged += OnPointsChangedHandler;
         }
 
@@ -51,7 +44,7 @@ namespace _Main.Scripts.UI.FSM.Level
         
         private void OnPointsChangedHandler(int amount)
         {
-            _displayedPoints = Mathf.RoundToInt(_elapsedTime >= Increase_Time ? _targetPoints : Controller.GetCurrentDisplayed());
+            _displayedPoints = Mathf.RoundToInt(_elapsedTime >= Increase_Time ? _targetPoints : Controller.GetDisplayedPointsFromText());
             _targetPoints = amount * GameValues.VisualMultiplier;
             _isCountingPoints = true;
             _elapsedTime = 0f;

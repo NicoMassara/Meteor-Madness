@@ -112,7 +112,8 @@ namespace _Main.Scripts.Gameplay
 
         #endregion
 
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
+        
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(centerOfGravity.position, spawnRadius*0.75f);

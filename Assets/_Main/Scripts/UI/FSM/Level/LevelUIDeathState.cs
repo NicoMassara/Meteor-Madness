@@ -4,28 +4,30 @@ namespace _Main.Scripts.UI.FSM.Level
 {
     public class LevelUIDeathState<T> : LevelUIBaseState<T>
     {
-        private GameObject canvasPanel;
         private float _elapsedTime;
         private int _targetPoints;
         private float _displayedPoints;
         private const float Increase_Time = GameValues.PointsTextTimeToIncreaseOnDeath;
         private bool _isCountingPoints = false;
 
-        public LevelUIDeathState(GameObject canvasPanel)
-        {
-            this.canvasPanel = canvasPanel;
-        }
+        private float _startCountingDelay = 0.5f;
         
         public override void Awake()
         {
-            Controller.ChangeCurrentPanel(canvasPanel);
+            Controller.SetActiveDeathPanel();
             Controller.UpdateDeathPointsText(0);
-            _targetPoints = Controller.GetFinalPoints();
+            _targetPoints = Controller.GetDisplayedPoints();
             _isCountingPoints = true;
         }
 
         public override void Execute()
         {
+            if (_startCountingDelay > 0) 
+            {
+                _startCountingDelay -= Time.deltaTime;
+                return;
+            }
+
             if(_isCountingPoints == false) return;
             //
             

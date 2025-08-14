@@ -1,27 +1,18 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay;
 using _Main.Scripts.UI.FSM.Level;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 namespace _Main.Scripts.UI
 {
     public class LevelUIController : MonoBehaviour
     {
-        [FormerlySerializedAs("levelControllers")]
-        [Header("UI Elements")]
+        [Header("Components")]
         [SerializeField] private LevelController levelController;
-        [SerializeField] private GameObject startPanel;
-        [SerializeField] private GameObject pointsPanel;
-        [SerializeField] private GameObject deathPanel;
-        [Header("Texts")]
-        [SerializeField] private Text countdownText;
-        [SerializeField] private Text playPointsText;
-        [SerializeField] private Text deathPointsText;
+        
+        private LevelUIMotor _motor;
 
         private int _finalPoints;
         private GameObject _currentPanel;
@@ -36,15 +27,16 @@ namespace _Main.Scripts.UI
             Death
         }
 
+        private void Awake()
+        {
+            _motor = GetComponent<LevelUIMotor>();
+        }
+
         private void Start()
         {
             levelController.OnShieldHit += OnShieldHitHandler;
             levelController.OnDeath += OnDeathHandler;
             levelController.OnStart += OnStartHandler;
-            
-            pointsPanel.SetActive(false);
-            deathPanel.SetActive(false);
-            startPanel.SetActive(false);
             
             InitializeFsm();
         }
@@ -52,6 +44,16 @@ namespace _Main.Scripts.UI
         private void Update()
         {
             _fsm.Execute();
+        }
+        
+        public int GetDisplayedPoints()
+        {
+            return _motor.GetDisplayedPoints();
+        }
+        
+        public int GetDisplayedPointsFromText()
+        {
+            return _motor.GetDisplayedPointsFromText();
         }
 
         #region FSM
@@ -63,9 +65,9 @@ namespace _Main.Scripts.UI
 
             #region Variables
 
-            var start = new LevelUIStartState<LevelUIState>(startPanel);
-            var play = new LevelUIPlayState<LevelUIState>(pointsPanel);
-            var death = new LevelUIDeathState<LevelUIState>(deathPanel);
+            var start = new LevelUIStartState<LevelUIState>();
+            var play = new LevelUIPlayState<LevelUIState>();
+            var death = new LevelUIDeathState<LevelUIState>();
             
             temp.Add(start);
             temp.Add(play);
@@ -122,71 +124,57 @@ namespace _Main.Scripts.UI
 
         public void UpdatePointsText(int points)
         {
-            playPointsText.text = $"Save Points: {points}";
+            _motor.UpdatePointsText(points);
         }
 
         public void UpdateCountdownText(int elapsedTime)
         {
-            if (elapsedTime > 0)
-            {
-                countdownText.text = $"{elapsedTime}...";
-            }
-            else
-            {
-                countdownText.text = "Defend!";
-            }
-
-
+            _motor.UpdateCountdownText(elapsedTime);
         }
 
         public void UpdateDeathPointsText(int points)
         {
-            deathPointsText.text = $"Points: {points}";
-        }
-
-        public int GetCurrentDisplayed()
-        {
-            // Reads the number currently shown in the text
-            if (int.TryParse(playPointsText.text, out int val))
-                return val;
-            return 0;
+            _motor.UpdateDeathPointsText(points);
         }
 
         #endregion
 
-        public void ChangeCurrentPanel(GameObject panel)
+        #region Panels
+
+        public void SetActiveCountdownPanel()
         {
-            if (_currentPanel != null)
-            {
-                _currentPanel.SetActive(false);
-            }
-            
-            _currentPanel = panel;
-            _currentPanel.SetActive(true);
+           _motor.SetActiveCountdownPanel();
         }
 
-        public int GetFinalPoints()
+        public void SetActivePlayPanel()
         {
-            return _finalPoints;
+            _motor.SetActivePlayPanel();
         }
+
+        public void SetActiveDeathPanel()
+        {
+            _motor.SetActiveDeathPanel();
+        }
+
+        #endregion
 
         #region Handlers
 
         private void OnShieldHitHandler(int meteorCount)
         {
+            _motor.SetDisplayedPoints(meteorCount);
             OnPointsChanged?.Invoke(meteorCount);
         }
         
         private void OnDeathHandler(int meteorAmount)
         {
-            Debug.Log(meteorAmount);
-            _finalPoints = meteorAmount * GameValues.VisualMultiplier;
             DeathTransition();
         }
         
         private void OnStartHandler()
         {
             StartTransition();
+            _motor.RestartPoints();
         }
 
         #endregion
