@@ -16,7 +16,7 @@ namespace _Main.Scripts.Gameplay
         public UnityAction<int> OnDeath;
         public UnityAction OnStart;
 
-        public enum LevelState
+        private enum LevelState
         {
             Start,
             Play,

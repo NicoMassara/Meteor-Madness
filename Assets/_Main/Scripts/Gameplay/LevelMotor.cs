@@ -107,7 +107,7 @@ namespace _Main.Scripts.Gameplay
         
         private void OnDeathHandler()
         {
-            OnDeath?.Invoke(_meteorHitCount);
+            OnDeath?.Invoke(_meteorSaveCount);
         }
 
         #endregion

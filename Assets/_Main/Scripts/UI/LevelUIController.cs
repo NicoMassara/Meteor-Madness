@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.UI
 {
-    public class LevelUI : MonoBehaviour
+    public class LevelUIController : MonoBehaviour
     {
         [FormerlySerializedAs("levelControllers")]
         [Header("UI Elements")]
@@ -29,7 +29,7 @@ namespace _Main.Scripts.UI
         
         public UnityAction<int> OnPointsChanged;
 
-        public enum LevelUIState
+        private enum LevelUIState
         {
             Start,
             Play,
@@ -179,6 +179,7 @@ namespace _Main.Scripts.UI
         
         private void OnDeathHandler(int meteorAmount)
         {
+            Debug.Log(meteorAmount);
             _finalPoints = meteorAmount * GameValues.VisualMultiplier;
             DeathTransition();
         }

@@ -4,11 +4,11 @@ namespace _Main.Scripts.UI.FSM.Level
 {
     public abstract class LevelUIBaseState<T> : State<T>
     {
-        protected LevelUI Controller { get; private set; }
+        protected LevelUIController Controller { get; private set; }
 
-        public void Initialize(LevelUI levelUI)
+        public void Initialize(LevelUIController levelUIController)
         {
-            Controller = levelUI;
+            Controller = levelUIController;
         }
     }
 }
