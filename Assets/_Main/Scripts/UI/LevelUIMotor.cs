@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace _Main.Scripts.UI
@@ -6,22 +8,39 @@ namespace _Main.Scripts.UI
     public class LevelUIMotor : MonoBehaviour
     {
         [Header("UI Elements")]
+        [Space]
+        [Header("Panels")]
         [SerializeField] private GameObject countdownPanel;
         [SerializeField] private GameObject playPanel;
         [SerializeField] private GameObject deathPanel;
+        [SerializeField] private GameObject restartSubPanel;
+        [SerializeField] private GameObject pausePanel;
         [Header("Texts")]
         [SerializeField] private Text countdownText;
         [SerializeField] private Text playPointsText;
         [SerializeField] private Text deathPointsText;
+        [SerializeField] private Text deathText;
+        [Header("Buttons")]
+        [SerializeField] private Button restartButton;
         
         private GameObject _currentPanel;
         private int _displayedPoints;
+        public UnityAction OnRestartPressed;
 
         private void Start()
         {
             playPanel.SetActive(false);
             deathPanel.SetActive(false);
             countdownPanel.SetActive(false);
+            deathText.text = $"{UITextValues.DeathText}";
+            
+            restartButton.onClick.AddListener(RestartButton_OnClickHandler);
+            SetActiveCountdownPanel();
+        }
+
+        private void RestartButton_OnClickHandler()
+        {
+            OnRestartPressed?.Invoke();
         }
 
         #region Displayed Points
@@ -33,7 +52,7 @@ namespace _Main.Scripts.UI
 
         public void SetDisplayedPoints(int finalPoints)
         {
-            _displayedPoints = finalPoints * GameValues.VisualMultiplier;
+            _displayedPoints = finalPoints;
         }
 
         public void RestartPoints()
@@ -80,20 +99,38 @@ namespace _Main.Scripts.UI
             ChangeCurrentPanel(deathPanel);
         }
 
+        public void DisableCurrentPanel()
+        {
+            if (_currentPanel != null)
+            {
+                _currentPanel.SetActive(false);
+            }
+        }
+
+        public void SetActiveRestartSubPanel(bool isActive)
+        {
+            restartSubPanel.SetActive(isActive);
+        }
+
+        public void EnablePausePanel()
+        {
+            pausePanel.SetActive(true);
+        }
+
         #endregion
         
         #region Update Texts
 
         public void UpdatePointsText(int points)
         {
-            playPointsText.text = $"Save Points: {points}";
+            playPointsText.text = $"{UITextValues.Points}: {points}";
         }
 
         public void UpdateCountdownText(int elapsedTime)
         {
             if (elapsedTime > 0)
             {
-                countdownText.text = $"{elapsedTime}...";
+                countdownText.text = $"{UITextValues.StartText} {elapsedTime}...";
             }
             else
             {
@@ -103,7 +140,7 @@ namespace _Main.Scripts.UI
 
         public void UpdateDeathPointsText(int points)
         {
-            deathPointsText.text = $"Points: {points}";
+            deathPointsText.text = $"{UITextValues.DeathPoints}: {points}";
         }
 
         #endregion

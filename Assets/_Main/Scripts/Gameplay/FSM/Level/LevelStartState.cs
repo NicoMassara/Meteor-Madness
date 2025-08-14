@@ -4,26 +4,23 @@ namespace _Main.Scripts.Gameplay.FSM.Level
 {
     public class LevelStartState<T> : LevelBaseState<T>
     {
-        private float _startTimer;
+        private readonly Timer _startTimer = new Timer();
         
         public override void Awake()
         {
             Controller.TriggerStart();
-            _startTimer = GameValues.StartGameCount + 1;
+            _startTimer.Set(GameValues.StartGameCount + 1);
+            _startTimer.OnEnd += StartTimer_OnEndHandler;
         }
-        
+
         public override void Execute()
         {
-            _startTimer -= Time.deltaTime;
-            if (_startTimer <= 0)
-            {
-                Controller.PlayTransition();
-            }
+            _startTimer.Run();
         }
-
-        public override void Sleep()
+        
+        private void StartTimer_OnEndHandler()
         {
-
+            Controller.PlayTransition();
         }
     }
 }

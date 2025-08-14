@@ -19,6 +19,7 @@ namespace _Main.Scripts.UI
         private FSM<LevelUIState> _fsm;
         
         public UnityAction<int> OnPointsChanged;
+        public UnityAction OnDestruction;
 
         private enum LevelUIState
         {
@@ -37,7 +38,9 @@ namespace _Main.Scripts.UI
             levelController.OnShieldHit += OnShieldHitHandler;
             levelController.OnDeath += OnDeathHandler;
             levelController.OnStart += OnStartHandler;
-            
+            levelController.OnDestruction += OnDestructionHandler;
+            _motor.OnRestartPressed += OnRestartPressedHandler;
+            GameManager.Instance.OnPaused += GM_OnPausedHandler;
             InitializeFsm();
         }
 
@@ -156,6 +159,16 @@ namespace _Main.Scripts.UI
             _motor.SetActiveDeathPanel();
         }
 
+        public void DisableCurrentPanel()
+        {
+            _motor.DisableCurrentPanel();
+        }
+        
+        public void SetActiveRestartSubPanel(bool isActive)
+        {
+            _motor.SetActiveRestartSubPanel(isActive);
+        }
+
         #endregion
 
         #region Handlers
@@ -175,6 +188,24 @@ namespace _Main.Scripts.UI
         {
             StartTransition();
             _motor.RestartPoints();
+        }
+        
+        private void OnDestructionHandler()
+        {
+            OnDestruction?.Invoke();
+        }
+        
+        private void OnRestartPressedHandler()
+        {
+            levelController.RestartGame();
+        }
+        
+        private void GM_OnPausedHandler(bool isPaused)
+        {
+            if (isPaused)
+            {
+                _motor.EnablePausePanel();
+            }
         }
 
         #endregion

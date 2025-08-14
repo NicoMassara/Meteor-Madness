@@ -27,7 +27,6 @@ namespace _Main.Scripts.Gameplay.Earth
                 _motor.RunHealTimer();
             }
         }
-        
         public void Restart()
         {
             _motor.Restart();
@@ -36,6 +35,11 @@ namespace _Main.Scripts.Gameplay.Earth
         public void Damage()
         {
             _motor.Damage();
+        }
+
+        public void TriggerDestruction()
+        {
+            _motor.TriggerDestruction();
         }
 
         #region Handlers

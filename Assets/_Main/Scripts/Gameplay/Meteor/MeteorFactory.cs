@@ -49,13 +49,18 @@ namespace _Main.Scripts.Gameplay.Meteor
             var tempMeteor = _pool.Get();
             tempMeteor.SetValues(meteorSpeed, tempRot, spawnPosition);
             tempMeteor.OnHit += Meteor_OnHitHandler;
+            tempMeteor.OnRecycle += Meteor_OnRecycleHandler;
+        }
+
+        private void Meteor_OnRecycleHandler(Meteor meteor)
+        {
+            meteor.OnRecycle -= Meteor_OnRecycleHandler;
+            _pool.Release(meteor);
         }
 
         private void Meteor_OnHitHandler(Meteor meteor, bool hasHitShield)
         {
             meteor.OnHit-= Meteor_OnHitHandler;
-            _pool.Release(meteor);
-
             if (hasHitShield)
             {
                 OnShieldHit?.Invoke();

@@ -41,3 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 24607073
+    locked: 0
+  - name: Details
+    uniqueID: 3192382635
+    locked: 0
+  - name: Earth
+    uniqueID: 1463996439
+    locked: 0
+  - name: Shield
+    uniqueID: 545170967
+    locked: 0
+  - name: Meteors
+    uniqueID: 1352932387
+    locked: 0

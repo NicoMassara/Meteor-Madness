@@ -45,7 +45,7 @@ namespace _Main.Scripts.UI.FSM.Level
         private void OnPointsChangedHandler(int amount)
         {
             _displayedPoints = Mathf.RoundToInt(_elapsedTime >= Increase_Time ? _targetPoints : Controller.GetDisplayedPointsFromText());
-            _targetPoints = amount * GameValues.VisualMultiplier;
+            _targetPoints = amount;
             _isCountingPoints = true;
             _elapsedTime = 0f;
         }

@@ -9,12 +9,15 @@ namespace _Main.Scripts.Gameplay
 {
     public class LevelController : MonoBehaviour
     {
-        private LevelMotor _levelMotor;
+        private LevelMotor _motor;
         private FSM<LevelState> _fsm;
         
         public UnityAction<int> OnShieldHit;
         public UnityAction<int> OnDeath;
         public UnityAction OnStart;
+        public UnityAction OnDestruction;
+        
+        private bool _isPaused;
 
         private enum LevelState
         {
@@ -25,21 +28,25 @@ namespace _Main.Scripts.Gameplay
 
         private void Awake()
         {
-            _levelMotor = GetComponent<LevelMotor>();
+            _motor = GetComponent<LevelMotor>();
         }
 
         private void Start()
         {
-            _levelMotor.OnShieldHit += OnShieldHitHandler;
-            _levelMotor.OnDeath += OnDeathHandler;
-            _levelMotor.OnStart += OnStartHandler;
-            
+            _motor.OnShieldHit += OnShieldHitHandler;
+            _motor.OnDeath += OnDeathHandler;
+            _motor.OnStart += OnStartHandler;
+
+            GameManager.Instance.OnPaused += GM_OnPausedHandler;
             InitializeFsm();
         }
 
         private void Update()
         {
-            _fsm.Execute();
+            if (_isPaused == false)
+            {
+                _fsm.Execute();     
+            }
         }
 
         #region FSM
@@ -111,26 +118,37 @@ namespace _Main.Scripts.Gameplay
             OnStart?.Invoke();
         }
 
+        public void TriggerEarthDestruction()
+        {
+            OnDestruction?.Invoke();
+            _motor.TriggerDestruction();
+        }
+
         #region Motor Functions
 
         public void RunSpawnTimer()
         {
-           _levelMotor.RunSpawnTimer();
+           _motor.RunSpawnTimer();
         }
 
         public void SpawnMeteor()
         {
-            _levelMotor.SpawnMeteor();
+            _motor.SpawnMeteor();
         }
 
         public void RestartSpawnTimer()
         {
-            _levelMotor.RestartSpawnTimer();
+            _motor.RestartSpawnTimer();
         }
 
         public void RestartLevel()
         {
-            _levelMotor.RestartLevel();
+            _motor.RestartLevel();
+        }
+
+        public void RestartGame()
+        {
+            StartTransition();
         }
 
         #endregion
@@ -139,7 +157,7 @@ namespace _Main.Scripts.Gameplay
 
         public bool HasSpawnTimerEnd()
         {
-            return _levelMotor.HasSpawnTimerEnd();
+            return _motor.HasSpawnTimerEnd();
         }
 
         #endregion
@@ -158,7 +176,13 @@ namespace _Main.Scripts.Gameplay
 
         private void OnShieldHitHandler(int meteorAmount)
         {
-            OnShieldHit?.Invoke(meteorAmount);
+            GameManager.Instance.IncreasePoints();
+            OnShieldHit?.Invoke(GameManager.Instance.GetCurrentPoints());
+        }
+        
+        private void GM_OnPausedHandler(bool isPaused)
+        {
+            _isPaused = isPaused;
         }
 
         #endregion

@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.Gameplay.Earth;
 using _Main.Scripts.Gameplay.Meteor;
+using _Main.Scripts.Gameplay.Shield;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -11,6 +12,7 @@ namespace _Main.Scripts.Gameplay
         [Header("Components")]
         [SerializeField] private MeteorFactory meteorFactory;
         [SerializeField] private EarthController earthController;
+        [SerializeField] private ShieldController shieldController;
         [SerializeField] private Transform centerOfGravity;
         [Header("Values")]
         [SerializeField] private float spawnRadius;
@@ -42,6 +44,27 @@ namespace _Main.Scripts.Gameplay
             
             _spawnTimer = spawnDelay;
         }
+        
+        public void RestartLevel()
+        {
+            _meteorHitCount = 0;
+            _meteorSaveCount = 0;
+            _multiplierController.Restart();
+            earthController.Restart();
+            SetActiveShield(true);
+        }
+
+        public void TriggerDestruction()
+        {
+            earthController.TriggerDestruction();
+        }
+
+        public void SetActiveShield(bool isActive)
+        {
+            shieldController.SetActiveSprite(isActive);
+        }
+
+        #region Spawner
 
         public void RunSpawnTimer()
         {
@@ -67,15 +90,7 @@ namespace _Main.Scripts.Gameplay
             var finalTimer = spawnDelay / _multiplierController.GetCurrentMultiplier();
             _spawnTimer = Random.Range(finalTimer*0.85f, finalTimer*1.15f);
         }
-
-        public void RestartLevel()
-        {
-            _meteorHitCount = 0;
-            _meteorSaveCount = 0;
-            _multiplierController.Restart();
-            earthController.Restart();
-        }
-
+        
         private Vector2 GetRandomPointInRadiusRange(Vector2 center, float minRadius, float maxRadius)
         {
             // Random angle in radians
@@ -89,6 +104,8 @@ namespace _Main.Scripts.Gameplay
             return center + offset;
         }
 
+        #endregion
+        
         #region Handlers
 
         private void OnEarthHitHandler()
@@ -107,6 +124,7 @@ namespace _Main.Scripts.Gameplay
         
         private void OnDeathHandler()
         {
+            SetActiveShield(false);
             OnDeath?.Invoke(_meteorSaveCount);
         }
 

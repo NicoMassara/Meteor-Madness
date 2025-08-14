@@ -9,9 +9,17 @@ namespace _Main.Scripts.Gameplay
     public class Inputs : MonoBehaviour
     {
         [SerializeField] private ShieldController shieldController;
+        private bool _isPaused;
+
+        private void Start()
+        {
+            GameManager.Instance.OnPaused += GM_OnPausedHandler;
+        }
 
         private void Update()
         {
+            if(_isPaused) return;
+            
             if (GameManager.Instance.CanPlay == true)
             {
                 if (Input.GetKey(KeyCode.A))
@@ -25,9 +33,14 @@ namespace _Main.Scripts.Gameplay
 
                 if (Input.GetKeyDown(KeyCode.P))
                 {
-                
+                    GameManager.Instance.SetPaused(true);
                 }
             }
+        }
+        
+        private void GM_OnPausedHandler(bool isPaused)
+        {
+            _isPaused = isPaused;
         }
     }
 }

@@ -23,6 +23,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private float _elapsedTime;
         private float _duration = 0.5f;
         private float _shakeTime;
+        private bool _isDead;
 
         private void Awake()
         {
@@ -38,6 +39,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _motor.OnHeal += OnHealHandler;
             _motor.OnDeath += OnDeathHandler;
             _motor.OnRestart += OnRestartHandler;
+            _motor.OnDestruction += OnDestructionHandler;
 
             _currentHealth = 1;
             _targetHealth = _currentHealth;
@@ -45,9 +47,12 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void Update()
         {
-            if (_targetHealth < 1)
+            if (_isDead == false)
             {
-                HandleShake();
+                if (_targetHealth < 1)
+                {
+                    HandleShake();
+                }
             }
         }
 
@@ -97,15 +102,23 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void OnDeathHandler()
         {
+            _targetHealth = 0;
+            _isDead = true;
+            UpdateColor();
+        }
+
+        private void OnDestructionHandler()
+        {
             spriteObject.SetActive(false);
             brokenSpriteObject.SetActive(true);
         }
-        
+
         private void OnRestartHandler()
         {
             spriteObject.SetActive(true);
             brokenSpriteObject.SetActive(false);
             _targetHealth = 1;
+            _isDead = false;
             UpdateColor();
         }
         #endregion
