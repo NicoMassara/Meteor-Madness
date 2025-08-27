@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay.FSM.Level;
 using UnityEngine;
@@ -13,6 +12,7 @@ namespace _Main.Scripts.Gameplay
         private FSM<LevelState> _fsm;
         
         public UnityAction<int> OnShieldHit;
+        public UnityAction<int> OnEarthHit;
         public UnityAction<int> OnDeath;
         public UnityAction OnStart;
         public UnityAction OnDestruction;
@@ -34,6 +34,7 @@ namespace _Main.Scripts.Gameplay
         private void Start()
         {
             _motor.OnShieldHit += OnShieldHitHandler;
+            _motor.OnEarthHit += OnEarthHitHandler;
             _motor.OnDeath += OnDeathHandler;
             _motor.OnStart += OnStartHandler;
 
@@ -125,20 +126,11 @@ namespace _Main.Scripts.Gameplay
         }
 
         #region Motor Functions
-
-        public void RunSpawnTimer()
-        {
-           _motor.RunSpawnTimer();
-        }
+        
 
         public void SpawnMeteor()
         {
             _motor.SpawnMeteor();
-        }
-
-        public void RestartSpawnTimer()
-        {
-            _motor.RestartSpawnTimer();
         }
 
         public void RestartLevel()
@@ -154,11 +146,6 @@ namespace _Main.Scripts.Gameplay
         #endregion
         
         #region Motor Data
-
-        public bool HasSpawnTimerEnd()
-        {
-            return _motor.HasSpawnTimerEnd();
-        }
 
         #endregion
 
@@ -183,6 +170,11 @@ namespace _Main.Scripts.Gameplay
         private void GM_OnPausedHandler(bool isPaused)
         {
             _isPaused = isPaused;
+        }
+        
+        private void OnEarthHitHandler(int arg0)
+        {
+            OnEarthHit?.Invoke(arg0);
         }
 
         #endregion

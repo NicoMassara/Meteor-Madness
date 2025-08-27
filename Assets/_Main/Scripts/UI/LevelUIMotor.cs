@@ -123,7 +123,7 @@ namespace _Main.Scripts.UI
 
         public void UpdatePointsText(int points)
         {
-            playPointsText.text = $"{UITextValues.Points}: {points}";
+            playPointsText.text = $"{UITextValues.Points}: {points:D6}";
         }
 
         public void UpdateCountdownText(int elapsedTime)
@@ -140,7 +140,7 @@ namespace _Main.Scripts.UI
 
         public void UpdateDeathPointsText(int points)
         {
-            deathPointsText.text = $"{UITextValues.DeathPoints}: {points}";
+            deathPointsText.text = $"{UITextValues.DeathPoints}: {points:D6}";
         }
 
         #endregion

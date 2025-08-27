@@ -6,23 +6,27 @@
         {
             GameManager.Instance.CanPlay = true;
             Controller.OnDeath += OnDeathHandler;
+            Controller.OnShieldHit += OnMeteorHitHandler;
+            Controller.OnEarthHit += OnMeteorHitHandler;
+            
+            Controller.SpawnMeteor();
         }
 
         public override void Execute()
         {
-            Controller.RunSpawnTimer();
-            if (Controller.HasSpawnTimerEnd())
-            {
-                Controller.SpawnMeteor();
-                Controller.RestartSpawnTimer();
-            }
+            
         }
 
         public override void Sleep()
         {
             GameManager.Instance.CanPlay = false;
-            Controller.RestartSpawnTimer();
         }
+        
+        private void OnMeteorHitHandler(int arg0)
+        {
+            Controller.SpawnMeteor();
+        }
+
         
         private void OnDeathHandler(int points)
         {

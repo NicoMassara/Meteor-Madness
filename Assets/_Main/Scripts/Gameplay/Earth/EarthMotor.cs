@@ -1,13 +1,17 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Sounds;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
     public class EarthMotor : MonoBehaviour
     {
+        [Header("Sounds")]
+        [SerializeField] private SoundBehavior hitSound;
         [Header("Values")]
         [Range(0, 30)] [SerializeField] private float startHealDelay = 15f;
         [Range(0, 15)] [SerializeField] private float keepHealDelay = 2f;
+        [SerializeField] private AnimationCurve healthRatioCurve;
         
         private float _currentHealth;
         private float _startHealTimer;
@@ -58,7 +62,9 @@ namespace _Main.Scripts.Gameplay.Earth
             _startHealTimer = startHealDelay;
             _keepHealTimer = 0;
             
+            hitSound.PlaySound(1f, healthRatioCurve.Evaluate(_currentHealth));
             
+
             if (_currentHealth <= 0)
             {
                 OnDeath?.Invoke();
@@ -72,6 +78,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private void Heal()
         {
             _currentHealth += 0.1f;
+
             OnHeal?.Invoke(_currentHealth);
         }
 

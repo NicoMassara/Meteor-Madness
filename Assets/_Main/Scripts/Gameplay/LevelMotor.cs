@@ -16,15 +16,10 @@ namespace _Main.Scripts.Gameplay
         [SerializeField] private Transform centerOfGravity;
         [Header("Values")]
         [SerializeField] private float spawnRadius;
-        [Range(0.1f, 5)]
-        [SerializeField] private float spawnDelay;
-        [Range(5, 50)] 
-        [SerializeField] private float baseMeteorSpeed = 15f;
         
-        private MultiplierController _multiplierController;
+        private MeteorSpeedController _meteorSpeedController;
         private int _meteorSaveCount;
         private int _meteorHitCount;
-        private float _spawnTimer;
 
         public UnityAction<int> OnShieldHit;
         public UnityAction<int> OnEarthHit;
@@ -33,7 +28,7 @@ namespace _Main.Scripts.Gameplay
 
         private void Awake()
         {
-            _multiplierController = new MultiplierController();
+            _meteorSpeedController = new MeteorSpeedController();
         }
 
         private void Start()
@@ -41,15 +36,13 @@ namespace _Main.Scripts.Gameplay
             meteorFactory.OnShieldHit += OnShieldHitHandler;
             meteorFactory.OnEarthHit += OnEarthHitHandler;
             earthController.OnDeath += OnDeathHandler;
-            
-            _spawnTimer = spawnDelay;
         }
         
         public void RestartLevel()
         {
             _meteorHitCount = 0;
             _meteorSaveCount = 0;
-            _multiplierController.Restart();
+            _meteorSpeedController.RestartAll();
             earthController.Restart();
             SetActiveShield(true);
         }
@@ -66,29 +59,13 @@ namespace _Main.Scripts.Gameplay
 
         #region Spawner
 
-        public void RunSpawnTimer()
-        {
-            _spawnTimer -= Time.deltaTime;
-        }
-
-        public bool HasSpawnTimerEnd()
-        {
-            return _spawnTimer <= 0;
-        }
-
         public void SpawnMeteor()
         {
             Vector2 spawnPosition = GetRandomPointInRadiusRange(centerOfGravity.position, 
                 spawnRadius*0.75f, spawnRadius*1.25f);
-            var meteorSpeed = baseMeteorSpeed * _multiplierController.GetCurrentMultiplier();
+            var meteorSpeed = GameValues.BaseMeteorSpeed * _meteorSpeedController.GetCurrentMultiplier();
             var finalSpeed = Random.Range(meteorSpeed*0.85f, meteorSpeed*1.15f);
             meteorFactory.SpawnMeteor(finalSpeed,spawnPosition);
-        }
-
-        public void RestartSpawnTimer()
-        {
-            var finalTimer = spawnDelay / _multiplierController.GetCurrentMultiplier();
-            _spawnTimer = Random.Range(finalTimer*0.85f, finalTimer*1.15f);
         }
         
         private Vector2 GetRandomPointInRadiusRange(Vector2 center, float minRadius, float maxRadius)
@@ -111,20 +88,25 @@ namespace _Main.Scripts.Gameplay
         private void OnEarthHitHandler()
         {
             _meteorHitCount++;
+            _meteorSpeedController.RestartCount();
             OnEarthHit?.Invoke(_meteorHitCount);
+            shieldController.ShrinkShield();
             earthController.Damage();
         }
 
         private void OnShieldHitHandler()
         {
             _meteorSaveCount++;
-            _multiplierController.CheckForNextLevel(_meteorSaveCount);
+            _meteorSpeedController.CheckForNextLevel(_meteorSaveCount);
+            shieldController.HitShield();
             OnShieldHit?.Invoke(_meteorSaveCount);
         }
         
         private void OnDeathHandler()
         {
             SetActiveShield(false);
+            shieldController.ShrinkShield();
+            meteorFactory.RecycleActiveMeteors();
             OnDeath?.Invoke(_meteorSaveCount);
         }
 

@@ -24,7 +24,7 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             if (_motor.IsHealing())
             {
-                _motor.RunHealTimer();
+                //_motor.RunHealTimer();
             }
         }
         public void Restart()

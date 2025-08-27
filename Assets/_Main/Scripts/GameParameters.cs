@@ -10,8 +10,13 @@
         public const float HardMeteorDamage = 0.35f;
         public const float HeavyMeteorDamage = 0.5f;
         public const float BrutalMeteorDamage = 1f;
-        public const int BaseMeteorNeed = 10;
-        public const float MeteorRecycleTime = 5f;
+        public const float MeteorRecycleTime = 0.5f;
+        public const float ShieldExtend = 1.5f;
+        public const float BaseMeteorSpeed = 10f;
+        public const int StartStreakShield = 5;
+        public const int MaxStreakShield = 10;
+        public const int ExtendedMaxHit = 10;
+        //
     }
 
     public struct UITimeValues

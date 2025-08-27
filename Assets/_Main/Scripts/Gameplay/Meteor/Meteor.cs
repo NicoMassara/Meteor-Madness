@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
@@ -7,6 +8,9 @@ namespace _Main.Scripts.Gameplay.Meteor
 {
     public class Meteor : MonoBehaviour
     {
+        [Header("Sounds")]
+        [SerializeField] private SoundBehavior moveSound;
+        [Header("Layers Mask")]
         [SerializeField] private LayerMask shieldMask;
         [SerializeField] private LayerMask earthMask;
         private Rigidbody2D _rb;
@@ -60,6 +64,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             _rb.transform.position = position;
             _canMove = true;
             _isDestroyed = false;
+            moveSound.PlaySound(1);
             OnValuesSet?.Invoke();
         }
         
@@ -86,14 +91,23 @@ namespace _Main.Scripts.Gameplay.Meteor
                     _circleCollider.isTrigger = true;
                     _isDestroyed = true;
                     _recycleTimer.Set(GameValues.MeteorRecycleTime);
+                    moveSound.StopSound();
                 }
             }
             else if (((1 << other.gameObject.layer) & earthMask) != 0)
             {
                 OnHit?.Invoke(this, false);
                 _canMove = false;
+                moveSound.StopSound();
                 OnRecycle?.Invoke(this);
             }
+        }
+
+        public void ForceRecycle()
+        {
+            _canMove = false;
+            moveSound.StopSound();
+            OnRecycle?.Invoke(this);
         }
     }
 }

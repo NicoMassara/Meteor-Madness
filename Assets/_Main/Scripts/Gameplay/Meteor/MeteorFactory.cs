@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
@@ -10,9 +11,8 @@ namespace _Main.Scripts.Gameplay.Meteor
     {
         [SerializeField] private Meteor meteorPrefab;
         [SerializeField] private Transform centerOfGravity;
-
-
         
+        private readonly List<Meteor> _activeMeteors = new List<Meteor>();
         private ObjectPool<Meteor> _pool;
 
         public UnityAction OnShieldHit;
@@ -50,11 +50,21 @@ namespace _Main.Scripts.Gameplay.Meteor
             tempMeteor.SetValues(meteorSpeed, tempRot, spawnPosition);
             tempMeteor.OnHit += Meteor_OnHitHandler;
             tempMeteor.OnRecycle += Meteor_OnRecycleHandler;
+            _activeMeteors.Add(tempMeteor);
+        }
+
+        public void RecycleActiveMeteors()
+        {
+            for (int i = _activeMeteors.Count - 1; i >= 0; i--)
+            {
+                _activeMeteors[i].ForceRecycle();
+            }
         }
 
         private void Meteor_OnRecycleHandler(Meteor meteor)
         {
             meteor.OnRecycle -= Meteor_OnRecycleHandler;
+            _activeMeteors.Remove(meteor);
             _pool.Release(meteor);
         }
 

@@ -22,7 +22,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             _meteor.OnHit += OnHitHandler;
             _meteor.OnValuesSet += OnValuesSetHandler;
         }
-        
 
         private void Update()
         {
@@ -38,6 +37,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             normalSpriteObject.SetActive(true);
             destroyedSpriteObject.SetActive(false);
             _alpha = 1;
+            destroyedSpriteObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
             _startDissolveTimer.Reset();
         }
 

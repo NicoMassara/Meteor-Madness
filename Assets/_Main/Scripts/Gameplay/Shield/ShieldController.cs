@@ -1,23 +1,37 @@
-﻿using UnityEngine;
+﻿using System;
+using _Main.Scripts.Sounds;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
+    [RequireComponent(typeof(ShieldMotor))]
     public class ShieldController : MonoBehaviour
     {
-        [Header("Components")]
-        [SerializeField] private GameObject spriteObject;
-        [Header("Values")]
-        [Range(1,10)]
-        [SerializeField] private float rotateSpeed;
+        private ShieldMotor _motor;
 
-        public void Rotate(float direction = 1)
+        private void Awake()
         {
-            transform.RotateAround(transform.position, Vector3.forward, (rotateSpeed/10) * direction);
+            _motor = GetComponent<ShieldMotor>();
         }
 
         public void SetActiveSprite(bool isActive)
         {
-            spriteObject.SetActive(isActive);
+            _motor.SetActiveSprite(isActive);
+        }
+
+        public void HitShield()
+        {
+            _motor.HitShield();
+        }
+
+        public void ShrinkShield()
+        {
+            _motor.ShrinkShield();
+        }
+
+        public void Rotate(int direction)
+        {
+            _motor.Rotate(direction);
         }
     }
 }
