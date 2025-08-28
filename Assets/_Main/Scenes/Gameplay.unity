@@ -237,10 +237,10 @@ RectTransform:
   - {fileID: 649174707}
   m_Father: {fileID: 2023637912}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.000030517578}
-  m_SizeDelta: {x: 1320, y: 743.9998}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 660, y: -371.99997}
+  m_SizeDelta: {x: 1320, y: 743.99976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &81793093
 MonoBehaviour:
@@ -4684,7 +4684,7 @@ MonoBehaviour:
   shieldHitSound: {fileID: 163182589}
   shieldMoveSound: {fileID: 1982406300}
   sprite: {fileID: 610377037}
-  rotateSpeed: 5
+  rotateSpeed: 6.75
   extendTime: 1.25
   pithCurve:
     serializedVersion: 2

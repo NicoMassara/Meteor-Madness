@@ -100,7 +100,8 @@ namespace _Main.Scripts.Gameplay.Shield
                 _lastDirection = direction;
             }
 
-            transform.RotateAround(transform.position, Vector3.forward, (rotateSpeed/10) * direction);
+            transform.RotateAround(transform.position, Vector3.forward, 
+                ((rotateSpeed*50) * direction) * Time.deltaTime);
         }
 
         public void StopRotation()
