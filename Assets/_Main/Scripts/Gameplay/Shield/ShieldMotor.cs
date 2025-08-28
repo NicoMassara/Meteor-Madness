@@ -10,9 +10,9 @@ namespace _Main.Scripts.Gameplay.Shield
     {
         private int _currentStreak;
         private int _initialStreak;
-
         private int _currentExtendedHitCount;
 
+        public bool IsShieldExtended { get; set; }
         public UnityAction OnReset;
         
         public float GetSteakRatio()
@@ -27,6 +27,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 if (_currentStreak < GameValues.MaxStreakShield)
                 {
                     _currentStreak++;
+                    
                 }
             }
             
@@ -40,14 +41,16 @@ namespace _Main.Scripts.Gameplay.Shield
             if (_currentExtendedHitCount >= GameValues.ExtendedMaxHit)
             {
                 OnReset?.Invoke();
-                _currentExtendedHitCount = 0;
+                ResetStreak();
             }
         }
 
         public void ResetStreak()
         {
+            _currentExtendedHitCount = 0;
             _currentStreak = 0;
             _initialStreak = 0;
+            IsShieldExtended = false;
         }
     }
     
@@ -67,6 +70,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldStreakController _shieldStreakController;
 
         private bool _canExtendShield;
+
+        public UnityAction OnHit;
 
         private void Awake()
         {
@@ -100,19 +105,21 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _shieldStreakController.IncreaseStreak();
             var currentRatio = _shieldStreakController.GetSteakRatio();
-            if(currentRatio >= 1)
+            var currValue = pithCurve.Evaluate(currentRatio);
+            
+            if(currentRatio >= 1 && _shieldStreakController.IsShieldExtended)
             {
                 _shieldStreakController.IncreaseExtendedHitCount();
             }
-            var currValue = pithCurve.Evaluate(currentRatio);
-            
-            if (currentRatio >= 1)
+            else if (currentRatio >= 1 && !_shieldStreakController.IsShieldExtended)
             {
                 _canExtendShield = true;
                 ExtendShield();
+                _shieldStreakController.IsShieldExtended = true;
             }
 
             shieldHitSound.PlaySound(1f,currValue);
+            OnHit?.Invoke();
         }
 
         private void ExtendShield()
@@ -130,15 +137,15 @@ namespace _Main.Scripts.Gameplay.Shield
 
         public void ShrinkShield()
         {
-            _shieldStreakController.ResetStreak();
             sprite.transform.localScale = new Vector3(1,1,1);
+            _shieldStreakController.ResetStreak();
         }
 
         #region Handlers
 
         private void ShieldStreakController_OnResetHandler()
         {
-            ShrinkShield();
+            sprite.transform.localScale = new Vector3(1,1,1);
         }
 
         #endregion

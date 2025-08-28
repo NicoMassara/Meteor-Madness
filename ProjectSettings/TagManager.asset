@@ -44,9 +44,6 @@ TagManager:
   - name: Background
     uniqueID: 24607073
     locked: 0
-  - name: Details
-    uniqueID: 3192382635
-    locked: 0
   - name: Earth
     uniqueID: 1463996439
     locked: 0
@@ -55,4 +52,7 @@ TagManager:
     locked: 0
   - name: Meteors
     uniqueID: 1352932387
+    locked: 0
+  - name: Details
+    uniqueID: 3192382635
     locked: 0

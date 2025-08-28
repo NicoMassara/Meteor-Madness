@@ -1,6 +1,8 @@
 ﻿using _Main.Scripts.Gameplay.Earth;
 using _Main.Scripts.Gameplay.Meteor;
 using _Main.Scripts.Gameplay.Shield;
+using _Main.Scripts.Particles;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -13,9 +15,14 @@ namespace _Main.Scripts.Gameplay
         [SerializeField] private MeteorFactory meteorFactory;
         [SerializeField] private EarthController earthController;
         [SerializeField] private ShieldController shieldController;
+        [SerializeField] private ParticlesController particlesController;
+        [SerializeField] private CameraShaker cameraShaker;
         [SerializeField] private Transform centerOfGravity;
         [Header("Values")]
         [SerializeField] private float spawnRadius;
+        [Header("Sprite Data")]
+        [SerializeField] private ParticleDataSo collisionSprite;
+        [SerializeField] private ParticleDataSo shieldHitSprite;
         
         private MeteorSpeedController _meteorSpeedController;
         private int _meteorSaveCount;
@@ -85,18 +92,21 @@ namespace _Main.Scripts.Gameplay
         
         #region Handlers
 
-        private void OnEarthHitHandler()
+        private void OnEarthHitHandler(Vector3 position, Quaternion rotation)
         {
             _meteorHitCount++;
+            cameraShaker.StartShake();
+            particlesController.SpawnParticle(collisionSprite, position, rotation);
             _meteorSpeedController.RestartCount();
             OnEarthHit?.Invoke(_meteorHitCount);
             shieldController.ShrinkShield();
             earthController.Damage();
         }
 
-        private void OnShieldHitHandler()
+        private void OnShieldHitHandler(Vector3 position)
         {
             _meteorSaveCount++;
+            particlesController.SpawnParticle(shieldHitSprite, position, quaternion.identity);
             _meteorSpeedController.CheckForNextLevel(_meteorSaveCount);
             shieldController.HitShield();
             OnShieldHit?.Invoke(_meteorSaveCount);
@@ -105,6 +115,7 @@ namespace _Main.Scripts.Gameplay
         private void OnDeathHandler()
         {
             SetActiveShield(false);
+            particlesController.RecycleAll();
             shieldController.ShrinkShield();
             meteorFactory.RecycleActiveMeteors();
             OnDeath?.Invoke(_meteorSaveCount);

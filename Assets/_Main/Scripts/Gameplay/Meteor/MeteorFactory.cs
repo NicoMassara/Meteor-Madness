@@ -15,8 +15,8 @@ namespace _Main.Scripts.Gameplay.Meteor
         private readonly List<Meteor> _activeMeteors = new List<Meteor>();
         private ObjectPool<Meteor> _pool;
 
-        public UnityAction OnShieldHit;
-        public UnityAction OnEarthHit;
+        public UnityAction<Vector3> OnShieldHit;
+        public UnityAction<Vector3, Quaternion> OnEarthHit;
 
         private void Start()
         {
@@ -73,11 +73,11 @@ namespace _Main.Scripts.Gameplay.Meteor
             meteor.OnHit-= Meteor_OnHitHandler;
             if (hasHitShield)
             {
-                OnShieldHit?.Invoke();
+                OnShieldHit?.Invoke(meteor.transform.position);
             }
             else
             {
-                OnEarthHit?.Invoke();
+                OnEarthHit?.Invoke(meteor.transform.position, meteor.transform.rotation);
             }
         }
     }
