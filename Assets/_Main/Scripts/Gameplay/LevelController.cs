@@ -13,7 +13,7 @@ namespace _Main.Scripts.Gameplay
         
         public UnityAction<int> OnShieldHit;
         public UnityAction<int> OnEarthHit;
-        public UnityAction<int> OnDeath;
+        public UnityAction<int> OnEnd;
         public UnityAction OnStart;
         public UnityAction OnDestruction;
         
@@ -35,7 +35,7 @@ namespace _Main.Scripts.Gameplay
         {
             _motor.OnShieldHit += OnShieldHitHandler;
             _motor.OnEarthHit += OnEarthHitHandler;
-            _motor.OnDeath += OnDeathHandler;
+            _motor.OnEnd += OnEndHandler;
             _motor.OnStart += OnStartHandler;
 
             GameManager.Instance.OnPaused += GM_OnPausedHandler;
@@ -114,11 +114,6 @@ namespace _Main.Scripts.Gameplay
 
         #endregion
 
-        public void TriggerStart()
-        {
-            OnStart?.Invoke();
-        }
-
         public void TriggerEarthDestruction()
         {
             OnDestruction?.Invoke();
@@ -127,6 +122,16 @@ namespace _Main.Scripts.Gameplay
 
         #region Motor Functions
         
+        public void StartLevel()
+        {
+            _motor.StartLevel();
+            GameManager.Instance.ClearCurrentPoints();
+        }
+
+        public void EndLevel()
+        {
+            _motor.EndLevel();
+        }
 
         public void SpawnMeteor()
         {
@@ -156,9 +161,9 @@ namespace _Main.Scripts.Gameplay
             OnStart?.Invoke();
         }
 
-        private void OnDeathHandler(int meteorHitCount)
+        private void OnEndHandler(int meteorHitCount)
         {
-            OnDeath?.Invoke(meteorHitCount);
+            OnEnd?.Invoke(meteorHitCount);
         }
 
         private void OnShieldHitHandler(int meteorAmount)
@@ -178,5 +183,15 @@ namespace _Main.Scripts.Gameplay
         }
 
         #endregion
+
+        public void StartEarthShake()
+        {
+            _motor.StartEarthShake();
+        }
+
+        public void StopEarthShake()
+        {
+            _motor.StopEarthShake();
+        }
     }
 }

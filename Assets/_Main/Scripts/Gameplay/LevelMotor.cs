@@ -34,28 +34,43 @@ namespace _Main.Scripts.Gameplay
 
         public UnityAction<int> OnShieldHit;
         public UnityAction<int> OnEarthHit;
-        public UnityAction<int> OnDeath;
+        public UnityAction<int> OnEnd;
         public UnityAction OnStart;
-
-        private void Awake()
-        {
-            _meteorSpeedController = new MeteorSpeedController();
-        }
 
         private void Start()
         {
-            meteorFactory.OnShieldHit += OnShieldHitHandler;
-            meteorFactory.OnEarthHit += OnEarthHitHandler;
-            earthController.OnDeath += OnDeathHandler;
+            _meteorSpeedController = new MeteorSpeedController();
+            
+            meteorFactory.OnShieldHit += Meteor_OnShieldHitHandler;
+            meteorFactory.OnEarthHit += Meteor_OnEarthHitHandler;
+            earthController.OnDeath += Earth_OnDeathHandler;
+            earthController.OnDamage += Earth_OnDamageHandler;
         }
-        
-        public void RestartLevel()
+
+        public void StartLevel()
         {
             _meteorHitCount = 0;
             _meteorSaveCount = 0;
-            _meteorSpeedController.RestartAll();
             earthController.Restart();
+            shieldController.Restart();
             SetActiveShield(true);
+            
+            OnStart?.Invoke();
+        }
+
+        public void EndLevel()
+        {            
+            SetActiveShield(false);
+            particlesController.RecycleAll();
+            meteorFactory.RecycleAll();
+            shieldController.ShrinkShield();
+            
+            OnEnd?.Invoke(_meteorSaveCount);
+        }
+
+        public void RestartLevel()
+        {
+            _meteorSpeedController.RestartAll();
         }
 
         public void TriggerDestruction()
@@ -68,11 +83,20 @@ namespace _Main.Scripts.Gameplay
             shieldController.SetActiveSprite(isActive);
         }
 
+        public void StartEarthShake()
+        {
+            earthController.StartShake();
+        }
+
+        public void StopEarthShake()
+        {
+            earthController.StopShake();
+        }
+
         #region Spawner
 
         public void SpawnMeteor()
         {
-            Debug.Log("SpawnMeteor : LevelMotor");
             Vector2 spawnPosition = GetRandomPointInRadiusRange(centerOfGravity.position, 
                 spawnRadius*0.75f, spawnRadius*1.25f);
             var meteorSpeed = GameValues.BaseMeteorSpeed * _meteorSpeedController.GetCurrentMultiplier();
@@ -97,7 +121,7 @@ namespace _Main.Scripts.Gameplay
         
         #region Handlers
 
-        private void OnEarthHitHandler(Vector3 position, Quaternion rotation)
+        private void Meteor_OnEarthHitHandler(Vector3 position, Quaternion rotation)
         {
             _meteorHitCount++;
             cameraShaker.StartShake(earthHitShake);
@@ -108,7 +132,7 @@ namespace _Main.Scripts.Gameplay
             earthController.Damage();
         }
 
-        private void OnShieldHitHandler(Vector3 position)
+        private void Meteor_OnShieldHitHandler(Vector3 position)
         {
             _meteorSaveCount++;
             cameraShaker.StartShake(shieldHitShake);
@@ -118,13 +142,14 @@ namespace _Main.Scripts.Gameplay
             OnShieldHit?.Invoke(_meteorSaveCount);
         }
         
-        private void OnDeathHandler()
+        private void Earth_OnDeathHandler()
         {
-            SetActiveShield(false);
-            particlesController.RecycleAll();
-            shieldController.ShrinkShield();
-            meteorFactory.RecycleActiveMeteors();
-            OnDeath?.Invoke(_meteorSaveCount);
+            EndLevel();
+        }
+        
+        private void Earth_OnDamageHandler()
+        {
+ 
         }
 
         #endregion

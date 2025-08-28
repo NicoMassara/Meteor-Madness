@@ -8,7 +8,7 @@ namespace _Main.Scripts.Gameplay.FSM.Level
         
         public override void Awake()
         {
-            Controller.TriggerStart();
+            Controller.StartLevel();
             _startTimer.Set(GameValues.StartGameCount + 1);
             _startTimer.OnEnd += StartTimer_OnEndHandler;
         }

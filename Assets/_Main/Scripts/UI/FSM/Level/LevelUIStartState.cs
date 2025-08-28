@@ -8,7 +8,7 @@ namespace _Main.Scripts.UI.FSM.Level
 
         public override void Awake()
         {
-            Controller.SetActiveCountdownPanel();
+            Controller.StartLevel();
             _timer = GameValues.StartGameCount;
         }
 

@@ -18,6 +18,7 @@ namespace _Main.Scripts.UI.FSM.Level
         {
             Controller.DisableCurrentPanel();
             Controller.SetActiveRestartSubPanel(false);
+            _elapsedTime = 0;
             Controller.OnDestruction += OnDestructionHandler;
             _displayPanelTimer.OnEnd += DisplayPanelTimer_OnEndHandler;
             _enableRestartTimer.OnEnd += EnableRestartTimer_OnEndHandler;
@@ -39,6 +40,13 @@ namespace _Main.Scripts.UI.FSM.Level
                     }
                 }
             }
+        }
+
+        public override void Sleep()
+        {
+            Controller.OnDestruction -= OnDestructionHandler;
+            _displayPanelTimer.OnEnd -= DisplayPanelTimer_OnEndHandler;
+            _enableRestartTimer.OnEnd -= EnableRestartTimer_OnEndHandler;
         }
 
         private void HandlePoints()
@@ -75,7 +83,7 @@ namespace _Main.Scripts.UI.FSM.Level
                 _isCountingPoints = true;
             }
             Controller.UpdateDeathPointsText(0);
-            Controller.SetActiveDeathPanel();
+            Controller.EndLevel();
         }
         
         private void EnableRestartTimer_OnEndHandler()

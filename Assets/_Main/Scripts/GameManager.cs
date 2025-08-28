@@ -23,6 +23,11 @@ namespace _Main.Scripts
             _currentPoints += 1 * multiplier;
         }
 
+        public void ClearCurrentPoints()
+        {
+            _currentPoints = 0;
+        }
+
         public int GetCurrentPoints()
         {
             return _currentPoints * GameValues.VisualMultiplier;

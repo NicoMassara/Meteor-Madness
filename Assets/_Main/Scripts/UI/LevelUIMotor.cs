@@ -43,6 +43,18 @@ namespace _Main.Scripts.UI
             OnRestartPressed?.Invoke();
         }
 
+
+        public void StartLevel()
+        {
+            SetActiveCountdownPanel();
+            SetDisplayedPoints(0);
+        }
+
+        public void EndLevel()
+        {
+            SetActiveDeathPanel();
+        }
+
         #region Displayed Points
 
         public int GetDisplayedPoints()
@@ -50,9 +62,9 @@ namespace _Main.Scripts.UI
             return _displayedPoints;
         }
 
-        public void SetDisplayedPoints(int finalPoints)
+        public void SetDisplayedPoints(int points)
         {
-            _displayedPoints = finalPoints;
+            _displayedPoints = points;
         }
 
         public void RestartPoints()

@@ -14,6 +14,8 @@ namespace _Main.Scripts.UI.FSM.Level
         {
             Controller.SetActivePlayPanel();
             Controller.OnPointsChanged += OnPointsChangedHandler;
+            _displayedPoints = 0;
+            _targetPoints = 0;
         }
 
         public override void Execute()

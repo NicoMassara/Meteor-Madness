@@ -5,7 +5,7 @@
         public override void Awake()
         {
             GameManager.Instance.CanPlay = true;
-            Controller.OnDeath += OnDeathHandler;
+            Controller.OnEnd += OnEndHandler;
             Controller.OnShieldHit += OnMeteorHitHandler;
             Controller.OnEarthHit += OnMeteorHitHandler;
             
@@ -19,6 +19,8 @@
 
         public override void Sleep()
         {
+            Controller.OnShieldHit -= OnMeteorHitHandler;
+            Controller.OnEarthHit -= OnMeteorHitHandler;
             GameManager.Instance.CanPlay = false;
         }
         
@@ -28,9 +30,10 @@
         }
 
         
-        private void OnDeathHandler(int points)
+        private void OnEndHandler(int points)
         {
-            Controller.OnDeath -= OnDeathHandler;
+            Controller.OnEnd -= OnEndHandler;
+
             Controller.DeathTransition();
         }
     }

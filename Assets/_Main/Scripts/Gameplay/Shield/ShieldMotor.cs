@@ -149,5 +149,10 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
+
+        public void RestartPosition()
+        {
+            transform.rotation = Quaternion.Euler(0,0,0);
+        }
     }
 }

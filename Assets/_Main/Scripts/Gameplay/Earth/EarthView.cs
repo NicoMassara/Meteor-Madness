@@ -2,6 +2,7 @@
 using _Main.Scripts.Shaker;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
@@ -13,16 +14,14 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private SpriteRenderer spriteRenderer;
         [Header("Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
-        [SerializeField] private ShakeDataSo shakeData;
+        [SerializeField] private ShakeDataSo healthShakeData;
+        [SerializeField] private ShakeDataSo deathShakeData;
         
         private ShakerController _shakerController;
         
         private EarthMotor _motor;
         private float _currentHealth;
         private float _targetHealth;
-        private float _elapsedTime;
-        private float _duration = 0.5f;
-        private float _shakeTime;
         private bool _isDead;
 
         private void Awake()
@@ -39,7 +38,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _targetHealth = _currentHealth;
             
             _shakerController = new ShakerController(spriteObject.transform);
-            _shakerController.SetShakeData(shakeData);
+            _shakerController.SetShakeData(healthShakeData);
             _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
             
             _motor.OnDamage += OnDamagedHandler;
@@ -47,14 +46,12 @@ namespace _Main.Scripts.Gameplay.Earth
             _motor.OnDeath += OnDeathHandler;
             _motor.OnRestart += OnRestartHandler;
             _motor.OnDestruction += OnDestructionHandler;
+            _motor.OnShake += OnShakeHandler;
         }
 
         private void Update()
         {
-            if (_isDead == false)
-            {
-                _shakerController.HandleShake();
-            }
+            _shakerController.HandleShake();
         }
 
         private void UpdateColor()
@@ -98,7 +95,23 @@ namespace _Main.Scripts.Gameplay.Earth
             brokenSpriteObject.SetActive(false);
             _targetHealth = 1;
             _isDead = false;
+            _shakerController.SetShakeData(healthShakeData);
+            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
             UpdateColor();
+        }
+        
+        private void OnShakeHandler(bool isShaking)
+        {
+            if (isShaking)
+            {
+                _shakerController.SetMultiplier(1);
+                _shakerController.SetShakeData(deathShakeData);
+            }
+            else
+            {
+                _shakerController.SetMultiplier(0);
+            }
+
         }
         #endregion
         

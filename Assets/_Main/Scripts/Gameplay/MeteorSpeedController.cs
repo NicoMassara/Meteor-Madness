@@ -73,7 +73,7 @@ namespace _Main.Scripts.Gameplay
         
         public MeteorSpeedController()
         {
-
+            RestartAll();
         }
 
         public void RestartAll()

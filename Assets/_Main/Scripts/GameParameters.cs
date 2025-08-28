@@ -28,6 +28,7 @@
 
     public struct GameTimeValues
     {
+        public const float DeathShakeTime = 3f;
         public const float DestructionTimeOnDeath = 1.5f;
     }
 

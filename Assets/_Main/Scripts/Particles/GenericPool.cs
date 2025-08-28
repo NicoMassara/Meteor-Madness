@@ -40,5 +40,14 @@ namespace _Main.Scripts.Particles
         {
             _pool.Release(item);
         }
+
+        public void RecycleAll()
+        {
+            for (int i = 0; i < _pool.CountActive; i++)
+            {
+                var item = _pool.Get();
+                _pool.Release(item);
+            }
+        }
     }
 }

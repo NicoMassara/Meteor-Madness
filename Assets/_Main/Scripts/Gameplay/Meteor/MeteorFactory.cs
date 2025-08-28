@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Main.Scripts.Particles;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Pool;
 
 
 namespace _Main.Scripts.Gameplay.Meteor
@@ -13,37 +13,18 @@ namespace _Main.Scripts.Gameplay.Meteor
         [SerializeField] private Transform centerOfGravity;
         
         private readonly List<Meteor> _activeMeteors = new List<Meteor>();
-        private ObjectPool<Meteor> _pool;
+        private GenericPool<Meteor> _pool;
 
         public UnityAction<Vector3> OnShieldHit;
         public UnityAction<Vector3, Quaternion> OnEarthHit;
 
         private void Start()
         {
-            _pool = new ObjectPool<Meteor>(
-                createFunc: () => Instantiate(meteorPrefab),
-                actionOnGet: OnGet,
-                actionOnRelease: OnRelease,
-                actionOnDestroy: b => Destroy(b.gameObject),
-                collectionCheck: true,
-                defaultCapacity: 20,
-                maxSize: 500
-            );
-        }
-
-        private void OnGet(Meteor meteor)
-        {
-            meteor.gameObject.SetActive(true);
-        }
-
-        private void OnRelease(Meteor meteor)
-        {
-            meteor.gameObject.SetActive(false);
+            _pool = new GenericPool<Meteor>(meteorPrefab);
         }
 
         public void SpawnMeteor(float meteorSpeed, Vector2 spawnPosition)
         {
-            Debug.Log("SpawnMeteor : Meteor Factory");
             Vector2 direction = (Vector2)centerOfGravity.position - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -54,7 +35,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             _activeMeteors.Add(tempMeteor);
         }
 
-        public void RecycleActiveMeteors()
+        public void RecycleAll()
         {
             for (int i = _activeMeteors.Count - 1; i >= 0; i--)
             {
@@ -64,6 +45,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void Meteor_OnRecycleHandler(Meteor meteor)
         {
+            meteor.OnHit -= Meteor_OnHitHandler;
             meteor.OnRecycle -= Meteor_OnRecycleHandler;
             _activeMeteors.Remove(meteor);
             _pool.Release(meteor);

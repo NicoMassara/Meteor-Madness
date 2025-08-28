@@ -36,9 +36,10 @@ namespace _Main.Scripts.UI
         private void Start()
         {
             levelController.OnShieldHit += OnShieldHitHandler;
-            levelController.OnDeath += OnDeathHandler;
+            levelController.OnEnd += OnEndHandler;
             levelController.OnStart += OnStartHandler;
             levelController.OnDestruction += OnDestructionHandler;
+            
             _motor.OnRestartPressed += OnRestartPressedHandler;
             GameManager.Instance.OnPaused += GM_OnPausedHandler;
             InitializeFsm();
@@ -144,9 +145,9 @@ namespace _Main.Scripts.UI
 
         #region Panels
 
-        public void SetActiveCountdownPanel()
+        public void StartLevel()
         {
-           _motor.SetActiveCountdownPanel();
+           _motor.StartLevel();
         }
 
         public void SetActivePlayPanel()
@@ -154,9 +155,9 @@ namespace _Main.Scripts.UI
             _motor.SetActivePlayPanel();
         }
 
-        public void SetActiveDeathPanel()
+        public void EndLevel()
         {
-            _motor.SetActiveDeathPanel();
+            _motor.EndLevel();
         }
 
         public void DisableCurrentPanel()
@@ -179,7 +180,7 @@ namespace _Main.Scripts.UI
             OnPointsChanged?.Invoke(meteorCount);
         }
         
-        private void OnDeathHandler(int meteorAmount)
+        private void OnEndHandler(int meteorAmount)
         {
             DeathTransition();
         }

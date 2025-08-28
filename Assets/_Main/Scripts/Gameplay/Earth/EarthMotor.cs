@@ -21,6 +21,7 @@ namespace _Main.Scripts.Gameplay.Earth
         public UnityAction<float> OnDamage;
         public UnityAction<float> OnHeal;
         public UnityAction OnRestart;
+        public UnityAction<bool> OnShake;
         public UnityAction OnDestruction;
         
         private void Start()
@@ -58,7 +59,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void Damage()
         {
-            _currentHealth -= GameValues.StandardMeteorDamage;
+            _currentHealth -= GameValues.BrutalMeteorDamage;
             _startHealTimer = startHealDelay;
             _keepHealTimer = 0;
             
@@ -85,6 +86,16 @@ namespace _Main.Scripts.Gameplay.Earth
         public void TriggerDestruction()
         {
             OnDestruction?.Invoke();
+        }
+
+        public void StartShake()
+        {
+            OnShake?.Invoke(true);
+        }
+
+        public void StopShake()
+        {
+            OnShake?.Invoke(false);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private EarthMotor _motor;
         
         public UnityAction OnDeath;
+        public UnityAction OnDamage;
 
         private void Awake()
         {
@@ -50,5 +51,15 @@ namespace _Main.Scripts.Gameplay.Earth
         }
 
         #endregion
+
+        public void StartShake()
+        {
+            _motor.StartShake();
+        }
+
+        public void StopShake()
+        {
+            _motor.StopShake();
+        }
     }
 }

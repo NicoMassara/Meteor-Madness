@@ -33,5 +33,10 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _motor.Rotate(direction);
         }
+
+        public void Restart()
+        {
+            _motor.RestartPosition();
+        }
     }
 }
