@@ -6,11 +6,11 @@ namespace _Main.Scripts.Shaker
     public class ShakeDataSo : ScriptableObject
     {
         [SerializeField] private float shakeTime;
-        [Range(0.1f, 200f)] 
+        [Range(0.1f, 500)] 
         [SerializeField] private float shakeIntensity = 20;
-        [Range(0,.5f)]
+        [Range(0,1f)]
         [SerializeField] private float xShakeMagnitude = 0.075f;
-        [Range(0,.5f)]
+        [Range(0,1f)]
         [SerializeField] private float yShakeMagnitude = 0.075f;
 
         public float ShakeTime => shakeTime;
