@@ -10,6 +10,7 @@ namespace _Main.Scripts.Gameplay.Earth
         
         public UnityAction OnDeath;
         public UnityAction OnDamage;
+        public UnityAction OnDestruction;
 
         private void Awake()
         {
@@ -19,7 +20,10 @@ namespace _Main.Scripts.Gameplay.Earth
         private void Start()
         {
             _motor.OnDeath += OnDeathHandler;
+            _motor.OnDestruction += OnDestructionHandler;
         }
+
+
 
         private void Update()
         {
@@ -48,6 +52,11 @@ namespace _Main.Scripts.Gameplay.Earth
         private void OnDeathHandler()
         {
             OnDeath?.Invoke();
+        }
+        
+        private void OnDestructionHandler()
+        {
+            OnDestruction?.Invoke();
         }
 
         #endregion

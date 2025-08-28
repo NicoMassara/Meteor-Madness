@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Sounds;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -22,6 +23,8 @@ namespace _Main.Scripts.UI
         [SerializeField] private Text deathText;
         [Header("Buttons")]
         [SerializeField] private Button restartButton;
+        [Header("Sounds")] 
+        [SerializeField] private SoundBehavior menuSound;
         
         private GameObject _currentPanel;
         private int _displayedPoints;
@@ -40,6 +43,7 @@ namespace _Main.Scripts.UI
 
         private void RestartButton_OnClickHandler()
         {
+            menuSound.PlaySound();
             OnRestartPressed?.Invoke();
         }
 

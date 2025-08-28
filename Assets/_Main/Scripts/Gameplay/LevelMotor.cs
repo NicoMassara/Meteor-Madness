@@ -3,9 +3,11 @@ using _Main.Scripts.Gameplay.Meteor;
 using _Main.Scripts.Gameplay.Shield;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
+using _Main.Scripts.Sounds;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Gameplay
@@ -27,6 +29,11 @@ namespace _Main.Scripts.Gameplay
         [SerializeField] private CameraShaker cameraShaker;
         [SerializeField] private ShakeDataSo earthHitShake;
         [SerializeField] private ShakeDataSo shieldHitShake;
+        [Header("Sounds")] 
+        [SerializeField] private SoundBehavior gameplayTheme;
+        [SerializeField] private SoundBehavior deathSound;
+        [SerializeField] private SoundBehavior deathTheme;
+        [SerializeField] private SoundBehavior pauseSound;
         
         private MeteorSpeedController _meteorSpeedController;
         private int _meteorSaveCount;
@@ -45,7 +52,9 @@ namespace _Main.Scripts.Gameplay
             meteorFactory.OnEarthHit += Meteor_OnEarthHitHandler;
             earthController.OnDeath += Earth_OnDeathHandler;
             earthController.OnDamage += Earth_OnDamageHandler;
+            earthController.OnDestruction += Earth_OnDestructionHandler;
         }
+        
 
         public void StartLevel()
         {
@@ -54,14 +63,18 @@ namespace _Main.Scripts.Gameplay
             earthController.Restart();
             shieldController.Restart();
             SetActiveShield(true);
+            deathTheme.StopSound();
+            gameplayTheme.PlaySound();
             
             OnStart?.Invoke();
         }
 
         public void EndLevel()
         {            
+            gameplayTheme.StopSound();
+            deathTheme.PlaySound();
             SetActiveShield(false);
-            particlesController.RecycleAll();
+            //particlesController.RecycleAll();
             meteorFactory.RecycleAll();
             shieldController.ShrinkShield();
             
@@ -91,6 +104,19 @@ namespace _Main.Scripts.Gameplay
         public void StopEarthShake()
         {
             earthController.StopShake();
+        }
+        
+        public void SetPaused(bool isPaused)
+        {
+            if (isPaused)
+            {
+                gameplayTheme.PauseSound();
+                pauseSound.PlaySound();
+            }
+            else
+            {
+                gameplayTheme.PlaySound();
+            }
         }
 
         #region Spawner
@@ -150,6 +176,11 @@ namespace _Main.Scripts.Gameplay
         private void Earth_OnDamageHandler()
         {
  
+        }
+        
+        private void Earth_OnDestructionHandler()
+        {
+            deathSound.PlaySound();
         }
 
         #endregion

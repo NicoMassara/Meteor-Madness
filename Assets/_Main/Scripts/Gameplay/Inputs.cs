@@ -22,16 +22,20 @@ namespace _Main.Scripts.Gameplay
             
             if (GameManager.Instance.CanPlay == true)
             {
-                if (Input.GetKey(KeyCode.A))
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
                 {
                     shieldController.Rotate(1);
                 }
-                else if (Input.GetKey(KeyCode.D))
+                else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
                 {
                     shieldController.Rotate(-1);
                 }
+                else
+                {
+                    shieldController.StopRotation();
+                }
 
-                if (Input.GetKeyDown(KeyCode.P))
+                if (Input.GetKeyDown(KeyCode.P) || Input.GetKey(KeyCode.Escape))
                 {
                     GameManager.Instance.SetPaused(true);
                 }

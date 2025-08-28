@@ -7,7 +7,6 @@ namespace _Main.Scripts.UI.FSM.Level
         private float _elapsedTime;
         private int _targetPoints;
         private float _displayedPoints;
-        private const float Increase_Time = GameValues.PointsTextTimeToIncreaseOnDeath;
         private bool _isCountingPoints = false;
 
         private readonly Timer _displayPanelTimer = new Timer();
@@ -19,6 +18,7 @@ namespace _Main.Scripts.UI.FSM.Level
             Controller.DisableCurrentPanel();
             Controller.SetActiveRestartSubPanel(false);
             _elapsedTime = 0;
+            _displayedPoints = 0;
             Controller.OnDestruction += OnDestructionHandler;
             _displayPanelTimer.OnEnd += DisplayPanelTimer_OnEndHandler;
             _enableRestartTimer.OnEnd += EnableRestartTimer_OnEndHandler;
@@ -52,7 +52,7 @@ namespace _Main.Scripts.UI.FSM.Level
         private void HandlePoints()
         {
             _elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(_elapsedTime / Increase_Time);
+            float t = Mathf.Clamp01(_elapsedTime / GameValues.PointsTextTimeToIncreaseOnDeath);
             _displayedPoints = Mathf.Lerp(_displayedPoints, _targetPoints, t);
             
             if (_displayedPoints >= _targetPoints)

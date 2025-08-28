@@ -16,11 +16,6 @@ namespace _Main.Scripts.Shaker
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _shakerController.StartShake();
-            }
-
             if (_shakerController.IsShaking)
             {
                 _shakerController.HandleShake();

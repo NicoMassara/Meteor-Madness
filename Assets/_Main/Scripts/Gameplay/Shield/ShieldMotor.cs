@@ -58,6 +58,7 @@ namespace _Main.Scripts.Gameplay.Shield
     {
         [Header("Sound")]
         [SerializeField] private SoundBehavior shieldHitSound;
+        [SerializeField] private SoundBehavior shieldMoveSound;
         [Header("Components")]
         [SerializeField] private GameObject sprite;
         [Header("Values")]
@@ -68,8 +69,8 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private AnimationCurve pithCurve;
         
         private ShieldStreakController _shieldStreakController;
-
         private bool _canExtendShield;
+        private float _lastDirection;
 
         public UnityAction OnHit;
 
@@ -93,7 +94,18 @@ namespace _Main.Scripts.Gameplay.Shield
 
         public void Rotate(float direction = 1)
         {
+            if (direction != _lastDirection)
+            {
+                shieldMoveSound.PlaySound();
+                _lastDirection = direction;
+            }
+
             transform.RotateAround(transform.position, Vector3.forward, (rotateSpeed/10) * direction);
+        }
+
+        public void StopRotation()
+        {
+            _lastDirection = 0;
         }
 
         public void SetActiveSprite(bool isActive)

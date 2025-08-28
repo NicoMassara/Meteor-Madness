@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,8 +18,13 @@ namespace _Main.Scripts.Menu
         [SerializeField] private Button backButton;
         [Header("Values")]
         [SerializeField] private string gameplaySceneName;
+
+        [Header("Sounds")] 
+        [SerializeField] private SoundBehavior themeSound;
+        [SerializeField] private SoundBehavior menuSound;
         
         private GameObject _currentPanel;
+        private Timer _playTimer = new Timer();
 
         private void Awake()
         {
@@ -33,6 +39,19 @@ namespace _Main.Scripts.Menu
             mainPanel.SetActive(false);
             lorePanel.SetActive(false);
             SetActiveMainPanel();
+            themeSound.PlaySound();
+            _playTimer.OnEnd += LoadGameplayScene;
+        }
+
+        private void Update()
+        {
+            _playTimer?.Run();
+        }
+
+        private void LoadGameplayScene()
+        {
+            _playTimer.OnEnd = null;
+            SceneManager.LoadScene(gameplaySceneName);
         }
 
         private void SetActivePanel(GameObject panel)
@@ -47,22 +66,25 @@ namespace _Main.Scripts.Menu
 
         private void SetActiveMainPanel()
         {
+            menuSound.PlaySound();
             SetActivePanel(mainPanel);
         }
 
         private void SetActiveLorePanel()
         {
+            menuSound.PlaySound();
             SetActivePanel(lorePanel);
         }
 
-
         private void StartGame()
         {
-            SceneManager.LoadScene(gameplaySceneName);
+            menuSound.PlaySound();
+            _playTimer.Set(GameTimeValues.TimeToLoadGameScene);
         }
 
         private void QuitGame()
         {
+            menuSound.PlaySound();
             Application.Quit();
         }
     }

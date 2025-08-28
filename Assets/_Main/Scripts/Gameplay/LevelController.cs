@@ -174,6 +174,7 @@ namespace _Main.Scripts.Gameplay
         
         private void GM_OnPausedHandler(bool isPaused)
         {
+            _motor.SetPaused(isPaused);
             _isPaused = isPaused;
         }
         
