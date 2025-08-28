@@ -41,7 +41,6 @@ namespace _Main.Scripts.Menu
             SetActiveMainPanel();
             themeSound.PlaySound();
             _playTimer.OnEnd += LoadGameplayScene;
-            Application.targetFrameRate = 60;
         }
 
         private void Update()
