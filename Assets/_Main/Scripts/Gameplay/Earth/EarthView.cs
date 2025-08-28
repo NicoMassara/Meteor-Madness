@@ -16,8 +16,11 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private AnimationCurve shakeMultiplier;
         [SerializeField] private ShakeDataSo healthShakeData;
         [SerializeField] private ShakeDataSo deathShakeData;
+        [Header("Rotation")] 
+        [Range(0, 100)] [SerializeField] private float rotationSpeed = 25;
         
         private ShakerController _shakerController;
+        private Rotator _rotator;
         
         private EarthMotor _motor;
         private float _currentHealth;
@@ -37,6 +40,8 @@ namespace _Main.Scripts.Gameplay.Earth
             _currentHealth = 1;
             _targetHealth = _currentHealth;
             
+            _rotator = new Rotator(spriteObject.transform, rotationSpeed);
+            
             _shakerController = new ShakerController(spriteObject.transform);
             _shakerController.SetShakeData(healthShakeData);
             _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
@@ -52,6 +57,11 @@ namespace _Main.Scripts.Gameplay.Earth
         private void Update()
         {
             _shakerController.HandleShake();
+
+            if (_isDead == false)
+            {
+                _rotator.Rotate();
+            }
         }
 
         private void UpdateColor()
@@ -65,6 +75,7 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             _targetHealth = healthAmount;
             _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
+            _rotator.SetSpeed(rotationSpeed * _targetHealth);
             UpdateColor();
         }
         
@@ -80,6 +91,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _targetHealth = 0;
             _isDead = true;
             _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
+            brokenSpriteObject.transform.rotation = Quaternion.Euler(0, 0, spriteObject.transform.eulerAngles.z);
             UpdateColor();
         }
 
@@ -97,6 +109,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _isDead = false;
             _shakerController.SetShakeData(healthShakeData);
             _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
+            spriteObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
             UpdateColor();
         }
         

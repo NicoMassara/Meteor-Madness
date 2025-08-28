@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using _Main.Scripts.Particles;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
     public class MeteorFactory : MonoBehaviour
     {
-        [SerializeField] private Meteor meteorPrefab;
+        [FormerlySerializedAs("meteorPrefab")] [SerializeField] private MeteorMotor meteorMotorPrefab;
         [SerializeField] private Transform centerOfGravity;
         
-        private readonly List<Meteor> _activeMeteors = new List<Meteor>();
-        private GenericPool<Meteor> _pool;
+        private readonly List<MeteorMotor> _activeMeteors = new List<MeteorMotor>();
+        private GenericPool<MeteorMotor> _pool;
 
         public UnityAction<Vector3> OnShieldHit;
         public UnityAction<Vector3, Quaternion> OnEarthHit;
 
         private void Start()
         {
-            _pool = new GenericPool<Meteor>(meteorPrefab);
+            _pool = new GenericPool<MeteorMotor>(meteorMotorPrefab);
         }
 
         public void SpawnMeteor(float meteorSpeed, Vector2 spawnPosition)
@@ -43,24 +44,24 @@ namespace _Main.Scripts.Gameplay.Meteor
             }
         }
 
-        private void Meteor_OnRecycleHandler(Meteor meteor)
+        private void Meteor_OnRecycleHandler(MeteorMotor meteorMotor)
         {
-            meteor.OnHit -= Meteor_OnHitHandler;
-            meteor.OnRecycle -= Meteor_OnRecycleHandler;
-            _activeMeteors.Remove(meteor);
-            _pool.Release(meteor);
+            meteorMotor.OnHit -= Meteor_OnHitHandler;
+            meteorMotor.OnRecycle -= Meteor_OnRecycleHandler;
+            _activeMeteors.Remove(meteorMotor);
+            _pool.Release(meteorMotor);
         }
 
-        private void Meteor_OnHitHandler(Meteor meteor, bool hasHitShield)
+        private void Meteor_OnHitHandler(MeteorMotor meteorMotor, bool hasHitShield)
         {
-            meteor.OnHit-= Meteor_OnHitHandler;
+            meteorMotor.OnHit-= Meteor_OnHitHandler;
             if (hasHitShield)
             {
-                OnShieldHit?.Invoke(meteor.transform.position);
+                OnShieldHit?.Invoke(meteorMotor.transform.position);
             }
             else
             {
-                OnEarthHit?.Invoke(meteor.transform.position, meteor.transform.rotation);
+                OnEarthHit?.Invoke(meteorMotor.transform.position, meteorMotor.transform.rotation);
             }
         }
     }

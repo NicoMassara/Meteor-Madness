@@ -20,11 +20,11 @@ namespace _Main.Scripts.Sounds
             _audioSource = GetComponent<AudioSource>();
             _audioSource.playOnAwake = false;
             VolumeMultiplier = 1;
+            SetSoundClass(soundDataSo);
         }
 
         private void Start()
         {
-            SetSoundClass(soundDataSo);
         }
 
         private void SetSoundClass(SoundClassSo soundClass)
@@ -72,7 +72,7 @@ namespace _Main.Scripts.Sounds
         {
             if (!_hasSoundClass)
             {
-                //Debug.Log("Sound class is null");
+                Debug.Log("Sound class is null");
                 return;
             }
 

@@ -2,16 +2,20 @@
 using _Main.Scripts.Shaker;
 using UnityEngine;
 
-namespace _Main.Scripts.Shaker
+namespace _Main.Scripts.Gameplay
 {
-    public class CameraShaker : MonoBehaviour
+    public class CameraController : MonoBehaviour
     {
         [SerializeField] private Camera mainCamera;
         private ShakerController _shakerController;
+        private float _defaultSize = 10;
+        private float _zoomSize = 6;
 
         private void Start()
         {
             _shakerController = new ShakerController(mainCamera.transform);
+            _defaultSize = mainCamera.orthographicSize;
+            ZoomIn();
         }
 
         private void Update()
@@ -20,6 +24,16 @@ namespace _Main.Scripts.Shaker
             {
                 _shakerController.HandleShake();
             }
+        }
+
+        public void ZoomIn()
+        {
+            mainCamera.orthographicSize = _zoomSize;
+        }
+
+        public void ZoomOut()
+        {
+            mainCamera.orthographicSize = _defaultSize;
         }
 
         public void StartShake(ShakeDataSo shakeData)

@@ -25,8 +25,9 @@ namespace _Main.Scripts.Gameplay
         [SerializeField] private ParticlesController particlesController;
         [SerializeField] private ParticleDataSo collisionSprite;
         [SerializeField] private ParticleDataSo shieldHitSprite;
+        [FormerlySerializedAs("cameraShaker")]
         [Header("Camera Shake")] 
-        [SerializeField] private CameraShaker cameraShaker;
+        [SerializeField] private CameraController cameraController;
         [SerializeField] private ShakeDataSo earthHitShake;
         [SerializeField] private ShakeDataSo shieldHitShake;
         [Header("Sounds")] 
@@ -65,6 +66,7 @@ namespace _Main.Scripts.Gameplay
             SetActiveShield(true);
             deathTheme.StopSound();
             gameplayTheme.PlaySound();
+            cameraController.ZoomOut();
             
             OnStart?.Invoke();
         }
@@ -150,7 +152,7 @@ namespace _Main.Scripts.Gameplay
         private void Meteor_OnEarthHitHandler(Vector3 position, Quaternion rotation)
         {
             _meteorHitCount++;
-            cameraShaker.StartShake(earthHitShake);
+            cameraController.StartShake(earthHitShake);
             particlesController.SpawnParticle(collisionSprite, position, rotation);
             _meteorSpeedController.RestartCount();
             OnEarthHit?.Invoke(_meteorHitCount);
@@ -161,7 +163,7 @@ namespace _Main.Scripts.Gameplay
         private void Meteor_OnShieldHitHandler(Vector3 position)
         {
             _meteorSaveCount++;
-            cameraShaker.StartShake(shieldHitShake);
+            cameraController.StartShake(shieldHitShake);
             particlesController.SpawnParticle(shieldHitSprite, position, quaternion.identity);
             _meteorSpeedController.CheckForNextLevel(_meteorSaveCount);
             shieldController.HitShield();
@@ -170,12 +172,13 @@ namespace _Main.Scripts.Gameplay
         
         private void Earth_OnDeathHandler()
         {
+            cameraController.ZoomIn();
             EndLevel();
         }
         
         private void Earth_OnDamageHandler()
         {
- 
+
         }
         
         private void Earth_OnDestructionHandler()

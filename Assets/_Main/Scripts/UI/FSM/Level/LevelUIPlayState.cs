@@ -7,7 +7,7 @@ namespace _Main.Scripts.UI.FSM.Level
         private float _elapsedTime;
         private int _targetPoints;
         private float _displayedPoints;
-        private const float Increase_Time = GameValues.PointsTextTimeToIncrease;
+        private const float Increase_Time = GameTimeValues.PointsTextTimeToIncrease;
         private bool _isCountingPoints = false;
 
         public override void Awake()

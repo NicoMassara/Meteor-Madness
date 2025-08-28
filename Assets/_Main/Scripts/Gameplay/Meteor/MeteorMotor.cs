@@ -6,7 +6,7 @@ using UnityEngine.PlayerLoop;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class Meteor : MonoBehaviour
+    public class MeteorMotor : MonoBehaviour
     {
         [Header("Sounds")]
         [SerializeField] private SoundBehavior moveSound;
@@ -19,8 +19,8 @@ namespace _Main.Scripts.Gameplay.Meteor
         private bool _canMove;
         
         //Reference to itself, hasHitShield
-        public UnityAction<Meteor, bool> OnHit;
-        public UnityAction<Meteor> OnRecycle;
+        public UnityAction<MeteorMotor, bool> OnHit;
+        public UnityAction<MeteorMotor> OnRecycle;
         public UnityAction OnValuesSet;
 
         private void Awake()
