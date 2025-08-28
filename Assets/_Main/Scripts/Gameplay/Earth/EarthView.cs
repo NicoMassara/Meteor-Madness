@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Shaker;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 
@@ -12,10 +13,9 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private SpriteRenderer spriteRenderer;
         [Header("Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
-        [Range(0.1f, 100)] 
-        [SerializeField] private float shakeIntensity = 20;
-        [Range(0,.1f)]
-        [SerializeField] private float shakeMagnitude = 0;
+        [SerializeField] private ShakeDataSo shakeData;
+        
+        private ShakerController _shakerController;
         
         private EarthMotor _motor;
         private float _currentHealth;
@@ -35,24 +35,25 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void Start()
         {
+            _currentHealth = 1;
+            _targetHealth = _currentHealth;
+            
+            _shakerController = new ShakerController(spriteObject.transform);
+            _shakerController.SetShakeData(shakeData);
+            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
+            
             _motor.OnDamage += OnDamagedHandler;
             _motor.OnHeal += OnHealHandler;
             _motor.OnDeath += OnDeathHandler;
             _motor.OnRestart += OnRestartHandler;
             _motor.OnDestruction += OnDestructionHandler;
-
-            _currentHealth = 1;
-            _targetHealth = _currentHealth;
         }
 
         private void Update()
         {
             if (_isDead == false)
             {
-                if (_targetHealth < 1)
-                {
-                    HandleShake();
-                }
+                _shakerController.HandleShake();
             }
         }
 
@@ -61,42 +62,19 @@ namespace _Main.Scripts.Gameplay.Earth
             spriteRenderer.color = new Color(1, _targetHealth, _targetHealth);
         }
 
-        private void HandleShake()
-        {
-            _shakeTime += Time.deltaTime;
-            spriteObject.transform.localPosition = GetShakeOffset(_shakeTime);
-        }
-        
-        public Vector3 GetShakeOffset(float time)
-        {
-            float multiplier = shakeMultiplier.Evaluate(_targetHealth);
-            float angle = ((shakeIntensity * multiplier) * Mathf.PI * 2f) * time;
-            float offsetX = Mathf.Sin(angle) * (shakeMagnitude * multiplier);
-            float offsetY = Mathf.Cos(angle) * (shakeMagnitude * multiplier);
-            return new Vector3(offsetX, offsetY, 0f);
-        }
-
-        private void Test()
-        {
-            if (_elapsedTime < _duration)
-            {
-                _elapsedTime += Time.deltaTime;
-                float t = _elapsedTime / _duration;
-                _currentHealth = Mathf.Lerp(_currentHealth, _targetHealth, t);
-            }
-        }
-
         #region Handlers
         
         private void OnDamagedHandler(float healthAmount)
         {
             _targetHealth = healthAmount;
+            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
             UpdateColor();
         }
         
         private void OnHealHandler(float healthAmount)
         {
             _targetHealth = healthAmount;
+            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
             UpdateColor();
         }
         
@@ -104,6 +82,7 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             _targetHealth = 0;
             _isDead = true;
+            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
             UpdateColor();
         }
 

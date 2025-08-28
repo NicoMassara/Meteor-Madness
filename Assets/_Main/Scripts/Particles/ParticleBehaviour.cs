@@ -43,7 +43,7 @@ namespace _Main.Scripts.Particles
                 _alpha = Mathf.Lerp(_alpha, -0.25f, _fadeSpeed * Time.deltaTime);
                 _sprite.color = new Color(1, 1, 1, _alpha);
 
-                if (_alpha <= -0.25)
+                if (_alpha <= 0)
                 {
                     ForceRecycle();
                 }

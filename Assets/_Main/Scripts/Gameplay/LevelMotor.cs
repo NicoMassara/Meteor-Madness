@@ -2,6 +2,7 @@
 using _Main.Scripts.Gameplay.Meteor;
 using _Main.Scripts.Gameplay.Shield;
 using _Main.Scripts.Particles;
+using _Main.Scripts.Shaker;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,14 +16,17 @@ namespace _Main.Scripts.Gameplay
         [SerializeField] private MeteorFactory meteorFactory;
         [SerializeField] private EarthController earthController;
         [SerializeField] private ShieldController shieldController;
-        [SerializeField] private ParticlesController particlesController;
-        [SerializeField] private CameraShaker cameraShaker;
         [SerializeField] private Transform centerOfGravity;
         [Header("Values")]
         [SerializeField] private float spawnRadius;
-        [Header("Sprite Data")]
+        [Header("Particles")]
+        [SerializeField] private ParticlesController particlesController;
         [SerializeField] private ParticleDataSo collisionSprite;
         [SerializeField] private ParticleDataSo shieldHitSprite;
+        [Header("Camera Shake")] 
+        [SerializeField] private CameraShaker cameraShaker;
+        [SerializeField] private ShakeDataSo earthHitShake;
+        [SerializeField] private ShakeDataSo shieldHitShake;
         
         private MeteorSpeedController _meteorSpeedController;
         private int _meteorSaveCount;
@@ -68,6 +72,7 @@ namespace _Main.Scripts.Gameplay
 
         public void SpawnMeteor()
         {
+            Debug.Log("SpawnMeteor : LevelMotor");
             Vector2 spawnPosition = GetRandomPointInRadiusRange(centerOfGravity.position, 
                 spawnRadius*0.75f, spawnRadius*1.25f);
             var meteorSpeed = GameValues.BaseMeteorSpeed * _meteorSpeedController.GetCurrentMultiplier();
@@ -95,7 +100,7 @@ namespace _Main.Scripts.Gameplay
         private void OnEarthHitHandler(Vector3 position, Quaternion rotation)
         {
             _meteorHitCount++;
-            cameraShaker.StartShake();
+            cameraShaker.StartShake(earthHitShake);
             particlesController.SpawnParticle(collisionSprite, position, rotation);
             _meteorSpeedController.RestartCount();
             OnEarthHit?.Invoke(_meteorHitCount);
@@ -106,6 +111,7 @@ namespace _Main.Scripts.Gameplay
         private void OnShieldHitHandler(Vector3 position)
         {
             _meteorSaveCount++;
+            cameraShaker.StartShake(shieldHitShake);
             particlesController.SpawnParticle(shieldHitSprite, position, quaternion.identity);
             _meteorSpeedController.CheckForNextLevel(_meteorSaveCount);
             shieldController.HitShield();

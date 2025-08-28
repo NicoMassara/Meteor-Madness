@@ -2513,8 +2513,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  shakeIntensity: 85
-  shakeMagnitude: 0.075
+  shakeData: {fileID: 0}
 --- !u!114 &1002815157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2584,9 +2583,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 519420031}
-  shakeTime: 0.225
-  shakeIntensity: 9.9
-  shakeMagnitude: 0.05
 --- !u!4 &1004163051
 Transform:
   m_ObjectHideFlags: 0
@@ -3211,12 +3207,14 @@ MonoBehaviour:
   meteorFactory: {fileID: 709288249}
   earthController: {fileID: 1002815155}
   shieldController: {fileID: 1798290944}
-  particlesController: {fileID: 2010873514}
-  cameraShaker: {fileID: 1004163050}
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 27
+  particlesController: {fileID: 2010873514}
   collisionSprite: {fileID: 11400000, guid: 645f01f20a3b3fd42b1a6fea00906bd4, type: 2}
   shieldHitSprite: {fileID: 11400000, guid: 57aab6ad92becd54f8c87a5e8e9ef067, type: 2}
+  cameraShaker: {fileID: 1004163050}
+  earthHitShake: {fileID: 11400000, guid: 5c794a1a9cfcc414694576699daa96a4, type: 2}
+  shieldHitShake: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
 --- !u!114 &1253651367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4050,7 +4048,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1798290943}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4112,9 +4110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteObject: {fileID: 610377037}
-  shakeTime: 0.25
-  shakeIntensity: 150
-  shakeMagnitude: 0.15
+  shakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
 --- !u!1 &1833264620
 GameObject:
   m_ObjectHideFlags: 0

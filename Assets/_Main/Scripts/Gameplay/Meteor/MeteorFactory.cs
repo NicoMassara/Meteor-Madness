@@ -43,6 +43,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         public void SpawnMeteor(float meteorSpeed, Vector2 spawnPosition)
         {
+            Debug.Log("SpawnMeteor : Meteor Factory");
             Vector2 direction = (Vector2)centerOfGravity.position - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
