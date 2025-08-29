@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.FSM.Level
 {
@@ -7,13 +8,16 @@ namespace _Main.Scripts.Gameplay.FSM.Level
         private readonly Timer _destructionTimer  = new Timer();
         private readonly Timer _shakeTimer  = new Timer();
         private readonly Timer _startShakeTimer  = new Timer();
+        //Could use a Queue
+        
         
         public override void Awake()
         {
-            Controller.EndLevel();
+            Controller.StartEndLevel();
 
             _startShakeTimer.OnEnd += StartShakeTimer_OnEndHandler;
-            _startShakeTimer.Set(GameTimeValues.StartShake);
+            _startShakeTimer.OnAboutToEnd += StartShakeTimer_OnAboutToEndHandler;
+            _startShakeTimer.Set(GameTimeValues.StartShake, 0.35f);
         }
 
         public override void Execute()
@@ -30,16 +34,22 @@ namespace _Main.Scripts.Gameplay.FSM.Level
             Controller.RestartLevel();
         }
         
+        private void StartShakeTimer_OnAboutToEndHandler()
+        {
+            Controller.ZoomIn();
+        }
+        
         private void StartShakeTimer_OnEndHandler()
         {
             Controller.StartEarthShake();
-            _shakeTimer.Set(GameTimeValues.DeathShake);
+            _shakeTimer.Set(GameTimeValues.DeathShakeDuration);
             _shakeTimer.OnEnd += ShakeTimer_OnEndHandler;
         }
         
         private void ShakeTimer_OnEndHandler()
         {
             _destructionTimer.Set(GameTimeValues.DestructionOnDeath);
+            Controller.FinishEndLevel();
             Controller.StopEarthShake();
             _destructionTimer.OnEnd += DestructionTimer_OnEndHandler;
         }

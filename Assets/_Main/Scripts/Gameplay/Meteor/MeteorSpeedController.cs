@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace _Main.Scripts.Gameplay
+namespace _Main.Scripts.Gameplay.Meteor
 {
     public class MeteorSpeedController
     {

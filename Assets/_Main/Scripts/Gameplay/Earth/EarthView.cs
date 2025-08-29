@@ -90,7 +90,7 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             _targetHealth = 0;
             _isDead = true;
-            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
+            _shakerController.SetMultiplier(0);
             brokenSpriteObject.transform.rotation = Quaternion.Euler(0, 0, spriteObject.transform.eulerAngles.z);
             UpdateColor();
         }

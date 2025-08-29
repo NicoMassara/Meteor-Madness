@@ -7,9 +7,14 @@ namespace _Main.Scripts.Gameplay
     public class CameraController : MonoBehaviour
     {
         [SerializeField] private Camera mainCamera;
+        [Range(0, 50)] 
+        [SerializeField] private float zoomSpeed = 10;
         private ShakerController _shakerController;
         private float _defaultSize = 10;
         private float _zoomSize = 6;
+        private bool _doesChangeSize = false;
+        private float _targetSize;
+        
 
         private void Start()
         {
@@ -24,16 +29,38 @@ namespace _Main.Scripts.Gameplay
             {
                 _shakerController.HandleShake();
             }
+
+            if (_doesChangeSize)
+            {
+                HandleSizeChange();
+            }
+        }
+
+        private void HandleSizeChange()
+        {
+            var newSize = mainCamera.orthographicSize;
+            newSize =
+                Mathf.Lerp(newSize, _targetSize, zoomSpeed * Time.deltaTime);
+            Mathf.Clamp(newSize, _zoomSize, _defaultSize);
+
+            if (newSize == _targetSize)
+            {
+                _doesChangeSize = false;
+            }
+
+            mainCamera.orthographicSize = newSize;
         }
 
         public void ZoomIn()
         {
-            mainCamera.orthographicSize = _zoomSize;
+            _targetSize = _zoomSize;
+            _doesChangeSize = true;
         }
 
         public void ZoomOut()
         {
-            mainCamera.orthographicSize = _defaultSize;
+            _targetSize = _defaultSize;
+            _doesChangeSize = true;
         }
 
         public void StartShake(ShakeDataSo shakeData)

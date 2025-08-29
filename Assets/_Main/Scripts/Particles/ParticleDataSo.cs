@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Particles
 {
@@ -14,13 +15,15 @@ namespace _Main.Scripts.Particles
         [SerializeField] private float fadeSpeed;
         [Range(0f, 5)] 
         [SerializeField] private float fadeScale;
+        [Range(0, 2)] 
+        [SerializeField] private float startScale = 1;
 
         public Sprite Sprite => sprite;
         public Vector3 PositionOffset => positionOffset;
         public float RotationOffset => rotationOffset;
         public float TimeToFade => timeToFade;
         public float FadeSpeed => fadeSpeed;
-
         public float FadeScale => fadeScale;
+        public float StartScale => startScale;
     }
 }

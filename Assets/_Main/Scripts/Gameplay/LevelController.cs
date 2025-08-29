@@ -128,9 +128,19 @@ namespace _Main.Scripts.Gameplay
             GameManager.Instance.ClearCurrentPoints();
         }
 
-        public void EndLevel()
+        public void StartEndLevel()
         {
-            _motor.EndLevel();
+            _motor.StartEndLevel();
+        }
+        
+        public void FinishEndLevel()
+        {
+            _motor.StartEndLevel();
+        }
+
+        public void ZoomIn()
+        {
+            _motor.ZoomIn();
         }
 
         public void SpawnMeteor()

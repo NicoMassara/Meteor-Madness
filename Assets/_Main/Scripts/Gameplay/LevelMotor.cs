@@ -70,17 +70,25 @@ namespace _Main.Scripts.Gameplay
             
             OnStart?.Invoke();
         }
+        
 
-        public void EndLevel()
+        public void StartEndLevel()
         {            
             gameplayTheme.StopSound();
-            deathTheme.PlaySound();
             SetActiveShield(false);
-            //particlesController.RecycleAll();
             meteorFactory.RecycleAll();
             shieldController.ShrinkShield();
-            
+        }
+
+        public void FinishEndLevel()
+        {
+            deathTheme.PlaySound();
             OnEnd?.Invoke(_meteorSaveCount);
+        }
+
+        public void ZoomIn()
+        {
+            cameraController.ZoomIn();
         }
 
         public void RestartLevel()
@@ -153,7 +161,8 @@ namespace _Main.Scripts.Gameplay
         {
             _meteorHitCount++;
             cameraController.StartShake(earthHitShake);
-            particlesController.SpawnParticle(collisionSprite, position, rotation);
+            var direction = (centerOfGravity.position - position).normalized;
+            particlesController.SpawnParticle(collisionSprite, position, rotation, direction);
             _meteorSpeedController.RestartCount();
             OnEarthHit?.Invoke(_meteorHitCount);
             shieldController.ShrinkShield();
@@ -164,7 +173,8 @@ namespace _Main.Scripts.Gameplay
         {
             _meteorSaveCount++;
             cameraController.StartShake(shieldHitShake);
-            particlesController.SpawnParticle(shieldHitSprite, position, quaternion.identity);
+            var direction = (centerOfGravity.position - position).normalized;
+            particlesController.SpawnParticle(shieldHitSprite, position, quaternion.identity, direction);
             _meteorSpeedController.CheckForNextLevel(_meteorSaveCount);
             shieldController.HitShield();
             OnShieldHit?.Invoke(_meteorSaveCount);
@@ -172,8 +182,7 @@ namespace _Main.Scripts.Gameplay
         
         private void Earth_OnDeathHandler()
         {
-            cameraController.ZoomIn();
-            EndLevel();
+            OnEnd?.Invoke(_meteorSaveCount);
         }
         
         private void Earth_OnDamageHandler()

@@ -59,7 +59,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void Damage()
         {
-            _currentHealth -= DamageValues.StandardMeteor;
+            _currentHealth -= DamageValues.BrutalMeteor;
             _startHealTimer = startHealDelay;
             _keepHealTimer = 0;
             

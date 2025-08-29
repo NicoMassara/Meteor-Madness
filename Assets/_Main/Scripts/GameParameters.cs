@@ -29,10 +29,10 @@
     public struct GameTimeValues
     {
         public const float TimeToLoadGameScene = 1f;
-        public const float DeathShake = 3f;
         public const float DestructionOnDeath = 1.5f;
         public const float ClosePauseMenu = 0.25f;
-        public const float StartShake = 2f;
+        public const float DeathShakeDuration = 3f;
+        public const float StartShake = 3f;
         public const float MeteorRecycle = 0.5f;
         public const float PointsTextTimeToIncrease = 1.78f;
         public const float PointsTextTimeToIncreaseOnDeath = 5f;
