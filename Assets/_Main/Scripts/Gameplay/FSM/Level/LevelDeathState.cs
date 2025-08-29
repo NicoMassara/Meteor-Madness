@@ -5,58 +5,56 @@ namespace _Main.Scripts.Gameplay.FSM.Level
 {
     public class LevelDeathState<T> : LevelBaseState<T>
     {
-        private readonly Timer _destructionTimer  = new Timer();
-        private readonly Timer _shakeTimer  = new Timer();
-        private readonly Timer _startShakeTimer  = new Timer();
-        //Could use a Queue
-        
+        private readonly ActionQueue _actionQueue = new ActionQueue();
         
         public override void Awake()
         {
             Controller.StartEndLevel();
-
-            _startShakeTimer.OnEnd += StartShakeTimer_OnEndHandler;
-            _startShakeTimer.OnAboutToEnd += StartShakeTimer_OnAboutToEndHandler;
-            _startShakeTimer.Set(GameTimeValues.StartShake, 0.35f);
+            
+            SetupQueue();
         }
 
         public override void Execute()
         {
-            _startShakeTimer.Run();
-            _shakeTimer.Run();
-            _destructionTimer.Run();
+            _actionQueue.Run();
         }
 
         public override void Sleep()
         {
-            _destructionTimer.OnEnd -= DestructionTimer_OnEndHandler;
-            _shakeTimer.OnEnd -= ShakeTimer_OnEndHandler;
             Controller.RestartLevel();
         }
-        
-        private void StartShakeTimer_OnAboutToEndHandler()
+
+        private void SetupQueue()
         {
-            Controller.ZoomIn();
+            //Zoom In
+            _actionQueue.AddAction(
+                new ActionData(()=> Controller.ZoomIn(), 
+                    (float)(GameTimeValues.StartShake * 0.65))
+            );
+            
+            //Start Shake
+            _actionQueue.AddAction( 
+                new ActionData(()=> Controller.StartEarthShake(),
+                    (float)(GameTimeValues.StartShake * 0.35))
+            );
+
+            //Destroys Earth
+            _actionQueue.AddAction( 
+                new ActionData(()=> Controller.TriggerEarthDestruction(),
+                    (float)(GameTimeValues.DeathShakeDuration))
+            );
+            
+            //Shows UI
+            _actionQueue.AddAction( 
+                new ActionData(Queue_FinishLevel,
+                    (float)(GameTimeValues.DestructionOnDeath))
+            );
         }
-        
-        private void StartShakeTimer_OnEndHandler()
+
+        private void Queue_FinishLevel()
         {
-            Controller.StartEarthShake();
-            _shakeTimer.Set(GameTimeValues.DeathShakeDuration);
-            _shakeTimer.OnEnd += ShakeTimer_OnEndHandler;
-        }
-        
-        private void ShakeTimer_OnEndHandler()
-        {
-            _destructionTimer.Set(GameTimeValues.DestructionOnDeath);
             Controller.FinishEndLevel();
             Controller.StopEarthShake();
-            _destructionTimer.OnEnd += DestructionTimer_OnEndHandler;
-        }
-        
-        private void DestructionTimer_OnEndHandler()
-        {
-            Controller.TriggerEarthDestruction();
         }
     }
 }

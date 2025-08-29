@@ -135,7 +135,7 @@ namespace _Main.Scripts.Gameplay
         
         public void FinishEndLevel()
         {
-            _motor.StartEndLevel();
+            _motor.FinishEndLevel();
         }
 
         public void ZoomIn()
