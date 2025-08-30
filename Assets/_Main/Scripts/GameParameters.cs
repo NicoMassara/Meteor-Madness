@@ -22,20 +22,23 @@
     public struct UITimeValues
     {
         public const float StartCountingPointsOnDeath = 0.5f;
-        public const float EnableRestartButtonOnDeath = 0.75f;
+        public const float EnableRestartButtonOnDeath = 0.1f;
         public const float EnableDeathPanel = 3f;
     }
 
     public struct GameTimeValues
     {
         public const float TimeToLoadGameScene = 1f;
-        public const float DestructionOnDeath = 1.5f;
         public const float ClosePauseMenu = 0.25f;
+        public const float PointsTextTimeToIncrease = 0.5f;
+        //Show Death
+        public const float DeathZoom = 2f;
+        public const float StartShake = 1f;
         public const float DeathShakeDuration = 3f;
-        public const float StartShake = 3f;
-        public const float MeteorRecycle = 0.5f;
-        public const float PointsTextTimeToIncrease = 1.78f;
-        public const float PointsTextTimeToIncreaseOnDeath = 5f;
+        public const float ShowEarthDestruction = 1.5f;
+        public const float ShowDeathUI = 1f;
+        public const float PointsTextTimeToIncreaseOnDeath = 1.5f;
+        public const float StartRotatingAfterDeath = 0.75f;
     }
 
     public struct UITextValues

@@ -52,20 +52,16 @@ namespace _Main.Scripts.UI.FSM.Level
         private void HandlePoints()
         {
             _elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(_elapsedTime / GameTimeValues.PointsTextTimeToIncreaseOnDeath);
-            _displayedPoints = Mathf.Lerp(_displayedPoints, _targetPoints, t);
-            
-            if (_displayedPoints >= _targetPoints)
-            {
-                _displayedPoints = _targetPoints;
-            }
+            float time = _elapsedTime / GameTimeValues.PointsTextTimeToIncreaseOnDeath;
+            _displayedPoints = Mathf.Lerp(0, _targetPoints, time);
+            _displayedPoints = Mathf.Clamp(_displayedPoints, 0, _targetPoints);
             
             Controller.UpdateDeathPointsText(Mathf.RoundToInt(_displayedPoints));
-            
-            if (t >= 0.85f)
+
+            if (_displayedPoints >= _targetPoints)
             {
                 _isCountingPoints = false;
-            } 
+            }
         }
 
         private void OnDestructionHandler()

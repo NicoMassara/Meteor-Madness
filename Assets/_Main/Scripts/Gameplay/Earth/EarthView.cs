@@ -9,7 +9,8 @@ namespace _Main.Scripts.Gameplay.Earth
     public class EarthView : MonoBehaviour
     {
         [Header("Components")]
-        [SerializeField] private GameObject spriteObject;
+        [SerializeField] private GameObject spriteContainer;
+        [SerializeField] private GameObject completeSpriteObject;
         [SerializeField] private GameObject brokenSpriteObject;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [Header("Values")]
@@ -25,13 +26,15 @@ namespace _Main.Scripts.Gameplay.Earth
         private EarthMotor _motor;
         private float _currentHealth;
         private float _targetHealth;
-        private bool _isDead;
+        private bool _canRotate;
+
+        private readonly Timer _startRotationTimer = new Timer();
 
         private void Awake()
         {
             _motor = GetComponent<EarthMotor>();
             
-            spriteObject.SetActive(true);
+            completeSpriteObject.SetActive(true);
             brokenSpriteObject.SetActive(false);
         }
 
@@ -40,9 +43,10 @@ namespace _Main.Scripts.Gameplay.Earth
             _currentHealth = 1;
             _targetHealth = _currentHealth;
             
-            _rotator = new Rotator(spriteObject.transform, rotationSpeed);
+            _rotator = new Rotator(spriteContainer.transform, rotationSpeed);
+            _startRotationTimer.OnEnd += StartRotationTimerOnEndHandler;
             
-            _shakerController = new ShakerController(spriteObject.transform);
+            _shakerController = new ShakerController(spriteContainer.transform);
             _shakerController.SetShakeData(healthShakeData);
             _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
             
@@ -53,15 +57,18 @@ namespace _Main.Scripts.Gameplay.Earth
             _motor.OnDestruction += OnDestructionHandler;
             _motor.OnShake += OnShakeHandler;
         }
+        
 
         private void Update()
         {
             _shakerController.HandleShake();
 
-            if (_isDead == false)
+            if (_canRotate == true)
             {
                 _rotator.Rotate();
             }
+            
+            _startRotationTimer.Run();
         }
 
         private void UpdateColor()
@@ -89,27 +96,27 @@ namespace _Main.Scripts.Gameplay.Earth
         private void OnDeathHandler()
         {
             _targetHealth = 0;
-            _isDead = true;
+            _canRotate = false;
             _shakerController.SetMultiplier(0);
-            brokenSpriteObject.transform.rotation = Quaternion.Euler(0, 0, spriteObject.transform.eulerAngles.z);
             UpdateColor();
         }
 
         private void OnDestructionHandler()
         {
-            spriteObject.SetActive(false);
+            completeSpriteObject.SetActive(false);
             brokenSpriteObject.SetActive(true);
+            _startRotationTimer.Set(GameTimeValues.StartRotatingAfterDeath);
         }
 
         private void OnRestartHandler()
         {
-            spriteObject.SetActive(true);
+            completeSpriteObject.SetActive(true);
             brokenSpriteObject.SetActive(false);
             _targetHealth = 1;
-            _isDead = false;
+            _canRotate = true;
             _shakerController.SetShakeData(healthShakeData);
             _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
-            spriteObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            spriteContainer.transform.localRotation = Quaternion.Euler(0, 0, 0);
             UpdateColor();
         }
         
@@ -124,8 +131,14 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 _shakerController.SetMultiplier(0);
             }
-
         }
+        
+        private void StartRotationTimerOnEndHandler()
+        {
+            _rotator.SetSpeed(rotationSpeed/2);
+            _canRotate = true;
+        }
+        
         #endregion
         
     }

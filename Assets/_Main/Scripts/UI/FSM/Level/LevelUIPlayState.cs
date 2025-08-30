@@ -24,16 +24,12 @@ namespace _Main.Scripts.UI.FSM.Level
             
             _elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(_elapsedTime / Increase_Time);
-            _displayedPoints = Mathf.Lerp(_displayedPoints, _targetPoints, t);
-            
-            if (_displayedPoints >= _targetPoints)
-            {
-                _displayedPoints = _targetPoints;
-            }
+            _displayedPoints = Mathf.Lerp(0, _targetPoints, t);
+            _displayedPoints = Mathf.Clamp(_displayedPoints, 0, _targetPoints);
             
             Controller.UpdatePointsText(Mathf.RoundToInt(_displayedPoints));
             
-            if (t >= 1f)
+            if (_displayedPoints >= _targetPoints)
             {
                 _isCountingPoints = false;
             }

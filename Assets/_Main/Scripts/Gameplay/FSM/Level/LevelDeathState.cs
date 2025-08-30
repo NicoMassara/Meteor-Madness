@@ -29,7 +29,7 @@ namespace _Main.Scripts.Gameplay.FSM.Level
             //Zoom In
             _actionQueue.AddAction(
                 new ActionData(()=> Controller.ZoomIn(), 
-                    (float)(GameTimeValues.StartShake * 0.65))
+                    (float)(GameTimeValues.DeathZoom))
             );
             
             //Start Shake
@@ -37,24 +37,24 @@ namespace _Main.Scripts.Gameplay.FSM.Level
                 new ActionData(()=> Controller.StartEarthShake(),
                     (float)(GameTimeValues.StartShake * 0.35))
             );
+            
+            //Stops Shake
+            _actionQueue.AddAction( 
+                new ActionData(()=> Controller.StopEarthShake(),
+                    (float)(GameTimeValues.DeathShakeDuration))
+            );
 
             //Destroys Earth
             _actionQueue.AddAction( 
                 new ActionData(()=> Controller.TriggerEarthDestruction(),
-                    (float)(GameTimeValues.DeathShakeDuration))
+                    (float)(GameTimeValues.ShowEarthDestruction))
             );
             
             //Shows UI
             _actionQueue.AddAction( 
-                new ActionData(Queue_FinishLevel,
-                    (float)(GameTimeValues.DestructionOnDeath))
+                new ActionData(()=> Controller.FinishEndLevel(),
+                    (float)(GameTimeValues.ShowDeathUI))
             );
-        }
-
-        private void Queue_FinishLevel()
-        {
-            Controller.FinishEndLevel();
-            Controller.StopEarthShake();
         }
     }
 }

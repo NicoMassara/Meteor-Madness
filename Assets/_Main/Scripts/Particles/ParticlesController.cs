@@ -27,10 +27,7 @@ namespace _Main.Scripts.Particles
         public void SpawnParticle(ParticleDataSo particleData, Vector3 position, Quaternion rotation, Vector3 moveDirection)
         {
             var tempParticle = _pool.Get();
-            tempParticle.SetValues(particleData.Sprite,particleData.TimeToFade,particleData.FadeSpeed, particleData.FadeScale,
-                position + particleData.PositionOffset, 
-                rotation.eulerAngles.z + particleData.RotationOffset, 
-                particleData.StartScale, moveDirection);
+            tempParticle.SetValues(particleData, position, rotation.eulerAngles.z, moveDirection);
             tempParticle.OnRecycle += Particle_OnRecycleHandler;
             _activeParticles.Add(tempParticle);
         }

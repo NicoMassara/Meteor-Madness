@@ -6,48 +6,47 @@ namespace _Main.Scripts.Particles
     public class ParticleBehaviour : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer sprite;
-        private float _timeToFade;
-        private float _fadeSpeed;
-        private float _fadeScale;
+        private ParticleDataSo _data;
         private float _alpha;
+        private float _scaleTimer;
+        private float _fadeTimer;
         private Vector3 _moveDirection = Vector3.up;
         
         public UnityAction<ParticleBehaviour> OnRecycle;
 
-        public void SetValues(Sprite spriteS, float timeToFade,float fadeSpeed, float fadeScale,
-            Vector3 position, float rotation, float startScale, Vector3 moveDirection)
+        public void SetValues(ParticleDataSo particleData, Vector3 position, float rotation, Vector3 moveDirection)
         {
-            this.sprite.sprite = spriteS;
-            _timeToFade = timeToFade;
-            _fadeSpeed = fadeSpeed;
-            _fadeScale = fadeScale;
-            transform.position = position;
-            transform.rotation = Quaternion.Euler(0, 0, rotation);
+            _data = particleData;
+            sprite.sprite = _data.Sprite;
+            transform.position = position + _data.PositionOffset;
+            transform.rotation = Quaternion.Euler(0, 0, rotation + _data.RotationOffset);
             _alpha = 1;
             this.sprite.color = new Color(1, 1, 1, 1);
-            transform.localScale = Vector3.one * startScale;
+            transform.localScale = _data.StartScale;
             _moveDirection = moveDirection;
+            _scaleTimer = 0;
+            _fadeTimer = 0;
         }
 
         private void Update()
         {
-            _timeToFade -= Time.deltaTime;
+            _scaleTimer += Time.deltaTime;
+            float t = _scaleTimer/_data.TimeToReachScale;
+            transform.localScale = Vector3.Lerp(_data.StartScale, _data.TargetScale, t);
+            transform.position += (Time.deltaTime * _data.MoveSpeed) * -_moveDirection;
             
-            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * _fadeScale, _fadeSpeed * Time.deltaTime);
-
-            transform.position += (Time.deltaTime * (_fadeSpeed/4)) * -_moveDirection;
+            var ratio = transform.localScale.x / _data.TargetScale.x;
             
-            if (transform.localScale.x >= 1)
+            if (ratio >= _data.RatioTimeToStartFade)
             {
-                if (_timeToFade <= 0)
-                {
-                    _alpha = Mathf.Lerp(_alpha, -0.25f, _fadeSpeed * Time.deltaTime);
-                    sprite.color = new Color(1, 1, 1, _alpha);
+                _fadeTimer += Time.deltaTime;
+                float a = _fadeTimer/_data.TimeToFade;
+                _alpha = Mathf.Lerp(1, 0, a);
+                sprite.color = new Color(1, 1, 1, _alpha);
 
-                    if (_alpha <= 0)
-                    {
-                        ForceRecycle();
-                    }
+                if (_alpha <= 0)
+                {
+                    ForceRecycle();
                 }
             }
         }

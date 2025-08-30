@@ -9,6 +9,7 @@ namespace _Main.Scripts
         private Queue<ActionData> _actionQueue = new Queue<ActionData>();
         private ActionData _currentAction;
         private readonly Timer _timer = new Timer();
+        public bool CanRun { get; set; } = true;
 
         public ActionQueue()
         {
@@ -17,6 +18,8 @@ namespace _Main.Scripts
 
         public void Run()
         {
+            if(CanRun == false) return;
+            
             if (_currentAction == null && _actionQueue.Count > 0)
             {
                 _currentAction = _actionQueue.Dequeue();
