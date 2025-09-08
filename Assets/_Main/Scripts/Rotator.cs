@@ -5,17 +5,26 @@ namespace _Main.Scripts
     public class Rotator
     {
         private float _rotationSpeed;
-        private readonly Transform _transform;
+        private readonly Transform[] _transforms;
 
         public Rotator(Transform transform, float rotationSpeed = 100)
         {
-            _transform = transform;
+            _transforms = new [] { transform };
+            _rotationSpeed = rotationSpeed;
+        }
+        
+        public Rotator(Transform[] transforms, float rotationSpeed = 100)
+        {
+            _transforms = transforms;
             _rotationSpeed = rotationSpeed;
         }
 
         public void Rotate()
         {
-            _transform.Rotate(0,0,_rotationSpeed * Time.deltaTime);
+            foreach (Transform transform in _transforms)
+            {
+                transform.Rotate(Vector3.forward, _rotationSpeed * Time.deltaTime);
+            }
         }
 
         public void SetSpeed(float newSpeed)

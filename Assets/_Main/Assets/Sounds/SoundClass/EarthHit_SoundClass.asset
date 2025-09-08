@@ -27,4 +27,5 @@ MonoBehaviour:
     stereoPan: 0
     spatialBlend: 0
     reverbZoneMix: 1
+    dopplerLevel: 0
   randomPitchRange: 0
