@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ namespace _Main.Scripts.FiniteStateMachine
         IState<T> _current;
         public T CurrentState { get; set; }
         public string FSMName { get; set; }
+        public event Action<T> OnEnterState;
+        public event Action<T> OnExitState;
 
         public FSM() {}
         public FSM(IState<T> init)
@@ -48,10 +51,16 @@ namespace _Main.Scripts.FiniteStateMachine
                 return;
             }
 
+            if (CurrentState != null)
+            {
+                OnExitState?.Invoke(CurrentState);
+            }
+            
             _current.Sleep();
             _current = newState;
             _current.Awake();
             CurrentState = input;
+            OnEnterState?.Invoke(CurrentState);
         }
     }
 }

@@ -8,7 +8,6 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Gameplay
 {
@@ -62,8 +61,8 @@ namespace _Main.Scripts.Gameplay
             _meteorHitCount = 0;
             _meteorSaveCount = 0;
             earthController.Restart();
-            shieldController.Restart();
-            SetActiveShield(true);
+            shieldController.RestartPosition();
+            shieldController.TransitionToActive();
             deathTheme.StopSound();
             gameplayTheme.PlaySound();
             cameraController.ZoomOut();
@@ -75,9 +74,8 @@ namespace _Main.Scripts.Gameplay
         public void StartEndLevel()
         {            
             gameplayTheme.StopSound();
-            SetActiveShield(false);
+            shieldController.TransitionToUnactive();
             meteorSpawner.RecycleAll();
-            shieldController.ShrinkShield();
         }
 
         public void FinishEndLevel()
@@ -99,11 +97,6 @@ namespace _Main.Scripts.Gameplay
         public void TriggerDestruction()
         {
             earthController.TriggerDestruction();
-        }
-
-        public void SetActiveShield(bool isActive)
-        {
-            shieldController.SetActiveSprite(isActive);
         }
 
         public void StartEarthShake()
@@ -149,7 +142,6 @@ namespace _Main.Scripts.Gameplay
             particlesController.SpawnParticle(collisionSprite, position, rotation, direction);
             _meteorSpeedController.RestartCount();
             OnEarthHit?.Invoke(_meteorHitCount);
-            shieldController.ShrinkShield();
             earthController.Damage();
         }
 
@@ -160,7 +152,7 @@ namespace _Main.Scripts.Gameplay
             var direction = (centerOfGravity.position - position).normalized;
             particlesController.SpawnParticle(shieldHitSprite, position, quaternion.identity, direction);
             _meteorSpeedController.CheckForNextLevel(_meteorSaveCount);
-            shieldController.HitShield();
+            shieldController.Hit();
             OnShieldHit?.Invoke(_meteorSaveCount);
         }
         

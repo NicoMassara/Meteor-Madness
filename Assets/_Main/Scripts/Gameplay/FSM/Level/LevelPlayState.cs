@@ -9,7 +9,7 @@
             GameManager.Instance.CanPlay = true;
             Controller.OnEnd += OnEndHandler;
             _spawnTimer.OnEnd += SpawnTimer_OnEndHandler;
-            //_spawnTimer.Set(0.25f);
+            _spawnTimer.Set(0.25f);
         }
 
         public override void Execute()

@@ -1433,6 +1433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 564b121823fa41dd972cb7b0d42a38a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentDamageType: 0
 --- !u!4 &464770896
 Transform:
   m_ObjectHideFlags: 0
@@ -2455,7 +2456,7 @@ MonoBehaviour:
   - 1.412
   - 1.297
   - 1.261
-  ringMeteorSpawnAmount: 0
+  ringMeteorSpawnAmount: 5
 --- !u!1 &780262261
 GameObject:
   m_ObjectHideFlags: 0
@@ -4098,7 +4099,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meteorSpawner: {fileID: 709288249}
   earthController: {fileID: 1002815155}
-  shieldController: {fileID: 1798290944}
+  shieldController: {fileID: 1798290946}
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 27
   particlesController: {fileID: 2010873514}
@@ -4608,7 +4609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33fd704c9d204e348fb046f25954d86c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shieldController: {fileID: 1798290944}
+  shieldController: {fileID: 1798290946}
 --- !u!4 &1482222718
 Transform:
   m_ObjectHideFlags: 0
@@ -5109,7 +5110,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -5318,9 +5319,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1798290945}
-  - component: {fileID: 1798290944}
-  - component: {fileID: 1798290946}
   - component: {fileID: 1798290947}
+  - component: {fileID: 1798290946}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
@@ -5328,18 +5328,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1798290944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798290943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f43696705980495380c42e0511dfa9fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1798290945
 Transform:
   m_ObjectHideFlags: 0
@@ -5366,38 +5354,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1798290943}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e1ab424a44444ae86369de7411a6dbf, type: 3}
+  m_Script: {fileID: 11500000, guid: 779adeff546d4c17bc616daa1bcf6716, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shieldHitSound: {fileID: 163182589}
-  shieldMoveSound: {fileID: 1982406300}
-  sprite: {fileID: 610377037}
-  rotateSpeed: 6.75
-  extendTime: 1.25
-  pithCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.75
-      inSlope: 0.8137764
-      outSlope: 0.8137764
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.09999098
-    - serializedVersion: 3
-      time: 1
-      value: 1.85
-      inSlope: 0.39089328
-      outSlope: 0.39089328
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.11068326
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &1798290947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5407,11 +5366,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1798290943}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c7110cad9e349b3bd8a06456b1db2a1, type: 3}
+  m_Script: {fileID: 11500000, guid: c1f9b60c92774e39b778dd7b6475f0cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteObject: {fileID: 610377037}
-  shakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
+  spriteContainer: {fileID: 1499242836}
+  normalSprite: {fileID: 610377037}
+  superSprite: {fileID: 1667250004}
+  hitSound: {fileID: 163182589}
+  moveSound: {fileID: 1982406300}
+  rotateSpeed: 6.75
+  hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
 --- !u!1 &1800173859
 GameObject:
   m_ObjectHideFlags: 0
@@ -8265,10 +8229,10 @@ SceneRoots:
   - {fileID: 99682038}
   - {fileID: 2023637912}
   - {fileID: 519420032}
-  - {fileID: 1482222718}
   - {fileID: 854189257}
   - {fileID: 1002815154}
   - {fileID: 458399473}
+  - {fileID: 1482222718}
   - {fileID: 1888334900}
   - {fileID: 396354760}
   - {fileID: 1004163051}

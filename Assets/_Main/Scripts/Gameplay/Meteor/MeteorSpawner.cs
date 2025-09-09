@@ -16,7 +16,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         [SerializeField] private float spawnRadius;
         [Range(1.1f, 2.5f)] 
         [SerializeField] private float[] ringOffset;
-        [Range(1, 360f)] 
+        [Range(2, 360f)] 
         [SerializeField] private int ringMeteorSpawnAmount;
         
         private MeteorFactory _meteorFactory;
@@ -28,14 +28,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void Start()
         {
             _meteorFactory = new MeteorFactory(meteorPrefab, centerOfGravity);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                SpawnRingMeteor(15f);
-            }
         }
 
         #region Spawn Single Meteor

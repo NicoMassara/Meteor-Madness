@@ -32,7 +32,7 @@ namespace _Main.Scripts.Gameplay
                 }
                 else
                 {
-                    shieldController.StopRotation();
+                    shieldController.StopRotate();
                 }
 
                 if (Input.GetKeyDown(KeyCode.P) || Input.GetKey(KeyCode.Escape))

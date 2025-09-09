@@ -1,26 +1,41 @@
 ﻿using System;
+using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
+using _Main.Scripts.Sounds;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    public class ShieldView : MonoBehaviour
+    public class ShieldView : MonoBehaviour, IObserver
     {
-        [SerializeField] private GameObject spriteObject;
-        [SerializeField] private ShakeDataSo shakeData;
+        [Header("Components")] 
+        [SerializeField] private GameObject spriteContainer;
+        [SerializeField] private GameObject normalSprite;
+        [SerializeField] private GameObject superSprite;
+        [Header("Sounds")]
+        [SerializeField] private SoundBehavior hitSound;
+        [SerializeField] private SoundBehavior moveSound;
+        [Space] 
+        [Header("Movement Values")]
+        [SerializeField] private float rotateSpeed = 6.75f;
+        [Header("Values")]
+        [SerializeField] private ShakeDataSo hitShakeData;
+
+        //Multiplier added to handle lower numbers in inspector
+        private float GetRotateSpeed => rotateSpeed * 50f; 
+        private GameObject _activeSprite;
         private ShakerController _shakerController;
-        private ShieldMotor _motor;
-        
+
         private void Awake()
         {
-            _motor = GetComponent<ShieldMotor>();
+            
         }
 
         private void Start()
         {
-            _motor.OnHit += OnHitHandler;
             _shakerController = new ShakerController(transform);
-            _shakerController.SetShakeData(shakeData);
+            _shakerController.SetShakeData(hitShakeData);
         }
 
         private void Update()
@@ -31,9 +46,85 @@ namespace _Main.Scripts.Gameplay.Shield
             }
         }
 
-        private void OnHitHandler()
+        public void OnNotify(string message, params object[] args)
+        {
+            switch (message)
+            {
+                case ShieldObserverMessage.Rotate:
+                    HandleRotation((float)args[0]);
+                    break;
+                case ShieldObserverMessage.StopRotate:
+                    HandleStopRotate();
+                    break;
+                case ShieldObserverMessage.Hit:
+                    HandleHit();
+                    break;
+                case ShieldObserverMessage.PlayMoveSound:
+                    PlayMoveSound();
+                    break;
+                case ShieldObserverMessage.RestartPosition:
+                    HandleRestartPosition();
+                    break;
+                case ShieldObserverMessage.SetActiveShield:
+                    HandleSetActiveShield((bool)args[0]);
+                    break;
+                case ShieldObserverMessage.SetSpriteType:
+                    HandleSetSpriteType((SpriteType)args[0]);
+                    break;
+            }
+        }
+        
+        #region Sprites
+
+        private void HandleSetActiveShield(bool isActive)
+        {
+            spriteContainer.SetActive(isActive);
+        }
+        
+        private void HandleSetSpriteType(SpriteType spriteType)
+        {
+            _activeSprite?.SetActive(false);
+
+            _activeSprite = spriteType switch
+            {
+                SpriteType.Normal => normalSprite,
+                SpriteType.Super => superSprite,
+                _ => _activeSprite
+            };
+            
+            _activeSprite?.SetActive(true);
+        }
+
+        #endregion
+
+        #region Movement
+        private void HandleRotation(float direction)
+        {
+            transform.RotateAround(transform.position, Vector3.forward, 
+                ((GetRotateSpeed) * direction) * Time.deltaTime);
+        }
+        private void HandleStopRotate()
+        {
+            
+        }
+        
+        private void PlayMoveSound()
+        {
+            moveSound?.PlaySound();
+        }
+        
+        private void HandleRestartPosition()
+        {
+            transform.rotation = Quaternion.Euler(0,0,0);
+        }
+
+        #endregion
+
+        private void HandleHit()
         {
             _shakerController.StartShake();
+            hitSound?.PlaySound();
         }
+        
     }
 }

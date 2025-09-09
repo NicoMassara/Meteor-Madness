@@ -1,18 +1,19 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace _Main.Scripts
 {
     public class GameManager : MonoBehaviour
     {
+        [SerializeField] private DamageTypes currentDamageType = DamageTypes.Brutal;
         public static GameManager Instance;
 
         public UnityAction<bool> OnPaused;
         
         public bool CanPlay { get; set; }
         private int _currentPoints;
-        private DamageTypes _currentDamageType = DamageTypes.None;
 
         private void Awake()
         {
@@ -23,7 +24,7 @@ namespace _Main.Scripts
 
         public float GetMeteorDamage()
         {
-            return _currentDamageType switch
+            return currentDamageType switch
             {
                 DamageTypes.None => DamageValues.NoneDamage,
                 DamageTypes.Standard => DamageValues.StandardMeteor,
@@ -36,7 +37,7 @@ namespace _Main.Scripts
 
         public void SetDamage(DamageTypes damageType)
         {
-            _currentDamageType = damageType;
+            currentDamageType = damageType;
         }
 
         #endregion
