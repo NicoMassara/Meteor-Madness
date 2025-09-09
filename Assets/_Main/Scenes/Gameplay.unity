@@ -2988,9 +2988,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1002815154}
-  - component: {fileID: 1002815155}
-  - component: {fileID: 1002815157}
   - component: {fileID: 1002815156}
+  - component: {fileID: 1002815155}
   m_Layer: 0
   m_Name: Earth
   m_TagString: Untagged
@@ -3025,7 +3024,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1002815153}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55aa613ed81f4aafb32ecbbdb46d58f4, type: 3}
+  m_Script: {fileID: 11500000, guid: edb24ca1eeee43edb82083f3874680a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1002815156
@@ -3037,13 +3036,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1002815153}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef80768e2cbf4c0d884029b4db7ba01c, type: 3}
+  m_Script: {fileID: 11500000, guid: 22e23ee0fb114841af3c35eae3e4ca74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spriteContainer: {fileID: 1282502640}
-  completeSpriteObject: {fileID: 2126408682}
+  normalSpriteObject: {fileID: 2126408682}
   brokenSpriteObject: {fileID: 1057396908}
   spriteRenderer: {fileID: 2126408684}
+  hitSound: {fileID: 587989228}
   shakeMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -3107,45 +3107,6 @@ MonoBehaviour:
   healthShakeData: {fileID: 11400000, guid: 333aff85bc8229f488e684caaca75f09, type: 2}
   deathShakeData: {fileID: 11400000, guid: 55e1a984783228a43b3935b516b82543, type: 2}
   rotationSpeed: 15
---- !u!114 &1002815157
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1002815153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ee115f5de1a4edf9710b9226e18a0c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hitSound: {fileID: 587989228}
-  startHealDelay: 15
-  keepHealDelay: 2
-  healthRatioCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1.85
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0.75
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &1004163049
 GameObject:
   m_ObjectHideFlags: 0

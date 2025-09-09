@@ -1,6 +1,7 @@
 ﻿using _Main.Scripts.Gameplay.Earth;
 using _Main.Scripts.Gameplay.Meteor;
 using _Main.Scripts.Gameplay.Shield;
+using _Main.Scripts.Observer;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
@@ -11,7 +12,7 @@ using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay
 {
-    public class LevelMotor : MonoBehaviour
+    public class LevelMotor : MonoBehaviour, IObserver
     {
         [Header("Components")]
         [SerializeField] private MeteorSpawner meteorSpawner;
@@ -50,9 +51,24 @@ namespace _Main.Scripts.Gameplay
             
             meteorSpawner.OnShieldHit += Meteor_OnShieldHitHandler;
             meteorSpawner.OnEarthHit += Meteor_OnEarthHitHandler;
-            earthController.OnDeath += Earth_OnDeathHandler;
-            earthController.OnDamage += Earth_OnDamageHandler;
-            earthController.OnDestruction += Earth_OnDestructionHandler;
+            
+            earthController.AddObserverToMotor(this);
+        }
+        
+        public void OnNotify(string message, params object[] args)
+        {
+            switch (message)
+            {
+                case EarthObserverMessage.MakeDamage:
+                    Earth_HandleDamage();
+                    break;
+                case EarthObserverMessage.DeclareDeath:
+                    Earth_HandleDeath();
+                    break;
+                case EarthObserverMessage.TriggerDestruction:
+                    Earth_HandleDestruction();
+                    break;
+            }
         }
         
 
@@ -60,7 +76,7 @@ namespace _Main.Scripts.Gameplay
         {
             _meteorHitCount = 0;
             _meteorSaveCount = 0;
-            earthController.Restart();
+            earthController.RestartHealth();
             shieldController.RestartPosition();
             shieldController.TransitionToActive();
             deathTheme.StopSound();
@@ -101,12 +117,12 @@ namespace _Main.Scripts.Gameplay
 
         public void StartEarthShake()
         {
-            earthController.StartShake();
+            earthController.SetDeathShake(true);
         }
 
         public void StopEarthShake()
         {
-            earthController.StopShake();
+            earthController.SetDeathShake(false);
         }
         
         public void SetPaused(bool isPaused)
@@ -142,7 +158,7 @@ namespace _Main.Scripts.Gameplay
             particlesController.SpawnParticle(collisionSprite, position, rotation, direction);
             _meteorSpeedController.RestartCount();
             OnEarthHit?.Invoke(_meteorHitCount);
-            earthController.Damage();
+            earthController.MakeDamage(GameManager.Instance.GetMeteorDamage());
         }
 
         private void Meteor_OnShieldHitHandler(Vector3 position)
@@ -156,17 +172,17 @@ namespace _Main.Scripts.Gameplay
             OnShieldHit?.Invoke(_meteorSaveCount);
         }
         
-        private void Earth_OnDeathHandler()
+        private void Earth_HandleDeath()
         {
             OnEnd?.Invoke(_meteorSaveCount);
         }
         
-        private void Earth_OnDamageHandler()
+        private void Earth_HandleDamage()
         {
 
         }
         
-        private void Earth_OnDestructionHandler()
+        private void Earth_HandleDestruction()
         {
             deathSound.PlaySound();
         }

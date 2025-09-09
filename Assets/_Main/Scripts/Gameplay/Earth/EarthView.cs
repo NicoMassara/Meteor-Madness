@@ -1,126 +1,116 @@
-﻿using System;
+﻿using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
+using _Main.Scripts.Sounds;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
-using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
-    public class EarthView : MonoBehaviour
+    public class EarthView : MonoBehaviour, IObserver
     {
-        [Header("Components")]
+        [Header("Sprite Components")]
         [SerializeField] private GameObject spriteContainer;
-        [SerializeField] private GameObject completeSpriteObject;
+        [SerializeField] private GameObject normalSpriteObject;
         [SerializeField] private GameObject brokenSpriteObject;
         [SerializeField] private SpriteRenderer spriteRenderer;
-        [Header("Values")]
+        [Space]
+        [Header("Sounds")]
+        [SerializeField] private SoundBehavior hitSound;
+        [Space]
+        [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
         [SerializeField] private ShakeDataSo healthShakeData;
         [SerializeField] private ShakeDataSo deathShakeData;
-        [Header("Rotation")] 
-        [Range(0, 100)] [SerializeField] private float rotationSpeed = 25;
+        [Space]
+        [Header("Values")] 
+        [Range(0, 100)] 
+        [SerializeField] private float rotationSpeed = 25;
         
         private ShakerController _shakerController;
         private Rotator _rotator;
-        
-        private EarthMotor _motor;
-        private float _currentHealth;
-        private float _targetHealth;
+        private readonly Timer _rotateAfterDeathTimer = new Timer();
+        private GameObject _currentSprite;
         private bool _canRotate;
-
-        private readonly Timer _startRotationTimer = new Timer();
 
         private void Awake()
         {
-            _motor = GetComponent<EarthMotor>();
             
-            completeSpriteObject.SetActive(true);
-            brokenSpriteObject.SetActive(false);
         }
 
         private void Start()
         {
-            _currentHealth = 1;
-            _targetHealth = _currentHealth;
-            
             _rotator = new Rotator(spriteContainer.transform, rotationSpeed);
-            _startRotationTimer.OnEnd += StartRotationTimerOnEndHandler;
-            
             _shakerController = new ShakerController(spriteContainer.transform);
             _shakerController.SetShakeData(healthShakeData);
-            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
-            
-            _motor.OnDamage += OnDamagedHandler;
-            _motor.OnHeal += OnHealHandler;
-            _motor.OnDeath += OnDeathHandler;
-            _motor.OnRestart += OnRestartHandler;
-            _motor.OnDestruction += OnDestructionHandler;
-            _motor.OnShake += OnShakeHandler;
+            SetShakeMultiplier(1);
         }
-        
 
         private void Update()
         {
             _shakerController.HandleShake();
-
+            
             if (_canRotate == true)
             {
                 _rotator.Rotate();
             }
             
-            _startRotationTimer.Run();
+            _rotateAfterDeathTimer.Run();
         }
 
-        private void UpdateColor()
+        public void OnNotify(string message, params object[] args)
         {
-            spriteRenderer.color = new Color(1, _targetHealth, _targetHealth);
+            switch (message)
+            {
+                case EarthObserverMessage.RestartHealth:
+                    HandleRestartHealth();
+                    break;
+                case EarthObserverMessage.MakeDamage:
+                    HandleMakeDamage((float)args[0]);
+                    break;
+                case EarthObserverMessage.DeclareDeath:
+                    HandleDeath();
+                    break;
+                case EarthObserverMessage.TriggerDestruction:
+                    HandleDestruction();
+                    break;
+                case EarthObserverMessage.SetActiveDeathShake:
+                    SetDeathShake((bool)args[0]);
+                    break;
+                case EarthObserverMessage.Heal:
+                    HandleHeal((float)args[0]);
+                    break;
+                case EarthObserverMessage.SetSprite:
+                    SetSpriteType((EarthSpriteType)args[0]);
+                    break;
+            }
         }
 
-        #region Handlers
+        #region Health
+
+        private void HandleMakeDamage(float healthAmount)
+        {
+            hitSound?.PlaySound();
+            SetShakeMultiplier(healthAmount);
+            UpdateColorByHealth(healthAmount);
+            _rotator.SetSpeed(rotationSpeed * healthAmount);
+        }
         
-        private void OnDamagedHandler(float healthAmount)
+        private void HandleHeal(float healthAmount)
         {
-            _targetHealth = healthAmount;
-            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
-            _rotator.SetSpeed(rotationSpeed * _targetHealth);
-            UpdateColor();
+            SetShakeMultiplier(healthAmount);
+            UpdateColorByHealth(healthAmount);
         }
-        
-        private void OnHealHandler(float healthAmount)
+        private void HandleRestartHealth()
         {
-            _targetHealth = healthAmount;
-            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
-            UpdateColor();
-        }
-        
-        private void OnDeathHandler()
-        {
-            _targetHealth = 0;
-            _canRotate = false;
-            _shakerController.SetMultiplier(0);
-            UpdateColor();
-        }
-
-        private void OnDestructionHandler()
-        {
-            completeSpriteObject.SetActive(false);
-            brokenSpriteObject.SetActive(true);
-            _startRotationTimer.Set(GameTimeValues.StartRotatingAfterDeath);
-        }
-
-        private void OnRestartHandler()
-        {
-            completeSpriteObject.SetActive(true);
-            brokenSpriteObject.SetActive(false);
-            _targetHealth = 1;
-            _canRotate = true;
+            UpdateColorByHealth(1);
+            SetSpriteType(EarthSpriteType.Normal);
             _shakerController.SetShakeData(healthShakeData);
-            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(_targetHealth));
-            spriteContainer.transform.localRotation = Quaternion.Euler(0, 0, 0);
-            UpdateColor();
         }
-        
-        private void OnShakeHandler(bool isShaking)
+
+        #endregion
+
+        #region Death
+
+        private void SetDeathShake(bool isShaking)
         {
             if (isShaking)
             {
@@ -132,14 +122,59 @@ namespace _Main.Scripts.Gameplay.Earth
                 _shakerController.SetMultiplier(0);
             }
         }
-        
-        private void StartRotationTimerOnEndHandler()
+
+        private void HandleDestruction()
         {
+            SetSpriteType(EarthSpriteType.Broken);
+            _rotateAfterDeathTimer.Set(GameTimeValues.StartRotatingAfterDeath);
+            _rotateAfterDeathTimer.OnEnd += RotateAfterDeathTimer_OnEndHandler;
+        }
+
+        private void HandleDeath()
+        {
+            _canRotate = false;
+            _shakerController.SetMultiplier(0);
+            UpdateColorByHealth(0);
+        }
+
+        #endregion
+
+        #region Sprite
+
+        private void SetSpriteType(EarthSpriteType spriteType)
+        {
+            _currentSprite?.SetActive(false);
+
+            switch (spriteType)
+            {
+                case EarthSpriteType.Normal:
+                    _currentSprite = normalSpriteObject;
+                    break;
+                case EarthSpriteType.Broken:
+                    _currentSprite = brokenSpriteObject;
+                    break;
+            }
+            
+            _currentSprite?.SetActive(true);
+        }
+
+        #endregion
+
+        private void SetShakeMultiplier(float currentHealth)
+        {
+            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(currentHealth));
+        }
+
+        private void UpdateColorByHealth(float currentHealth)
+        {
+            spriteRenderer.color = new Color(1, currentHealth, currentHealth);
+        }
+        
+        private void RotateAfterDeathTimer_OnEndHandler()
+        {
+            _rotateAfterDeathTimer.OnEnd -= RotateAfterDeathTimer_OnEndHandler;
             _rotator.SetSpeed(rotationSpeed/2);
             _canRotate = true;
         }
-        
-        #endregion
-        
     }
 }

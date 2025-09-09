@@ -1,74 +1,61 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.Earth;
+using _Main.Scripts.Observer;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
+    [RequireComponent(typeof(EarthView))]
     public class EarthController : MonoBehaviour
     {
         private EarthMotor _motor;
-        
-        public UnityAction OnDeath;
-        public UnityAction OnDamage;
-        public UnityAction OnDestruction;
+        private EarthView _view;
 
         private void Awake()
         {
-            _motor = GetComponent<EarthMotor>();
+            _view = GetComponent<EarthView>();
+            
+            _motor = new EarthMotor();
+            _motor.Subscribe(_view);
         }
 
-        private void Start()
+        #region Health
+
+        public void RestartHealth()
         {
-            _motor.OnDeath += OnDeathHandler;
-            _motor.OnDestruction += OnDestructionHandler;
+            _motor.RestartHealth();
         }
 
-
-
-        private void Update()
+        public void MakeDamage(float damage)
         {
-            if (_motor.IsHealing())
-            {
-                //_motor.RunHealTimer();
-            }
-        }
-        public void Restart()
-        {
-            _motor.Restart();
+            _motor.MakeDamage(damage);
         }
 
-        public void Damage()
+        public void Heal(float healAmount)
         {
-            _motor.Damage();
+            _motor.Heal(healAmount);
         }
+
+        #endregion
+
+        #region Death
 
         public void TriggerDestruction()
         {
             _motor.TriggerDestruction();
         }
 
-        #region Handlers
-
-        private void OnDeathHandler()
+        public void SetDeathShake(bool isShaking)
         {
-            OnDeath?.Invoke();
-        }
-        
-        private void OnDestructionHandler()
-        {
-            OnDestruction?.Invoke();
+            _motor.SetDeathShake(isShaking);
         }
 
         #endregion
 
-        public void StartShake()
+        public void AddObserverToMotor(IObserver observer)
         {
-            _motor.StartShake();
+            _motor.Subscribe(observer);
         }
 
-        public void StopShake()
-        {
-            _motor.StopShake();
-        }
     }
 }

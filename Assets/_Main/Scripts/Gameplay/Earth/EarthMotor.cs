@@ -1,101 +1,51 @@
-﻿using _Main.Scripts.Sounds;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using _Main.Scripts.Observer;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
-    public class EarthMotor : MonoBehaviour
+    public class EarthMotor : ObservableComponent
     {
-        [Header("Sounds")]
-        [SerializeField] private SoundBehavior hitSound;
-        [Header("Values")]
-        [Range(0, 30)] [SerializeField] private float startHealDelay = 15f;
-        [Range(0, 15)] [SerializeField] private float keepHealDelay = 2f;
-        [SerializeField] private AnimationCurve healthRatioCurve;
-        
         private float _currentHealth;
-        private float _startHealTimer;
-        private float _keepHealTimer;
-        
-        public UnityAction OnDeath;
-        public UnityAction<float> OnDamage;
-        public UnityAction<float> OnHeal;
-        public UnityAction OnRestart;
-        public UnityAction<bool> OnShake;
-        public UnityAction OnDestruction;
-        
-        private void Start()
+
+        public void RestartHealth()
         {
             _currentHealth = 1;
+            NotifyAll(EarthObserverMessage.RestartHealth);
         }
 
-        public bool IsHealing()
+        public void MakeDamage(float damage)
         {
-            return _currentHealth < 1;
-        }
-
-        public void RunHealTimer()
-        {
-            if (_currentHealth < 1)
-            {
-                _startHealTimer -= Time.deltaTime;
-                if (_startHealTimer <= 0)
-                {
-                    _keepHealTimer -= Time.deltaTime;
-                    if (_keepHealTimer <= 0)
-                    {
-                        Heal();
-                        _keepHealTimer = keepHealDelay;
-                    }
-                }
-            }
-        }
-
-        public void Restart()
-        {
-            OnRestart?.Invoke();
-            _currentHealth = 1;
-        }
-
-        public void Damage()
-        {
-            _currentHealth -= GameManager.Instance.GetMeteorDamage();
-            _startHealTimer = startHealDelay;
-            _keepHealTimer = 0;
-            
-            hitSound.PlaySound(1f, healthRatioCurve.Evaluate(_currentHealth));
-            
+            _currentHealth -= damage;
 
             if (_currentHealth <= 0)
             {
-                OnDeath?.Invoke();
+                NotifyAll(EarthObserverMessage.DeclareDeath);
             }
             else
             {
-                OnDamage?.Invoke(_currentHealth);
+                NotifyAll(EarthObserverMessage.MakeDamage, _currentHealth);
             }
         }
 
-        private void Heal()
+        public void Heal(float heal)
         {
-            _currentHealth += 0.1f;
-
-            OnHeal?.Invoke(_currentHealth);
+            _currentHealth += heal;
+            NotifyAll(EarthObserverMessage.Heal);
         }
 
         public void TriggerDestruction()
         {
-            OnDestruction?.Invoke();
+            NotifyAll(EarthObserverMessage.TriggerDestruction);
         }
 
-        public void StartShake()
+        public void SetDeathShake(bool isShaking)
         {
-            OnShake?.Invoke(true);
+            NotifyAll(EarthObserverMessage.SetActiveDeathShake, isShaking);
         }
+    }
 
-        public void StopShake()
-        {
-            OnShake?.Invoke(false);
-        }
+    public enum EarthSpriteType
+    {
+        Normal,
+        Broken
     }
 }
