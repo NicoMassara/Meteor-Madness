@@ -13,7 +13,6 @@ namespace _Main.Scripts.Comet
         {
             if (((1 << other.gameObject.layer) & cometWallMask) != 0)
             {
-                Debug.Log("Recycle");
                 CanMove = false;
                 moveSound?.StopSound();
                 OnRecycle?.Invoke(this);

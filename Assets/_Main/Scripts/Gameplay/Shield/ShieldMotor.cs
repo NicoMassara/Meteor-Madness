@@ -11,9 +11,9 @@ namespace _Main.Scripts.Gameplay.Shield
         private int _currentStreak;
         private int _initialStreak;
         private int _currentExtendedHitCount;
-
         public bool IsShieldExtended { get; set; }
         public UnityAction OnReset;
+        
         
         public float GetSteakRatio()
         {
@@ -27,7 +27,6 @@ namespace _Main.Scripts.Gameplay.Shield
                 if (_currentStreak < GameValues.MaxStreakShield)
                 {
                     _currentStreak++;
-                    
                 }
             }
             
@@ -61,9 +60,10 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private SoundBehavior shieldMoveSound;
         [Header("Components")]
         [SerializeField] private GameObject sprite;
-        [Header("Values")]
-        [Range(1,10)]
-        [SerializeField] private float rotateSpeed;
+
+        [Header("Values")] 
+        [Range(1, 1000)] 
+        [SerializeField] private float rotateSpeed = 6.75f;
         [Range(0.1f, 2)] 
         [SerializeField] private float extendTime = 1.25f;
         [SerializeField] private AnimationCurve pithCurve;
@@ -71,6 +71,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldStreakController _shieldStreakController;
         private bool _canExtendShield;
         private float _lastDirection;
+        private bool _canStreak = false;
 
         public UnityAction OnHit;
 
@@ -122,7 +123,10 @@ namespace _Main.Scripts.Gameplay.Shield
             
             if(currentRatio >= 1 && _shieldStreakController.IsShieldExtended)
             {
-                _shieldStreakController.IncreaseExtendedHitCount();
+                if (_canStreak)
+                {
+                    _shieldStreakController.IncreaseExtendedHitCount();
+                }
             }
             else if (currentRatio >= 1 && !_shieldStreakController.IsShieldExtended)
             {

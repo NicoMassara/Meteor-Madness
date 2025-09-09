@@ -2,39 +2,49 @@
 {
     public class LevelPlayState<T> : LevelBaseState<T>
     {
+        private readonly Timer _spawnTimer = new Timer();
+        
         public override void Awake()
         {
             GameManager.Instance.CanPlay = true;
             Controller.OnEnd += OnEndHandler;
-            Controller.OnShieldHit += OnMeteorHitHandler;
-            Controller.OnEarthHit += OnMeteorHitHandler;
-            
-            Controller.SpawnMeteor();
+            _spawnTimer.OnEnd += SpawnTimer_OnEndHandler;
+            //_spawnTimer.Set(0.25f);
         }
 
         public override void Execute()
         {
-            
+            _spawnTimer.Run();
         }
 
         public override void Sleep()
         {
-            Controller.OnShieldHit -= OnMeteorHitHandler;
-            Controller.OnEarthHit -= OnMeteorHitHandler;
             GameManager.Instance.CanPlay = false;
         }
-        
-        private void OnMeteorHitHandler(int arg0)
+
+        private void SetTimer()
         {
-            Controller.SpawnMeteor();
+            _spawnTimer.Set(GameTimeValues.MeteorSpawnDelay);
         }
 
-        
+        #region Handlers
+
         private void OnEndHandler(int points)
         {
             Controller.OnEnd -= OnEndHandler;
+            _spawnTimer.OnEnd -= SpawnTimer_OnEndHandler;
 
             Controller.DeathTransition();
         }
+
+        private void SpawnTimer_OnEndHandler()
+        {
+            Controller.SpawnMeteor();
+            SetTimer();
+        }
+
+        #endregion
+        
+
     }
 }

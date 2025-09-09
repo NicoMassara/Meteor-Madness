@@ -12,11 +12,36 @@ namespace _Main.Scripts
         
         public bool CanPlay { get; set; }
         private int _currentPoints;
+        private DamageTypes _currentDamageType = DamageTypes.None;
 
         private void Awake()
         {
             Instance = this;
         }
+
+        #region Damage
+
+        public float GetMeteorDamage()
+        {
+            return _currentDamageType switch
+            {
+                DamageTypes.None => DamageValues.NoneDamage,
+                DamageTypes.Standard => DamageValues.StandardMeteor,
+                DamageTypes.Hard => DamageValues.HardMeteor,
+                DamageTypes.Heavy => DamageValues.HeavyMeteor,
+                DamageTypes.Brutal => DamageValues.BrutalMeteor,
+                _ => DamageValues.StandardMeteor
+            };
+        }
+
+        public void SetDamage(DamageTypes damageType)
+        {
+            _currentDamageType = damageType;
+        }
+
+        #endregion
+        
+        #region Points
 
         public void IncreasePoints(int multiplier = 1)
         {
@@ -32,6 +57,8 @@ namespace _Main.Scripts
         {
             return _currentPoints * GameValues.VisualMultiplier;
         }
+
+        #endregion
 
         public void SetPaused(bool paused)
         {

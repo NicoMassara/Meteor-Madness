@@ -15,7 +15,7 @@ namespace _Main.Scripts.Gameplay
     public class LevelMotor : MonoBehaviour
     {
         [Header("Components")]
-        [SerializeField] private MeteorFactory meteorFactory;
+        [SerializeField] private MeteorSpawner meteorSpawner;
         [SerializeField] private EarthController earthController;
         [SerializeField] private ShieldController shieldController;
         [SerializeField] private Transform centerOfGravity;
@@ -49,8 +49,8 @@ namespace _Main.Scripts.Gameplay
         {
             _meteorSpeedController = new MeteorSpeedController();
             
-            meteorFactory.OnShieldHit += Meteor_OnShieldHitHandler;
-            meteorFactory.OnEarthHit += Meteor_OnEarthHitHandler;
+            meteorSpawner.OnShieldHit += Meteor_OnShieldHitHandler;
+            meteorSpawner.OnEarthHit += Meteor_OnEarthHitHandler;
             earthController.OnDeath += Earth_OnDeathHandler;
             earthController.OnDamage += Earth_OnDamageHandler;
             earthController.OnDestruction += Earth_OnDestructionHandler;
@@ -76,7 +76,7 @@ namespace _Main.Scripts.Gameplay
         {            
             gameplayTheme.StopSound();
             SetActiveShield(false);
-            meteorFactory.RecycleAll();
+            meteorSpawner.RecycleAll();
             shieldController.ShrinkShield();
         }
 
@@ -133,24 +133,8 @@ namespace _Main.Scripts.Gameplay
 
         public void SpawnMeteor()
         {
-            Vector2 spawnPosition = GetRandomPointInRadiusRange(centerOfGravity.position, 
-                spawnRadius*0.75f, spawnRadius*1.25f);
             var meteorSpeed = GameValues.BaseMeteorSpeed * _meteorSpeedController.GetCurrentMultiplier();
-            var finalSpeed = Random.Range(meteorSpeed*0.85f, meteorSpeed*1.15f);
-            meteorFactory.SpawnMeteor(finalSpeed,spawnPosition);
-        }
-        
-        private Vector2 GetRandomPointInRadiusRange(Vector2 center, float minRadius, float maxRadius)
-        {
-            // Random angle in radians
-            float angle = Random.Range(0f, Mathf.PI * 2f);
-
-            // Random distance between min and max radius
-            float distance = Random.Range(minRadius, maxRadius);
-
-            // Convert polar coordinates to Cartesian
-            Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
-            return center + offset;
+            meteorSpawner.SpawnSingleMeteor(meteorSpeed);
         }
 
         #endregion

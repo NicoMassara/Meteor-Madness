@@ -8,10 +8,10 @@ using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class MeteorFactory : MonoBehaviour
+    public class MeteorFactory
     {
-        [FormerlySerializedAs("meteorPrefab")] [SerializeField] private MeteorMotor meteorMotorPrefab;
-        [SerializeField] private Transform centerOfGravity;
+        private readonly MeteorMotor _meteorPrefab;
+        private readonly Transform _centerOfGravity;
         
         private readonly List<MeteorMotor> _activeMeteors = new List<MeteorMotor>();
         private GenericPool<MeteorMotor> _pool;
@@ -19,21 +19,27 @@ namespace _Main.Scripts.Gameplay.Meteor
         public UnityAction<Vector3> OnShieldHit;
         public UnityAction<Vector3, Quaternion> OnEarthHit;
 
-        private void Start()
+        public MeteorFactory(MeteorMotor meteorPrefab, Transform centerOfGravity)
         {
-            _pool = new GenericPool<MeteorMotor>(meteorMotorPrefab);
+            this._meteorPrefab = meteorPrefab;
+            this._centerOfGravity = centerOfGravity;
+            
+            Initialize();
         }
 
-        public void SpawnMeteor(float meteorSpeed, Vector2 spawnPosition)
+        private void Initialize()
         {
-            Vector2 direction = (Vector2)centerOfGravity.position - spawnPosition;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
+            _pool = new GenericPool<MeteorMotor>(_meteorPrefab);
+        }
+
+        // ReSharper disable Unity.PerformanceAnalysis
+
+        public MeteorMotor SpawnMeteor()
+        {
             var tempMeteor = _pool.Get();
-            tempMeteor.SetValues(meteorSpeed, tempRot, spawnPosition);
-            tempMeteor.OnHit += Meteor_OnHitHandler;
             tempMeteor.OnRecycle += Meteor_OnRecycleHandler;
             _activeMeteors.Add(tempMeteor);
+            return tempMeteor;
         }
 
         public void RecycleAll()
@@ -46,23 +52,10 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void Meteor_OnRecycleHandler(MeteorMotor meteorMotor)
         {
-            meteorMotor.OnHit -= Meteor_OnHitHandler;
+            meteorMotor.OnHit = null;
             meteorMotor.OnRecycle -= Meteor_OnRecycleHandler;
             _activeMeteors.Remove(meteorMotor);
             _pool.Release(meteorMotor);
-        }
-
-        private void Meteor_OnHitHandler(MeteorMotor meteorMotor, bool hasHitShield)
-        {
-            meteorMotor.OnHit-= Meteor_OnHitHandler;
-            if (hasHitShield)
-            {
-                OnShieldHit?.Invoke(meteorMotor.transform.position);
-            }
-            else
-            {
-                OnEarthHit?.Invoke(meteorMotor.transform.position, meteorMotor.transform.rotation);
-            }
         }
     }
 }

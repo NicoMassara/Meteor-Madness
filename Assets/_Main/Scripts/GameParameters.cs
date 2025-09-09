@@ -13,10 +13,20 @@
 
     public struct DamageValues
     {
+        public const float NoneDamage = 0f;
         public const float StandardMeteor = 0.1f;
         public const float HardMeteor = 0.35f;
         public const float HeavyMeteor = 0.5f;
         public const float BrutalMeteor = 1f;
+    }
+
+    public enum DamageTypes
+    {
+        None,
+        Standard,
+        Hard,
+        Heavy,
+        Brutal
     }
 
     public struct UITimeValues
@@ -39,6 +49,8 @@
         public const float ShowDeathUI = 1f;
         public const float PointsTextTimeToIncreaseOnDeath = 1.5f;
         public const float StartRotatingAfterDeath = 0.75f;
+        public const float MeteorSpawnDelay = 8f;
+        public const float MeteorDelayBetweenSpawn = 0.25f;
     }
 
     public struct UITextValues
