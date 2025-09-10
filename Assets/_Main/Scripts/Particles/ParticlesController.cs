@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using _Main.Scripts.Managers;
 using UnityEngine;
-using UnityEngine.Pool;
 
 namespace _Main.Scripts.Particles
 {
     public class ParticlesController : MonoBehaviour
     {
+        [Header("Components")]
         [SerializeField] private ParticleBehaviour particlePrefab;
         private GenericPool<ParticleBehaviour> _pool;
         private readonly List<ParticleBehaviour> _activeParticles = new List<ParticleBehaviour>();
 
-        private void Start()
+        private void Awake()
         {
             _pool = new GenericPool<ParticleBehaviour>(particlePrefab, 5, 100);
+            
+            GameManager.Instance.EventManager.Subscribe<SpawnParticle>(EventBus_OnSpawnParticle);
         }
         
         public void RecycleAll()
@@ -23,9 +25,17 @@ namespace _Main.Scripts.Particles
                 _activeParticles[i].ForceRecycle();
             }
         }
-
-        public void SpawnParticle(ParticleDataSo particleData, Vector3 position, Quaternion rotation, Vector3 moveDirection)
+        
+        private void SpawnParticle(ParticleDataSo particleData, 
+            Vector3 position, Quaternion rotation, Vector3 moveDirection)
         {
+            if (particleData == null)
+            {
+                Debug.LogWarning("Particle data is null");
+                return;
+            }
+
+            Debug.Log(position);
             var tempParticle = _pool.Get();
             tempParticle.SetValues(particleData, position, rotation.eulerAngles.z, moveDirection);
             tempParticle.OnRecycle += Particle_OnRecycleHandler;
@@ -37,6 +47,12 @@ namespace _Main.Scripts.Particles
             particle.OnRecycle -= Particle_OnRecycleHandler;
             _activeParticles.Remove(particle);
             _pool.Release(particle);
+        }
+        
+        private void EventBus_OnSpawnParticle(SpawnParticle input)
+        {
+            SpawnParticle(input.ParticleData, input.Position, 
+                input.Rotation, input.MoveDirection);
         }
     }
 }

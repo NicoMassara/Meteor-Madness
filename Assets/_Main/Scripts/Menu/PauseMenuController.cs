@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,7 +37,6 @@ namespace _Main.Scripts.Menu
         private void ResumeGame()
         {
             _resumeTimer.OnEnd -= ResumeGame;
-            GameManager.Instance.SetPaused(false);
             pauseMenuPanel.SetActive(false);
         }
         private void MainMenu()

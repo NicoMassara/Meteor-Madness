@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 5654539694408146381}
   - component: {fileID: 5671694474534071226}
   m_Layer: 0
-  m_Name: Movement
+  m_Name: MoveSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -216,8 +216,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6928463678124089595}
-  - component: {fileID: 3276286387540560667}
-  - component: {fileID: 9098267824343955197}
+  - component: {fileID: 2516834064939955826}
+  - component: {fileID: 2969321756996762836}
   - component: {fileID: 3982104306026143777}
   - component: {fileID: 5269513674762319328}
   m_Layer: 6
@@ -245,7 +245,7 @@ Transform:
   - {fileID: 7533056331287447038}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3276286387540560667
+--- !u!114 &2516834064939955826
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -254,31 +254,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 3244478745791155186}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bb2be34e60a4174b0ccd9ec7ddbafc0, type: 3}
+  m_Script: {fileID: 11500000, guid: f5150c1ed635454b99a7b84c0dbdc8ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shieldLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  earthLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+--- !u!114 &2969321756996762836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3244478745791155186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdb681730db24aa4ad71e0ee68c135b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSound: {fileID: 5671694474534071226}
-  shieldMask:
-    serializedVersion: 2
-    m_Bits: 256
-  earthMask:
-    serializedVersion: 2
-    m_Bits: 128
---- !u!114 &9098267824343955197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3244478745791155186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10ee4db61c674b1d903b201aeb120ec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxRotationSpeed: 50
+  maxRotationSpeed: 25
   sphereObject: {fileID: 3599986003245062479}
   fireObject: {fileID: 7024479806668994044}
+  collisionParticle: {fileID: 11400000, guid: 57aab6ad92becd54f8c87a5e8e9ef067, type: 2}
 --- !u!58 &3982104306026143777
 CircleCollider2D:
   m_ObjectHideFlags: 0

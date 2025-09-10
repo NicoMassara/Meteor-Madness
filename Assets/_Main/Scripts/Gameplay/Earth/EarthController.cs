@@ -5,18 +5,13 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
-    [RequireComponent(typeof(EarthView))]
-    public class EarthController : MonoBehaviour
+    public class EarthController 
     {
-        private EarthMotor _motor;
-        private EarthView _view;
+        private readonly EarthMotor _motor;
 
-        private void Awake()
+        public EarthController(EarthMotor motor)
         {
-            _view = GetComponent<EarthView>();
-            
-            _motor = new EarthMotor();
-            _motor.Subscribe(_view);
+            _motor = motor;
         }
 
         #region Health
@@ -26,9 +21,9 @@ namespace _Main.Scripts.Gameplay.Earth
             _motor.RestartHealth();
         }
 
-        public void MakeDamage(float damage)
+        public void HandleCollision(float damage, Vector3 position, Quaternion rotation)
         {
-            _motor.MakeDamage(damage);
+            _motor.HandleCollision(damage, position, rotation);
         }
 
         public void Heal(float healAmount)
@@ -51,11 +46,5 @@ namespace _Main.Scripts.Gameplay.Earth
         }
 
         #endregion
-
-        public void AddObserverToMotor(IObserver observer)
-        {
-            _motor.Subscribe(observer);
-        }
-
     }
 }

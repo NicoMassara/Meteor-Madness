@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.Managers;
 using UnityEngine;
-using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Gameplay.Meteor
@@ -9,7 +9,7 @@ namespace _Main.Scripts.Gameplay.Meteor
     public class MeteorSpawner : MonoBehaviour
     {
         [Header("Components")]
-        [SerializeField] private MeteorMotor meteorPrefab;
+        [SerializeField] private MeteorView meteorPrefab;
         [SerializeField] private Transform centerOfGravity;
         [Header("Spawn Rings")] 
         [Range(22f,100f)]
@@ -21,13 +21,20 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private MeteorFactory _meteorFactory;
         private float[] _spawnAngleArr;
-        
-        public UnityAction<Vector3> OnShieldHit;
-        public UnityAction<Vector3, Quaternion> OnEarthHit;
+
+
+        private void Awake()
+        {
+            //Add events to EventManager
+            var eventManager = GameManager.Instance.EventManager;
+            eventManager.Subscribe<SpawnSingleMeteor>(EnventBus_SpawnSingleMeteor);
+            eventManager.Subscribe<SpawnRingMeteor>(EnventBus_SpawnRingMeteor);
+            eventManager.Subscribe<RecycleAllMeteors>(EnventBus_RecycleAllMeteors);
+        }
 
         private void Start()
         {
-            _meteorFactory = new MeteorFactory(meteorPrefab, centerOfGravity);
+            _meteorFactory = new MeteorFactory(meteorPrefab);
         }
 
         #region Spawn Single Meteor
@@ -147,9 +154,10 @@ namespace _Main.Scripts.Gameplay.Meteor
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
             tempMeteor.SetValues(meteorSpeed, tempRot, spawnPosition);
-            tempMeteor.OnHit += Meteor_OnHitHandler;
+            tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
+            tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
         }
-        
+
         public void RecycleAll()
         {
             _meteorFactory.RecycleAll();
@@ -186,17 +194,50 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         #region Handlers
 
-        private void Meteor_OnHitHandler(MeteorMotor meteorMotor, bool hasHitShield)
+        private void Meteor_OnDeflectionHandler(MeteorView view, Vector3 position)
         {
-            meteorMotor.OnHit-= Meteor_OnHitHandler;
-            if (hasHitShield)
-            {
-                OnShieldHit?.Invoke(meteorMotor.transform.position);
-            }
-            else
-            {
-                OnEarthHit?.Invoke(meteorMotor.transform.position, meteorMotor.transform.rotation);
-            }
+            view.OnDeflection = null;
+            view.OnEarthCollision = null;
+            
+            GameManager.Instance.EventManager.Publish(new MeteorDeflected { Position = position });
+            
+            view.ForceRecycle();
+        }
+
+        private void Meteor_OnEarthCollisionHandler(MeteorView view, Vector3 position, Quaternion rotation)
+        {
+            view.OnDeflection = null;
+            view.OnEarthCollision = null;
+            
+            GameManager.Instance.EventManager.Publish
+            (
+                new MeteorCollision
+                {
+                    Position = position,
+                    Rotation = rotation
+                }
+            );
+            
+            view.ForceRecycle();
+        }
+
+        #endregion
+
+        #region EventBus
+
+        private void EnventBus_SpawnSingleMeteor(SpawnSingleMeteor input)
+        {
+            SpawnSingleMeteor(input.Speed);
+        }
+        
+        private void EnventBus_SpawnRingMeteor(SpawnRingMeteor input)
+        {
+            SpawnRingMeteor(input.Speed);
+        }
+
+        private void EnventBus_RecycleAllMeteors(RecycleAllMeteors input)
+        {
+            RecycleAll();
         }
 
         #endregion

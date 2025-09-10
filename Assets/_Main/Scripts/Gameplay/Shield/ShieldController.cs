@@ -6,8 +6,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    [RequireComponent(typeof(ShieldView))]
-    public class ShieldController : MonoBehaviour
+    public class ShieldController
     {
         private ShieldMotor _motor;
         private ShieldView _view;
@@ -34,25 +33,23 @@ namespace _Main.Scripts.Gameplay.Shield
         private FSM<States> _fsm;
 
         private ActionGate _actionGate;
-            
 
-        private void Awake()    
+        public ShieldController(ShieldMotor motor)
         {
-            _view = GetComponent<ShieldView>();
-            
-            _motor = new ShieldMotor();
-            _motor.Subscribe(_view);
+            _motor = motor;
         }
 
-        private void Start()
+        public void Initialize()
         {
             InitializeFsm();
         }
 
-        private void Update()
+        public void Execute()
         {
             _fsm.Execute();
 
+            
+            //Tester
             if (Input.GetKeyDown(KeyCode.R))
             {
                 TransitionToTotal();
@@ -166,9 +163,9 @@ namespace _Main.Scripts.Gameplay.Shield
 
         #endregion
         
-        public void Hit()
+        public void HandleHit(Vector3 inputPosition)
         {
-            _motor.Hit();
+            _motor.HandleHit(inputPosition);
         }
 
         #region Handlers

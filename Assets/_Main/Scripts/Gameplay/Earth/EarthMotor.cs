@@ -1,10 +1,25 @@
 ﻿using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
     public class EarthMotor : ObservableComponent
     {
         private float _currentHealth;
+        private float _deathShakeTimer;
+
+        public void Execute()
+        {
+            if (_deathShakeTimer > 0)
+            {
+                _deathShakeTimer -= Time.deltaTime;
+
+                if (_deathShakeTimer <= 0)
+                {
+                    NotifyAll(EarthObserverMessage.SetActiveDeathShake, false);
+                }
+            }
+        }
 
         public void RestartHealth()
         {
@@ -12,17 +27,15 @@ namespace _Main.Scripts.Gameplay.Earth
             NotifyAll(EarthObserverMessage.RestartHealth);
         }
 
-        public void MakeDamage(float damage)
+        public void HandleCollision(float damage, Vector3 position, Quaternion rotation)
         {
             _currentHealth -= damage;
-
+            
+            NotifyAll(EarthObserverMessage.EarthCollision, _currentHealth, position, rotation);
+            
             if (_currentHealth <= 0)
             {
                 NotifyAll(EarthObserverMessage.DeclareDeath);
-            }
-            else
-            {
-                NotifyAll(EarthObserverMessage.MakeDamage, _currentHealth);
             }
         }
 
@@ -39,6 +52,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void SetDeathShake(bool isShaking)
         {
+            _deathShakeTimer = 3f;
             NotifyAll(EarthObserverMessage.SetActiveDeathShake, isShaking);
         }
     }

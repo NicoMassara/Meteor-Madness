@@ -1,7 +1,10 @@
-﻿using _Main.Scripts.Observer;
+﻿using _Main.Scripts.Managers;
+using _Main.Scripts.Observer;
+using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
@@ -11,10 +14,11 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private GameObject spriteContainer;
         [SerializeField] private GameObject normalSpriteObject;
         [SerializeField] private GameObject brokenSpriteObject;
-        [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private SpriteRenderer normalSpriteRenderer;
         [Space]
         [Header("Sounds")]
-        [SerializeField] private SoundBehavior hitSound;
+        [SerializeField] private SoundBehavior collisionSound;
+        [SerializeField] private SoundBehavior deathSound;
         [Space]
         [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
@@ -24,24 +28,27 @@ namespace _Main.Scripts.Gameplay.Earth
         [Header("Values")] 
         [Range(0, 100)] 
         [SerializeField] private float rotationSpeed = 25;
+        [SerializeField] private ParticleDataSo collisionParticleData;
         
+        private EarthController _controller;
         private ShakerController _shakerController;
         private Rotator _rotator;
         private readonly Timer _rotateAfterDeathTimer = new Timer();
         private GameObject _currentSprite;
         private bool _canRotate;
+        
 
         private void Awake()
         {
-            
+            _rotator = new Rotator(spriteContainer.transform, rotationSpeed);
+            _shakerController = new ShakerController(spriteContainer.transform);
         }
 
         private void Start()
         {
-            _rotator = new Rotator(spriteContainer.transform, rotationSpeed);
-            _shakerController = new ShakerController(spriteContainer.transform);
             _shakerController.SetShakeData(healthShakeData);
             SetShakeMultiplier(1);
+            SetSpriteType(EarthSpriteType.Normal);
         }
 
         private void Update()
@@ -63,8 +70,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 case EarthObserverMessage.RestartHealth:
                     HandleRestartHealth();
                     break;
-                case EarthObserverMessage.MakeDamage:
-                    HandleMakeDamage((float)args[0]);
+                case EarthObserverMessage.EarthCollision:
+                    HandleCollision((float)args[0],(Vector3)args[1],(Quaternion)args[2]);
                     break;
                 case EarthObserverMessage.DeclareDeath:
                     HandleDeath();
@@ -84,14 +91,28 @@ namespace _Main.Scripts.Gameplay.Earth
             }
         }
 
-        #region Health
 
-        private void HandleMakeDamage(float healthAmount)
+
+        #region Health
+        
+        private void HandleCollision(float healthAmount, Vector3 position, Quaternion rotation)
         {
-            hitSound?.PlaySound();
+            Time.timeScale = 0.1f;
+            collisionSound?.PlaySound();
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
             _rotator.SetSpeed(rotationSpeed * healthAmount);
+            //
+            
+            GameManager.Instance.EventManager.Publish
+            (
+                new SpawnParticle
+                {
+                    ParticleData = collisionParticleData,
+                    Position = position,
+                    Rotation = rotation
+                }
+            );
         }
         
         private void HandleHeal(float healthAmount)
@@ -104,30 +125,36 @@ namespace _Main.Scripts.Gameplay.Earth
             UpdateColorByHealth(1);
             SetSpriteType(EarthSpriteType.Normal);
             _shakerController.SetShakeData(healthShakeData);
+            SetShakeMultiplier(1);
         }
 
         #endregion
 
         #region Death
 
+        // ReSharper disable Unity.PerformanceAnalysis
         private void SetDeathShake(bool isShaking)
         {
             if (isShaking)
             {
                 _shakerController.SetMultiplier(1);
                 _shakerController.SetShakeData(deathShakeData);
+                GameManager.Instance.EventManager.Publish(new EarthShake());
             }
             else
             {
                 _shakerController.SetMultiplier(0);
+                _controller.TriggerDestruction();
             }
         }
 
         private void HandleDestruction()
         {
+            deathSound?.PlaySound();
             SetSpriteType(EarthSpriteType.Broken);
             _rotateAfterDeathTimer.Set(GameTimeValues.StartRotatingAfterDeath);
             _rotateAfterDeathTimer.OnEnd += RotateAfterDeathTimer_OnEndHandler;
+            GameManager.Instance.EventManager.Publish(new EarthDestruction());
         }
 
         private void HandleDeath()
@@ -135,6 +162,8 @@ namespace _Main.Scripts.Gameplay.Earth
             _canRotate = false;
             _shakerController.SetMultiplier(0);
             UpdateColorByHealth(0);
+            GameManager.Instance.EventManager.Publish(new EarthDeath());
+            _controller.SetDeathShake(true);
         }
 
         #endregion
@@ -145,16 +174,13 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             _currentSprite?.SetActive(false);
 
-            switch (spriteType)
+            _currentSprite = spriteType switch
             {
-                case EarthSpriteType.Normal:
-                    _currentSprite = normalSpriteObject;
-                    break;
-                case EarthSpriteType.Broken:
-                    _currentSprite = brokenSpriteObject;
-                    break;
-            }
-            
+                EarthSpriteType.Normal => normalSpriteObject,
+                EarthSpriteType.Broken => brokenSpriteObject,
+                _ => _currentSprite
+            };
+
             _currentSprite?.SetActive(true);
         }
 
@@ -167,7 +193,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void UpdateColorByHealth(float currentHealth)
         {
-            spriteRenderer.color = new Color(1, currentHealth, currentHealth);
+            normalSpriteRenderer.color = new Color(1, currentHealth, currentHealth);
         }
         
         private void RotateAfterDeathTimer_OnEndHandler()
@@ -175,6 +201,11 @@ namespace _Main.Scripts.Gameplay.Earth
             _rotateAfterDeathTimer.OnEnd -= RotateAfterDeathTimer_OnEndHandler;
             _rotator.SetSpeed(rotationSpeed/2);
             _canRotate = true;
+        }
+
+        public void SetController(EarthController controller)
+        {
+            _controller = controller;
         }
     }
 }

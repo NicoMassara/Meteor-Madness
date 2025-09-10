@@ -92,7 +92,7 @@ namespace _Main.Scripts.Sounds
                 _audioSource.pitch = SoundClass.GetRandomPitch();
             }
             
-            _audioSource.Play();
+            _audioSource?.Play();
             _isPlaying = true;
         }
 

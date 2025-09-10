@@ -268,7 +268,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1298370899725552040}
-  - component: {fileID: 5966374823175098116}
+  - component: {fileID: 3790414671115964670}
   - component: {fileID: 7779817624001456119}
   - component: {fileID: 6018189826576287001}
   - component: {fileID: 2550002458397255613}
@@ -296,7 +296,7 @@ Transform:
   - {fileID: 6351426985224968225}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5966374823175098116
+--- !u!114 &3790414671115964670
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -305,10 +305,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4732004088864625325}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3f0df01af504d06a76ae638d252bacd, type: 3}
+  m_Script: {fileID: 11500000, guid: 330eec1d8eb841f0aa74f084c668e2b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSound: {fileID: 2028866992308588399}
   cometWallMask:
     serializedVersion: 2
     m_Bits: 512
@@ -324,9 +323,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e1ff103f4314985959c359ab09609c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSound: {fileID: 0}
   maxRotationSpeed: 0
   sphereObject: {fileID: 1511132778346679233}
   fireObject: {fileID: 6191557560812045889}
+  collisionParticle: {fileID: 0}
 --- !u!61 &6018189826576287001
 BoxCollider2D:
   m_ObjectHideFlags: 0

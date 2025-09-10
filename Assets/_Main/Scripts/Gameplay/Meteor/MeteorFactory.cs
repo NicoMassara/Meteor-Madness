@@ -1,40 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.Particles;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
     public class MeteorFactory
     {
-        private readonly MeteorMotor _meteorPrefab;
-        private readonly Transform _centerOfGravity;
+        private readonly MeteorView _meteorPrefab;
         
-        private readonly List<MeteorMotor> _activeMeteors = new List<MeteorMotor>();
-        private GenericPool<MeteorMotor> _pool;
+        private readonly List<MeteorView> _activeMeteors = new List<MeteorView>();
+        private GenericPool<MeteorView> _pool;
 
         public UnityAction<Vector3> OnShieldHit;
         public UnityAction<Vector3, Quaternion> OnEarthHit;
 
-        public MeteorFactory(MeteorMotor meteorPrefab, Transform centerOfGravity)
+        public MeteorFactory(MeteorView meteorPrefab)
         {
             this._meteorPrefab = meteorPrefab;
-            this._centerOfGravity = centerOfGravity;
             
             Initialize();
         }
 
         private void Initialize()
         {
-            _pool = new GenericPool<MeteorMotor>(_meteorPrefab);
+            _pool = new GenericPool<MeteorView>(_meteorPrefab);
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
 
-        public MeteorMotor SpawnMeteor()
+        public MeteorView SpawnMeteor()
         {
             var tempMeteor = _pool.Get();
             tempMeteor.OnRecycle += Meteor_OnRecycleHandler;
@@ -50,12 +46,13 @@ namespace _Main.Scripts.Gameplay.Meteor
             }
         }
 
-        private void Meteor_OnRecycleHandler(MeteorMotor meteorMotor)
+        private void Meteor_OnRecycleHandler(MeteorView meteorMotorOld)
         {
-            meteorMotor.OnHit = null;
-            meteorMotor.OnRecycle -= Meteor_OnRecycleHandler;
-            _activeMeteors.Remove(meteorMotor);
-            _pool.Release(meteorMotor);
+            meteorMotorOld.OnDeflection = null;
+            meteorMotorOld.OnEarthCollision = null;
+            meteorMotorOld.OnRecycle -= Meteor_OnRecycleHandler;
+            _activeMeteors.Remove(meteorMotorOld);
+            _pool.Release(meteorMotorOld);
         }
     }
 }

@@ -373,7 +373,7 @@ GameObject:
   - component: {fileID: 81793093}
   - component: {fileID: 81793096}
   m_Layer: 5
-  m_Name: PlayPanel
+  m_Name: GameplayPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -599,7 +599,7 @@ GameObject:
   - component: {fileID: 163182590}
   - component: {fileID: 163182589}
   m_Layer: 0
-  m_Name: Shield Hit
+  m_Name: ShieldDeflectSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -917,7 +917,7 @@ GameObject:
   - component: {fileID: 278564666}
   - component: {fileID: 278564665}
   m_Layer: 0
-  m_Name: Button
+  m_Name: ButtonSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -931,12 +931,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 278564663}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 396354760}
+  m_Father: {fileID: 683997010}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &278564665
 MonoBehaviour:
@@ -1160,10 +1160,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1133250051}
-  - {fileID: 500014530}
-  - {fileID: 1858039245}
-  - {fileID: 278564664}
   - {fileID: 1764078067}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1731,12 +1727,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 500014527}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 396354760}
+  m_Father: {fileID: 683997010}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
@@ -2046,7 +2042,7 @@ GameObject:
   - component: {fileID: 587989229}
   - component: {fileID: 587989228}
   m_Layer: 0
-  m_Name: HitSound
+  m_Name: CollisionSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2400,9 +2396,44 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1858039245}
   - {fileID: 1982406302}
   - {fileID: 163182588}
   m_Father: {fileID: 1798290945}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &683997009
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 683997010}
+  m_Layer: 0
+  m_Name: Sounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &683997010
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683997009}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1133250051}
+  - {fileID: 500014530}
+  - {fileID: 278564664}
+  m_Father: {fileID: 1253651364}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &709288247
 GameObject:
@@ -2448,7 +2479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ee54a6d324c1590f695999ffae034, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meteorPrefab: {fileID: 3276286387540560667, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
+  meteorPrefab: {fileID: 2969321756996762836, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 30
   ringOffset:
@@ -2989,7 +3020,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1002815154}
   - component: {fileID: 1002815156}
-  - component: {fileID: 1002815155}
+  - component: {fileID: 1002815157}
   m_Layer: 0
   m_Name: Earth
   m_TagString: Untagged
@@ -3015,18 +3046,6 @@ Transform:
   - {fileID: 860705065}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1002815155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1002815153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edb24ca1eeee43edb82083f3874680a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1002815156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3042,8 +3061,9 @@ MonoBehaviour:
   spriteContainer: {fileID: 1282502640}
   normalSpriteObject: {fileID: 2126408682}
   brokenSpriteObject: {fileID: 1057396908}
-  spriteRenderer: {fileID: 2126408684}
-  hitSound: {fileID: 587989228}
+  normalSpriteRenderer: {fileID: 2126408684}
+  collisionSound: {fileID: 587989228}
+  deathSound: {fileID: 0}
   shakeMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -3107,6 +3127,19 @@ MonoBehaviour:
   healthShakeData: {fileID: 11400000, guid: 333aff85bc8229f488e684caaca75f09, type: 2}
   deathShakeData: {fileID: 11400000, guid: 55e1a984783228a43b3935b516b82543, type: 2}
   rotationSpeed: 15
+  collisionParticleData: {fileID: 11400000, guid: 645f01f20a3b3fd42b1a6fea00906bd4, type: 2}
+--- !u!114 &1002815157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002815153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10af1b4cdd9a4b8aa195f829b8a437af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1004163049
 GameObject:
   m_ObjectHideFlags: 0
@@ -3674,12 +3707,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1133250050}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 396354760}
+  m_Father: {fileID: 683997010}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1133250052
 MonoBehaviour:
@@ -4010,9 +4043,8 @@ GameObject:
   - component: {fileID: 1253651367}
   - component: {fileID: 1253651366}
   - component: {fileID: 1253651365}
-  - component: {fileID: 1253651368}
   m_Layer: 0
-  m_Name: Level
+  m_Name: GameModeController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4030,7 +4062,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 683997010}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1253651365
@@ -4042,10 +4075,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1253651362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f68282296e341788906d462a0397a02, type: 3}
+  m_Script: {fileID: 11500000, guid: 931e2c9b596c423198585ea1ef2fdb84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelController: {fileID: 1253651367}
 --- !u!114 &1253651366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4055,24 +4087,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1253651362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70ac36470703487c99c9af02156800f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 935ef18d510e4e2cb557e315f289bea0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meteorSpawner: {fileID: 709288249}
-  earthController: {fileID: 1002815155}
-  shieldController: {fileID: 1798290946}
-  centerOfGravity: {fileID: 854189257}
-  spawnRadius: 27
-  particlesController: {fileID: 2010873514}
-  collisionSprite: {fileID: 11400000, guid: 645f01f20a3b3fd42b1a6fea00906bd4, type: 2}
-  shieldHitSprite: {fileID: 11400000, guid: 57aab6ad92becd54f8c87a5e8e9ef067, type: 2}
-  cameraController: {fileID: 1004163050}
-  earthHitShake: {fileID: 11400000, guid: 5c794a1a9cfcc414694576699daa96a4, type: 2}
-  shieldHitShake: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
-  gameplayTheme: {fileID: 1133250052}
-  deathSound: {fileID: 1858039247}
-  deathTheme: {fileID: 500014528}
-  pauseSound: {fileID: 1764078068}
+  countdownText: {fileID: 1016699662}
+  scoreText: {fileID: 1285684195}
+  deathScoreText: {fileID: 483817950}
+  pausePanel: {fileID: 429169735}
+  countdownPanel: {fileID: 575877853}
+  gameplayPanel: {fileID: 81793091}
+  deathPanel: {fileID: 934641330}
+  restartButton: {fileID: 1389853209}
+  buttonSound: {fileID: 278564665}
 --- !u!114 &1253651367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4082,32 +4108,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1253651362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f7d928abd3c4fbeb6de7b93d7aa7724, type: 3}
+  m_Script: {fileID: 11500000, guid: f12934bf659c4ad6aa6a0eb01ed6af54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1253651368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97e36bdcbb6642c2af1a9d677a6d264f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  countdownPanel: {fileID: 575877853}
-  playPanel: {fileID: 81793091}
-  deathPanel: {fileID: 934641330}
-  restartSubPanel: {fileID: 423795396}
-  pausePanel: {fileID: 429169735}
-  countdownText: {fileID: 1016699662}
-  playPointsText: {fileID: 1285684195}
-  deathPointsText: {fileID: 483817950}
-  deathText: {fileID: 1584270277}
-  restartButton: {fileID: 1389853209}
-  menuSound: {fileID: 278564665}
+  gameplayTheme: {fileID: 1133250052}
+  deathTheme: {fileID: 500014528}
 --- !u!1 &1254674026
 GameObject:
   m_ObjectHideFlags: 0
@@ -4570,7 +4575,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33fd704c9d204e348fb046f25954d86c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shieldController: {fileID: 1798290946}
 --- !u!4 &1482222718
 Transform:
   m_ObjectHideFlags: 0
@@ -5281,7 +5285,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1798290945}
   - component: {fileID: 1798290947}
-  - component: {fileID: 1798290946}
+  - component: {fileID: 1798290948}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
@@ -5306,18 +5310,6 @@ Transform:
   - {fileID: 653007581}
   m_Father: {fileID: 1002815154}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1798290946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798290943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 779adeff546d4c17bc616daa1bcf6716, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1798290947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5337,6 +5329,20 @@ MonoBehaviour:
   moveSound: {fileID: 1982406300}
   rotateSpeed: 6.75
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
+  deflectParticleData: {fileID: 0}
+--- !u!114 &1798290948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798290943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f20c5e7595e54d48a2e1041ede5f5856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 1482222717}
 --- !u!1 &1800173859
 GameObject:
   m_ObjectHideFlags: 0
@@ -5480,12 +5486,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1858039244}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.1095639, y: -2.1954246, z: 0.1760557}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 396354760}
+  m_Father: {fileID: 653007581}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1858039246
 AudioSource:
@@ -5605,7 +5611,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1888334900}
-  - component: {fileID: 1888334899}
   - component: {fileID: 1888334898}
   m_Layer: 0
   m_Name: CometController
@@ -5626,24 +5631,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8309ec0dba62409a9d9deddf2d40f7dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cometPrefab: {fileID: 5966374823175098116, guid: cdc27d595c40ee1459a1e2a99b7a6269, type: 3}
---- !u!114 &1888334899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1888334897}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d91c214fe87a4362aed4a0da22686008, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movementSpeed: 50
+  cometPrefab: {fileID: 7779817624001456119, guid: cdc27d595c40ee1459a1e2a99b7a6269, type: 3}
+  movementSpeed: 15
   spawnOffset: 5
-  spawnDelay: 15
-  firstSpawnDelay: 5
-  cometFactory: {fileID: 1888334898}
+  spawnDelay: 0
+  firstSpawnDelay: 0
   playerCamera: {fileID: 519420031}
 --- !u!4 &1888334900
 Transform:

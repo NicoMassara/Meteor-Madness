@@ -1,5 +1,7 @@
 ﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
+using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
 using UnityEngine;
@@ -21,6 +23,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float rotateSpeed = 6.75f;
         [Header("Values")]
         [SerializeField] private ShakeDataSo hitShakeData;
+        [SerializeField] private ParticleDataSo deflectParticleData;
 
         //Multiplier added to handle lower numbers in inspector
         private float GetRotateSpeed => rotateSpeed * 50f; 
@@ -56,8 +59,8 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.StopRotate:
                     HandleStopRotate();
                     break;
-                case ShieldObserverMessage.Hit:
-                    HandleHit();
+                case ShieldObserverMessage.Deflect:
+                    HandleDeflect((Vector3)args[0]);
                     break;
                 case ShieldObserverMessage.PlayMoveSound:
                     PlayMoveSound();
@@ -120,10 +123,20 @@ namespace _Main.Scripts.Gameplay.Shield
 
         #endregion
 
-        private void HandleHit()
+        private void HandleDeflect(Vector3 position)
         {
             _shakerController.StartShake();
             hitSound?.PlaySound();
+            
+            /*GameManager.Instance.EventManager.Publish
+            (
+                new SpawnParticle
+                {
+                    ParticleData = deflectParticleData,
+                    Position = position,
+                    Rotation = Quaternion.identity
+                }
+            );*/
         }
         
     }

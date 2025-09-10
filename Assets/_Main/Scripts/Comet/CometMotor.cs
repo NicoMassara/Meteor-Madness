@@ -1,29 +1,17 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Serialization;
+﻿using _Main.Scripts.FyingObject;
+using UnityEngine;
 
 namespace _Main.Scripts.Comet
 {
     public class CometMotor : FlyingObjectMotor
     {
-        [SerializeField] private LayerMask cometWallMask;
-        
-        public UnityAction<CometMotor> OnRecycle;
-        protected override void HandleCollision(Collider2D other)
+        public CometMotor(Vector2 position) : base(position)
         {
-            if (((1 << other.gameObject.layer) & cometWallMask) != 0)
-            {
-                CanMove = false;
-                moveSound?.StopSound();
-                OnRecycle?.Invoke(this);
-            }
         }
-        
-        public void ForceRecycle()
+
+        public void HandleCollisionWithWall()
         {
-            CanMove = false;
-            moveSound?.StopSound();
-            OnRecycle?.Invoke(this);
+            HandleCollision(false);
         }
     }
 }

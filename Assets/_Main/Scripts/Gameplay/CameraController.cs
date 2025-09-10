@@ -1,11 +1,14 @@
 ﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Shaker;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay
 {
     public class CameraController : MonoBehaviour
     {
+        [Header("Components")]
         [SerializeField] private Camera mainCamera;
         [Range(0, 50)] 
         [SerializeField] private float zoomSpeed = 10;
@@ -14,13 +17,17 @@ namespace _Main.Scripts.Gameplay
         private float _zoomSize = 6;
         private bool _doesChangeSize = false;
         private float _targetSize;
-        
+
+
+        private void Awake()
+        {
+            SetEvents();
+        }
 
         private void Start()
         {
             _shakerController = new ShakerController(mainCamera.transform);
             _defaultSize = mainCamera.orthographicSize;
-            ZoomIn();
         }
 
         private void Update()
@@ -35,6 +42,8 @@ namespace _Main.Scripts.Gameplay
                 HandleSizeChange();
             }
         }
+
+        #region Zoom
 
         private void HandleSizeChange()
         {
@@ -63,10 +72,45 @@ namespace _Main.Scripts.Gameplay
             _doesChangeSize = true;
         }
 
-        public void StartShake(ShakeDataSo shakeData)
+        #endregion
+        
+        #region Shake
+
+        private void StartShake(ShakeDataSo shakeData)
         {
             _shakerController.SetShakeData(shakeData);
             _shakerController.StartShake();
         }
+
+        #endregion
+
+        #region Event Bus
+
+        private void SetEvents()
+        {
+            var eventBus = GameManager.Instance.EventManager;
+            
+            eventBus.Subscribe<CameraShake>(EventBus_StartShake);
+            eventBus.Subscribe<CameraZoomIn>(EventBus_ZoomIn);
+            eventBus.Subscribe<CameraZoomOut>(EventBus_ZoomOut);
+        }
+
+        private void EventBus_ZoomOut(CameraZoomOut input)
+        {
+            ZoomOut();
+        }
+
+        private void EventBus_ZoomIn(CameraZoomIn input)
+        {
+            ZoomIn();
+        }
+
+        private void EventBus_StartShake(CameraShake input)
+        {
+            StartShake(input.ShakeData);
+        }
+
+        #endregion
+
     }
 }

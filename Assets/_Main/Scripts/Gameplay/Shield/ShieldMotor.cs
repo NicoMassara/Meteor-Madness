@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
@@ -50,9 +51,9 @@ namespace _Main.Scripts.Gameplay.Shield
 
         #endregion
         
-        public void Hit()
+        public void HandleHit(Vector3 position)
         {
-            NotifyAll(ShieldObserverMessage.Hit);
+            NotifyAll(ShieldObserverMessage.Deflect,position);
         }
 
     }
