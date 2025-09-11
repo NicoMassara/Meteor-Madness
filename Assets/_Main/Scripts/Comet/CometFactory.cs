@@ -1,5 +1,7 @@
-﻿using _Main.Scripts.Particles;
+﻿using System;
+using _Main.Scripts.Particles;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Comet
 {
@@ -10,11 +12,6 @@ namespace _Main.Scripts.Comet
         [Range(1,100f)]
         [SerializeField] private float movementSpeed = 15;
         [SerializeField] private float spawnOffset;
-        [Header("Spawn Delay")]
-        [Range(1, 60f)]
-        [SerializeField] private float spawnDelay;
-        [Range(0,10)]
-        [SerializeField] private float firstSpawnDelay;
         [Header("Components")]
         [SerializeField] private Camera playerCamera;
         
@@ -25,7 +22,7 @@ namespace _Main.Scripts.Comet
         private void Start()
         {
             _pool = new GenericPool<CometView>(cometPrefab);
-            _spawnTimer.Set(firstSpawnDelay);
+            _spawnTimer.Set(GameTimeValues.FirstCometSpawnDelay);
             _spawnTimer.OnEnd += Timer_OnEndHandler;
         }
 
@@ -37,7 +34,9 @@ namespace _Main.Scripts.Comet
         private void Timer_OnEndHandler()
         {
             SpawnComet(GetSpawnPosition(), GetTargetPosition());
-            _spawnTimer.Set(spawnDelay);
+            var spawnDelayRange = Random.Range(GameTimeValues.CometSpawnDelay*0.75f,
+                GameTimeValues.CometSpawnDelay*1.25f);
+            _spawnTimer.Set(spawnDelayRange);
         }
 
         private Vector2 GetSpawnPosition()
@@ -73,6 +72,12 @@ namespace _Main.Scripts.Comet
         {
             item.OnRecycle -= Comet_OnRecycleHandler;
             _pool.Release(item);
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(new Vector3(0, -spawnOffset,0), 1);
         }
     }
 }

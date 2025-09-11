@@ -44,13 +44,15 @@
         //Show Death
         public const float StartEarthDestruction = 1.25f;
         public const float StartShake = 1.5f;
-        public const float DeathShakeDuration = 3f;
+        public const float DeathShakeDuration = 2f;
         public const float ShowEarthDestruction = 1.5f;
-        public const float ShowDeathUI = 2f;
+        public const float ShowDeathUI = 1.5f;
+        public const float StartRotatingAfterDeath = 1f;
         public const float PointsTextTimeToIncreaseOnDeath = 1.5f;
-        public const float StartRotatingAfterDeath = 1.5f;
         public const float MeteorSpawnDelay = 8f;
         public const float MeteorDelayBetweenSpawn = 0.25f;
+        public const float CometSpawnDelay = 1f;
+        public const float FirstCometSpawnDelay = 10f;
     }
 
     public struct UITextValues

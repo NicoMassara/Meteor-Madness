@@ -323,7 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e1ff103f4314985959c359ab09609c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSound: {fileID: 0}
+  moveSound: {fileID: 2028866992308588399}
   maxRotationSpeed: 0
   sphereObject: {fileID: 1511132778346679233}
   fireObject: {fileID: 6191557560812045889}

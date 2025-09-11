@@ -8,12 +8,12 @@ namespace _Main.Scripts
     {
         private Queue<ActionData> _actionQueue = new Queue<ActionData>();
         private ActionData _currentAction;
-        private readonly Timer _timer = new Timer();
+        private readonly Timer _executeTimer = new Timer();
         public bool CanRun { get; set; } = true;
 
         public ActionQueue()
         {
-            _timer.OnEnd += OnEndHandler;
+            _executeTimer.OnEnd += Timer_OnEndHandler;
         }
 
         public void Run()
@@ -23,10 +23,16 @@ namespace _Main.Scripts
             if (_currentAction == null && _actionQueue.Count > 0)
             {
                 _currentAction = _actionQueue.Dequeue();
-                _timer.Set(_currentAction.TimeToExecute);
+                _executeTimer.Set(_currentAction.TimeToExecute);
             }
 
-            _timer.Run();
+            _executeTimer.Run();
+        }
+        
+        private void Timer_OnEndHandler()
+        {
+            _currentAction.Execute();
+            _currentAction = null;
         }
 
         public void AddAction(ActionData action)
@@ -50,12 +56,6 @@ namespace _Main.Scripts
                 _actionQueue = newQueue;
             }
         }
-        
-        private void OnEndHandler()
-        {
-            _currentAction?.Execute();
-            _currentAction = null;
-        }
     }
 
 
@@ -63,14 +63,12 @@ namespace _Main.Scripts
     {
         private readonly Action _actionToDo;
         public float TimeToExecute { get; }
-
-        public ActionData(Action actionToDo, float timeToExecute)
+        
+        public ActionData(Action actionToDo, float timeToExecute = 0)
         {
             _actionToDo = actionToDo;
             TimeToExecute = timeToExecute;
         }
-        
-
         public void Execute()
         {
             _actionToDo?.Invoke();

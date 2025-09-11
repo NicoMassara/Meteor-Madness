@@ -15,6 +15,7 @@ namespace _Main.Scripts.Gameplay.FSM.Earth
             ActionData transitionToDead = new ActionData(
                 ()=>Controller.TransitionToDestruction(),GameTimeValues.ShowEarthDestruction);
             
+            
             _queue.AddAction(startShake);
             _queue.AddAction(stopShake);
             _queue.AddAction(transitionToDead);

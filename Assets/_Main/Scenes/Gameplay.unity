@@ -152,7 +152,7 @@ Transform:
   m_GameObject: {fileID: 16885182}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -20, z: 0}
+  m_LocalPosition: {x: 0, y: -30, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1397,7 +1397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 564b121823fa41dd972cb7b0d42a38a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentDamageType: 4
+  currentDamageType: 0
 --- !u!4 &464770896
 Transform:
   m_ObjectHideFlags: 0
@@ -3490,7 +3490,7 @@ Transform:
   m_GameObject: {fileID: 1031019794}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 20, z: 0}
+  m_LocalPosition: {x: 0, y: 30, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -5604,9 +5604,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cometPrefab: {fileID: 7779817624001456119, guid: cdc27d595c40ee1459a1e2a99b7a6269, type: 3}
   movementSpeed: 15
-  spawnOffset: 5
-  spawnDelay: 0
-  firstSpawnDelay: 0
+  spawnOffset: 14
   playerCamera: {fileID: 519420031}
 --- !u!4 &1888334900
 Transform:
