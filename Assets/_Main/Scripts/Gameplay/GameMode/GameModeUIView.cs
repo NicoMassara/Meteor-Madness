@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Managers;
+using System.Collections;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
@@ -13,6 +13,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private Text countdownText;
         [SerializeField] private Text scoreText;
         [SerializeField] private Text deathScoreText;
+        [SerializeField] private Text deathText;
         [Space]
         [Header("Panels")]
         [SerializeField] private GameObject pausePanel;
@@ -27,10 +28,18 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private GameObject _currentPanel;
         private GameModeController _controller;
+        private readonly NumberIncrementer _numberIncrementer = new NumberIncrementer();
+        private ActionQueue _deathPanelActionQueue = new ActionQueue();
 
         private void Start()
         {
             restartButton.onClick.AddListener(RestartButton_OnClickHandler);
+            deathText.text = UITextValues.DeathText;
+        }
+
+        private void Update()
+        {
+            _deathPanelActionQueue.Run();
         }
 
         public void OnNotify(string message, params object[] args)
@@ -103,13 +112,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdownFinish()
         {
-            UpdatePointsText(0);
+            UpdateGameplayScoreText(0);
         }
         
         private void HandleStartGame()
         {
             SetActivePanel(gameplayPanel);
-            
         }
 
         #endregion
@@ -123,10 +131,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleEarthEndDestruction(int deflectCount)
         {
-            SetActivePanel(deathPanel);
-            
-            var text = $"{UITextValues.Points}: {deflectCount:D6}";
-            deathScoreText.text = text;
+            StartDeathPanelActionQueue(deflectCount);
         }
 
         private void HandleEarthStartDestruction()
@@ -140,7 +145,15 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleMeteorDeflect(int deflectCount)
         {
-            UpdatePointsText(deflectCount);
+            _numberIncrementer.SetData(new NumberIncrementerData
+            {
+                Target = deflectCount * GameValues.VisualMultiplier,
+                Current = GetCurrentPoints(),
+                TargetTime = UIPanelTimeValues.GameplayPointsTimeToIncrease
+                
+            });
+            
+            StartCoroutine(IncreasePointsText(UpdateGameplayScoreText));
         }
 
         #endregion
@@ -155,10 +168,95 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #endregion
 
-        private void UpdatePointsText(int points)
+        #region ScoreTextUpdate
+
+        private void UpdateGameplayScoreText(int points)
         {
             var text = $"{UITextValues.Points}: {points:D6}";
             scoreText.text = text;
+        }
+
+        private void UpdateDeathScoreText(int points)
+        {
+            var text = $"{UITextValues.DeathPoints}: {points:D6}";
+            deathScoreText.text = text;
+        }
+
+        private IEnumerator IncreasePointsText(Action<int> increaseAction = null)
+        {
+            while (!_numberIncrementer.IsFinished)
+            {
+                _numberIncrementer.Run();
+                increaseAction?.Invoke(GetCurrentPoints());
+                
+                yield return null;
+            }
+        }
+
+        #endregion
+
+        #region Death Panel Queue Actions
+
+        private void StartDeathPanelActionQueue(int deflectCount)
+        {
+            SetActiveDeathText(false);
+            SetActiveDeathScoreText(false);
+            SetActiveRestartButton(false);
+            UpdateDeathScoreText(0);
+            SetActivePanel(deathPanel);
+            
+            _deathPanelActionQueue.AddAction(
+                new ActionData(()=> SetActiveDeathText(true), UIPanelTimeValues.SetEnableDeathText));
+            _deathPanelActionQueue.AddAction(
+                new ActionData(()=> SetActiveDeathScoreText(true), UIPanelTimeValues.SetEnableDeathScore));
+
+            if (deflectCount > 0)
+            {
+                _numberIncrementer.SetData(new NumberIncrementerData
+                {
+                    Target = deflectCount * GameValues.VisualMultiplier,
+                    TargetTime = UIPanelTimeValues.DeathPointsTimeToIncrease,
+                    ActionOnFinish = ()=> _deathPanelActionQueue.AddAction(
+                        new ActionData(()=> SetActiveRestartButton(true),UIPanelTimeValues.EnableRestartButton))
+                
+                });
+                
+                _deathPanelActionQueue.AddAction(
+                    new ActionData(()=> StartCoroutine(
+                        IncreasePointsText(UpdateDeathScoreText)),UIPanelTimeValues.CountDeathScore));
+                ;
+            }
+            else
+            {
+                _deathPanelActionQueue.AddAction(
+                    new ActionData(()=> SetActiveRestartButton(true),UIPanelTimeValues.EnableRestartButton));
+            }
+            
+            
+        }
+
+        private void SetActiveDeathText(bool isActive)
+        {
+            deathText.gameObject.SetActive(isActive);
+        }
+
+        private void SetActiveDeathScoreText(bool isActive)
+        {
+            deathScoreText.gameObject.SetActive(isActive);
+        }
+
+        private void SetActiveRestartButton(bool isActive)
+        {
+            restartButton.gameObject.SetActive(isActive);
+        }
+
+        #endregion
+
+
+        
+        private int GetCurrentPoints()
+        {
+            return (int)_numberIncrementer.CurrentValue;
         }
 
     }

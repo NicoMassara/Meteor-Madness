@@ -58,6 +58,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void HandleMeteorDeflect()
         {
+            _meteorDeflectCount++;
             _meteorSpeedController.CheckForNextLevel(_meteorDeflectCount);
             NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);
         }

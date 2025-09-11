@@ -40,8 +40,6 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         public void RecycleAll()
         {
-            Debug.Log("Recycling Meteors");
-            
             for (int i = _activeMeteors.Count - 1; i >= 0; i--)
             {
                 _activeMeteors[i].ForceRecycle();

@@ -48,14 +48,14 @@ namespace _Main.Scripts.Menu
         public void ResumeGameOnClickHandler()
         {
             menuSound.PlaySound();
-            _resumeTimer.Set(GameTimeValues.ClosePauseMenu);
+            _resumeTimer.Set(UIPanelTimeValues.ClosePauseMenu);
             _resumeTimer.OnEnd += ResumeGame;
         }
 
         public void MainMenuOnClickHandler()
         {
             menuSound.PlaySound();
-            _resumeTimer.Set(GameTimeValues.ClosePauseMenu);
+            _resumeTimer.Set(UIPanelTimeValues.ClosePauseMenu);
             _resumeTimer.OnEnd += MainMenu;
         }
     }

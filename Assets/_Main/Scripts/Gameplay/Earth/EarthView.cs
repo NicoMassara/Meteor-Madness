@@ -121,7 +121,7 @@ namespace _Main.Scripts.Gameplay.Earth
             SetSpriteType(EarthSpriteType.Normal);
             SetShakeMultiplier(1);
             _rotator.SetSpeed(rotationSpeed);
-            transform.rotation = Quaternion.identity;
+            spriteContainer.transform.rotation = Quaternion.identity;
             _shakerController.SetShakeData(healthShakeData);
         }
 

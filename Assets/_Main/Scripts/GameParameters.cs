@@ -39,19 +39,15 @@
     {
         public const int StartGameCount = 0;
         public const float TimeToLoadGameScene = 1f;
-        public const float ClosePauseMenu = 0.25f;
-        public const float PointsTextTimeToIncrease = 0.5f;
         //Show Death
         public const float StartEarthDestruction = 1.25f;
         public const float StartShake = 1.5f;
         public const float DeathShakeDuration = 2f;
         public const float ShowEarthDestruction = 1.5f;
-        public const float ShowDeathUI = 1.5f;
         public const float StartRotatingAfterDeath = 1f;
-        public const float PointsTextTimeToIncreaseOnDeath = 1.5f;
         public const float MeteorSpawnDelay = 8f;
         public const float MeteorDelayBetweenSpawn = 0.25f;
-        public const float CometSpawnDelay = 1f;
+        public const float CometSpawnDelay = 8f;
         public const float FirstCometSpawnDelay = 10f;
     }
 
@@ -62,5 +58,19 @@
         public const string DeathText = "Humanity is Over";
         public const string GameCountdownText = "Prepare In";
         public const string GameCountdownFinish = "Defend!";
+    }
+
+    public struct UIPanelTimeValues
+    {
+        public const float GameplayPointsTimeToIncrease = 0.35f;
+        public const float ClosePauseMenu = 0.25f;
+        // Death Panel
+        public const float ShowDeathUI = 1.5f;
+        public const float SetEnableDeathText = 1.5f;
+        public const float SetEnableDeathScore = 1f;
+        public const float DeathPointsTimeToIncrease = 1f;
+        public const float CountDeathScore =  0.75f;
+        public const float EnableRestartButton = 1f;
+
     }
 }

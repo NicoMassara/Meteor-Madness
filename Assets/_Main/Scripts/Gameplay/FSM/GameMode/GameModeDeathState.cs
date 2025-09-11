@@ -7,7 +7,7 @@
         public override void Awake()
         {
             ActionData showUI = new ActionData(
-                () => Controller.HandleEarthEndDestruction(), GameTimeValues.ShowDeathUI);
+                () => Controller.HandleEarthEndDestruction(), UIPanelTimeValues.ShowDeathUI);
             _actionQueue.AddAction(showUI);
         }
 
