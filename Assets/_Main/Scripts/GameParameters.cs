@@ -28,13 +28,6 @@
         Brutal
     }
 
-    public struct UITimeValues
-    {
-        public const float StartCountingPointsOnDeath = 0.5f;
-        public const float EnableRestartButtonOnDeath = 0.1f;
-        public const float EnableDeathPanel = 3f;
-    }
-
     public struct GameTimeValues
     {
         public const int StartGameCount = 0;

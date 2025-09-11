@@ -1,4 +1,6 @@
 ﻿using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
@@ -8,7 +10,7 @@ using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
-    public class EarthView : MonoBehaviour, IObserver
+    public class EarthView : ManagedBehavior, IObserver, IUpdatable
     {
         [Header("Sprite Components")]
         [SerializeField] private GameObject spriteContainer;
@@ -44,7 +46,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _shakerController = new ShakerController(spriteContainer.transform);
         }
 
-        private void Update()
+        public void ManagedUpdate()
         {
             _shakerController.HandleShake();
             

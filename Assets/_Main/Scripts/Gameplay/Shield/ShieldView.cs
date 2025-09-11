@@ -1,5 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
@@ -9,7 +11,7 @@ using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    public class ShieldView : MonoBehaviour, IObserver
+    public class ShieldView : ManagedBehavior, IObserver, IUpdatable
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
@@ -42,7 +44,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _shakerController.SetShakeData(hitShakeData);
         }
 
-        private void Update()
+        public void ManagedUpdate()
         {
             if (_shakerController.IsShaking)
             {
@@ -141,6 +143,5 @@ namespace _Main.Scripts.Gameplay.Shield
             
             GameManager.Instance.EventManager.Publish(new CameraShake{ShakeData = cameraShakeData});
         }
-        
     }
 }

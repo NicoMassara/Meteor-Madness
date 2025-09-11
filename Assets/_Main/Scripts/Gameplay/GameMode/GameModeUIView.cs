@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
@@ -7,7 +9,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeUIView : MonoBehaviour, IObserver
+    public class GameModeUIView : ManagedBehavior, IObserver, IUpdatable
     {
         [Header("Texts")]
         [SerializeField] private Text countdownText;
@@ -36,8 +38,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             restartButton.onClick.AddListener(RestartButton_OnClickHandler);
             deathText.text = UITextValues.DeathText;
         }
-
-        private void Update()
+        
+        public void ManagedUpdate()
         {
             _deathPanelActionQueue.Run();
         }
@@ -258,6 +260,5 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             return (int)_numberIncrementer.CurrentValue;
         }
-
     }
 }

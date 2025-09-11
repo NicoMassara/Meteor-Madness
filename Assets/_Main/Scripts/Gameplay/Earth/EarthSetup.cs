@@ -1,11 +1,13 @@
 ﻿using System;
 using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
     [RequireComponent(typeof(EarthView))]
-    public class EarthSetup : MonoBehaviour
+    public class EarthSetup : ManagedBehavior, IUpdatable
     {
         private EarthMotor _motor;
         private EarthController _controller;
@@ -28,7 +30,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _controller.Initialize();
         }
 
-        private void Update()
+        public void ManagedUpdate()
         {
             _controller.Execute();
         }

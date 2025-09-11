@@ -1,5 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Sounds;
@@ -11,7 +13,7 @@ using Random = UnityEngine.Random;
 namespace _Main.Scripts.FyingObject
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class FlyingObjectView<T, TS> : MonoBehaviour, IObserver
+    public class FlyingObjectView<T, TS> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable
     where T : FlyingObjectMotor
     where TS : FlyingObjectView<T, TS>
     {
@@ -62,8 +64,8 @@ namespace _Main.Scripts.FyingObject
             _sphereRotator = new Rotator(sphereObject.transform, maxRotationSpeed);
             _sphereRotator.SetSpeed(GetRotationSpeed());
         }
-
-        private void Update()
+        
+        public void ManagedUpdate()
         {
             _sphereRotator.Rotate();
             
@@ -74,7 +76,7 @@ namespace _Main.Scripts.FyingObject
             }
         }
 
-        private void FixedUpdate()
+        public void ManagedFixedUpdate()
         {
             if (_canMove)
             {

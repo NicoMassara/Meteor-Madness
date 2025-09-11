@@ -1,12 +1,14 @@
 ﻿using System;
 using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
     [RequireComponent(typeof(ShieldView))]
-    public class ShieldSetup : MonoBehaviour
+    public class ShieldSetup : ManagedBehavior, IUpdatable
     {
         [SerializeField] private InputReader inputReader;
         private ShieldMotor _motor;
@@ -29,8 +31,8 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _controller.Initialize();
         }
-
-        private void Update()
+        
+        public void ManagedUpdate()
         {
             if (inputReader != null && GameManager.Instance.CanPlay)
             {

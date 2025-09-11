@@ -1,9 +1,11 @@
 ﻿using System;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using UnityEngine;
 
 namespace _Main.Scripts
 {
-    public class GalaxyRotator : MonoBehaviour
+    public class GalaxyRotator : ManagedBehavior, IUpdatable
     {
         [SerializeField] private Transform[] galaxies;
         [Range(0f, 1f)]
@@ -15,8 +17,7 @@ namespace _Main.Scripts
         {
             _rotator = new Rotator(galaxies, rotationSpeed);
         }
-
-        private void Update()
+        public void ManagedUpdate()
         {
             _rotator.Rotate();
         }

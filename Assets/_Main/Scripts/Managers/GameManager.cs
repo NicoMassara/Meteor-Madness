@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Managers.UpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : ManagedBehavior
     {
         [SerializeField] private DamageTypes currentDamageType = DamageTypes.Brutal;
         public static GameManager Instance;

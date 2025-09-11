@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace _Main.Scripts.Particles
 {
-    public class ParticleBehaviour : MonoBehaviour
+    public class ParticleBehaviour : ManagedBehavior, IUpdatable
     {
         [SerializeField] private SpriteRenderer sprite;
         private ParticleDataSo _data;
@@ -28,7 +30,7 @@ namespace _Main.Scripts.Particles
             _fadeTimer = 0;
         }
 
-        private void Update()
+        public void ManagedUpdate()
         {
             _scaleTimer += Time.deltaTime;
             float t = _scaleTimer/_data.TimeToReachScale;
@@ -55,5 +57,7 @@ namespace _Main.Scripts.Particles
         {
             OnRecycle?.Invoke(this);
         }
+
+
     }
 }
