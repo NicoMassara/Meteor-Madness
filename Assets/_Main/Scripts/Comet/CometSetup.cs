@@ -15,7 +15,7 @@ namespace _Main.Scripts.Comet
         {
             _view = GetComponent<CometView>();
             
-            _motor = new CometMotor(transform.position);
+            _motor = new CometMotor();
             _controller = new CometController(_motor, cometWallMask);
             
             _motor.Subscribe(_view);

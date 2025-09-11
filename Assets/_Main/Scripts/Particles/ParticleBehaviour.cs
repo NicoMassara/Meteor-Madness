@@ -33,7 +33,7 @@ namespace _Main.Scripts.Particles
             _scaleTimer += Time.deltaTime;
             float t = _scaleTimer/_data.TimeToReachScale;
             transform.localScale = Vector3.Lerp(_data.StartScale, _data.TargetScale, t);
-            //transform.position += (Time.deltaTime * _data.MoveSpeed) * -_moveDirection;
+            transform.position += (Time.deltaTime * _data.MoveSpeed) * -_moveDirection;
             
             var ratio = transform.localScale.x / _data.TargetScale.x;
             

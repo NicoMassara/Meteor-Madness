@@ -34,8 +34,7 @@ namespace _Main.Scripts.Particles
                 Debug.LogWarning("Particle data is null");
                 return;
             }
-
-            Debug.Log(position);
+            
             var tempParticle = _pool.Get();
             tempParticle.SetValues(particleData, position, rotation.eulerAngles.z, moveDirection);
             tempParticle.OnRecycle += Particle_OnRecycleHandler;

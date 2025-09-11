@@ -18,7 +18,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             _view = GetComponent<MeteorView>();
             
-            _motor = new MeteorMotor(transform.position);
+            _motor = new MeteorMotor();
             _controller = new MeteorController(_motor, shieldLayerMask, earthLayerMask);
             
             _view.SetController(_controller);

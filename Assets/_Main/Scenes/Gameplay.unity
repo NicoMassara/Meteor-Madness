@@ -1131,38 +1131,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &396354759
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 396354760}
-  m_Layer: 0
-  m_Name: Sounds
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &396354760
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 396354759}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1764078067}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &423795396
 GameObject:
   m_ObjectHideFlags: 0
@@ -2396,7 +2364,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1858039245}
   - {fileID: 1982406302}
   - {fileID: 163182588}
   m_Father: {fileID: 1798290945}
@@ -2430,6 +2397,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1764078067}
   - {fileID: 1133250051}
   - {fileID: 500014530}
   - {fileID: 278564664}
@@ -2827,6 +2795,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1858039245}
   - {fileID: 587989227}
   - {fileID: 1029714879}
   m_Father: {fileID: 1002815154}
@@ -3063,7 +3032,7 @@ MonoBehaviour:
   brokenSpriteObject: {fileID: 1057396908}
   normalSpriteRenderer: {fileID: 2126408684}
   collisionSound: {fileID: 587989228}
-  deathSound: {fileID: 0}
+  deathSound: {fileID: 1858039247}
   shakeMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -3126,6 +3095,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   healthShakeData: {fileID: 11400000, guid: 333aff85bc8229f488e684caaca75f09, type: 2}
   deathShakeData: {fileID: 11400000, guid: 55e1a984783228a43b3935b516b82543, type: 2}
+  cameraShakeData: {fileID: 0}
   rotationSpeed: 15
   collisionParticleData: {fileID: 11400000, guid: 645f01f20a3b3fd42b1a6fea00906bd4, type: 2}
 --- !u!114 &1002815157
@@ -5145,7 +5115,7 @@ GameObject:
   - component: {fileID: 1764078069}
   - component: {fileID: 1764078068}
   m_Layer: 0
-  m_Name: Pause
+  m_Name: PauseSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5159,12 +5129,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1764078066}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 396354760}
+  m_Father: {fileID: 683997010}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1764078068
 MonoBehaviour:
@@ -5329,6 +5299,7 @@ MonoBehaviour:
   moveSound: {fileID: 1982406300}
   rotateSpeed: 6.75
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
+  cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 0}
 --- !u!114 &1798290948
 MonoBehaviour:
@@ -5487,11 +5458,11 @@ Transform:
   m_GameObject: {fileID: 1858039244}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.1095639, y: -2.1954246, z: 0.1760557}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 653007581}
+  m_Father: {fileID: 860705065}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1858039246
 AudioSource:
@@ -8187,7 +8158,6 @@ SceneRoots:
   - {fileID: 458399473}
   - {fileID: 1482222718}
   - {fileID: 1888334900}
-  - {fileID: 396354760}
   - {fileID: 1004163051}
   - {fileID: 2010873515}
   - {fileID: 709288248}

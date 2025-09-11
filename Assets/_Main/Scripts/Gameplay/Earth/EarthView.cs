@@ -24,6 +24,7 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private AnimationCurve shakeMultiplier;
         [SerializeField] private ShakeDataSo healthShakeData;
         [SerializeField] private ShakeDataSo deathShakeData;
+        [SerializeField] private ShakeDataSo cameraShakeData;
         [Space]
         [Header("Values")] 
         [Range(0, 100)] 
@@ -90,19 +91,15 @@ namespace _Main.Scripts.Gameplay.Earth
                     break;
             }
         }
-
-
-
+        
         #region Health
         
         private void HandleCollision(float healthAmount, Vector3 position, Quaternion rotation)
         {
-            Time.timeScale = 0.1f;
             collisionSound?.PlaySound();
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
             _rotator.SetSpeed(rotationSpeed * healthAmount);
-            //
             
             GameManager.Instance.EventManager.Publish
             (
@@ -113,6 +110,8 @@ namespace _Main.Scripts.Gameplay.Earth
                     Rotation = rotation
                 }
             );
+            
+            GameManager.Instance.EventManager.Publish(new CameraShake{ShakeData = cameraShakeData});
         }
         
         private void HandleHeal(float healthAmount)
@@ -124,8 +123,9 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             UpdateColorByHealth(1);
             SetSpriteType(EarthSpriteType.Normal);
-            _shakerController.SetShakeData(healthShakeData);
             SetShakeMultiplier(1);
+            _canRotate = true;
+            _shakerController.SetShakeData(healthShakeData);
         }
 
         #endregion

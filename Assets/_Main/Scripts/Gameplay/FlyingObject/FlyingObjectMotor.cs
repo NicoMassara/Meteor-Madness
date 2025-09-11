@@ -9,11 +9,7 @@ namespace _Main.Scripts.FyingObject
         public Vector2 Position { get; protected set; }
         public Quaternion Rotation { get; protected set; }
         protected bool CanMove { get; set; }
-
-        protected FlyingObjectMotor(Vector2 position)
-        {
-            Position = position;
-        }
+        
 
         public virtual void SetValues(float movementSpeed, Quaternion rotation, Vector2 position)
         {
@@ -30,6 +26,11 @@ namespace _Main.Scripts.FyingObject
             CanMove = false;
             
             NotifyAll(FlyingObjectObserverMessage.HandleCollision, CanMove, Position, doesShowParticles);
+        }
+        
+        public void UpdatePosition(Vector2 transformPosition)
+        {
+            Position = transformPosition;
         }
     }
 }

@@ -17,5 +17,10 @@ namespace _Main.Scripts.FyingObject
         }
 
         public abstract void HandleTriggerEnter2D(Collider2D other);
+
+        public void UpdatePosition(Vector2 transformPosition)
+        {
+            Motor.UpdatePosition(transformPosition);
+        }
     }
 }

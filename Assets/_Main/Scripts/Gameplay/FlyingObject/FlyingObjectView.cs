@@ -79,6 +79,7 @@ namespace _Main.Scripts.FyingObject
             if (_canMove)
             {
                 _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * Time.deltaTime));
+                _controller.UpdatePosition( _rigidbody2D.transform.position);
             }
         }
 
@@ -103,7 +104,7 @@ namespace _Main.Scripts.FyingObject
         protected virtual void HandleCollision(bool canMove, Vector2 position, bool doesShowParticles)
         {
             _canMove = canMove;
-            if (false)
+            if (doesShowParticles)
             {
                 GameManager.Instance.EventManager.Publish
                 (

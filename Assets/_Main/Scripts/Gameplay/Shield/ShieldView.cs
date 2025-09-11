@@ -23,6 +23,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float rotateSpeed = 6.75f;
         [Header("Values")]
         [SerializeField] private ShakeDataSo hitShakeData;
+        [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
 
         //Multiplier added to handle lower numbers in inspector
@@ -128,7 +129,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _shakerController.StartShake();
             hitSound?.PlaySound();
             
-            /*GameManager.Instance.EventManager.Publish
+            GameManager.Instance.EventManager.Publish
             (
                 new SpawnParticle
                 {
@@ -136,7 +137,9 @@ namespace _Main.Scripts.Gameplay.Shield
                     Position = position,
                     Rotation = Quaternion.identity
                 }
-            );*/
+            );
+            
+            GameManager.Instance.EventManager.Publish(new CameraShake{ShakeData = cameraShakeData});
         }
         
     }

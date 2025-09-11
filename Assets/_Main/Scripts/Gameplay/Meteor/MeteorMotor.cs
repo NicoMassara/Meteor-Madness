@@ -7,11 +7,6 @@ namespace _Main.Scripts.Gameplay.Meteor
 {
     public class MeteorMotor : FlyingObjectMotor
     {
-        public MeteorMotor(Vector2 position) : base(position)
-        {
-            
-        }
-
         public void HandleShieldDeflection()
         {
             NotifyAll(MeteorObserverMessage.ShieldDeflection, Position);
