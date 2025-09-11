@@ -32,14 +32,14 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.StartGame:
                     HandleStartGame();
                     break;
-                case GameModeObserverMessage.EarthDeath:
-                    HandleEarthDeath();
+                case GameModeObserverMessage.EarthStartDestruction:
+                    HandleEarthStartDestruction();
                     break;
                 case GameModeObserverMessage.EarthShaking:
                     HandleEarthShake();
                     break;
-                case GameModeObserverMessage.EarthDestruction:
-                    HandleEarthDestruction();
+                case GameModeObserverMessage.EarthEndDestruction:
+                    HandleEarthEndDestruction();
                     break;
                 case GameModeObserverMessage.SpawnSingleMeteor:
                     HandleSpawnSingleMeteor();
@@ -47,14 +47,27 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SpawnRingMeteor:
                     HandleSpawnRingMeteor();
                     break;
+                case GameModeObserverMessage.GameFinish:
+                    HandleGameFinish();
+                    break;
             }
         }
+        
 
+        private void HandleGameFinish()
+        {
+            gameplayTheme?.StopSound();
+            GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = false});
+            GameManager.Instance.CanPlay = false;
+            GameManager.Instance.EventManager.Publish(new RecycleAllMeteors());
+        }
+        
         #region Start
 
         private void HandleStartCountdown()
         {
             deathTheme?.StopSound();
+            GameManager.Instance.EventManager.Publish(new EarthRestart());
             GameManager.Instance.EventManager.Publish(new CameraZoomOut());
         }
         
@@ -74,13 +87,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         #region Earth
 
-        private void HandleEarthDeath()
+        private void HandleEarthStartDestruction()
         {
-            gameplayTheme?.StopSound();
-            _controller.TransitionToFinish();
-            GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = false});
-            GameManager.Instance.CanPlay = false;
-            GameManager.Instance.EventManager.Publish(new RecycleAllMeteors());
+            GameManager.Instance.EventManager.Publish(new EarthStartDestruction());
         }
         
         private void HandleEarthShake()
@@ -88,7 +97,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameManager.Instance.EventManager.Publish(new CameraZoomIn());
         }
         
-        private void HandleEarthDestruction()
+        private void HandleEarthEndDestruction()
         {
             deathTheme?.PlaySound();
         }

@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Observer;
+﻿using System;
+using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
@@ -6,20 +7,10 @@ namespace _Main.Scripts.Gameplay.Earth
     public class EarthMotor : ObservableComponent
     {
         private float _currentHealth;
-        private float _deathShakeTimer;
-
-        public void Execute()
-        {
-            if (_deathShakeTimer > 0)
-            {
-                _deathShakeTimer -= Time.deltaTime;
-
-                if (_deathShakeTimer <= 0)
-                {
-                    NotifyAll(EarthObserverMessage.SetActiveDeathShake, false);
-                }
-            }
-        }
+        private bool _canRotate;
+        private bool _isShaking;
+        public event Action OnDeath;
+        
 
         public void RestartHealth()
         {
@@ -35,7 +26,7 @@ namespace _Main.Scripts.Gameplay.Earth
             
             if (_currentHealth <= 0)
             {
-                NotifyAll(EarthObserverMessage.DeclareDeath);
+                OnDeath?.Invoke();
             }
         }
 
@@ -52,8 +43,24 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void SetDeathShake(bool isShaking)
         {
-            _deathShakeTimer = 3f;
-            NotifyAll(EarthObserverMessage.SetActiveDeathShake, isShaking);
+            _isShaking = isShaking;
+            NotifyAll(EarthObserverMessage.SetActiveDeathShake, _isShaking);
+        }
+
+        public void SetRotation(bool canRotate)
+        {
+            _canRotate = canRotate;
+            NotifyAll(EarthObserverMessage.SetRotation, _canRotate);
+        }
+
+        public void TriggerDeath()
+        {
+            NotifyAll(EarthObserverMessage.DeclareDeath);
+        }
+
+        public void TriggerEndDestruction()
+        {
+            NotifyAll(EarthObserverMessage.TriggerEndDestruction);
         }
     }
 

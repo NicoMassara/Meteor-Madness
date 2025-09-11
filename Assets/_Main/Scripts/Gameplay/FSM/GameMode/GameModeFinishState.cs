@@ -2,6 +2,20 @@
 {
     public class GameModeFinishState<T> : GameModeStateBase<T>
     {
+        private ActionQueue _actionQueue = new ActionQueue();
         
+        public override void Awake()
+        {
+            Controller.HandleGameFinish();
+
+            ActionData startEarthDeath = new ActionData(
+                () => Controller.HandleEarthStartDestruction(), GameTimeValues.StartEarthDestruction);
+            _actionQueue.AddAction(startEarthDeath);
+        }
+
+        public override void Execute()
+        {
+            _actionQueue.Run();
+        }
     }
 }

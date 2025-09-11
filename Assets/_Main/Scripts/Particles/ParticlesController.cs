@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _Main.Scripts.Managers;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace _Main.Scripts.Particles
 {
@@ -10,14 +12,18 @@ namespace _Main.Scripts.Particles
         [SerializeField] private ParticleBehaviour particlePrefab;
         private GenericPool<ParticleBehaviour> _pool;
         private readonly List<ParticleBehaviour> _activeParticles = new List<ParticleBehaviour>();
+        
 
         private void Awake()
         {
             _pool = new GenericPool<ParticleBehaviour>(particlePrefab, 5, 100);
-            
-            GameManager.Instance.EventManager.Subscribe<SpawnParticle>(EventBus_OnSpawnParticle);
         }
-        
+
+        private void Start()
+        {
+            SetEventBus();
+        }
+
         public void RecycleAll()
         {
             for (int i = _activeParticles.Count - 1; i >= 0; i--)
@@ -46,12 +52,31 @@ namespace _Main.Scripts.Particles
             particle.OnRecycle -= Particle_OnRecycleHandler;
             _activeParticles.Remove(particle);
             _pool.Release(particle);
+            
         }
+
+        #region Handlers
         
+
+        #endregion
+
+        #region EventBus
+
+        private void SetEventBus()
+        {
+            var eventManager = GameManager.Instance.EventManager;
+            eventManager.Subscribe<SpawnParticle>(EventBus_OnSpawnParticle);
+        }
+
+
         private void EventBus_OnSpawnParticle(SpawnParticle input)
         {
             SpawnParticle(input.ParticleData, input.Position, 
                 input.Rotation, input.MoveDirection);
         }
+
+        #endregion
+        
+
     }
 }

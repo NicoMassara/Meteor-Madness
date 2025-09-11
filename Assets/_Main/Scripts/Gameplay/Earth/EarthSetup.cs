@@ -23,9 +23,14 @@ namespace _Main.Scripts.Gameplay.Earth
             SetEventBus();
         }
 
+        private void Start()
+        {
+            _controller.Initialize();
+        }
+
         private void Update()
         {
-            _motor.Execute();
+            _controller.Execute();
         }
 
         #region Event Bus
@@ -36,11 +41,17 @@ namespace _Main.Scripts.Gameplay.Earth
             
             eventBus.Subscribe<MeteorCollision>(EventBus_OnMeteorCollision);
             eventBus.Subscribe<EarthRestart>(EventBus_OnEarthRestart);
+            eventBus.Subscribe<EarthStartDestruction>(EventBus_OnEarthStartDestruction);
+        }
+
+        private void EventBus_OnEarthStartDestruction(EarthStartDestruction input)
+        {
+            _controller.TransitionToShaking();
         }
 
         private void EventBus_OnEarthRestart(EarthRestart input)
         {
-            _controller.RestartHealth();
+            _controller.TransitionToDefault();
         }
 
         private void EventBus_OnMeteorCollision(MeteorCollision input)

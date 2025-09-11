@@ -5,21 +5,11 @@ using UnityEngine;
 namespace _Main.Scripts.Managers
 {
     #region Earth
-
-    public struct EarthDamaged
-    {
-        public int CurrentHealth;
-    }
-
-    public struct EarthHealed
-    {
-        public int CurrentHealth;
-    }
-
-    public struct EarthDeath { }
-    public struct EarthDestruction { }
     public struct EarthRestart { }
     public struct EarthShake { }
+    
+    public struct EarthStartDestruction { }
+    public struct EarthEndDestruction { }
 
     #endregion
 
@@ -53,7 +43,7 @@ namespace _Main.Scripts.Managers
 
     #endregion
 
-    #region Spawner
+    #region Particle
 
     public struct SpawnParticle
     {
@@ -62,6 +52,12 @@ namespace _Main.Scripts.Managers
         public Quaternion Rotation;
         public Vector3 MoveDirection;
     }
+
+    #endregion
+    
+    #region Meteor
+
+
 
     public struct SpawnSingleMeteor
     {

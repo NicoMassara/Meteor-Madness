@@ -52,15 +52,18 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.MeteorDeflect:
                     HandleMeteorDeflect((int)args[0]);
                     break;
-                case GameModeObserverMessage.EarthDeath:
-                    HandleEarthDeath();
+                case GameModeObserverMessage.EarthStartDestruction:
+                    HandleEarthStartDestruction();
                     break;
-                case GameModeObserverMessage.EarthDestruction:
-                    HandleEarthDestruction((int)args[0]);
+                case GameModeObserverMessage.EarthEndDestruction:
+                    HandleEarthEndDestruction((int)args[0]);
+                    break;
+                case GameModeObserverMessage.GameFinish:
+                    HandleGameFinish();
                     break;
             }
         }
-        
+
         public void SetController(GameModeController controller)
         {
             _controller = controller;
@@ -89,8 +92,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             DisableActivePanel();
             SetActivePanel(countdownPanel);
-            
-            GameManager.Instance.EventManager.Publish(new EarthRestart());
         }
         
         private void HandleCountdown(float countdownTime)
@@ -115,7 +116,12 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #region Death
 
-        private void HandleEarthDestruction(int deflectCount)
+        private void HandleGameFinish()
+        {
+            DisableActivePanel();
+        }
+        
+        private void HandleEarthEndDestruction(int deflectCount)
         {
             SetActivePanel(deathPanel);
             
@@ -123,7 +129,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             deathScoreText.text = text;
         }
 
-        private void HandleEarthDeath()
+        private void HandleEarthStartDestruction()
         {
             DisableActivePanel();
         }

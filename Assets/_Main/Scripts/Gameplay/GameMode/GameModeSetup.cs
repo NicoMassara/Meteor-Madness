@@ -41,9 +41,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller?.Execute();
             _motor?.Execute();
         }
-
-
-
+        
         #region EventBus
 
         private void ControllerEventSetup()
@@ -55,14 +53,14 @@ namespace _Main.Scripts.Gameplay.GameMode
             eventBus.Subscribe<MeteorDeflected>(EventBus_OnMeteorDeflected);
             
             //Earth
-            eventBus.Subscribe<EarthDeath>(EventBus_OnEarthDeath);
-            eventBus.Subscribe<EarthDestruction>(EventBus_OnEarthDestruction);
             eventBus.Subscribe<EarthShake>(EventBus_OnEarthShake);
+            eventBus.Subscribe<EarthEndDestruction>(EventBus_OnEarthDestruction);
+            eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
         }
 
-        private void EventBus_OnEarthDeath(EarthDeath input)
+        private void EventBus_OnGameFinished(GameFinished input)
         {
-            _controller.HandleEarthDeath();
+            _controller.TransitionToFinish();
         }
 
         private void EventBus_OnMeteorDeflected(MeteorDeflected input)
@@ -70,9 +68,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller.HandleMeteorDeflect();
         }
 
-        private void EventBus_OnEarthDestruction(EarthDestruction input)
+        private void EventBus_OnEarthDestruction(EarthEndDestruction input)
         {
-            _controller.HandleEarthDestruction();
+            _controller.TransitionToDeath();
         }
 
         private void EventBus_OnEarthShake(EarthShake input)

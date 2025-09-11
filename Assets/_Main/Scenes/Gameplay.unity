@@ -1397,7 +1397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 564b121823fa41dd972cb7b0d42a38a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentDamageType: 0
+  currentDamageType: 4
 --- !u!4 &464770896
 Transform:
   m_ObjectHideFlags: 0
@@ -3095,7 +3095,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   healthShakeData: {fileID: 11400000, guid: 333aff85bc8229f488e684caaca75f09, type: 2}
   deathShakeData: {fileID: 11400000, guid: 55e1a984783228a43b3935b516b82543, type: 2}
-  cameraShakeData: {fileID: 0}
+  cameraShakeData: {fileID: 11400000, guid: 5c794a1a9cfcc414694576699daa96a4, type: 2}
   rotationSpeed: 15
   collisionParticleData: {fileID: 11400000, guid: 645f01f20a3b3fd42b1a6fea00906bd4, type: 2}
 --- !u!114 &1002815157

@@ -16,7 +16,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             Start,
             Gameplay,
-            Finish
+            Finish,
+            Death
         }
 
         public GameModeController(GameModeMotor motor)
@@ -46,10 +47,12 @@ namespace _Main.Scripts.Gameplay.GameMode
             var start = new GameModeStartState<States>();
             var gameplay = new GameModeGameplayState<States>();
             var finish = new GameModeFinishState<States>();
+            var death = new GameModeDeathState<States>();
             
             temp.Add(start);
             temp.Add(gameplay);
             temp.Add(finish);
+            temp.Add(death);
 
             #endregion
 
@@ -59,7 +62,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             gameplay.AddTransition(States.Finish, finish);
             
-            finish.AddTransition(States.Start, start);
+            finish.AddTransition(States.Death, death);
+            
+            death.AddTransition(States.Start, start);
+            
 
             #endregion
 
@@ -93,6 +99,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             SetTransition(States.Finish);
         }
+        
+        public void TransitionToDeath()
+        {
+            SetTransition(States.Death);
+        }
 
         #endregion
 
@@ -119,14 +130,14 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #region Earth
 
-        public void HandleEarthDeath()
+        public void HandleEarthStartDestruction()
         {
-            _motor.HandleEarthDeath();
+            _motor.HandleEarthStartDestruction();
         }
 
-        public void HandleEarthDestruction()
+        public void HandleEarthEndDestruction()
         {
-            _motor.HandleEarthDestruction();
+            _motor.HandleEarthEndDestruction();
         }
         
         public void HandleEarthShake()
@@ -145,6 +156,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void SpawnSingleMeteor()
         {
             _motor.SpawnSingleMeteor();
+        }
+
+        public void HandleGameFinish()
+        {
+            _motor.HandleGameFinish();
         }
     }
 }

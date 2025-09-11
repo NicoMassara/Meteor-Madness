@@ -76,22 +76,26 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.EarthShaking);
         }
 
-        public void HandleEarthDeath()
+        public void HandleEarthStartDestruction()
         {
-            NotifyAll(GameModeObserverMessage.EarthDeath);
+            NotifyAll(GameModeObserverMessage.EarthStartDestruction);
         }
 
-        public void HandleEarthDestruction()
+        public void HandleEarthEndDestruction()
         {
-            NotifyAll(GameModeObserverMessage.EarthDestruction, _meteorDeflectCount);
+            NotifyAll(GameModeObserverMessage.EarthEndDestruction, _meteorDeflectCount);
         }
 
         #endregion
-
-
+        
         public void SpawnSingleMeteor()
         {
             NotifyAll(GameModeObserverMessage.SpawnSingleMeteor);
+        }
+
+        public void HandleGameFinish()
+        {
+            NotifyAll(GameModeObserverMessage.GameFinish);
         }
     }
 }

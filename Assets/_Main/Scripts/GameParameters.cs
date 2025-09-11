@@ -3,7 +3,6 @@
     public struct GameValues
     {
         public const int VisualMultiplier = 150;
-        public const int StartGameCount = 3;
         public const float ShieldExtend = 1.5f;
         public const float BaseMeteorSpeed = 10f; //10
         public const int StartStreakShield = 5;
@@ -43,13 +42,13 @@
         public const float ClosePauseMenu = 0.25f;
         public const float PointsTextTimeToIncrease = 0.5f;
         //Show Death
-        public const float DeathZoom = 2f;
-        public const float StartShake = 1f;
+        public const float StartEarthDestruction = 1.25f;
+        public const float StartShake = 1.5f;
         public const float DeathShakeDuration = 3f;
         public const float ShowEarthDestruction = 1.5f;
-        public const float ShowDeathUI = 1f;
+        public const float ShowDeathUI = 2f;
         public const float PointsTextTimeToIncreaseOnDeath = 1.5f;
-        public const float StartRotatingAfterDeath = 0.1f;
+        public const float StartRotatingAfterDeath = 1.5f;
         public const float MeteorSpawnDelay = 8f;
         public const float MeteorDelayBetweenSpawn = 0.25f;
     }

@@ -20,6 +20,8 @@
         public const string SetActiveDeathShake = "A01005";
         public const string Heal = "A01006";
         public const string SetSprite = "A01007";
+        public const string SetRotation = "A01008";
+        public const string TriggerEndDestruction = "A01009";
     }
 
     public struct GameModeObserverMessage
@@ -29,11 +31,12 @@
         public const string CountdownFinish = "A02003";
         public const string StartGame = "A02004";
         public const string MeteorDeflect = "A02005";
-        public const string EarthDeath = "A02006";
-        public const string EarthDestruction = "A02007";
+        public const string EarthStartDestruction = "A02006";
+        public const string EarthEndDestruction = "A02007";
         public const string EarthShaking = "A02008";
         public const string SpawnSingleMeteor = "A02009";
         public const string SpawnRingMeteor = "A02010";
+        public const string GameFinish = "A02011";
     }
 
     public struct FlyingObjectObserverMessage
