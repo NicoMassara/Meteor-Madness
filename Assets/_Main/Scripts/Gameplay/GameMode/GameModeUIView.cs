@@ -32,6 +32,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         private GameModeController _controller;
         private readonly NumberIncrementer _numberIncrementer = new NumberIncrementer();
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
+        
+        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.UI;
 
         private void Start()
         {

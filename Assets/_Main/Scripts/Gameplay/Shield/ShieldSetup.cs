@@ -15,6 +15,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldController _controller;
         private ShieldView _view;
         
+        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Inputs;
+        
         private void Awake()
         {
             _view = GetComponent<ShieldView>();

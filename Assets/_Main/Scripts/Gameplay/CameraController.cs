@@ -1,12 +1,13 @@
-﻿using System;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Shaker;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay
 {
-    public class CameraController : MonoBehaviour
+    public class CameraController : ManagedBehavior, ILateUpdatable
     {
         [Header("Components")]
         [SerializeField] private Camera mainCamera;
@@ -18,6 +19,8 @@ namespace _Main.Scripts.Gameplay
         private bool _doesChangeSize = false;
         private float _targetSize;
 
+        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        
 
         private void Awake()
         {
@@ -29,8 +32,8 @@ namespace _Main.Scripts.Gameplay
             _shakerController = new ShakerController(mainCamera.transform);
             _defaultSize = mainCamera.orthographicSize;
         }
-
-        private void Update()
+        
+        public void ManagedLateUpdate()
         {
             if (_shakerController.IsShaking)
             {
@@ -49,7 +52,7 @@ namespace _Main.Scripts.Gameplay
         {
             var newSize = mainCamera.orthographicSize;
             newSize =
-                Mathf.Lerp(newSize, _targetSize, zoomSpeed * Time.deltaTime);
+                Mathf.Lerp(newSize, _targetSize, zoomSpeed * CustomTime.DeltaTime);
             Mathf.Clamp(newSize, _zoomSize, _defaultSize);
 
             if (newSize == _targetSize)
@@ -111,6 +114,5 @@ namespace _Main.Scripts.Gameplay
         }
 
         #endregion
-
     }
 }

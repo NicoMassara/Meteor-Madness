@@ -39,6 +39,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private GameObject _currentSprite;
         private bool _canRotate;
         
+        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
 
         private void Awake()
         {

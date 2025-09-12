@@ -30,7 +30,7 @@
 
     public struct GameTimeValues
     {
-        public const int StartGameCount = 0;
+        public const int StartGameCount = 3;
         public const float TimeToLoadGameScene = 1f;
         //Show Death
         public const float StartEarthDestruction = 1.25f;

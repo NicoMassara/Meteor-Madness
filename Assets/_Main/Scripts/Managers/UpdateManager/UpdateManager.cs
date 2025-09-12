@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers.UpdateManager
@@ -11,11 +11,30 @@ namespace _Main.Scripts.Managers.UpdateManager
         protected static UpdateManager _instance;
 
         private readonly List<IUpdatable> _updatableObjects = new List<IUpdatable>();
-        private readonly List<ILateUpdatable> _lateUpdatableObjects = new List<ILateUpdatable>();
         private readonly List<IFixedUpdatable> _fixedUpdatableObjects = new List<IFixedUpdatable>();
+        private readonly List<ILateUpdatable> _lateUpdatableObjects = new List<ILateUpdatable>();
+        
+        private readonly List<IUpdatable> _toAdd = new List<IUpdatable>();
+        private readonly List<IUpdatable> _toRemove = new List<IUpdatable>();
+        private readonly List<IFixedUpdatable> _fixedToAdd = new List<IFixedUpdatable>();
+        private readonly List<IFixedUpdatable> _fixedToRemove = new List<IFixedUpdatable>();
+        private readonly List<ILateUpdatable> _lateToAdd = new List<ILateUpdatable>();
+        private readonly List<ILateUpdatable> _lateToRemove = new List<ILateUpdatable>();
 
+        public enum UpdateGroup
+        {
+            Gameplay,
+            UI,
+            Inputs,
+            Always
+        }
+        
         public bool IsPaused { get; set; }
-
+        
+        private bool _isUpdating = false;
+        private bool _isFixedUpdating = false;
+        private bool _isLateUpdating = false;
+        
         private static UpdateManager CreateInstance()
         {
             var gameObject = new GameObject(nameof(UpdateManager))
@@ -25,76 +44,287 @@ namespace _Main.Scripts.Managers.UpdateManager
             DontDestroyOnLoad(gameObject);
             return gameObject.AddComponent<UpdateManager>();
         }
-        
+
+        #region Update
+
         private void Update()
         {
-            if (IsPaused) return;
+            CustomTime.UpdateFrame(Time.unscaledDeltaTime);
+            
+            ApplyPending();
+            
+            _isUpdating = true;
 
-            for (var index = 0; index < _updatableObjects.Count; index++)
+            for (int i = 0; i < _updatableObjects.Count; i++)
             {
-                var t = _updatableObjects[index];
-                t?.ManagedUpdate();
+                var u = _updatableObjects[i];
+                if(IsPaused) continue;
+                
+                u.ManagedUpdate();
             }
+            
+            _isUpdating = false;
+            
+            ApplyPending();
         }
+
+        private void FixedUpdate()
+        {
+            CustomTime.UpdateFixed(Time.fixedUnscaledDeltaTime);
+            
+            ApplyPendingFixed();
+            
+            _isFixedUpdating = true;
+            
+            for (int i = 0; i < _fixedUpdatableObjects.Count; i++)
+            {
+                var u = _fixedUpdatableObjects[i];
+                if(IsPaused) continue;
+
+                u.ManagedFixedUpdate();
+            }
+            
+            _isFixedUpdating = false;
+            
+            ApplyPendingFixed();
+        }
+        
         
         private void LateUpdate()
         {
-            if (IsPaused) return;
-
-            for (var index = 0; index < _lateUpdatableObjects.Count; index++)
+            ApplyPendingLate();
+            
+            _isLateUpdating = true;
+            
+            for (int i = 0; i < _lateUpdatableObjects.Count; i++)
             {
-                var t = _lateUpdatableObjects[index];
-                t?.ManagedLateUpdate();
-            }
-        }
-        private void FixedUpdate()
-        {
-            if (IsPaused) return;
+                var u = _lateUpdatableObjects[i];
+                if(IsPaused) continue;
 
-            for (var index = 0; index < _fixedUpdatableObjects.Count; index++)
-            {
-                var t = _fixedUpdatableObjects[index];
-                t?.ManagedFixedUpdate();
+                u.ManagedLateUpdate();
             }
+            
+            _isLateUpdating = false;
+            
+            ApplyPendingLate();
         }
 
-        public void Register(IManagedObject element)
+        #endregion
+        
+        #region ApplyPending
+
+        private void ApplyPending()
         {
-            if (element is IUpdatable updatable)
+            if (_toAdd.Count > 0)
+            {
+                foreach (var a in _toAdd)
+                {
+                    if (!_updatableObjects.Contains(a))
+                    {
+                        _updatableObjects.Add(a);
+                    }
+                }
+                _toAdd.Clear();
+                
+            }
+
+            if (_toRemove.Count > 0)
+            {
+                foreach (var r in _toRemove)
+                {
+                    _updatableObjects.Remove(r);
+                }
+                
+                _toRemove.Clear();
+            }
+        }
+
+        private void ApplyPendingFixed()
+        {
+            if (_fixedToAdd.Count > 0)
+            {
+                foreach (var a in _fixedToAdd)
+                {
+                    if (!_fixedUpdatableObjects.Contains(a))
+                    {
+                        _fixedUpdatableObjects.Add(a);
+                    }
+                }
+                
+                _fixedToAdd.Clear();
+            }
+
+            if (_fixedToRemove.Count > 0)
+            {
+                foreach (var r in _fixedToRemove)
+                {
+                    _fixedUpdatableObjects.Remove(r);
+                }
+                
+                _fixedToRemove.Clear();
+            }
+        }
+        
+        private void ApplyPendingLate()
+        {
+            if (_lateToAdd.Count > 0)
+            {
+                foreach (var a in _lateToAdd)
+                {
+                    if (!_lateUpdatableObjects.Contains(a))
+                    {
+                        _lateUpdatableObjects.Add(a);
+                    }
+                }
+                
+                _lateToAdd.Clear();
+            }
+
+            if (_lateToRemove.Count > 0)
+            {
+                foreach (var r in _lateToRemove)
+                {
+                    _lateUpdatableObjects.Remove(r);
+                }
+                
+                _lateToRemove.Clear();
+            }
+        }
+
+        #endregion
+
+        #region Add/Remove
+
+        private void AddUpdatable(IUpdatable updatable)
+        {
+            if (_isUpdating)
+            {
+                if (!_toAdd.Contains(updatable))
+                {
+                    _toAdd.Add(updatable);
+                }
+            }
+            else if (!_updatableObjects.Contains(updatable))
             {
                 _updatableObjects.Add(updatable);
             }
-            if (element is ILateUpdatable lateUpdatable)
+        }
+
+        private void RemoveUpdatable(IUpdatable updatable)
+        {
+            if (_isUpdating)
             {
-                _lateUpdatableObjects.Add(lateUpdatable);
+                if (!_toRemove.Contains(updatable))
+                {
+                    _toRemove.Add(updatable);
+                }
+            }
+            else
+            { 
+                _updatableObjects.Remove(updatable);
+            }
+        }
+        
+        private void AddFixedUpdatable(IFixedUpdatable updatable)
+        {
+            if (_isUpdating)
+            {
+                if (!_fixedToAdd.Contains(updatable))
+                {
+                    _fixedToAdd.Add(updatable);
+                }
+            }
+            else if (!_fixedUpdatableObjects.Contains(updatable))
+            {
+                _fixedUpdatableObjects.Add(updatable);
+            }
+        }
+
+        private void RemoveFixedUpdatable(IFixedUpdatable updatable)
+        {
+            if (_isUpdating)
+            {
+                if (!_fixedToRemove.Contains(updatable))
+                {
+                    _fixedUpdatableObjects.Add(updatable);
+                }
+            }
+            else
+            { 
+                _fixedUpdatableObjects.Remove(updatable);
+            }
+        }
+        
+        private void AddLateUpdatable(ILateUpdatable updatable)
+        {
+            if (_isUpdating)
+            {
+                if (!_lateToAdd.Contains(updatable))
+                {
+                    _lateToAdd.Add(updatable);
+                }
+            }
+            else if (!_lateUpdatableObjects.Contains(updatable))
+            {
+                _lateUpdatableObjects.Add(updatable);
+            }
+        }
+
+        private void RemoveLateUpdatable(ILateUpdatable updatable)
+        {
+            if (_isUpdating)
+            {
+                if (!_lateToRemove.Contains(updatable))
+                {
+                    _lateToRemove.Add(updatable);
+                }
+            }
+            else
+            { 
+                _lateUpdatableObjects.Remove(updatable);
+            }
+        }
+
+        #endregion
+
+        #region Register/Unregister
+        
+        public void Register(IManagedObject element)
+        {
+            if(element == null) return;
+            
+            if (element is IUpdatable updatable)
+            {
+                AddUpdatable(updatable);
             }
             if (element is IFixedUpdatable fixedUpdatable)
             {
-                _fixedUpdatableObjects.Add(fixedUpdatable);
+                AddFixedUpdatable(fixedUpdatable);
+            }
+            if (element is ILateUpdatable lateUpdatable)
+            {
+                AddLateUpdatable(lateUpdatable);
             }
         }
 
         public void Unregister(IManagedObject element)
         {
+            if(element == null) return;
+            
             if (element is IUpdatable updatable)
             {
-                _updatableObjects.Remove(updatable);
-            }
-            if (element is ILateUpdatable lateUpdatable)
-            {
-                _lateUpdatableObjects.Remove(lateUpdatable);
+                RemoveUpdatable(updatable);
             }
             if (element is IFixedUpdatable fixedUpdatable)
             {
-                _fixedUpdatableObjects.Remove(fixedUpdatable);
+                RemoveFixedUpdatable(fixedUpdatable);
+            }
+            if (element is ILateUpdatable lateUpdatable)
+            {
+                RemoveLateUpdatable(lateUpdatable);
             }  
         }
-
-        public void Clear()
-        {
-            _updatableObjects.Clear();
-            _lateUpdatableObjects.Clear();
-            _fixedUpdatableObjects.Clear();
-        }
+        
+        #endregion
     }
 }

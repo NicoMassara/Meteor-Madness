@@ -2,6 +2,7 @@
 {
     public interface IUpdatable
     {
+        public UpdateManager.UpdateGroup UpdateGroup { get; }
         void ManagedUpdate();
     }
 }

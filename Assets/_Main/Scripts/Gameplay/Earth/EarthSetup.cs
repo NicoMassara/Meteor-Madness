@@ -13,6 +13,8 @@ namespace _Main.Scripts.Gameplay.Earth
         private EarthController _controller;
         private EarthView _view;
         
+        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        
         private void Awake()
         {
             _view = GetComponent<EarthView>();

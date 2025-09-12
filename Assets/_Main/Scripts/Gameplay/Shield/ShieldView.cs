@@ -32,6 +32,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private float GetRotateSpeed => rotateSpeed * 50f; 
         private GameObject _activeSprite;
         private ShakerController _shakerController;
+        
+        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
 
         private void Awake()
         {

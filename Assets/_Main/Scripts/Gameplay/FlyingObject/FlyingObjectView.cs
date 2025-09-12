@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Sounds;
@@ -37,6 +38,7 @@ namespace _Main.Scripts.FyingObject
         private bool _canMove;
         private float _movementSpeed;
 
+        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
         public UnityAction<TS> OnRecycle;
         
         private void Awake()
@@ -80,7 +82,7 @@ namespace _Main.Scripts.FyingObject
         {
             if (_canMove)
             {
-                _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * Time.deltaTime));
+                _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * CustomTime.FixedDeltaTime));
                 _controller.UpdatePosition( _rigidbody2D.transform.position);
             }
         }
