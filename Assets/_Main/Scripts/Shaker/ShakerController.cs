@@ -23,18 +23,18 @@ namespace _Main.Scripts.Shaker
             _shakeData = data;
         }
 
-        public void HandleShake()
+        public void HandleShake(float deltaTime)
         {
             if(_shakeData == null) return;
             
             if (_shakeData.DoesLoop)
             {
-                _shakeTimer += Time.deltaTime;
+                _shakeTimer += deltaTime;
                 _transform.localPosition = GetShakeOffset(_shakeTimer) + _startPosition;
             }
             else if (_shakeTimer > 0)
             {
-                _shakeTimer -= Time.deltaTime;
+                _shakeTimer -= deltaTime;
                 _transform.localPosition = GetShakeOffset(_shakeTimer) + _startPosition;
                 
                 if (_shakeTimer <= 0)

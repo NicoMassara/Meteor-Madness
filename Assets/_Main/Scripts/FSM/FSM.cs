@@ -29,16 +29,16 @@ namespace _Main.Scripts.FiniteStateMachine
                 _current.Execute(deltaTime);
         }
 
-        public void FixedExecute()
+        public void FixedExecute(float fixedDeltaTime)
         {
             if(_current != null)
-                _current.FixedExecute();
+                _current.FixedExecute(fixedDeltaTime);
         }
         
-        public void LateExecute()
+        public void LateExecute(float deltaTime)
         {
             if(_current != null)
-                _current.LateExecute();
+                _current.LateExecute(deltaTime);
         }
 
         public void Transitions(T input)

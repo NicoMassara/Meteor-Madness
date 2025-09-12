@@ -1,5 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
@@ -7,13 +9,15 @@ namespace _Main.Scripts.Gameplay.GameMode
 {
     [RequireComponent(typeof(GameModeView))]
     [RequireComponent(typeof(GameModeUIView))]
-    public class GameModeSetup : MonoBehaviour
+    public class GameModeSetup : ManagedBehavior, IUpdatable
     {
         private GameModeMotor _motor;
         private GameModeController _controller;
         
         private GameModeView _view;
         private GameModeUIView _ui;
+        
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
         private void Awake()
         {
@@ -36,12 +40,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _controller.Initialize();
         }
-
-        private void Update()
+        
+        public void ManagedUpdate()
         {
-            _controller?.Execute(CustomTime.DeltaTime);
-            _motor?.Execute();
+            _controller?.Execute(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
+
         
         #region EventBus
 
@@ -80,5 +84,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
+
     }
 }

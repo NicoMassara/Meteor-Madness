@@ -15,7 +15,7 @@ namespace _Main.Scripts.Particles
         private float _fadeTimer;
         private Vector3 _moveDirection = Vector3.up;
         
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public UnityAction<ParticleBehaviour> OnRecycle;
 
         public void SetValues(ParticleDataSo particleData, Vector3 position, float rotation, Vector3 moveDirection)
@@ -35,16 +35,18 @@ namespace _Main.Scripts.Particles
 
         public void ManagedUpdate()
         {
-            _scaleTimer += CustomTime.DeltaTime;
+            var dt = CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+            
+            _scaleTimer += dt;
             float t = _scaleTimer/_data.TimeToReachScale;
             transform.localScale = Vector3.Lerp(_data.StartScale, _data.TargetScale, t);
-            transform.position += (CustomTime.DeltaTime * _data.MoveSpeed) * -_moveDirection;
+            transform.position += (dt * _data.MoveSpeed) * _moveDirection;
             
             var ratio = transform.localScale.x / _data.TargetScale.x;
             
             if (ratio >= _data.RatioTimeToStartFade)
             {
-                _fadeTimer += CustomTime.DeltaTime;
+                _fadeTimer += dt;
                 float a = _fadeTimer/_data.TimeToFade;
                 _alpha = Mathf.Lerp(1, 0, a);
                 sprite.color = new Color(1, 1, 1, _alpha);

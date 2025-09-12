@@ -19,7 +19,7 @@ namespace _Main.Scripts.Gameplay
         private bool _doesChangeSize = false;
         private float _targetSize;
 
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        public UpdateGroup SelfLateUpdateGroup { get; } = UpdateGroup.Gameplay;
         
 
         private void Awake()
@@ -35,24 +35,26 @@ namespace _Main.Scripts.Gameplay
         
         public void ManagedLateUpdate()
         {
+            var dt = CustomTime.GetChannel(SelfLateUpdateGroup).DeltaTime;
+            
             if (_shakerController.IsShaking)
             {
-                _shakerController.HandleShake();
+                _shakerController.HandleShake(dt);
             }
 
             if (_doesChangeSize)
             {
-                HandleSizeChange();
+                HandleSizeChange(dt);
             }
         }
 
         #region Zoom
 
-        private void HandleSizeChange()
+        private void HandleSizeChange(float deltaTime)
         {
             var newSize = mainCamera.orthographicSize;
             newSize =
-                Mathf.Lerp(newSize, _targetSize, zoomSpeed * CustomTime.DeltaTime);
+                Mathf.Lerp(newSize, _targetSize, zoomSpeed * deltaTime);
             Mathf.Clamp(newSize, _zoomSize, _defaultSize);
 
             if (newSize == _targetSize)

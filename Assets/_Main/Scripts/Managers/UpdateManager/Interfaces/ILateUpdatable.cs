@@ -2,7 +2,7 @@
 {
     public interface ILateUpdatable
     {
-        public UpdateManager.UpdateGroup UpdateGroup { get; }
+        public UpdateGroup SelfLateUpdateGroup { get; }
         void ManagedLateUpdate();
     }
 }

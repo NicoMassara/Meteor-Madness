@@ -4,8 +4,8 @@
     {
         void Awake();
         void Execute(float deltaTime);
-        void FixedExecute();
-        void LateExecute();
+        void FixedExecute(float fixedDeltaTime);
+        void LateExecute(float deltaTime);
         void Sleep();
 
         IState<T> GetTransition(T input);

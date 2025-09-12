@@ -117,9 +117,9 @@ namespace _Main.Scripts.Gameplay.Earth
             _motor.RestartHealth();
         }
 
-        public void HandleCollision(float damage, Vector3 position, Quaternion rotation)
+        public void HandleCollision(float damage, Vector3 position, Quaternion rotation, Vector2 direction)
         {
-            _motor.HandleCollision(damage, position, rotation);
+            _motor.HandleCollision(damage, position, rotation, direction);
         }
 
         public void Heal(float healAmount)

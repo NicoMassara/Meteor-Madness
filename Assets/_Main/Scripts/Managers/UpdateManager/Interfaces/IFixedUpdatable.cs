@@ -2,7 +2,7 @@
 {
     public interface IFixedUpdatable
     {
-        public UpdateManager.UpdateGroup UpdateGroup { get; }
+        public UpdateGroup SelfFixedUpdateGroup { get; }
         void ManagedFixedUpdate();
     }
 }

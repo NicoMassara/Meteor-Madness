@@ -163,9 +163,9 @@ namespace _Main.Scripts.Gameplay.Shield
 
         #endregion
         
-        public void HandleHit(Vector3 inputPosition)
+        public void HandleHit(Vector3 position, Quaternion rotation, Vector2 direction)
         {
-            _motor.HandleHit(inputPosition);
+            _motor.HandleHit(position,rotation,direction);
         }
 
         #region Handlers

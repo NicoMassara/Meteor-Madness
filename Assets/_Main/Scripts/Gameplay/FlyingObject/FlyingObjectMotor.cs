@@ -8,14 +8,16 @@ namespace _Main.Scripts.FyingObject
         protected float MovementSpeed { get; set; }
         public Vector2 Position { get; protected set; }
         public Quaternion Rotation { get; protected set; }
+        public Vector2 Direction { get; protected set; }
         protected bool CanMove { get; set; }
         
 
-        public virtual void SetValues(float movementSpeed, Quaternion rotation, Vector2 position)
+        public virtual void SetValues(float movementSpeed, Quaternion rotation, Vector2 position, Vector2 direction)
         {
             MovementSpeed = movementSpeed;
             Rotation = rotation;
             Position = position;
+            Direction = direction;
             CanMove = true;
             
             NotifyAll(FlyingObjectObserverMessage.SetValues, MovementSpeed, Rotation, Position, CanMove);
@@ -25,7 +27,7 @@ namespace _Main.Scripts.FyingObject
         {
             CanMove = false;
             
-            NotifyAll(FlyingObjectObserverMessage.HandleCollision, CanMove, Position, doesShowParticles);
+            NotifyAll(FlyingObjectObserverMessage.HandleCollision, CanMove, Position, Direction, doesShowParticles);
         }
         
         public void UpdatePosition(Vector2 transformPosition)

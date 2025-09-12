@@ -14,7 +14,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private EarthController _controller;
         private EarthView _view;
         
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
         private void Awake()
         {
@@ -35,7 +35,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void ManagedUpdate()
         {
-            _controller.Execute(CustomTime.DeltaTime);
+            _controller.Execute(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
 
         #region Event Bus
@@ -61,7 +61,8 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void EventBus_OnMeteorCollision(MeteorCollision input)
         {
-            _controller.HandleCollision(GameManager.Instance.GetMeteorDamage(), input.Position, input.Rotation);
+            _controller.HandleCollision(GameManager.Instance.GetMeteorDamage(), 
+                input.Position, input.Rotation, input.Direction);
         }
         
         #endregion

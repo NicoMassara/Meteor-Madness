@@ -8,6 +8,11 @@
             Controller.StartCountdown();
         }
 
+        public override void Execute(float deltaTime)
+        {
+            Controller.HandleCountdownTimer(deltaTime);
+        }
+
         public override void Sleep()
         {
             Controller.StartGame();

@@ -1,24 +1,49 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using _Main.Scripts.Managers.UpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.MyCustoms
 {
     public static class CustomTime
     {
-        public static float DeltaTime { get; private set; }
-        public static float FixedDeltaTime { get; private set; }
+        private static readonly Dictionary<UpdateGroup, TimeChannel> Channels = new();
+        
+        public static TimeChannel GetChannel(UpdateGroup key)
+        {
+            if (!Channels.ContainsKey(key))
+                Channels[key] = new TimeChannel();
+            return Channels[key];
+        }
 
-        public static float TimeScale { get; private set; } = 1f;
-        public static bool IsPaused { get; private set; }
+        internal static void UpdateAll(float unscaledDeltaTime)
+        {
+            foreach (var kv in Channels)
+                kv.Value.Update(unscaledDeltaTime);
+        }
+        
+        internal static void FixedUpdateAll(float unscaledDeltaTime)
+        {
+            foreach (var kv in Channels)
+                kv.Value.UpdateFixed(unscaledDeltaTime);
+        }
+    }
 
-        public static void SetTimeScale(float scale) => TimeScale = Mathf.Max(0f, scale);
-        public static void SetPaused(bool value) => IsPaused = value;
+    public class TimeChannel
+    {
+        public float DeltaTime { get; private set; }
+        public float FixedDeltaTime { get; private set; }
+        public float TimeScale = 1f;
+        public bool IsPaused = false;
+        
+        public void SetTimeScale(float scale) => TimeScale = Mathf.Max(0f, scale);
+        public void SetPaused(bool value) => IsPaused = value;
 
-        internal static void UpdateFrame(float unscaledDeltaTime)
+        public void Update(float unscaledDeltaTime)
         {
             DeltaTime = IsPaused ? 0f : unscaledDeltaTime * TimeScale;
         }
-
-        internal static void UpdateFixed(float fixedUnscaledDeltaTime)
+        
+        public void UpdateFixed(float fixedUnscaledDeltaTime)
         {
             FixedDeltaTime = IsPaused ? 0f : fixedUnscaledDeltaTime * TimeScale;
         }

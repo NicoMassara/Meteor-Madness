@@ -14,7 +14,7 @@ namespace _Main.Scripts.Menu
         [SerializeField] private Transform itemTransform;
         private Rotator _rotator;
 
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         private void Start()
         {
             _rotator = new Rotator(itemTransform,rotationSpeed);
@@ -22,7 +22,7 @@ namespace _Main.Scripts.Menu
         
         public void ManagedUpdate()
         {
-            _rotator.Rotate(CustomTime.DeltaTime);
+            _rotator.Rotate(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
     }
 }

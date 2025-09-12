@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
@@ -20,20 +21,14 @@ namespace _Main.Scripts.Managers.UpdateManager
         private readonly List<IFixedUpdatable> _fixedToRemove = new List<IFixedUpdatable>();
         private readonly List<ILateUpdatable> _lateToAdd = new List<ILateUpdatable>();
         private readonly List<ILateUpdatable> _lateToRemove = new List<ILateUpdatable>();
-
-        public enum UpdateGroup
-        {
-            Gameplay,
-            UI,
-            Inputs,
-            Always
-        }
         
         public bool IsPaused { get; set; }
         
+#pragma warning disable CS0414 // Field is assigned but its value is never used
         private bool _isUpdating = false;
         private bool _isFixedUpdating = false;
         private bool _isLateUpdating = false;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
         
         private static UpdateManager CreateInstance()
         {
@@ -44,23 +39,29 @@ namespace _Main.Scripts.Managers.UpdateManager
             DontDestroyOnLoad(gameObject);
             return gameObject.AddComponent<UpdateManager>();
         }
-
+        
         #region Update
 
         private void Update()
         {
-            CustomTime.UpdateFrame(Time.unscaledDeltaTime);
+            CustomTime.UpdateAll(IsPaused ? 0 : Time.unscaledDeltaTime);
             
             ApplyPending();
             
+            
             _isUpdating = true;
 
-            for (int i = 0; i < _updatableObjects.Count; i++)
+            if (!IsPaused)
             {
-                var u = _updatableObjects[i];
-                if(IsPaused) continue;
+                for (int i = 0; i < _updatableObjects.Count; i++)
+                {
+                    var u = _updatableObjects[i];
                 
-                u.ManagedUpdate();
+                    if(CustomTime.GetChannel(u.SelfUpdateGroup).IsPaused)
+                        continue;
+                
+                    u.ManagedUpdate();
+                }
             }
             
             _isUpdating = false;
@@ -70,18 +71,23 @@ namespace _Main.Scripts.Managers.UpdateManager
 
         private void FixedUpdate()
         {
-            CustomTime.UpdateFixed(Time.fixedUnscaledDeltaTime);
+            CustomTime.FixedUpdateAll(IsPaused ? 0 : Time.fixedUnscaledDeltaTime);
             
             ApplyPendingFixed();
             
             _isFixedUpdating = true;
-            
-            for (int i = 0; i < _fixedUpdatableObjects.Count; i++)
-            {
-                var u = _fixedUpdatableObjects[i];
-                if(IsPaused) continue;
 
-                u.ManagedFixedUpdate();
+            if (!IsPaused)
+            {
+                for (int i = 0; i < _fixedUpdatableObjects.Count; i++)
+                {
+                    var u = _fixedUpdatableObjects[i];
+                
+                    if(CustomTime.GetChannel(u.SelfFixedUpdateGroup).IsPaused)
+                        continue;
+
+                    u.ManagedFixedUpdate();
+                }
             }
             
             _isFixedUpdating = false;
@@ -95,13 +101,18 @@ namespace _Main.Scripts.Managers.UpdateManager
             ApplyPendingLate();
             
             _isLateUpdating = true;
-            
-            for (int i = 0; i < _lateUpdatableObjects.Count; i++)
-            {
-                var u = _lateUpdatableObjects[i];
-                if(IsPaused) continue;
 
-                u.ManagedLateUpdate();
+            if (!IsPaused)
+            {
+                for (int i = 0; i < _lateUpdatableObjects.Count; i++)
+                {
+                    var u = _lateUpdatableObjects[i];
+                
+                    if(CustomTime.GetChannel(u.SelfLateUpdateGroup).IsPaused)
+                        continue;
+
+                    u.ManagedLateUpdate();
+                }
             }
             
             _isLateUpdating = false;
@@ -326,5 +337,13 @@ namespace _Main.Scripts.Managers.UpdateManager
         }
         
         #endregion
+    }
+    
+    public enum UpdateGroup
+    {
+        Gameplay,
+        UI,
+        Inputs,
+        Always
     }
 }

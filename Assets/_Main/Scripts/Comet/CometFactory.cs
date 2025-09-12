@@ -22,7 +22,7 @@ namespace _Main.Scripts.Comet
         private GenericPool<CometView> _pool;
         private bool _isBottomSpawn;
 
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
 
         private void Start()
@@ -34,7 +34,7 @@ namespace _Main.Scripts.Comet
         
         public void ManagedUpdate()
         {
-            _spawnTimer.Run(CustomTime.DeltaTime);
+            _spawnTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
         
         private void Timer_OnEndHandler()
@@ -70,7 +70,7 @@ namespace _Main.Scripts.Comet
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
             var tempComet = _pool.Get();
-            tempComet.SetValues(movementSpeed, tempRot, spawnPosition);
+            tempComet.SetValues(movementSpeed, tempRot, spawnPosition,direction);
             tempComet.OnRecycle += Comet_OnRecycleHandler;
         }
 

@@ -162,5 +162,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _motor.HandleGameFinish();
         }
+
+        public void HandleCountdownTimer(float deltaTime)
+        {
+            _motor.HandleCountdownTimer(deltaTime);
+        }
     }
 }

@@ -16,7 +16,7 @@ MonoBehaviour:
   clips:
   - {fileID: 8300000, guid: 8b3836daf909c78469aaf3d586e55619, type: 3}
   sourceData:
-    mixerGroup: {fileID: 0}
+    mixerGroup: {fileID: -7029012848971564562, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0

@@ -8,8 +8,8 @@ namespace _Main.Scripts.FiniteStateMachine
         
         public virtual void Awake(){}
         public virtual void Execute(float deltaTime){}
-        public virtual void FixedExecute(){}
-        public virtual void LateExecute(){}
+        public virtual void FixedExecute(float fixedDeltaTime){}
+        public virtual void LateExecute(float deltaTime){}
         public virtual void Sleep(){}
         
 

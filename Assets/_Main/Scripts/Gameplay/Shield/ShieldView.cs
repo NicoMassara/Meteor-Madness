@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
@@ -33,7 +34,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private GameObject _activeSprite;
         private ShakerController _shakerController;
         
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
         private void Awake()
         {
@@ -50,7 +51,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (_shakerController.IsShaking)
             {
-                _shakerController.HandleShake();
+                _shakerController.HandleShake(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
             }
         }
 
@@ -65,7 +66,10 @@ namespace _Main.Scripts.Gameplay.Shield
                     HandleStopRotate();
                     break;
                 case ShieldObserverMessage.Deflect:
-                    HandleDeflect((Vector3)args[0]);
+                    HandleDeflect((Vector3)args[0],
+                        (Quaternion)args[1],
+                        (Vector2)args[2]
+                    );
                     break;
                 case ShieldObserverMessage.PlayMoveSound:
                     PlayMoveSound();
@@ -81,7 +85,7 @@ namespace _Main.Scripts.Gameplay.Shield
                     break;
             }
         }
-        
+
         #region Sprites
 
         private void HandleSetActiveShield(bool isActive)
@@ -109,7 +113,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private void HandleRotation(float direction)
         {
             transform.RotateAround(transform.position, Vector3.forward, 
-                ((GetRotateSpeed) * direction) * Time.deltaTime);
+                ((GetRotateSpeed) * direction) * CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
         private void HandleStopRotate()
         {
@@ -128,7 +132,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         #endregion
 
-        private void HandleDeflect(Vector3 position)
+        private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
         {
             _shakerController.StartShake();
             hitSound?.PlaySound();
@@ -139,7 +143,8 @@ namespace _Main.Scripts.Gameplay.Shield
                 {
                     ParticleData = deflectParticleData,
                     Position = position,
-                    Rotation = Quaternion.identity
+                    Rotation = rotation,
+                    MoveDirection = direction
                 }
             );
             

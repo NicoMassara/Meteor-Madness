@@ -38,7 +38,8 @@ namespace _Main.Scripts.FyingObject
         private bool _canMove;
         private float _movementSpeed;
 
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public UpdateGroup SelfFixedUpdateGroup { get; } = UpdateGroup.Gameplay;
         public UnityAction<TS> OnRecycle;
         
         private void Awake()
@@ -69,7 +70,7 @@ namespace _Main.Scripts.FyingObject
         
         public void ManagedUpdate()
         {
-            _sphereRotator.Rotate(CustomTime.DeltaTime);
+            _sphereRotator.Rotate(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
             
             if (_hasFire)
             {
@@ -82,7 +83,8 @@ namespace _Main.Scripts.FyingObject
         {
             if (_canMove)
             {
-                _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * CustomTime.FixedDeltaTime));
+                var dt = CustomTime.GetChannel(SelfFixedUpdateGroup).FixedDeltaTime;
+                _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * dt));
                 _controller.UpdatePosition( _rigidbody2D.transform.position);
             }
         }
@@ -92,20 +94,20 @@ namespace _Main.Scripts.FyingObject
             switch (message)
             {
                 case FlyingObjectObserverMessage.SetValues:
-                    HandleSetValues((float)args[0], (Quaternion)args[1], (Vector2)args[2], (bool)args[3]);
+                    HandleSetValues((float)args[0], (Quaternion)args[1], (Vector2)args[2],(bool)args[3]);
                     break;
                 case FlyingObjectObserverMessage.HandleCollision:
-                    HandleCollision((bool)args[0], (Vector2)args[1], (bool)args[2]);
+                    HandleCollision((bool)args[0], (Vector2)args[1], (Vector2)args[2],(bool)args[3]);
                     break;
             }
         }
 
-        public void SetValues(float movementSpeed, Quaternion rotation, Vector2 position)
+        public void SetValues(float movementSpeed, Quaternion rotation, Vector2 position, Vector2 direction)
         {
-            _controller.SetValues(movementSpeed,rotation,position);
+            _controller.SetValues(movementSpeed,rotation,position, direction);
         }
 
-        protected virtual void HandleCollision(bool canMove, Vector2 position, bool doesShowParticles)
+        protected virtual void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)
         {
             _canMove = canMove;
             if (doesShowParticles)
@@ -115,7 +117,8 @@ namespace _Main.Scripts.FyingObject
                     new SpawnParticle
                     {
                         ParticleData = collisionParticle,
-                        Position = position
+                        Position = position,
+                        MoveDirection = direction
                     }
                 );
             }

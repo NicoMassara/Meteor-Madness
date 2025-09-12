@@ -34,7 +34,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private readonly NumberIncrementer _numberIncrementer = new NumberIncrementer();
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
         
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.UI;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
 
         private void Start()
         {
@@ -44,7 +44,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public void ManagedUpdate()
         {
-            _deathPanelActionQueue.Run(CustomTime.DeltaTime);
+            _deathPanelActionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
 
         public void OnNotify(string message, params object[] args)
@@ -191,7 +191,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             while (!_numberIncrementer.IsFinished)
             {
-                _numberIncrementer.Run(CustomTime.DeltaTime);
+                _numberIncrementer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
                 increaseAction?.Invoke(GetCurrentPoints());
                 
                 yield return null;

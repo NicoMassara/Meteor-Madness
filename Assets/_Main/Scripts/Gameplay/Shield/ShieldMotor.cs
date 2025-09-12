@@ -50,12 +50,11 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
-        
-        public void HandleHit(Vector3 position)
-        {
-            NotifyAll(ShieldObserverMessage.Deflect,position);
-        }
 
+        public void HandleHit(Vector3 position, Quaternion rotation, Vector2 direction)
+        {
+            NotifyAll(ShieldObserverMessage.Deflect,position, rotation, direction);
+        }
     }
 
     public enum SpriteType

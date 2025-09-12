@@ -18,11 +18,11 @@ namespace _Main.Scripts.Gameplay.Earth
             NotifyAll(EarthObserverMessage.RestartHealth);
         }
 
-        public void HandleCollision(float damage, Vector3 position, Quaternion rotation)
+        public void HandleCollision(float damage, Vector3 position, Quaternion rotation, Vector2 direction)
         {
             _currentHealth -= damage;
             
-            NotifyAll(EarthObserverMessage.EarthCollision, _currentHealth, position, rotation);
+            NotifyAll(EarthObserverMessage.EarthCollision, _currentHealth, position, rotation,direction);
             
             if (_currentHealth <= 0)
             {

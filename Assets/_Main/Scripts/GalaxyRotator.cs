@@ -13,7 +13,7 @@ namespace _Main.Scripts
         [SerializeField] private float rotationSpeed = 0.5f;
         
         private Rotator _rotator; 
-        public UpdateManager.UpdateGroup UpdateGroup { get; private set; } = UpdateManager.UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; private set; } = UpdateGroup.Gameplay;
 
         private void Start()
         {
@@ -22,7 +22,7 @@ namespace _Main.Scripts
 
         public void ManagedUpdate()
         {
-            _rotator.Rotate(CustomTime.DeltaTime);
+            _rotator.Rotate(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
     }
 }

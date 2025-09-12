@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.MyCustoms;
+﻿using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay
@@ -6,12 +7,9 @@ namespace _Main.Scripts.Gameplay
     public class InputReader : MonoBehaviour
     {
         public float MovementDirection { get; private set; }
-        public bool IsPaused { get; private set; }
 
         private void Update()
         {
-            IsPaused = Input.GetKeyDown(KeyCode.P);
-
             if (GetIsLeftPressed())
             {
                 MovementDirection = 1;
@@ -25,7 +23,16 @@ namespace _Main.Scripts.Gameplay
                 MovementDirection = 0;
             }
 
-            CustomTime.SetTimeScale(Input.GetKey(KeyCode.Space) ? 0.25f : 1f);
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                UpdateManager.Instance.IsPaused = !UpdateManager.Instance.IsPaused;
+            }
+
+            CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(Input.GetKey(KeyCode.Y) ? 0.25f : 1f);
+            CustomTime.GetChannel(UpdateGroup.Inputs).SetTimeScale(Input.GetKey(KeyCode.U) ? 0.25f : 1f);
+            
+
         }
 
         private bool GetIsLeftPressed()

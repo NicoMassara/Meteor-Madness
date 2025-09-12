@@ -9,12 +9,12 @@ namespace _Main.Scripts.Gameplay.Meteor
     {
         public void HandleShieldDeflection()
         {
-            NotifyAll(MeteorObserverMessage.ShieldDeflection, Position);
+            NotifyAll(MeteorObserverMessage.ShieldDeflection, Position, Rotation, Direction);
         }
 
         public void HandleEarthCollision()
         {
-            NotifyAll(MeteorObserverMessage.EarthCollision, Position, Rotation);
+            NotifyAll(MeteorObserverMessage.EarthCollision, Position, Rotation, Direction);
         }
     }
 }

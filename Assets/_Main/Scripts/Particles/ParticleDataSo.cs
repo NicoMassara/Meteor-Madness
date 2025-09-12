@@ -9,8 +9,8 @@ namespace _Main.Scripts.Particles
         [SerializeField] private Sprite sprite;
         [SerializeField] private Vector3 positionOffset;
         [SerializeField] private float rotationOffset;
-        [Range(0.1f, 10)]
-        [SerializeField] private float moveSpeed;
+        [Range(-5, 5)] 
+        [SerializeField] private float moveSpeed = 0;
         [Header("Scale Values")]
         [Range(0.1f, 15f)] 
         [SerializeField] private float timeToReachScale;

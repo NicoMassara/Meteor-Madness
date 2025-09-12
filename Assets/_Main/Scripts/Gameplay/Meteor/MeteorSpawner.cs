@@ -153,7 +153,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             Vector2 direction = (Vector2)centerOfGravity.position - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
-            tempMeteor.SetValues(meteorSpeed, tempRot, spawnPosition);
+            tempMeteor.SetValues(meteorSpeed, tempRot, spawnPosition,direction.normalized);
             tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
             tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
         }
@@ -194,17 +194,27 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         #region Handlers
 
-        private void Meteor_OnDeflectionHandler(MeteorView view, Vector3 position)
+        private void Meteor_OnDeflectionHandler(MeteorView view, 
+            Vector3 position, Quaternion rotation, Vector2 direction)
         {
             view.OnDeflection = null;
             view.OnEarthCollision = null;
             
-            GameManager.Instance.EventManager.Publish(new MeteorDeflected { Position = position });
+            GameManager.Instance.EventManager.Publish
+            (
+                new MeteorDeflected
+                {
+                    Position = position,
+                    Rotation = rotation,
+                    Direction = direction
+                }
+            );
             
             view.ForceRecycle();
         }
 
-        private void Meteor_OnEarthCollisionHandler(MeteorView view, Vector3 position, Quaternion rotation)
+        private void Meteor_OnEarthCollisionHandler(MeteorView view, 
+            Vector3 position, Quaternion rotation, Vector2 direction)
         {
             view.OnDeflection = null;
             view.OnEarthCollision = null;
@@ -214,7 +224,8 @@ namespace _Main.Scripts.Gameplay.Meteor
                 new MeteorCollision
                 {
                     Position = position,
-                    Rotation = rotation
+                    Rotation = rotation,
+                    Direction = direction
                 }
             );
             

@@ -11,7 +11,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         private int _meteorCollisionCount;
 
         private float _startTimer;
-        private bool _doesHandleTimer;
 
         public GameModeMotor()
         {
@@ -22,33 +21,23 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _meteorSpeedController = new MeteorSpeedController();
         }
-                
-        public void Execute()
+        
+        public void StartCountdown(float time)
         {
-            if (_doesHandleTimer)
-            {
-                HandleTimer();
-            }
+            _startTimer = time + 1;
+            NotifyAll(GameModeObserverMessage.StartCountdown);
         }
-
-        private void HandleTimer()
+        
+        public void HandleCountdownTimer(float deltaTime)
         {
-            _startTimer -= Time.deltaTime;
+            _startTimer -= deltaTime;
 
             NotifyAll(GameModeObserverMessage.UpdateCountdown, _startTimer);
             
             if (_startTimer <= 0)
             {
-                _doesHandleTimer = false;
                 NotifyAll(GameModeObserverMessage.CountdownFinish);
             }
-        }
-
-        public void StartCountdown(float time)
-        {
-            _startTimer = time + 1;
-            _doesHandleTimer = true;
-            NotifyAll(GameModeObserverMessage.StartCountdown);
         }
 
         public void StartGame()

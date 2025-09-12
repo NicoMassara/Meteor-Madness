@@ -20,7 +20,7 @@ namespace _Main.Scripts.Menu
         [SerializeField] private SoundBehavior menuSound;
         
         private readonly Timer _resumeTimer = new Timer();
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.UI;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
 
         private void Awake()
         {
@@ -35,7 +35,7 @@ namespace _Main.Scripts.Menu
         
         public void ManagedUpdate()
         {
-            _resumeTimer.Run(CustomTime.DeltaTime);
+            _resumeTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
 
         private void ResumeGame()

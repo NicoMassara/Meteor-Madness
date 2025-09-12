@@ -16,7 +16,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldController _controller;
         private ShieldView _view;
         
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Inputs;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
         private void Awake()
         {
@@ -42,7 +42,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 HandleInputs();
             }
 
-            _controller?.Execute(CustomTime.DeltaTime);
+            _controller?.Execute(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
 
         private void HandleInputs()
@@ -69,7 +69,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void EventBus_ShieldDeflection(MeteorDeflected input)
         {
-            _controller.HandleHit(input.Position);
+            _controller.HandleHit(input.Position, input.Rotation,input.Direction);
         }
 
         private void EventBus_OnEarthShake(ShieldEnable input)

@@ -40,7 +40,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private GameObject _currentSprite;
         private bool _canRotate;
         
-        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
         private void Awake()
         {
@@ -50,11 +50,13 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void ManagedUpdate()
         {
-            _shakerController.HandleShake();
+            var dt = CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+            
+            _shakerController.HandleShake(dt);
             
             if (_canRotate == true)
             {
-                _rotator.Rotate(CustomTime.DeltaTime);
+                _rotator.Rotate(dt);
             }
         }
 
@@ -66,7 +68,10 @@ namespace _Main.Scripts.Gameplay.Earth
                     HandleRestartHealth();
                     break;
                 case EarthObserverMessage.EarthCollision:
-                    HandleCollision((float)args[0],(Vector3)args[1],(Quaternion)args[2]);
+                    HandleCollision((float)args[0],
+                        (Vector3)args[1],
+                        (Quaternion)args[2],
+                        (Vector2)args[3]);
                     break;
                 case EarthObserverMessage.DeclareDeath:
                     HandleDeath();
@@ -94,7 +99,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         #region Health
         
-        private void HandleCollision(float healthAmount, Vector3 position, Quaternion rotation)
+        private void HandleCollision(float healthAmount, Vector3 position, Quaternion rotation, Vector2 direction)
         {
             collisionSound?.PlaySound();
             SetShakeMultiplier(healthAmount);
@@ -107,7 +112,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 {
                     ParticleData = collisionParticleData,
                     Position = position,
-                    Rotation = rotation
+                    Rotation = rotation,
+                    MoveDirection = -direction
                 }
             );
             
