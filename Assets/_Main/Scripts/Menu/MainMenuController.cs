@@ -45,7 +45,7 @@ namespace _Main.Scripts.Menu
 
         private void Update()
         {
-            _playTimer?.Run();
+            _playTimer?.Run(Time.deltaTime);
         }
 
         private void LoadGameplayScene()

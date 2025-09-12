@@ -2,6 +2,7 @@
 using System.Collections;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
@@ -43,7 +44,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public void ManagedUpdate()
         {
-            _deathPanelActionQueue.Run();
+            _deathPanelActionQueue.Run(CustomTime.DeltaTime);
         }
 
         public void OnNotify(string message, params object[] args)
@@ -190,7 +191,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             while (!_numberIncrementer.IsFinished)
             {
-                _numberIncrementer.Run();
+                _numberIncrementer.Run(CustomTime.DeltaTime);
                 increaseAction?.Invoke(GetCurrentPoints());
                 
                 yield return null;
@@ -255,8 +256,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
-
-
+        
         
         private int GetCurrentPoints()
         {

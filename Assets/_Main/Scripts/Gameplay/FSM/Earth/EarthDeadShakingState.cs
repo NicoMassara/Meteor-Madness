@@ -21,9 +21,9 @@ namespace _Main.Scripts.Gameplay.FSM.Earth
             _queue.AddAction(transitionToDead);
         }
 
-        public override void Execute()
+        public override void Execute(float deltaTime)
         {
-            _queue.Run();
+            _queue.Run(deltaTime);
         }
 
         public override void Sleep()

@@ -28,7 +28,7 @@ namespace _Main.Scripts
             _aboutToEndRatio = aboutToEndRatio;
         }
 
-        public void Run()
+        public void Run(float deltaTime)
         {
             if (_currentTime > 0)
             {
@@ -38,7 +38,7 @@ namespace _Main.Scripts
                     _hasStarted = true;
                 }
 
-                _currentTime -= Time.deltaTime;
+                _currentTime -= deltaTime;
 
                 //This trigger when the ratio is higher or lower.
                 //Needs to be higher than 0 to trigger and equal or lower to 1.
@@ -62,9 +62,9 @@ namespace _Main.Scripts
             }
         }
 
-        public bool HasEnded()
+        public bool HasEnded(float deltaTime)
         {
-            Run();
+            Run(deltaTime);
             return GetHasEnded;
         }
 

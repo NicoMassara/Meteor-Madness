@@ -23,10 +23,10 @@ namespace _Main.Scripts.FiniteStateMachine
             _current = init;
             _current.Awake();
         }
-        public void Execute()
+        public void Execute(float deltaTime)
         {
             if (_current != null)
-                _current.Execute();
+                _current.Execute(deltaTime);
         }
 
         public void FixedExecute()

@@ -16,9 +16,9 @@
             _queue.AddAction(startRotation);
         }
 
-        public override void Execute()
+        public override void Execute(float deltaTime)
         {
-            _queue.Run();
+            _queue.Run(deltaTime);
         }
 
         public override void Sleep()

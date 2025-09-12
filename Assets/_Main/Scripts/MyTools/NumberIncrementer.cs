@@ -14,12 +14,12 @@ namespace _Main.Scripts
         public float CurrentValue => _currentValue;
         public bool IsFinished => _currentValue >= _targetValue;
         
-        public void Run()
+        public void Run(float deltaTime)
         {
             _currentValue = Mathf.MoveTowards(
                 _currentValue,
                 _targetValue,
-                (_targetValue - _startValue) / _targetTime * Time.deltaTime
+                (_targetValue - _startValue) / _targetTime * deltaTime
             );
 
             if (IsFinished)

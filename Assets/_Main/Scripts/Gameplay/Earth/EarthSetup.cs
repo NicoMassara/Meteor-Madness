@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
@@ -34,7 +35,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void ManagedUpdate()
         {
-            _controller.Execute();
+            _controller.Execute(CustomTime.DeltaTime);
         }
 
         #region Event Bus

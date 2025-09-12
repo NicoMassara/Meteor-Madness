@@ -24,6 +24,8 @@ namespace _Main.Scripts.Gameplay
             {
                 MovementDirection = 0;
             }
+
+            CustomTime.SetTimeScale(Input.GetKey(KeyCode.Space) ? 0.25f : 1f);
         }
 
         private bool GetIsLeftPressed()

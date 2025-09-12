@@ -32,9 +32,9 @@ namespace _Main.Scripts.Gameplay.Earth
             _motor.OnDeath += Motor_OnDeathHandler;
         }
 
-        public void Execute()
+        public void Execute(float deltaTime)
         {
-            _fsm.Execute();
+            _fsm.Execute(deltaTime);
         }
 
         #region FSM

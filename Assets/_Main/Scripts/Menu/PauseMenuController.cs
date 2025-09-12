@@ -1,5 +1,8 @@
 ﻿using System;
 using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,7 +10,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Menu
 {
-    public class PauseMenuController : MonoBehaviour
+    public class PauseMenuController : ManagedBehavior, IUpdatable
     {
         [Header("Components")]
         [SerializeField] private GameObject pauseMenuPanel;
@@ -17,6 +20,7 @@ namespace _Main.Scripts.Menu
         [SerializeField] private SoundBehavior menuSound;
         
         private readonly Timer _resumeTimer = new Timer();
+        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.UI;
 
         private void Awake()
         {
@@ -28,10 +32,10 @@ namespace _Main.Scripts.Menu
         {
             pauseMenuPanel.SetActive(false);
         }
-
-        private void Update()
+        
+        public void ManagedUpdate()
         {
-            _resumeTimer.Run();
+            _resumeTimer.Run(CustomTime.DeltaTime);
         }
 
         private void ResumeGame()
@@ -58,5 +62,7 @@ namespace _Main.Scripts.Menu
             _resumeTimer.Set(UIPanelTimeValues.ClosePauseMenu);
             _resumeTimer.OnEnd += MainMenu;
         }
+
+
     }
 }

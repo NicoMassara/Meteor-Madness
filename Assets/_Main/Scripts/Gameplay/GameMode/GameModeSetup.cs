@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Managers;
+using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -38,7 +39,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void Update()
         {
-            _controller?.Execute();
+            _controller?.Execute(CustomTime.DeltaTime);
             _motor?.Execute();
         }
         

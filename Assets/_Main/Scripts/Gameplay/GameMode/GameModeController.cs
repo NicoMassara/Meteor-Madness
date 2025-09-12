@@ -30,9 +30,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             InitializeFsm();
         }
 
-        public void Execute()
+        public void Execute(float deltaTime)
         {
-            _fsm?.Execute();
+            _fsm?.Execute(deltaTime);
         }
 
         #region FSM

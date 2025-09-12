@@ -19,11 +19,11 @@ namespace _Main.Scripts
             _rotationSpeed = rotationSpeed;
         }
 
-        public void Rotate()
+        public void Rotate(float deltaTime)
         {
             foreach (Transform transform in _transforms)
             {
-                transform.Rotate(Vector3.forward, _rotationSpeed * Time.deltaTime);
+                transform.Rotate(Vector3.forward, _rotationSpeed * deltaTime);
             }
         }
 

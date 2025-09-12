@@ -3,7 +3,7 @@
     public interface IState<T>
     {
         void Awake();
-        void Execute();
+        void Execute(float deltaTime);
         void FixedExecute();
         void LateExecute();
         void Sleep();

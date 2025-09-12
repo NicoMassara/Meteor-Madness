@@ -1,11 +1,14 @@
 ﻿using System;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Particles;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Comet
 {
-    public class CometFactory : MonoBehaviour
+    public class CometFactory : ManagedBehavior, IUpdatable
     {
         [SerializeField] private CometView cometPrefab;
         [Header("Values")]
@@ -19,16 +22,19 @@ namespace _Main.Scripts.Comet
         private GenericPool<CometView> _pool;
         private bool _isBottomSpawn;
 
+        public UpdateManager.UpdateGroup UpdateGroup { get; } = UpdateManager.UpdateGroup.Gameplay;
+
+
         private void Start()
         {
             _pool = new GenericPool<CometView>(cometPrefab);
             _spawnTimer.Set(GameTimeValues.FirstCometSpawnDelay);
             _spawnTimer.OnEnd += Timer_OnEndHandler;
         }
-
-        private void Update()
+        
+        public void ManagedUpdate()
         {
-            _spawnTimer.Run();
+            _spawnTimer.Run(CustomTime.DeltaTime);
         }
         
         private void Timer_OnEndHandler()

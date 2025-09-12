@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -41,7 +42,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 HandleInputs();
             }
 
-            _controller?.Execute();
+            _controller?.Execute(CustomTime.DeltaTime);
         }
 
         private void HandleInputs()

@@ -9,7 +9,7 @@ namespace _Main.Scripts.Gameplay.FSM.Shield
             Controller.SetSpriteByEnum(SpriteType.Super);
         }
 
-        public override void Execute()
+        public override void Execute(float deltaTime)
         {
             Controller.ForceRotation();
         }

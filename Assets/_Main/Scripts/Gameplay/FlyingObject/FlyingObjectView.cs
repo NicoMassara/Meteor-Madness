@@ -69,7 +69,7 @@ namespace _Main.Scripts.FyingObject
         
         public void ManagedUpdate()
         {
-            _sphereRotator.Rotate();
+            _sphereRotator.Rotate(CustomTime.DeltaTime);
             
             if (_hasFire)
             {

@@ -11,9 +11,9 @@
             _actionQueue.AddAction(showUI);
         }
 
-        public override void Execute()
+        public override void Execute(float deltaTime)
         {
-            _actionQueue.Run();
+            _actionQueue.Run(deltaTime);
         }
     }
 }

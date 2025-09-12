@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
 namespace _Main.Scripts
@@ -21,7 +22,7 @@ namespace _Main.Scripts
 
         public void ManagedUpdate()
         {
-            _rotator.Rotate();
+            _rotator.Rotate(CustomTime.DeltaTime);
         }
     }
 }

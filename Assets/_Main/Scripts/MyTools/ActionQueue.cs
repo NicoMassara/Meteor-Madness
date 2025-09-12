@@ -16,7 +16,7 @@ namespace _Main.Scripts
             _executeTimer.OnEnd += Timer_OnEndHandler;
         }
 
-        public void Run()
+        public void Run(float deltaTime)
         {
             if(CanRun == false) return;
             
@@ -26,7 +26,7 @@ namespace _Main.Scripts
                 _executeTimer.Set(_currentAction.TimeToExecute);
             }
 
-            _executeTimer.Run();
+            _executeTimer.Run(deltaTime);
         }
         
         private void Timer_OnEndHandler()

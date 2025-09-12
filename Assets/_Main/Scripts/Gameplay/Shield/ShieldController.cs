@@ -44,9 +44,9 @@ namespace _Main.Scripts.Gameplay.Shield
             InitializeFsm();
         }
 
-        public void Execute()
+        public void Execute(float deltaTime)
         {
-            _fsm.Execute();
+            _fsm.Execute(deltaTime);
 
             
             //Tester
