@@ -6,7 +6,6 @@ namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeMotor : ObservableComponent
     {
-        private MeteorSpeedController _meteorSpeedController;
         private int _meteorDeflectCount;
         private int _meteorCollisionCount;
 
@@ -14,14 +13,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public GameModeMotor()
         {
-            Initialize();
-        }
 
-        private void Initialize()
-        {
-            _meteorSpeedController = new MeteorSpeedController();
         }
-        
         public void StartCountdown(float time)
         {
             _startTimer = time + 1;
@@ -48,7 +41,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void HandleMeteorDeflect()
         {
             _meteorDeflectCount++;
-            _meteorSpeedController.CheckForNextLevel(_meteorDeflectCount);
             NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);
         }
 
@@ -56,7 +48,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _meteorCollisionCount = 0;
             _meteorDeflectCount = 0;
-            _meteorSpeedController.RestartAll();
         }
 
         #region Earth

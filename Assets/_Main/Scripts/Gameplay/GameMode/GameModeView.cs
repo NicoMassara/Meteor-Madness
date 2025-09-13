@@ -108,11 +108,11 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleSpawnSingleMeteor()
         {
-            GameManager.Instance.EventManager.Publish(new SpawnSingleMeteor{Speed = GameValues.BaseMeteorSpeed});
+            GameManager.Instance.EventManager.Publish(new SpawnSingleMeteor{Speed = GameValues.MaxMeteorSpeed});
         }
         private void HandleSpawnRingMeteor()
         {
-            GameManager.Instance.EventManager.Publish(new SpawnRingMeteor{Speed = GameValues.BaseMeteorSpeed});
+            GameManager.Instance.EventManager.Publish(new SpawnRingMeteor{Speed = GameValues.MaxMeteorSpeed});
         }
 
 

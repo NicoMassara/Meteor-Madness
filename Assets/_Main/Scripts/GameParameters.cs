@@ -4,10 +4,11 @@
     {
         public const int VisualMultiplier = 150;
         public const float ShieldExtend = 1.5f;
-        public const float BaseMeteorSpeed = 10f; //10
+        public const float MaxMeteorSpeed = 23/4f;
         public const int StartStreakShield = 5;
         public const int MaxStreakShield = 10;
         public const int ExtendedMaxHit = 10;
+        public const float ShieldRotationSpeed = 9.8f;
     }
 
     public struct DamageValues
@@ -38,10 +39,10 @@
         public const float DeathShakeDuration = 2f;
         public const float ShowEarthDestruction = 1.5f;
         public const float StartRotatingAfterDeath = 1f;
-        public const float MeteorSpawnDelay = 8f;
+        public const float MeteorSpawnDelay = 3f;
         public const float MeteorDelayBetweenSpawn = 0.25f;
         public const float CometSpawnDelay = 8f;
-        public const float FirstCometSpawnDelay = 10f;
+        public const float FirstCometSpawnDelay = 1f;
     }
 
     public struct UITextValues

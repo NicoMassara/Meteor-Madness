@@ -1397,7 +1397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 564b121823fa41dd972cb7b0d42a38a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentDamageType: 2
+  currentDamageType: 0
 --- !u!4 &464770896
 Transform:
   m_ObjectHideFlags: 0
@@ -1763,7 +1763,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 11
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2273,19 +2273,20 @@ PolygonCollider2D:
       - {x: 0.155, y: 0.28}
       - {x: 0.114999995, y: 0.48}
       - {x: 0.005, y: 0.81}
-      - {x: -0.044999998, y: 0.87}
-      - {x: -0.145, y: 0.87}
-      - {x: -0.155, y: 0.84999996}
-      - {x: -0.155, y: 0.5}
-      - {x: -0.13499999, y: 0.37}
-      - {x: -0.085, y: 0.17}
-      - {x: -0.074999996, y: -0.03}
-      - {x: -0.095, y: -0.21}
-      - {x: -0.155, y: -0.47}
-      - {x: -0.155, y: -0.84999996}
-      - {x: -0.13499999, y: -0.87}
-      - {x: -0.055, y: -0.87}
-      - {x: -0.035, y: -0.85999995}
+      - {x: -0.017617863, y: 0.87391174}
+      - {x: -0.2067044, y: 1.2145125}
+      - {x: -0.34239092, y: 0.86304784}
+      - {x: -0.2948815, y: 0.5}
+      - {x: -0.28232646, y: 0.3830479}
+      - {x: -0.28075704, y: 0.20914368}
+      - {x: -0.28100318, y: 0.018929588}
+      - {x: -0.2739869, y: -0.15128447}
+      - {x: -0.26715982, y: -0.30488032}
+      - {x: -0.27246967, y: -0.3884507}
+      - {x: -0.2679682, y: -0.6715511}
+      - {x: -0.28611553, y: -0.8318781}
+      - {x: -0.16843837, y: -1.1235377}
+      - {x: -0.06014935, y: -0.95529175}
       - {x: 0.024999999, y: -0.76}
       - {x: 0.125, y: -0.44}
   m_UseDelaunayMesh: 1
@@ -2451,11 +2452,12 @@ MonoBehaviour:
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 30
   ringOffset:
-  - 1.756
-  - 1.412
-  - 1.297
-  - 1.261
+  - 1.5
+  - 1.5
+  - 1.25
+  - 1.25
   ringMeteorSpawnAmount: 5
+  ringsToUse: 5
 --- !u!1 &780262261
 GameObject:
   m_ObjectHideFlags: 0
@@ -5298,7 +5300,7 @@ MonoBehaviour:
   superSprite: {fileID: 1667250004}
   hitSound: {fileID: 163182589}
   moveSound: {fileID: 1982406300}
-  rotateSpeed: 6.75
+  rotateSpeed: 11
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
   cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 11400000, guid: 5ce58a01a5bf45a4389c9d0c8a108114, type: 2}

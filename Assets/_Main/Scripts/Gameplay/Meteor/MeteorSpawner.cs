@@ -2,6 +2,7 @@
 using System.Collections;
 using _Main.Scripts.Managers;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Gameplay.Meteor
@@ -18,10 +19,11 @@ namespace _Main.Scripts.Gameplay.Meteor
         [SerializeField] private float[] ringOffset;
         [Range(2, 360f)] 
         [SerializeField] private int ringMeteorSpawnAmount;
+        [Range(1,5)]
+        [SerializeField] private int ringsToUse = 5;
         
         private MeteorFactory _meteorFactory;
         private float[] _spawnAngleArr;
-
 
         private void Awake()
         {
@@ -48,7 +50,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         // ReSharper disable Unity.PerformanceAnalysis
         private IEnumerator SpawnSingleMeteorCoroutine(float meteorSpeed)
         {
-            for (int i = 5 - 1; i >= 0; i--)
+            for (int i = ringsToUse - 1; i >= 0; i--)
             {
                 var position = GetPositionInRadius(i);
                 var finalSpeed = Random.Range(meteorSpeed*0.95f, meteorSpeed*1.05f);
@@ -56,60 +58,63 @@ namespace _Main.Scripts.Gameplay.Meteor
                 
                 yield return new WaitForSeconds(GameTimeValues.MeteorDelayBetweenSpawn);
             }
-            
-            /*for (int i = 0; i < 5; i++)
-            {
-                CreateMeteor(meteorSpeed, i);
-
-                yield return new WaitForSeconds(_delayBetweenSpawns);
-            }*/
         }
+        
+        private float GetValidAngle(float lastAngle, float proximityRange)
+        {
+            float angle;
+            int safety = 0;
+            do
+            {
+                angle = Random.Range(0f, 359f);
+                safety++;
+                if (safety > 1000) // seguridad anti-bucle infinito
+                {
+                    Debug.LogWarning("No se encontró un ángulo válido!");
+                    angle = lastAngle + (180 - (proximityRange - 1));
+                    break;
+                }
+            }
+            while (!IsAngleValid(angle,lastAngle,proximityRange));
+
+            return angle;
+        }
+        
+        private bool IsAngleValid(float angle, float lastAngle, float proximityRange)
+        {
+            if (lastAngle < 0) return true; // primera vez siempre válido
+
+            // Diferencia directa
+            float diff = Mathf.DeltaAngle(lastAngle, angle);
+
+            // Zona prohibida alrededor del último
+            if (Mathf.Abs(diff) < proximityRange) return false;
+
+            // Zona prohibida alrededor del opuesto
+            float oppDiff = Mathf.DeltaAngle(lastAngle + 180f, angle);
+            if (Mathf.Abs(oppDiff) < proximityRange) return false;
+
+            return true;
+        }
+        
         
         private float[] CreateSpawnAngle()
         {
-            float[] angleArr = new float[5];
-            float proximityRange = 45 / 2f;
+            float[] angleArr = new float[ringsToUse];
+            float proximityRange = 30 / 2f;
+
 
             for (int i = 0; i < angleArr.Length; i++)
             {
-                float newAngle;
-                bool valid;
-
-                do
+                if (i == 0)
                 {
-                    newAngle = Random.Range(0f, 360f);
-                    valid = true;
-
-                    for (int j = 0; j < i; j++)
-                    {
-                        float checkAngle = angleArr[j];
-
-                        // Creamos el rango de exclusión
-                        float lowerBound = (checkAngle - proximityRange + 360f) % 360f;
-                        float upperBound = (checkAngle + proximityRange) % 360f;
-
-                        // Verificar si newAngle cae dentro del rango
-                        if (lowerBound < upperBound)
-                        {
-                            if (newAngle >= lowerBound && newAngle <= upperBound)
-                            {
-                                valid = false;
-                                break;
-                            }
-                        }
-                        else // el rango envuelve 0°
-                        {
-                            if (newAngle >= lowerBound || newAngle <= upperBound)
-                            {
-                                valid = false;
-                                break;
-                            }
-                        }
-                    }
-
-                } while (!valid);
-
-                angleArr[i] = newAngle;
+                    angleArr[i] = Random.Range(0f, 359f);
+                }
+                else
+                {
+                    var lastAngle = angleArr[i - 1];
+                    angleArr[i] = GetValidAngle(lastAngle,proximityRange);
+                }
             }
 
             return angleArr;
