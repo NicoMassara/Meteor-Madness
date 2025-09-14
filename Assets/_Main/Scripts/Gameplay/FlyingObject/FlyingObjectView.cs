@@ -64,7 +64,7 @@ namespace _Main.Scripts.FyingObject
                 _fireRotationOscillator = new Oscillator(10, 1, 90);
             }
 
-            _sphereRotator = new Rotator(sphereObject.transform, maxRotationSpeed);
+            _sphereRotator = new Rotator(sphereObject.transform,Vector3.forward, maxRotationSpeed);
             _sphereRotator.SetSpeed(GetRotationSpeed());
         }
         

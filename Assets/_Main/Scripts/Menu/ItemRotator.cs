@@ -17,7 +17,7 @@ namespace _Main.Scripts.Menu
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         private void Start()
         {
-            _rotator = new Rotator(itemTransform,rotationSpeed);
+            _rotator = new Rotator(itemTransform,Vector3.forward, rotationSpeed);
         }
         
         public void ManagedUpdate()

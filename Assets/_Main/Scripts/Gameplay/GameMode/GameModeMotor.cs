@@ -7,7 +7,9 @@ namespace _Main.Scripts.Gameplay.GameMode
     public class GameModeMotor : ObservableComponent
     {
         private int _meteorDeflectCount;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
         private int _meteorCollisionCount;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
 
         private float _startTimer;
 

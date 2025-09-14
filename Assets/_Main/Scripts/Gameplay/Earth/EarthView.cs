@@ -13,11 +13,12 @@ namespace _Main.Scripts.Gameplay.Earth
 {
     public class EarthView : ManagedBehavior, IObserver, IUpdatable
     {
+        [Header("Model Components")]
+        [SerializeField] private GameObject modelContainer;
         [Header("Sprite Components")]
         [SerializeField] private GameObject spriteContainer;
-        [SerializeField] private GameObject normalSpriteObject;
         [SerializeField] private GameObject brokenSpriteObject;
-        [SerializeField] private SpriteRenderer normalSpriteRenderer;
+        [SerializeField] private MeshRenderer modelMeshRenderer;
         [Space]
         [Header("Sounds")]
         [SerializeField] private SoundBehavior collisionSound;
@@ -34,18 +35,23 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private float rotationSpeed = 25;
         [SerializeField] private ParticleDataSo collisionParticleData;
         
+        private Material _modelMaterial;
         private EarthController _controller;
         private ShakerController _shakerController;
-        private Rotator _rotator;
         private GameObject _currentSprite;
+        private EarthRotator _earthRotator;
         private bool _canRotate;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
         private void Awake()
         {
-            _rotator = new Rotator(spriteContainer.transform, rotationSpeed);
-            _shakerController = new ShakerController(spriteContainer.transform);
+            _earthRotator = new EarthRotator(modelContainer.transform, spriteContainer.transform, rotationSpeed);
+            _shakerController = new ShakerController(modelContainer.transform);
+            //Model Material Settings
+            _modelMaterial = modelMeshRenderer.materials[0];
+            modelMeshRenderer.sortingLayerName = "Earth";
+            modelMeshRenderer.sortingOrder = 0;
         }
 
         public void ManagedUpdate()
@@ -56,7 +62,7 @@ namespace _Main.Scripts.Gameplay.Earth
             
             if (_canRotate == true)
             {
-                _rotator.Rotate(dt);
+                _earthRotator.Rotate(dt);
             }
         }
 
@@ -104,7 +110,7 @@ namespace _Main.Scripts.Gameplay.Earth
             collisionSound?.PlaySound();
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
-            _rotator.SetSpeed(rotationSpeed * healthAmount);
+            _earthRotator.SetRotationSpeed(rotationSpeed * healthAmount);
             
             GameManager.Instance.EventManager.Publish
             (
@@ -130,8 +136,10 @@ namespace _Main.Scripts.Gameplay.Earth
             UpdateColorByHealth(1);
             SetSpriteType(EarthSpriteType.Normal);
             SetShakeMultiplier(1);
-            _rotator.SetSpeed(rotationSpeed);
+            _earthRotator.SetRotationSpeed(rotationSpeed);
+            //_rotator.SetSpeed(rotationSpeed);
             spriteContainer.transform.rotation = Quaternion.identity;
+            modelContainer.transform.rotation = Quaternion.identity;
             _shakerController.SetShakeData(healthShakeData);
         }
 
@@ -156,7 +164,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private void HandleDestruction()
         {
             deathSound?.PlaySound();
-            _rotator.SetSpeed(rotationSpeed/2); // Show this slow rotation when is destroyed
+            _earthRotator.SetRotationSpeed(rotationSpeed/2);
             SetSpriteType(EarthSpriteType.Broken);
         }
 
@@ -183,7 +191,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
             _currentSprite = spriteType switch
             {
-                EarthSpriteType.Normal => normalSpriteObject,
+                EarthSpriteType.Normal => modelContainer,
                 EarthSpriteType.Broken => brokenSpriteObject,
                 _ => _currentSprite
             };
@@ -205,7 +213,9 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void UpdateColorByHealth(float currentHealth)
         {
-            normalSpriteRenderer.color = new Color(1, currentHealth, currentHealth);
+            _modelMaterial.EnableKeyword("_EMISSION");
+            
+            _modelMaterial.SetColor("_EmissionColor", new Color(1, currentHealth, currentHealth)); 
         }
 
         public void SetController(EarthController controller)

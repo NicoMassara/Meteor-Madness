@@ -17,7 +17,7 @@ namespace _Main.Scripts
 
         private void Start()
         {
-            _rotator = new Rotator(galaxies, rotationSpeed);
+            _rotator = new Rotator(galaxies,Vector3.forward,rotationSpeed);
         }
 
         public void ManagedUpdate()
