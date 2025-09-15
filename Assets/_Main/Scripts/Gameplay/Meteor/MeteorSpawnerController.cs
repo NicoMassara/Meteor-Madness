@@ -21,6 +21,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         private MeteorLocationSpawnController _locationSpawn;
         private MeteorFactory _meteorFactory;
         private bool _canSpawn;
+        private bool _isSpawningRing;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
@@ -30,6 +31,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             //Add events to EventManager
             var eventManager = GameManager.Instance.EventManager;
+            eventManager.Subscribe<GameRestart>(EnventBus_GameRestart);
             eventManager.Subscribe<UpdateLevel>(EnventBus_UpdateLevel);
             eventManager.Subscribe<EnableMeteorSpawn>(EnventBus_EnableMeteorSpawn);
             eventManager.Subscribe<SpawnRingMeteor>(EnventBus_SpawnRingMeteor);
@@ -55,38 +57,48 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         public void SpawnSingleMeteor(float meteorSpeed)
         {
-            _locationSpawn.CreateSpawnAngleArray();
-            
-            for (int i = _locationSpawn.RingsToUse - 1; i >= 0; i--)
-            {
-                var position = _locationSpawn.GetPositionInRadius(i);
-                var finalSpeed = Random.Range(meteorSpeed*0.95f, meteorSpeed*1.05f);
-                CreateMeteor(finalSpeed, position);
-            }
+            var position = _locationSpawn.GetPositionByAngle(_locationSpawn.GetSpawnAngle());
+            var finalSpeed = Random.Range(meteorSpeed*0.95f, meteorSpeed*1.05f);
+            CreateMeteor(finalSpeed, position);
         }
         
         public void SpawnRingMeteor(float meteorSpeed)
         {
+            StartCoroutine(CreateRingMeteor(meteorSpeed));
+        }
+
+        private IEnumerator CreateRingMeteor(float meteorSpeed)
+        {
+            _isSpawningRing = true;
+            
             var currAngle = 0f;
             var amountToSpawn = (float)_locationSpawn.RingMeteorSpawnAmount;
+            var ringsToUse = _locationSpawn.RingsAmount;
             var angleOffset = 360f / amountToSpawn;
             var startAngleOffset = angleOffset/2;
             var startOffset = 0f;
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < ringsToUse; i++)
             {
+                if(_canSpawn == false) yield break; 
+                
                 for (int j = 0; j < amountToSpawn; j++)
                 {
-                    CreateMeteor(meteorSpeed, _locationSpawn.GetPositionByAngle(currAngle, i));
+                    CreateMeteor(meteorSpeed, _locationSpawn.GetPositionByAngle(currAngle));
                     currAngle += angleOffset;
                     currAngle = Mathf.Repeat(currAngle, 360f);
                 }
+                
                 startOffset += startAngleOffset;
                 startOffset = Mathf.Repeat(startOffset, 360f);
                 currAngle = startOffset;
+                
+                yield return new WaitForSeconds(GameTimeValues.RingMeteorDelayBetweenSpawn);
             }
+            
+            _isSpawningRing = false;
         }
-        
+
 
         #endregion
         
@@ -154,8 +166,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             var finalSpeed = GameValues.MaxMeteorSpeed * _spawnSettings.GetMultiplier();
             SpawnSingleMeteor(finalSpeed);
-            /*var finalSpeed = GameValues.MaxMeteorSpeed;
-            SpawnSingleMeteor(finalSpeed);*/
             _spawnTimer.Set(GameTimeValues.MeteorSpawnDelay);
         }
 
@@ -181,6 +191,11 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void EnventBus_RecycleAllMeteors(RecycleAllMeteors input)
         {
             RecycleAll();
+        }
+        
+        private void EnventBus_GameRestart(GameRestart input)
+        {
+            _locationSpawn.RestartValues();
         }
 
         #endregion
@@ -214,5 +229,11 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             return _spawnMultiplier[_currentIndex];
         }
+    }
+
+    public class MeteorSpawnData
+    {
+        public float SpeedMultiplier;
+        public int SpawnAmount;
     }
 }

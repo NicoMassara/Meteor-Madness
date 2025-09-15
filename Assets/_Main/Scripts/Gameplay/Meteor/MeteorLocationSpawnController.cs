@@ -8,43 +8,50 @@ namespace _Main.Scripts.Gameplay.Meteor
     {
         [Header("Components")]
         [SerializeField] private Transform centerOfGravity;
-        [Header("Spawn Rings")] 
+        [Header("Values")] 
         [Range(22f,100f)]
         [SerializeField] private float spawnRadius;
-        [Range(1.1f, 2.5f)] 
-        [SerializeField] private float[] ringOffset;
-        [Range(2, 15)] 
-        [SerializeField] private int ringMeteorSpawnAmount;
-        [Range(1,5)]
-        [SerializeField] private int ringsToUse = 5;
-        
-        public int RingsToUse => ringsToUse;
-        public int RingMeteorSpawnAmount => ringMeteorSpawnAmount;
-        
-        private float[] _spawnAngleArr;
+        [Range(1, 180f)] 
+        [SerializeField] private int minSpawnProximity = 30;
+        [Range(0, 180)] 
+        [SerializeField] private int maxSpawnProximity = 180;
+        [Header("Ring Meteor Value")]
+        [Range(2,20)]
+        [SerializeField] private int ringSpawnAmount;
+        [Range(1, 10)] 
+        [SerializeField] private int ringsAmount;
+
+        private float _lasAngle;
+        private bool _isFirstSpawn;
+        public int RingMeteorSpawnAmount => ringSpawnAmount;
+        public int RingsAmount => ringsAmount;
+
+        public void RestartValues()
+        {
+            _lasAngle = 0;
+            _isFirstSpawn = true;
+        }
 
         #region Create Spawn Angle
 
-        public void CreateSpawnAngleArray()
+        // ReSharper disable Unity.PerformanceAnalysis
+        public float GetSpawnAngle()
         {
-            float[] angleArr = new float[ringsToUse];
-            float proximityRange = 30 / 2f;
+            float proximityRange = (float)(minSpawnProximity / 2f);
+            float angle = 0f;
 
-
-            for (int i = 0; i < angleArr.Length; i++)
+            if (_isFirstSpawn)
             {
-                if (i == 0)
-                {
-                    angleArr[i] = Random.Range(0f, 359f);
-                }
-                else
-                {
-                    var lastAngle = angleArr[i - 1];
-                    angleArr[i] = GetValidAngle(lastAngle,proximityRange);
-                }
+                _isFirstSpawn = false;
+                angle = Random.Range(0f, 359f);
             }
+            else
+            {
+                angle =  GetValidAngle(_lasAngle,proximityRange);
+            }
+            
+            return angle;
 
-            _spawnAngleArr = angleArr;
         }
         
         private float GetValidAngle(float lastAngle, float proximityRange)
@@ -58,7 +65,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                 if (safety > 1000) // seguridad anti-bucle infinito
                 {
                     Debug.LogWarning("No se encontró un ángulo válido!");
-                    angle = lastAngle + (180 - (proximityRange - 1));
+                    angle = lastAngle + (maxSpawnProximity - (proximityRange - 1));
                     break;
                 }
             }
@@ -78,7 +85,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             if (Mathf.Abs(diff) < proximityRange) return false;
 
             // Zona prohibida alrededor del opuesto
-            float oppDiff = Mathf.DeltaAngle(lastAngle + 180f, angle);
+            float oppDiff = Mathf.DeltaAngle(lastAngle + maxSpawnProximity, angle);
             if (Mathf.Abs(oppDiff) < proximityRange) return false;
 
             return true;
@@ -88,50 +95,23 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         #region Get Position
 
-        public Vector2 GetPositionByAngle(float angle, int ringIndex)
+        public Vector2 GetPositionByAngle(float angle)
         {
             float radians = angle * Mathf.Deg2Rad;
             
             //Point in Radius
-            Vector2 point = new Vector2(MathF.Cos(radians), Mathf.Sin(radians)) * GetRingOffset(ringIndex);
+            Vector2 point = new Vector2(MathF.Cos(radians), Mathf.Sin(radians)) * spawnRadius;
             return point;
         }
-
-        public Vector2 GetPositionInRadius(int ringIndex)
-        {
-            return GetPositionByAngle(_spawnAngleArr[ringIndex], ringIndex);
-        }
+        
 
         #endregion
-
-
-        private float GetRingOffset(int ringNumber)
-        {
-            float offset = ringNumber switch
-            {
-                0 => spawnRadius,
-                1 => (spawnRadius * ringOffset[0]),
-                2 => (spawnRadius * ringOffset[0]) * ringOffset[1],
-                3 => ((spawnRadius * ringOffset[0]) * ringOffset[1]) * ringOffset[2],
-                4 => (((spawnRadius * ringOffset[0]) * ringOffset[1]) * ringOffset[2]) * ringOffset[3],
-                _ => -1
-            };
-
-            return offset;
-        }
         
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(centerOfGravity.position, GetRingOffset(0));
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(centerOfGravity.position, GetRingOffset(1));
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(centerOfGravity.position, GetRingOffset(2));
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(centerOfGravity.position, GetRingOffset(3));
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(centerOfGravity.position, GetRingOffset(4));
+            Gizmos.DrawWireSphere(centerOfGravity.position, spawnRadius);
+
         }
     }
 }

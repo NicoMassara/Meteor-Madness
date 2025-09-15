@@ -25,6 +25,7 @@ namespace _Main.Scripts.Managers
     #region GameMode
 
     public struct GameFinished { };
+    public struct GameRestart { };
 
     public struct UpdateLevel
     {

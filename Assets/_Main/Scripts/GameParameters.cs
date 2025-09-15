@@ -39,8 +39,8 @@
         public const float DeathShakeDuration = 2f;
         public const float ShowEarthDestruction = 1.5f;
         public const float StartRotatingAfterDeath = 1f;
-        public const float MeteorSpawnDelay = 3f;
-        public const float MeteorDelayBetweenSpawn = 0.25f;
+        public const float MeteorSpawnDelay = 0.75f;
+        public const float RingMeteorDelayBetweenSpawn = 0.25f;
         public const float CometSpawnDelay = 8f;
         public const float FirstCometSpawnDelay = 1f;
     }

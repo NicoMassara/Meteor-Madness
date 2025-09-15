@@ -69,6 +69,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             deathTheme?.StopSound();
+            GameManager.Instance.EventManager.Publish(new GameRestart());
             GameManager.Instance.EventManager.Publish(new EarthRestart());
             GameManager.Instance.EventManager.Publish(new CameraZoomOut());
         }
