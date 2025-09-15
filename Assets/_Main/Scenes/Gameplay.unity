@@ -1527,7 +1527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 564b121823fa41dd972cb7b0d42a38a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentDamageType: 0
+  currentDamageType: 1
 --- !u!4 &464770896
 Transform:
   m_ObjectHideFlags: 0
@@ -2576,6 +2576,7 @@ GameObject:
   m_Component:
   - component: {fileID: 709288248}
   - component: {fileID: 709288249}
+  - component: {fileID: 709288250}
   m_Layer: 0
   m_Name: MeteorSpawnner
   m_TagString: Untagged
@@ -2612,14 +2613,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meteorPrefab: {fileID: 2969321756996762836, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
   centerOfGravity: {fileID: 854189257}
+--- !u!114 &709288250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709288247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 182035e9c12d4c90826b4976880bb05f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  centerOfGravity: {fileID: 854189257}
   spawnRadius: 30
-  ringOffset:
-  - 1.5
-  - 1.5
-  - 1.25
-  - 1.25
-  ringMeteorSpawnAmount: 5
-  ringsToUse: 5
+  minSpawnProximity: 45
+  maxSpawnProximity: 120
+  ringSpawnAmount: 8
+  ringsAmount: 10
 --- !u!1 &724356219
 GameObject:
   m_ObjectHideFlags: 0

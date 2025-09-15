@@ -18,6 +18,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private readonly MeteorSpawnSettings _spawnSettings = new MeteorSpawnSettings();
         private readonly Timer _spawnTimer = new Timer();
+        private readonly MeteorTravelledDistanceTracker _travelledDistanceTracker = new MeteorTravelledDistanceTracker();
         private MeteorLocationSpawnController _locationSpawn;
         private MeteorFactory _meteorFactory;
         private bool _canSpawn;
@@ -42,14 +43,26 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             _meteorFactory = new MeteorFactory(meteorPrefab);
             _spawnTimer.OnEnd += SpawnTimer_OnEndHandler;
-            _spawnTimer.Set(1f);
         }
 
         public void ManagedUpdate()
         {
-            if (_canSpawn)
+            if (_canSpawn && !_isSpawningRing)
             {
                 _spawnTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            }
+
+            if (_travelledDistanceTracker.HasMeteor && _canSpawn && !_isSpawningRing)
+            {
+                if (_travelledDistanceTracker.GetTravelledDistanceRatio() <= _spawnSettings.GetMaxTravelDistance())
+                {
+                    SpawnSingleMeteor(GameValues.MaxMeteorSpeed);
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SpawnSingleMeteor(GameValues.MaxMeteorSpeed);
             }
         }
 
@@ -58,7 +71,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void SpawnSingleMeteor(float meteorSpeed)
         {
             var position = _locationSpawn.GetPositionByAngle(_locationSpawn.GetSpawnAngle());
-            var finalSpeed = Random.Range(meteorSpeed*0.95f, meteorSpeed*1.05f);
+            var finalSpeed = meteorSpeed * _spawnSettings.GetMovementMultiplier();
             CreateMeteor(finalSpeed, position);
         }
 
@@ -115,6 +128,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             tempMeteor.SetValues(meteorSpeed, tempRot, spawnPosition,direction.normalized);
             tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
             tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
+            _travelledDistanceTracker.SetMeteor(tempMeteor, centerOfGravity.position);
         }
 
         public void RecycleAll()
@@ -164,9 +178,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void SpawnTimer_OnEndHandler()
         {
-            var finalSpeed = GameValues.MaxMeteorSpeed * _spawnSettings.GetMultiplier();
-            SpawnSingleMeteor(finalSpeed);
-            _spawnTimer.Set(GameTimeValues.MeteorSpawnDelay);
+            SpawnSingleMeteor(GameValues.MaxMeteorSpeed);
         }
 
         #endregion
@@ -195,45 +207,115 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void EnventBus_GameRestart(GameRestart input)
         {
+            _spawnTimer.Set(1f);
             _locationSpawn.RestartValues();
         }
 
         #endregion
     }
 
+    public class MeteorTravelledDistanceTracker
+    {
+        private IMeteor _meteor;
+        private Vector2 _targetPosition;
+        private float _totalDistance;
+        
+        public bool HasMeteor => _meteor != null;
+
+        public void SetMeteor(IMeteor meteor, Vector2 targetPosition)
+        {
+            _meteor = meteor;
+            _targetPosition = targetPosition;
+            _totalDistance = Vector2.Distance(_meteor.Position, targetPosition);
+        }
+
+        public float GetTravelledDistanceRatio()
+        {
+            var currentDistance = Vector2.Distance(_meteor.Position, _targetPosition);
+            
+            return currentDistance/_totalDistance;
+        }
+    }
+
     public class MeteorSpawnSettings
     {
         private int _currentIndex;
-        
-        private readonly float[] _spawnMultiplier = new float[]
+
+        private readonly MeteorSpawnData[] _spawnData = new[]
         {
-            0.50f,
-            0.60f,
-            0.70f,
-            0.75f,
-            0.80f,
-            0.80f,
-            0.90f,
-            0.90f,
-            0.95f,
-            1
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 0.50f,
+                TravelDistance = 0.11f
+            },
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 0.60f,
+                TravelDistance = 0.15f
+            },
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 0.70f,
+                TravelDistance = 0.20f
+            },
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 0.75f,
+                TravelDistance = 0.25f
+            },
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 0.80f,
+                TravelDistance = 0.30f
+            },
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 0.80f,
+                TravelDistance = 0.45f
+            },
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 0.90f,
+                TravelDistance = 0.50f
+            },
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 0.90f,
+                TravelDistance = 0.55f
+            },
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 0.95f,
+                TravelDistance = 0.60f
+            },
+            new MeteorSpawnData()
+            {
+                SpeedMultiplier = 1f,
+                TravelDistance = 0.70f
+            }
         };
 
         public void SetIndex(int index)
         {
             _currentIndex = index;
-            _currentIndex = Mathf.Clamp(_currentIndex, 0, _spawnMultiplier.Length - 1);
+            _currentIndex = Mathf.Clamp(_currentIndex, 0, _spawnData.Length - 1);
         }
 
-        public float GetMultiplier()
+        public float GetMovementMultiplier()
         {
-            return _spawnMultiplier[_currentIndex];
+            return _spawnData[_currentIndex].SpeedMultiplier;
+        }
+
+        public float GetMaxTravelDistance()
+        {
+            return _spawnData[_currentIndex].TravelDistance;
         }
     }
 
     public class MeteorSpawnData
     {
         public float SpeedMultiplier;
-        public int SpawnAmount;
+        // The distance needs a Meteor to travel in order to spawn a new one, goes from 1 to 0. 
+        public float TravelDistance; 
     }
 }

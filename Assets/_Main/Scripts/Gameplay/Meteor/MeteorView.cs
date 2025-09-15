@@ -5,10 +5,11 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView>
+    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView>, IMeteor
     {
         public UnityAction<MeteorView, Vector3, Quaternion, Vector2> OnEarthCollision;
         public UnityAction<MeteorView, Vector3, Quaternion, Vector2> OnDeflection;
+        public Vector2 Position => (Vector2)transform.position;
         
         public override void OnNotify(string message, params object[] args)
         {
@@ -37,5 +38,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             OnDeflection?.Invoke(this,position,rotation,direction);
             HandleCollision(false, position, direction,true);
         }
+
     }
 }

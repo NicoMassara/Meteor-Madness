@@ -48,10 +48,11 @@ namespace _Main.Scripts.Gameplay.Meteor
             else
             {
                 angle =  GetValidAngle(_lasAngle,proximityRange);
+                float diferenciaAbs = Mathf.Abs(Mathf.DeltaAngle(_lasAngle, angle));
             }
             
+            _lasAngle = angle; 
             return angle;
-
         }
         
         private float GetValidAngle(float lastAngle, float proximityRange)
@@ -70,7 +71,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                 }
             }
             while (!IsAngleValid(angle,lastAngle,proximityRange));
-
+            
             return angle;
         }
         
@@ -111,6 +112,18 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(centerOfGravity.position, spawnRadius);
+            Gizmos.color = Color.yellow;
+            float dist1 = centerOfGravity.position.x + spawnRadius;
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.11f);
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.15f);
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.20f);
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.25f);
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.30f);
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.45f);
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.50f);
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.55f);
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.60f);
+            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.70f);
 
         }
     }
