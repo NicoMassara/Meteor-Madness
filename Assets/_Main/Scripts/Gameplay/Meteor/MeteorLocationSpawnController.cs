@@ -25,6 +25,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         private bool _isFirstSpawn;
         public int RingMeteorSpawnAmount => ringSpawnAmount;
         public int RingsAmount => ringsAmount;
+        public float SpawnRadius => spawnRadius;
 
         public void RestartValues()
         {
@@ -107,24 +108,5 @@ namespace _Main.Scripts.Gameplay.Meteor
         
 
         #endregion
-        
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(centerOfGravity.position, spawnRadius);
-            Gizmos.color = Color.yellow;
-            float dist1 = centerOfGravity.position.x + spawnRadius;
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.11f);
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.15f);
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.20f);
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.25f);
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.30f);
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.45f);
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.50f);
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.55f);
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.60f);
-            Gizmos.DrawWireSphere(centerOfGravity.position, dist1 * 0.70f);
-
-        }
     }
 }

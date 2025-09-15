@@ -2613,6 +2613,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meteorPrefab: {fileID: 2969321756996762836, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
   centerOfGravity: {fileID: 854189257}
+  meteorSpawnDataSo: {fileID: 11400000, guid: 9d29848a0c7d74346a7b13c97f3dedba, type: 2}
+  spawnRadius: 24.5
 --- !u!114 &709288250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2626,9 +2628,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   centerOfGravity: {fileID: 854189257}
-  spawnRadius: 30
-  minSpawnProximity: 45
-  maxSpawnProximity: 120
+  spawnRadius: 25
+  minSpawnProximity: 50
+  maxSpawnProximity: 145
   ringSpawnAmount: 8
   ringsAmount: 10
 --- !u!1 &724356219

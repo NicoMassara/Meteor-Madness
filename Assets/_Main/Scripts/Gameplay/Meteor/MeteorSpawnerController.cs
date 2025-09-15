@@ -15,10 +15,14 @@ namespace _Main.Scripts.Gameplay.Meteor
         [Header("Components")]
         [SerializeField] private MeteorView meteorPrefab;
         [SerializeField] private Transform centerOfGravity;
-
-        private readonly MeteorSpawnSettings _spawnSettings = new MeteorSpawnSettings();
+        [SerializeField] private MeteorSpawnDataSo meteorSpawnDataSo;
+        [Header("Values")] 
+        [Range(22f,100f)]
+        [SerializeField] private float spawnRadius;
+        
         private readonly Timer _spawnTimer = new Timer();
         private readonly MeteorTravelledDistanceTracker _travelledDistanceTracker = new MeteorTravelledDistanceTracker();
+        private MeteorSpawnSettings _spawnSettings;
         private MeteorLocationSpawnController _locationSpawn;
         private MeteorFactory _meteorFactory;
         private bool _canSpawn;
@@ -42,6 +46,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void Start()
         {
             _meteorFactory = new MeteorFactory(meteorPrefab);
+            _spawnSettings = new MeteorSpawnSettings(meteorSpawnDataSo);
             _spawnTimer.OnEnd += SpawnTimer_OnEndHandler;
         }
 
@@ -212,6 +217,22 @@ namespace _Main.Scripts.Gameplay.Meteor
         }
 
         #endregion
+        
+        
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(centerOfGravity.position, spawnRadius);
+            float temp = centerOfGravity.position.x + spawnRadius;
+
+            foreach (var t in meteorSpawnDataSo.SpawnData)
+            {
+                var multiplier = t.TravelDistance;
+                Gizmos.color = new Color(multiplier, .5f, multiplier/2f, 1);
+                Gizmos.DrawWireSphere(centerOfGravity.position, multiplier * temp);
+            }
+        }
+        
     }
 
     public class MeteorTravelledDistanceTracker
@@ -236,86 +257,31 @@ namespace _Main.Scripts.Gameplay.Meteor
             return currentDistance/_totalDistance;
         }
     }
-
     public class MeteorSpawnSettings
     {
         private int _currentIndex;
+        private readonly MeteorSpawnDataSo _soData;
 
-        private readonly MeteorSpawnData[] _spawnData = new[]
+        public MeteorSpawnSettings(MeteorSpawnDataSo soData)
         {
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 0.50f,
-                TravelDistance = 0.11f
-            },
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 0.60f,
-                TravelDistance = 0.15f
-            },
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 0.70f,
-                TravelDistance = 0.20f
-            },
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 0.75f,
-                TravelDistance = 0.25f
-            },
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 0.80f,
-                TravelDistance = 0.30f
-            },
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 0.80f,
-                TravelDistance = 0.45f
-            },
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 0.90f,
-                TravelDistance = 0.50f
-            },
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 0.90f,
-                TravelDistance = 0.55f
-            },
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 0.95f,
-                TravelDistance = 0.60f
-            },
-            new MeteorSpawnData()
-            {
-                SpeedMultiplier = 1f,
-                TravelDistance = 0.70f
-            }
-        };
+            _soData = soData;
+        }
 
         public void SetIndex(int index)
         {
             _currentIndex = index;
-            _currentIndex = Mathf.Clamp(_currentIndex, 0, _spawnData.Length - 1);
+            _currentIndex = Mathf.Clamp(_currentIndex, 0, _soData.SpawnData.Length - 1);
         }
 
         public float GetMovementMultiplier()
         {
-            return _spawnData[_currentIndex].SpeedMultiplier;
+            return _soData.SpawnData[_currentIndex].SpeedMultiplier;
         }
 
         public float GetMaxTravelDistance()
         {
-            return _spawnData[_currentIndex].TravelDistance;
+            return _soData.SpawnData[_currentIndex].TravelDistance;
         }
     }
 
-    public class MeteorSpawnData
-    {
-        public float SpeedMultiplier;
-        // The distance needs a Meteor to travel in order to spawn a new one, goes from 1 to 0. 
-        public float TravelDistance; 
-    }
 }

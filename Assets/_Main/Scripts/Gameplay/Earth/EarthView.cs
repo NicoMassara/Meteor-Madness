@@ -51,7 +51,7 @@ namespace _Main.Scripts.Gameplay.Earth
             //Model Material Settings
             _modelMaterial = modelMeshRenderer.materials[0];
             modelMeshRenderer.sortingLayerName = "Earth";
-            modelMeshRenderer.sortingOrder = 0;
+            modelMeshRenderer.sortingOrder = 1;
         }
 
         public void ManagedUpdate()
