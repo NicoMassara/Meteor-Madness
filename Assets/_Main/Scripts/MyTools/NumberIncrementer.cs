@@ -28,6 +28,11 @@ namespace _Main.Scripts
             }
         }
 
+        public void ResetValues()
+        {
+            _currentValue = 0;
+        }
+
         public void SetData(NumberIncrementerData data)
         {
             _currentValue = data.Current;
@@ -40,9 +45,9 @@ namespace _Main.Scripts
 
     public class NumberIncrementerData
     {
-        public float Target;
-        public float Current;
-        public float TargetTime;
+        public float Target = 0;
+        public float Current = 0;
+        public float TargetTime = 0;
         public Action ActionOnFinish;
     }
 }

@@ -33,6 +33,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         private GameModeController _controller;
         private readonly NumberIncrementer _numberIncrementer = new NumberIncrementer();
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
+        private Coroutine _gameplayPointsCoroutine;
+        private bool _canRunDeathQueue;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
 
@@ -44,7 +46,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public void ManagedUpdate()
         {
-            _deathPanelActionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            if (_canRunDeathQueue)
+            {
+                _deathPanelActionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            }
         }
 
         public void OnNotify(string message, params object[] args)
@@ -117,6 +122,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdownFinish()
         {
+            _numberIncrementer.ResetValues();
             UpdateGameplayScoreText(0);
         }
         
@@ -167,6 +173,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void RestartButton_OnClickHandler()
         {
+            _canRunDeathQueue = false;
             _controller.TransitionToStart();
             buttonSound?.PlaySound();
         }
@@ -204,6 +211,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void StartDeathPanelActionQueue(int deflectCount)
         {
+            _canRunDeathQueue = true;
             SetActiveDeathText(false);
             SetActiveDeathScoreText(false);
             SetActiveRestartButton(false);
@@ -222,7 +230,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                     Target = deflectCount * GameValues.VisualMultiplier,
                     TargetTime = UIPanelTimeValues.DeathPointsTimeToIncrease,
                     ActionOnFinish = ()=> _deathPanelActionQueue.AddAction(
-                        new ActionData(()=> SetActiveRestartButton(true),UIPanelTimeValues.EnableRestartButton))
+                        new ActionData(() =>
+                        {
+                            SetActiveRestartButton(true);
+                            _canRunDeathQueue = false;
+                        },UIPanelTimeValues.EnableRestartButton))
                 
                 });
                 
@@ -234,10 +246,12 @@ namespace _Main.Scripts.Gameplay.GameMode
             else
             {
                 _deathPanelActionQueue.AddAction(
-                    new ActionData(()=> SetActiveRestartButton(true),UIPanelTimeValues.EnableRestartButton));
+                    new ActionData(()=>
+                    {
+                        SetActiveRestartButton(true);
+                        _canRunDeathQueue = false;
+                    },UIPanelTimeValues.EnableRestartButton));
             }
-            
-            
         }
 
         private void SetActiveDeathText(bool isActive)
@@ -256,7 +270,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
-        
         
         private int GetCurrentPoints()
         {

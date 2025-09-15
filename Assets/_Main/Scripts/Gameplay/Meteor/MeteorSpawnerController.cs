@@ -55,14 +55,14 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         #region Spawn
 
-        public void SpawnSingleMeteor(float meteorSpeed)
+        private void SpawnSingleMeteor(float meteorSpeed)
         {
             var position = _locationSpawn.GetPositionByAngle(_locationSpawn.GetSpawnAngle());
             var finalSpeed = Random.Range(meteorSpeed*0.95f, meteorSpeed*1.05f);
             CreateMeteor(finalSpeed, position);
         }
-        
-        public void SpawnRingMeteor(float meteorSpeed)
+
+        private void SpawnRingMeteor(float meteorSpeed)
         {
             StartCoroutine(CreateRingMeteor(meteorSpeed));
         }
