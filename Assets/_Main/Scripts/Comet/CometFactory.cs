@@ -1,8 +1,6 @@
-﻿using System;
-using _Main.Scripts.Managers.UpdateManager;
+﻿using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
-using _Main.Scripts.Particles;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -78,12 +76,6 @@ namespace _Main.Scripts.Comet
         {
             item.OnRecycle -= Comet_OnRecycleHandler;
             _pool.Release(item);
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.white;
-            Gizmos.DrawWireSphere(new Vector3(0, -spawnOffset,0), 1);
         }
     }
 }
