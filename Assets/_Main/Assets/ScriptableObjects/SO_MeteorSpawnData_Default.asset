@@ -14,22 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnData:
   - SpeedMultiplier: 0.5
-    TravelDistance: 0.11
+    TravelDistance: 0.099
   - SpeedMultiplier: 0.6
-    TravelDistance: 0.15
+    TravelDistance: 0.123
   - SpeedMultiplier: 0.7
-    TravelDistance: 0.2
+    TravelDistance: 0.151
   - SpeedMultiplier: 0.75
-    TravelDistance: 0.25
+    TravelDistance: 0.216
   - SpeedMultiplier: 0.8
-    TravelDistance: 0.288
+    TravelDistance: 0.243
   - SpeedMultiplier: 0.8
-    TravelDistance: 0.288
-  - SpeedMultiplier: 0.9
-    TravelDistance: 0.332
+    TravelDistance: 0.291
+  - SpeedMultiplier: 0.8
+    TravelDistance: 0.336
   - SpeedMultiplier: 0.95
-    TravelDistance: 0.387
+    TravelDistance: 0.366
   - SpeedMultiplier: 0.95
-    TravelDistance: 0.438
+    TravelDistance: 0.394
   - SpeedMultiplier: 1
-    TravelDistance: 0.48
+    TravelDistance: 0.42

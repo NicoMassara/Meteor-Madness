@@ -782,7 +782,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 3.62
+  orthographic size: 3.3
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -852,7 +852,7 @@ Transform:
   m_GameObject: {fileID: 217641707}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1897,7 +1897,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 887
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2435,7 +2435,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &645524449
 Transform:
   m_ObjectHideFlags: 0
@@ -2614,7 +2614,7 @@ MonoBehaviour:
   meteorPrefab: {fileID: 2969321756996762836, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
   centerOfGravity: {fileID: 854189257}
   meteorSpawnDataSo: {fileID: 11400000, guid: 9d29848a0c7d74346a7b13c97f3dedba, type: 2}
-  spawnRadius: 24.5
+  spawnRadius: 25
 --- !u!114 &709288250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2629,8 +2629,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 25
-  minSpawnProximity: 50
-  maxSpawnProximity: 145
+  minSpawnProximity: 15
+  maxSpawnProximity: 120
   ringSpawnAmount: 8
   ringsAmount: 10
 --- !u!1 &724356219
@@ -2905,6 +2905,7 @@ GameObject:
   - component: {fileID: 802478749}
   - component: {fileID: 802478751}
   - component: {fileID: 802478750}
+  - component: {fileID: 802478752}
   m_Layer: 0
   m_Name: EarthRenderTexture
   m_TagString: Untagged
@@ -2922,8 +2923,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.65, y: 0.65, z: 0.65}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 645524449}
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
@@ -2977,6 +2978,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 802478748}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &802478752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802478748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ae76f60c12944b18a7f278d39e79b30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelMeshRenderer: {fileID: 802478750}
+  sortingLayer: Earth
+  sortingOrder: 0
 --- !u!1 &842433379
 GameObject:
   m_ObjectHideFlags: 0
@@ -3368,8 +3384,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1993859789}
   - {fileID: 724356220}
+  - {fileID: 1993859789}
   - {fileID: 645524449}
   - {fileID: 1282502641}
   - {fileID: 1798290945}
@@ -4249,6 +4265,7 @@ GameObject:
   - component: {fileID: 1173399836}
   - component: {fileID: 1173399838}
   - component: {fileID: 1173399837}
+  - component: {fileID: 1173399839}
   m_Layer: 7
   m_Name: Mesh
   m_TagString: Untagged
@@ -4321,6 +4338,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1173399835}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1173399839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173399835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ae76f60c12944b18a7f278d39e79b30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelMeshRenderer: {fileID: 1173399837}
+  sortingLayer: Earth
+  sortingOrder: 0
 --- !u!1 &1205703516
 GameObject:
   m_ObjectHideFlags: 0
@@ -6048,8 +6080,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cometPrefab: {fileID: 7779817624001456119, guid: cdc27d595c40ee1459a1e2a99b7a6269, type: 3}
-  movementSpeed: 30
-  spawnOffset: 14
+  movementSpeed: 40
+  spawnOffset: 15
   playerCamera: {fileID: 519420031}
 --- !u!4 &1888334900
 Transform:

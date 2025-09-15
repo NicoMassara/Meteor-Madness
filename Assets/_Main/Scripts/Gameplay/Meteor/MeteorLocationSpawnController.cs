@@ -38,7 +38,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         // ReSharper disable Unity.PerformanceAnalysis
         public float GetSpawnAngle()
         {
-            float proximityRange = (float)(minSpawnProximity / 2f);
+            float proximityRange = (float)minSpawnProximity;
             float angle = 0f;
 
             if (_isFirstSpawn)
