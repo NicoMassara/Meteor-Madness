@@ -34,9 +34,10 @@
         public const string EarthStartDestruction = "A02006";
         public const string EarthEndDestruction = "A02007";
         public const string EarthShaking = "A02008";
-        public const string SpawnSingleMeteor = "A02009";
+        public const string SetEnableSpawnMeteor = "A02009";
         public const string SpawnRingMeteor = "A02010";
         public const string GameFinish = "A02011";
+        public const string UpdateGameLevel = "A02012";
     }
 
     public struct FlyingObjectObserverMessage

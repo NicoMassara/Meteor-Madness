@@ -4,7 +4,7 @@
     {
         public const int VisualMultiplier = 150;
         public const float ShieldExtend = 1.5f;
-        public const float MaxMeteorSpeed = 23/4f;
+        public const float MaxMeteorSpeed = 23;
         public const int StartStreakShield = 5;
         public const int MaxStreakShield = 10;
         public const int ExtendedMaxHit = 10;

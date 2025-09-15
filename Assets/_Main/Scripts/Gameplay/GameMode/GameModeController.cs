@@ -153,9 +153,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
 
-        public void SpawnSingleMeteor()
+        public void SetEnableMeteorSpawn(bool canSpawn)
         {
-            _motor.SpawnSingleMeteor();
+            _motor.SetEnableMeteorSpawn(canSpawn);
         }
 
         public void HandleGameFinish()

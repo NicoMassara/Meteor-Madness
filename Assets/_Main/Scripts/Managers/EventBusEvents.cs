@@ -24,7 +24,12 @@ namespace _Main.Scripts.Managers
 
     #region GameMode
 
-    public struct GameFinished { }
+    public struct GameFinished { };
+
+    public struct UpdateLevel
+    {
+        public int CurrentLevel;
+    };
 
     #endregion
 
@@ -62,15 +67,12 @@ namespace _Main.Scripts.Managers
 
 
 
-    public struct SpawnSingleMeteor
+    public struct EnableMeteorSpawn
     {
-        public float Speed;
+        public bool CanSpawn;
     }
     
-    public struct SpawnRingMeteor
-    {
-        public float Speed;
-    }
+    public struct SpawnRingMeteor { }
     
     public struct RecycleAllMeteors{}
     

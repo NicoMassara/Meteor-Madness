@@ -41,8 +41,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.EarthEndDestruction:
                     HandleEarthEndDestruction();
                     break;
-                case GameModeObserverMessage.SpawnSingleMeteor:
-                    HandleSpawnSingleMeteor();
+                case GameModeObserverMessage.SetEnableSpawnMeteor:
+                    HandleSetEnableMeteorSpawn((bool)args[0]);
                     break;
                 case GameModeObserverMessage.SpawnRingMeteor:
                     HandleSpawnRingMeteor();
@@ -50,9 +50,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
                     break;
+                case GameModeObserverMessage.UpdateGameLevel:
+                    HandleUpdateGameLevel((int)args[0]);
+                    break;
             }
         }
-        
 
         private void HandleGameFinish()
         {
@@ -106,16 +108,25 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #region Meteor
 
-        private void HandleSpawnSingleMeteor()
+        private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
-            GameManager.Instance.EventManager.Publish(new SpawnSingleMeteor{Speed = GameValues.MaxMeteorSpeed});
+            GameManager.Instance.EventManager.Publish(
+                new EnableMeteorSpawn
+                    {
+                        CanSpawn = canSpawn
+                    });
         }
+        
         private void HandleSpawnRingMeteor()
         {
-            GameManager.Instance.EventManager.Publish(new SpawnRingMeteor{Speed = GameValues.MaxMeteorSpeed});
+            GameManager.Instance.EventManager.Publish(new SpawnRingMeteor{});
         }
 
-
         #endregion
+        
+        private void HandleUpdateGameLevel(int currentLevel)
+        {
+            GameManager.Instance.EventManager.Publish(new UpdateLevel{CurrentLevel = currentLevel});
+        }
     }
 }

@@ -13,10 +13,14 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private float _startTimer;
 
+        private readonly GameLevelController _levelController;
+
         public GameModeMotor()
         {
-
+            _levelController = new();
+            _levelController.OnLevelChange += OnLevelChangeHandler;
         }
+        
         public void StartCountdown(float time)
         {
             _startTimer = time + 1;
@@ -43,6 +47,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void HandleMeteorDeflect()
         {
             _meteorDeflectCount++;
+            _levelController.IncreaseStreak();
+            _levelController.CheckForNextLevel();
             NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);
         }
 
@@ -50,6 +56,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _meteorCollisionCount = 0;
             _meteorDeflectCount = 0;
+            _levelController.ResetLevel();
         }
 
         #region Earth
@@ -71,14 +78,25 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #endregion
         
-        public void SpawnSingleMeteor()
+        public void SetEnableMeteorSpawn(bool canSpawn)
         {
-            NotifyAll(GameModeObserverMessage.SpawnSingleMeteor);
+            NotifyAll(GameModeObserverMessage.SetEnableSpawnMeteor, canSpawn);
+        }
+
+        public void UpdateCurrentLevel()
+        {
+            NotifyAll(GameModeObserverMessage.UpdateGameLevel, _levelController.GetCurrentLevel());
         }
 
         public void HandleGameFinish()
         {
             NotifyAll(GameModeObserverMessage.GameFinish);
+        }
+        
+        
+        private void OnLevelChangeHandler()
+        {
+            UpdateCurrentLevel();
         }
     }
 }
