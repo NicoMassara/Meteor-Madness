@@ -72,7 +72,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void SpawnSingleMeteor(float meteorSpeed)
         {
-            var position = _locationSpawn.GetPositionByAngle(_locationSpawn.GetSpawnAngle());
+            var position = _locationSpawn.GetPositionByAngle(_locationSpawn.GetSpawnAngle(), spawnRadius);
             var finalSpeed = meteorSpeed * _spawnSettings.GetMovementMultiplier();
             CreateMeteor(finalSpeed, position);
         }
@@ -120,7 +120,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                 
                 for (int j = 0; j < amountToSpawn; j++)
                 {
-                    CreateMeteor(meteorSpeed, _locationSpawn.GetPositionByAngle(currAngle), 
+                    CreateMeteor(meteorSpeed, _locationSpawn.GetPositionByAngle(currAngle, spawnRadius), 
                         GetRingMeteorValue(amountToSpawn, ringsToUse));
                     currAngle += angleOffset;
                     currAngle = Mathf.Repeat(currAngle, 360f);
@@ -138,10 +138,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             _isSpawningRing = false;
         }
-
-
-        #endregion
-
+        
         private float GetRingMeteorValue(float amountToSpawn, float ringsToUse)
         {
             var temp1 = 1f - (amountToSpawn * 0.1f);
@@ -150,6 +147,10 @@ namespace _Main.Scripts.Gameplay.Meteor
             return temp2 * 1.5f;
         }
 
+
+        #endregion
+
+        #region Create
 
         // ReSharper disable Unity.PerformanceAnalysis
         
@@ -178,6 +179,8 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             _meteorFactory.RecycleAll();
         }
+
+        #endregion
 
         #region Handlers
 
@@ -255,7 +258,8 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         #endregion
         
-        
+        #region Gizmos
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.cyan;
@@ -269,7 +273,8 @@ namespace _Main.Scripts.Gameplay.Meteor
                 Gizmos.DrawWireSphere(centerOfGravity.position, multiplier * temp);
             }
         }
-        
+
+        #endregion
     }
 
     public class MeteorTravelledDistanceTracker

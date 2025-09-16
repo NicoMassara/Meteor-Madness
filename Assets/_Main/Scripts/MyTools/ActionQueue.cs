@@ -9,7 +9,12 @@ namespace _Main.Scripts
         private Queue<ActionData> _actionQueue = new Queue<ActionData>();
         private ActionData _currentAction;
         private readonly Timer _executeTimer = new Timer();
-        public bool CanRun { get; set; } = true;
+        public bool IsEmpty => _graceTimer <= 0;
+
+        //Time added to delay the Queue finish, used to added extra Actions and avoid 
+        //the Coroutine to stop 
+        private const float GraceTime = 3f;
+        private float _graceTimer;
 
         public ActionQueue()
         {
@@ -18,15 +23,24 @@ namespace _Main.Scripts
 
         public void Run(float deltaTime)
         {
-            if(CanRun == false) return;
-            
-            if (_currentAction == null && _actionQueue.Count > 0)
+            if (_currentAction == null)
             {
-                _currentAction = _actionQueue.Dequeue();
-                _executeTimer.Set(_currentAction.TimeToExecute);
+                //Is empty
+                if (_actionQueue.Count == 0)
+                {
+                    _graceTimer -= deltaTime;
+                }
+                //Has actions
+                else if (_actionQueue.Count > 0)
+                {
+                    _currentAction = _actionQueue.Dequeue();
+                    _executeTimer.Set(_currentAction.TimeToExecute);
+                }
             }
-
-            _executeTimer.Run(deltaTime);
+            else
+            {
+                _executeTimer.Run(deltaTime);
+            }
         }
         
         private void Timer_OnEndHandler()
@@ -38,6 +52,7 @@ namespace _Main.Scripts
         public void AddAction(ActionData action)
         {
             _actionQueue.Enqueue(action);
+            _graceTimer = GraceTime;
         }
 
         public void RemoveAction(ActionData action)

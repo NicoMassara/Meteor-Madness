@@ -34,9 +34,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         private NumberIncrementer _numberIncrementer;
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
         private Coroutine _gameplayPointsCoroutine;
-        private bool _canRunDeathQueue;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
+        
+        public void ManagedUpdate()
+        {
+
+        }
 
         private void Start()
         {
@@ -44,13 +48,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             deathText.text = UITextValues.DeathText;
         }
         
-        public void ManagedUpdate()
-        {
-            if (_canRunDeathQueue)
-            {
-                _deathPanelActionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
-            }
-        }
 
         public void OnNotify(string message, params object[] args)
         {
@@ -171,7 +168,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
             else
             {
-                Debug.Log("Here");
                 _numberIncrementer.SetNewTarget(deflectCount * GameValues.VisualMultiplier);
             }
         }
@@ -182,7 +178,6 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void RestartButton_OnClickHandler()
         {
-            _canRunDeathQueue = false;
             _controller.TransitionToStart();
             buttonSound?.PlaySound();
         }
@@ -207,8 +202,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             while (!_numberIncrementer.IsFinished)
             {
-                _numberIncrementer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
-                increaseAction?.Invoke(GetCurrentPoints());
+                if (!CustomTime.GetChannel(SelfUpdateGroup).IsPaused)
+                {
+                    _numberIncrementer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                    increaseAction?.Invoke(GetCurrentPoints());
+                }
                 
                 yield return null;
             }
@@ -220,7 +218,6 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void StartDeathPanelActionQueue(float deflectCount)
         {
-            _canRunDeathQueue = true;
             SetActiveDeathText(false);
             SetActiveDeathScoreText(false);
             SetActiveRestartButton(false);
@@ -228,9 +225,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetActivePanel(deathPanel);
             
             _deathPanelActionQueue.AddAction(
-                new ActionData(()=> SetActiveDeathText(true), UIPanelTimeValues.SetEnableDeathText));
+                new ActionData(()=> SetActiveDeathText(true), 
+                    UIPanelTimeValues.SetEnableDeathText));
             _deathPanelActionQueue.AddAction(
-                new ActionData(()=> SetActiveDeathScoreText(true), UIPanelTimeValues.SetEnableDeathScore));
+                new ActionData(()=> SetActiveDeathScoreText(true), 
+                    UIPanelTimeValues.SetEnableDeathScore));
 
             if (deflectCount > 0)
             {
@@ -238,28 +237,39 @@ namespace _Main.Scripts.Gameplay.GameMode
                 {
                     Target = deflectCount * GameValues.VisualMultiplier,
                     TargetTime = UIPanelTimeValues.DeathPointsTimeToIncrease,
-                    ActionOnFinish = ()=> _deathPanelActionQueue.AddAction(
-                        new ActionData(() =>
-                        {
-                            SetActiveRestartButton(true);
-                            _canRunDeathQueue = false;
-                        },UIPanelTimeValues.EnableRestartButton))
-                
+                    ActionOnFinish = ()=>
+                    {
+                        _deathPanelActionQueue.AddAction(
+                            new ActionData(() => SetActiveRestartButton(true),
+                                UIPanelTimeValues.EnableRestartButton));
+                    }
                 });
                 
                 _deathPanelActionQueue.AddAction(
                     new ActionData(()=> StartCoroutine(
-                        IncreasePointsText(UpdateDeathScoreText)),UIPanelTimeValues.CountDeathScore));
+                        IncreasePointsText(UpdateDeathScoreText)),
+                        UIPanelTimeValues.CountDeathScore));
                 ;
             }
             else
             {
                 _deathPanelActionQueue.AddAction(
-                    new ActionData(()=>
-                    {
-                        SetActiveRestartButton(true);
-                        _canRunDeathQueue = false;
-                    },UIPanelTimeValues.EnableRestartButton));
+                    new ActionData(()=> SetActiveRestartButton(true),
+                        UIPanelTimeValues.EnableRestartButton));
+            }
+
+            StartCoroutine(RunDeathPanelActionQueue());
+        }
+
+        private IEnumerator RunDeathPanelActionQueue()
+        {
+            while (!_deathPanelActionQueue.IsEmpty)
+            {
+                var dt = CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+                
+                _deathPanelActionQueue.Run(dt);
+
+                yield return null;
             }
         }
 

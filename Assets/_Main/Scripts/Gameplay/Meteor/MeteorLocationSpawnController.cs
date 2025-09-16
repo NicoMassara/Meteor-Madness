@@ -9,8 +9,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         [Header("Components")]
         [SerializeField] private Transform centerOfGravity;
         [Header("Values")] 
-        [Range(22f,100f)]
-        [SerializeField] private float spawnRadius;
         [Range(1, 180f)] 
         [SerializeField] private int minSpawnProximity = 30;
         [Range(0, 180)] 
@@ -25,7 +23,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         private bool _isFirstSpawn;
         public int RingMeteorSpawnAmount => ringSpawnAmount;
         public int RingsAmount => ringsAmount;
-        public float SpawnRadius => spawnRadius;
 
         public void RestartValues()
         {
@@ -97,7 +94,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         #region Get Position
 
-        public Vector2 GetPositionByAngle(float angle)
+        public Vector2 GetPositionByAngle(float angle, float spawnRadius)
         {
             float radians = angle * Mathf.Deg2Rad;
             
