@@ -14,9 +14,10 @@ using Random = UnityEngine.Random;
 namespace _Main.Scripts.FyingObject
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class FlyingObjectView<T, TS> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable
+    public class FlyingObjectView<T, TS, TC> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable
     where T : FlyingObjectMotor
-    where TS : FlyingObjectView<T, TS>
+    where TS : FlyingObjectView<T, TS, TC>
+    where TC : FlyingObjectController<T>
     {
         [Header("Sounds")]
         [SerializeField] protected SoundBehavior moveSound;
@@ -28,8 +29,8 @@ namespace _Main.Scripts.FyingObject
         [SerializeField] private GameObject fireObject;
         [Header("Particles")]
         [SerializeField] private ParticleDataSo collisionParticle;
-        
-        private FlyingObjectController<T> _controller;
+
+        protected TC Controller { get; private set; }
         private Rigidbody2D _rigidbody2D;
         private Oscillator _fireScaleOscillator;
         private Oscillator _fireRotationOscillator;
@@ -85,7 +86,7 @@ namespace _Main.Scripts.FyingObject
             {
                 var dt = CustomTime.GetChannel(SelfFixedUpdateGroup).FixedDeltaTime;
                 _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * dt));
-                _controller.UpdatePosition( _rigidbody2D.transform.position);
+                Controller.UpdatePosition( _rigidbody2D.transform.position);
             }
         }
 
@@ -104,7 +105,7 @@ namespace _Main.Scripts.FyingObject
 
         public void SetValues(float movementSpeed, Quaternion rotation, Vector2 position, Vector2 direction)
         {
-            _controller.SetValues(movementSpeed,rotation,position, direction);
+            Controller.SetValues(movementSpeed,rotation,position, direction);
         }
 
         protected virtual void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)
@@ -126,9 +127,9 @@ namespace _Main.Scripts.FyingObject
             moveSound?.StopSound();
         }
         
-        public void SetController(FlyingObjectController<T> controller)
+        public void SetController(TC controller)
         {
-            _controller = controller;
+            Controller = controller;
         }
 
         private void HandleSetValues(float movementSpeed, Quaternion rotation, Vector2 position, bool canMove)
@@ -147,7 +148,7 @@ namespace _Main.Scripts.FyingObject
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            _controller.HandleTriggerEnter2D(other);
+            Controller.HandleTriggerEnter2D(other);
         }
 
         public void ForceRecycle()

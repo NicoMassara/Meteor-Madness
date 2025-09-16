@@ -6,7 +6,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeMotor : ObservableComponent
     {
-        private int _meteorDeflectCount;
+        private float _meteorDeflectCount;
 #pragma warning disable CS0414 // Field is assigned but its value is never used
         private int _meteorCollisionCount;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
@@ -44,9 +44,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.StartGame);
         }
 
-        public void HandleMeteorDeflect()
+        public void HandleMeteorDeflect(float meteorDeflectValue)
         {
-            _meteorDeflectCount++;
+            _meteorDeflectCount += meteorDeflectValue;
             _levelController.IncreaseStreak();
             _levelController.CheckForNextLevel();
             NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);

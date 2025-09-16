@@ -147,9 +147,9 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #endregion
         
-        public void HandleMeteorDeflect()
+        public void HandleMeteorDeflect(float meteorDeflectValue)
         {
-            _motor.HandleMeteorDeflect();
+            _motor.HandleMeteorDeflect(meteorDeflectValue);
         }
 
 

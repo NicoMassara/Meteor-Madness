@@ -9,6 +9,7 @@
         public const int MaxStreakShield = 10;
         public const int ExtendedMaxHit = 10;
         public const float ShieldRotationSpeed = 9.8f;
+        public const float RingMeteorPointsMultiplier = 0.25f;
     }
 
     public struct DamageValues
@@ -31,7 +32,7 @@
 
     public struct GameTimeValues
     {
-        public const int StartGameCount = 3;
+        public const int StartGameCount = 0;
         public const float TimeToLoadGameScene = 1f;
         //Show Death
         public const float StartEarthDestruction = 1.25f;
@@ -39,7 +40,7 @@
         public const float DeathShakeDuration = 2f;
         public const float ShowEarthDestruction = 1.5f;
         public const float StartRotatingAfterDeath = 1f;
-        public const float MeteorSpawnDelay = 0.75f;
+        public const float MeteorSpawnDelayAfterRing = 1f;
         public const float RingMeteorDelayBetweenSpawn = 0.25f;
         public const float CometSpawnDelay = 8f;
         public const float FirstCometSpawnDelay = 1f;

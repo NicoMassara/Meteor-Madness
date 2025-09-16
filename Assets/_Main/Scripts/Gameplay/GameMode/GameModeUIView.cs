@@ -31,7 +31,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private GameObject _currentPanel;
         private GameModeController _controller;
-        private readonly NumberIncrementer _numberIncrementer = new NumberIncrementer();
+        private NumberIncrementer _numberIncrementer;
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
         private Coroutine _gameplayPointsCoroutine;
         private bool _canRunDeathQueue;
@@ -69,13 +69,13 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleStartGame();
                     break;
                 case GameModeObserverMessage.MeteorDeflect:
-                    HandleMeteorDeflect((int)args[0]);
+                    HandleMeteorDeflect((float)args[0]);
                     break;
                 case GameModeObserverMessage.EarthStartDestruction:
                     HandleEarthStartDestruction();
                     break;
                 case GameModeObserverMessage.EarthEndDestruction:
-                    HandleEarthEndDestruction((int)args[0]);
+                    HandleEarthEndDestruction((float)args[0]);
                     break;
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
@@ -110,6 +110,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             DisableActivePanel();
+            _numberIncrementer = new NumberIncrementer();
             SetActivePanel(countdownPanel);
         }
         
@@ -122,7 +123,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdownFinish()
         {
-            _numberIncrementer.ResetValues();
+            _numberIncrementer?.ResetValues();
             UpdateGameplayScoreText(0);
         }
         
@@ -140,7 +141,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             DisableActivePanel();
         }
         
-        private void HandleEarthEndDestruction(int deflectCount)
+        private void HandleEarthEndDestruction(float deflectCount)
         {
             StartDeathPanelActionQueue(deflectCount);
         }
@@ -154,17 +155,25 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #region Meteor
 
-        private void HandleMeteorDeflect(int deflectCount)
+        private void HandleMeteorDeflect(float deflectCount)
         {
-            _numberIncrementer.SetData(new NumberIncrementerData
+            if (_numberIncrementer.IsFinished)
             {
-                Target = deflectCount * GameValues.VisualMultiplier,
-                Current = GetCurrentPoints(),
-                TargetTime = UIPanelTimeValues.GameplayPointsTimeToIncrease
+                _numberIncrementer.SetData(new NumberIncrementerData
+                {
+                    Target = (deflectCount * GameValues.VisualMultiplier),
+                    Current = GetCurrentPoints(),
+                    TargetTime = UIPanelTimeValues.GameplayPointsTimeToIncrease
                 
-            });
-            
-            StartCoroutine(IncreasePointsText(UpdateGameplayScoreText));
+                });
+                
+                StartCoroutine(IncreasePointsText(UpdateGameplayScoreText));
+            }
+            else
+            {
+                Debug.Log("Here");
+                _numberIncrementer.SetNewTarget(deflectCount * GameValues.VisualMultiplier);
+            }
         }
 
         #endregion
@@ -209,7 +218,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #region Death Panel Queue Actions
 
-        private void StartDeathPanelActionQueue(int deflectCount)
+        private void StartDeathPanelActionQueue(float deflectCount)
         {
             _canRunDeathQueue = true;
             SetActiveDeathText(false);

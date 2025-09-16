@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeTime: 0.25
   shakeIntensity: 1.25
-  xShakeMagnitude: 0.025
-  yShakeMagnitude: 0.025
+  xShakeMagnitude: 0.075
+  yShakeMagnitude: 0.075

@@ -41,6 +41,11 @@ namespace _Main.Scripts
             _targetTime = data.TargetTime;
             _actionOnFinish = data.ActionOnFinish;
         }
+
+        public void SetNewTarget(float targetValue)
+        {
+            _targetValue = targetValue;
+        }
     }
 
     public class NumberIncrementerData

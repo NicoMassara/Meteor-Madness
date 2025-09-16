@@ -27,6 +27,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         private MeteorFactory _meteorFactory;
         private bool _canSpawn;
         private bool _isSpawningRing;
+        private bool _isFirstSpawn;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
@@ -47,17 +48,13 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             _meteorFactory = new MeteorFactory(meteorPrefab);
             _spawnSettings = new MeteorSpawnSettings(meteorSpawnDataSo);
-            _spawnTimer.OnEnd += SpawnTimer_OnEndHandler;
         }
-
+        
         public void ManagedUpdate()
         {
-            if (_canSpawn && !_isSpawningRing)
-            {
-                _spawnTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
-            }
-
-            if (_travelledDistanceTracker.HasMeteor && _canSpawn && !_isSpawningRing)
+            if (_travelledDistanceTracker.HasMeteor 
+                && _canSpawn 
+                && !_isSpawningRing)
             {
                 if (_travelledDistanceTracker.GetTravelledDistanceRatio() <= _spawnSettings.GetMaxTravelDistance())
                 {
@@ -67,7 +64,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                SpawnSingleMeteor(GameValues.MaxMeteorSpeed);
+                SpawnRingMeteor(GameValues.MaxMeteorSpeed);
             }
         }
 
@@ -82,12 +79,33 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void SpawnRingMeteor(float meteorSpeed)
         {
+            if(_isSpawningRing) return;
+            
             StartCoroutine(CreateRingMeteor(meteorSpeed));
+        }
+        
+        private IEnumerator StartMeteorTimer()
+        {
+            _isFirstSpawn = false;
+            _spawnTimer.Set(1f);
+            _spawnTimer.OnEnd += () =>
+            {
+                SpawnSingleMeteor(GameValues.MaxMeteorSpeed);
+                _spawnTimer.OnEnd = null;
+            };
+            
+            while (!_spawnTimer.GetHasEnded)
+            {
+                _spawnTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                yield return null;
+            }
         }
 
         private IEnumerator CreateRingMeteor(float meteorSpeed)
         {
             _isSpawningRing = true;
+            
+            yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
             
             var currAngle = 0f;
             var amountToSpawn = (float)_locationSpawn.RingMeteorSpawnAmount;
@@ -102,7 +120,8 @@ namespace _Main.Scripts.Gameplay.Meteor
                 
                 for (int j = 0; j < amountToSpawn; j++)
                 {
-                    CreateMeteor(meteorSpeed, _locationSpawn.GetPositionByAngle(currAngle));
+                    CreateMeteor(meteorSpeed, _locationSpawn.GetPositionByAngle(currAngle), 
+                        GetRingMeteorValue(amountToSpawn, ringsToUse));
                     currAngle += angleOffset;
                     currAngle = Mathf.Repeat(currAngle, 360f);
                 }
@@ -114,15 +133,27 @@ namespace _Main.Scripts.Gameplay.Meteor
                 yield return new WaitForSeconds(GameTimeValues.RingMeteorDelayBetweenSpawn);
             }
             
+            yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
+            yield return new WaitForSeconds(GameTimeValues.MeteorSpawnDelayAfterRing);
+            
             _isSpawningRing = false;
         }
 
 
         #endregion
-        
+
+        private float GetRingMeteorValue(float amountToSpawn, float ringsToUse)
+        {
+            var temp1 = 1f - (amountToSpawn * 0.1f);
+            var temp2 = temp1 * (ringsToUse * 0.1f);
+            
+            return temp2 * 1.5f;
+        }
+
+
         // ReSharper disable Unity.PerformanceAnalysis
         
-        private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition)
+        private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition, float value = 1)
         {
             var tempMeteor = _meteorFactory.SpawnMeteor();
                 
@@ -130,7 +161,14 @@ namespace _Main.Scripts.Gameplay.Meteor
             Vector2 direction = (Vector2)centerOfGravity.position - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
-            tempMeteor.SetValues(meteorSpeed, tempRot, spawnPosition,direction.normalized);
+            tempMeteor.SetMeteorValues(new MeteorValuesData
+            {
+                MovementSpeed = meteorSpeed,
+                Rotation = tempRot,
+                Position = spawnPosition,
+                Direction = direction.normalized,
+                Value = value
+            });
             tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
             tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
             _travelledDistanceTracker.SetMeteor(tempMeteor, centerOfGravity.position);
@@ -143,47 +181,41 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         #region Handlers
 
-        private void Meteor_OnDeflectionHandler(MeteorView view, 
-            Vector3 position, Quaternion rotation, Vector2 direction)
+        private void Meteor_OnDeflectionHandler(MeteorCollisionData data)
         {
-            view.OnDeflection = null;
-            view.OnEarthCollision = null;
+            data.Meteor.OnDeflection = null;
+            data.Meteor.OnEarthCollision = null;
             
             GameManager.Instance.EventManager.Publish
             (
                 new MeteorDeflected
                 {
-                    Position = position,
-                    Rotation = rotation,
-                    Direction = direction
+                    Position = data.Position,
+                    Rotation = data.Rotation,
+                    Direction = data.Direction,
+                    Value = data.Value
                 }
             );
             
-            view.ForceRecycle();
+            data.Meteor.ForceRecycle();
         }
 
-        private void Meteor_OnEarthCollisionHandler(MeteorView view, 
-            Vector3 position, Quaternion rotation, Vector2 direction)
+        private void Meteor_OnEarthCollisionHandler(MeteorCollisionData data)
         {
-            view.OnDeflection = null;
-            view.OnEarthCollision = null;
+            data.Meteor.OnDeflection = null;
+            data.Meteor.OnEarthCollision = null;
             
             GameManager.Instance.EventManager.Publish
             (
                 new MeteorCollision
                 {
-                    Position = position,
-                    Rotation = rotation,
-                    Direction = direction
+                    Position = data.Position,
+                    Rotation = data.Rotation,
+                    Direction = data.Direction
                 }
             );
             
-            view.ForceRecycle();
-        }
-        
-        private void SpawnTimer_OnEndHandler()
-        {
-            SpawnSingleMeteor(GameValues.MaxMeteorSpeed);
+            data.Meteor.ForceRecycle();
         }
 
         #endregion
@@ -198,6 +230,10 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void EnventBus_EnableMeteorSpawn(EnableMeteorSpawn input)
         {
             _canSpawn = input.CanSpawn;
+            if (_isFirstSpawn)
+            {
+                StartCoroutine(StartMeteorTimer());
+            }
         }
         
         private void EnventBus_SpawnRingMeteor(SpawnRingMeteor input)
@@ -212,7 +248,8 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void EnventBus_GameRestart(GameRestart input)
         {
-            _spawnTimer.Set(1f);
+            _isFirstSpawn = true;
+            _travelledDistanceTracker.ClearValues();
             _locationSpawn.RestartValues();
         }
 
@@ -248,6 +285,13 @@ namespace _Main.Scripts.Gameplay.Meteor
             _meteor = meteor;
             _targetPosition = targetPosition;
             _totalDistance = Vector2.Distance(_meteor.Position, targetPosition);
+        }
+
+        public void ClearValues()
+        {
+            _meteor = null;
+            _targetPosition = Vector2.zero;
+            _totalDistance = float.PositiveInfinity;
         }
 
         public float GetTravelledDistanceRatio()

@@ -70,7 +70,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void EventBus_OnMeteorDeflected(MeteorDeflected input)
         {
-            _controller.HandleMeteorDeflect();
+            _controller.HandleMeteorDeflect(input.Value);
         }
 
         private void EventBus_OnEarthDestruction(EarthEndDestruction input)

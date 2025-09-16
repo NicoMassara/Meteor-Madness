@@ -12,6 +12,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private readonly List<MeteorView> _activeMeteors = new List<MeteorView>();
         private GenericPool<MeteorView> _pool;
+        public int ActiveMeteorCount => _activeMeteors.Count;
 
         public UnityAction<Vector3> OnShieldHit;
         public UnityAction<Vector3, Quaternion> OnEarthHit;

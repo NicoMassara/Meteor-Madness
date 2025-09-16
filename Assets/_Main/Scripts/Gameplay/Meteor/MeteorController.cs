@@ -26,5 +26,10 @@ namespace _Main.Scripts.Gameplay.Meteor
                 Motor.HandleEarthCollision(); 
             }
         }
+
+        public void SetMeteorValues(MeteorValuesData data)
+        {
+            Motor.SetMeteorValues(data);
+        }
     }
 }
