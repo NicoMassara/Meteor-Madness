@@ -19,9 +19,8 @@
         public const string TriggerDestruction = "A01004";
         public const string SetActiveDeathShake = "A01005";
         public const string Heal = "A01006";
-        public const string SetSprite = "A01007";
-        public const string SetRotation = "A01008";
-        public const string TriggerEndDestruction = "A01009";
+        public const string SetRotation = "A01007";
+        public const string TriggerEndDestruction = "A01008";
     }
 
     public struct GameModeObserverMessage

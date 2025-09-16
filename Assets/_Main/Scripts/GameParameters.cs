@@ -12,6 +12,11 @@
         public const float RingMeteorPointsMultiplier = 0.25f;
     }
 
+    public struct TotalShieldValues
+    {
+        
+    }
+
     public struct DamageValues
     {
         public const float NoneDamage = 0f;

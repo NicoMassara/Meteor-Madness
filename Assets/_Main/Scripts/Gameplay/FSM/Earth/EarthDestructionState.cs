@@ -6,13 +6,15 @@
         
         public override void Awake()
         {
-            Controller.TriggerDestruction();
-            Controller.TriggerEndDestruction();
-            //Could Trigger 'EndDestruction' on a Queue
-            
+            ActionData startDestruction = new ActionData(
+                ()=>Controller.TriggerDestruction(),0f);
+            ActionData endDestruction = new ActionData(
+                ()=>Controller.TriggerEndDestruction(),1f);
             ActionData startRotation = new ActionData(
                 ()=>Controller.SetRotation(true),GameTimeValues.StartRotatingAfterDeath);
             
+            _queue.AddAction(startDestruction);
+            _queue.AddAction(endDestruction);
             _queue.AddAction(startRotation);
         }
 

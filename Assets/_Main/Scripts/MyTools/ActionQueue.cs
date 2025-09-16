@@ -18,6 +18,19 @@ namespace _Main.Scripts
 
         public ActionQueue()
         {
+            Initialize();
+        }
+
+        public ActionQueue(ActionData[] actionQueue)
+        {
+            foreach (var action in actionQueue)
+            {
+                AddAction(action);
+            }
+        }
+
+        private void Initialize()
+        {
             _executeTimer.OnEnd += Timer_OnEndHandler;
         }
 
@@ -82,7 +95,7 @@ namespace _Main.Scripts
         public ActionData(Action actionToDo, float timeToExecute = 0)
         {
             _actionToDo = actionToDo;
-            TimeToExecute = timeToExecute;
+            TimeToExecute = Mathf.Clamp(timeToExecute, 0.1f, float.PositiveInfinity);
         }
         public void Execute()
         {

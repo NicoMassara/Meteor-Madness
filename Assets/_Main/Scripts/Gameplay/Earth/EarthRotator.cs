@@ -10,20 +10,25 @@ namespace _Main.Scripts.Gameplay.Earth
         public EarthRotator(Transform modelTransform, Transform spriteTransform, float rotationSpeed)
         {
             _modelRotator = new Rotator(modelTransform, Vector3.up, rotationSpeed);
-            _spriteRotator =  new Rotator(spriteTransform, Vector3.forward, rotationSpeed/2);
+            _spriteRotator =  new Rotator(spriteTransform, Vector3.forward, rotationSpeed);
         }
 
-        public void Rotate(float deltaTime)
+        public void Rotate(float deltaTime, bool isDead)
         {
-            _modelRotator.Rotate(deltaTime);
-            _spriteRotator.Rotate(deltaTime);
+            if (isDead)
+            {
+                _spriteRotator.Rotate(deltaTime);
+            }
+            else
+            {
+                _modelRotator.Rotate(deltaTime);
+            }
         }
 
         public void SetRotationSpeed(float speed)
         {
             _spriteRotator.SetSpeed(speed);
             _modelRotator.SetSpeed(speed);
-            
         }
     }
 }

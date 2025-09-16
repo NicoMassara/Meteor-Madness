@@ -344,6 +344,9 @@ namespace _Main.Scripts.Managers.UpdateManager
         Gameplay,
         UI,
         Inputs,
+        Ability,
+        Earth,
+        Effects,
         Always
     }
 }

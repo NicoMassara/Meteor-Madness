@@ -15,10 +15,9 @@ namespace _Main.Scripts.Gameplay.Earth
     {
         [Header("Model Components")]
         [SerializeField] private GameObject modelContainer;
-        [Header("Sprite Components")]
-        [SerializeField] private GameObject spriteContainer;
-        [SerializeField] private GameObject brokenSpriteObject;
         [SerializeField] private MeshRenderer modelMeshRenderer;
+        [SerializeField] private GameObject planeMeshContainer;
+        [SerializeField] private PlaneSlicer earthMeshSlicer;
         [Space]
         [Header("Sounds")]
         [SerializeField] private SoundBehavior collisionSound;
@@ -41,12 +40,13 @@ namespace _Main.Scripts.Gameplay.Earth
         private GameObject _currentSprite;
         private EarthRotator _earthRotator;
         private bool _canRotate;
+        private bool _isDead;
         
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
 
         private void Awake()
         {
-            _earthRotator = new EarthRotator(modelContainer.transform, spriteContainer.transform, rotationSpeed);
+            _earthRotator = new EarthRotator(modelContainer.transform, planeMeshContainer.transform, rotationSpeed);
             _shakerController = new ShakerController(modelContainer.transform);
             //Model Material Settings
             _modelMaterial = modelMeshRenderer.materials[0];
@@ -60,7 +60,7 @@ namespace _Main.Scripts.Gameplay.Earth
             
             if (_canRotate == true)
             {
-                _earthRotator.Rotate(dt);
+                _earthRotator.Rotate(dt,_isDead);
             }
         }
 
@@ -88,9 +88,6 @@ namespace _Main.Scripts.Gameplay.Earth
                     break;
                 case EarthObserverMessage.Heal:
                     HandleHeal((float)args[0]);
-                    break;
-                case EarthObserverMessage.SetSprite:
-                    SetSpriteType((EarthSpriteType)args[0]);
                     break;
                 case EarthObserverMessage.SetRotation:
                     HandleSetRotation((bool)args[0]);
@@ -132,13 +129,14 @@ namespace _Main.Scripts.Gameplay.Earth
         private void HandleRestartHealth()
         {
             UpdateColorByHealth(1);
-            SetSpriteType(EarthSpriteType.Normal);
             SetShakeMultiplier(1);
             _earthRotator.SetRotationSpeed(rotationSpeed);
             //_rotator.SetSpeed(rotationSpeed);
-            spriteContainer.transform.rotation = Quaternion.identity;
+            planeMeshContainer.transform.rotation = Quaternion.identity;
             modelContainer.transform.rotation = Quaternion.identity;
             _shakerController.SetShakeData(healthShakeData);
+            earthMeshSlicer.RestartValues();
+            _isDead = false;
         }
 
         #endregion
@@ -161,9 +159,10 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleDestruction()
         {
+            earthMeshSlicer.StartSlicing();
+            _isDead = true;
             deathSound?.PlaySound();
             _earthRotator.SetRotationSpeed(rotationSpeed/2);
-            SetSpriteType(EarthSpriteType.Broken);
         }
 
         private void HandleDeath()
@@ -177,24 +176,6 @@ namespace _Main.Scripts.Gameplay.Earth
         private void TriggerEndDestruction()
         {
             GameManager.Instance.EventManager.Publish(new EarthEndDestruction());
-        }
-
-        #endregion
-
-        #region Sprite
-
-        private void SetSpriteType(EarthSpriteType spriteType)
-        {
-            _currentSprite?.SetActive(false);
-
-            _currentSprite = spriteType switch
-            {
-                EarthSpriteType.Normal => modelContainer,
-                EarthSpriteType.Broken => brokenSpriteObject,
-                _ => _currentSprite
-            };
-
-            _currentSprite?.SetActive(true);
         }
 
         #endregion

@@ -63,10 +63,4 @@ namespace _Main.Scripts.Gameplay.Earth
             NotifyAll(EarthObserverMessage.TriggerEndDestruction);
         }
     }
-
-    public enum EarthSpriteType
-    {
-        Normal,
-        Broken
-    }
 }

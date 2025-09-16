@@ -61,11 +61,6 @@ namespace _Main.Scripts.Gameplay.Meteor
                     SpawnSingleMeteor(GameValues.MaxMeteorSpeed);
                 }
             }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                SpawnRingMeteor(GameValues.MaxMeteorSpeed);
-            }
         }
 
         #region Spawn
