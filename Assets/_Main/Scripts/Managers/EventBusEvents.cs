@@ -6,6 +6,7 @@ namespace _Main.Scripts.Managers
 {
     #region Earth
     public struct EarthRestart { }
+    public struct EarthRestartFinish { }
     public struct EarthShake { }
     
     public struct EarthStartDestruction { }
@@ -25,6 +26,7 @@ namespace _Main.Scripts.Managers
     #region GameMode
 
     public struct GameFinished { };
+    public struct GameStart { };
     public struct GameRestart { };
 
     public struct UpdateLevel

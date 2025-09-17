@@ -37,7 +37,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             //Add events to EventManager
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<GameRestart>(EnventBus_GameRestart);
+            eventManager.Subscribe<GameStart>(EnventBus_GameStart);
             eventManager.Subscribe<UpdateLevel>(EnventBus_UpdateLevel);
             eventManager.Subscribe<EnableMeteorSpawn>(EnventBus_EnableMeteorSpawn);
             eventManager.Subscribe<SpawnRingMeteor>(EnventBus_SpawnRingMeteor);
@@ -244,7 +244,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             RecycleAll();
         }
         
-        private void EnventBus_GameRestart(GameRestart input)
+        private void EnventBus_GameStart(GameStart input)
         {
             _isFirstSpawn = true;
             _travelledDistanceTracker.ClearValues();

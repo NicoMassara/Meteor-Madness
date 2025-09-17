@@ -28,7 +28,7 @@
         public const string StartCountdown = "A02001";
         public const string UpdateCountdown = "A02002";
         public const string CountdownFinish = "A02003";
-        public const string StartGame = "A02004";
+        public const string StartGameplay = "A02004";
         public const string MeteorDeflect = "A02005";
         public const string EarthStartDestruction = "A02006";
         public const string EarthEndDestruction = "A02007";
@@ -37,6 +37,8 @@
         public const string SpawnRingMeteor = "A02010";
         public const string GameFinish = "A02011";
         public const string UpdateGameLevel = "A02012";
+        public const string GameRestart = "A02013";
+        public const string EarthRestartFinish = "A02014";
     }
 
     public struct FlyingObjectObserverMessage

@@ -54,13 +54,21 @@ namespace _Main.Scripts.Gameplay.GameMode
             var eventBus = GameManager.Instance.EventManager;
             //Add events
             
+            //Game
+            eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
+            
             //Meteor
             eventBus.Subscribe<MeteorDeflected>(EventBus_OnMeteorDeflected);
             
             //Earth
             eventBus.Subscribe<EarthShake>(EventBus_OnEarthShake);
             eventBus.Subscribe<EarthEndDestruction>(EventBus_OnEarthDestruction);
-            eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
+            eventBus.Subscribe<EarthRestartFinish>(EventBus_OnEarthRestartFinish);
+        }
+
+        private void EventBus_OnEarthRestartFinish(EarthRestartFinish input)
+        {
+            _controller.EarthRestartFinish();
         }
 
         private void EventBus_OnGameFinished(GameFinished input)

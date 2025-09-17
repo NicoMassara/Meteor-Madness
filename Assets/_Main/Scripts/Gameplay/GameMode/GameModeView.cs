@@ -1,22 +1,34 @@
-﻿using _Main.Scripts.Managers;
+﻿using System.Collections;
+using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
+using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeView : MonoBehaviour, IObserver
+    public class GameModeView : ManagedBehavior, IObserver, IUpdatable
     {
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior gameplayTheme;
         [SerializeField] private SoundBehavior deathTheme;
         
         private GameModeController _controller;
+        private GameModeUIView _uiView;
+
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public void ManagedUpdate()
+        {
+
+        }
 
         public void SetController(GameModeController controller)
         {
             _controller = controller;
         }
+        
         
         // ReSharper disable Unity.PerformanceAnalysis
         public void OnNotify(string message, params object[] args)
@@ -29,8 +41,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.CountdownFinish:
                     HandleCountdownFinish();
                     break;
-                case GameModeObserverMessage.StartGame:
-                    HandleStartGame();
+                case GameModeObserverMessage.StartGameplay:
+                    HandleStartGameplay();
                     break;
                 case GameModeObserverMessage.EarthStartDestruction:
                     HandleEarthStartDestruction();
@@ -53,8 +65,15 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.UpdateGameLevel:
                     HandleUpdateGameLevel((int)args[0]);
                     break;
+                case GameModeObserverMessage.GameRestart:
+                    HandleGameRestart();
+                    break;
+                case GameModeObserverMessage.EarthRestartFinish:
+                    HandleEarthRestartFinish();
+                    break;
             }
         }
+        
 
         private void HandleGameFinish()
         {
@@ -64,13 +83,40 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameManager.Instance.EventManager.Publish(new RecycleAllMeteors());
         }
         
+        private void HandleGameRestart()
+        {
+            StartCoroutine(RestartCoroutine());
+        }
+        
+        private void HandleEarthRestartFinish()
+        {
+            _controller.TransitionToStart();
+        }
+
+        private IEnumerator RestartCoroutine()
+        {
+            var tempActions = new ActionData[]
+            {
+                new (()=>GameManager.Instance.EventManager.Publish(new GameRestart()),
+                    GameRestartTimeValues.TriggerRestart),
+                new (()=>GameManager.Instance.EventManager.Publish(new EarthRestart()),
+                    GameRestartTimeValues.RestartEarth),
+            };
+            var tempQueue = new ActionQueue(tempActions);
+            
+            while (!tempQueue.IsEmpty)
+            {
+                tempQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                yield return null;
+            }
+        }
+
         #region Start
 
         private void HandleStartCountdown()
         {
             deathTheme?.StopSound();
-            GameManager.Instance.EventManager.Publish(new GameRestart());
-            GameManager.Instance.EventManager.Publish(new EarthRestart());
+            GameManager.Instance.EventManager.Publish(new GameStart());
             GameManager.Instance.EventManager.Publish(new CameraZoomOut());
         }
         
@@ -79,7 +125,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller.TransitionToGameplay();
         }
 
-        private void HandleStartGame()
+        private void HandleStartGameplay()
         {
             GameManager.Instance.CanPlay = true;
             GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = true});

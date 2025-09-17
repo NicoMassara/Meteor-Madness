@@ -64,7 +64,24 @@
         public const float MoveSlices = 0.05f;
         public const float ReturnToNormalTime = 0.5f;
         public const float ReturnSlices = 0.1f;
+        public const float TotalTime = StartSlice + MoveSlices + ReturnSlices + ReturnToNormalTime;
     }
+
+    public struct GameRestartTimeValues
+    {
+        public const float TriggerRestart = 0f;
+        public const float RestartEarth = 0.25f;
+    }
+
+    public struct EarthRestartTimeValues
+    {
+        public const float StopRotation = 0.15f;
+        public const float RestartZRotation = 0.25f;
+        public const float RestartYRotation = 0.25f;
+        public const float RestartHealth = 0.15f;
+        public const float FinishRestart = 0.25f;
+    }
+    
 
     public struct UITextValues
     {

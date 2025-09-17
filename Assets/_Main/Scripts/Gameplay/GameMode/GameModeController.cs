@@ -17,7 +17,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             Start,
             Gameplay,
             Finish,
-            Death
+            Death,
+            Restart
         }
 
         public GameModeController(GameModeMotor motor)
@@ -48,11 +49,13 @@ namespace _Main.Scripts.Gameplay.GameMode
             var gameplay = new GameModeGameplayState<States>();
             var finish = new GameModeFinishState<States>();
             var death = new GameModeDeathState<States>();
+            var restart = new GameModeRestartState<States>();
             
             temp.Add(start);
             temp.Add(gameplay);
             temp.Add(finish);
             temp.Add(death);
+            temp.Add(restart);
 
             #endregion
 
@@ -64,7 +67,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             finish.AddTransition(States.Death, death);
             
-            death.AddTransition(States.Start, start);
+            death.AddTransition(States.Restart, restart);
+            
+            restart.AddTransition(States.Start, start);
             
 
             #endregion
@@ -104,6 +109,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             SetTransition(States.Death);
         }
+        
+        public void TransitionToRestart()
+        {
+            SetTransition(States.Restart);
+        }
+
 
         #endregion
 
@@ -116,9 +127,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.StartCountdown(GameTimeValues.StartGameCount);
         }
 
-        public void StartGame()
+        public void StartGameplay()
         {
-            _motor.StartGame();
+            _motor.StartGameplay();
         }
 
         public void RestartValues()
@@ -166,6 +177,16 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void HandleCountdownTimer(float deltaTime)
         {
             _motor.HandleCountdownTimer(deltaTime);
+        }
+
+        public void GameRestart()
+        {
+            _motor.GameRestart();
+        }
+        
+        public void EarthRestartFinish()
+        {
+            _motor.EarthRestartFinish();
         }
     }
 }

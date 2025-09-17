@@ -39,9 +39,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
         }
 
-        public void StartGame()
+        public void StartGameplay()
         {
-            NotifyAll(GameModeObserverMessage.StartGame);
+            NotifyAll(GameModeObserverMessage.StartGameplay);
         }
 
         public void HandleMeteorDeflect(float meteorDeflectValue)
@@ -97,6 +97,16 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void OnLevelChangeHandler()
         {
             UpdateCurrentLevel();
+        }
+
+        public void GameRestart()
+        {
+            NotifyAll(GameModeObserverMessage.GameRestart);
+        }
+
+        public void EarthRestartFinish()
+        {
+            NotifyAll(GameModeObserverMessage.EarthRestartFinish);
         }
     }
 }

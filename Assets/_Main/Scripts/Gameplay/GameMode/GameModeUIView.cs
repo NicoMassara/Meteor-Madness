@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
@@ -63,8 +64,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.CountdownFinish:
                     HandleCountdownFinish();
                     break;
-                case GameModeObserverMessage.StartGame:
-                    HandleStartGame();
+                case GameModeObserverMessage.StartGameplay:
+                    HandleStartGameplay();
                     break;
                 case GameModeObserverMessage.MeteorDeflect:
                     HandleMeteorDeflect((float)args[0]);
@@ -77,6 +78,9 @@ namespace _Main.Scripts.Gameplay.GameMode
                     break;
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
+                    break;
+                case GameModeObserverMessage.GameRestart:
+                    HandleGameRestart();
                     break;
             }
         }
@@ -95,7 +99,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _currentPanel?.SetActive(true);
         }
 
-        private void DisableActivePanel()
+        public void DisableActivePanel()
         {
             _currentPanel?.SetActive(false);
             _currentPanel = null;
@@ -125,7 +129,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             UpdateGameplayScoreText(0);
         }
         
-        private void HandleStartGame()
+        private void HandleStartGameplay()
         {
             SetActivePanel(gameplayPanel);
         }
@@ -135,6 +139,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         #region Death
 
         private void HandleGameFinish()
+        {
+            DisableActivePanel();
+        }
+        
+        private void HandleGameRestart()
         {
             DisableActivePanel();
         }
@@ -179,8 +188,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void RestartButton_OnClickHandler()
         {
-            _controller.TransitionToStart();
             buttonSound?.PlaySound();
+            _controller.TransitionToRestart();
         }
 
         #endregion

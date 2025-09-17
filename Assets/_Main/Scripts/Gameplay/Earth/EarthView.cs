@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using System.Collections;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
@@ -128,15 +129,98 @@ namespace _Main.Scripts.Gameplay.Earth
         }
         private void HandleRestartHealth()
         {
-            UpdateColorByHealth(1);
-            SetShakeMultiplier(1);
-            _earthRotator.SetRotationSpeed(rotationSpeed);
-            //_rotator.SetSpeed(rotationSpeed);
-            planeMeshContainer.transform.rotation = Quaternion.identity;
-            modelContainer.transform.rotation = Quaternion.identity;
-            _shakerController.SetShakeData(healthShakeData);
-            earthMeshSlicer.StartUnite();
-            _isDead = false;
+            StartCoroutine(Coroutine_RestartHealth());
+        }
+
+        private IEnumerator Coroutine_RestartHealth()
+        {
+            var timeToRestartRot = 1f;
+            var timeToRestartHealth = 1f;
+            
+
+            var tempActions = new ActionData[]
+            {
+                new ActionData(() =>
+                {
+                    HandleSetRotation(false);
+                }, EarthRestartTimeValues.StopRotation * 2),
+                new ActionData(() =>
+                {
+                    StartCoroutine(Coroutine_RestartRotation(EarthRestartTimeValues.RestartZRotation, 
+                        planeMeshContainer.transform));
+                }, EarthRestartTimeValues.StopRotation),
+                new ActionData(() =>
+                {
+                    earthMeshSlicer.StartUnite();
+                }, EarthRestartTimeValues.RestartZRotation),
+                new ActionData(() =>
+                {
+                    StartCoroutine(Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform));
+                }, EarthSliceTimeValues.TotalTime),
+                new ActionData(() =>
+                {
+                    StartCoroutine(Coroutine_RestartHealthColor(EarthRestartTimeValues.RestartHealth));
+                    
+                }, EarthRestartTimeValues.RestartYRotation),
+                new ActionData(() =>
+                {
+                    SetShakeMultiplier(1);
+                    _earthRotator.SetRotationSpeed(rotationSpeed);
+                    _shakerController.SetShakeData(healthShakeData);
+                    _isDead = false;
+                    
+                }, EarthRestartTimeValues.RestartHealth),
+                new ActionData(() =>
+                {
+                    HandleSetRotation(true);
+                    GameManager.Instance.EventManager.Publish(new EarthRestartFinish());
+                    
+                }, EarthRestartTimeValues.FinishRestart),
+                
+            };
+            var tempQueue = new ActionQueue(tempActions);
+
+            while (!tempQueue.IsEmpty)
+            {
+                tempQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                
+                yield return null;
+            }
+        }
+
+        private IEnumerator Coroutine_RestartRotation(float timeToRestart, Transform objectToRotate)
+        {
+            Quaternion startRotation = objectToRotate.rotation;
+            Quaternion targetRotation = Quaternion.identity;
+            float elapsed = 0f;
+
+            while (elapsed < timeToRestart)
+            {
+                elapsed += CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+                float t = elapsed / timeToRestart;
+
+                objectToRotate.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+                yield return null;
+            }
+
+            objectToRotate.rotation = targetRotation; // ensure exact final rotation
+        }
+
+
+        private IEnumerator Coroutine_RestartHealthColor(float timeToIncrease)
+        {
+            float healthValue = 0;
+            float elapsedTime = 0;
+            float increaseSpeed = elapsedTime/timeToIncrease;
+            
+            while (healthValue < 1)
+            {
+                elapsedTime += CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+                UpdateColorByHealth(healthValue);
+                healthValue += increaseSpeed;
+                
+                yield return null;
+            }
         }
 
         #endregion

@@ -15,7 +15,7 @@
 
         public override void Sleep()
         {
-            Controller.StartGame();
+            Controller.StartGameplay();
         }
     }
 }

@@ -4,7 +4,6 @@
     {
         public override void Awake()
         {
-            Controller.RestartHealth();
             Controller.SetRotation(true);
         }
     }

@@ -49,16 +49,16 @@ namespace _Main.Scripts.Gameplay.Earth
             eventBus.Subscribe<EarthStartDestruction>(EventBus_OnEarthStartDestruction);
         }
 
-        private void EventBus_OnEarthStartDestruction(EarthStartDestruction input)
-        {
-            _controller.TransitionToShaking();
-        }
-
         private void EventBus_OnEarthRestart(EarthRestart input)
         {
             _controller.TransitionToDefault();
         }
 
+        private void EventBus_OnEarthStartDestruction(EarthStartDestruction input)
+        {
+            _controller.TransitionToShaking();
+        }
+        
         private void EventBus_OnMeteorCollision(MeteorCollision input)
         {
             _controller.HandleCollision(GameManager.Instance.GetMeteorDamage(), 
