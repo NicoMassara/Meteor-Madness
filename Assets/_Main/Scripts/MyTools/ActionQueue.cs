@@ -13,7 +13,7 @@ namespace _Main.Scripts
 
         //Time added to delay the Queue finish, used to added extra Actions and avoid 
         //the Coroutine to stop 
-        private const float GraceTime = 3f;
+        private const float GraceTime = 5f;
         private float _graceTimer;
 
         public ActionQueue()
@@ -23,10 +23,14 @@ namespace _Main.Scripts
 
         public ActionQueue(ActionData[] actionQueue)
         {
-            foreach (var action in actionQueue)
-            {
-                AddAction(action);
-            }
+            AddAction(actionQueue);
+            Initialize();
+        }
+        
+        public ActionQueue(List<ActionData> actionQueue)
+        {
+            AddAction(actionQueue);
+            Initialize();
         }
 
         private void Initialize()
@@ -66,6 +70,21 @@ namespace _Main.Scripts
         {
             _actionQueue.Enqueue(action);
             _graceTimer = GraceTime;
+        }
+        
+        public void AddAction(ActionData[] actionQueue)
+        {
+            foreach (var action in actionQueue)
+            {
+                AddAction(action);
+            }
+        }
+        public void AddAction(List<ActionData> actionQueue)
+        {
+            foreach (var action in actionQueue)
+            {
+                AddAction(action);
+            }
         }
 
         public void RemoveAction(ActionData action)

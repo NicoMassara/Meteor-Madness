@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
@@ -223,14 +224,16 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetActiveRestartButton(false);
             UpdateDeathScoreText(0);
             SetActivePanel(deathPanel);
-            
-            _deathPanelActionQueue.AddAction(
-                new ActionData(()=> SetActiveDeathText(true), 
-                    UIPanelTimeValues.SetEnableDeathText));
-            _deathPanelActionQueue.AddAction(
-                new ActionData(()=> SetActiveDeathScoreText(true), 
-                    UIPanelTimeValues.SetEnableDeathScore));
 
+
+            List<ActionData> tempList = new List<ActionData>
+            {
+                new (()=> SetActiveDeathText(true), 
+                    UIPanelTimeValues.SetEnableDeathText),
+                new (()=> SetActiveDeathScoreText(true), 
+                    UIPanelTimeValues.SetEnableDeathScore)
+            };
+            
             if (deflectCount > 0)
             {
                 _numberIncrementer.SetData(new NumberIncrementerData
@@ -240,24 +243,28 @@ namespace _Main.Scripts.Gameplay.GameMode
                     ActionOnFinish = ()=>
                     {
                         _deathPanelActionQueue.AddAction(
-                            new ActionData(() => SetActiveRestartButton(true),
+                            new ActionData(
+                                () => SetActiveRestartButton(true),
                                 UIPanelTimeValues.EnableRestartButton));
                     }
                 });
                 
-                _deathPanelActionQueue.AddAction(
-                    new ActionData(()=> StartCoroutine(
-                        IncreasePointsText(UpdateDeathScoreText)),
+                tempList.Add(
+                    new ActionData(
+                        ()=> StartCoroutine(IncreasePointsText(UpdateDeathScoreText)),
                         UIPanelTimeValues.CountDeathScore));
                 ;
             }
             else
             {
-                _deathPanelActionQueue.AddAction(
-                    new ActionData(()=> SetActiveRestartButton(true),
+                tempList.Add(
+                    new ActionData(
+                        ()=> SetActiveRestartButton(true),
                         UIPanelTimeValues.EnableRestartButton));
             }
 
+            
+            _deathPanelActionQueue.AddAction(tempList);
             StartCoroutine(RunDeathPanelActionQueue());
         }
 

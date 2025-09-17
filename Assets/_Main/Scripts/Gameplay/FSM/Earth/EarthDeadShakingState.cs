@@ -8,17 +8,17 @@ namespace _Main.Scripts.Gameplay.FSM.Earth
 
         public override void Awake()
         {
-            ActionData startShake = new ActionData(
-                ()=>Controller.SetDeathShake(true),GameTimeValues.StartShake);
-            ActionData stopShake = new ActionData(
-                ()=>Controller.SetDeathShake(false),GameTimeValues.DeathShakeDuration);
-            ActionData transitionToDead = new ActionData(
-                ()=>Controller.TransitionToDestruction(),GameTimeValues.ShowEarthDestruction);
+            var temp = new ActionData[]
+            {
+                new(()=>Controller.SetDeathShake(true),
+                    EarthDestructionTimeValues.StartShake),
+                new(()=>Controller.SetDeathShake(false),
+                    EarthDestructionTimeValues.DeathShakeDuration),
+                new(()=>Controller.TransitionToDestruction(),
+                    EarthDestructionTimeValues.ShowEarthDestruction)
+            };
             
-            
-            _queue.AddAction(startShake);
-            _queue.AddAction(stopShake);
-            _queue.AddAction(transitionToDead);
+            _queue.AddAction(temp);
         }
 
         public override void Execute(float deltaTime)

@@ -135,7 +135,7 @@ namespace _Main.Scripts.Gameplay.Earth
             planeMeshContainer.transform.rotation = Quaternion.identity;
             modelContainer.transform.rotation = Quaternion.identity;
             _shakerController.SetShakeData(healthShakeData);
-            earthMeshSlicer.RestartValues();
+            earthMeshSlicer.StartUnite();
             _isDead = false;
         }
 

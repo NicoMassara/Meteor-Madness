@@ -6,26 +6,22 @@
         
         public override void Awake()
         {
-            ActionData startDestruction = new ActionData(
-                ()=>Controller.TriggerDestruction(),0f);
-            ActionData endDestruction = new ActionData(
-                ()=>Controller.TriggerEndDestruction(),1f);
-            ActionData startRotation = new ActionData(
-                ()=>Controller.SetRotation(true),GameTimeValues.StartRotatingAfterDeath);
+            var temp = new ActionData[]
+            {
+                new (()=>Controller.TriggerDestruction(),
+                    EarthDestructionTimeValues.StartTriggerDestructionTime),
+                new (()=>Controller.SetRotation(true),
+                    EarthDestructionTimeValues.StartRotatingAfterDeath),
+                new (()=>Controller.TriggerEndDestruction(),
+                    EarthDestructionTimeValues.EndTriggerDestructionTime),
+            };
             
-            _queue.AddAction(startDestruction);
-            _queue.AddAction(endDestruction);
-            _queue.AddAction(startRotation);
+            _queue.AddAction(temp);
         }
 
         public override void Execute(float deltaTime)
         {
             _queue.Run(deltaTime);
-        }
-
-        public override void Sleep()
-        {
-            base.Sleep();
         }
     }
 }

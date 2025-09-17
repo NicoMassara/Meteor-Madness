@@ -17,7 +17,7 @@ namespace _Main.Scripts
         [Range(0, 5f)]
         [SerializeField] private float timeToMove;
 
-        private ActionQueue _sliceQueue = new ActionQueue();
+        private ActionQueue _actionQueue = new ActionQueue();
         private MeshFilter meshA;
         private MeshFilter meshB;
         private bool _isSliced;
@@ -28,44 +28,42 @@ namespace _Main.Scripts
 
         public void ManagedUpdate()
         {
-            if (_canMove)
-            {
-                MoveSlicedParts();
-            }
-        }
 
-        public void RestartValues()
-        {
-            SetSliceQueue();
-            UniteMeshes();
         }
         
         #region Slice
 
-        private void SetSliceQueue()
-        {
-            _sliceQueue.AddAction(new ActionData(()=> CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(0f), 0));
-            _sliceQueue.AddAction(new ActionData(()=> CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(0f), 0));
-            _sliceQueue.AddAction(new ActionData(()=> Slice(), 1f));
-            _sliceQueue.AddAction(new ActionData(()=> _canMove = true, 0f));
-            _sliceQueue.AddAction(new ActionData(()=> _canMove = false, timeToMove));
-            _sliceQueue.AddAction(new ActionData(()=> CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(1), 2f));
-            _sliceQueue.AddAction(new ActionData(()=> CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(1f), 0));
-        }
-        
         public void StartSlicing()
         {
-            StartCoroutine(RunQueue());
+            SetSliceQueue();
+            StartCoroutine(RunQueue(sliceDistance, EarthSliceTimeValues.MoveSlices));
         }
-
-        private IEnumerator RunQueue()
+        
+        private void SetSliceQueue()
         {
-            while (!_sliceQueue.IsEmpty)
+            var temp = new[]
             {
-                _sliceQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                new ActionData(() =>
+                {
+                    CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(0f);
+                    CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(0f);
+                }),
+                new ActionData(() =>
+                {
+                    Slice();
+                    _canMove = true;
+                }, EarthSliceTimeValues.StartSlice),
                 
-                yield return null;
-            }
+                new ActionData(() => _canMove = false, EarthSliceTimeValues.MoveSlices),
+                
+                new ActionData(() =>
+                {
+                    CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(1f);
+                    CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(1f);
+                }, EarthSliceTimeValues.ReturnToNormalTime),
+            };
+            
+            _actionQueue.AddAction(temp);
         }
         
         private void Slice() 
@@ -96,37 +94,73 @@ namespace _Main.Scripts
             }
         }
 
-        private void MoveSlicedParts()
+        private void MoveSlicedParts(float targetDistance, float targetTime)
         {
-            HandlePartMovement(meshA.transform, Vector2.right);
-            HandlePartMovement(meshB.transform, Vector2.left);
+            HandlePartMovement(meshA.transform, Vector2.right, targetDistance,targetTime);
+            HandlePartMovement(meshB.transform, Vector2.left, targetDistance,targetTime);
         }
 
-        private void HandlePartMovement(Transform partTransform, Vector2 direction)
+        private void HandlePartMovement(Transform partTransform, Vector2 direction, float targetDistance, float targetTime)
         {
             var lastPosition = partTransform.localPosition;
-            var targetPosition = new Vector2(sliceDistance * direction.x, lastPosition.y);
+            var targetPosition = new Vector2(targetDistance * direction.x, lastPosition.y);
             var distance = Vector2.Distance(lastPosition, targetPosition);
-            var speed = (distance / timeToMove) * CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+            var speed = (distance / targetTime) * CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
             var newX = Mathf.MoveTowards(lastPosition.x, targetPosition.x, speed);
             partTransform.localPosition = new Vector2(newX, lastPosition.y);
         }
 
         #endregion
-
-
         
+        #region Unite
+        
+        public void StartUnite()
+        {
+            if(!_isSliced) return;
+            
+            SetUniteQueue();
+            StartCoroutine(RunQueue(0, EarthSliceTimeValues.ReturnSlices));
+        }
+        
+        private void SetUniteQueue()
+        {
+            var temp = new[]
+            {
+                new ActionData(() =>
+                {
+                    CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(0f);
+                    CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(0f);
+                    _canMove = true;
+                }),
+                
+                new ActionData(() =>
+                {
+                    UniteMeshes();
+                    _canMove = false;
+                    
+                }, EarthSliceTimeValues.ReturnSlices),
+                
+                new ActionData(() =>
+                {
+                    UniteMeshes();
+                    CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(1f);
+                    CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(1f);
+                }, EarthSliceTimeValues.ReturnToNormalTime),
+            };
+            
+            _actionQueue.AddAction(temp);
+        }
+
+
         private void UniteMeshes() 
         {
-            if(!_isSliced) return;  
-            
             Destroy(meshA);
             Destroy(meshB);
             gameObject.GetComponent<MeshRenderer>().enabled = true;
             
             /*meshA.transform.localPosition = Vector3.zero;
             meshB.transform.localPosition = Vector3.zero;
-            
+
             MeshFilter filterA = meshA.GetComponent<MeshFilter>();
             MeshFilter filterB = meshB.GetComponent<MeshFilter>();
 
@@ -151,7 +185,7 @@ namespace _Main.Scripts
 
             mf.mesh = newMesh;
             mr.material = meshA.GetComponent<MeshRenderer>().sharedMaterial;
-            
+
             capMaterial = mr.material;
 
             // Optional: destroy the originals
@@ -160,6 +194,24 @@ namespace _Main.Scripts
 
             _isSliced = false;*/
         }
+
+        #endregion
+        
+        private IEnumerator RunQueue(float targetDistance, float targetTime)
+        {
+            while (!_actionQueue.IsEmpty)
+            {
+                _actionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                
+                if (_canMove)
+                {
+                    MoveSlicedParts(targetDistance, targetTime);
+                }
+                
+                yield return null;
+            }
+        }
+        
 
         private void OnDrawGizmosSelected()
         {

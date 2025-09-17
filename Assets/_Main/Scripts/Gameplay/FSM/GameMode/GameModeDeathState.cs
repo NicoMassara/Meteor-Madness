@@ -6,9 +6,9 @@
         
         public override void Awake()
         {
-            ActionData showUI = new ActionData(
-                () => Controller.HandleEarthEndDestruction(), UIPanelTimeValues.ShowDeathUI);
-            _actionQueue.AddAction(showUI);
+            _actionQueue.AddAction(new ActionData(
+                () => Controller.HandleEarthEndDestruction(), 
+                UIPanelTimeValues.ShowDeathUI));
         }
 
         public override void Execute(float deltaTime)
