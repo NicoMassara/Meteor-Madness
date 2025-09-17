@@ -52,10 +52,10 @@
         public const float StartTriggerDestructionTime = 0f;
         public const float EndTriggerDestructionTime = 0.5f;
         public const float StartEarthDestruction = 1.25f;
-        public const float StartShake = 0.75f;
+        public const float StartShake = 0.5f;
         public const float DeathShakeDuration = 2f;
-        public const float ShowEarthDestruction = 0.5f;
-        public const float StartRotatingAfterDeath = 0.5f;
+        public const float ShowEarthDestruction = 1f;
+        public const float StartRotatingAfterDeath = 1f;
     }
 
     public struct EarthSliceTimeValues
@@ -64,7 +64,7 @@
         public const float MoveSlices = 0.05f;
         public const float ReturnToNormalTime = 0.5f;
         public const float ReturnSlices = 0.1f;
-        public const float TotalTime = StartSlice + MoveSlices + ReturnSlices + ReturnToNormalTime;
+        public const float TotalReturnTime = StartSlice + ReturnSlices + ReturnToNormalTime;
     }
 
     public struct GameRestartTimeValues
@@ -75,10 +75,10 @@
 
     public struct EarthRestartTimeValues
     {
-        public const float StopRotation = 0.15f;
+        public const float TimeBeforeRotateZ = 0.25f;
         public const float RestartZRotation = 0.25f;
         public const float RestartYRotation = 0.25f;
-        public const float RestartHealth = 0.15f;
+        public const float RestartHealth = 0.25f;
         public const float FinishRestart = 0.25f;
     }
     

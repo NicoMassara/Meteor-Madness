@@ -12,10 +12,8 @@ namespace _Main.Scripts
     {
         [SerializeField] private Material capMaterial;
         [SerializeField] private Transform slicePlane; // defines where & how to slice
-        [Range(0,3f)]
+        [Range(0,1.5f)]
         [SerializeField] private float sliceDistance;
-        [Range(0, 5f)]
-        [SerializeField] private float timeToMove;
 
         private ActionQueue _actionQueue = new ActionQueue();
         private MeshFilter meshA;

@@ -134,34 +134,21 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private IEnumerator Coroutine_RestartHealth()
         {
-            var timeToRestartRot = 1f;
-            var timeToRestartHealth = 1f;
-            
-
             var tempActions = new ActionData[]
             {
-                new ActionData(() =>
-                {
-                    HandleSetRotation(false);
-                }, EarthRestartTimeValues.StopRotation * 2),
-                new ActionData(() =>
-                {
-                    StartCoroutine(Coroutine_RestartRotation(EarthRestartTimeValues.RestartZRotation, 
-                        planeMeshContainer.transform));
-                }, EarthRestartTimeValues.StopRotation),
-                new ActionData(() =>
-                {
-                    earthMeshSlicer.StartUnite();
-                }, EarthRestartTimeValues.RestartZRotation),
-                new ActionData(() =>
-                {
-                    StartCoroutine(Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform));
-                }, EarthSliceTimeValues.TotalTime),
-                new ActionData(() =>
-                {
-                    StartCoroutine(Coroutine_RestartHealthColor(EarthRestartTimeValues.RestartHealth));
-                    
-                }, EarthRestartTimeValues.RestartYRotation),
+                new ActionData(() =>  HandleSetRotation(false)),
+                new ActionData(() => StartCoroutine(
+                    Coroutine_RestartRotation(EarthRestartTimeValues.RestartZRotation, 
+                    planeMeshContainer.transform)), 
+                    EarthRestartTimeValues.TimeBeforeRotateZ),
+                new ActionData(() => earthMeshSlicer?.StartUnite(), 
+                    EarthRestartTimeValues.RestartZRotation),
+                new ActionData(() => StartCoroutine(
+                    Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform)), 
+                    EarthSliceTimeValues.TotalReturnTime),
+                new ActionData(() => StartCoroutine(
+                    Coroutine_RestartHealthColor(EarthRestartTimeValues.RestartHealth)), 
+                    EarthRestartTimeValues.RestartYRotation),
                 new ActionData(() =>
                 {
                     SetShakeMultiplier(1);
@@ -211,16 +198,17 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             float healthValue = 0;
             float elapsedTime = 0;
-            float increaseSpeed = elapsedTime/timeToIncrease;
             
-            while (healthValue < 1)
+            while (elapsedTime < timeToIncrease)
             {
                 elapsedTime += CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
                 UpdateColorByHealth(healthValue);
-                healthValue += increaseSpeed;
+                healthValue = elapsedTime/timeToIncrease;
                 
                 yield return null;
             }
+
+            UpdateColorByHealth(1);
         }
 
         #endregion
