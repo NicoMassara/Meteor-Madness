@@ -8,7 +8,6 @@ namespace _Main.Scripts.Gameplay.FSM.Shield
         public override void Awake()
         {
             Controller.SetActiveShield(true);
-            Controller.SetSpriteByEnum(SpriteType.Normal);
         }
     }
 }

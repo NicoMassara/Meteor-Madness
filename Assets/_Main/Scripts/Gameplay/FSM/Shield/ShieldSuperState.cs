@@ -4,14 +4,21 @@ namespace _Main.Scripts.Gameplay.FSM.Shield
 {
     public class ShieldSuperState<T> : ShieldBaseState<T>
     {
+        private const float MovementDirection = 50f;
+        
         public override void Awake()
         {
-            Controller.SetSpriteByEnum(SpriteType.Super);
+            Controller.SetActiveSuperShield(true);
         }
 
         public override void Execute(float deltaTime)
         {
-            Controller.ForceRotation();
+            Controller.ForceRotate(MovementDirection);
+        }
+
+        public override void Sleep()
+        {
+            Controller.SetActiveSuperShield(false);
         }
     }
 }

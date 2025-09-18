@@ -1,4 +1,6 @@
-﻿using _Main.Scripts.Managers;
+﻿using System;
+using System.Collections;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
@@ -7,6 +9,7 @@ using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
@@ -26,17 +29,29 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
         [SerializeField] private ShieldMovementSo shieldMovementData;
+        [Space]
+        [Header("Values")]
+        [Range(0.1f, 5f)]
+        [SerializeField] private float timeToEnableSuperShield;
+        [Range(0.1f, 5f)]
+        [SerializeField] private float timeToDisableSuperShield;
+        [Range(0, 1000)]
+        [SerializeField] private float decayConstant = 100f;
 
         private ShieldMovement _movement;
+        private ShieldSpeeder _shieldSpeeder;
+        private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         
         private GameObject _activeSprite;
         private ShakerController _shakerController;
         
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
         private void Awake()
         {
-            _movement = new ShieldMovement(shieldMovementData);
+            _movement = new ShieldMovement(shieldMovementData,spriteContainer.transform);
+            _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
+            _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
         }
 
         private void Start()
@@ -60,14 +75,10 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.Rotate:
                     HandleRotation((float)args[0]);
                     break;
-                case ShieldObserverMessage.StopRotate:
-                    HandleStopRotate();
-                    break;
                 case ShieldObserverMessage.Deflect:
                     HandleDeflect((Vector3)args[0],
                         (Quaternion)args[1],
-                        (Vector2)args[2]
-                    );
+                        (Vector2)args[2]);
                     break;
                 case ShieldObserverMessage.PlayMoveSound:
                     PlayMoveSound();
@@ -78,11 +89,13 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.SetActiveShield:
                     HandleSetActiveShield((bool)args[0]);
                     break;
-                case ShieldObserverMessage.SetSpriteType:
-                    HandleSetSpriteType((SpriteType)args[0]);
+                case ShieldObserverMessage.SetActiveSuperShield:
+                    HandleSetSuperActive((bool)args[0]);
                     break;
             }
         }
+
+
 
         #region Sprites
 
@@ -90,33 +103,13 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             spriteContainer.SetActive(isActive);
         }
-        
-        private void HandleSetSpriteType(SpriteType spriteType)
-        {
-            _activeSprite?.SetActive(false);
-
-            _activeSprite = spriteType switch
-            {
-                SpriteType.Normal => normalSprite,
-                SpriteType.Super => superSprite,
-                _ => _activeSprite
-            };
-            
-            _activeSprite?.SetActive(true);
-        }
 
         #endregion
 
         #region Movement
         private void HandleRotation(float direction)
         {
-            var angularVelocity = _movement.GetAngularVelocity(direction, 
-                CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
-            transform.Rotate(0f,0f,angularVelocity);
-        }
-        private void HandleStopRotate()
-        {
-            
+            _movement.Move(direction, CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
         }
         
         private void PlayMoveSound()
@@ -128,6 +121,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             transform.rotation = Quaternion.Euler(0,0,0);
         }
+        
 
         #endregion
 
@@ -148,6 +142,110 @@ namespace _Main.Scripts.Gameplay.Shield
             );
             
             GameManager.Instance.EventManager.Publish(new CameraShake{ShakeData = cameraShakeData});
+        }
+
+        private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)
+        {
+            var elapsedTime = 0f;
+            
+            while (elapsedTime < targetTime)
+            {
+                var deltaTime = CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+                elapsedTime += deltaTime;
+                action?.Invoke(deltaTime);
+                
+                yield return null;
+            }
+        }
+
+
+        #region Change Form 
+
+        private void HandleSetSuperActive(bool isActive)
+        {
+            if (isActive)
+            {
+                superSprite.gameObject.SetActive(true);
+                RunSuperShieldQueue();
+            }
+            else
+            {
+                RunNormalShieldQueue();
+            }
+        }
+
+        private void RunSuperShieldQueue()
+        {
+            var actionData = new ActionData[]
+            {
+                new(() =>
+                {
+                    //Debug.Log("Ability Time Scale Set to 0");
+                    CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 0;
+                    StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, timeToEnableSuperShield));
+                }),
+                new(() =>
+                {
+                    //Debug.Log("Ability Time Scale Set to 1");
+                    _shieldSpeeder.RestartValues();
+                    _spriteAlphaSetter.RestartValues();
+                    CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 1;
+                },timeToEnableSuperShield),
+            };
+            
+            
+            ActionQueue tempQueue = new ActionQueue(actionData);
+            StartCoroutine(Coroutine_RunActionQueue(tempQueue));
+        }
+        
+        private void RunNormalShieldQueue()
+        {
+            var actionData = new ActionData[]
+            {
+                new(() =>
+                {
+                    //Debug.Log("Ability Time Scale Set To 0");
+                    CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 0;
+                    StartCoroutine(
+                        Coroutine_RunActionByTime(HandleNormalShieldEnable, timeToDisableSuperShield));
+                }),
+                new(() =>
+                {
+                    //Debug.Log("Ability Time Scale Set To 1");
+                    superSprite.gameObject.SetActive(false);
+                    _spriteAlphaSetter.RestartValues();
+                    _shieldSpeeder.RestartValues();
+                    CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 1;
+                },timeToDisableSuperShield),
+            };
+            
+            
+            ActionQueue tempQueue = new ActionQueue(actionData);
+            StartCoroutine(Coroutine_RunActionQueue(tempQueue));
+        }
+
+        private IEnumerator Coroutine_RunActionQueue(ActionQueue actionQueue)
+        {
+            while (!actionQueue.IsEmpty)
+            {
+                actionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                
+                yield return null;
+            }
+        }
+
+        #endregion
+        
+        private void HandleSuperShieldEnable(float deltaTime)
+        {
+            _spriteAlphaSetter.EnableSuper(deltaTime);
+            _shieldSpeeder.IncreaseSpeed(deltaTime);
+        }
+
+        private void HandleNormalShieldEnable(float deltaTime)
+        {
+            _spriteAlphaSetter.EnableNormal(deltaTime);
+            _shieldSpeeder.DecreaseSpeed(deltaTime);
         }
     }
 }

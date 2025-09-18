@@ -63,7 +63,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
             eventManager.Subscribe<MeteorDeflected>(EventBus_ShieldDeflection);
             eventManager.Subscribe<ShieldEnable>(EventBus_OnEarthShake);
-            eventManager.Subscribe<SetTotalShield>(EventBus_OnSetTotalShield);
+            eventManager.Subscribe<SetSuperShield>(EventBus_OnSetTotalShield);
             eventManager.Subscribe<SetNormalShield>(EventBus_OnSetNormalShield);
         }
 
@@ -73,9 +73,9 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
 
-        private void EventBus_OnSetTotalShield(SetTotalShield input)
+        private void EventBus_OnSetTotalShield(SetSuperShield input)
         {
-            _controller.TransitionToTotal();
+            _controller.TransitionToSuper();
         }
 
         private void EventBus_ShieldDeflection(MeteorDeflected input)

@@ -27,7 +27,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             Unactive,
             Active,
-            Total
+            Super
         }
 
         private FSM<States> _fsm;
@@ -52,7 +52,7 @@ namespace _Main.Scripts.Gameplay.Shield
             //Tester
             if (Input.GetKeyDown(KeyCode.R))
             {
-                TransitionToTotal();
+                TransitionToSuper();
             }
             else if (Input.GetKeyDown(KeyCode.T))
             {
@@ -72,11 +72,11 @@ namespace _Main.Scripts.Gameplay.Shield
 
             var unactive = new ShieldUnactiveState<States>();
             var active = new ShieldActivateState<States>();
-            var total = new ShieldSuperState<States>();
+            var super = new ShieldSuperState<States>();
             
             temp.Add(unactive);
             temp.Add(active);
-            temp.Add(total);
+            temp.Add(super);
 
             #endregion
 
@@ -84,10 +84,10 @@ namespace _Main.Scripts.Gameplay.Shield
 
             unactive.AddTransition(States.Active, active);
             
-            active.AddTransition(States.Total, total);
+            active.AddTransition(States.Super, super);
             active.AddTransition(States.Unactive, unactive);
             
-            total.AddTransition(States.Active, active);
+            super.AddTransition(States.Active, active);
 
             #endregion
 
@@ -115,9 +115,9 @@ namespace _Main.Scripts.Gameplay.Shield
             SetTransitions(States.Unactive);
         }
 
-        public void TransitionToTotal()
+        public void TransitionToSuper()
         {
-            SetTransitions(States.Total);
+            SetTransitions(States.Super);
         }
 
         #endregion
@@ -132,14 +132,19 @@ namespace _Main.Scripts.Gameplay.Shield
             }
         }
 
-        public void ForceRotation()
+        public void SetActiveSuperShield(bool isActive)
         {
-            _motor.Rotate(0.5f);
+            _motor.SetActiveSuperShield(isActive);
         }
 
         public void StopRotate()
         {
             _motor.StopRotate();
+        }
+
+        public void ForceRotate(float direction)
+        {
+            _motor.ForceRotate(direction);
         }
 
         public void RestartPosition()
@@ -150,11 +155,6 @@ namespace _Main.Scripts.Gameplay.Shield
         #endregion
 
         #region Sprites
-
-        public void SetSpriteByEnum(SpriteType spriteType)
-        {
-            _motor.SetSpriteByEnum(spriteType);
-        }
 
         public void SetActiveShield(bool isActive)
         {

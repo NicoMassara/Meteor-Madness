@@ -108,28 +108,38 @@ namespace _Main.Scripts.Gameplay.Meteor
             var angleOffset = 360f / amountToSpawn;
             var startAngleOffset = angleOffset/2;
             var startOffset = 0f;
+            var wavesAmount = GameValues.RingMeteorWaves;
 
-            for (int i = 0; i < ringsToUse; i++)
+            for (int a = 0; a < wavesAmount; a++)
             {
-                if(_canSpawn == false) yield break; 
-                
-                for (int j = 0; j < amountToSpawn; j++)
+                for (int i = 0; i < ringsToUse; i++)
                 {
-                    CreateMeteor(meteorSpeed, _locationSpawn.GetPositionByAngle(currAngle, spawnRadius), 
-                        GetRingMeteorValue(amountToSpawn, ringsToUse));
-                    currAngle += angleOffset;
-                    currAngle = Mathf.Repeat(currAngle, 360f);
+                    if(_canSpawn == false) yield break; 
+                
+                    for (int j = 0; j < amountToSpawn; j++)
+                    {
+                        yield return new WaitForSeconds(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+
+                        CreateMeteor(meteorSpeed * 1.5f, _locationSpawn.GetPositionByAngle(currAngle, spawnRadius), 
+                            GetRingMeteorValue(amountToSpawn, ringsToUse));
+                        currAngle += angleOffset;
+                        currAngle = Mathf.Repeat(currAngle, 360f);
+                    }
+                
+                    startOffset += startAngleOffset;
+                    startOffset = Mathf.Repeat(startOffset, 360f);
+                    currAngle = startOffset;
+                    
+                    yield return new WaitForSeconds(MeteorTimeValues.RingMeteorDelayBetweenSpawn);
                 }
                 
-                startOffset += startAngleOffset;
-                startOffset = Mathf.Repeat(startOffset, 360f);
-                currAngle = startOffset;
                 
-                yield return new WaitForSeconds(GameTimeValues.RingMeteorDelayBetweenSpawn);
+                yield return new WaitForSeconds(MeteorTimeValues.RingMeteorDelayBetweenWaves);
             }
             
+            
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
-            yield return new WaitForSeconds(GameTimeValues.MeteorSpawnDelayAfterRing);
+            yield return new WaitForSeconds(MeteorTimeValues.MeteorSpawnDelayAfterRing);
             
             _isSpawningRing = false;
         }
@@ -230,7 +240,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             _canSpawn = input.CanSpawn;
             if (_isFirstSpawn)
             {
-                StartCoroutine(StartMeteorTimer());
+                //StartCoroutine(StartMeteorTimer());
             }
         }
         

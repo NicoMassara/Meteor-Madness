@@ -19,7 +19,7 @@ namespace _Main.Scripts.Gameplay
         private bool _doesChangeSize = false;
         private float _targetSize;
 
-        public UpdateGroup SelfLateUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public UpdateGroup SelfLateUpdateGroup { get; } = UpdateGroup.Camera;
         
 
         private void Awake()

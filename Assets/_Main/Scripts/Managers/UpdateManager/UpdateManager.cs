@@ -341,12 +341,14 @@ namespace _Main.Scripts.Managers.UpdateManager
     
     public enum UpdateGroup
     {
+        Always,
         Gameplay,
         UI,
         Inputs,
         Ability,
         Earth,
         Effects,
-        Always
+        Shield,
+        Camera
     }
 }

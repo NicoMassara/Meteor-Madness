@@ -6,6 +6,7 @@ namespace _Main.Scripts.Gameplay.Shield
     public class ShieldMotor : ObservableComponent
     {
         private float _lastDirection;
+        private bool _isTotalActive;
 
         #region Movement
         public void Rotate(float direction = 1)
@@ -29,15 +30,21 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             NotifyAll(ShieldObserverMessage.RestartPosition);
         }
+        
+        public void SetActiveSuperShield(bool isActive)
+        {
+            _isTotalActive = isActive;
+            NotifyAll(ShieldObserverMessage.SetActiveSuperShield,_isTotalActive);
+        }
+
+        public void ForceRotate(float direction = 1)
+        {
+            NotifyAll(ShieldObserverMessage.Rotate, direction);
+        }
 
         #endregion
 
         #region Sprites
-
-        public void SetSpriteByEnum(SpriteType spriteType)
-        {
-            NotifyAll(ShieldObserverMessage.SetSpriteType, spriteType);
-        }
 
         public void SetActiveShield(bool isActive)
         {
@@ -50,11 +57,5 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             NotifyAll(ShieldObserverMessage.Deflect,position, rotation, direction);
         }
-    }
-
-    public enum SpriteType
-    {
-        Normal,
-        Super
     }
 }

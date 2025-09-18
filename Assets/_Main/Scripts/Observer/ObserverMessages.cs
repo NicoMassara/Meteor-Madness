@@ -8,7 +8,7 @@
         public const string PlayMoveSound = "A00004";
         public const string RestartPosition = "A00005";
         public const string SetActiveShield = "A00006";
-        public const string SetSpriteType = "A00007";
+        public const string SetActiveSuperShield = "A00008";
     }
 
     public struct EarthObserverMessage
@@ -51,5 +51,15 @@
     {
         public const string ShieldDeflection = "A13001";
         public const string EarthCollision = "A13002";
+    }
+
+    public struct AbilityObserverMessage
+    {
+        public const string TriggerAbility = "A04001";
+        public const string FinishAbility = "A04002";
+        public const string RunTimer = "A04003";
+        public const string SetCanUse = "A04004";
+        public const string SetEnableUI = "A04005";
+        public const string SelectAbility = "A04006";
     }
 }

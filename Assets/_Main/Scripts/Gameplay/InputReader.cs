@@ -1,15 +1,28 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
+﻿using System;
+using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay
 {
-    public class InputReader : MonoBehaviour
+    public class InputReader : ManagedBehavior, IUpdatable
     {
         public float MovementDirection { get; private set; }
+        public bool HasUsedAbility { get; private set; }
+        private bool _areInputEnabled;
 
-        private void Update()
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
+        private void Awake()
         {
+            GameManager.Instance.EventManager.Subscribe<SetEnableInputs>(EventBus_OnSetEnableInputs);
+        }
+        
+        public void ManagedUpdate()
+        {
+            if(_areInputEnabled == false) return;
+            
             if (GetIsLeftPressed())
             {
                 MovementDirection = 1;
@@ -23,16 +36,12 @@ namespace _Main.Scripts.Gameplay
                 MovementDirection = 0;
             }
 
+            HasUsedAbility = GetIsDownPressed();
 
             if (Input.GetKeyDown(KeyCode.P))
             {
                 UpdateManager.Instance.IsPaused = !UpdateManager.Instance.IsPaused;
             }
-
-            CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(Input.GetKey(KeyCode.Y) ? 0.25f : 1f);
-            CustomTime.GetChannel(UpdateGroup.Inputs).SetTimeScale(Input.GetKey(KeyCode.U) ? 0.25f : 1f);
-            
-
         }
 
         private bool GetIsLeftPressed()
@@ -44,5 +53,17 @@ namespace _Main.Scripts.Gameplay
         {
             return Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
         }
+
+        private bool GetIsDownPressed()
+        {
+            return Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow);
+        }
+        
+        private void EventBus_OnSetEnableInputs(SetEnableInputs input)
+        {
+            _areInputEnabled = input.IsEnabled;
+        }
+
+
     }
 }

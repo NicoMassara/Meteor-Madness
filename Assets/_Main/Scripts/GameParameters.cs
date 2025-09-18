@@ -5,6 +5,7 @@
         public const int VisualMultiplier = 150;
         public const float ShieldExtend = 1.5f;
         public const float MaxMeteorSpeed = 20;
+        public const int RingMeteorWaves = 3;
         public const int StartStreakShield = 5;
         public const int MaxStreakShield = 10;
         public const int ExtendedMaxHit = 10;
@@ -12,20 +13,25 @@
         public const float RingMeteorPointsMultiplier = 0.25f;
     }
 
-    public struct TotalShieldStartTimeValues
+    public struct AbilitiesActiveTimeValues
     {
-        public const float TimeBeforeDecreasingTimeScale = 0.5f;
-        public const float TimeToZoomIn = 0.5f;
-        public const float TimeToMoveFastShield = 0.5f;
-        public const float TimeBeforeTotalShield = 0.5f;
-        public const float TimeToSpawnRingMeteor = 0.5f;
-        public const float TimeToZoomOut = 0.5f;
-        public const float TimeBeforeIncreasingTimeScale = 0.5f;
+        public const float SuperShield = 8f;
     }
 
-    public struct TotalShieldEndTimeValues
+    public struct SuperShieldStartTimeValues
     {
+        public const float TimeBeforeDecreasingTimeScale = 0.5f;
+        public const float TimeToZoomIn = 0.25f;
+        public const float TimeToMoveFastShield = 0.15f;
+        public const float TimeToZoomOut = 0.5f;
+        public const float TimeBeforeIncreasingTimeScale = 0.25f;
+    }
 
+    public struct SuperShieldEndTimeValues
+    {
+        public const float TimeBeforeDisableSuperShield = 0.5f;
+        public const float TimeBeforeEnableInput = 0.5f;
+        public const float TimeBeforeRestoringTimeScale = 0.5f;
     }
 
 
@@ -47,13 +53,17 @@
         Brutal
     }
 
+    public struct MeteorTimeValues
+    {
+        public const float MeteorSpawnDelayAfterRing = 1f;
+        public const float RingMeteorDelayBetweenSpawn = 0.15f;
+        public const float RingMeteorDelayBetweenWaves = 0.5f;
+    }
+
     public struct GameTimeValues
     {
         public const int StartGameCount = 0;
         public const float TimeToLoadGameScene = 1f;
-        //Show Death
-        public const float MeteorSpawnDelayAfterRing = 1f;
-        public const float RingMeteorDelayBetweenSpawn = 0.25f;
         public const float CometSpawnDelay = 8f;
         public const float FirstCometSpawnDelay = 1f;
     }
@@ -75,7 +85,6 @@
         public const float MoveSlices = 0.05f;
         public const float ReturnToNormalTime = 0.5f;
         public const float ReturnSlices = 0.1f;
-        public const float TotalReturnTime = StartSlice + ReturnSlices + ReturnToNormalTime;
     }
 
     public struct GameRestartTimeValues

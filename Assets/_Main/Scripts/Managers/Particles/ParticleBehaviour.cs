@@ -15,7 +15,7 @@ namespace _Main.Scripts.Particles
         private float _fadeTimer;
         private Vector3 _moveDirection = Vector3.up;
         
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
         public UnityAction<ParticleBehaviour> OnRecycle;
 
         public void SetValues(ParticleDataSo particleData, Vector3 position, float rotation, Vector3 moveDirection)

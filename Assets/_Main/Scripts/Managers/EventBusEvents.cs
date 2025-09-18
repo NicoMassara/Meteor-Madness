@@ -22,7 +22,7 @@ namespace _Main.Scripts.Managers
         public bool IsEnabled;
     }
 
-    public struct SetTotalShield { }
+    public struct SetSuperShield { }
     public struct SetNormalShield { }
 
 
