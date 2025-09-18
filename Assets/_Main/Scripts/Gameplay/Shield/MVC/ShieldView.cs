@@ -36,7 +36,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [Range(0, 1000)]
         [SerializeField] private float decayConstant = 100f;
         [SerializeField] private LayerMask meteorLayer;
-        [Range(0,15f)]
+        [Range(0,50f)]
         [SerializeField] private float meteorCheckRadius;
 
         private ShieldMovement _movement;
@@ -257,17 +257,22 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             StartCoroutine(Coroutine_MoveToTargetAngle(data.Angle));
         }
-
+        
         private IEnumerator Coroutine_MoveToTargetAngle(float targetAngle)
         {
-            var diffTolerance = 5f;
+            var diffTolerance = 0.1f;
             var delta = Mathf.DeltaAngle(_movement.GetAngle(), targetAngle);
             int direction = (int)Mathf.Sign(delta);
             
-            // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
+            Debug.Log($"Meteor Angle: {targetAngle}, " +
+                      $"Shield Angle: {_movement.GetAngle()}," +
+                      $" Direction: {direction}, Delta: {delta}");
+            
             while (delta < diffTolerance)
             {
-                HandleRotation(direction * 15);
+                delta = Mathf.DeltaAngle(_movement.GetAngle(), targetAngle);
+                
+                HandleRotation(direction);
                 
                 yield return null;
             }

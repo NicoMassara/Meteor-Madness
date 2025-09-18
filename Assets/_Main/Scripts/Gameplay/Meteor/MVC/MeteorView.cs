@@ -7,8 +7,8 @@ namespace _Main.Scripts.Gameplay.Meteor
 {
     public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorController>, IMeteor
     {
-        public UnityAction<MeteorCollisionData> OnEarthCollision;
-        public UnityAction<MeteorCollisionData> OnDeflection;
+        public UnityAction<MeteorCollisionData> OnEarthCollision { get; set; }
+        public UnityAction<MeteorCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
 
         public void SetMeteorValues(MeteorValuesData data)

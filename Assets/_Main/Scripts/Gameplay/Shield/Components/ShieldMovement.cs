@@ -35,7 +35,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         public float GetAngle()
         {
-            return Mathf.Repeat(_transform.rotation.eulerAngles.z - 90, 360F);
+            return _transform.rotation.eulerAngles.z;
         }
 
     }
