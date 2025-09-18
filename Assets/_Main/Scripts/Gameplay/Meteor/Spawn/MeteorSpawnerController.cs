@@ -239,7 +239,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             _canSpawn = input.CanSpawn;
             if (_isFirstSpawn)
             {
-                //StartCoroutine(StartMeteorTimer());
+                StartCoroutine(StartMeteorTimer());
             }
         }
         

@@ -33,5 +33,10 @@ namespace _Main.Scripts.Gameplay.Shield
             _transform.Rotate(0f,0f,GetAngularVelocity(inputDirection,deltaTime));
         }
 
+        public float GetAngle()
+        {
+            return Mathf.Repeat(_transform.rotation.eulerAngles.z - 90, 360F);
+        }
+
     }
 }

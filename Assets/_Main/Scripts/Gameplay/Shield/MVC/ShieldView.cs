@@ -35,10 +35,14 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float timeToDisableSuperShield;
         [Range(0, 1000)]
         [SerializeField] private float decayConstant = 100f;
+        [SerializeField] private LayerMask meteorLayer;
+        [Range(0,15f)]
+        [SerializeField] private float meteorCheckRadius;
 
         private ShieldMovement _movement;
         private ShieldSpeeder _shieldSpeeder;
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
+        private MeteorDetector _meteorDetector;
         
         private GameObject _activeSprite;
         private ShakerController _shakerController;
@@ -50,10 +54,13 @@ namespace _Main.Scripts.Gameplay.Shield
             _movement = new ShieldMovement(shieldMovementData,spriteContainer.transform);
             _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
+            _meteorDetector = new MeteorDetector(spriteContainer.transform, meteorCheckRadius, meteorLayer);
+            _meteorDetector.OnMeteorDetected += OnMeteorDetectedHandler;
         }
 
         private void Start()
         {
+            superSprite.gameObject.SetActive(false);
             _shakerController = new ShakerController(transform);
             _shakerController.SetShakeData(hitShakeData);
         }
@@ -64,6 +71,8 @@ namespace _Main.Scripts.Gameplay.Shield
             {
                 _shakerController.HandleShake(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
             }
+            
+            _meteorDetector.CheckForNearMeteor();
         }
 
         public void OnNotify(string message, params object[] args)
@@ -92,8 +101,7 @@ namespace _Main.Scripts.Gameplay.Shield
                     break;
             }
         }
-
-
+        
 
         #region Sprites
 
@@ -156,14 +164,12 @@ namespace _Main.Scripts.Gameplay.Shield
             }
         }
 
-
         #region Change Form 
 
         private void HandleSetSuperActive(bool isActive)
         {
             if (isActive)
             {
-                superSprite.gameObject.SetActive(true);
                 RunSuperShieldQueue();
             }
             else
@@ -179,6 +185,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set to 0");
+                    superSprite.gameObject.SetActive(true);
                     CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 0;
                     StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, timeToEnableSuperShield));
                 }),
@@ -231,8 +238,6 @@ namespace _Main.Scripts.Gameplay.Shield
                 yield return null;
             }
         }
-
-        #endregion
         
         private void HandleSuperShieldEnable(float deltaTime)
         {
@@ -244,6 +249,34 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _spriteAlphaSetter.EnableNormal(deltaTime);
             _shieldSpeeder.DecreaseSpeed(deltaTime);
+        }
+
+        #endregion
+
+        private void OnMeteorDetectedHandler(MeteorDetectedData data)
+        {
+            StartCoroutine(Coroutine_MoveToTargetAngle(data.Angle));
+        }
+
+        private IEnumerator Coroutine_MoveToTargetAngle(float targetAngle)
+        {
+            var diffTolerance = 5f;
+            var delta = Mathf.DeltaAngle(_movement.GetAngle(), targetAngle);
+            int direction = (int)Mathf.Sign(delta);
+            
+            // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
+            while (delta < diffTolerance)
+            {
+                HandleRotation(direction * 15);
+                
+                yield return null;
+            }
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(spriteContainer.transform.position,meteorCheckRadius );
         }
     }
 }

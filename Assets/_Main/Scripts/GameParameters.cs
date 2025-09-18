@@ -3,14 +3,8 @@
     public struct GameValues
     {
         public const int VisualMultiplier = 150;
-        public const float ShieldExtend = 1.5f;
         public const float MaxMeteorSpeed = 20;
         public const int RingMeteorWaves = 3;
-        public const int StartStreakShield = 5;
-        public const int MaxStreakShield = 10;
-        public const int ExtendedMaxHit = 10;
-        public const float ShieldRotationSpeed = 9.8f;
-        public const float RingMeteorPointsMultiplier = 0.25f;
     }
 
     public struct AbilitiesActiveTimeValues
@@ -20,10 +14,9 @@
 
     public struct SuperShieldStartTimeValues
     {
-        public const float TimeBeforeDecreasingTimeScale = 0.5f;
         public const float TimeToZoomIn = 0.25f;
-        public const float TimeToMoveFastShield = 0.15f;
-        public const float TimeToZoomOut = 0.5f;
+        public const float TimeToMoveFastShield = 0.45f;
+        public const float TimeToZoomOut = 0.25f;
         public const float TimeBeforeIncreasingTimeScale = 0.25f;
     }
 

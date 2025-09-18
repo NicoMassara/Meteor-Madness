@@ -31,13 +31,10 @@ namespace _Main.Scripts.Gameplay.Abilies
                 new ActionData(() =>
                 {
                     //Debug.Log("Disable Inputs");
-                    _eventBus.Publish(new SetEnableInputs{IsEnabled = false});
-                }, 0f),
-                new ActionData(() =>
-                {
                     //Debug.Log("Gameplay Time Scale Set To 0");
+                    _eventBus.Publish(new SetEnableInputs{IsEnabled = false});
                     CustomTime.GetChannel(UpdateGroup.Gameplay).TimeScale = 0;
-                }, SuperShieldStartTimeValues.TimeBeforeDecreasingTimeScale),
+                }, 0f),
                 new ActionData(() =>
                 {
                     //Debug.Log("Camera Zoom In");
@@ -50,15 +47,15 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, SuperShieldStartTimeValues.TimeToMoveFastShield),
                 new ActionData(() =>
                 {
+                    //Debug.Log("Camera Zoom Out");
+                    _eventBus.Publish(new CameraZoomOut());
+                }, SuperShieldStartTimeValues.TimeToZoomOut),
+                new ActionData(() =>
+                {
                     //Debug.Log("Gameplay Time Scale Set To 1");
                     CustomTime.GetChannel(UpdateGroup.Gameplay).TimeScale = 1;
                     _eventBus.Publish(new SpawnRingMeteor());
                 }, SuperShieldStartTimeValues.TimeBeforeIncreasingTimeScale),
-                new ActionData(() =>
-                {
-                    //Debug.Log("Camera Zoom Out");
-                    _eventBus.Publish(new CameraZoomOut());
-                }, SuperShieldStartTimeValues.TimeToZoomOut),
                 new ActionData(() =>
                 {
                     var activeTime = _abilities[AbilityType.SuperShield].ActiveTime;
