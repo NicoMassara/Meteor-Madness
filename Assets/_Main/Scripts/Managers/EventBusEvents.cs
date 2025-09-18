@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Particles;
+﻿using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using UnityEngine;
 
@@ -20,6 +21,10 @@ namespace _Main.Scripts.Managers
     {
         public bool IsEnabled;
     }
+
+    public struct SetTotalShield { }
+    public struct SetNormalShield { }
+
 
     #endregion
 
@@ -68,8 +73,7 @@ namespace _Main.Scripts.Managers
     #endregion
     
     #region Meteor
-
-
+    
 
     public struct EnableMeteorSpawn
     {
@@ -92,6 +96,24 @@ namespace _Main.Scripts.Managers
 
     public struct CameraZoomIn { }
     public struct CameraZoomOut { }
+
+    #endregion
+
+    #region Inputs
+
+    public struct SetEnableInputs
+    {
+        public bool IsEnabled;
+    }
+
+    #endregion
+
+    #region Abilities
+
+    public struct SetEnableAbility
+    {
+        public bool IsEnable;
+    }
 
     #endregion
 }

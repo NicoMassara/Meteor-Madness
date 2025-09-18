@@ -1,6 +1,6 @@
 ﻿namespace _Main.Scripts.Gameplay.Abilies
 {
-    public class AbilityController
+    public class AbilityMotor
     {
         
     }

@@ -6,7 +6,7 @@ namespace _Main.Scripts.Gameplay.Earth
 {
     public class EarthMotor : ObservableComponent
     {
-        private float _currentHealth;
+        private float _currentHealth = 1;
         private bool _canRotate;
         private bool _isShaking;
         public event Action OnDeath;

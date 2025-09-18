@@ -26,9 +26,11 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private ShakeDataSo hitShakeData;
         [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
+        [SerializeField] private ShieldMovementSo shieldMovementData;
+
+        private ShieldMovement _movement;
 
         //Multiplier added to handle lower numbers in inspector
-        private float GetRotateSpeed => rotateSpeed * 50f; 
         private GameObject _activeSprite;
         private ShakerController _shakerController;
         
@@ -36,7 +38,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void Awake()
         {
-            
+            _movement = new ShieldMovement(shieldMovementData);
         }
 
         private void Start()
@@ -110,8 +112,12 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
-            transform.RotateAround(transform.position, Vector3.forward, 
-                ((GetRotateSpeed) * direction) * CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            var angularVelocity = _movement.GetAngularVelocity(direction, 
+                CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            transform.Rotate(0f,0f,angularVelocity);
+            
+            /*transform.RotateAround(transform.position, Vector3.forward, 
+                ((GetRotateSpeed) * direction) * CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);*/
         }
         private void HandleStopRotate()
         {

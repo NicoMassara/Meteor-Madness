@@ -12,11 +12,22 @@
         public const float RingMeteorPointsMultiplier = 0.25f;
     }
 
-    public struct TotalShieldValues
+    public struct TotalShieldStartTimeValues
     {
-        
+        public const float TimeBeforeDecreasingTimeScale = 0.5f;
+        public const float TimeToZoomIn = 0.5f;
+        public const float TimeToMoveFastShield = 0.5f;
+        public const float TimeBeforeTotalShield = 0.5f;
+        public const float TimeToSpawnRingMeteor = 0.5f;
+        public const float TimeToZoomOut = 0.5f;
+        public const float TimeBeforeIncreasingTimeScale = 0.5f;
     }
-    
+
+    public struct TotalShieldEndTimeValues
+    {
+
+    }
+
 
     public struct DamageValues
     {

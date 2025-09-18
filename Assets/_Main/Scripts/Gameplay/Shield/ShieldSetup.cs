@@ -1,10 +1,8 @@
-﻿using System;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
@@ -65,6 +63,19 @@ namespace _Main.Scripts.Gameplay.Shield
             
             eventManager.Subscribe<MeteorDeflected>(EventBus_ShieldDeflection);
             eventManager.Subscribe<ShieldEnable>(EventBus_OnEarthShake);
+            eventManager.Subscribe<SetTotalShield>(EventBus_OnSetTotalShield);
+            eventManager.Subscribe<SetNormalShield>(EventBus_OnSetNormalShield);
+        }
+
+        private void EventBus_OnSetNormalShield(SetNormalShield input)
+        {
+            _controller.TransitionToActive();
+        }
+
+
+        private void EventBus_OnSetTotalShield(SetTotalShield input)
+        {
+            _controller.TransitionToTotal();
         }
 
         private void EventBus_ShieldDeflection(MeteorDeflected input)
