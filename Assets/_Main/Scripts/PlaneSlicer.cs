@@ -45,6 +45,7 @@ namespace _Main.Scripts
                 {
                     CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(0f);
                     CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(0f);
+                    CustomTime.GetChannel(UpdateGroup.Earth).SetTimeScale(0f);
                 }),
                 new ActionData(() =>
                 {
@@ -58,6 +59,7 @@ namespace _Main.Scripts
                 {
                     CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(1f);
                     CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(1f);
+                    CustomTime.GetChannel(UpdateGroup.Earth).SetTimeScale(1f);
                 }, EarthSliceTimeValues.ReturnToNormalTime),
             };
             
@@ -128,6 +130,7 @@ namespace _Main.Scripts
                 {
                     CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(0f);
                     CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(0f);
+                    CustomTime.GetChannel(UpdateGroup.Earth).SetTimeScale(0f);
                     _canMove = true;
                 }),
                 
@@ -143,7 +146,8 @@ namespace _Main.Scripts
                     UniteMeshes();
                     CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(1f);
                     CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(1f);
-                }, EarthSliceTimeValues.ReturnToNormalTime),
+                    CustomTime.GetChannel(UpdateGroup.Earth).SetTimeScale(1f);
+                }, EarthSliceTimeValues.ReturnSlices),
             };
             
             _actionQueue.AddAction(temp);

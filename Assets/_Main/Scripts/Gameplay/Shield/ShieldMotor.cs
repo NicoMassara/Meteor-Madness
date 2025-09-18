@@ -7,11 +7,6 @@ namespace _Main.Scripts.Gameplay.Shield
     {
         private float _lastDirection;
 
-        public ShieldMotor()
-        {
-            
-        }
-
         #region Movement
         public void Rotate(float direction = 1)
         {

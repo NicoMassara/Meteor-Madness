@@ -145,7 +145,7 @@ namespace _Main.Scripts.Gameplay.Earth
                     EarthRestartTimeValues.RestartZRotation),
                 new ActionData(() => StartCoroutine(
                     Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform)), 
-                    EarthSliceTimeValues.TotalReturnTime),
+                    EarthRestartTimeValues.TimeBeforeRotateY),
                 new ActionData(() => StartCoroutine(
                     Coroutine_RestartHealthColor(EarthRestartTimeValues.RestartHealth)), 
                     EarthRestartTimeValues.RestartYRotation),
