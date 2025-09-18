@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using UnityEngine;

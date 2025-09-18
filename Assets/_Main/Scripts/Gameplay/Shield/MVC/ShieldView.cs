@@ -2,14 +2,12 @@
 using System.Collections;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Shield
 {

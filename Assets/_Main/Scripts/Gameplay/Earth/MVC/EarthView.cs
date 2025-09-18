@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Particles;
@@ -18,7 +17,7 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private GameObject modelContainer;
         [SerializeField] private MeshRenderer modelMeshRenderer;
         [SerializeField] private GameObject planeMeshContainer;
-        [SerializeField] private PlaneSlicer earthMeshSlicer;
+        [SerializeField] private EarthSlicer earthMeshSlicer;
         [Space]
         [Header("Sounds")]
         [SerializeField] private SoundBehavior collisionSound;

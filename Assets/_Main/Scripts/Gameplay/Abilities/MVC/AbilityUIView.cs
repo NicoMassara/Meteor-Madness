@@ -1,5 +1,4 @@
 ﻿using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.Managers.UpdateManager.Interfaces;
 using _Main.Scripts.Observer;
 
 namespace _Main.Scripts.Gameplay.Abilies

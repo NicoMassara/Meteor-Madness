@@ -1,4 +1,4 @@
-﻿namespace _Main.Scripts.Managers.UpdateManager.Interfaces
+﻿namespace _Main.Scripts.Managers.UpdateManager
 {
     public interface IUpdatable
     {

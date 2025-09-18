@@ -1,5 +1,4 @@
-﻿using _Main.Scripts.Managers.UpdateManager.Interfaces;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace _Main.Scripts.Managers.UpdateManager
 {
