@@ -48,15 +48,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             
             _currentAngle = angle;
         }
-
-        private float GetDeltaAngle()
-        {
-            if (_activeMeteor == null)
-            {
-                return 0;
-            }
-            return Mathf.DeltaAngle(_getShieldAngle(), _currentAngle);
-        }
+        
 
         public int GetDirectionToMeteorAngle()
         {
@@ -65,7 +57,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
                 return 0;
             }
 
-            var delta = GetDeltaAngle();
+            var delta = Mathf.DeltaAngle(_getShieldAngle(), _currentAngle);
             
             const float tolerance = 0.5f; // degrees
 

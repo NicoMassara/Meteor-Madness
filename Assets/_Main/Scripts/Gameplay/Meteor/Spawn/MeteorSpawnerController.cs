@@ -106,12 +106,12 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             var currAngle = 0f;
             var amountToSpawn = (float)_locationSpawn.RingMeteorSpawnAmount;
-            var ringsToUse = _locationSpawn.RingsAmount;
+            var ringsToUse = MeteorRingValues.RingsAmount;
             var angleOffset = 360f / amountToSpawn;
             var startAngleOffset = angleOffset/2;
             var startOffset = 0f;
-            var wavesAmount = GameValues.RingMeteorWaves;
-            var speedMultiplier = (AbilitiesActiveTimeValues.SuperShield / (wavesAmount))/2;
+            var wavesAmount = MeteorRingValues.WavesAmount;
+            var speedMultiplier = 2f;
 
             for (int a = 0; a < wavesAmount; a++)
             {
@@ -133,16 +133,16 @@ namespace _Main.Scripts.Gameplay.Meteor
                     startOffset = Mathf.Repeat(startOffset, 360f);
                     currAngle = startOffset;
                     
-                    yield return new WaitForSeconds(MeteorTimeValues.RingMeteorDelayBetweenSpawn);
+                    yield return new WaitForSeconds(MeteorRingValues.DelayBetweenRings);
                 }
                 
                 
-                yield return new WaitForSeconds(MeteorTimeValues.RingMeteorDelayBetweenWaves);
+                yield return new WaitForSeconds(MeteorRingValues.DelayBetweenWaves);
             }
             
             
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
-            yield return new WaitForSeconds(MeteorTimeValues.MeteorSpawnDelayAfterRing);
+            yield return new WaitForSeconds(GameTimeValues.MeteorSpawnDelayAfterRing);
             
             _isSpawningRing = false;
         }

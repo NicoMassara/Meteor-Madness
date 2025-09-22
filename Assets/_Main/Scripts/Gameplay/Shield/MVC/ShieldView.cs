@@ -219,7 +219,6 @@ namespace _Main.Scripts.Gameplay.Shield
                     _spriteAlphaSetter.RestartValues();
                     _shieldSpeeder.RestartValues();
                     StartCoroutine(Coroutine_HandleAutoRotate());
-                    CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 1;
                 },timeToDisableSuperShield),
             };
             
@@ -262,6 +261,8 @@ namespace _Main.Scripts.Gameplay.Shield
                 
                 yield return null;
             }
+            
+            CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 1;
         }
         
         private void OnDrawGizmosSelected()

@@ -4,12 +4,11 @@
     {
         public const int VisualMultiplier = 150;
         public const float MaxMeteorSpeed = 20;
-        public const int RingMeteorWaves = 3;
     }
 
     public struct AbilitiesActiveTimeValues
     {
-        public const float SuperShield = 10f;
+        public const float SuperShield = 10f + MeteorRingValues.TotalTime;
     }
 
     public struct SuperShieldStartTimeValues
@@ -23,8 +22,7 @@
     public struct SuperShieldEndTimeValues
     {
         public const float TimeBeforeDisableSuperShield = 0.5f;
-        public const float TimeBeforeEnableInput = 0.5f;
-        public const float TimeBeforeRestoringTimeScale = 0.5f;
+        public const float TimeBeforeRestoringTimeScale = 0.15f;
     }
 
 
@@ -46,15 +44,20 @@
         Brutal
     }
 
-    public struct MeteorTimeValues
+    public struct MeteorRingValues
     {
-        public const float MeteorSpawnDelayAfterRing = 1f;
-        public const float RingMeteorDelayBetweenSpawn = 0.15f;
-        public const float RingMeteorDelayBetweenWaves = 0.5f;
+        public const int RingsAmount = 5;
+        public const int WavesAmount = 3;
+        public const float DelayBetweenRings = 0.15f;
+        public const float DelayBetweenWaves = 0.5f;
+
+        public const float TotalTime = (((RingsAmount-1) * DelayBetweenRings)*(WavesAmount-1)) + 
+                                       ((WavesAmount-1) * DelayBetweenWaves);
     }
 
     public struct GameTimeValues
     {
+        public const float MeteorSpawnDelayAfterRing = 1f;
         public const int StartGameCount = 0;
         public const float TimeToLoadGameScene = 1f;
         public const float CometSpawnDelay = 8f;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -13,18 +14,31 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         public UnityAction<float> OnAbilityStarted;
         public UnityAction OnAbilityFinished;
+        public UnityAction<TimeScaleData> _updateTimeScale;
 
-        public AbilityDataController(EventBusManager eventBus)
+        public AbilityDataController(EventBusManager eventBus, UnityAction<TimeScaleData> updateTimeScale)
         {
             _eventBus = eventBus;
+            _updateTimeScale = updateTimeScale;
             
             CreateAbilityData();
         }
+
+        private void SetTimeScale(UpdateGroup[] groups, float timeScale)
+        {
+            foreach (var t in groups)
+            {
+                CustomTime.GetChannel(t).TimeScale = timeScale;
+            }
+        }
+        
 
         #region Set Data
 
         private void CreateShieldData()
         {
+            var minTimeScale = 0.025f;
+            
             //Start Queue
             var startActions = new []
             {
@@ -33,7 +47,14 @@ namespace _Main.Scripts.Gameplay.Abilies
                     //Debug.Log("Disable Inputs");
                     //Debug.Log("Gameplay Time Scale Set To 0");
                     _eventBus.Publish(new SetEnableInputs{IsEnabled = false});
-                    CustomTime.GetChannel(UpdateGroup.Gameplay).TimeScale = 0;
+                    //SetTimeScale(new[] { UpdateGroup.Gameplay, UpdateGroup.Effects }, 0.025f);
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
+                        TargetTimeScale = minTimeScale,
+                        CurrentTimeScale = 1.0f,
+                        TimeToUpdate = SuperShieldStartTimeValues.TimeToZoomIn,
+                    });
                 }, 0f),
                 new ActionData(() =>
                 {
@@ -53,7 +74,14 @@ namespace _Main.Scripts.Gameplay.Abilies
                 new ActionData(() =>
                 {
                     //Debug.Log("Gameplay Time Scale Set To 1");
-                    CustomTime.GetChannel(UpdateGroup.Gameplay).TimeScale = 1;
+                    //SetTimeScale(new[] { UpdateGroup.Gameplay, UpdateGroup.Effects }, 1f);
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = minTimeScale,
+                        TimeToUpdate = 0.25f,
+                    });
                     _eventBus.Publish(new SpawnRingMeteor());
                 }, SuperShieldStartTimeValues.TimeBeforeIncreasingTimeScale),
                 new ActionData(() =>
@@ -69,7 +97,14 @@ namespace _Main.Scripts.Gameplay.Abilies
                 new ActionData(() =>
                 {
                     //Debug.Log("Gameplay Time Scale Set To 0");
-                    CustomTime.GetChannel(UpdateGroup.Gameplay).TimeScale = 0;
+                    //SetTimeScale(new[] { UpdateGroup.Gameplay, UpdateGroup.Effects }, 0.025f);
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
+                        TargetTimeScale = minTimeScale,
+                        CurrentTimeScale = 1.0f,
+                        TimeToUpdate = SuperShieldEndTimeValues.TimeBeforeDisableSuperShield
+                    });
                 }, 0f),
                 new ActionData(() =>
                 {
@@ -78,13 +113,16 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, SuperShieldEndTimeValues.TimeBeforeDisableSuperShield),
                 new ActionData(() =>
                 {
-                    //Debug.Log("Inputs Enable");
-                    _eventBus.Publish(new SetEnableInputs{IsEnabled = true});
-                }, SuperShieldEndTimeValues.TimeBeforeEnableInput),
-                new ActionData(() =>
-                {
                     //Debug.Log("Gameplay Time Scale Set To 1");
-                    CustomTime.GetChannel(UpdateGroup.Gameplay).TimeScale = 1;
+                    _eventBus.Publish(new SetEnableInputs{IsEnabled = true});
+                    //SetTimeScale(new[] { UpdateGroup.Gameplay, UpdateGroup.Effects }, 1f);
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = minTimeScale,
+                        TimeToUpdate = 0.25f,
+                    });
                     OnAbilityFinished?.Invoke();
                 }, SuperShieldEndTimeValues.TimeBeforeRestoringTimeScale),
             };
@@ -172,7 +210,15 @@ namespace _Main.Scripts.Gameplay.Abilies
         }
         
     }
-    
+
+    public class TimeScaleData
+    {
+        public UpdateGroup[] UpdateGroups;
+        public float TargetTimeScale;
+        public float CurrentTimeScale;
+        public float TimeToUpdate;
+    }
+
     public class AbilityData
     {
         public float ActiveTime;

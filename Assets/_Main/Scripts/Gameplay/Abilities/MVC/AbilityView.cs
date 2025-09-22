@@ -18,7 +18,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Start()
         {
-            abilityDataController = new AbilityDataController(GameManager.Instance.EventManager);
+            abilityDataController = new AbilityDataController(GameManager.Instance.EventManager, AbilitiesData_UpdateTimeScale);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
         }
 
@@ -69,19 +69,19 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return;
             }
             
-            StartCoroutine(RunAbilityQueue(abilityDataController.GetAbilityStartQueue(enumType)));
+            StartCoroutine(Coroutine_RunAbilityQueue(abilityDataController.GetAbilityStartQueue(enumType)));
         }
 
         private void HandleFinishAbility(AbilityType enumType)
         {
-            StartCoroutine(RunAbilityQueue(abilityDataController.GetAbilityEndQueue(enumType)));
+            StartCoroutine(Coroutine_RunAbilityQueue(abilityDataController.GetAbilityEndQueue(enumType)));
         }
 
         #endregion
 
         #region Coroutine
 
-        private IEnumerator RunAbilityQueue(ActionQueue actionQueue)
+        private IEnumerator Coroutine_RunAbilityQueue(ActionQueue actionQueue)
         {
             while (!actionQueue.IsEmpty)
             {
@@ -91,12 +91,33 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
         }
         
-        private IEnumerator RunAbilityTimer()
+        private IEnumerator Coroutine_RunAbilityTimer()
         {
             while (!_abilityTimer.GetHasEnded)
             {
                 _abilityTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
 
+                yield return null;
+            }
+        }
+
+        private IEnumerator Coroutine_UpdateTimeScale(TimeScaleData timeScaleData)
+        {
+            var currentTimeScale = timeScaleData.CurrentTimeScale;
+            var duration = timeScaleData.TimeToUpdate;
+            float elapsedTime = 0;
+            
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                float timeRatio = Mathf.Clamp01(elapsedTime / duration);
+                currentTimeScale = Mathf.Lerp(currentTimeScale, timeScaleData.TargetTimeScale, timeRatio);
+                
+                foreach (var updateGroup in timeScaleData.UpdateGroups)
+                {
+                    CustomTime.GetChannel(updateGroup).TimeScale = currentTimeScale;
+                }
+                
                 yield return null;
             }
         }
@@ -109,13 +130,18 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             _abilityTimer.Set(activeTime);
             _abilityTimer.OnEnd += AbilityTimer_OnEndHandler;
-            StartCoroutine(RunAbilityTimer());
+            StartCoroutine(Coroutine_RunAbilityTimer());
         }
         
         private void AbilityTimer_OnEndHandler()
         {
             _abilityTimer.OnEnd -= AbilityTimer_OnEndHandler;
             _controller.TransitionToEnable();
+        }
+
+        private void AbilitiesData_UpdateTimeScale(TimeScaleData timeScaleData)
+        {
+            StartCoroutine(Coroutine_UpdateTimeScale(timeScaleData));
         }
 
         #endregion

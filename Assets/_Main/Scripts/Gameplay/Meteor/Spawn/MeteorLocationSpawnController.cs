@@ -16,13 +16,10 @@ namespace _Main.Scripts.Gameplay.Meteor
         [Header("Ring Meteor Value")]
         [Range(2,20)]
         [SerializeField] private int ringSpawnAmount;
-        [Range(1, 10)] 
-        [SerializeField] private int ringsAmount;
 
         private float _lasAngle;
         private bool _isFirstSpawn;
         public int RingMeteorSpawnAmount => ringSpawnAmount;
-        public int RingsAmount => ringsAmount;
 
         public void RestartValues()
         {
