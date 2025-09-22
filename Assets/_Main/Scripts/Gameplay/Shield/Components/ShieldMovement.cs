@@ -6,12 +6,14 @@ namespace _Main.Scripts.Gameplay.Shield
     {
         private readonly ShieldMovementSo _data;
         private readonly Transform _transform;
+        private readonly int _angleOffset;
         
         private float _angularVelocity = 0f;
-        public ShieldMovement(ShieldMovementSo data, Transform transform)
+        public ShieldMovement(ShieldMovementSo data, Transform transform, int angleOffset = 0)
         {
             _data = data;
             _transform = transform; 
+            _angleOffset = angleOffset;
         }
         
         private float GetAngularVelocity(float inputDirection, float deltaTime)
@@ -35,7 +37,12 @@ namespace _Main.Scripts.Gameplay.Shield
 
         public float GetAngle()
         {
-            return _transform.rotation.eulerAngles.z;
+            return Mathf.Repeat(_transform.rotation.eulerAngles.z + _angleOffset, 360f);
+        }
+
+        public Vector2 GetPosition()
+        {
+            return new Vector2(_transform.position.x, _transform.position.y);
         }
 
     }

@@ -9,7 +9,7 @@
 
     public struct AbilitiesActiveTimeValues
     {
-        public const float SuperShield = 8f;
+        public const float SuperShield = 10f;
     }
 
     public struct SuperShieldStartTimeValues

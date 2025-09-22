@@ -1,15 +1,19 @@
-﻿using _Main.Scripts.FyingObject;
+﻿using System;
+using _Main.Scripts.FyingObject;
+using _Main.Scripts.Gameplay.AutoTarget;
 using _Main.Scripts.Observer;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorController>, IMeteor
+    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorController>, IMeteor, ITargetable
     {
+        private ITargetable targetableImplementation;
         public UnityAction<MeteorCollisionData> OnEarthCollision { get; set; }
         public UnityAction<MeteorCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
+        public event Action OnDeath;
 
         public void SetMeteorValues(MeteorValuesData data)
         {
@@ -41,6 +45,8 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void HandleEarthCollision(Vector2 position, Quaternion rotation, Vector2 direction)
         {
+            OnDeath?.Invoke();
+            
             OnEarthCollision?.Invoke(new MeteorCollisionData
             {
                 Meteor = this,
@@ -52,6 +58,8 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void HandleShieldDeflection(Vector2 position,Quaternion rotation, Vector2 direction, float value)
         {
+            OnDeath?.Invoke();
+            
             OnDeflection?.Invoke(new MeteorCollisionData
             {
                 Meteor = this,

@@ -18,6 +18,9 @@ namespace _Main.Scripts.Gameplay.Meteor
         [Header("Values")] 
         [Range(22f,100f)]
         [SerializeField] private float spawnRadius;
+        [Space]
+        [Header("Testing")] 
+        [SerializeField] private bool doesSpawn;
         
         private readonly Timer _spawnTimer = new Timer();
         private readonly MeteorTravelledDistanceTracker _travelledDistanceTracker = new MeteorTravelledDistanceTracker();
@@ -108,6 +111,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             var startAngleOffset = angleOffset/2;
             var startOffset = 0f;
             var wavesAmount = GameValues.RingMeteorWaves;
+            var speedMultiplier = (AbilitiesActiveTimeValues.SuperShield / (wavesAmount))/2;
 
             for (int a = 0; a < wavesAmount; a++)
             {
@@ -119,7 +123,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                     {
                         yield return new WaitForSeconds(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
 
-                        CreateMeteor(meteorSpeed * 1.5f, _locationSpawn.GetPositionByAngle(currAngle, spawnRadius), 
+                        CreateMeteor(meteorSpeed * speedMultiplier, _locationSpawn.GetPositionByAngle(currAngle, spawnRadius), 
                             GetRingMeteorValue(amountToSpawn, ringsToUse));
                         currAngle += angleOffset;
                         currAngle = Mathf.Repeat(currAngle, 360f);
@@ -160,6 +164,8 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition, float value = 1)
         {
+            if(doesSpawn == false) return;
+            
             var tempMeteor = _meteorFactory.SpawnMeteor();
                 
             //Set Direction and Rotation towards COG

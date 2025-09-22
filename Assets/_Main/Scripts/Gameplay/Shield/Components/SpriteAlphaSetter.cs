@@ -8,7 +8,9 @@ namespace _Main.Scripts.Gameplay.Shield
         private readonly float _timeToAppear;
         private readonly float _timeToDisappear;
 
+#pragma warning disable CS0414 // Field is assigned but its value is never used
         private float _elapsedTime = 0;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
         private float _currentAlpha = 0;
 
         public SpriteAlphaSetter(SpriteRenderer renderer, float timeToAppear, float timeToDisappear)

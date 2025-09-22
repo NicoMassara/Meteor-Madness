@@ -11,13 +11,26 @@ namespace _Main.Scripts.Gameplay
         public bool HasUsedAbility { get; private set; }
         private bool _areInputEnabled;
 
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         private void Awake()
         {
             GameManager.Instance.EventManager.Subscribe<SetEnableInputs>(EventBus_OnSetEnableInputs);
         }
-        
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                UpdateManager.Instance.IsPaused = !UpdateManager.Instance.IsPaused;
+            }
+        }
+
         public void ManagedUpdate()
+        {
+            HandleInput();
+        }
+
+        private void HandleInput()
         {
             if(_areInputEnabled == false) return;
             
@@ -35,11 +48,6 @@ namespace _Main.Scripts.Gameplay
             }
 
             HasUsedAbility = GetIsDownPressed();
-
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                UpdateManager.Instance.IsPaused = !UpdateManager.Instance.IsPaused;
-            }
         }
 
         private bool GetIsLeftPressed()
