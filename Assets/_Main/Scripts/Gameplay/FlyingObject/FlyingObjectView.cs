@@ -88,7 +88,7 @@ namespace _Main.Scripts.FyingObject
             }
         }
 
-        public virtual void OnNotify(string message, params object[] args)
+        public virtual void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {

@@ -14,18 +14,25 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         }
 
-        public void OnNotify(string message, params object[] args)
+        public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
                 case AbilityObserverMessage.AddAbility:
                     HandleAddAbility((AbilityType)args[0]);
                     break;
-                
                 case AbilityObserverMessage.SelectAbility:
                     HandleSelectAbility((AbilityType)args[0]);
                     break;
+                case AbilityObserverMessage.RestartAbilities:
+                    HandleRestartAbilities();
+                    break;
             }
+        }
+
+        private void HandleRestartAbilities()
+        {
+            abilityUIData.RestartValues();
         }
 
         private void HandleAddAbility(AbilityType abilityType)

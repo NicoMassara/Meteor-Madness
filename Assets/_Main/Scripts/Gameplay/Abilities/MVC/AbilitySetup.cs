@@ -55,6 +55,12 @@ namespace _Main.Scripts.Gameplay.Abilies
             
             eventBus.Subscribe<SetEnableAbility>(EventBus_OnSetEnableAbility);
             eventBus.Subscribe<AddAbility>(EventBus_OnAddAbility);
+            eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
+        }
+
+        private void EventBus_OnGameFinished(GameFinished input)
+        {
+            _controller.RestartAbilities();
         }
 
         private void EventBus_OnAddAbility(AddAbility input)

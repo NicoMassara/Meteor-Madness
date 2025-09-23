@@ -121,5 +121,10 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             _motor.FinishAbility();
         }
+
+        public void RestartAbilities()
+        {
+            _motor.RestartAbilities();
+        }
     }
 }

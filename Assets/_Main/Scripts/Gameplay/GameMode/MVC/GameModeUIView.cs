@@ -50,7 +50,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
         
 
-        public void OnNotify(string message, params object[] args)
+        public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {

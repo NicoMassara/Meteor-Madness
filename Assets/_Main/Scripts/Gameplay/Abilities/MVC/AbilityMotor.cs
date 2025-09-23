@@ -74,6 +74,14 @@ namespace _Main.Scripts.Gameplay.Abilies
             NotifyAll(AbilityObserverMessage.SetEnableUI, _isUIEnable);
         }
         
+        public void RestartAbilities()
+        {
+            _currentAbility = AbilityType.None;
+            _canUseAbility = false;
+            _storage.Restart();
+            NotifyAll(AbilityObserverMessage.RestartAbilities);
+        }
+        
         #region Handlers
 
         private void Storage_OnAbilityAddedHandler(AbilityType abilityType)
@@ -94,6 +102,8 @@ namespace _Main.Scripts.Gameplay.Abilies
         }
 
         #endregion
+
+
     }
     
     public enum AbilityType

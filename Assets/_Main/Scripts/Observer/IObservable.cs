@@ -9,7 +9,7 @@ namespace _Main.Scripts.Observer
         void Subscribe(IObserver observer);
         void Unsubscribe(IObserver observer);
 
-        void NotifyAll(string message, params object[] args);
+        void NotifyAll(ulong message, params object[] args);
     }
 }
 

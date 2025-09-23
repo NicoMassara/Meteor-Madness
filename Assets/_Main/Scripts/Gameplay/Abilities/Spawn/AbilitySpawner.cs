@@ -13,15 +13,12 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        
 
         private void Start()
         {
-            TimerManager.AddTimer(new TimerData
-            {
-                Time = spawnDelay,
-                OnEndAction = SendAbility
-            });
+            SetEventBus();
+            
+            SetTimer();
         }
 
         public void ManagedUpdate()
@@ -35,17 +32,35 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             GameManager.Instance.EventManager.Publish(new AddAbility{AbilityType = GetAbilityToAdd()});
             
+            SetTimer();
+        }
+
+        private void SetTimer()
+        {
             TimerManager.AddTimer(new TimerData
             {
                 Time = spawnDelay,
                 OnEndAction = SendAbility
             }, SelfUpdateGroup);
-            
         }
 
         private AbilityType GetAbilityToAdd()
         {
             return (AbilityType)UnityEngine.Random.Range(1, Enum.GetValues(typeof(AbilityType)).Length-1);
         }
+
+        #region EventBus
+
+        private void SetEventBus()
+        {
+            GameManager.Instance.EventManager.Subscribe<GameFinished>(EventBus_OnGameFinished);
+        }
+
+        private void EventBus_OnGameFinished(GameFinished input)
+        {
+            
+        }
+
+        #endregion
     }
 }

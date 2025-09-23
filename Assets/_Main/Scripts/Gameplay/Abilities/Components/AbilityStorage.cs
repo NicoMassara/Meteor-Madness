@@ -17,6 +17,11 @@ namespace _Main.Scripts.Gameplay.Abilies
             _maxAbilityCount = maxAbilityCount;
         }
 
+        public void Restart()
+        {
+            _abilityQueue.Clear();
+        }
+
         public void AddAbility(AbilityType ability)
         {
             if(_abilityQueue.Count >= _maxAbilityCount) return;

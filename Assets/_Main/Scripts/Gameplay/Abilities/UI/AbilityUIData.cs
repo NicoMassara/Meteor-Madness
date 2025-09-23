@@ -15,11 +15,7 @@ namespace _Main.Scripts.Gameplay.Abilities
 
         private void Awake()
         {
-            for (int i = 0; i < abilitySprite.Length; i++)
-            {
-                var spriteToUse = abilitySprite[i];
-                spriteToUse.color = GetAbilityColor(AbilityType.None);
-            }
+            RestartValues();
         }
 
         public void AddAbility(AbilityType ability)
@@ -66,6 +62,17 @@ namespace _Main.Scripts.Gameplay.Abilities
             };
             
             return newColor;
+        }
+
+        public void RestartValues()
+        {
+            _inUseCount = 0;
+            
+            for (int i = 0; i < abilitySprite.Length; i++)
+            {
+                var spriteToUse = abilitySprite[i];
+                spriteToUse.color = GetAbilityColor(AbilityType.None);
+            }
         }
     }
 }

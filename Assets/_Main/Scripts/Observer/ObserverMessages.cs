@@ -2,65 +2,66 @@
 {
     public struct ShieldObserverMessage
     {
-        public const string Rotate = "A00001";
-        public const string StopRotate = "A00002";
-        public const string Deflect = "A00003";
-        public const string PlayMoveSound = "A00004";
-        public const string RestartPosition = "A00005";
-        public const string SetActiveShield = "A00006";
-        public const string SetActiveSuperShield = "A00008";
+        public const ulong Rotate = 0xA0001;
+        public const ulong StopRotate = 0xA0002;
+        public const ulong Deflect = 0xA0003;
+        public const ulong PlayMoveSound = 0xA0004;
+        public const ulong RestartPosition = 0xA0005;
+        public const ulong SetActiveShield = 0xA0006;
+        public const ulong SetActiveSuperShield = 0xA0007;
     }
 
     public struct EarthObserverMessage
     {
-        public const string RestartHealth = "A01001";
-        public const string EarthCollision = "A01002";
-        public const string DeclareDeath = "A01003";
-        public const string TriggerDestruction = "A01004";
-        public const string SetActiveDeathShake = "A01005";
-        public const string Heal = "A01006";
-        public const string SetRotation = "A01007";
-        public const string TriggerEndDestruction = "A01008";
+        public const ulong RestartHealth = 0xA1001;
+        public const ulong EarthCollision = 0xA1002;
+        public const ulong DeclareDeath = 0xA1003;
+        public const ulong TriggerDestruction = 0xA1004;
+        public const ulong SetActiveDeathShake = 0xA1005;
+        public const ulong Heal = 0xA1006;
+        public const ulong SetRotation = 0xA1007;
+        public const ulong TriggerEndDestruction = 0xA1008;
     }
 
     public struct GameModeObserverMessage
     {
-        public const string StartCountdown = "A02001";
-        public const string UpdateCountdown = "A02002";
-        public const string CountdownFinish = "A02003";
-        public const string StartGameplay = "A02004";
-        public const string MeteorDeflect = "A02005";
-        public const string EarthStartDestruction = "A02006";
-        public const string EarthEndDestruction = "A02007";
-        public const string EarthShaking = "A02008";
-        public const string SetEnableSpawnMeteor = "A02009";
-        public const string SpawnRingMeteor = "A02010";
-        public const string GameFinish = "A02011";
-        public const string UpdateGameLevel = "A02012";
-        public const string GameRestart = "A02013";
-        public const string EarthRestartFinish = "A02014";
+        public const ulong StartCountdown = 0xA2001;
+        public const ulong UpdateCountdown = 0xA2002;
+        public const ulong CountdownFinish = 0xA2003;
+        public const ulong StartGameplay = 0xA2004;
+        public const ulong MeteorDeflect = 0xA2005;
+        public const ulong EarthStartDestruction = 0xA2006;
+        public const ulong EarthEndDestruction = 0xA2007;
+        public const ulong EarthShaking = 0xA2008;
+        public const ulong SetEnableSpawnMeteor = 0xA2009;
+        public const ulong SpawnRingMeteor = 0xA2010;
+        public const ulong GameFinish = 0xA2011;
+        public const ulong UpdateGameLevel = 0xA2012;
+        public const ulong GameRestart = 0xA2013;
+        public const ulong EarthRestartFinish = 0xA2014;
     }
 
     public struct FlyingObjectObserverMessage
     {
-        public const string SetValues = "A03001";
-        public const string HandleCollision = "A03002";
+        public const ulong SetValues = 0xA3001;
+        public const ulong HandleCollision = 0xA3002;
     }
 
     public struct MeteorObserverMessage
     {
-        public const string ShieldDeflection = "A13001";
-        public const string EarthCollision = "A13002";
+        public const ulong ShieldDeflection = 0xB3001;
+        public const ulong EarthCollision = 0xB3002;
     }
 
     public struct AbilityObserverMessage
     {
-        public const string TriggerAbility = "A04001";
-        public const string FinishAbility = "A04002";
-        public const string AddAbility = "A04003";
-        public const string SetCanUse = "A04004";
-        public const string SetEnableUI = "A04005";
-        public const string SelectAbility = "A04006";
-        public const string StorageFilled = "A04007";
+        public const ulong TriggerAbility = 0xA4001;
+        public const ulong FinishAbility = 0xA4002;
+        public const ulong AddAbility = 0xA4003;
+        public const ulong SetCanUse = 0xA4004;
+        public const ulong SetEnableUI = 0xA4005;
+        public const ulong SelectAbility = 0xA4006;
+        public const ulong StorageFilled = 0xA4007;
+        public const ulong RestartAbilities = 0xA4008;
     }
 }

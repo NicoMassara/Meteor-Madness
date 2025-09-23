@@ -26,7 +26,7 @@ namespace _Main.Scripts.Observer
             }
         }
 
-        public void NotifyAll(string message, params object[] args)
+        public void NotifyAll(ulong message, params object[] args)
         {
             Subscribers ??= new List<IObserver>();
             

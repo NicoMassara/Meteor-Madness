@@ -6,16 +6,26 @@ namespace _Main.Scripts.Managers
     public class GameManager : ManagedBehavior
     {
         [SerializeField] private DamageTypes currentDamageType = DamageTypes.Brutal;
-        public static GameManager Instance;
+        public static GameManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
+        private static GameManager _instance;
         
         public bool CanPlay { get; set; }
         private int _currentPoints;
         
         public EventBusManager EventManager { get; private set; }
+        
+        private static GameManager CreateInstance()
+        {
+            var gameObject = new GameObject(nameof(GameManager))
+            {
+                hideFlags = HideFlags.DontSave,
+            };
+            DontDestroyOnLoad(gameObject);
+            return gameObject.AddComponent<GameManager>();
+        }
 
         private void Awake()
         {
-            Instance = this;
             EventManager = new EventBusManager();
         }
 
@@ -32,30 +42,6 @@ namespace _Main.Scripts.Managers
                 DamageTypes.Brutal => DamageValues.BrutalMeteor,
                 _ => DamageValues.StandardMeteor
             };
-        }
-
-        public void SetDamage(DamageTypes damageType)
-        {
-            currentDamageType = damageType;
-        }
-
-        #endregion
-        
-        #region Points
-
-        public void IncreasePoints(int multiplier = 1)
-        {
-            _currentPoints += 1 * multiplier;
-        }
-
-        public void ClearCurrentPoints()
-        {
-            _currentPoints = 0;
-        }
-
-        public int GetCurrentPoints()
-        {
-            return _currentPoints * GameValues.VisualMultiplier;
         }
 
         #endregion

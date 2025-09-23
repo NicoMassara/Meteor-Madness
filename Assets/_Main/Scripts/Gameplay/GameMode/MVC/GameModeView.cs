@@ -30,7 +30,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         
         // ReSharper disable Unity.PerformanceAnalysis
-        public void OnNotify(string message, params object[] args)
+        public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
