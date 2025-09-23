@@ -66,7 +66,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 }, EarthSliceTimeValues.ReturnToNormalTime),
             };
             
-            ActionQueueManager.Add(new ActionQueue(temp),SelfUpdateGroup);
+            ActionManager.Add(new ActionQueue(temp),SelfUpdateGroup);
         }
         
         private void Slice() 
@@ -152,7 +152,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 }, EarthSliceTimeValues.ReturnSlices),
             };
             
-            ActionQueueManager.Add(new ActionQueue(temp),SelfUpdateGroup);
+            ActionManager.Add(new ActionQueue(temp),SelfUpdateGroup);
         }
 
 

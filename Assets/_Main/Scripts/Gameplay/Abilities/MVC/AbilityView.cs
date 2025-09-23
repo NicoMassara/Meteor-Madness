@@ -62,12 +62,12 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleTriggerAbility(AbilityType enumType)
         {
-            ActionQueueManager.Add(abilityDataController.GetAbilityStartQueue(enumType),SelfUpdateGroup);
+            ActionManager.Add(abilityDataController.GetAbilityStartQueue(enumType),SelfUpdateGroup);
         }
 
         private void HandleFinishAbility(AbilityType enumType)
         {
-            ActionQueueManager.Add(abilityDataController.GetAbilityEndQueue(enumType),SelfUpdateGroup);
+            ActionManager.Add(abilityDataController.GetAbilityEndQueue(enumType),SelfUpdateGroup);
         }
 
         #endregion

@@ -160,7 +160,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 
             };
             
-            ActionQueueManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
+            ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
 
 

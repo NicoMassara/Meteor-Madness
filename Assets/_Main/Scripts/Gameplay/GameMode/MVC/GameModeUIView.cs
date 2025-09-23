@@ -274,7 +274,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             _deathPanelActionQueue.AddAction(tempList);
             
-            ActionQueueManager.Add(_deathPanelActionQueue,SelfUpdateGroup);
+            ActionManager.Add(_deathPanelActionQueue,SelfUpdateGroup);
         }
 
         private void SetActiveDeathText(bool isActive)

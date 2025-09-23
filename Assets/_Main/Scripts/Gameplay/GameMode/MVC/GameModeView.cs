@@ -93,7 +93,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                     GameRestartTimeValues.RestartEarth),
             };
             
-            ActionQueueManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
+            ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
         
         private void HandleEarthRestartFinish()

@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
-    public class ActionQueueManager : MonoBehaviour
+    public class ActionManager : MonoBehaviour
     {
-        public static ActionQueueManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
-        private static ActionQueueManager _instance;
+        public static ActionManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
+        private static ActionManager _instance;
         
         private readonly List<ActionQueueData> _running = new List<ActionQueueData>();
         private readonly List<ActionQueueData> _toAdd = new List<ActionQueueData>();
@@ -24,14 +24,14 @@ namespace _Main.Scripts.Managers
         [SerializeField, ReadOnly] 
         private int activeCount = 0;
         
-        private static ActionQueueManager CreateInstance()
+        private static ActionManager CreateInstance()
         {
-            var gameObject = new GameObject(nameof(ActionQueueManager))
+            var gameObject = new GameObject(nameof(ActionManager))
             {
                 hideFlags = HideFlags.DontSave,
             };
             DontDestroyOnLoad(gameObject);
-            return gameObject.AddComponent<ActionQueueManager>();
+            return gameObject.AddComponent<ActionManager>();
         }
         
         private void Update()

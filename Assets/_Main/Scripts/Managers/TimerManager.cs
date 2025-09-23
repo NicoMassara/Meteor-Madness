@@ -46,7 +46,7 @@ namespace _Main.Scripts.Managers
                 var dt = CustomTime.GetDeltaTimeByChannel(data.UpdateGroup);
                 data.Timer.Run(dt);
 
-                if (data.Timer.GetHasEnded)
+                if (data.Timer.HasEnded)
                 {
                     _toRemove.Add(data);
                 }

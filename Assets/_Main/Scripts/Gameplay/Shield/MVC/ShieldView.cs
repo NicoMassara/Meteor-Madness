@@ -197,7 +197,7 @@ namespace _Main.Scripts.Gameplay.Shield
             };
             
             
-            ActionQueueManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
+            ActionManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
         }
         
         private void RunNormalShieldQueue()
@@ -222,7 +222,7 @@ namespace _Main.Scripts.Gameplay.Shield
             };
             
             
-            ActionQueueManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
+            ActionManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
         }
         
         private void HandleSuperShieldEnable(float deltaTime)
