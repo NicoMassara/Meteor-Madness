@@ -128,25 +128,20 @@ namespace _Main.Scripts.Gameplay.Earth
         }
         private void HandleRestartHealth()
         {
-            StartCoroutine(Coroutine_RestartHealth());
-        }
-
-        private IEnumerator Coroutine_RestartHealth()
-        {
             var tempActions = new ActionData[]
             {
                 new ActionData(() =>  HandleSetRotation(false)),
                 new ActionData(() => StartCoroutine(
-                    Coroutine_RestartRotation(EarthRestartTimeValues.RestartZRotation, 
-                    planeMeshContainer.transform)), 
+                        Coroutine_RestartRotation(EarthRestartTimeValues.RestartZRotation, 
+                            planeMeshContainer.transform)), 
                     EarthRestartTimeValues.TimeBeforeRotateZ),
                 new ActionData(() => earthMeshSlicer?.StartUnite(), 
                     EarthRestartTimeValues.RestartZRotation),
                 new ActionData(() => StartCoroutine(
-                    Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform)), 
+                        Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform)), 
                     EarthRestartTimeValues.TimeBeforeRotateY),
                 new ActionData(() => StartCoroutine(
-                    Coroutine_RestartHealthColor(EarthRestartTimeValues.RestartHealth)), 
+                        Coroutine_RestartHealthColor(EarthRestartTimeValues.RestartHealth)), 
                     EarthRestartTimeValues.RestartYRotation),
                 new ActionData(() =>
                 {
@@ -164,15 +159,10 @@ namespace _Main.Scripts.Gameplay.Earth
                 }, EarthRestartTimeValues.FinishRestart),
                 
             };
-            var tempQueue = new ActionQueue(tempActions);
-
-            while (!tempQueue.IsEmpty)
-            {
-                tempQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-                
-                yield return null;
-            }
+            
+            ActionQueueManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
+
 
         private IEnumerator Coroutine_RestartRotation(float timeToRestart, Transform objectToRotate)
         {

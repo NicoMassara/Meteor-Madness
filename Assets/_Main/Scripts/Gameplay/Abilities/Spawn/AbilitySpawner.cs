@@ -17,7 +17,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void Start()
         {
-            TimerManager.SetTimer(new TimerData
+            TimerManager.AddTimer(new TimerData
             {
                 Time = spawnDelay,
                 OnEndAction = SendAbility
@@ -35,7 +35,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             GameManager.Instance.EventManager.Publish(new AddAbility{AbilityType = GetAbilityToAdd()});
             
-            TimerManager.SetTimer(new TimerData
+            TimerManager.AddTimer(new TimerData
             {
                 Time = spawnDelay,
                 OnEndAction = SendAbility

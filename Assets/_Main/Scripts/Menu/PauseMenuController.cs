@@ -45,7 +45,7 @@ namespace _Main.Scripts.Menu
         public void ResumeGameOnClickHandler()
         {
             menuSound.PlaySound();
-            TimerManager.SetTimer(new TimerData
+            TimerManager.AddTimer(new TimerData
             {
                 Time = UIPanelTimeValues.ClosePauseMenu,
                 OnEndAction = ResumeGame
@@ -55,7 +55,7 @@ namespace _Main.Scripts.Menu
         public void MainMenuOnClickHandler()
         {
             menuSound.PlaySound();
-            TimerManager.SetTimer(new TimerData
+            TimerManager.AddTimer(new TimerData
             {
                 Time = UIPanelTimeValues.ClosePauseMenu,
                 OnEndAction = MainMenu

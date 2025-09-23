@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
@@ -272,19 +273,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             
             _deathPanelActionQueue.AddAction(tempList);
-            StartCoroutine(RunDeathPanelActionQueue());
-        }
-
-        private IEnumerator RunDeathPanelActionQueue()
-        {
-            while (!_deathPanelActionQueue.IsEmpty)
-            {
-                var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-                
-                _deathPanelActionQueue.Run(dt);
-
-                yield return null;
-            }
+            
+            ActionQueueManager.Add(_deathPanelActionQueue,SelfUpdateGroup);
         }
 
         private void SetActiveDeathText(bool isActive)

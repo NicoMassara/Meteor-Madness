@@ -227,7 +227,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             _canSpawn = input.CanSpawn;
             if (_isFirstSpawn)
             {
-                TimerManager.SetTimer(new TimerData
+                TimerManager.AddTimer(new TimerData
                 {
                     Time = 1f,
                     OnEndAction = ()=> SpawnSingleMeteor(GameValues.MaxMeteorSpeed)

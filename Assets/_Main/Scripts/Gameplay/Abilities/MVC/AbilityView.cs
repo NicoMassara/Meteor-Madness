@@ -62,27 +62,18 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleTriggerAbility(AbilityType enumType)
         {
-            StartCoroutine(Coroutine_RunAbilityQueue(abilityDataController.GetAbilityStartQueue(enumType)));
+            ActionQueueManager.Add(abilityDataController.GetAbilityStartQueue(enumType),SelfUpdateGroup);
         }
 
         private void HandleFinishAbility(AbilityType enumType)
         {
-            StartCoroutine(Coroutine_RunAbilityQueue(abilityDataController.GetAbilityEndQueue(enumType)));
+            ActionQueueManager.Add(abilityDataController.GetAbilityEndQueue(enumType),SelfUpdateGroup);
         }
 
         #endregion
 
         #region Coroutine
-
-        private IEnumerator Coroutine_RunAbilityQueue(ActionQueue actionQueue)
-        {
-            while (!actionQueue.IsEmpty)
-            {
-                actionQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-
-                yield return null;
-            }
-        }
+        
 
         private IEnumerator Coroutine_UpdateTimeScale(TimeScaleData timeScaleData)
         {
@@ -111,7 +102,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void AbilitiesData_OnAbilityStartedHandler(float activeTime)
         {
-            TimerManager.SetTimer(new TimerData
+            TimerManager.AddTimer(new TimerData
             {
                 Time = activeTime,
                 OnEndAction = ()=> _controller.TransitionToEnable()

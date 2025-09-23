@@ -135,7 +135,6 @@ namespace _Main.Scripts.Managers.UpdateManager
                     }
                 }
                 _toAdd.Clear();
-                
             }
 
             if (_toRemove.Count > 0)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using EzySlice;
@@ -13,27 +14,32 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private Transform slicePlane; // defines where & how to slice
         [Range(0,1.5f)]
         [SerializeField] private float sliceDistance;
-
-        private ActionQueue _actionQueue = new ActionQueue();
+        
         private MeshFilter meshA;
         private MeshFilter meshB;
         private bool _isSliced;
         private bool _canMove;
+        private float _moveTargetDistance;
+        private float _moveTargetTime;
 
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
 
         public void ManagedUpdate()
         {
-
+            if (_canMove)
+            {
+                MoveSlicedParts(_moveTargetDistance, _moveTargetTime);
+            }
         }
         
         #region Slice
 
         public void StartSlicing()
         {
+            _moveTargetDistance = sliceDistance;
+            _moveTargetTime = EarthSliceTimeValues.MoveSlices;
             SetSliceQueue();
-            StartCoroutine(RunQueue(sliceDistance, EarthSliceTimeValues.MoveSlices));
         }
         
         private void SetSliceQueue()
@@ -60,7 +66,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 }, EarthSliceTimeValues.ReturnToNormalTime),
             };
             
-            _actionQueue.AddAction(temp);
+            ActionQueueManager.Add(new ActionQueue(temp),SelfUpdateGroup);
         }
         
         private void Slice() 
@@ -115,8 +121,9 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             if(!_isSliced) return;
             
+            _moveTargetDistance = 0;
+            _moveTargetTime = EarthSliceTimeValues.ReturnSlices;
             SetUniteQueue();
-            StartCoroutine(RunQueue(0, EarthSliceTimeValues.ReturnSlices));
         }
         
         private void SetUniteQueue()
@@ -145,7 +152,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 }, EarthSliceTimeValues.ReturnSlices),
             };
             
-            _actionQueue.AddAction(temp);
+            ActionQueueManager.Add(new ActionQueue(temp),SelfUpdateGroup);
         }
 
 
@@ -193,21 +200,6 @@ namespace _Main.Scripts.Gameplay.Earth
         }
 
         #endregion
-        
-        private IEnumerator RunQueue(float targetDistance, float targetTime)
-        {
-            while (!_actionQueue.IsEmpty)
-            {
-                _actionQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-                
-                if (_canMove)
-                {
-                    MoveSlicedParts(targetDistance, targetTime);
-                }
-                
-                yield return null;
-            }
-        }
         
 
         private void OnDrawGizmosSelected()

@@ -197,8 +197,7 @@ namespace _Main.Scripts.Gameplay.Shield
             };
             
             
-            ActionQueue tempQueue = new ActionQueue(actionData);
-            StartCoroutine(Coroutine_RunActionQueue(tempQueue));
+            ActionQueueManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
         }
         
         private void RunNormalShieldQueue()
@@ -223,19 +222,7 @@ namespace _Main.Scripts.Gameplay.Shield
             };
             
             
-            ActionQueue tempQueue = new ActionQueue(actionData);
-            StartCoroutine(Coroutine_RunActionQueue(tempQueue));
-        }
-
-        private IEnumerator Coroutine_RunActionQueue(ActionQueue actionQueue)
-        {
-            
-            while (!actionQueue.IsEmpty)
-            {
-                actionQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-                
-                yield return null;
-            }
+            ActionQueueManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
         }
         
         private void HandleSuperShieldEnable(float deltaTime)

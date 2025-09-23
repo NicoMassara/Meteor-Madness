@@ -26,7 +26,7 @@ namespace _Main.Scripts.Comet
         private void Start()
         {
             _pool = new GenericPool<CometView>(cometPrefab);
-            TimerManager.SetTimer(new TimerData
+            TimerManager.AddTimer(new TimerData
             {
                 Time = GameTimeValues.FirstCometSpawnDelay,
                 OnEndAction = Timer_OnEndHandler
@@ -44,7 +44,7 @@ namespace _Main.Scripts.Comet
             var spawnDelayRange = Random.Range(GameTimeValues.CometSpawnDelay*0.75f,
                 GameTimeValues.CometSpawnDelay*1.25f);
             
-            TimerManager.SetTimer(new TimerData
+            TimerManager.AddTimer(new TimerData
             {
                 Time = spawnDelayRange,
                 OnEndAction = Timer_OnEndHandler

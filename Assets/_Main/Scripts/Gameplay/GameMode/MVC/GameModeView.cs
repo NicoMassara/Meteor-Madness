@@ -85,16 +85,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleGameRestart()
         {
-            StartCoroutine(RestartCoroutine());
-        }
-        
-        private void HandleEarthRestartFinish()
-        {
-            _controller.TransitionToStart();
-        }
-
-        private IEnumerator RestartCoroutine()
-        {
             var tempActions = new ActionData[]
             {
                 new (()=>GameManager.Instance.EventManager.Publish(new GameRestart()),
@@ -102,14 +92,15 @@ namespace _Main.Scripts.Gameplay.GameMode
                 new (()=>GameManager.Instance.EventManager.Publish(new EarthRestart()),
                     GameRestartTimeValues.RestartEarth),
             };
-            var tempQueue = new ActionQueue(tempActions);
             
-            while (!tempQueue.IsEmpty)
-            {
-                tempQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-                yield return null;
-            }
+            ActionQueueManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
+        
+        private void HandleEarthRestartFinish()
+        {
+            _controller.TransitionToStart();
+        }
+        
 
         #region Start
 
