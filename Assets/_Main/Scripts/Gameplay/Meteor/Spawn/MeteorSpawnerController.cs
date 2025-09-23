@@ -22,7 +22,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         [Header("Testing")] 
         [SerializeField] private bool doesSpawn;
         
-        private readonly Timer _spawnTimer = new Timer();
         private readonly MeteorTravelledDistanceTracker _travelledDistanceTracker = new MeteorTravelledDistanceTracker();
         private MeteorSpawnSettings _spawnSettings;
         private MeteorLocationSpawnController _locationSpawn;
@@ -79,23 +78,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             if(_isSpawningRing) return;
             
             StartCoroutine(CreateRingMeteor(meteorSpeed));
-        }
-        
-        private IEnumerator StartMeteorTimer()
-        {
-            _isFirstSpawn = false;
-            _spawnTimer.Set(1f);
-            _spawnTimer.OnEnd += () =>
-            {
-                SpawnSingleMeteor(GameValues.MaxMeteorSpeed);
-                _spawnTimer.OnEnd = null;
-            };
-            
-            while (!_spawnTimer.GetHasEnded)
-            {
-                _spawnTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-                yield return null;
-            }
         }
 
         private IEnumerator CreateRingMeteor(float meteorSpeed)
@@ -245,7 +227,11 @@ namespace _Main.Scripts.Gameplay.Meteor
             _canSpawn = input.CanSpawn;
             if (_isFirstSpawn)
             {
-                StartCoroutine(StartMeteorTimer());
+                TimerManager.SetTimer(new TimerData
+                {
+                    Time = 1f,
+                    OnEndAction = ()=> SpawnSingleMeteor(GameValues.MaxMeteorSpeed)
+                }, SelfUpdateGroup);
             }
         }
         

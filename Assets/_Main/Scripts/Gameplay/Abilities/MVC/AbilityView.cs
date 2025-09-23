@@ -9,7 +9,6 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityView : ManagedBehavior, IUpdatable, IObserver
     {
-        private readonly Timer _abilityTimer = new Timer();
         private AbilityData _currentAbility;
         private AbilityController _controller;
         private AbilityDataController abilityDataController;
@@ -84,16 +83,6 @@ namespace _Main.Scripts.Gameplay.Abilies
                 yield return null;
             }
         }
-        
-        private IEnumerator Coroutine_RunAbilityTimer()
-        {
-            while (!_abilityTimer.GetHasEnded)
-            {
-                _abilityTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-
-                yield return null;
-            }
-        }
 
         private IEnumerator Coroutine_UpdateTimeScale(TimeScaleData timeScaleData)
         {
@@ -122,15 +111,11 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void AbilitiesData_OnAbilityStartedHandler(float activeTime)
         {
-            _abilityTimer.Set(activeTime);
-            _abilityTimer.OnEnd += AbilityTimer_OnEndHandler;
-            StartCoroutine(Coroutine_RunAbilityTimer());
-        }
-        
-        private void AbilityTimer_OnEndHandler()
-        {
-            _abilityTimer.OnEnd -= AbilityTimer_OnEndHandler;
-            _controller.TransitionToEnable();
+            TimerManager.SetTimer(new TimerData
+            {
+                Time = activeTime,
+                OnEndAction = ()=> _controller.TransitionToEnable()
+            }, SelfUpdateGroup);
         }
 
         private void AbilitiesData_UpdateTimeScale(TimeScaleData timeScaleData)

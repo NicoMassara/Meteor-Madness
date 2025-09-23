@@ -1,8 +1,8 @@
 ﻿using System.Collections;
+using _Main.Scripts.InspectorTools;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Managers
 {
@@ -11,7 +11,8 @@ namespace _Main.Scripts.Managers
         public static TimerManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         protected static TimerManager _instance;
 
-        private int _timerRunningCount;
+        [SerializeField, ReadOnly] 
+        private int _timerRunningCount = 0;
         
         private static TimerManager CreateInstance()
         {
@@ -30,13 +31,14 @@ namespace _Main.Scripts.Managers
 
         private IEnumerator Coroutine_RunTimer(TimerData timerData, UpdateGroup updateGroup)
         {
-            _timerRunningCount++;
-            
             var timer = new Timer(timerData);
+            
+            _timerRunningCount++;
             
             while (timer.GetHasEnded == false)
             {
                 timer.Run(CustomTime.GetDeltaTimeByChannel(updateGroup));
+                
                 yield return null;
             }
             

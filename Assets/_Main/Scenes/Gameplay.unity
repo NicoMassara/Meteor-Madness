@@ -4781,26 +4781,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1233927883}
-  - component: {fileID: 1233927882}
+  - component: {fileID: 1233927884}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: AbilitySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1233927882
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1233927881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffc06faa26bc45c093525ead5f90b708, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1233927883
 Transform:
   m_ObjectHideFlags: 0
@@ -4816,6 +4804,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1233927884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233927881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f752bda47bf48b5afb8712e91bfbf3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDelay: 10
 --- !u!1 &1236263223
 GameObject:
   m_ObjectHideFlags: 0
@@ -6593,7 +6594,7 @@ GameObject:
   - component: {fileID: 1888334900}
   - component: {fileID: 1888334898}
   m_Layer: 0
-  m_Name: CometController
+  m_Name: CometSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

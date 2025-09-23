@@ -5,7 +5,7 @@ namespace _Main.Scripts
     public class Timer
     {
         private float _currentTime = -1;
-        public bool GetHasEnded => _currentTime is <= 0 and > -1;
+        public bool GetHasEnded { get; private set; } 
         public float CurrentTime => _currentTime;
         public float CurrentRatio => _currentTime / _targetTime;
         private bool _hasStarted = false;
@@ -18,8 +18,7 @@ namespace _Main.Scripts
 
 
         public Timer()
-        {
-        }
+        { }
 
         public Timer(TimerData timerData)
         {
@@ -38,6 +37,7 @@ namespace _Main.Scripts
             _currentTime = time;
             _targetTime = _currentTime; 
             _aboutToEndRatio = aboutToEndRatio;
+            GetHasEnded = false;
         }
 
         public void Run(float deltaTime)
@@ -69,6 +69,7 @@ namespace _Main.Scripts
                 
                 if (_currentTime <= 0)
                 {
+                    GetHasEnded = true;
                     Reset();
                     OnEnd?.Invoke();
                 }

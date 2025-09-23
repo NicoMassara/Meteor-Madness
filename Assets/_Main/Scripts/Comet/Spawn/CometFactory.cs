@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
+﻿using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -15,7 +16,7 @@ namespace _Main.Scripts.Comet
         [Header("Components")]
         [SerializeField] private Camera playerCamera;
         
-        private readonly Timer _spawnTimer = new Timer();
+        //private readonly Timer _spawnTimer = new Timer();
         private GenericPool<CometView> _pool;
         private bool _isBottomSpawn;
 
@@ -25,13 +26,16 @@ namespace _Main.Scripts.Comet
         private void Start()
         {
             _pool = new GenericPool<CometView>(cometPrefab);
-            _spawnTimer.Set(GameTimeValues.FirstCometSpawnDelay);
-            _spawnTimer.OnEnd += Timer_OnEndHandler;
+            TimerManager.SetTimer(new TimerData
+            {
+                Time = GameTimeValues.FirstCometSpawnDelay,
+                OnEndAction = Timer_OnEndHandler
+            }, SelfUpdateGroup);
         }
         
         public void ManagedUpdate()
         {
-            _spawnTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            //_spawnTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
         
         private void Timer_OnEndHandler()
@@ -39,7 +43,12 @@ namespace _Main.Scripts.Comet
             SpawnComet(GetSpawnPosition(), GetTargetPosition());
             var spawnDelayRange = Random.Range(GameTimeValues.CometSpawnDelay*0.75f,
                 GameTimeValues.CometSpawnDelay*1.25f);
-            _spawnTimer.Set(spawnDelayRange);
+            
+            TimerManager.SetTimer(new TimerData
+            {
+                Time = spawnDelayRange,
+                OnEndAction = Timer_OnEndHandler
+            }, SelfUpdateGroup);
         }
 
         private Vector2 GetSpawnPosition()

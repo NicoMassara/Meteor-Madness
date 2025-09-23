@@ -1,5 +1,5 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+﻿using _Main.Scripts.Managers;
+using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,7 +16,6 @@ namespace _Main.Scripts.Menu
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior menuSound;
         
-        private readonly Timer _resumeTimer = new Timer();
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
 
         private void Awake()
@@ -32,34 +31,35 @@ namespace _Main.Scripts.Menu
         
         public void ManagedUpdate()
         {
-            _resumeTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
 
         private void ResumeGame()
         {
-            _resumeTimer.OnEnd -= ResumeGame;
             pauseMenuPanel.SetActive(false);
         }
         private void MainMenu()
         {
-            _resumeTimer.OnEnd -= MainMenu;
             SceneManager.LoadScene("MainMenu");
         }
 
         public void ResumeGameOnClickHandler()
         {
             menuSound.PlaySound();
-            _resumeTimer.Set(UIPanelTimeValues.ClosePauseMenu);
-            _resumeTimer.OnEnd += ResumeGame;
+            TimerManager.SetTimer(new TimerData
+            {
+                Time = UIPanelTimeValues.ClosePauseMenu,
+                OnEndAction = ResumeGame
+            },SelfUpdateGroup);
         }
 
         public void MainMenuOnClickHandler()
         {
             menuSound.PlaySound();
-            _resumeTimer.Set(UIPanelTimeValues.ClosePauseMenu);
-            _resumeTimer.OnEnd += MainMenu;
+            TimerManager.SetTimer(new TimerData
+            {
+                Time = UIPanelTimeValues.ClosePauseMenu,
+                OnEndAction = MainMenu
+            },SelfUpdateGroup);
         }
-
-
     }
 }

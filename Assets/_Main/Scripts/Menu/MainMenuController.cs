@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,7 +25,6 @@ namespace _Main.Scripts.Menu
         [SerializeField] private SoundBehavior menuSound;
         
         private GameObject _currentPanel;
-        private Timer _playTimer = new Timer();
 
         private void Awake()
         {
@@ -40,17 +40,10 @@ namespace _Main.Scripts.Menu
             lorePanel.SetActive(false);
             SetActiveMainPanel();
             themeSound.PlaySound();
-            _playTimer.OnEnd += LoadGameplayScene;
-        }
-
-        private void Update()
-        {
-            _playTimer?.Run(Time.deltaTime);
         }
 
         private void LoadGameplayScene()
         {
-            _playTimer.OnEnd = null;
             SceneManager.LoadScene(gameplaySceneName);
         }
 
@@ -79,7 +72,11 @@ namespace _Main.Scripts.Menu
         private void StartGame()
         {
             menuSound.PlaySound();
-            _playTimer.Set(GameTimeValues.TimeToLoadGameScene);
+            TimerManager.SetTimer(new TimerData
+            {
+                Time = GameTimeValues.TimeToLoadGameScene,
+                OnEndAction = LoadGameplayScene
+            });
         }
 
         private void QuitGame()
