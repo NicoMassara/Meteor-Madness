@@ -5,21 +5,50 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityMotor : ObservableComponent
     {
+        private readonly AbilityStorage _storage;
         private AbilityType _currentAbility;
         private bool _canUseAbility;
         private bool _isUIEnable;
 
-        public void SelectAbility(AbilityType ability)
+        public AbilityMotor(int maxAbilityStorage)
+        {
+            _storage = new AbilityStorage(maxAbilityStorage);
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            _storage.OnAbilityAdded += Storage_OnAbilityAddedHandler;
+            _storage.OnAbilityTaken += Storage_OnAbilityTakenHandler;
+            _storage.OnStorageFilled += Storage_OnStorageFilledHandler;
+        }
+        
+        public void SelectAbility()
         {
             if (_canUseAbility == false)
             {
                 Debug.Log("Can't use ability");
                 return;
             }
-            
-            _currentAbility = ability;
-            
-            NotifyAll(AbilityObserverMessage.SelectAbility, _currentAbility);
+
+            if (_storage.IsEmpty())
+            {
+                Debug.Log("No Ability in Storage"); 
+                return;
+            }
+
+            _storage.TakeAbility();
+        }
+        
+        public void TryAddAbility(AbilityType ability)
+        {
+            if (_storage.IsFull())
+            {
+                Debug.Log("Ability storage is full");
+                return;
+            }
+
+            _storage.AddAbility(ability);
         }
 
         public void TriggerAbility()
@@ -44,6 +73,27 @@ namespace _Main.Scripts.Gameplay.Abilies
             _isUIEnable = isEnable;
             NotifyAll(AbilityObserverMessage.SetEnableUI, _isUIEnable);
         }
+        
+        #region Handlers
+
+        private void Storage_OnAbilityAddedHandler(AbilityType abilityType)
+        {
+            NotifyAll(AbilityObserverMessage.AddAbility, abilityType);
+        }
+
+        private void Storage_OnAbilityTakenHandler(AbilityType abilityType)
+        {
+            _currentAbility = abilityType;
+            
+            NotifyAll(AbilityObserverMessage.SelectAbility, _currentAbility);
+        }
+
+        private void Storage_OnStorageFilledHandler()
+        {
+            NotifyAll(AbilityObserverMessage.StorageFilled);
+        }
+
+        #endregion
     }
     
     public enum AbilityType

@@ -20,7 +20,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Awake()
         {
-            _motor = new AbilityMotor();
+            _motor = new AbilityMotor(GameValues.MaxAbilityCount);
             _controller = new AbilityController(_motor);
             
             _view = GetComponent<AbilityView>();
@@ -43,7 +43,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             if (inputReader.HasUsedAbility)
             {
-                _controller.SelectAbility(AbilityType.SuperShield);
+                _controller.SelectAbility();
             }
         }
 
@@ -54,11 +54,24 @@ namespace _Main.Scripts.Gameplay.Abilies
             var eventBus = GameManager.Instance.EventManager;
             
             eventBus.Subscribe<SetEnableAbility>(EventBus_OnSetEnableAbility);
+            eventBus.Subscribe<AddAbility>(EventBus_OnAddAbility);
+        }
+
+        private void EventBus_OnAddAbility(AddAbility input)
+        {
+            _controller.TryAddAbility(input.AbilityType);
         }
 
         private void EventBus_OnSetEnableAbility(SetEnableAbility input)
         {
-            
+            if (input.IsEnable)
+            {
+                _controller.TransitionToEnable();
+            }
+            else
+            {
+                _controller.TransitionToDisable();
+            }
         }
 
         #endregion

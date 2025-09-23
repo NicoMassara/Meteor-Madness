@@ -7,6 +7,7 @@ namespace _Main.Scripts.Gameplay.FSM.Ability
         public override void Awake()
         {
             Controller.SetCanUseAbility(true);
+            Controller.SetEnableUIAbility(true);
         }
 
         public override void Sleep()

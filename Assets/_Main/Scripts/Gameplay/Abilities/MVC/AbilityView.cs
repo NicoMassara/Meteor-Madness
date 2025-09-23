@@ -63,12 +63,6 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleTriggerAbility(AbilityType enumType)
         {
-            if (!abilityDataController.HasAbilityData(enumType))
-            {
-                Debug.LogWarning("AbilityData Does not exist");
-                return;
-            }
-            
             StartCoroutine(Coroutine_RunAbilityQueue(abilityDataController.GetAbilityStartQueue(enumType)));
         }
 
@@ -115,7 +109,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 
                 foreach (var updateGroup in timeScaleData.UpdateGroups)
                 {
-                    CustomTime.GetChannel(updateGroup).TimeScale = currentTimeScale;
+                    CustomTime.SetChannelTimeScale(updateGroup, currentTimeScale);
                 }
                 
                 yield return null;

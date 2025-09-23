@@ -4,6 +4,7 @@
     {
         public const int VisualMultiplier = 150;
         public const float MaxMeteorSpeed = 20;
+        public const int MaxAbilityCount = 3;
     }
 
     public struct AbilitiesActiveTimeValues

@@ -115,5 +115,15 @@ namespace _Main.Scripts.Managers
         public bool IsEnable;
     }
 
+    public struct AddAbility
+    {
+        public AbilityType AbilityType;
+    }
+
+    public struct SetAbilityStorageFull
+    {
+        public bool IsFull;
+    }
+
     #endregion
 }

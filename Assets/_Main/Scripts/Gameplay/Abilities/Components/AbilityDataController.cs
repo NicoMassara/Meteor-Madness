@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilies
@@ -23,14 +24,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             
             CreateAbilityData();
         }
-
-        private void SetTimeScale(UpdateGroup[] groups, float timeScale)
-        {
-            foreach (var t in groups)
-            {
-                CustomTime.GetChannel(t).TimeScale = timeScale;
-            }
-        }
         
 
         #region Set Data
@@ -44,10 +37,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
-                    //Debug.Log("Disable Inputs");
-                    //Debug.Log("Gameplay Time Scale Set To 0");
                     _eventBus.Publish(new SetEnableInputs{IsEnabled = false});
-                    //SetTimeScale(new[] { UpdateGroup.Gameplay, UpdateGroup.Effects }, 0.025f);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -58,23 +48,18 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, 0f),
                 new ActionData(() =>
                 {
-                    //Debug.Log("Camera Zoom In");
                     _eventBus.Publish(new CameraZoomIn());
                 }, SuperShieldStartTimeValues.TimeToZoomIn),
                 new ActionData(() =>
                 {
-                    //Debug.Log("Enable Super Shield");
                     _eventBus.Publish(new SetSuperShield{});
                 }, SuperShieldStartTimeValues.TimeToMoveFastShield),
                 new ActionData(() =>
                 {
-                    //Debug.Log("Camera Zoom Out");
                     _eventBus.Publish(new CameraZoomOut());
                 }, SuperShieldStartTimeValues.TimeToZoomOut),
                 new ActionData(() =>
                 {
-                    //Debug.Log("Gameplay Time Scale Set To 1");
-                    //SetTimeScale(new[] { UpdateGroup.Gameplay, UpdateGroup.Effects }, 1f);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -96,8 +81,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
-                    //Debug.Log("Gameplay Time Scale Set To 0");
-                    //SetTimeScale(new[] { UpdateGroup.Gameplay, UpdateGroup.Effects }, 0.025f);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -108,14 +91,11 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, 0f),
                 new ActionData(() =>
                 {
-                    //Debug.Log("Normal Shield Set");
                     _eventBus.Publish(new SetNormalShield());
                 }, SuperShieldEndTimeValues.TimeBeforeDisableSuperShield),
                 new ActionData(() =>
                 {
-                    //Debug.Log("Gameplay Time Scale Set To 1");
                     _eventBus.Publish(new SetEnableInputs{IsEnabled = true});
-                    //SetTimeScale(new[] { UpdateGroup.Gameplay, UpdateGroup.Effects }, 1f);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -136,59 +116,12 @@ namespace _Main.Scripts.Gameplay.Abilies
             };
             
             _abilities.Add(shieldData.AbilityType, shieldData);
+            Debug.Log($"Shield Data Created: {shieldData.AbilityType}");
         }
 
         private void CreateAbilityData()
         {
-            
             CreateShieldData();
-            
-            #region SlowMotion
-
-            //TotalShield
-            ActionQueue slowQueue = new ActionQueue();
-            ActionData[] slowActionData = new []
-            {
-                new ActionData(() =>
-                {
-                    //Disable Player Inputs
-                    //Stops GameplayTime
-                }, 0f),
-                new ActionData(() =>
-                {
-                    //
-                }, 1f),
-                new ActionData(() =>
-                {
-                    //
-                }, 1f),
-                new ActionData(() =>
-                {
-                    //
-                }, 1f),
-                new ActionData(() =>
-                {
-                    //
-                }, 1f),
-                new ActionData(() =>
-                {
-                    //
-                }, 1f),
-                new ActionData(() =>
-                {
-                    //
-                }, 1f),
-                new ActionData(() =>
-                {
-                    //
-                }, 1f),
-                new ActionData(() =>
-                {
-                    //
-                }, 1f),
-            };
-
-            #endregion
         }
 
         #endregion

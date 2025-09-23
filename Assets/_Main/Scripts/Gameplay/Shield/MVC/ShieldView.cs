@@ -184,7 +184,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 {
                     //Debug.Log("Ability Time Scale Set to 0");
                     superSprite.gameObject.SetActive(true);
-                    CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 0;
+                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
                     StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, timeToEnableSuperShield));
                 }),
                 new(() =>
@@ -192,7 +192,7 @@ namespace _Main.Scripts.Gameplay.Shield
                     //Debug.Log("Ability Time Scale Set to 1");
                     _shieldSpeeder.RestartValues();
                     _spriteAlphaSetter.RestartValues();
-                    CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 1;
+                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                 },timeToEnableSuperShield),
             };
             
@@ -208,7 +208,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set To 0");
-                    CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 0;
+                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
                     StartCoroutine(
                         Coroutine_RunActionByTime(HandleNormalShieldEnable, timeToDisableSuperShield));
                 }),
@@ -218,7 +218,6 @@ namespace _Main.Scripts.Gameplay.Shield
                     superSprite.gameObject.SetActive(false);
                     _spriteAlphaSetter.RestartValues();
                     _shieldSpeeder.RestartValues();
-
                     StartCoroutine(Coroutine_RotateTowardsNearestMeteor());
                 },timeToDisableSuperShield),
             };
@@ -264,7 +263,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 yield return null;
             }
             
-            CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 1;
+            CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
         }
 
         private void OnDrawGizmosSelected()

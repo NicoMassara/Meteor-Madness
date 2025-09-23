@@ -26,6 +26,19 @@ namespace _Main.Scripts.MyCustoms
             foreach (var kv in Channels)
                 kv.Value.UpdateFixed(unscaledDeltaTime);
         }
+
+        public static void SetChannelTimeScale(UpdateGroup updateGroup, float timeScale)
+        {
+            GetChannel(updateGroup).SetTimeScale(timeScale);
+        }
+
+        public static void SetChannelTimeScale(UpdateGroup[] updateGroup, float timeScale)
+        {
+            for (int i = 0; i < updateGroup.Length; i++)
+            {
+                GetChannel(updateGroup[i]).SetTimeScale(timeScale);
+            }
+        }
     }
 
     public class TimeChannel

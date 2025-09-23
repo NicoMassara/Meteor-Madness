@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay.FSM.Ability;
+using _Main.Scripts.Managers;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
@@ -91,9 +92,14 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         #endregion
 
-        public void SelectAbility(AbilityType ability)
+        public void TryAddAbility(AbilityType abilityType)
         {
-            _motor.SelectAbility(ability);
+            _motor.TryAddAbility(abilityType);
+        }
+
+        public void SelectAbility()
+        {
+            _motor.SelectAbility();
         }
 
         public void TriggerAbility()

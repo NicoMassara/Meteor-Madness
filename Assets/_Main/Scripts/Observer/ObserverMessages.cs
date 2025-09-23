@@ -57,9 +57,10 @@
     {
         public const string TriggerAbility = "A04001";
         public const string FinishAbility = "A04002";
-        public const string RunTimer = "A04003";
+        public const string AddAbility = "A04003";
         public const string SetCanUse = "A04004";
         public const string SetEnableUI = "A04005";
         public const string SelectAbility = "A04006";
+        public const string StorageFilled = "A04007";
     }
 }
