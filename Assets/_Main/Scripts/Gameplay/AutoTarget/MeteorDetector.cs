@@ -10,49 +10,51 @@ namespace _Main.Scripts.Gameplay.AutoTarget
         private readonly LayerMask _meteorLayer;
         private readonly Collider2D[] _colliders = new Collider2D[5];
         private Func<float> _getShieldAngle;
-        private Vector2 _shieldPosition = Vector2.zero;
-        private ITargetable _activeMeteor;
+        private ITargetable _activeTarget;
         private float _currentAngle;
-        
+        public bool HasActiveTarget { get; private set; }
+
         public UnityAction OnTargetLost;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
 
-        public MeteorDetector(Vector2 shieldPosition, Func<float> angleGetter, LayerMask meteorLayer)
+        public MeteorDetector(Func<float> angleGetter, LayerMask meteorLayer)
         {
-            _shieldPosition = shieldPosition;
             _getShieldAngle = angleGetter;
             _meteorLayer = meteorLayer;
         }
         
-        public void CheckForNearMeteor(float checkRadius)
+        public void CheckForNearMeteor(Vector2 position, float checkRadius)
         {
-            var hitCount = Physics2D.OverlapCircleNonAlloc(_shieldPosition, checkRadius, _colliders,_meteorLayer);
+            if(HasActiveTarget) return;
+            
+            var hitCount = Physics2D.OverlapCircleNonAlloc(position, checkRadius, _colliders,_meteorLayer);
 
             if (hitCount == 0)
             {
                 return;
             }
             
-            _activeMeteor = _colliders[GetNearestMeteor(hitCount)].GetComponent<ITargetable>();
+            _activeTarget = _colliders[GetNearestMeteor(position, hitCount)].GetComponent<ITargetable>();
 
-            _activeMeteor.OnDeath += Target_OnDeathHandler;
+            _activeTarget.OnDeath += Target_OnDeathHandler;
             
-            var meteorPos = _activeMeteor.Position;
-            var dir = (meteorPos - _shieldPosition).normalized;
+            var meteorPos = _activeTarget.Position;
+            var dir = (meteorPos - position).normalized;
             var angle = Mathf.Repeat(Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg, 360f);
             
-            Debug.DrawRay(_shieldPosition,
+            Debug.DrawRay(position,
                 dir * checkRadius, Color.magenta, 0.1f);
             
             _currentAngle = angle;
+            HasActiveTarget = true;
         }
         
 
         public int GetDirectionToMeteorAngle()
         {
-            if (_activeMeteor == null)
+            if (_activeTarget == null)
             {
                 return 0;
             }
@@ -69,13 +71,14 @@ namespace _Main.Scripts.Gameplay.AutoTarget
 
         private void Target_OnDeathHandler()
         {
-            _activeMeteor.OnDeath -= Target_OnDeathHandler;
-            _activeMeteor = null;
+            _activeTarget.OnDeath -= Target_OnDeathHandler;
+            _activeTarget = null;
+            HasActiveTarget = false;
             
             OnTargetLost?.Invoke();
         }
 
-        private int GetNearestMeteor(int hitCount)
+        private int GetNearestMeteor(Vector2 shieldPosition, int hitCount)
         {
             var minDistance = float.MaxValue;
             var selectedIndex = -1;
@@ -83,7 +86,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             for (int i = 0; i < hitCount; i++)
             {
                 var meteorPos = _colliders[i].transform.position;
-                var distance = Vector2.Distance(meteorPos, _shieldPosition);
+                var distance = Vector2.Distance(meteorPos, shieldPosition);
 
                 if (distance < minDistance)
                 {

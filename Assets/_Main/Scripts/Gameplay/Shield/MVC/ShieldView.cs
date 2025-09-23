@@ -38,8 +38,8 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float decayConstant = 100f;
         [Header("Meteor Detector")]
         [SerializeField] private LayerMask meteorLayer;
-        [Range(3, 30f)] 
-        [SerializeField] private float superShieldEndCheckRadius = 10f;
+        [Range(0.5f, 3f)] 
+        [SerializeField] private float meteorCheckRadius = 10f;
         
         private MeteorDetector _meteorDetector;
         private ShieldMovement _movement;
@@ -55,7 +55,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _movement = new ShieldMovement(shieldMovementData,spriteContainer.transform);
             _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
-            _meteorDetector = new MeteorDetector(_movement.GetPosition(), _movement.GetAngle,meteorLayer);
+            _meteorDetector = new MeteorDetector(_movement.GetAngle,meteorLayer);
         }
 
         private void Start()
@@ -218,7 +218,8 @@ namespace _Main.Scripts.Gameplay.Shield
                     superSprite.gameObject.SetActive(false);
                     _spriteAlphaSetter.RestartValues();
                     _shieldSpeeder.RestartValues();
-                    StartCoroutine(Coroutine_HandleAutoRotate());
+
+                    StartCoroutine(Coroutine_RotateTowardsNearestMeteor());
                 },timeToDisableSuperShield),
             };
             
@@ -229,6 +230,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private IEnumerator Coroutine_RunActionQueue(ActionQueue actionQueue)
         {
+            
             while (!actionQueue.IsEmpty)
             {
                 actionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
@@ -251,24 +253,24 @@ namespace _Main.Scripts.Gameplay.Shield
         
         #endregion
 
-        private IEnumerator Coroutine_HandleAutoRotate()
+        private IEnumerator Coroutine_RotateTowardsNearestMeteor()
         {
-            _meteorDetector.CheckForNearMeteor(superShieldEndCheckRadius);
+            _meteorDetector.CheckForNearMeteor(_movement.GetPosition(), Mathf.Infinity);
             
             while (_meteorDetector.GetDirectionToMeteorAngle() != 0)
             {
-                HandleRotation(0.5f);
+                _movement.Move(0.5f, CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
                 
                 yield return null;
             }
             
             CustomTime.GetChannel(UpdateGroup.Ability).TimeScale = 1;
         }
-        
+
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(spriteContainer.transform.position, superShieldEndCheckRadius);
+            Gizmos.DrawWireSphere(normalSprite.transform.position, meteorCheckRadius);
         }
     }
 }

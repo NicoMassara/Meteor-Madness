@@ -787,7 +787,7 @@ MonoBehaviour:
   meteorLayer:
     serializedVersion: 2
     m_Bits: 64
-  superShieldEndCheckRadius: 30
+  meteorCheckRadius: 3
 --- !u!4 &168416677
 Transform:
   m_ObjectHideFlags: 0
@@ -2777,7 +2777,6 @@ MonoBehaviour:
   minSpawnProximity: 15
   maxSpawnProximity: 120
   ringSpawnAmount: 8
-  ringsAmount: 10
 --- !u!1 &724356219
 GameObject:
   m_ObjectHideFlags: 0
