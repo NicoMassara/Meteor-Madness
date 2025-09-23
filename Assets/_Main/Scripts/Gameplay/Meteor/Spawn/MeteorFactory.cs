@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using _Main.Scripts.Particles;
 using UnityEngine;
 using UnityEngine.Events;
 

@@ -102,7 +102,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void AbilitiesData_OnAbilityStartedHandler(float activeTime)
         {
-            TimerManager.AddTimer(new TimerData
+            TimerManager.Add(new TimerData
             {
                 Time = activeTime,
                 OnEndAction = ()=> _controller.TransitionToEnable()

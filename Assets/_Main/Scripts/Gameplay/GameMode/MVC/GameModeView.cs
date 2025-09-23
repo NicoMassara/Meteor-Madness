@@ -77,8 +77,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleGameFinish()
         {
             gameplayTheme?.StopSound();
-            GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = false});
             GameManager.Instance.CanPlay = false;
+            GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = false});
             GameManager.Instance.EventManager.Publish(new RecycleAllMeteors());
             GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnabled = false});
         }
@@ -100,7 +100,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _controller.TransitionToStart();
         }
-        
 
         #region Start
 
@@ -149,11 +148,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
-            GameManager.Instance.EventManager.Publish(
-                new EnableMeteorSpawn
-                    {
-                        CanSpawn = canSpawn
-                    });
+            GameManager.Instance.EventManager.Publish(new EnableMeteorSpawn { CanSpawn = canSpawn });
         }
         
         private void HandleSpawnRingMeteor()

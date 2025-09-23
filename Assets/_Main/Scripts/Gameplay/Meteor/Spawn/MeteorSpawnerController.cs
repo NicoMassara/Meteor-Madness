@@ -35,18 +35,12 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void Awake()
         {
             _locationSpawn = GetComponent<MeteorLocationSpawnController>();
-            
-            //Add events to EventManager
-            var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<GameStart>(EnventBus_GameStart);
-            eventManager.Subscribe<UpdateLevel>(EnventBus_UpdateLevel);
-            eventManager.Subscribe<EnableMeteorSpawn>(EnventBus_EnableMeteorSpawn);
-            eventManager.Subscribe<SpawnRingMeteor>(EnventBus_SpawnRingMeteor);
-            eventManager.Subscribe<RecycleAllMeteors>(EnventBus_RecycleAllMeteors);
         }
 
         private void Start()
         {
+            SetEventBus();
+            
             _meteorFactory = new MeteorFactory(meteorPrefab);
             _spawnSettings = new MeteorSpawnSettings(meteorSpawnDataSo);
         }
@@ -68,6 +62,8 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void SpawnSingleMeteor(float meteorSpeed)
         {
+            if(_canSpawn == false) return;
+            
             var position = _locationSpawn.GetPositionByAngle(_locationSpawn.GetSpawnAngle(), spawnRadius);
             var finalSpeed = meteorSpeed * _spawnSettings.GetMovementMultiplier();
             CreateMeteor(finalSpeed, position);
@@ -167,7 +163,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             _travelledDistanceTracker.SetMeteor(tempMeteor, centerOfGravity.position);
         }
 
-        public void RecycleAll()
+        private void RecycleAll()
         {
             _meteorFactory.RecycleAll();
         }
@@ -216,6 +212,16 @@ namespace _Main.Scripts.Gameplay.Meteor
         #endregion
 
         #region EventBus
+
+        private void SetEventBus()
+        {
+            var eventManager = GameManager.Instance.EventManager;
+            eventManager.Subscribe<GameStart>(EnventBus_GameStart);
+            eventManager.Subscribe<UpdateLevel>(EnventBus_UpdateLevel);
+            eventManager.Subscribe<EnableMeteorSpawn>(EnventBus_EnableMeteorSpawn);
+            eventManager.Subscribe<SpawnRingMeteor>(EnventBus_SpawnRingMeteor);
+            eventManager.Subscribe<RecycleAllMeteors>(EnventBus_RecycleAllMeteors);
+        }
         
         private void EnventBus_UpdateLevel(UpdateLevel input)
         {
@@ -227,7 +233,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             _canSpawn = input.CanSpawn;
             if (_isFirstSpawn)
             {
-                TimerManager.AddTimer(new TimerData
+                TimerManager.Add(new TimerData
                 {
                     Time = 1f,
                     OnEndAction = ()=> SpawnSingleMeteor(GameValues.MaxMeteorSpeed)

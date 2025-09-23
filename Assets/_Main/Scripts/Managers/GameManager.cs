@@ -26,6 +26,7 @@ namespace _Main.Scripts.Managers
 
         private void Awake()
         {
+            currentDamageType = DamageTypes.Standard;
             EventManager = new EventBusManager();
         }
 

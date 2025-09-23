@@ -72,7 +72,7 @@ namespace _Main.Scripts.Menu
         private void StartGame()
         {
             menuSound.PlaySound();
-            TimerManager.AddTimer(new TimerData
+            TimerManager.Add(new TimerData
             {
                 Time = GameTimeValues.TimeToLoadGameScene,
                 OnEndAction = LoadGameplayScene

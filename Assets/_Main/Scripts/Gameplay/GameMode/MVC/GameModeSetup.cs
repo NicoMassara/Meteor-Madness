@@ -31,7 +31,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _view.SetController(_controller);
             _ui.SetController(_controller);
 
-            ControllerEventSetup();
+            SetEventBus();
         }
 
         private void Start()
@@ -46,7 +46,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         #region EventBus
 
-        private void ControllerEventSetup()
+        private void SetEventBus()
         {
             var eventBus = GameManager.Instance.EventManager;
             //Add events

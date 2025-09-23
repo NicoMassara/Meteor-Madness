@@ -11,15 +11,19 @@ namespace _Main.Scripts.Managers
     {
         public static TimerManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         protected static TimerManager _instance;
+
+        private readonly RandomIdGenerator _idStorage = new RandomIdGenerator();
         
         private readonly List<TimerManagerData> _running = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toAdd = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toRemove = new List<TimerManagerData>();
+        private readonly Dictionary<ulong, TimerManagerData> _idsDic = new Dictionary<ulong, TimerManagerData>();
 
         private class TimerManagerData
         {
             public Timer Timer;
             public UpdateGroup UpdateGroup;
+            public ulong Id;
         }
 
         [SerializeField, ReadOnly] 
@@ -63,6 +67,7 @@ namespace _Main.Scripts.Managers
                 {
                     activeCount++;
                     _running.Add(data);
+                    _idsDic.Add(data.Id, data);
                 }
             
                 _toAdd.Clear();
@@ -74,15 +79,39 @@ namespace _Main.Scripts.Managers
                 {
                     activeCount--;
                     _running.Remove(data);
+                    _idsDic.Remove(data.Id);
+                    _idStorage.Release(data.Id);
                 }
             
                 _toRemove.Clear();
             }
         }
 
-        public static void AddTimer(TimerData timerData,UpdateGroup updateGroup = UpdateGroup.Always)
+        public static ulong Add(TimerData timerData, UpdateGroup updateGroup = UpdateGroup.Always)
         {
-            Instance._toAdd.Add(new TimerManagerData { Timer = new Timer(timerData), UpdateGroup = updateGroup });
+            return Instance._Add(timerData,updateGroup);
         }
+
+        private ulong _Add(TimerData timerData, UpdateGroup updateGroup = UpdateGroup.Always)
+        {
+            var id = _idStorage.Generate();
+            _toAdd.Add(new TimerManagerData { Timer = new Timer(timerData), UpdateGroup = updateGroup, Id = id});
+
+            return id;
+        }
+
+        public static void Remove(ulong id)
+        {
+            Instance._Remove(id);
+        }
+
+        private void _Remove(ulong id)
+        {
+            if (_idsDic.TryGetValue(id, out var value))
+            {
+                _toRemove.Add(value);
+            }
+        }
+
     }
 }

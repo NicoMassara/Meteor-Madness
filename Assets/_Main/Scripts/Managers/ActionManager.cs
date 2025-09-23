@@ -12,13 +12,18 @@ namespace _Main.Scripts.Managers
         public static ActionManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         private static ActionManager _instance;
         
+        private readonly RandomIdGenerator _idStorage = new RandomIdGenerator();
+        
         private readonly List<ActionQueueData> _running = new List<ActionQueueData>();
         private readonly List<ActionQueueData> _toAdd = new List<ActionQueueData>();
         private readonly List<ActionQueueData> _toRemove = new List<ActionQueueData>();
+        private readonly Dictionary<ulong, ActionQueueData> _idsDic = new Dictionary<ulong, ActionQueueData>();
+        
         private class ActionQueueData
         {
             public UpdateGroup UpdateGroup;
             public ActionQueue ActionQueue;
+            public ulong Id;
         }
         
         [SerializeField, ReadOnly] 
@@ -64,6 +69,7 @@ namespace _Main.Scripts.Managers
                 {
                     activeCount++;
                     _running.Add(data);
+                    _idsDic.Add(data.Id, data);
                 }
             
                 _toAdd.Clear();
@@ -75,16 +81,38 @@ namespace _Main.Scripts.Managers
                 {
                     activeCount--;
                     _running.Remove(data);
+                    _idsDic.Remove(data.Id);
+                    _idStorage.Release(data.Id);
                 }
             
                 _toRemove.Clear();
             }
         }
-
-        public static void Add(ActionQueue queueData, UpdateGroup updateGroup)
+        public static ulong Add(ActionQueue queueData, UpdateGroup updateGroup = UpdateGroup.Always)
         {
-            Instance.activeCount++;
-            Instance._toAdd.Add(new ActionQueueData { UpdateGroup = updateGroup, ActionQueue = queueData });
+            return Instance._Add(queueData,updateGroup);
         }
+
+        private ulong _Add(ActionQueue queueData, UpdateGroup updateGroup = UpdateGroup.Always)
+        {
+            var id = _idStorage.Generate();
+            _toAdd.Add(new ActionQueueData { UpdateGroup = updateGroup, ActionQueue = queueData, Id = id});
+            return id;
+        }
+        
+        public static void Remove(ulong id)
+        {
+            Instance._Remove(id);
+        }
+
+        private void _Remove(ulong id)
+        {
+            if (_idsDic.TryGetValue(id, out var value))
+            {
+                _toRemove.Add(value);
+            }
+        }
+        
+        
     }
 }

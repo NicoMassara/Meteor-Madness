@@ -13,6 +13,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        private ulong _spawnTimerId;
 
         private void Start()
         {
@@ -28,8 +29,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         
         private void SendAbility()
         {
-            Debug.Log("Ability Sent");
-            
             GameManager.Instance.EventManager.Publish(new AddAbility{AbilityType = GetAbilityToAdd()});
             
             SetTimer();
@@ -37,7 +36,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void SetTimer()
         {
-            TimerManager.AddTimer(new TimerData
+            _spawnTimerId = TimerManager.Add(new TimerData
             {
                 Time = spawnDelay,
                 OnEndAction = SendAbility
@@ -58,7 +57,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void EventBus_OnGameFinished(GameFinished input)
         {
-            
+            TimerManager.Remove(_spawnTimerId);
         }
 
         #endregion

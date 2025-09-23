@@ -4,7 +4,6 @@ namespace _Main.Scripts.Gameplay.FSM.GameMode
 {
     public class GameModeGameplayState<T> : GameModeStateBase<T>
     {
-
         public override void Awake()
         {
             Controller.SetEnableMeteorSpawn(true);
@@ -14,6 +13,5 @@ namespace _Main.Scripts.Gameplay.FSM.GameMode
         {
             Controller.SetEnableMeteorSpawn(false);
         }
-
     }
 }
