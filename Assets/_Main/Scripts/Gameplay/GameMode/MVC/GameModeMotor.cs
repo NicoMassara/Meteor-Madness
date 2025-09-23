@@ -47,8 +47,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void HandleMeteorDeflect(float meteorDeflectValue)
         {
             _meteorDeflectCount += meteorDeflectValue;
-            _levelController.IncreaseStreak();
-            _levelController.CheckForNextLevel();
+            
+            if (meteorDeflectValue >= 1)
+            {
+                _levelController.IncreaseStreak();
+                _levelController.CheckForNextLevel();
+            }
+
             NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);
         }
 
