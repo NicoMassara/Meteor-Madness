@@ -54,7 +54,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void ManagedUpdate()
         {
-            var dt = CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+            var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
             
             _shakerController.HandleShake(dt);
             
@@ -168,7 +168,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
             while (!tempQueue.IsEmpty)
             {
-                tempQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                tempQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 
                 yield return null;
             }
@@ -182,7 +182,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
             while (elapsed < timeToRestart)
             {
-                elapsed += CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+                elapsed += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
                 float t = elapsed / timeToRestart;
 
                 objectToRotate.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
@@ -200,7 +200,7 @@ namespace _Main.Scripts.Gameplay.Earth
             
             while (elapsedTime < timeToIncrease)
             {
-                elapsedTime += CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+                elapsedTime += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
                 UpdateColorByHealth(healthValue);
                 healthValue = elapsedTime/timeToIncrease;
                 

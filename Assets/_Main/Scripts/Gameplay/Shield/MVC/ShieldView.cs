@@ -69,7 +69,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (_shakerController.IsShaking)
             {
-                _shakerController.HandleShake(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                _shakerController.HandleShake(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             }
         }
 
@@ -113,7 +113,7 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
-            _movement.Move(direction, CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            _movement.Move(direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
         
         private void PlayMoveSound()
@@ -154,7 +154,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
             while (elapsedTime < targetTime)
             {
-                var deltaTime = CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+                var deltaTime = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
                 elapsedTime += deltaTime;
                 action?.Invoke(deltaTime);
                 
@@ -232,7 +232,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
             while (!actionQueue.IsEmpty)
             {
-                actionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                actionQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 
                 yield return null;
             }
@@ -258,7 +258,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
             while (_meteorDetector.GetDirectionToMeteorAngle() != 0)
             {
-                _movement.Move(0.5f, CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                _movement.Move(0.5f, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 
                 yield return null;
             }

@@ -34,7 +34,7 @@ namespace _Main.Scripts.Gameplay
         
         public void ManagedLateUpdate()
         {
-            var dt = CustomTime.GetChannel(SelfLateUpdateGroup).DeltaTime;
+            var dt = CustomTime.GetDeltaTimeByChannel(SelfLateUpdateGroup);
             
             if (_shakerController.IsShaking)
             {

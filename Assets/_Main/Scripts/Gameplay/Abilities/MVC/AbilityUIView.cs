@@ -30,6 +30,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleAddAbility(AbilityType abilityType)
         {
+            Debug.Log($"Ability Added: {abilityType}");
             abilityUIData.AddAbility(abilityType);
         }
         

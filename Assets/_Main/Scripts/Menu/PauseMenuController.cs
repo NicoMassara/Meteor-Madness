@@ -32,7 +32,7 @@ namespace _Main.Scripts.Menu
         
         public void ManagedUpdate()
         {
-            _resumeTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            _resumeTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
 
         private void ResumeGame()

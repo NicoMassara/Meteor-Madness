@@ -39,7 +39,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 HandleInputs();
             }
 
-            _controller?.Execute(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
 
         private void HandleInputs()

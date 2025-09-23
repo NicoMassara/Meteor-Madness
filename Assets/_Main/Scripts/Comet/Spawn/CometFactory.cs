@@ -31,7 +31,7 @@ namespace _Main.Scripts.Comet
         
         public void ManagedUpdate()
         {
-            _spawnTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            _spawnTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
         
         private void Timer_OnEndHandler()

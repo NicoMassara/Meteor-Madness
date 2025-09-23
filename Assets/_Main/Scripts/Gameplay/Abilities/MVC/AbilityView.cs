@@ -79,7 +79,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             while (!actionQueue.IsEmpty)
             {
-                actionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                actionQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
 
                 yield return null;
             }
@@ -89,7 +89,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             while (!_abilityTimer.GetHasEnded)
             {
-                _abilityTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                _abilityTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
 
                 yield return null;
             }

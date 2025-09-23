@@ -42,9 +42,8 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 new ActionData(() =>
                 {
-                    CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(0f);
-                    CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(0f);
-                    CustomTime.GetChannel(UpdateGroup.Earth).SetTimeScale(0f);
+                    CustomTime.SetChannelTimeScale(
+                        new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 0f);
                 }),
                 new ActionData(() =>
                 {
@@ -56,9 +55,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 
                 new ActionData(() =>
                 {
-                    CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(1f);
-                    CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(1f);
-                    CustomTime.GetChannel(UpdateGroup.Earth).SetTimeScale(1f);
+                    CustomTime.SetChannelTimeScale(
+                        new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
                 }, EarthSliceTimeValues.ReturnToNormalTime),
             };
             
@@ -104,7 +102,7 @@ namespace _Main.Scripts.Gameplay.Earth
             var lastPosition = partTransform.localPosition;
             var targetPosition = new Vector2(targetDistance * direction.x, lastPosition.y);
             var distance = Vector2.Distance(lastPosition, targetPosition);
-            var speed = (distance / targetTime) * CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+            var speed = (distance / targetTime) * CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
             var newX = Mathf.MoveTowards(lastPosition.x, targetPosition.x, speed);
             partTransform.localPosition = new Vector2(newX, lastPosition.y);
         }
@@ -127,9 +125,8 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 new ActionData(() =>
                 {
-                    CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(0f);
-                    CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(0f);
-                    CustomTime.GetChannel(UpdateGroup.Earth).SetTimeScale(0f);
+                    CustomTime.SetChannelTimeScale(
+                        new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 0f);
                     _canMove = true;
                 }),
                 
@@ -143,9 +140,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 new ActionData(() =>
                 {
                     UniteMeshes();
-                    CustomTime.GetChannel(UpdateGroup.UI).SetTimeScale(1f);
-                    CustomTime.GetChannel(UpdateGroup.Gameplay).SetTimeScale(1f);
-                    CustomTime.GetChannel(UpdateGroup.Earth).SetTimeScale(1f);
+                    CustomTime.SetChannelTimeScale(
+                        new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
                 }, EarthSliceTimeValues.ReturnSlices),
             };
             
@@ -202,7 +198,7 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             while (!_actionQueue.IsEmpty)
             {
-                _actionQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                _actionQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 
                 if (_canMove)
                 {

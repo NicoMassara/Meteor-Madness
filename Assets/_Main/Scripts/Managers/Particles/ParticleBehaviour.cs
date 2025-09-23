@@ -34,7 +34,7 @@ namespace _Main.Scripts.Particles
 
         public void ManagedUpdate()
         {
-            var dt = CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+            var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
             
             _scaleTimer += dt;
             float t = _scaleTimer/_data.TimeToReachScale;

@@ -15,6 +15,16 @@ namespace _Main.Scripts.MyCustoms
             return Channels[key];
         }
 
+        public static float GetDeltaTimeByChannel(UpdateGroup key)
+        {
+            return GetChannel(key).DeltaTime;
+        }
+        
+        public static float GetFixedDeltaTimeByChannel(UpdateGroup key)
+        {
+            return GetChannel(key).FixedDeltaTime;
+        }
+
         internal static void UpdateAll(float unscaledDeltaTime)
         {
             foreach (var kv in Channels)

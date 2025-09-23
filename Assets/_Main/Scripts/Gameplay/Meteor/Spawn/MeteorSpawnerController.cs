@@ -93,7 +93,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             while (!_spawnTimer.GetHasEnded)
             {
-                _spawnTimer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                _spawnTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 yield return null;
             }
         }
@@ -121,7 +121,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                 
                     for (int j = 0; j < amountToSpawn; j++)
                     {
-                        yield return new WaitForSeconds(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                        yield return new WaitForSeconds(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
 
                         CreateMeteor(meteorSpeed * speedMultiplier, _locationSpawn.GetPositionByAngle(currAngle, spawnRadius), 
                             GetRingMeteorValue(amountToSpawn, ringsToUse));

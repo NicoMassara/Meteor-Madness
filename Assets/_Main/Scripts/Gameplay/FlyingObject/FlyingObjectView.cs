@@ -69,7 +69,7 @@ namespace _Main.Scripts.FyingObject
         
         public void ManagedUpdate()
         {
-            _sphereRotator.Rotate(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            _sphereRotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             
             if (_hasFire)
             {
@@ -82,7 +82,7 @@ namespace _Main.Scripts.FyingObject
         {
             if (_canMove)
             {
-                var dt = CustomTime.GetChannel(SelfFixedUpdateGroup).FixedDeltaTime;
+                var dt = CustomTime.GetFixedDeltaTimeByChannel(SelfFixedUpdateGroup);
                 _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * dt));
                 Controller.UpdatePosition( _rigidbody2D.transform.position);
             }

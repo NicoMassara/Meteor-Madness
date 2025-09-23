@@ -34,7 +34,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void ManagedUpdate()
         {
-            _controller.Execute(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
 
         #region Event Bus

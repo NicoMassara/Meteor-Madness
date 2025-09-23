@@ -116,7 +116,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             };
             
             _abilities.Add(shieldData.AbilityType, shieldData);
-            Debug.Log($"Shield Data Created: {shieldData.AbilityType}");
         }
 
         private void CreateAbilityData()

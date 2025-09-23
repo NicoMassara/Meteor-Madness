@@ -41,7 +41,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public void ManagedUpdate()
         {
-            _controller?.Execute(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
         
         #region EventBus

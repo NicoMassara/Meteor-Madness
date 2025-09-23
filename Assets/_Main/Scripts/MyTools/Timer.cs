@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine.Events;
 
 namespace _Main.Scripts
 {
@@ -8,13 +7,26 @@ namespace _Main.Scripts
         private float _currentTime = -1;
         public bool GetHasEnded => _currentTime is <= 0 and > -1;
         public float CurrentTime => _currentTime;
+        public float CurrentRatio => _currentTime / _targetTime;
         private bool _hasStarted = false;
         private float _aboutToEndRatio;
-        private float _timerTime;
+        private float _targetTime;
 
         public UnityAction OnEnd;
         public UnityAction OnStart;
         public UnityAction OnAboutToEnd;
+
+
+        public Timer()
+        {
+        }
+
+        public Timer(TimerData timerData)
+        {
+            Set(timerData.Time);
+            OnStart = timerData.OnStartAction;
+            OnEnd = timerData.OnEndAction;
+        }
 
         /// <summary>
         /// Set Time in Seconds
@@ -24,7 +36,7 @@ namespace _Main.Scripts
         public void Set(float time, float aboutToEndRatio = -1)
         {
             _currentTime = time;
-            _timerTime = _currentTime; 
+            _targetTime = _currentTime; 
             _aboutToEndRatio = aboutToEndRatio;
         }
 
@@ -46,7 +58,7 @@ namespace _Main.Scripts
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (_aboutToEndRatio > 0)
                 {
-                    var isAboutToFinish = (_currentTime/_timerTime) <= _aboutToEndRatio;
+                    var isAboutToFinish = (_currentTime/_targetTime) <= _aboutToEndRatio;
 
                     if (isAboutToFinish)
                     {
@@ -57,6 +69,7 @@ namespace _Main.Scripts
                 
                 if (_currentTime <= 0)
                 {
+                    Reset();
                     OnEnd?.Invoke();
                 }
             }
@@ -72,5 +85,12 @@ namespace _Main.Scripts
         {
             _currentTime = -1;
         }
+    }
+    
+    public class TimerData
+    {
+        public float Time;
+        public UnityAction OnEndAction;
+        public UnityAction OnStartAction;
     }
 }

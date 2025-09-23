@@ -212,7 +212,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 if (!CustomTime.GetChannel(SelfUpdateGroup).IsPaused)
                 {
-                    _numberIncrementer.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                    _numberIncrementer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                     increaseAction?.Invoke(GetCurrentPoints());
                 }
                 
@@ -279,7 +279,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             while (!_deathPanelActionQueue.IsEmpty)
             {
-                var dt = CustomTime.GetChannel(SelfUpdateGroup).DeltaTime;
+                var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
                 
                 _deathPanelActionQueue.Run(dt);
 

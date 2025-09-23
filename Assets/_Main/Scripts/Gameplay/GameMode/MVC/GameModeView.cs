@@ -106,7 +106,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             while (!tempQueue.IsEmpty)
             {
-                tempQueue.Run(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+                tempQueue.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 yield return null;
             }
         }

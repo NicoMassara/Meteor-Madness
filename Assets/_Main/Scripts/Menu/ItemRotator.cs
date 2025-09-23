@@ -19,7 +19,7 @@ namespace _Main.Scripts.Menu
         
         public void ManagedUpdate()
         {
-            _rotator.Rotate(CustomTime.GetChannel(SelfUpdateGroup).DeltaTime);
+            _rotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
     }
 }
