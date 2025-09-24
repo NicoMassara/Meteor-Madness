@@ -4770,6 +4770,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1233927883}
   - component: {fileID: 1233927884}
+  - component: {fileID: 1233927885}
   m_Layer: 0
   m_Name: AbilitySpawner
   m_TagString: Untagged
@@ -4804,7 +4805,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f752bda47bf48b5afb8712e91bfbf3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnDelay: 10
+  prefab: {fileID: 8335861176009586927, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
+  centerOfGravity: {fileID: 854189257}
+  spawnDelay: 5
+  spawnRadius: 29
+--- !u!114 &1233927885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233927881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 182035e9c12d4c90826b4976880bb05f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  centerOfGravity: {fileID: 854189257}
+  minSpawnProximity: 30
+  maxSpawnProximity: 180
+  ringSpawnAmount: 0
 --- !u!1 &1236263223
 GameObject:
   m_ObjectHideFlags: 0

@@ -52,6 +52,12 @@
         public const ulong ShieldDeflection = 0xB3001;
         public const ulong EarthCollision = 0xB3002;
     }
+    
+    public struct AbilitySphereObserverMessage
+    {
+        public const ulong ShieldDeflection = 0xC3001;
+        public const ulong EarthCollision = 0xC3002;
+    }
 
     public struct AbilityObserverMessage
     {

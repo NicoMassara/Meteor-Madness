@@ -11,9 +11,9 @@ namespace _Main.Scripts.FyingObject
             Motor = motor;
         }
 
-        public virtual void SetValues(float movementSpeed, Quaternion rotation, Vector2 position, Vector2 direction)
+        public virtual void SetValues(FlyingObjectValues data)
         {
-            Motor.SetValues(movementSpeed, rotation, position, direction);
+            Motor.SetValues(data);
         }
 
         public abstract void HandleTriggerEnter2D(Collider2D other);

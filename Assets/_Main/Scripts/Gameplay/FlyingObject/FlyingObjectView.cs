@@ -101,9 +101,9 @@ namespace _Main.Scripts.FyingObject
             }
         }
 
-        public void SetValues(float movementSpeed, Quaternion rotation, Vector2 position, Vector2 direction)
+        public void SetValues(FlyingObjectValues data)
         {
-            Controller.SetValues(movementSpeed,rotation,position, direction);
+            Controller.SetValues(data);
         }
 
         protected virtual void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)

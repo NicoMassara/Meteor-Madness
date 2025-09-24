@@ -10,7 +10,7 @@ namespace _Main.Scripts.Gameplay.Meteor
      
         public void SetMeteorValues(MeteorValuesData data)
         {
-            base.SetValues(data.MovementSpeed,data.Rotation, data.Position, data.Direction);
+            base.SetValues(data);
             _value = data.Value;
         }
 
@@ -26,12 +26,8 @@ namespace _Main.Scripts.Gameplay.Meteor
         
     }
 
-    public class MeteorValuesData
+    public class MeteorValuesData : FlyingObjectValues
     {
-        public float MovementSpeed;
-        public Quaternion Rotation;
-        public Vector2 Position;
-        public Vector2 Direction;
         public float Value;
     }
 }

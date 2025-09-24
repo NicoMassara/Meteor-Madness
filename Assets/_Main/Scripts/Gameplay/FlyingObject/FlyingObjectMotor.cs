@@ -12,12 +12,12 @@ namespace _Main.Scripts.FyingObject
         protected bool CanMove { get; set; }
         
 
-        public virtual void SetValues(float movementSpeed, Quaternion rotation, Vector2 position, Vector2 direction)
+        public virtual void SetValues(FlyingObjectValues data)
         {
-            MovementSpeed = movementSpeed;
-            Rotation = rotation;
-            Position = position;
-            Direction = direction;
+            MovementSpeed = data.MovementSpeed;
+            Rotation = data.Rotation;
+            Position = data.Position;
+            Direction = data.Direction;
             CanMove = true;
             
             NotifyAll(FlyingObjectObserverMessage.SetValues, MovementSpeed, Rotation, Position, CanMove);
@@ -34,5 +34,13 @@ namespace _Main.Scripts.FyingObject
         {
             Position = transformPosition;
         }
+    }
+    
+    public class FlyingObjectValues
+    {
+        public float MovementSpeed;
+        public Quaternion Rotation;
+        public Vector2 Position;
+        public Vector2 Direction;
     }
 }

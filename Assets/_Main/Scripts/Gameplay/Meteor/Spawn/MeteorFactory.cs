@@ -13,9 +13,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         private GenericPool<MeteorView> _pool;
         public int ActiveMeteorCount => _activeMeteors.Count;
 
-        public UnityAction<Vector3> OnShieldHit;
-        public UnityAction<Vector3, Quaternion> OnEarthHit;
-
         public MeteorFactory(MeteorView meteorPrefab)
         {
             this._meteorPrefab = meteorPrefab;
@@ -33,7 +30,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         public MeteorView SpawnMeteor()
         {
             var tempMeteor = _pool.Get();
-            tempMeteor.OnRecycle += Meteor_OnRecycleHandler;
+            tempMeteor.OnRecycle += OnRecycleHandler;
             _activeMeteors.Add(tempMeteor);
             return tempMeteor;
         }
@@ -46,13 +43,13 @@ namespace _Main.Scripts.Gameplay.Meteor
             }
         }
 
-        private void Meteor_OnRecycleHandler(MeteorView meteorMotorOld)
+        private void OnRecycleHandler(MeteorView meteorMotor)
         {
-            meteorMotorOld.OnDeflection = null;
-            meteorMotorOld.OnEarthCollision = null;
-            meteorMotorOld.OnRecycle -= Meteor_OnRecycleHandler;
-            _activeMeteors.Remove(meteorMotorOld);
-            _pool.Release(meteorMotorOld);
+            meteorMotor.OnDeflection = null;
+            meteorMotor.OnEarthCollision = null;
+            meteorMotor.OnRecycle -= OnRecycleHandler;
+            _activeMeteors.Remove(meteorMotor);
+            _pool.Release(meteorMotor);
         }
     }
 }

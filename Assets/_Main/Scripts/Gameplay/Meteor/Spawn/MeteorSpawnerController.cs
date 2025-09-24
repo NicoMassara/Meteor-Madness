@@ -35,14 +35,13 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void Awake()
         {
             _locationSpawn = GetComponent<MeteorLocationSpawnController>();
+            _meteorFactory = new MeteorFactory(meteorPrefab);
+            _spawnSettings = new MeteorSpawnSettings(meteorSpawnDataSo);
         }
 
         private void Start()
         {
             SetEventBus();
-            
-            _meteorFactory = new MeteorFactory(meteorPrefab);
-            _spawnSettings = new MeteorSpawnSettings(meteorSpawnDataSo);
         }
         
         public void ManagedUpdate()
