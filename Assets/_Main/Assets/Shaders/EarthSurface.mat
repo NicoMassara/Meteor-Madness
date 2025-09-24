@@ -23,6 +23,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _Cloud:
+        m_Texture: {fileID: 2800000, guid: ee8207e613571014bb995d4f29e32c6d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EarthMap:
         m_Texture: {fileID: 2800000, guid: c036000bb622eae43b6b10cd89a3a25d, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -78,11 +82,16 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.5
-    - _FlowIntensity: 0.703
-    - _GrassTextureTiling: 0.5
+    - _Float0: 0
+    - _Float3: -1.27
+    - _FlowIntensity: 0.7
+    - _GrassTextureTiling: 0.25
     - _HealthAmount: 1
+    - _MinToIncreasePannerSpeed: 0.35
+    - _PannerSpeedMultiplier: 10
     - _StepValue: 0.361
     - _Tiling: 1.7529414
+    - _TimeScale: 1
     - _WaterLavaTiling: 1.7529414
     - _WaterTiling: 10
     - __dirty: 0
