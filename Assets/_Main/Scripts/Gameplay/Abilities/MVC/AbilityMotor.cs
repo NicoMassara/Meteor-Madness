@@ -110,7 +110,7 @@ namespace _Main.Scripts.Gameplay.Abilies
     {
         None,
         SuperShield,
-        SlowMotion,
-        Health
+        Health,
+        SlowMotion
     }
 }

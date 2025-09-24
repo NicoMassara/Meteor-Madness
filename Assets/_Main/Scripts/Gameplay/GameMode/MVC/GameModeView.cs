@@ -80,7 +80,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameManager.Instance.CanPlay = false;
             GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = false});
             GameManager.Instance.EventManager.Publish(new RecycleAllMeteors());
-            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnabled = false});
+            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = false});
         }
         
         private void HandleGameRestart()
@@ -113,7 +113,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleCountdownFinish()
         {
             _controller.TransitionToGameplay();
-            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnabled = true});
+            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = true});
+            GameManager.Instance.EventManager.Publish(new SetEnableAbility{IsEnable = true});
         }
 
         private void HandleStartGameplay()

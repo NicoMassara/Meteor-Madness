@@ -46,6 +46,12 @@ namespace _Main.Scripts.Gameplay.Earth
             eventBus.Subscribe<MeteorCollision>(EventBus_OnMeteorCollision);
             eventBus.Subscribe<EarthRestart>(EventBus_OnEarthRestart);
             eventBus.Subscribe<EarthStartDestruction>(EventBus_OnEarthStartDestruction);
+            eventBus.Subscribe<HealEarth>(EventBus_OnHealEarth);
+        }
+
+        private void EventBus_OnHealEarth(HealEarth input)
+        {
+            _controller.Heal(1f);
         }
 
         private void EventBus_OnEarthRestart(EarthRestart input)

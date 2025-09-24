@@ -38,8 +38,12 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.5
+    - _AtmoshereSize1: 2
     - _Cutoff: 0.5
+    - _Float0: 1
     - __dirty: 0
     m_Colors:
+    - _DamageAtmoshere1: {r: 1, g: 0, b: 0.1522532, a: 1}
+    - _DefaultAtmosphere1: {r: 0, g: 0.2627451, b: 0.2392157, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

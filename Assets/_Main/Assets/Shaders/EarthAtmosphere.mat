@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: EarthAtmosphere
+  m_Shader: {fileID: 4800000, guid: 2ed2d2f0dd2f4a543ab0a2a613d5c600, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _AtmoshereSize: 2
+    - _AtmoshereSize2: 2
+    - _ChromaticAberration: 0.1
+    - _Float0: -5.09
+    - _HealthAmount: 0
+    - _Intensity: 2
+    - _Size: 1.15
+    - _Smoothness: 1.23
+    - _TransAmbient: 0.2
+    - _TransDirect: 1
+    - _TransNormalDistortion: 0.1
+    - _TransScattering: 2
+    - _TransShadow: 0.9
+    - _Translucency: 1
+    - __dirty: 0
+    m_Colors:
+    - _DamageAtmosphere: {r: 1, g: 0, b: 0, a: 1}
+    - _DamageAtmosphere2: {r: 1, g: 0, b: 0, a: 1}
+    - _DefaultAtmosphere: {r: 0, g: 0.4753861, b: 1, a: 1}
+    - _DefaultAtmosphere2: {r: 0, g: 0.4753861, b: 1, a: 1}
+  m_BuildTextureStacks: []

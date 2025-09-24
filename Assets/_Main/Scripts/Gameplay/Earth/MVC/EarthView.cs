@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -15,7 +16,6 @@ namespace _Main.Scripts.Gameplay.Earth
     {
         [Header("Model Components")]
         [SerializeField] private GameObject modelContainer;
-        [SerializeField] private MeshRenderer modelMeshRenderer;
         [SerializeField] private GameObject planeMeshContainer;
         [SerializeField] private EarthSlicer earthMeshSlicer;
         [Space]
@@ -35,7 +35,7 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private AnimationCurve rotationSpeedCurve;
         [SerializeField] private ParticleDataSo collisionParticleData;
         
-        private Material _modelMaterial;
+        private EarthMaterialController _earthMaterialController;
         private EarthController _controller;
         private ShakerController _shakerController;
         private GameObject _currentSprite;
@@ -47,10 +47,16 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void Awake()
         {
+            _earthMaterialController = GetComponent<EarthMaterialController>();
             _earthRotator = new EarthRotator(modelContainer.transform, planeMeshContainer.transform, rotationSpeed);
             _shakerController = new ShakerController(modelContainer.transform);
-            //Model Material Settings
-            _modelMaterial = modelMeshRenderer.materials[0];
+
+        }
+
+        private void Start()
+        {
+            _shakerController.SetShakeData(healthShakeData);
+            SetShakeMultiplier(1f);
         }
 
         public void ManagedUpdate()
@@ -88,7 +94,7 @@ namespace _Main.Scripts.Gameplay.Earth
                     SetDeathShake((bool)args[0]);
                     break;
                 case EarthObserverMessage.Heal:
-                    HandleHeal((float)args[0]);
+                    HandleHeal((float)args[0],(float)args[1]);
                     break;
                 case EarthObserverMessage.SetRotation:
                     HandleSetRotation((bool)args[0]);
@@ -123,29 +129,71 @@ namespace _Main.Scripts.Gameplay.Earth
             GameManager.Instance.EventManager.Publish(new CameraShake{ShakeData = cameraShakeData});
         }
         
-        private void HandleHeal(float healthAmount)
+        private void HandleHeal(float currentHealth, float lastHealth)
         {
-            SetShakeMultiplier(healthAmount);
-            UpdateColorByHealth(healthAmount);
+            var tempActions = new ActionData[]
+            {
+                new (() =>
+                {
+                    CustomTime.SetChannelTimeScale(new[]
+                    {
+                        UpdateGroup.Gameplay, UpdateGroup.Ability, 
+                        UpdateGroup.Effects, UpdateGroup.Shield
+                    }, 0f);
+                    
+                    StartCoroutine(Coroutine_HandleHeal(currentHealth, lastHealth, EarthRestartTimeValues.RestartHealth));
+                }),
+                new (() =>
+                {
+                    CustomTime.SetChannelTimeScale(new[]
+                    {
+                        UpdateGroup.Gameplay, UpdateGroup.Ability, 
+                        UpdateGroup.Effects, UpdateGroup.Shield
+                    }, 1f);
+                    
+                },EarthRestartTimeValues.RestartHealth),
+            };
+            
+            ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
+
+
+
+        private IEnumerator Coroutine_HandleHeal(float targetHealth, float lastHealth, float duration)
+        {
+            var currentHealth = lastHealth;
+            var elapsedTime = 0f;
+            
+            while (elapsedTime < duration)
+            {
+                elapsedTime += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
+                var t = elapsedTime / duration;
+                var value  = Mathf.Lerp(lastHealth, targetHealth, t);
+                SetShakeMultiplier(value);
+                UpdateColorByHealth(value);
+                
+                yield return null;
+            }
+        }
+
         private void HandleRestartHealth()
         {
             var tempActions = new ActionData[]
             {
-                new ActionData(() =>  HandleSetRotation(false)),
-                new ActionData(() => StartCoroutine(
+                new (() =>  HandleSetRotation(false)),
+                new (() => StartCoroutine(
                         Coroutine_RestartRotation(EarthRestartTimeValues.RestartZRotation, 
                             planeMeshContainer.transform)), 
                     EarthRestartTimeValues.TimeBeforeRotateZ),
-                new ActionData(() => earthMeshSlicer?.StartUnite(), 
+                new (() => earthMeshSlicer?.StartUnite(), 
                     EarthRestartTimeValues.RestartZRotation),
-                new ActionData(() => StartCoroutine(
+                new (() => StartCoroutine(
                         Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform)), 
                     EarthRestartTimeValues.TimeBeforeRotateY),
-                new ActionData(() => StartCoroutine(
+                new (() => StartCoroutine(
                         Coroutine_RestartHealthColor(EarthRestartTimeValues.RestartHealth)), 
                     EarthRestartTimeValues.RestartYRotation),
-                new ActionData(() =>
+                new (() =>
                 {
                     SetShakeMultiplier(1);
                     _earthRotator.SetRotationSpeed(rotationSpeed);
@@ -187,14 +235,18 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private IEnumerator Coroutine_RestartHealthColor(float timeToIncrease)
         {
-            float healthValue = 0;
             float elapsedTime = 0;
             
             while (elapsedTime < timeToIncrease)
             {
-                elapsedTime += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-                UpdateColorByHealth(healthValue);
+                /*elapsedTime += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
                 healthValue = elapsedTime/timeToIncrease;
+                UpdateColorByHealth(healthValue);*/
+                
+                elapsedTime += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
+                var t = elapsedTime/timeToIncrease;
+                var healthValue = Mathf.Lerp(0, 1f, t);
+                UpdateColorByHealth(healthValue);
                 
                 yield return null;
             }
@@ -255,7 +307,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void UpdateColorByHealth(float currentHealth)
         {
-            _modelMaterial.SetFloat("_HealthAmount", currentHealth);
+            _earthMaterialController.SetMaterialHealth(currentHealth);
         }
 
         public void SetController(EarthController controller)

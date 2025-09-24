@@ -9,7 +9,12 @@ namespace _Main.Scripts.Managers
     public struct EarthRestart { }
     public struct EarthRestartFinish { }
     public struct EarthShake { }
-    
+
+    public struct HealEarth
+    {
+        public float HealAmount;
+    }
+
     public struct EarthStartDestruction { }
     public struct EarthEndDestruction { }
 
@@ -57,6 +62,15 @@ namespace _Main.Scripts.Managers
         public Vector2 Direction;
         public float Value;
     }
+    
+    public struct EnableMeteorSpawn
+    {
+        public bool CanSpawn;
+    }
+    
+    public struct SpawnRingMeteor { }
+    
+    public struct RecycleAllMeteors{}
 
     #endregion
 
@@ -72,20 +86,6 @@ namespace _Main.Scripts.Managers
 
     #endregion
     
-    #region Meteor
-    
-
-    public struct EnableMeteorSpawn
-    {
-        public bool CanSpawn;
-    }
-    
-    public struct SpawnRingMeteor { }
-    
-    public struct RecycleAllMeteors{}
-    
-
-    #endregion
 
     #region Camera
 
@@ -103,7 +103,7 @@ namespace _Main.Scripts.Managers
 
     public struct SetEnableInputs
     {
-        public bool IsEnabled;
+        public bool IsEnable;
     }
 
     #endregion

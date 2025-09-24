@@ -23,6 +23,10 @@ namespace _Main.Scripts.Gameplay
             {
                 UpdateManager.Instance.IsPaused = !UpdateManager.Instance.IsPaused;
             }
+            else if (Input.GetKeyDown(KeyCode.K))
+            {
+                GameManager.Instance.EventManager.Publish(new MeteorCollision());
+            }
         }
 
         public void ManagedUpdate()
@@ -67,7 +71,7 @@ namespace _Main.Scripts.Gameplay
         
         private void EventBus_OnSetEnableInputs(SetEnableInputs input)
         {
-            _areInputEnabled = input.IsEnabled;
+            _areInputEnabled = input.IsEnable;
         }
 
 

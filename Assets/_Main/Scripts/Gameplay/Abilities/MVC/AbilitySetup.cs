@@ -56,6 +56,12 @@ namespace _Main.Scripts.Gameplay.Abilies
             eventBus.Subscribe<SetEnableAbility>(EventBus_OnSetEnableAbility);
             eventBus.Subscribe<AddAbility>(EventBus_OnAddAbility);
             eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
+            eventBus.Subscribe<GameStart>(EventBus_OnGameStart);
+        }
+
+        private void EventBus_OnGameStart(GameStart input)
+        {
+            _controller.TransitionToEnable();
         }
 
         private void EventBus_OnGameFinished(GameFinished input)

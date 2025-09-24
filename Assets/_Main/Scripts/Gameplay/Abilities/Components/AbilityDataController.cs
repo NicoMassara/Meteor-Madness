@@ -21,48 +21,48 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             _eventBus = eventBus;
             _updateTimeScale = updateTimeScale;
-            
+
             CreateAbilityData();
         }
-        
 
-        #region Set Data
+
+        private void CreateAbilityData()
+        {
+            CreateShieldData();
+            CreateHealData();
+        }
+
+        #region Abilities Data
 
         private void CreateShieldData()
         {
             var minTimeScale = 0.025f;
-            
+
             //Start Queue
-            var startActions = new []
+            var startActions = new[]
             {
                 new ActionData(() =>
                 {
-                    _eventBus.Publish(new SetEnableInputs{IsEnabled = false});
+                    _eventBus.Publish(new SetEnableInputs { IsEnable = false });
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
-                        UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
                         TargetTimeScale = minTimeScale,
                         CurrentTimeScale = 1.0f,
                         TimeToUpdate = SuperShieldStartTimeValues.TimeToZoomIn,
                     });
                 }, 0f),
-                new ActionData(() =>
-                {
-                    _eventBus.Publish(new CameraZoomIn());
-                }, SuperShieldStartTimeValues.TimeToZoomIn),
-                new ActionData(() =>
-                {
-                    _eventBus.Publish(new SetSuperShield{});
-                }, SuperShieldStartTimeValues.TimeToMoveFastShield),
-                new ActionData(() =>
-                {
-                    _eventBus.Publish(new CameraZoomOut());
-                }, SuperShieldStartTimeValues.TimeToZoomOut),
+                new ActionData(() => { _eventBus.Publish(new CameraZoomIn()); },
+                    SuperShieldStartTimeValues.TimeToZoomIn),
+                new ActionData(() => { _eventBus.Publish(new SetSuperShield { }); },
+                    SuperShieldStartTimeValues.TimeToMoveFastShield),
+                new ActionData(() => { _eventBus.Publish(new CameraZoomOut()); },
+                    SuperShieldStartTimeValues.TimeToZoomOut),
                 new ActionData(() =>
                 {
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
-                        UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
                         TargetTimeScale = 1f,
                         CurrentTimeScale = minTimeScale,
                         TimeToUpdate = 0.25f,
@@ -75,9 +75,9 @@ namespace _Main.Scripts.Gameplay.Abilies
                     OnAbilityStarted?.Invoke(activeTime);
                 }),
             };
-            
+
             //End Queue
-            var endActions = new []
+            var endActions = new[]
             {
                 new ActionData(() =>
                 {
@@ -89,13 +89,11 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = SuperShieldEndTimeValues.TimeBeforeDisableSuperShield
                     });
                 }, 0f),
+                new ActionData(() => { _eventBus.Publish(new SetNormalShield()); },
+                    SuperShieldEndTimeValues.TimeBeforeDisableSuperShield),
                 new ActionData(() =>
                 {
-                    _eventBus.Publish(new SetNormalShield());
-                }, SuperShieldEndTimeValues.TimeBeforeDisableSuperShield),
-                new ActionData(() =>
-                {
-                    _eventBus.Publish(new SetEnableInputs{IsEnabled = true});
+                    _eventBus.Publish(new SetEnableInputs { IsEnable = true });
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -114,14 +112,58 @@ namespace _Main.Scripts.Gameplay.Abilies
                 StartActions = startActions,
                 EndActions = endActions,
             };
-            
+
             _abilities.Add(shieldData.AbilityType, shieldData);
         }
 
-        private void CreateAbilityData()
+        private void CreateHealData()
         {
-            CreateShieldData();
+            var minTimeScale = 0.025f;
+            
+            //Start Queue
+            var startActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new[] { UpdateGroup.Gameplay, UpdateGroup.Effects, UpdateGroup.Shield },
+                        TargetTimeScale = minTimeScale,
+                        CurrentTimeScale = 1.0f,
+                        TimeToUpdate = SuperHealTimeValues.TimeToZoomIn,
+                    });
+                    
+                }, 0f),
+                new ActionData(() => { _eventBus.Publish(new CameraZoomIn()); },
+                    SuperHealTimeValues.TimeToZoomIn),
+                new ActionData(() => { _eventBus.Publish(new HealEarth()); },
+                    SuperHealTimeValues.TimeToHeal),
+                new ActionData(() => { _eventBus.Publish(new CameraZoomOut()); },
+                    SuperHealTimeValues.TimeToZoomOut),
+                new ActionData(() =>
+                {
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects, UpdateGroup.Shield },
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = minTimeScale,
+                        TimeToUpdate = 0.25f,
+                    });
+                    
+                    OnAbilityStarted?.Invoke(0.1f);
+                }, SuperHealTimeValues.TimeBeforeIncreasingTimeScale),
+            };
+            
+            var healData = new AbilityData
+            {
+                AbilityType = AbilityType.Health,
+                StartActions = startActions,
+                HasInstantEffect = true
+            };
+            
+            _abilities.Add(healData.AbilityType, healData);
         }
+
 
         #endregion
 
@@ -140,7 +182,12 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             return _abilities[abilityType].GetEndActionQueue();
         }
-        
+
+        public bool GetHasInstantEffect(AbilityType abilityType)
+        {
+            return _abilities[abilityType].GetHasInstantEffect();
+        }
+
     }
 
     public class TimeScaleData
@@ -154,6 +201,7 @@ namespace _Main.Scripts.Gameplay.Abilies
     public class AbilityData
     {
         public float ActiveTime;
+        public bool HasInstantEffect;
         public AbilityType AbilityType;
         public ActionData[] StartActions;
         public ActionData[] EndActions;
@@ -167,6 +215,11 @@ namespace _Main.Scripts.Gameplay.Abilies
         public ActionQueue GetEndActionQueue()
         {
             return new ActionQueue(EndActions);
+        }
+
+        public bool GetHasInstantEffect()
+        {
+            return HasInstantEffect;
         }
     }
 }

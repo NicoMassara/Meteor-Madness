@@ -25,6 +25,14 @@
         public const float TimeBeforeDisableSuperShield = 0.5f;
         public const float TimeBeforeRestoringTimeScale = 0.15f;
     }
+    
+    public struct SuperHealTimeValues
+    {
+        public const float TimeToZoomIn = 0.25f;
+        public const float TimeToHeal = 0.5f;
+        public const float TimeToZoomOut = 0.25f;
+        public const float TimeBeforeIncreasingTimeScale = 0.25f;
+    }
 
 
     public struct DamageValues

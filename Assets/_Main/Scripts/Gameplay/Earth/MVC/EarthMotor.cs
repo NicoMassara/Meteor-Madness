@@ -32,8 +32,10 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void Heal(float heal)
         {
+            var lastAmount = _currentHealth;
             _currentHealth += heal;
-            NotifyAll(EarthObserverMessage.Heal);
+            _currentHealth = Mathf.Clamp(_currentHealth, 0f, 1f);
+            NotifyAll(EarthObserverMessage.Heal, _currentHealth,lastAmount);
         }
 
         public void TriggerDestruction()

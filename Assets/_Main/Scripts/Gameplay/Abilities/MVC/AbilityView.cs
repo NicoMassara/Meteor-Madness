@@ -67,6 +67,8 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleFinishAbility(AbilityType enumType)
         {
+            if (abilityDataController.GetHasInstantEffect(enumType)) return;
+            
             ActionManager.Add(abilityDataController.GetAbilityEndQueue(enumType),SelfUpdateGroup);
         }
 

@@ -24,7 +24,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         public void ManagedUpdate()
         {
-
+            if (Input.GetKeyDown(KeyCode.N))
+            {
+                GameManager.Instance.EventManager.Publish(new AddAbility{AbilityType = AbilityType.Health});
+            }
         }
         
         private void SendAbility()
