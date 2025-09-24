@@ -66,7 +66,8 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBus_OnGameFinished(GameFinished input)
         {
-            _controller.RestartAbilities();
+            _controller.TransitionToRestart();
+            _controller.TransitionToDisable();
         }
 
         private void EventBus_OnAddAbility(AddAbility input)
