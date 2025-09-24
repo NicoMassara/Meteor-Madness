@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: aef45e26267d5bc45926b4780f388019
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _WaterDamage: {fileID: 2800000, guid: 7bea6e4487f50884f9d91abf7953b2a7, type: 3}
+  - _EarthMap: {fileID: 2800000, guid: c036000bb622eae43b6b10cd89a3a25d, type: 3}
+  - _WaterDefault: {fileID: 2800000, guid: 6fe629e0670cf8c4d980fd5b34631dcb, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

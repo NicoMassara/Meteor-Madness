@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: EarthSurface
+  m_Shader: {fileID: 4800000, guid: aef45e26267d5bc45926b4780f388019, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _EarthMap:
+        m_Texture: {fileID: 2800000, guid: c036000bb622eae43b6b10cd89a3a25d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 2800000, guid: a2567c79fcafff541bd097660979fea8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GassTexture:
+        m_Texture: {fileID: 2800000, guid: fcb3e019a33c36d41a3ebbc5b14f61a0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _S:
+        m_Texture: {fileID: 2800000, guid: c036000bb622eae43b6b10cd89a3a25d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceDamage:
+        m_Texture: {fileID: 2800000, guid: f0ec32efe9d542045877f97847d48f9f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceDefault:
+        m_Texture: {fileID: 2800000, guid: fcb3e019a33c36d41a3ebbc5b14f61a0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample0:
+        m_Texture: {fileID: 2800000, guid: fcb3e019a33c36d41a3ebbc5b14f61a0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample1:
+        m_Texture: {fileID: 2800000, guid: 7bea6e4487f50884f9d91abf7953b2a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterDamage:
+        m_Texture: {fileID: 2800000, guid: 7bea6e4487f50884f9d91abf7953b2a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterDamage1:
+        m_Texture: {fileID: 2800000, guid: 7bea6e4487f50884f9d91abf7953b2a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterDefault:
+        m_Texture: {fileID: 2800000, guid: 6fe629e0670cf8c4d980fd5b34631dcb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterLava:
+        m_Texture: {fileID: 2800000, guid: 7bea6e4487f50884f9d91abf7953b2a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaCutoff: 0.5
+    - _FlowIntensity: 0.703
+    - _GrassTextureTiling: 0.5
+    - _HealthAmount: 1
+    - _StepValue: 0.361
+    - _Tiling: 1.7529414
+    - _WaterLavaTiling: 1.7529414
+    - _WaterTiling: 10
+    - __dirty: 0
+    m_Colors:
+    - _Color0: {r: 0, g: 0, b: 0, a: 0}
+    - _Color1: {r: 0, g: 0, b: 0, a: 0}
+    - _Damage: {r: 0.4433962, g: 0.006274463, b: 0.015200939, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Surface: {r: 0, g: 1, b: 0, a: 1}
+    - _SurfaceDamage: {r: 1, g: 0, b: 0, a: 1}
+    - _Water: {r: 0, g: 0, b: 1, a: 1}
+    - _WaterDamage: {r: 0.42745098, g: 0, b: 0.009691238, a: 1}
+  m_BuildTextureStacks: []

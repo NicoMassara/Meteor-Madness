@@ -32,6 +32,7 @@ namespace _Main.Scripts.Gameplay.Earth
         [Header("Values")] 
         [Range(0, 100)] 
         [SerializeField] private float rotationSpeed = 25;
+        [SerializeField] private AnimationCurve rotationSpeedCurve;
         [SerializeField] private ParticleDataSo collisionParticleData;
         
         private Material _modelMaterial;
@@ -105,7 +106,8 @@ namespace _Main.Scripts.Gameplay.Earth
             collisionSound?.PlaySound();
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
-            _earthRotator.SetRotationSpeed(rotationSpeed * healthAmount);
+            var rotationMultiplier = rotationSpeedCurve.Evaluate(healthAmount);
+            _earthRotator.SetRotationSpeed(rotationSpeed * rotationMultiplier);
             
             GameManager.Instance.EventManager.Publish
             (
@@ -253,9 +255,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void UpdateColorByHealth(float currentHealth)
         {
-            _modelMaterial.EnableKeyword("_EMISSION");
-            
-            _modelMaterial.SetColor("_EmissionColor", new Color(1, currentHealth, currentHealth)); 
+            _modelMaterial.SetFloat("_HealthAmount", currentHealth);
         }
 
         public void SetController(EarthController controller)
