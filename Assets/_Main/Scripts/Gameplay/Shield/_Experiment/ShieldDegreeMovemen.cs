@@ -15,6 +15,9 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
         private float _rightHoldTimer = 0f;
         private float _leftDelay;
         private float _rightDelay;
+        
+        private bool _isPressingRight = false;
+        private bool _isPressingLeft = false;
 
 
         public ShieldDegreeMovement(Transform shieldTransform, ShieldDegreeMovementDataSo data)
@@ -35,6 +38,15 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
 
         public void Update(float deltaTime)
         {
+            if (_isPressingRight == false)
+            {
+                HandleDelay(ref _rightDelay, deltaTime);
+            }
+            if (_isPressingLeft == false)
+            {
+                HandleDelay(ref _leftDelay, deltaTime);
+            }
+
             _currentAngle = Mathf.LerpAngle(_currentAngle, _targetAngle, _data.RotationSpeed * deltaTime);
             _shieldTransform.localRotation = Quaternion.Euler(0, 0, _currentAngle);
         }
@@ -56,10 +68,15 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
             }
         }
 
-        private void ClearData(ref float timer, ref float delay)
+        private void ClearData(ref float timer, ref bool isPressing)
         {
             timer = 0f;
-            delay = _data.InitialDelay;
+            isPressing = false;
+        }
+
+        private void HandleDelay(ref float delay, float deltaTime)
+        {
+            delay = Mathf.Lerp(delay, _data.InitialDelay, deltaTime * _data.DecelerationRate);
         }
 
         private void MoveRight()
@@ -77,17 +94,17 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
             if (direction > 0)
             {
                 HandleInput(ref _rightHoldTimer, ref _rightDelay, deltaTime, MoveRight);
-                ClearData(ref _leftHoldTimer, ref _leftDelay);
+                ClearData(ref _leftHoldTimer, ref _isPressingLeft);
             }
             else if (direction < 0)
             {
                 HandleInput(ref _leftHoldTimer, ref _leftDelay, deltaTime, MoveLeft);
-                ClearData(ref _rightHoldTimer, ref _rightDelay);
+                ClearData(ref _rightHoldTimer, ref _isPressingRight);
             }
             else
             {
-                ClearData(ref _leftHoldTimer, ref _leftDelay);
-                ClearData(ref _rightHoldTimer, ref _rightDelay);
+                ClearData(ref _leftHoldTimer, ref _isPressingLeft);
+                ClearData(ref _rightHoldTimer, ref _isPressingRight);
             }
             
             UpdateTargetAngle();

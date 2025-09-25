@@ -12,7 +12,9 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
         [Range(0.015f,0.5f)]
         [SerializeField] private float initialDelay = 0.3f;      // Tiempo inicial antes de repetir
         [Range(0.01f,1f)]
-        [SerializeField] private float accelerationRate = 0.05f; 
+        [SerializeField] private float accelerationRate = 0.05f;
+        [Range(0.1f, 10f)]
+        [SerializeField] private float decelerationRate = 3f;
         [Range(0.015f,0.1f)]
         [SerializeField] private float minDelay = 0.05f; // Reducción del delay por frame
 
@@ -21,5 +23,6 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
         public float InitialDelay => initialDelay;
         public float AccelerationRate => accelerationRate;
         public float MinDelay => minDelay;
+        public float DecelerationRate => decelerationRate;
     }
 }
