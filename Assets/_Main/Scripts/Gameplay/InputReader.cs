@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
@@ -22,6 +23,11 @@ namespace _Main.Scripts.Gameplay
             if (Input.GetKeyDown(KeyCode.P))
             {
                 UpdateManager.Instance.IsPaused = !UpdateManager.Instance.IsPaused;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                GameManager.Instance.EventManager.Publish(new AddAbility{AbilityType = AbilityType.SuperShield});
             }
         }
 

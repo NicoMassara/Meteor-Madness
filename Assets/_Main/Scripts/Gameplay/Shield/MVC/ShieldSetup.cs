@@ -46,11 +46,11 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (inputReader.MovementDirection != 0)
             {
-                _controller.Rotate(inputReader.MovementDirection);
+                _controller.TryRotate(inputReader.MovementDirection);
             }
             else
             {
-                _controller.StopRotate();
+                _controller.TryStopRotate();
             }
         }
 
