@@ -154,8 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 26
-  minSlotProximity: -1
-  maxSlotProximity: 0
+  minSlotProximity: 3
+  maxSlotProximity: 20
 --- !u!4 &12163666
 Transform:
   m_ObjectHideFlags: 0

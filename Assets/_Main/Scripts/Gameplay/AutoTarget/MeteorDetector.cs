@@ -94,6 +94,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
         {
             _activeTarget.OnDeath -= Target_OnDeathHandler;
             _activeTarget = null;
+            _currentAngleSlot = -1;
             HasActiveTarget = false;
             
             OnTargetLost?.Invoke();

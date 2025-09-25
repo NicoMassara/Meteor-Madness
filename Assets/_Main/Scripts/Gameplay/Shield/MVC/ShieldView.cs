@@ -49,7 +49,6 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
         
-        private bool _isInSuperShield;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
@@ -119,10 +118,6 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandleStopRotate()
         {
-            Debug.Log("Trying to stop rotation");
-            
-            //if (_shieldSpeeder.GetIsSpeedingUp() || _isInSuperShield) return;
-            
             _movement.HandleMove(0,0);
         }
         
@@ -193,7 +188,6 @@ namespace _Main.Scripts.Gameplay.Shield
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set to 0");
-                    _isInSuperShield = true;
                     superSprite.gameObject.SetActive(true);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
                     StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, timeToEnableSuperShield));
@@ -252,21 +246,22 @@ namespace _Main.Scripts.Gameplay.Shield
         private IEnumerator Coroutine_RotateTowardsNearestMeteor()
         {
             _meteorDetector.CheckForNearMeteor(_movement.GetPosition(), Mathf.Infinity);
-            _movement.SetSpeedMultiplier(0.5f);
-            
-            while (_meteorDetector.GetMeteorAngleSlot() != _movement.GetCurrentSlot())
-            {
-                _movement.HandleMove(1, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-                
-                yield return null;
-            }
-            
-            
-            _movement.HandleMove(0, 0);
-            
-            _movement.SetSpeedMultiplier(1);
+            var meteorSlot = _meteorDetector.GetMeteorAngleSlot();
 
-            _isInSuperShield = false;
+            if (meteorSlot > -1)
+            {
+                _movement.SetSpeedMultiplier(0.5f);
+            
+                while (meteorSlot != _movement.GetCurrentSlot())
+                {
+                    _movement.HandleMove(1, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                
+                    yield return null;
+                }
+            
+                _movement.HandleMove(0, 0);
+                _movement.SetSpeedMultiplier(1);
+            }
             
             CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
         }

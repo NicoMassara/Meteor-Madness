@@ -29,7 +29,7 @@ Material:
     - _AtmoshereSize2: 2
     - _ChromaticAberration: 0.1
     - _Float0: -5.09
-    - _HealthAmount: 1
+    - _HealthAmount: 0
     - _Intensity: 2
     - _Size: 1.15
     - _Smoothness: 1.23
