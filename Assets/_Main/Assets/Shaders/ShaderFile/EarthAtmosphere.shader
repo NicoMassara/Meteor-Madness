@@ -144,7 +144,7 @@ Shader "EarthAtmosphere"
 }
 /*ASEBEGIN
 Version=18900
--1080;-312;1080;1851;750.8914;688.5305;1;True;False
+-1080;-312;1080;1851;2605.225;197.3914;1;True;False
 Node;AmplifyShaderEditor.CommentaryNode;29;-2385.521,457.4287;Inherit;False;828.0447;469.5275;Comment;5;10;8;6;15;28;ColorSelect;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;1;-2397.612,-56.0346;Inherit;False;1686.716;480.2203;Comment;12;27;17;13;12;11;9;5;3;2;4;32;33;Atmosthere;1,1,1,1;0;0
 Node;AmplifyShaderEditor.WorldNormalVector;2;-2375.559,-1.683052;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
@@ -167,7 +167,7 @@ Node;AmplifyShaderEditor.RegisterLocalVarNode;17;-1470.137,121.5401;Inherit;Fals
 Node;AmplifyShaderEditor.GetLocalVarNode;14;-297.6744,-22.15421;Inherit;False;13;Atmosthere;1;0;OBJECT;;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;18;-292.4138,330.3553;Inherit;False;17;Mask;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;35;-308.8914,119.4695;Inherit;False;Constant;_Smoothnes;Smoothnes;5;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.StandardSurfaceOutputNode;0;1,0;Float;False;True;-1;2;ASEMaterialInspector;0;0;Standard;EarthAtmosphere;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;Back;0;False;-1;0;False;-1;False;0;False;-1;0;False;-1;False;0;Transparent;0.5;True;True;0;False;Transparent;;Transparent;ForwardOnly;14;all;True;True;True;True;0;False;-1;False;0;False;-1;255;False;-1;255;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;False;2;15;10;25;False;0.5;True;2;5;False;-1;10;False;-1;4;1;False;-1;1;False;-1;0;False;-1;0;False;-1;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;Relative;0;;-1;-1;0;-1;0;False;0;0;False;-1;-1;0;False;-1;0;0;0;False;0.1;False;-1;0;False;-1;False;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.StandardSurfaceOutputNode;0;1,0;Float;False;True;-1;2;ASEMaterialInspector;0;0;Standard;EarthAtmosphere;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;Back;0;False;-1;0;False;-1;False;0;False;-1;0;False;-1;False;0;Transparent;0.5;True;True;0;False;Transparent;;Transparent;ForwardOnly;14;all;True;True;True;True;0;False;-1;False;0;False;-1;255;False;-1;255;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;False;2;15;10;25;False;0.5;True;2;5;False;-1;10;False;-1;4;1;False;-1;1;False;-1;0;False;-1;0;False;-1;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;Relative;0;;-1;-1;-1;-1;0;False;0;0;False;-1;-1;0;False;-1;0;0;0;False;0.1;False;-1;0;False;-1;False;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
 WireConnection;10;0;6;0
 WireConnection;10;1;8;0
 WireConnection;10;2;15;0
@@ -188,4 +188,4 @@ WireConnection;0;2;14;0
 WireConnection;0;4;35;0
 WireConnection;0;9;18;0
 ASEEND*/
-//CHKSM=9687AC92B441891958C0415EBA23496224A7B085
+//CHKSM=F5BCA0414F31B55F9CCBDEDFEC7B7980FA3EB839
