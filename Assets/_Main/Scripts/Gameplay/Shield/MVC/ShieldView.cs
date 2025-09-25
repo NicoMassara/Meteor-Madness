@@ -41,6 +41,15 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private LayerMask meteorLayer;
         [Range(0.5f, 3f)] 
         [SerializeField] private float meteorCheckRadius = 10f;
+        [Space]
+        [Header("Degree Movement")]
+        [Range(1, 50f)] 
+        [SerializeField] private float moveSpeed = 10f;
+        [Range(0f, 1f)] 
+        [SerializeField] private float repeatDelay = 0.1f;
+        [Range(1,10)]
+        [SerializeField] private int slots = 4;
+        
         
         private MeteorDetector _meteorDetector;
         private ShieldMovement _movement;
@@ -58,7 +67,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
             _meteorDetector = new MeteorDetector(_movement.GetAngle,meteorLayer);
-            _degreeMovement = new ShieldDegreeMovement(spriteContainer.transform);
+            _degreeMovement = new ShieldDegreeMovement(spriteContainer.transform,moveSpeed, repeatDelay,slots);
         }
 
         private void Start()
@@ -84,6 +93,9 @@ namespace _Main.Scripts.Gameplay.Shield
                         (Quaternion)args[1],
                         (Vector2)args[2]);
                     break;
+                case ShieldObserverMessage.StopRotate:
+                    HandleStopRotate();
+                    break;
                 case ShieldObserverMessage.PlayMoveSound:
                     PlayMoveSound();
                     break;
@@ -98,7 +110,6 @@ namespace _Main.Scripts.Gameplay.Shield
                     break;
             }
         }
-        
 
         #region Sprites
 
@@ -114,6 +125,11 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _degreeMovement.Move((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             //_movement.Move(direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+        }
+        
+        private void HandleStopRotate()
+        {
+            _degreeMovement.Move(0,0);
         }
         
         private void PlayMoveSound()

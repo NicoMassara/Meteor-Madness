@@ -5,9 +5,9 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
     public class ShieldDegreeMovement
     {
         private Transform _shieldTransform;
-        private const int Slots = 16;
-        private const float MoveSpeed = 10f;
-        private const float RepeatDelay = 0.1f; 
+        private readonly int _slots = 16;
+        private readonly float moveSpeed = 20f;
+        private readonly float repeatDelay = 0.05f; 
 
         private int _currentSlot = 0;
         private float _targetAngle = 0;
@@ -19,9 +19,12 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
         private bool _isTryingToMoveLeft = false;
 
 
-        public ShieldDegreeMovement(Transform shieldTransform)
+        public ShieldDegreeMovement(Transform shieldTransform, float moveSpeed, float repeatDelay, int slots)
         {
             _shieldTransform = shieldTransform;
+            this.moveSpeed = moveSpeed;
+            this.repeatDelay = repeatDelay;
+            this._slots = slots * 4;
             Initialize();
         }
 
@@ -34,31 +37,44 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
 
         public void Update(float deltaTime)
         {
-            _currentAngle = Mathf.LerpAngle(_currentAngle, _targetAngle, MoveSpeed * deltaTime);
+            _currentAngle = Mathf.LerpAngle(_currentAngle, _targetAngle, moveSpeed * deltaTime);
             _shieldTransform.localRotation = Quaternion.Euler(0, 0, _currentAngle);
         }
 
         private void UpdateTargetAngle()
         {
-            float anglePerSlot = 360f / Slots;
+            float anglePerSlot = 360f / _slots;
             _targetAngle = _currentSlot * anglePerSlot;
         }
 
         public void Move(int direction, float deltaTime)
         {
-            if(direction > 0) MoveRight(deltaTime);
-            else if(direction < 0) MoveLeft(deltaTime);
-            
+            if (direction > 0)
+            {
+                MoveRight(deltaTime);
+                _leftHoldTimer = repeatDelay;
+            }
+            else if (direction < 0)
+            {
+                MoveLeft(deltaTime);
+                _rightHoldTimer = repeatDelay;
+            }
+            else
+            {
+                _leftHoldTimer = repeatDelay;
+                _rightHoldTimer = repeatDelay;
+            }
+
             UpdateTargetAngle();
         }
-        
+
         private void MoveRight(float deltaTime)
         {
             _rightHoldTimer += deltaTime;
             
-            if (_rightHoldTimer >= RepeatDelay)
+            if (_rightHoldTimer >= repeatDelay)
             {
-                _currentSlot = (_currentSlot + 1 + Slots) % Slots;
+                _currentSlot = (_currentSlot + 1 + _slots) % _slots;
                 _rightHoldTimer = 0f;
             }
         }
@@ -67,9 +83,9 @@ namespace _Main.Scripts.Gameplay.Shield._Experiment
         {
             _leftHoldTimer += deltaTime;
             
-            if (_leftHoldTimer >= RepeatDelay)
+            if (_leftHoldTimer >= repeatDelay)
             {
-                _currentSlot = (_currentSlot - 1 + Slots) % Slots;
+                _currentSlot = (_currentSlot - 1 + _slots) % _slots;
                 _leftHoldTimer = 0f;
             }
 
