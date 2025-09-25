@@ -35,8 +35,8 @@ namespace _Main.Scripts.Managers
 
     #region GameMode
 
-    public struct GameFinished { };
     public struct GameStart { };
+    public struct GameFinished { };
     public struct GameRestart { };
 
     public struct UpdateLevel
@@ -86,7 +86,6 @@ namespace _Main.Scripts.Managers
 
     #endregion
     
-
     #region Camera
 
     public struct CameraShake
@@ -118,6 +117,11 @@ namespace _Main.Scripts.Managers
     public struct AddAbility
     {
         public AbilityType AbilityType;
+    }
+
+    public struct EnableSpawner
+    {
+        public bool IsEnable;
     }
 
     public struct SetAbilityStorageFull

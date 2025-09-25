@@ -23,10 +23,6 @@ namespace _Main.Scripts.Gameplay
             {
                 UpdateManager.Instance.IsPaused = !UpdateManager.Instance.IsPaused;
             }
-            else if (Input.GetKeyDown(KeyCode.K))
-            {
-                GameManager.Instance.EventManager.Publish(new MeteorCollision());
-            }
         }
 
         public void ManagedUpdate()

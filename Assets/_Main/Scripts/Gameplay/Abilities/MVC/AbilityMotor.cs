@@ -27,13 +27,11 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             if (_canUseAbility == false)
             {
-                Debug.Log("Can't use ability");
                 return;
             }
 
             if (_storage.IsEmpty())
             {
-                Debug.Log("No Ability in Storage"); 
                 return;
             }
 
@@ -44,7 +42,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             if (_storage.IsFull())
             {
-                Debug.Log("Ability storage is full");
                 return;
             }
 

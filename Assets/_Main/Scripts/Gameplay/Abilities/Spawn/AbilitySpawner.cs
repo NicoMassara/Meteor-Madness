@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.FyingObject;
 using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Gameplay.Abilities.Sphere;
 using _Main.Scripts.Gameplay.Meteor;
@@ -8,34 +9,32 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Spawn
 {
-    [RequireComponent(typeof(MeteorLocationSpawnController))]
     public class AbilitySpawner : ManagedBehavior, IUpdatable
     {
         [Header("Components")]
+        [SerializeField] private ProjectileSpawnLocationController spawnLocation;
         [SerializeField] private AbilitySphereView prefab;
-        [SerializeField] private Transform centerOfGravity;
+        [SerializeField] private ProjectileSpawnDataSo spawanData;
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
         [Header("Values")] 
         [Range(22f,100f)]
         [SerializeField] private float spawnRadius;
+        [Space]
+        [Header("Testing")] 
+        [SerializeField] private bool doesSpawn;
         
-        private MeteorLocationSpawnController _locationSpawn;
         private AbilitySphereFactory _factory;
+        private ProjectileSpawnValues _spawnValues;
         private ulong _spawnTimerId;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-
-        private void Awake()
-        {
-            _locationSpawn = GetComponent<MeteorLocationSpawnController>();
-        }
-
+        
         private void Start()
         {
             _factory = new AbilitySphereFactory(prefab);
+            _spawnValues = new ProjectileSpawnValues(spawanData);
             
             SetEventBus();
-            SetTimer();
         }
 
         public void ManagedUpdate() { }
@@ -43,13 +42,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void SendAbility()
         {
             var temp = _factory.SpawnAbilitySphere();
-            var spawnPosition = _locationSpawn.GetPositionByAngle(_locationSpawn.GetSpawnAngle(), spawnRadius);
-            var movementSpeed = 10f;
-
-            Debug.Log(spawnPosition);
-                
-            //Set Direction and Rotation towards COG
-            Vector2 direction = (Vector2)centerOfGravity.position - spawnPosition;
+            var spawnPosition = spawnLocation.GetPositionByAngle(spawnLocation.GetSpawnAngle(), spawnRadius);
+            var movementSpeed = (GameValues.MaxMeteorSpeed/2) * _spawnValues.GetMovementMultiplier();
+            
+            Vector2 direction = spawnLocation.GetCenterOfGravity() - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
             temp.SetSphereValues(new AbilitySphereValues
@@ -72,6 +68,15 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             data.Sphere.OnEarthCollision = null;
             
             GameManager.Instance.EventManager.Publish(new AddAbility{AbilityType = data.Ability});
+            GameManager.Instance.EventManager.Publish
+            (
+                new MeteorDeflected
+                {
+                    Position = data.Position,
+                    Rotation = data.Rotation,
+                    Direction = data.Direction
+                }
+            );
             
             data.Sphere.ForceRecycle();
         }
@@ -96,6 +101,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void SetTimer()
         {
+            if(doesSpawn == false) return;
+            
             _spawnTimerId = TimerManager.Add(new TimerData
             {
                 Time = spawnDelay,
@@ -113,6 +120,31 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void SetEventBus()
         {
             GameManager.Instance.EventManager.Subscribe<GameFinished>(EventBus_OnGameFinished);
+            GameManager.Instance.EventManager.Subscribe<GameStart>(EventBus_OnGameStart);
+            GameManager.Instance.EventManager.Subscribe<EnableSpawner>(EventBus_OnAbilityInUse);
+            GameManager.Instance.EventManager.Subscribe<UpdateLevel>(EnventBus_UpdateLevel);
+        }
+        
+        private void EnventBus_UpdateLevel(UpdateLevel input)
+        {
+            _spawnValues.SetIndex(input.CurrentLevel);
+        }
+
+        private void EventBus_OnGameStart(GameStart input)
+        {
+            SetTimer();
+        }
+
+        private void EventBus_OnAbilityInUse(EnableSpawner input)
+        {
+            if (input.IsEnable)
+            {
+                TimerManager.Remove(_spawnTimerId);
+            }
+            else
+            {
+                SetTimer();
+            }
         }
 
         private void EventBus_OnGameFinished(GameFinished input)
@@ -122,11 +154,5 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         }
 
         #endregion
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(centerOfGravity.position, spawnRadius);
-        }
     }
 }

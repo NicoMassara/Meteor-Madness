@@ -61,17 +61,10 @@ namespace _Main.Scripts.Gameplay.Shield
         private void Start()
         {
             superSprite.gameObject.SetActive(false);
-            _shakerController = new ShakerController(transform);
-            _shakerController.SetShakeData(hitShakeData);
+            _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
         }
 
-        public void ManagedUpdate()
-        {
-            if (_shakerController.IsShaking)
-            {
-                _shakerController.HandleShake(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-            }
-        }
+        public void ManagedUpdate() { }
 
         public void OnNotify(ulong message, params object[] args)
         {
@@ -131,8 +124,9 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
         {
-            _shakerController.StartShake();
             hitSound?.PlaySound();
+            
+            StartCoroutine(Coroutine_Shake());
             
             GameManager.Instance.EventManager.Publish
             (
@@ -251,6 +245,18 @@ namespace _Main.Scripts.Gameplay.Shield
             }
             
             CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
+        }
+
+        private IEnumerator Coroutine_Shake()
+        {
+            _shakerController.StartShake();
+            
+            while (_shakerController.IsShaking == true)
+            {
+                _shakerController.HandleShake(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                
+                yield return null;
+            }
         }
 
         private void OnDrawGizmosSelected()

@@ -17,6 +17,13 @@ namespace _Main.Scripts.Shaker
             _transform = transform;
             _startPosition = _transform.position;
         }
+        
+        public ShakerController(Transform transform, ShakeDataSo data)
+        {
+            _transform = transform;
+            _startPosition = _transform.position;
+            SetShakeData(data);
+        }
 
         public void SetShakeData(ShakeDataSo data)
         {

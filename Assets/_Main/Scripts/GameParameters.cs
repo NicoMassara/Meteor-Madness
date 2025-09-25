@@ -55,6 +55,7 @@
 
     public struct MeteorRingValues
     {
+        public const int MeteorAmount = 8;
         public const int RingsAmount = 5;
         public const int WavesAmount = 3;
         public const float DelayBetweenRings = 0.15f;

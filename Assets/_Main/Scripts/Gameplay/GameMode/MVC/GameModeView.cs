@@ -106,15 +106,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             deathTheme?.StopSound();
-            GameManager.Instance.EventManager.Publish(new GameStart());
             GameManager.Instance.EventManager.Publish(new CameraZoomOut());
         }
         
         private void HandleCountdownFinish()
         {
-            _controller.TransitionToGameplay();
+            GameManager.Instance.EventManager.Publish(new GameStart());
             GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = true});
             GameManager.Instance.EventManager.Publish(new SetEnableAbility{IsEnable = true});
+            _controller.TransitionToGameplay();
         }
 
         private void HandleStartGameplay()
