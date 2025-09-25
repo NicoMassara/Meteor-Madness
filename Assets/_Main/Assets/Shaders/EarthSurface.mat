@@ -87,7 +87,7 @@ Material:
     - _Float3: -1.27
     - _FlowIntensity: 1
     - _GrassTextureTiling: 0.25
-    - _HealthAmount: 0.9
+    - _HealthAmount: 1
     - _MinToIncreasePannerSpeed: 0.35
     - _PannerSpeedMultiplier: 10
     - _StepValue: 0.361

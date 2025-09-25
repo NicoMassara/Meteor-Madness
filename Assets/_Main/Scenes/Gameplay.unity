@@ -2925,7 +2925,7 @@ GameObject:
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &709288248
 Transform:
   m_ObjectHideFlags: 0
@@ -2955,8 +2955,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnLocation: {fileID: 12163665}
   meteorPrefab: {fileID: 2969321756996762836, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
-  centerOfGravity: {fileID: 854189257}
-  meteorSpawnDataSo: {fileID: 11400000, guid: 9d29848a0c7d74346a7b13c97f3dedba, type: 2}
+  projectileSpawnDataSo: {fileID: 0}
   spawnRadius: 25
   doesSpawn: 1
 --- !u!1 &724356219
@@ -4808,7 +4807,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1233927883
 Transform:
   m_ObjectHideFlags: 0
@@ -4838,8 +4837,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnLocation: {fileID: 12163665}
   prefab: {fileID: 8335861176009586927, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
+  spawanData: {fileID: 0}
   spawnDelay: 5
   spawnRadius: 29
+  doesSpawn: 0
 --- !u!1 &1236263223
 GameObject:
   m_ObjectHideFlags: 0
