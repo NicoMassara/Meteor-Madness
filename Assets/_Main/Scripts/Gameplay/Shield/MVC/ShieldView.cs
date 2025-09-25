@@ -27,7 +27,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private ShakeDataSo hitShakeData;
         [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
-        [SerializeField] private ShieldMovementSo shieldMovementData;
+        [SerializeField] private ShieldMovementDataSo movementData;
         [Space]
         [Header("Values")]
         [Range(0.1f, 5f)]
@@ -40,6 +40,8 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private LayerMask meteorLayer;
         [Range(0.5f, 3f)] 
         [SerializeField] private float meteorCheckRadius = 10f;
+        [Space] 
+        [Header("Degree Movement")] 
         
         private MeteorDetector _meteorDetector;
         private ShieldMovement _movement;
@@ -47,15 +49,16 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
         
+        private bool _isInSuperShield;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
         private void Awake()
         {
-            _movement = new ShieldMovement(shieldMovementData,spriteContainer.transform);
+            _movement = new ShieldMovement(spriteContainer.transform,movementData);
             _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
-            _meteorDetector = new MeteorDetector(_movement.GetAngle,meteorLayer);
+            _meteorDetector = new MeteorDetector(meteorLayer);
         }
 
         private void Start()
@@ -64,7 +67,10 @@ namespace _Main.Scripts.Gameplay.Shield
             _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
         }
 
-        public void ManagedUpdate() { }
+        public void ManagedUpdate()
+        {
+            _movement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+        }
 
         public void OnNotify(ulong message, params object[] args)
         {
@@ -77,6 +83,9 @@ namespace _Main.Scripts.Gameplay.Shield
                     HandleDeflect((Vector3)args[0],
                         (Quaternion)args[1],
                         (Vector2)args[2]);
+                    break;
+                case ShieldObserverMessage.StopRotate:
+                    HandleStopRotate();
                     break;
                 case ShieldObserverMessage.PlayMoveSound:
                     PlayMoveSound();
@@ -92,7 +101,6 @@ namespace _Main.Scripts.Gameplay.Shield
                     break;
             }
         }
-        
 
         #region Sprites
 
@@ -106,7 +114,16 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
-            _movement.Move(direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _movement.HandleMove((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+        }
+        
+        private void HandleStopRotate()
+        {
+            Debug.Log("Trying to stop rotation");
+            
+            //if (_shieldSpeeder.GetIsSpeedingUp() || _isInSuperShield) return;
+            
+            _movement.HandleMove(0,0);
         }
         
         private void PlayMoveSound()
@@ -118,7 +135,6 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             transform.rotation = Quaternion.Euler(0,0,0);
         }
-        
 
         #endregion
 
@@ -177,6 +193,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set to 0");
+                    _isInSuperShield = true;
                     superSprite.gameObject.SetActive(true);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
                     StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, timeToEnableSuperShield));
@@ -215,7 +232,6 @@ namespace _Main.Scripts.Gameplay.Shield
                 },timeToDisableSuperShield),
             };
             
-            
             ActionManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
         }
         
@@ -236,13 +252,21 @@ namespace _Main.Scripts.Gameplay.Shield
         private IEnumerator Coroutine_RotateTowardsNearestMeteor()
         {
             _meteorDetector.CheckForNearMeteor(_movement.GetPosition(), Mathf.Infinity);
+            _movement.SetSpeedMultiplier(0.5f);
             
-            while (_meteorDetector.GetDirectionToMeteorAngle() != 0)
+            while (_meteorDetector.GetMeteorAngleSlot() != _movement.GetCurrentSlot())
             {
-                _movement.Move(0.5f, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                _movement.HandleMove(1, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 
                 yield return null;
             }
+            
+            
+            _movement.HandleMove(0, 0);
+            
+            _movement.SetSpeedMultiplier(1);
+
+            _isInSuperShield = false;
             
             CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
         }

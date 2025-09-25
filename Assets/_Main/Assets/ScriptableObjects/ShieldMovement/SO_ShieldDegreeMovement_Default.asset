@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 112687bf3eb44f96bf04fc4985f6c844, type: 3}
-  m_Name: SO_ShieldMovement_2
+  m_Script: {fileID: 11500000, guid: db6125b0833d4c849a796bb062b0e79c, type: 3}
+  m_Name: SO_ShieldDegreeMovement_Default
   m_EditorClassIdentifier: 
-  acceleration: 75
-  drag: 11.5
-  maxAngularVelocity: 360
+  rotationSpeed: 25
+  initialDelay: 0.026
+  accelerationRate: 0.5
+  decelerationRate: 15
+  minDelay: 0.017

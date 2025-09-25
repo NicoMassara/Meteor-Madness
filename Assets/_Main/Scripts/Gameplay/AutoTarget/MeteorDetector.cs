@@ -9,19 +9,15 @@ namespace _Main.Scripts.Gameplay.AutoTarget
     {
         private readonly LayerMask _meteorLayer;
         private readonly Collider2D[] _colliders = new Collider2D[5];
-        private Func<float> _getShieldAngle;
         private ITargetable _activeTarget;
-        private float _currentAngle;
+        private int _currentAngleSlot;
         public bool HasActiveTarget { get; private set; }
 
         public UnityAction OnTargetLost;
+        
 
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
-
-
-        public MeteorDetector(Func<float> angleGetter, LayerMask meteorLayer)
+        public MeteorDetector(LayerMask meteorLayer)
         {
-            _getShieldAngle = angleGetter;
             _meteorLayer = meteorLayer;
         }
         
@@ -47,35 +43,31 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             Debug.DrawRay(position,
                 dir * checkRadius, Color.magenta, 0.1f);
             
-            _currentAngle = angle;
+            _currentAngleSlot = GetSlotByAngle(angle);
             HasActiveTarget = true;
         }
-        
 
-        public int GetDirectionToMeteorAngle()
+        private int GetSlotByAngle(float angle)
         {
-            if (_activeTarget == null)
-            {
-                return 0;
-            }
-
-            var delta = Mathf.DeltaAngle(_getShieldAngle(), _currentAngle);
+            int slot = -1;
+            float anglePerSlot = 360f / GameValues.AngleSlots;
             
-            const float tolerance = 0.5f; // degrees
-
-            if (Mathf.Abs(delta) <= tolerance)
-                return 0;
-
-            return delta > 0 ? 1 : -1;
+            for (int i = 0; i < GameValues.AngleSlots; i++)
+            {
+                var currentAngle = i * anglePerSlot;
+                if (Mathf.Approximately(currentAngle, angle))
+                {
+                    slot = i;
+                    break;
+                }
+            }
+            
+            return slot;
         }
 
-        private void Target_OnDeathHandler()
+        public int GetMeteorAngleSlot()
         {
-            _activeTarget.OnDeath -= Target_OnDeathHandler;
-            _activeTarget = null;
-            HasActiveTarget = false;
-            
-            OnTargetLost?.Invoke();
+            return _currentAngleSlot;
         }
 
         private int GetNearestMeteor(Vector2 shieldPosition, int hitCount)
@@ -96,6 +88,15 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             }
 
             return selectedIndex;
+        }
+        
+        private void Target_OnDeathHandler()
+        {
+            _activeTarget.OnDeath -= Target_OnDeathHandler;
+            _activeTarget = null;
+            HasActiveTarget = false;
+            
+            OnTargetLost?.Invoke();
         }
     }
 }

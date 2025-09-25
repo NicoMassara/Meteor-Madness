@@ -124,7 +124,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         #region Movement
 
-        public void Rotate(float direction)
+        public void TryRotate(float direction)
         {
             if (_actionGate.RotationEnable)
             {
@@ -137,9 +137,12 @@ namespace _Main.Scripts.Gameplay.Shield
             _motor.SetActiveSuperShield(isActive);
         }
 
-        public void StopRotate()
+        public void TryStopRotate()
         {
-            _motor.StopRotate();
+            if (_actionGate.RotationEnable)
+            {
+                _motor.StopRotate();
+            }
         }
 
         public void ForceRotate(float direction)
@@ -151,7 +154,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _motor.RestartPosition();
         }
-
+        
         #endregion
 
         #region Sprites

@@ -38,14 +38,14 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (GameManager.Instance.CanPlay == false) return;
             
-            _controller.StopRotate();
+            _controller.TryStopRotate();
         }
         
         private void Input_OnMovementDirectionChangedHandler(int direction)
         {
             if (GameManager.Instance.CanPlay == false) return;
             
-            _controller.Rotate(direction);
+            _controller.TryRotate(direction);
         }
 
         public void ManagedUpdate()

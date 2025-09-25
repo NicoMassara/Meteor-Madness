@@ -4,7 +4,7 @@ namespace _Main.Scripts.Gameplay.FSM.Shield
 {
     public class ShieldSuperState<T> : ShieldBaseState<T>
     {
-        private const float MovementDirection = 50f;
+        private const float MovementDirection = 1f;
         
         public override void Awake()
         {
