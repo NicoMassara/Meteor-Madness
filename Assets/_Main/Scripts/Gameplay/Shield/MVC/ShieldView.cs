@@ -41,14 +41,9 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private LayerMask meteorLayer;
         [Range(0.5f, 3f)] 
         [SerializeField] private float meteorCheckRadius = 10f;
-        [Space]
-        [Header("Degree Movement")]
-        [Range(1, 50f)] 
-        [SerializeField] private float moveSpeed = 10f;
-        [Range(0f, 1f)] 
-        [SerializeField] private float repeatDelay = 0.1f;
-        [Range(1,10)]
-        [SerializeField] private int slots = 4;
+        [Space] 
+        [Header("Degree Movement")] 
+        [SerializeField] private ShieldDegreeMovementDataSo degreeMovementData;
         
         
         private MeteorDetector _meteorDetector;
@@ -67,7 +62,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
             _meteorDetector = new MeteorDetector(_movement.GetAngle,meteorLayer);
-            _degreeMovement = new ShieldDegreeMovement(spriteContainer.transform,moveSpeed, repeatDelay,slots);
+            _degreeMovement = new ShieldDegreeMovement(spriteContainer.transform,degreeMovementData);
         }
 
         private void Start()
@@ -123,13 +118,13 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
-            _degreeMovement.Move((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _degreeMovement.HandleMove((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             //_movement.Move(direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
         
         private void HandleStopRotate()
         {
-            _degreeMovement.Move(0,0);
+            _degreeMovement.HandleMove(0,0);
         }
         
         private void PlayMoveSound()
