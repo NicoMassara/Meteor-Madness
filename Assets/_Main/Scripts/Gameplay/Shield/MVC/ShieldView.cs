@@ -8,6 +8,7 @@ using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
 using _Main.Scripts.Gameplay.AutoTarget;
+using _Main.Scripts.Gameplay.Shield._Experiment;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
@@ -43,6 +44,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private MeteorDetector _meteorDetector;
         private ShieldMovement _movement;
+        private ShieldDegreeMovement _degreeMovement;
         private ShieldSpeeder _shieldSpeeder;
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
@@ -56,6 +58,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
             _meteorDetector = new MeteorDetector(_movement.GetAngle,meteorLayer);
+            _degreeMovement = new ShieldDegreeMovement(spriteContainer.transform);
         }
 
         private void Start()
@@ -64,7 +67,10 @@ namespace _Main.Scripts.Gameplay.Shield
             _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
         }
 
-        public void ManagedUpdate() { }
+        public void ManagedUpdate()
+        {
+            _degreeMovement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+        }
 
         public void OnNotify(ulong message, params object[] args)
         {
@@ -106,7 +112,8 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
-            _movement.Move(direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _degreeMovement.Move((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            //_movement.Move(direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
         
         private void PlayMoveSound()
