@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using EzySlice;
@@ -75,7 +73,8 @@ namespace _Main.Scripts.Gameplay.Earth
             
             SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, capMaterial);
 
-            if (hull != null) {
+            if (hull != null) 
+            {
                 GameObject upper = hull.CreateUpperHull(planeObj, planeObj.GetComponent<Renderer>().material);
                 GameObject lower = hull.CreateLowerHull(planeObj, planeObj.GetComponent<Renderer>().material);
 
@@ -86,7 +85,12 @@ namespace _Main.Scripts.Gameplay.Earth
                 lower.transform.localPosition = Vector3.zero;
                 
                 upper.AddComponent<MeshCollider>().convex = true;
+                upper.AddComponent<MeshSortingLayerSetter>().
+                    SetLayerData(upper.GetComponent<Renderer>(), "Earth",0);
+                
                 lower.AddComponent<MeshCollider>().convex = true;
+                lower.AddComponent<MeshSortingLayerSetter>().
+                    SetLayerData(upper.GetComponent<Renderer>(), "Earth",0);
                 
                 meshA = upper.GetComponent<MeshFilter>();
                 meshB = lower.GetComponent<MeshFilter>();

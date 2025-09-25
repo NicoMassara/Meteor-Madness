@@ -15,5 +15,5 @@ MonoBehaviour:
   rotationSpeed: 30
   initialDelay: 0.026
   accelerationRate: 0.911
-  decelerationRate: 15
+  decelerationRate: 25
   minDelay: 0.0175
