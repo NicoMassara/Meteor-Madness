@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using _Main.Scripts.FyingObject;
+using _Main.Scripts.Gameplay.FlyingObject;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -13,9 +14,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         [SerializeField] private ProjectileSpawnLocationController spawnLocation;
         [SerializeField] private MeteorView meteorPrefab;
         [SerializeField] private ProjectileSpawnDataSo projectileSpawnDataSo;
-        [Header("Values")] 
-        [Range(22f,100f)]
-        [SerializeField] private float spawnRadius;
         [Space]
         [Header("Testing")] 
         [SerializeField] private bool doesSpawn;
@@ -28,7 +26,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         private bool _isFirstSpawn;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-
+        
         private void Awake()
         {
             _meteorFactory = new MeteorFactory(meteorPrefab);
@@ -59,7 +57,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             if(_canSpawn == false) return;
             
-            var position = spawnLocation.GetPositionByAngle(spawnLocation.GetSpawnAngle(), spawnRadius);
+            var position = spawnLocation.GetPositionByAngle(spawnLocation.GetSpawnAngle(), spawnLocation.GetSpawnRadius());
             var finalSpeed = meteorSpeed * spawnValues.GetMovementMultiplier();
             CreateMeteor(finalSpeed, position);
         }
@@ -95,7 +93,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                     {
                         yield return new WaitForSeconds(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
 
-                        CreateMeteor(meteorSpeed * speedMultiplier, spawnLocation.GetPositionByAngle(currAngle, spawnRadius), 
+                        CreateMeteor(meteorSpeed * speedMultiplier, spawnLocation.GetPositionByAngle(currAngle, spawnLocation.GetSpawnRadius()), 
                             GetRingMeteorValue(amountToSpawn, ringsToUse));
                         currAngle += angleOffset;
                         currAngle = Mathf.Repeat(currAngle, 360f);
@@ -258,19 +256,10 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void OnDrawGizmos()
         {
-            /*float temp = centerOfGravity.position.x + spawnRadius;
-
-            foreach (var t in meteorSpawnDataSo.SpawnData)
-            {
-                var multiplier = t.TravelDistance;
-                Gizmos.color = new Color(multiplier, .5f, multiplier/2f, 1);
-                Gizmos.DrawWireSphere(centerOfGravity.position, multiplier * temp);
-            }*/
-
             if(spawnLocation == null) return;
             
             var cog = spawnLocation.GetCenterOfGravity();
-            float temp = cog.x + spawnRadius;
+            float temp = cog.x + spawnLocation.GetSpawnRadius();
 
             foreach (var t in projectileSpawnDataSo.SpawnData)
             {

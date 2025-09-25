@@ -2,7 +2,7 @@
 {
     public struct GameValues
     {
-        public const int AngleSlots = 16;
+        public const int AngleSlots = 32;
         public const int VisualMultiplier = 150;
         public const float MaxMeteorSpeed = 20;
         public const int MaxAbilityCount = 3;

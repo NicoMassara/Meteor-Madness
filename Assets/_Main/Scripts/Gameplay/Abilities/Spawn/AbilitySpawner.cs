@@ -2,7 +2,7 @@
 using _Main.Scripts.FyingObject;
 using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Gameplay.Abilities.Sphere;
-using _Main.Scripts.Gameplay.Meteor;
+using _Main.Scripts.Gameplay.FlyingObject;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
@@ -15,11 +15,9 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         [SerializeField] private ProjectileSpawnLocationController spawnLocation;
         [SerializeField] private AbilitySphereView prefab;
         [SerializeField] private ProjectileSpawnDataSo spawanData;
+        [Header("Values")] 
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
-        [Header("Values")] 
-        [Range(22f,100f)]
-        [SerializeField] private float spawnRadius;
         [Space]
         [Header("Testing")] 
         [SerializeField] private bool doesSpawn;
@@ -42,7 +40,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void SendAbility()
         {
             var temp = _factory.SpawnAbilitySphere();
-            var spawnPosition = spawnLocation.GetPositionByAngle(spawnLocation.GetSpawnAngle(), spawnRadius);
+            var spawnPosition = spawnLocation.GetPositionByAngle(spawnLocation.GetSpawnAngle(), spawnLocation.GetSpawnRadius());
             var movementSpeed = (GameValues.MaxMeteorSpeed/2) * _spawnValues.GetMovementMultiplier();
             
             Vector2 direction = spawnLocation.GetCenterOfGravity() - spawnPosition;
