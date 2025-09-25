@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db6125b0833d4c849a796bb062b0e79c, type: 3}
   m_Name: SO_ShieldDegreeMovement_Default
   m_EditorClassIdentifier: 
-  rotationSpeed: 25
+  rotationSpeed: 30
   initialDelay: 0.026
-  accelerationRate: 0.5
+  accelerationRate: 0.911
   decelerationRate: 15
-  minDelay: 0.017
+  minDelay: 0.0175

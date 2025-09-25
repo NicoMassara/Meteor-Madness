@@ -106,7 +106,7 @@
         public const float RestartYRotation = 0.25f;
         public const float TimeBeforeRotateZ = 0.25f;
         public const float TimeBeforeRotateY = 0.25f;
-        public const float RestartHealth = 0.25f;
+        public const float RestartHealth = 0.75f;
         public const float FinishRestart = 0.25f;
     }
     
