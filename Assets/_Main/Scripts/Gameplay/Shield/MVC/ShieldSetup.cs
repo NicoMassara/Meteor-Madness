@@ -30,28 +30,27 @@ namespace _Main.Scripts.Gameplay.Shield
         private void Start()
         {
             _controller.Initialize();
+            inputReader.OnMovementDirectionChanged += Input_OnMovementDirectionChangedHandler;
+            inputReader.OnStopMovement += Input_OnStopMovementHandler;
+        }
+
+        private void Input_OnStopMovementHandler()
+        {
+            if (GameManager.Instance.CanPlay == false) return;
+            
+            _controller.StopRotate();
         }
         
-        public void ManagedUpdate()
+        private void Input_OnMovementDirectionChangedHandler(int direction)
         {
-            if (inputReader != null && GameManager.Instance.CanPlay)
-            {
-                HandleInputs();
-            }
-
-            _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            if (GameManager.Instance.CanPlay == false) return;
+            
+            _controller.Rotate(direction);
         }
 
-        private void HandleInputs()
+        public void ManagedUpdate()
         {
-            if (inputReader.MovementDirection != 0)
-            {
-                _controller.Rotate(inputReader.MovementDirection);
-            }
-            else
-            {
-                _controller.StopRotate();
-            }
+            _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
 
         #region EventBus
