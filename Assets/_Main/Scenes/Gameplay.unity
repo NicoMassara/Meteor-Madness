@@ -154,8 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 26
-  minSpawnProximity: 15
-  maxSpawnProximity: 120
+  minSlotProximity: -1
+  maxSlotProximity: 0
 --- !u!4 &12163666
 Transform:
   m_ObjectHideFlags: 0
@@ -829,7 +829,7 @@ MonoBehaviour:
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
   cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 11400000, guid: 5ce58a01a5bf45a4389c9d0c8a108114, type: 2}
-  shieldMovementData: {fileID: 11400000, guid: ec554646bf5101640ab2a7040e396fb5, type: 2}
+  movementData: {fileID: 11400000, guid: 5170044f9f0b6f74aae35b1c7e5a849f, type: 2}
   timeToEnableSuperShield: 0.75
   timeToDisableSuperShield: 0.75
   decayConstant: 500
@@ -2925,7 +2925,7 @@ GameObject:
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &709288248
 Transform:
   m_ObjectHideFlags: 0
@@ -2955,8 +2955,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnLocation: {fileID: 12163665}
   meteorPrefab: {fileID: 2969321756996762836, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
-  projectileSpawnDataSo: {fileID: 0}
-  spawnRadius: 25
+  projectileSpawnDataSo: {fileID: 11400000, guid: 9d29848a0c7d74346a7b13c97f3dedba, type: 2}
   doesSpawn: 1
 --- !u!1 &724356219
 GameObject:
@@ -4807,7 +4806,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1233927883
 Transform:
   m_ObjectHideFlags: 0
@@ -4837,9 +4836,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnLocation: {fileID: 12163665}
   prefab: {fileID: 8335861176009586927, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
-  spawanData: {fileID: 0}
+  spawanData: {fileID: 11400000, guid: 9d29848a0c7d74346a7b13c97f3dedba, type: 2}
   spawnDelay: 5
-  spawnRadius: 29
   doesSpawn: 0
 --- !u!1 &1236263223
 GameObject:
