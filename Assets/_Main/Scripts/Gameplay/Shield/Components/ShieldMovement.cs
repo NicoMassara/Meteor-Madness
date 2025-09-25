@@ -5,7 +5,7 @@ namespace _Main.Scripts.Gameplay.Shield
     public class ShieldMovement
     {
         private readonly Transform _shieldTransform;
-        private readonly ShieldDegreeMovementDataSo _data;
+        private readonly ShieldMovementDataSo _data;
         
         private int _currentSlot = 0;
         private float _targetAngle = 0;
@@ -22,7 +22,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private float _speedMultiplier = 1;
 
 
-        public ShieldMovement(Transform shieldTransform, ShieldDegreeMovementDataSo data)
+        public ShieldMovement(Transform shieldTransform, ShieldMovementDataSo data)
         {
             _shieldTransform = shieldTransform;
             _data = data;

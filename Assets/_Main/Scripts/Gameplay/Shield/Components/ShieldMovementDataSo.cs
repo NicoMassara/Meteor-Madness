@@ -2,8 +2,8 @@
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    [CreateAssetMenu(fileName = "SO_ShieldDegreeMovement_Name", menuName = "Scriptable Objects/Shield/Degree Movement Data", order = 0)]
-    public class ShieldDegreeMovementDataSo : ScriptableObject
+    [CreateAssetMenu(fileName = "SO_ShieldMovement_Name", menuName = "Scriptable Objects/Shield/Movement Data", order = 0)]
+    public class ShieldMovementDataSo : ScriptableObject
     { 
         [Range(5,50)]
         [SerializeField] private float rotationSpeed = 10f;      // Velocidad de interpolación de la rotación

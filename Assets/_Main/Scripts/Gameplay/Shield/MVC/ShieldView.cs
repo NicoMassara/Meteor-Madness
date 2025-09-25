@@ -27,7 +27,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private ShakeDataSo hitShakeData;
         [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
-        [SerializeField] private ShieldDegreeMovementDataSo degreeMovementData;
+        [SerializeField] private ShieldMovementDataSo movementData;
         [Space]
         [Header("Values")]
         [Range(0.1f, 5f)]
@@ -44,7 +44,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [Header("Degree Movement")] 
         
         private MeteorDetector _meteorDetector;
-        private ShieldDegreeMovement _degreeMovement;
+        private ShieldMovement _movement;
         private ShieldSpeeder _shieldSpeeder;
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
@@ -55,8 +55,8 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void Awake()
         {
-            _degreeMovement = new ShieldDegreeMovement(spriteContainer.transform,degreeMovementData);
-            _shieldSpeeder = new ShieldSpeeder(_degreeMovement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
+            _movement = new ShieldMovement(spriteContainer.transform,movementData);
+            _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
             _meteorDetector = new MeteorDetector(meteorLayer);
         }
@@ -69,7 +69,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         public void ManagedUpdate()
         {
-            _degreeMovement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _movement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -114,7 +114,7 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
-            _degreeMovement.HandleMove((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _movement.HandleMove((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
         
         private void HandleStopRotate()
@@ -123,7 +123,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
             //if (_shieldSpeeder.GetIsSpeedingUp() || _isInSuperShield) return;
             
-            _degreeMovement.HandleMove(0,0);
+            _movement.HandleMove(0,0);
         }
         
         private void PlayMoveSound()
@@ -251,20 +251,20 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private IEnumerator Coroutine_RotateTowardsNearestMeteor()
         {
-            _meteorDetector.CheckForNearMeteor(_degreeMovement.GetPosition(), Mathf.Infinity);
-            _degreeMovement.SetSpeedMultiplier(0.5f);
+            _meteorDetector.CheckForNearMeteor(_movement.GetPosition(), Mathf.Infinity);
+            _movement.SetSpeedMultiplier(0.5f);
             
-            while (_meteorDetector.GetMeteorAngleSlot() != _degreeMovement.GetCurrentSlot())
+            while (_meteorDetector.GetMeteorAngleSlot() != _movement.GetCurrentSlot())
             {
-                _degreeMovement.HandleMove(1, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                _movement.HandleMove(1, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 
                 yield return null;
             }
             
             
-            _degreeMovement.HandleMove(0, 0);
+            _movement.HandleMove(0, 0);
             
-            _degreeMovement.SetSpeedMultiplier(1);
+            _movement.SetSpeedMultiplier(1);
 
             _isInSuperShield = false;
             
