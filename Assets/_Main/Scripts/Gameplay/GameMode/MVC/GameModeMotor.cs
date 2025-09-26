@@ -12,6 +12,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 #pragma warning restore CS0414 // Field is assigned but its value is never used
 
         private float _startTimer;
+        private bool _isPaused;
 
         private readonly GameLevelController _levelController;
 
@@ -112,6 +113,17 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void EarthRestartFinish()
         {
             NotifyAll(GameModeObserverMessage.EarthRestartFinish);
+        }
+
+        public void SetGamePaused(bool isPaused)
+        {
+            _isPaused = isPaused;
+            NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
+        }
+        
+        public void ChangeToMainMenu()
+        {
+            NotifyAll(GameModeObserverMessage.MainMenu);
         }
     }
 }

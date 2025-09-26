@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
@@ -67,12 +66,57 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameRestart:
                     HandleGameRestart();
                     break;
+                case GameModeObserverMessage.GamePaused:
+                    HandleGamePaused((bool)args[0]);
+                    break;
                 case GameModeObserverMessage.EarthRestartFinish:
                     HandleEarthRestartFinish();
+                    break;
+                case GameModeObserverMessage.MainMenu:
+                    HandleMainMenu();
                     break;
             }
         }
         
+        private void HandleGamePaused(bool isPaused)
+        {
+            var timeScale = isPaused ? 0f : 1f;
+            
+            CustomTime.SetChannelTimeScale(new []
+            {
+                UpdateGroup.Gameplay,
+                UpdateGroup.Ability, 
+                UpdateGroup.Shield,
+                UpdateGroup.Earth,
+                UpdateGroup.Effects,
+                UpdateGroup.Camera
+                
+            }, timeScale);
+
+            if (isPaused == true)
+            {
+                TimerManager.Add(new TimerData
+                {
+                    Time = 0.5f,
+                    OnStartAction = () =>
+                    {
+                        CustomTime.SetChannelTimeScale(UpdateGroup.Inputs, 0f);
+                    },
+                    OnEndAction = () =>
+                    {
+                        CustomTime.SetChannelTimeScale(UpdateGroup.Inputs, 1f);
+                    },
+                    
+                }, UpdateGroup.Always);
+            }
+            
+            GameManager.Instance.IsPaused = isPaused;
+        }
+
+        private void HandleMainMenu()
+        {
+            //Change Scene
+        }
 
         private void HandleGameFinish()
         {

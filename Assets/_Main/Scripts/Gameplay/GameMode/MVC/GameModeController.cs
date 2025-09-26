@@ -188,5 +188,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _motor.EarthRestartFinish();
         }
+
+        public void SetGamePause(bool isPaused)
+        {
+            _motor.SetGamePaused(isPaused);
+        }
+        
+        public void ChangeToMainMenu()
+        {
+            _motor.ChangeToMainMenu();
+        }
     }
 }
