@@ -15,6 +15,11 @@ namespace _Main.Scripts.MyCustoms
             return Channels[key];
         }
 
+        public static bool GetIsPausedByChannel(UpdateGroup key)
+        {
+            return GetChannel(key).IsPaused;
+        }
+
         public static float GetDeltaTimeByChannel(UpdateGroup key)
         {
             return GetChannel(key).DeltaTime;
@@ -37,6 +42,19 @@ namespace _Main.Scripts.MyCustoms
                 kv.Value.UpdateFixed(unscaledDeltaTime);
         }
 
+        public static void SetPaused(UpdateGroup updateGroup, bool isPaused)
+        {
+            GetChannel(updateGroup).SetPaused(isPaused);
+        }
+        
+        public static void SetPaused(UpdateGroup[] updateGroup, bool isPaused)
+        {
+            for (int i = 0; i < updateGroup.Length; i++)
+            {
+                GetChannel(updateGroup[i]).SetPaused(isPaused);
+            }
+        }
+        
         public static void SetChannelTimeScale(UpdateGroup updateGroup, float timeScale)
         {
             GetChannel(updateGroup).SetTimeScale(timeScale);
