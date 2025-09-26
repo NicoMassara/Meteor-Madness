@@ -80,9 +80,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleGamePaused(bool isPaused)
         {
-            var timeScale = isPaused ? 0f : 1f;
-            
-            CustomTime.SetChannelTimeScale(new []
+            CustomTime.SetChannelPaused(new []
             {
                 UpdateGroup.Gameplay,
                 UpdateGroup.Ability, 
@@ -91,7 +89,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 UpdateGroup.Effects,
                 UpdateGroup.Camera
                 
-            }, timeScale);
+            }, isPaused);
 
             if (isPaused == true)
             {
@@ -100,11 +98,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                     Time = 0.5f,
                     OnStartAction = () =>
                     {
-                        CustomTime.SetChannelTimeScale(UpdateGroup.Inputs, 0f);
+                        CustomTime.SetChannelPaused(UpdateGroup.Inputs, true);
                     },
                     OnEndAction = () =>
                     {
-                        CustomTime.SetChannelTimeScale(UpdateGroup.Inputs, 1f);
+                        CustomTime.SetChannelPaused(UpdateGroup.Inputs, false);
                     },
                     
                 }, UpdateGroup.Always);

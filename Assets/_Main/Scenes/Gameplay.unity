@@ -5239,7 +5239,7 @@ MonoBehaviour:
   scoreText: {fileID: 1285684195}
   deathScoreText: {fileID: 483817950}
   deathText: {fileID: 1584270277}
-  pausePanel: {fileID: 429169735}
+  pausePanel: {fileID: 262541088}
   countdownPanel: {fileID: 575877853}
   gameplayPanel: {fileID: 81793091}
   deathPanel: {fileID: 934641330}
