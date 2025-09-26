@@ -113,7 +113,13 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleMainMenu()
         {
-            //Change Scene
+            TimerManager.Add(new TimerData
+            {
+                Time = 1f,
+                OnEndAction = () => GameManager.Instance.LoadMainMenuScene()
+                    
+            }, UpdateGroup.Always);
+
         }
 
         private void HandleGameFinish()

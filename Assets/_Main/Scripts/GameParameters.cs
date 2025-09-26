@@ -6,7 +6,10 @@
         public const int VisualMultiplier = 150;
         public const float MaxMeteorSpeed = 20;
         public const int MaxAbilityCount = 3;
+        public const string GameplaySceneName = "Gameplay";
+        public const string MainMenuSceneName = "MainMenu";
     }
+    
 
     public struct AbilitiesActiveTimeValues
     {
