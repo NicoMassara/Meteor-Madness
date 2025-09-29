@@ -65,7 +65,11 @@ namespace _Main.Scripts.Sounds
         private void SetVolumeMultiplier(float multiplier)
         {
             VolumeMultiplier = multiplier;
-            _audioSource.volume *= VolumeMultiplier;
+            
+            if (_audioSource != null)
+            {
+                _audioSource.volume *= VolumeMultiplier;
+            }
         }
 
         public void PlaySound(float volumeMultiplier = 1, float pitch = 1)
@@ -73,6 +77,12 @@ namespace _Main.Scripts.Sounds
             if (!_hasSoundClass)
             {
                 Debug.Log("Sound class is null");
+                return;
+            }
+            
+            if (_audioSource == null)
+            {
+                //Debug.Log("Audio Source is null");
                 return;
             }
 

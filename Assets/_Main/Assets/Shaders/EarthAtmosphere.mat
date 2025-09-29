@@ -28,10 +28,12 @@ Material:
     - _AtmoshereSize: 2
     - _AtmoshereSize2: 2
     - _ChromaticAberration: 0.1
-    - _Float0: -5.09
+    - _Cutoff: 0.5
+    - _Float0: 0.01
     - _HealthAmount: 1
-    - _Intensity: 2
-    - _Size: 1.15
+    - _Intensity: 1.1
+    - _Size: 1.1294118
+    - _Smoothnes: 0
     - _Smoothness: 1.23
     - _TransAmbient: 0.2
     - _TransDirect: 1
@@ -45,4 +47,5 @@ Material:
     - _DamageAtmosphere2: {r: 1, g: 0, b: 0, a: 1}
     - _DefaultAtmosphere: {r: 0, g: 0.4753861, b: 1, a: 1}
     - _DefaultAtmosphere2: {r: 0, g: 0.4753861, b: 1, a: 1}
+    - _Vector0: {r: -0.6, g: 0.42, b: 3.29, a: 0}
   m_BuildTextureStacks: []
