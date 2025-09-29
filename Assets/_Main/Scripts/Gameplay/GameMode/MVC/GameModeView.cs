@@ -116,8 +116,21 @@ namespace _Main.Scripts.Gameplay.GameMode
             TimerManager.Add(new TimerData
             {
                 Time = 1f,
-                OnEndAction = () => GameManager.Instance.LoadMainMenuScene()
+                OnEndAction = () =>
+                {
+                    CustomTime.SetChannelPaused(new []
+                    {
+                        UpdateGroup.Gameplay,
+                        UpdateGroup.Ability, 
+                        UpdateGroup.Shield,
+                        UpdateGroup.Earth,
+                        UpdateGroup.Effects,
+                        UpdateGroup.Camera
+                
+                    }, false);
                     
+                    GameManager.Instance.LoadMainMenuScene();
+                }
             }, UpdateGroup.Always);
 
         }

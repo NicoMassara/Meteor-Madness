@@ -108,6 +108,11 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }, SelfUpdateGroup);
         }
 
+        private void RemoveTimer()
+        {
+            TimerManager.Remove(_spawnTimerId);
+        }
+
         private AbilityType GetAbilityToAdd()
         {
             return (AbilityType)UnityEngine.Random.Range(1, Enum.GetValues(typeof(AbilityType)).Length-1);
@@ -120,10 +125,18 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             GameManager.Instance.EventManager.Subscribe<GameFinished>(EventBus_OnGameFinished);
             GameManager.Instance.EventManager.Subscribe<GameStart>(EventBus_OnGameStart);
             GameManager.Instance.EventManager.Subscribe<EnableSpawner>(EventBus_OnAbilityInUse);
-            GameManager.Instance.EventManager.Subscribe<UpdateLevel>(EnventBus_UpdateLevel);
+            GameManager.Instance.EventManager.Subscribe<UpdateLevel>(EnventBus_OnUpdateLevel);
+            GameManager.Instance.EventManager.Subscribe<MainMenu>(EnventBus_OnMainMenu);
         }
-        
-        private void EnventBus_UpdateLevel(UpdateLevel input)
+
+        private void EnventBus_OnMainMenu(MainMenu input)
+        {
+            TimerManager.Clear();
+            ActionManager.Clear();
+            RemoveTimer();
+        }
+
+        private void EnventBus_OnUpdateLevel(UpdateLevel input)
         {
             _spawnValues.SetIndex(input.CurrentLevel);
         }
@@ -137,7 +150,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             if (input.IsEnable)
             {
-                TimerManager.Remove(_spawnTimerId);
+                RemoveTimer();
             }
             else
             {

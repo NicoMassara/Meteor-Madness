@@ -88,6 +88,20 @@ namespace _Main.Scripts.Managers
                 _toRemove.Clear();
             }
         }
+
+        public static void Clear()
+        {
+            Instance._Clear();
+        }
+
+        private void _Clear()
+        {
+            foreach (var value in _running)
+            {
+                _toRemove.Add(value);
+            }
+        }
+        
         public static ulong Add(ActionQueue queueData, UpdateGroup updateGroup = UpdateGroup.Always)
         {
             return Instance._Add(queueData,updateGroup);

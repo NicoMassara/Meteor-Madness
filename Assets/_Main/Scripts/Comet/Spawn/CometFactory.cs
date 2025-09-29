@@ -17,9 +17,9 @@ namespace _Main.Scripts.Comet
         [Header("Components")]
         [SerializeField] private Camera playerCamera;
         
-        //private readonly Timer _spawnTimer = new Timer();
         private GenericPool<CometView> _pool;
         private bool _isBottomSpawn;
+        private ulong _spawnTimerId;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
@@ -27,29 +27,29 @@ namespace _Main.Scripts.Comet
         private void Start()
         {
             _pool = new GenericPool<CometView>(cometPrefab);
-            TimerManager.Add(new TimerData
+            GameManager.Instance.EventManager.Subscribe<MainMenu>(EnventBus_OnMainMenu);
+            
+            SetTimer(GameTimeValues.FirstCometSpawnDelay);
+        }
+
+        public void ManagedUpdate() { }
+
+        private void SetTimer(float spawnDelay)
+        {
+            _spawnTimerId = TimerManager.Add(new TimerData
             {
-                Time = GameTimeValues.FirstCometSpawnDelay,
+                Time = spawnDelay,
                 OnEndAction = Timer_OnEndHandler
             }, SelfUpdateGroup);
         }
-        
-        public void ManagedUpdate()
-        {
-            //_spawnTimer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-        }
-        
+
         private void Timer_OnEndHandler()
         {
             SpawnComet(GetSpawnPosition(), GetTargetPosition());
             var spawnDelayRange = Random.Range(GameTimeValues.CometSpawnDelay*0.75f,
                 GameTimeValues.CometSpawnDelay*1.25f);
             
-            TimerManager.Add(new TimerData
-            {
-                Time = spawnDelayRange,
-                OnEndAction = Timer_OnEndHandler
-            }, SelfUpdateGroup);
+            SetTimer(spawnDelayRange);
         }
 
         private Vector2 GetSpawnPosition()
@@ -92,5 +92,14 @@ namespace _Main.Scripts.Comet
             item.OnRecycle -= Comet_OnRecycleHandler;
             _pool.Release(item);
         }
+
+        #region Event Bus
+
+        private void EnventBus_OnMainMenu(MainMenu input)
+        {
+            TimerManager.Remove(_spawnTimerId);
+        }
+
+        #endregion
     }
 }
