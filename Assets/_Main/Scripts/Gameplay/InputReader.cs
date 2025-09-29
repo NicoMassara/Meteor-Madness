@@ -13,26 +13,13 @@ namespace _Main.Scripts.Gameplay
         public bool HasUsedAbility { get; private set; }
         private bool _areInputEnabled;
 
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
         
         public UnityAction<int> OnMovementDirectionChanged;
         public UnityAction OnStopMovement;
         private void Awake()
         {
             GameManager.Instance.EventManager.Subscribe<SetEnableInputs>(EventBus_OnSetEnableInputs);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                UpdateManager.Instance.IsPaused = !UpdateManager.Instance.IsPaused;
-            }
-
-            if (Input.GetKeyDown(KeyCode.Y))
-            {
-                GameManager.Instance.EventManager.Publish(new AddAbility{AbilityType = AbilityType.SuperShield});
-            }
         }
 
         public void ManagedUpdate()
@@ -61,6 +48,12 @@ namespace _Main.Scripts.Gameplay
             }
 
             HasUsedAbility = GetIsDownPressed();
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                GameManager.Instance.EventManager.Publish(
+                    new GamePause{IsPaused = !GameManager.Instance.IsPaused});
+            }
         }
 
         private bool GetIsLeftPressed()

@@ -6,7 +6,10 @@
         public const int VisualMultiplier = 150;
         public const float MaxMeteorSpeed = 20;
         public const int MaxAbilityCount = 3;
+        public const string GameplaySceneName = "Gameplay";
+        public const string MainMenuSceneName = "MainMenu";
     }
+    
 
     public struct AbilitiesActiveTimeValues
     {
@@ -106,7 +109,7 @@
         public const float RestartYRotation = 0.25f;
         public const float TimeBeforeRotateZ = 0.25f;
         public const float TimeBeforeRotateY = 0.25f;
-        public const float RestartHealth = 0.25f;
+        public const float RestartHealth = 0.75f;
         public const float FinishRestart = 0.25f;
     }
     

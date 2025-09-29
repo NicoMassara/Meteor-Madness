@@ -24,6 +24,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         private bool _canSpawn;
         private bool _isSpawningRing;
         private bool _isFirstSpawn;
+        private ulong _firstSpawnTimerId;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -215,7 +216,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             eventManager.Subscribe<SpawnRingMeteor>(EnventBus_SpawnRingMeteor);
             eventManager.Subscribe<RecycleAllMeteors>(EnventBus_RecycleAllMeteors);
         }
-        
         private void EnventBus_UpdateLevel(UpdateLevel input)
         {
             spawnValues.SetIndex(input.CurrentLevel);
@@ -226,7 +226,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             _canSpawn = input.CanSpawn;
             if (_isFirstSpawn)
             {
-                TimerManager.Add(new TimerData
+                _firstSpawnTimerId = TimerManager.Add(new TimerData
                 {
                     Time = 1f,
                     OnEndAction = ()=> SpawnSingleMeteor(GameValues.MaxMeteorSpeed)

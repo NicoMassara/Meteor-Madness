@@ -39,6 +39,8 @@
         public const ulong UpdateGameLevel = 0xA2012;
         public const ulong GameRestart = 0xA2013;
         public const ulong EarthRestartFinish = 0xA2014;
+        public const ulong GamePaused = 0xA2015;
+        public const ulong MainMenu= 0xA2016;
     }
 
     public struct FlyingObjectObserverMessage
