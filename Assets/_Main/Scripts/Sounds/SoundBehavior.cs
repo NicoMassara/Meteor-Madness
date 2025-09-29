@@ -21,8 +21,6 @@ namespace _Main.Scripts.Sounds
             _audioSource.playOnAwake = false;
             VolumeMultiplier = 1;
             SetSoundClass(soundDataSo);
-            
-            Debug.Log($"{_audioSource.clip.name} has been initialized");
         }
 
         private void Start()
