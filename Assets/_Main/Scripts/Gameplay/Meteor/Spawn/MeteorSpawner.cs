@@ -215,14 +215,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             eventManager.Subscribe<EnableMeteorSpawn>(EnventBus_EnableMeteorSpawn);
             eventManager.Subscribe<SpawnRingMeteor>(EnventBus_SpawnRingMeteor);
             eventManager.Subscribe<RecycleAllMeteors>(EnventBus_RecycleAllMeteors);
-            eventManager.Subscribe<MainMenu>(EnventBus_OnMainMenu);
         }
-
-        private void EnventBus_OnMainMenu(MainMenu input)
-        {
-            TimerManager.Remove(_firstSpawnTimerId);
-        }
-
         private void EnventBus_UpdateLevel(UpdateLevel input)
         {
             spawnValues.SetIndex(input.CurrentLevel);

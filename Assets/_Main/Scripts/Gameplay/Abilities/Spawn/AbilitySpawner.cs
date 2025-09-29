@@ -126,14 +126,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             GameManager.Instance.EventManager.Subscribe<GameStart>(EventBus_OnGameStart);
             GameManager.Instance.EventManager.Subscribe<EnableSpawner>(EventBus_OnAbilityInUse);
             GameManager.Instance.EventManager.Subscribe<UpdateLevel>(EnventBus_OnUpdateLevel);
-            GameManager.Instance.EventManager.Subscribe<MainMenu>(EnventBus_OnMainMenu);
-        }
-
-        private void EnventBus_OnMainMenu(MainMenu input)
-        {
-            TimerManager.Clear();
-            ActionManager.Clear();
-            RemoveTimer();
         }
 
         private void EnventBus_OnUpdateLevel(UpdateLevel input)

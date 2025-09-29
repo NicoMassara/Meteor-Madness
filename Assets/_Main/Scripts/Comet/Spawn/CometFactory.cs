@@ -23,11 +23,9 @@ namespace _Main.Scripts.Comet
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
-
         private void Start()
         {
             _pool = new GenericPool<CometView>(cometPrefab);
-            GameManager.Instance.EventManager.Subscribe<MainMenu>(EnventBus_OnMainMenu);
             
             SetTimer(GameTimeValues.FirstCometSpawnDelay);
         }
@@ -92,14 +90,5 @@ namespace _Main.Scripts.Comet
             item.OnRecycle -= Comet_OnRecycleHandler;
             _pool.Release(item);
         }
-
-        #region Event Bus
-
-        private void EnventBus_OnMainMenu(MainMenu input)
-        {
-            TimerManager.Remove(_spawnTimerId);
-        }
-
-        #endregion
     }
 }

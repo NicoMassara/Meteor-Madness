@@ -129,6 +129,9 @@ namespace _Main.Scripts.Gameplay.GameMode
                 
                     }, false);
                     
+                    GameManager.Instance.EventManager.Clear();
+                    TimerManager.Clear();
+                    ActionManager.Clear();
                     GameManager.Instance.LoadMainMenuScene();
                 }
             }, UpdateGroup.Always);
