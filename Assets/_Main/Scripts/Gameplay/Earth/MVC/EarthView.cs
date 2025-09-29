@@ -140,7 +140,8 @@ namespace _Main.Scripts.Gameplay.Earth
                         UpdateGroup.Effects, UpdateGroup.Shield
                     }, 0f);
                     
-                    StartCoroutine(Coroutine_HandleHeal(currentHealth, lastHealth, EarthRestartTimeValues.RestartHealth));
+                    StartCoroutine(Coroutine_HandleHeal(currentHealth, lastHealth, 
+                        EarthRestartTimeValues.RestartHealth));
                 }),
                 new (() =>
                 {

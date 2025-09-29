@@ -42,12 +42,12 @@ namespace _Main.Scripts.MyCustoms
                 kv.Value.UpdateFixed(unscaledDeltaTime);
         }
 
-        public static void SetPaused(UpdateGroup updateGroup, bool isPaused)
+        public static void SetChannelPaused(UpdateGroup updateGroup, bool isPaused)
         {
             GetChannel(updateGroup).SetPaused(isPaused);
         }
         
-        public static void SetPaused(UpdateGroup[] updateGroup, bool isPaused)
+        public static void SetChannelPaused(UpdateGroup[] updateGroup, bool isPaused)
         {
             for (int i = 0; i < updateGroup.Length; i++)
             {
