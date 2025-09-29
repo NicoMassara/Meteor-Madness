@@ -4,7 +4,7 @@ using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Shaker;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay
+namespace _Main.Scripts.Gameplay.MyCamera
 {
     public class CameraController : ManagedBehavior, ILateUpdatable
     {

@@ -26,7 +26,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private GameObject deathPanel;
         [Space]
         [Header("Buttons")]
+        [SerializeField] private GameObject deathButtonContainer;
         [SerializeField] private Button restartButton;
+        [SerializeField] private Button resumeButton;
+        [SerializeField] private Button[] mainMenuButtons;
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior buttonSound;
 
@@ -46,10 +49,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void Start()
         {
             restartButton.onClick.AddListener(RestartButton_OnClickHandler);
+            resumeButton.onClick.AddListener(ResumeButton_OnClickHandler);
+            foreach (var button in mainMenuButtons)
+            {
+                button.onClick.AddListener(MainMenuButton_OnClickHandler);
+            }
             deathText.text = UITextValues.DeathText;
         }
         
-
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -81,12 +88,22 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameRestart:
                     HandleGameRestart();
                     break;
+                case GameModeObserverMessage.GamePaused:
+                    HandleGamePaused((bool)args[0]);
+                    break;
             }
         }
+        
 
         public void SetController(GameModeController controller)
         {
             _controller = controller;
+        }
+        
+        private void HandleGamePaused(bool isPaused)
+        {
+            var panelToActive = isPaused ? pausePanel : gameplayPanel;
+            SetActivePanel(panelToActive);
         }
 
         #region Panel
@@ -190,6 +207,18 @@ namespace _Main.Scripts.Gameplay.GameMode
             buttonSound?.PlaySound();
             _controller.TransitionToRestart();
         }
+        
+        private void MainMenuButton_OnClickHandler()
+        {
+            buttonSound?.PlaySound();
+            GameManager.Instance.EventManager.Publish(new MainMenu());
+        }
+        
+        private void ResumeButton_OnClickHandler()
+        {
+            GameManager.Instance.EventManager.Publish(new GamePause{IsPaused = false});
+        }
+
 
         #endregion
 
@@ -291,6 +320,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             restartButton.gameObject.SetActive(isActive);
         }
+        
 
         #endregion
         

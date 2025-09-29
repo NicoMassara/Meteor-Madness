@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
@@ -67,12 +66,78 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameRestart:
                     HandleGameRestart();
                     break;
+                case GameModeObserverMessage.GamePaused:
+                    HandleGamePaused((bool)args[0]);
+                    break;
                 case GameModeObserverMessage.EarthRestartFinish:
                     HandleEarthRestartFinish();
+                    break;
+                case GameModeObserverMessage.MainMenu:
+                    HandleMainMenu();
                     break;
             }
         }
         
+        private void HandleGamePaused(bool isPaused)
+        {
+            CustomTime.SetChannelPaused(new []
+            {
+                UpdateGroup.Gameplay,
+                UpdateGroup.Ability, 
+                UpdateGroup.Shield,
+                UpdateGroup.Earth,
+                UpdateGroup.Effects,
+                UpdateGroup.Camera
+                
+            }, isPaused);
+
+            if (isPaused == true)
+            {
+                TimerManager.Add(new TimerData
+                {
+                    Time = 0.5f,
+                    OnStartAction = () =>
+                    {
+                        CustomTime.SetChannelPaused(UpdateGroup.Inputs, true);
+                    },
+                    OnEndAction = () =>
+                    {
+                        CustomTime.SetChannelPaused(UpdateGroup.Inputs, false);
+                    },
+                    
+                }, UpdateGroup.Always);
+            }
+            
+            GameManager.Instance.IsPaused = isPaused;
+        }
+
+        private void HandleMainMenu()
+        {
+            TimerManager.Clear();
+            ActionManager.Clear();
+            GameManager.Instance.EventManager.Clear();
+            
+            TimerManager.Add(new TimerData
+            {
+                Time = 1f,
+                OnEndAction = () =>
+                {
+                    CustomTime.SetChannelPaused(new []
+                    {
+                        UpdateGroup.Gameplay,
+                        UpdateGroup.Ability, 
+                        UpdateGroup.Shield,
+                        UpdateGroup.Earth,
+                        UpdateGroup.Effects,
+                        UpdateGroup.Camera
+                
+                    }, false);
+                    
+                    GameManager.Instance.LoadMainMenuScene();
+                }
+            }, UpdateGroup.Always);
+
+        }
 
         private void HandleGameFinish()
         {

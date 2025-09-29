@@ -43,6 +43,13 @@ namespace _Main.Scripts.Managers
     {
         public int CurrentLevel;
     };
+    
+    public struct GamePause
+    {
+        public bool IsPaused;
+    }
+
+    public struct MainMenu { }
 
     #endregion
 

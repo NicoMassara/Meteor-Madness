@@ -112,8 +112,7 @@ namespace _Main.Scripts.Gameplay.Earth
             collisionSound?.PlaySound();
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
-            var rotationMultiplier = rotationSpeedCurve.Evaluate(healthAmount);
-            _earthRotator.SetRotationSpeed(rotationSpeed * rotationMultiplier);
+            SetRotationSpeed(healthAmount);
             
             GameManager.Instance.EventManager.Publish
             (
@@ -128,7 +127,7 @@ namespace _Main.Scripts.Gameplay.Earth
             
             GameManager.Instance.EventManager.Publish(new CameraShake{ShakeData = cameraShakeData});
         }
-        
+
         private void HandleHeal(float currentHealth, float lastHealth)
         {
             var tempActions = new ActionData[]
@@ -141,7 +140,8 @@ namespace _Main.Scripts.Gameplay.Earth
                         UpdateGroup.Effects, UpdateGroup.Shield
                     }, 0f);
                     
-                    StartCoroutine(Coroutine_HandleHeal(currentHealth, lastHealth, EarthRestartTimeValues.RestartHealth));
+                    StartCoroutine(Coroutine_HandleHeal(currentHealth, lastHealth, 
+                        EarthRestartTimeValues.RestartHealth));
                 }),
                 new (() =>
                 {
@@ -161,7 +161,6 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private IEnumerator Coroutine_HandleHeal(float targetHealth, float lastHealth, float duration)
         {
-            var currentHealth = lastHealth;
             var elapsedTime = 0f;
             
             while (elapsedTime < duration)
@@ -171,9 +170,14 @@ namespace _Main.Scripts.Gameplay.Earth
                 var value  = Mathf.Lerp(lastHealth, targetHealth, t);
                 SetShakeMultiplier(value);
                 UpdateColorByHealth(value);
+                SetRotationSpeed(value);
                 
                 yield return null;
             }
+            
+            SetShakeMultiplier(targetHealth);
+            UpdateColorByHealth(targetHealth);
+            SetRotationSpeed(targetHealth);
         }
 
         private void HandleRestartHealth()
@@ -239,10 +243,6 @@ namespace _Main.Scripts.Gameplay.Earth
             
             while (elapsedTime < timeToIncrease)
             {
-                /*elapsedTime += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-                healthValue = elapsedTime/timeToIncrease;
-                UpdateColorByHealth(healthValue);*/
-                
                 elapsedTime += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
                 var t = elapsedTime/timeToIncrease;
                 var healthValue = Mathf.Lerp(0, 1f, t);
@@ -294,6 +294,12 @@ namespace _Main.Scripts.Gameplay.Earth
         }
 
         #endregion
+        
+        private void SetRotationSpeed(float healAmount)
+        {
+            var rotationMultiplier = rotationSpeedCurve.Evaluate(healAmount);
+            _earthRotator.SetRotationSpeed(rotationSpeed * rotationMultiplier);
+        }
         
         private void HandleSetRotation(bool canRotate)
         {

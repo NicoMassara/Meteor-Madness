@@ -53,6 +53,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             //Game
             eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
+            eventBus.Subscribe<GamePause>(EventBus_OnGamePaused);
+            eventBus.Subscribe<MainMenu>(EventBus_OnMainMenu);
             
             //Meteor
             eventBus.Subscribe<MeteorDeflected>(EventBus_OnMeteorDeflected);
@@ -61,6 +63,16 @@ namespace _Main.Scripts.Gameplay.GameMode
             eventBus.Subscribe<EarthShake>(EventBus_OnEarthShake);
             eventBus.Subscribe<EarthEndDestruction>(EventBus_OnEarthDestruction);
             eventBus.Subscribe<EarthRestartFinish>(EventBus_OnEarthRestartFinish);
+        }
+
+        private void EventBus_OnMainMenu(MainMenu input)
+        {
+            _controller.ChangeToMainMenu();
+        }
+
+        private void EventBus_OnGamePaused(GamePause input)
+        {
+            _controller.SetGamePause(input.IsPaused);
         }
 
         private void EventBus_OnEarthRestartFinish(EarthRestartFinish input)
