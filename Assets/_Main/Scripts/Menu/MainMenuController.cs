@@ -1,8 +1,6 @@
-﻿using System;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Sounds;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace _Main.Scripts.Menu
@@ -17,8 +15,6 @@ namespace _Main.Scripts.Menu
         [SerializeField] private Button loreButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private Button backButton;
-        [Header("Values")]
-        [SerializeField] private string gameplaySceneName;
 
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior themeSound;
@@ -44,7 +40,7 @@ namespace _Main.Scripts.Menu
 
         private void LoadGameplayScene()
         {
-            SceneManager.LoadScene(gameplaySceneName);
+            GameManager.Instance.LoadGameScene();
         }
 
         private void SetActivePanel(GameObject panel)

@@ -17,6 +17,7 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private MeshFilter meshA;
         private MeshFilter meshB;
+        private bool _hasBeenSliced = false;
         private bool _isSliced;
         private bool _canMove;
         private float _moveTargetDistance;
@@ -71,6 +72,8 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void Slice() 
         {
+            if(_hasBeenSliced) return;
+            
             GameObject planeObj = gameObject;
             
             SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, capMaterial);
@@ -90,10 +93,17 @@ namespace _Main.Scripts.Gameplay.Earth
                 
                 meshA = upper.GetComponent<MeshFilter>();
                 meshB = lower.GetComponent<MeshFilter>();
+                
+                meshA.gameObject.AddComponent<MeshSortingLayerSetter>().SetSortingLayer(
+                    meshA.GetComponent<Renderer>(), "Earth", 0);
+                meshB.gameObject.AddComponent<MeshSortingLayerSetter>().SetSortingLayer(
+                    meshB.GetComponent<Renderer>(), "Earth", 0);
 
                 _isSliced = true;
 
                 planeObj.GetComponent<MeshRenderer>().enabled = false;
+
+                _hasBeenSliced = true;
             }
         }
 

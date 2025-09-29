@@ -9,7 +9,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public EarthRotator(Transform modelTransform, Transform spriteTransform, float rotationSpeed)
         {
-            _modelRotator = new Rotator(modelTransform, Vector3.up, rotationSpeed);
+            _modelRotator = new Rotator(modelTransform, Vector3.down, rotationSpeed);
             _spriteRotator =  new Rotator(spriteTransform, Vector3.forward, rotationSpeed);
         }
 

@@ -9,7 +9,10 @@ namespace _Main.Scripts.Managers
         public static GameManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         private static GameManager _instance;
         
+        private SceneController _sceneController;
+        
         public bool CanPlay { get; set; }
+        public bool IsPaused { get; set; }
         private int _currentPoints;
         
         public EventBusManager EventManager { get; private set; }
@@ -26,8 +29,19 @@ namespace _Main.Scripts.Managers
 
         private void Awake()
         {
+            _sceneController = new SceneController();
             currentDamageType = DamageTypes.Standard;
             EventManager = new EventBusManager();
+        }
+
+        public void LoadGameScene()
+        {
+            _sceneController.LoadGameScene();
+        }
+
+        public void LoadMainMenuScene()
+        {
+            _sceneController.LoadMainMenuScene();
         }
 
         #region Damage

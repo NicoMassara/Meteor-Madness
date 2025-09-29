@@ -21,7 +21,7 @@ namespace _Main.Scripts.Managers.UpdateManager
         private readonly List<ILateUpdatable> _lateToAdd = new List<ILateUpdatable>();
         private readonly List<ILateUpdatable> _lateToRemove = new List<ILateUpdatable>();
         
-        public bool IsPaused { get; set; }
+        public bool IsGlobalPaused { get; set; }
         
 #pragma warning disable CS0414 // Field is assigned but its value is never used
         private bool _isUpdating = false;
@@ -43,14 +43,14 @@ namespace _Main.Scripts.Managers.UpdateManager
 
         private void Update()
         {
-            CustomTime.UpdateAll(IsPaused ? 0 : Time.unscaledDeltaTime);
+            CustomTime.UpdateAll(IsGlobalPaused ? 0 : Time.unscaledDeltaTime);
             
             ApplyPending();
             
             
             _isUpdating = true;
 
-            if (!IsPaused)
+            if (!IsGlobalPaused)
             {
                 for (int i = 0; i < _updatableObjects.Count; i++)
                 {
@@ -70,13 +70,13 @@ namespace _Main.Scripts.Managers.UpdateManager
 
         private void FixedUpdate()
         {
-            CustomTime.FixedUpdateAll(IsPaused ? 0 : Time.fixedUnscaledDeltaTime);
+            CustomTime.FixedUpdateAll(IsGlobalPaused ? 0 : Time.fixedUnscaledDeltaTime);
             
             ApplyPendingFixed();
             
             _isFixedUpdating = true;
 
-            if (!IsPaused)
+            if (!IsGlobalPaused)
             {
                 for (int i = 0; i < _fixedUpdatableObjects.Count; i++)
                 {
@@ -101,7 +101,7 @@ namespace _Main.Scripts.Managers.UpdateManager
             
             _isLateUpdating = true;
 
-            if (!IsPaused)
+            if (!IsGlobalPaused)
             {
                 for (int i = 0; i < _lateUpdatableObjects.Count; i++)
                 {

@@ -32,6 +32,11 @@ namespace _Main.Scripts.Managers
                     listener.Invoke(eventData);
             }
         }
+
+        public void Clear()
+        {
+            _listeners.Clear();
+        }
     }
     
     

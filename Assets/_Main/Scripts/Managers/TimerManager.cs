@@ -87,6 +87,19 @@ namespace _Main.Scripts.Managers
             }
         }
 
+        public static void Clear()
+        {
+            Instance._Clear();
+        }
+        
+        private void _Clear()
+        {
+            foreach (var timer in _running)
+            {
+                _toRemove.Add(timer);
+            }
+        }
+
         public static ulong Add(TimerData timerData, UpdateGroup updateGroup = UpdateGroup.Always)
         {
             return Instance._Add(timerData,updateGroup);

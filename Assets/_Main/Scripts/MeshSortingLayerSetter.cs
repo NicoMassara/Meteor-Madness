@@ -23,8 +23,19 @@ namespace _Main.Scripts
 
         private void ApplySortingLayer()
         {
+            if(modelMeshRenderer == null) return;
+            
             modelMeshRenderer.sortingLayerName = sortingLayer;
             modelMeshRenderer.sortingOrder = sortingOrder;
+        }
+
+        public void SetSortingLayer(Renderer model, string layer, int order)
+        {
+            modelMeshRenderer = model;
+            sortingLayer = layer;
+            sortingOrder = order;
+            
+            ApplySortingLayer();
         }
     }
 }
