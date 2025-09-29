@@ -113,6 +113,10 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleMainMenu()
         {
+            TimerManager.Clear();
+            ActionManager.Clear();
+            GameManager.Instance.EventManager.Clear();
+            
             TimerManager.Add(new TimerData
             {
                 Time = 1f,
@@ -129,9 +133,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 
                     }, false);
                     
-                    GameManager.Instance.EventManager.Clear();
-                    TimerManager.Clear();
-                    ActionManager.Clear();
                     GameManager.Instance.LoadMainMenuScene();
                 }
             }, UpdateGroup.Always);
