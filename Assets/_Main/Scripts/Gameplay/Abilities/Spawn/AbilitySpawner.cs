@@ -26,13 +26,16 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private ProjectileSpawnValues _spawnValues;
         private ulong _spawnTimerId;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        
+
+        private void Awake()
+        {
+            SetEventBus();
+        }
+
         private void Start()
         {
             _factory = new AbilitySphereFactory(prefab);
             _spawnValues = new ProjectileSpawnValues(spawanData);
-            
-            SetEventBus();
         }
 
         public void ManagedUpdate() { }
@@ -122,10 +125,25 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void SetEventBus()
         {
-            GameManager.Instance.EventManager.Subscribe<GameFinished>(EventBus_OnGameFinished);
-            GameManager.Instance.EventManager.Subscribe<GameStart>(EventBus_OnGameStart);
-            GameManager.Instance.EventManager.Subscribe<EnableSpawner>(EventBus_OnAbilityInUse);
-            GameManager.Instance.EventManager.Subscribe<UpdateLevel>(EnventBus_OnUpdateLevel);
+            var eventManager = GameManager.Instance.EventManager;
+            eventManager.Subscribe<GameFinished>(EventBus_OnGameFinished);
+            eventManager.Subscribe<GameStart>(EventBus_OnGameStart);
+            eventManager.Subscribe<EnableSpawner>(EventBus_OnAbilityInUse);
+            eventManager.Subscribe<UpdateLevel>(EnventBus_OnUpdateLevel);
+            eventManager.Subscribe<GameModeEnable>(EventBus_OnGameModeEnable);
+        }
+
+        private void EventBus_OnGameModeEnable(GameModeEnable input)
+        {
+            if (input.IsEnabled)
+            {
+                
+            }
+            else
+            {
+                TimerManager.Remove(_spawnTimerId);
+                _factory.RecycleAll();
+            }
         }
 
         private void EnventBus_OnUpdateLevel(UpdateLevel input)

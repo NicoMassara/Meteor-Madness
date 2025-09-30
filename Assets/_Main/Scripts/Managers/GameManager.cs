@@ -34,14 +34,14 @@ namespace _Main.Scripts.Managers
             EventManager = new EventBusManager();
         }
 
-        public void LoadGameScene()
+        public void LoadGameplay()
         {
-            _sceneController.LoadGameScene();
+            Instance.EventManager.Publish(new SetGameScreen{Index = 1});
         }
 
-        public void LoadMainMenuScene()
+        public void LoadMainMenu()
         {
-            _sceneController.LoadMainMenuScene();
+            Instance.EventManager.Publish(new SetGameScreen{Index = 0});
         }
 
         #region Damage

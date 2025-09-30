@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
@@ -57,6 +56,20 @@ namespace _Main.Scripts.Gameplay.Abilies
             eventBus.Subscribe<AddAbility>(EventBus_OnAddAbility);
             eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
             eventBus.Subscribe<GameStart>(EventBus_OnGameStart);
+            eventBus.Subscribe<GameModeEnable>(EventBus_OnGameModeEnable);
+        }
+
+        private void EventBus_OnGameModeEnable(GameModeEnable input)
+        {
+            if (input.IsEnabled)
+            {
+                
+            }
+            else
+            {
+                _controller.TransitionToRestart();
+                _controller.TransitionToDisable();
+            }
         }
 
         private void EventBus_OnGameStart(GameStart input)

@@ -40,7 +40,7 @@
         public const ulong GameRestart = 0xA2013;
         public const ulong EarthRestartFinish = 0xA2014;
         public const ulong GamePaused = 0xA2015;
-        public const ulong MainMenu= 0xA2016;
+        public const ulong Disable= 0xA2016;
     }
 
     public struct FlyingObjectObserverMessage
@@ -71,5 +71,11 @@
         public const ulong SelectAbility = 0xA4006;
         public const ulong StorageFilled = 0xA4007;
         public const ulong RestartAbilities = 0xA4008;
+    }
+    
+    public struct GameScreenObserverMessage
+    {
+        public const ulong SetMainMenu = 0xA5001;
+        public const ulong SetGameplay = 0xA5002;
     }
 }

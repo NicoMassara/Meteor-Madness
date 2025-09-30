@@ -9,6 +9,7 @@ namespace _Main.Scripts.Menu
     {
         [Header("Panels")]
         [SerializeField] private GameObject mainPanel;
+        [SerializeField] private GameObject menuPanel;
         [SerializeField] private GameObject lorePanel;
         [Header("Buttons")]
         [SerializeField] private Button playButton;
@@ -28,35 +29,34 @@ namespace _Main.Scripts.Menu
             loreButton.onClick.AddListener(SetActiveLorePanel);
             backButton.onClick.AddListener(SetActiveMainPanel);
             exitButton.onClick.AddListener(QuitGame);
+            
+            SetEventBus();
         }
 
-        private void Start()
+        private void Initialize()
         {
-            mainPanel.SetActive(false);
+            menuPanel.SetActive(false);
             lorePanel.SetActive(false);
-            SetActiveMainPanel();
             themeSound.PlaySound();
+            SetEnableMainPanel(true);
+            SetActivePanel(menuPanel);
         }
 
-        private void LoadGameplayScene()
-        {
-            GameManager.Instance.LoadGameScene();
-        }
-
-        private void SetActivePanel(GameObject panel)
+        private void SetActivePanel(GameObject panelObject)
         {
             if (_currentPanel != null)
             {
                 _currentPanel.SetActive(false);
             }
-            _currentPanel = panel;
+            
+            _currentPanel = panelObject;
             _currentPanel.SetActive(true);
         }
 
         private void SetActiveMainPanel()
         {
             menuSound.PlaySound();
-            SetActivePanel(mainPanel);
+            SetActivePanel(menuPanel);
         }
 
         private void SetActiveLorePanel()
@@ -71,7 +71,7 @@ namespace _Main.Scripts.Menu
             TimerManager.Add(new TimerData
             {
                 Time = GameTimeValues.TimeToLoadGameScene,
-                OnEndAction = LoadGameplayScene
+                OnEndAction = ()=> GameManager.Instance.LoadGameplay()
             });
         }
 
@@ -80,5 +80,33 @@ namespace _Main.Scripts.Menu
             menuSound.PlaySound();
             Application.Quit();
         }
+
+        private void SetEnableMainPanel(bool isActive)
+        {
+            mainPanel.SetActive(isActive);
+        }
+
+        #region EventBus
+
+        private void SetEventBus()
+        {
+            var eventManager = GameManager.Instance.EventManager;
+
+            eventManager.Subscribe<MainMenuScreenEnable>(EventBus_OnMainMenuScreen);
+            eventManager.Subscribe<GameModeScreenEnable>(EventBus_OnGameplayScreen);
+        }
+
+        private void EventBus_OnGameplayScreen(GameModeScreenEnable input)
+        {
+            themeSound.StopSound();
+            SetEnableMainPanel(false);
+        }
+
+        private void EventBus_OnMainMenuScreen(MainMenuScreenEnable input)
+        {
+            Initialize();
+        }
+
+        #endregion
     }
 }

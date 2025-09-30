@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
@@ -14,6 +15,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private GameModeView _view;
         private GameModeUIView _ui;
+        
+        //Hack
+        private bool _isDisable;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -31,6 +35,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _view.SetController(_controller);
             _ui.SetController(_controller);
 
+            SetViewHandlers();
             SetEventBus();
         }
 
@@ -43,6 +48,23 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
+
+        #region ViewHandlers
+
+        private void SetViewHandlers()
+        {
+            _view.OnEarthRestarted += View_OnEarthRestartedHandler;
+        }
+
+        private void View_OnEarthRestartedHandler()
+        {
+            if (_isDisable == false)
+            {
+                _controller.TransitionToStart();
+            }
+        }
+
+        #endregion
         
         #region EventBus
 
@@ -54,7 +76,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             //Game
             eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
             eventBus.Subscribe<GamePause>(EventBus_OnGamePaused);
-            eventBus.Subscribe<MainMenu>(EventBus_OnMainMenu);
+            eventBus.Subscribe<MainMenuScreenEnable>(EventBus_OnMainMenu);
+            eventBus.Subscribe<GameModeScreenEnable>(EventBus_OnGameModeScreenEnable);
             
             //Meteor
             eventBus.Subscribe<MeteorDeflected>(EventBus_OnMeteorDeflected);
@@ -65,9 +88,16 @@ namespace _Main.Scripts.Gameplay.GameMode
             eventBus.Subscribe<EarthRestartFinish>(EventBus_OnEarthRestartFinish);
         }
 
-        private void EventBus_OnMainMenu(MainMenu input)
+        private void EventBus_OnGameModeScreenEnable(GameModeScreenEnable input)
         {
-            _controller.ChangeToMainMenu();
+            _isDisable = false;
+            _controller.TransitionToStart();
+        }
+
+        private void EventBus_OnMainMenu(MainMenuScreenEnable input)
+        {
+            _isDisable = true;
+            _controller.TransitionToDisable();
         }
 
         private void EventBus_OnGamePaused(GamePause input)

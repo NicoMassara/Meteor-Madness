@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
@@ -47,6 +46,19 @@ namespace _Main.Scripts.Gameplay.Earth
             eventBus.Subscribe<EarthRestart>(EventBus_OnEarthRestart);
             eventBus.Subscribe<EarthStartDestruction>(EventBus_OnEarthStartDestruction);
             eventBus.Subscribe<HealEarth>(EventBus_OnHealEarth);
+            eventBus.Subscribe<GameModeEnable>(EventBus_OnGameModeEnable);
+        }
+
+        private void EventBus_OnGameModeEnable(GameModeEnable input)
+        {
+            if (input.IsEnabled)
+            {
+                
+            }
+            else
+            {
+                _controller.TransitionToDefault();
+            }
         }
 
         private void EventBus_OnHealEarth(HealEarth input)

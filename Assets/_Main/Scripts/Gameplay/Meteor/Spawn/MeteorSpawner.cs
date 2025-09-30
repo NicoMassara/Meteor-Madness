@@ -32,13 +32,9 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             _meteorFactory = new MeteorFactory(meteorPrefab);
             spawnValues = new ProjectileSpawnValues(projectileSpawnDataSo);
-        }
-
-        private void Start()
-        {
+            
             SetEventBus();
         }
-        
         public void ManagedUpdate()
         {
             if (_travelledDistanceTracker.HasMeteor 
@@ -215,7 +211,22 @@ namespace _Main.Scripts.Gameplay.Meteor
             eventManager.Subscribe<EnableMeteorSpawn>(EnventBus_EnableMeteorSpawn);
             eventManager.Subscribe<SpawnRingMeteor>(EnventBus_SpawnRingMeteor);
             eventManager.Subscribe<RecycleAllMeteors>(EnventBus_RecycleAllMeteors);
+            eventManager.Subscribe<GameModeEnable>(EventBus_GameModeEnable);
         }
+
+        private void EventBus_GameModeEnable(GameModeEnable input)
+        {
+            if (input.IsEnabled)
+            {
+                
+            }
+            else
+            {
+                TimerManager.Remove(_firstSpawnTimerId);
+                RecycleAll();
+            }
+        }
+
         private void EnventBus_UpdateLevel(UpdateLevel input)
         {
             spawnValues.SetIndex(input.CurrentLevel);

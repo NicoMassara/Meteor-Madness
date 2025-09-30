@@ -33,7 +33,24 @@ namespace _Main.Scripts.Managers
 
     #endregion
 
+    #region GameScreen
+
+    public struct MainMenuScreenEnable { }
+    public struct GameModeScreenEnable { }
+
+    public struct SetGameScreen
+    {
+        public int Index;
+    }
+
+    #endregion
+
     #region GameMode
+
+    public struct GameModeEnable
+    {
+        public bool IsEnabled;
+    }
 
     public struct GameStart { };
     public struct GameFinished { };
@@ -48,9 +65,7 @@ namespace _Main.Scripts.Managers
     {
         public bool IsPaused;
     }
-
-    public struct MainMenu { }
-
+    
     #endregion
 
     #region Meteor
