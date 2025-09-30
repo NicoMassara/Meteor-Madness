@@ -7,6 +7,7 @@ using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -36,10 +37,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private SoundBehavior buttonSound;
 
         private GameObject _currentPanel;
-        private GameModeController _controller;
         private NumberIncrementer _numberIncrementer;
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
         private Coroutine _gameplayPointsCoroutine;
+        
+        public UnityAction OnMainMenuButtonPressed;
+        public UnityAction OnRestartButtonPressed;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
         
@@ -99,11 +102,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleDisable()
         {
             mainPanel.SetActive(false);
-        }
-        
-        public void SetController(GameModeController controller)
-        {
-            _controller = controller;
         }
         
         private void HandleGamePaused(bool isPaused)
@@ -212,13 +210,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void RestartButton_OnClickHandler()
         {
             buttonSound?.PlaySound();
-            _controller.TransitionToRestart();
+            OnRestartButtonPressed?.Invoke();
+
         }
         
         private void MainMenuButton_OnClickHandler()
         {
             buttonSound?.PlaySound();
-            GameManager.Instance.LoadMainMenu();
+            GameManager.Instance.EventManager.Publish(new CameraZoomIn());
+            OnMainMenuButtonPressed?.Invoke();
         }
         
         private void ResumeButton_OnClickHandler()

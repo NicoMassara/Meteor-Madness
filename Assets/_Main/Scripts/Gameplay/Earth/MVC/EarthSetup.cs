@@ -21,7 +21,8 @@ namespace _Main.Scripts.Gameplay.Earth
             _motor = new EarthMotor();
             _motor.Subscribe(_view);
             _controller = new EarthController(_motor);
-            
+
+            SetViewHandlers();
             SetEventBus();
         }
 
@@ -34,6 +35,20 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
+
+        #region ViewHandlers
+
+        private void SetViewHandlers()
+        {
+            _view.OnHealed += View_OnHealedHandler;
+        }
+
+        private void View_OnHealedHandler()
+        {
+            _controller.TransitionToDefault();
+        }
+
+        #endregion
 
         #region Event Bus
 
@@ -73,7 +88,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void EventBus_OnEarthRestart(EarthRestart input)
         {
-            _controller.TransitionToDefault();
+            _controller.TransitionToHeal();
         }
 
         private void EventBus_OnEarthStartDestruction(EarthStartDestruction input)

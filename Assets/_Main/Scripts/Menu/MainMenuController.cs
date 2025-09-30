@@ -67,12 +67,21 @@ namespace _Main.Scripts.Menu
 
         private void StartGame()
         {
+            SetEnableAllButtons(false);
             menuSound.PlaySound();
             TimerManager.Add(new TimerData
             {
                 Time = GameTimeValues.TimeToLoadGameScene,
                 OnEndAction = ()=> GameManager.Instance.LoadGameplay()
             });
+        }
+
+        private void SetEnableAllButtons(bool isEnable)
+        {
+            playButton.enabled = isEnable; 
+            loreButton.enabled = isEnable; 
+            backButton.enabled = isEnable; 
+            exitButton.enabled = isEnable; 
         }
 
         private void QuitGame()
@@ -104,6 +113,7 @@ namespace _Main.Scripts.Menu
 
         private void EventBus_OnMainMenuScreen(MainMenuScreenEnable input)
         {
+            SetEnableAllButtons(true);
             Initialize();
         }
 

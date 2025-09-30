@@ -15,8 +15,8 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void RestartHealth()
         {
+            NotifyAll(EarthObserverMessage.RestartHealth,_currentHealth);
             _currentHealth = 1;
-            NotifyAll(EarthObserverMessage.RestartHealth);
         }
 
         public void HandleCollision(float damage, Vector3 position, Quaternion rotation, Vector2 direction)

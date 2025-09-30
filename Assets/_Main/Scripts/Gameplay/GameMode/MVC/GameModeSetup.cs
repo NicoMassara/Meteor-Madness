@@ -31,8 +31,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             _motor.Subscribe(_view);
             _motor.Subscribe(_ui);
-            
-            _ui.SetController(_controller);
 
             SetViewHandlers();
             SetUIViewHandlers();
@@ -56,7 +54,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _view.OnEarthRestarted += View_OnEarthRestartedHandler;
             _view.OnCountdownFinished += View_OnCountdownFinishedHandler;
         }
-
+        
         private void View_OnCountdownFinishedHandler()
         {
             _controller.TransitionToGameplay();
@@ -70,6 +68,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 _controller.TransitionToStart();
             }
+            else
+            {
+                GameManager.Instance.LoadMainMenu();
+            }
         }
 
         #endregion
@@ -79,7 +81,19 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void SetUIViewHandlers()
         {
-            
+            _ui.OnRestartButtonPressed += UIView_OnRestartButtonPressedHandler;
+            _ui.OnMainMenuButtonPressed += UIView_OnMainMenuButtonPressedHandler;
+        }
+
+        private void UIView_OnMainMenuButtonPressedHandler()
+        {
+            _isDisable = true;
+            _controller.TransitionToDisable();
+        }
+
+        private void UIView_OnRestartButtonPressedHandler()
+        {
+            _controller.TransitionToRestart();
         }
 
         #endregion

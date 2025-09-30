@@ -18,7 +18,8 @@ namespace _Main.Scripts.Gameplay.Earth
             Default,
             Dead,
             Shaking,
-            Destruction
+            Destruction,
+            Heal
         }
 
         public EarthController(EarthMotor motor)
@@ -50,23 +51,28 @@ namespace _Main.Scripts.Gameplay.Earth
             var dead = new EarthDeadState<States>();
             var shaking = new EarthDeadShakingState<States>();
             var destruction = new EarthDestructionState<States>();
+            var heal = new EarthHealState<States>();
             
             temp.Add(defaultEarth);
             temp.Add(dead);
             temp.Add(shaking);
-            temp.Add(destruction);
+            temp.Add(heal);
 
             #endregion
 
             #region Transitions
 
             defaultEarth.AddTransition(States.Dead, dead);
+            defaultEarth.AddTransition(States.Heal, heal);
             
             dead.AddTransition(States.Shaking, shaking);
             
             shaking.AddTransition(States.Destruction, destruction);
             
             destruction.AddTransition(States.Default, defaultEarth);
+            destruction.AddTransition(States.Heal, heal);
+                
+            heal.AddTransition(States.Default, defaultEarth);
 
             #endregion
 
@@ -104,6 +110,11 @@ namespace _Main.Scripts.Gameplay.Earth
         public void TransitionToDestruction()
         {
             SetTransition(States.Destruction);
+        }
+
+        public void TransitionToHeal()
+        {
+            SetTransition(States.Heal);
         }
 
         #endregion

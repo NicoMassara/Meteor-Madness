@@ -23,10 +23,5 @@
         {
             _queue.Run(deltaTime);
         }
-
-        public override void Sleep()
-        {
-            Controller.RestartHealth();
-        }
     }
 }

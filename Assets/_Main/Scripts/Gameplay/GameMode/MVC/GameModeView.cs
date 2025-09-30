@@ -21,6 +21,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public void ManagedUpdate() { }
         
+        //Hack
+        private bool _isFirstDisable = true;
         
         
         // ReSharper disable Unity.PerformanceAnalysis
@@ -118,6 +120,13 @@ namespace _Main.Scripts.Gameplay.GameMode
                 UpdateGroup.Camera
                 
             }, false);
+
+            if (_isFirstDisable == false)
+            {
+                GameManager.Instance.EventManager.Publish(new EarthRestart());
+            }
+            
+            _isFirstDisable = false;
             
             GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = false});
             GameManager.Instance.EventManager.Publish(new GameModeEnable{IsEnabled = false});
