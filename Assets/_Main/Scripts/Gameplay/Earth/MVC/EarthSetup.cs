@@ -56,47 +56,40 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             var eventBus = GameManager.Instance.EventManager;
             
-            eventBus.Subscribe<MeteorEvents.Collision>(EventBus_OnMeteorCollision);
-            eventBus.Subscribe<EarthEvents.Restart>(EventBus_OnEarthRestart);
-            eventBus.Subscribe<EarthEvents.DestructionStart>(EventBus_OnEarthStartDestruction);
-            eventBus.Subscribe<EarthEvents.Heal>(EventBus_OnHealEarth);
-            eventBus.Subscribe<GameModeEvents.SetEnable>(EventBus_OnGameModeEnable);
-            eventBus.Subscribe<EarthEvents.SetEnableDamage>(EventBus_OnEarthCanTakeDamage);
+            eventBus.Subscribe<EarthEvents.Restart>(EventBus_Earth_Restart);
+            eventBus.Subscribe<EarthEvents.DestructionStart>(EventBus_Earth_DestructionStart);
+            eventBus.Subscribe<EarthEvents.Heal>(EventBus_Earth_Heal);
+            eventBus.Subscribe<EarthEvents.SetEnableDamage>(EventBus_Earth_SetEnableDamage);
+            eventBus.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            eventBus.Subscribe<MeteorEvents.Collision>(EventBus_Meteor_Collision);
         }
 
-        private void EventBus_OnEarthCanTakeDamage(EarthEvents.SetEnableDamage input)
+        private void EventBus_Earth_SetEnableDamage(EarthEvents.SetEnableDamage input)
         {
             _controller.SetEnableDamage(input.DamageEnable);
         }
 
-        private void EventBus_OnGameModeEnable(GameModeEvents.SetEnable input)
+        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
         {
-            if (input.IsEnabled)
-            {
-                
-            }
-            else
-            {
-                _controller.TransitionToDefault();
-            }
+            _controller.TransitionToDefault();
         }
 
-        private void EventBus_OnHealEarth(EarthEvents.Heal input)
+        private void EventBus_Earth_Heal(EarthEvents.Heal input)
         {
             _controller.Heal(1f);
         }
 
-        private void EventBus_OnEarthRestart(EarthEvents.Restart input)
+        private void EventBus_Earth_Restart(EarthEvents.Restart input)
         {
             _controller.TransitionToHeal();
         }
 
-        private void EventBus_OnEarthStartDestruction(EarthEvents.DestructionStart input)
+        private void EventBus_Earth_DestructionStart(EarthEvents.DestructionStart input)
         {
             _controller.TransitionToShaking();
         }
         
-        private void EventBus_OnMeteorCollision(MeteorEvents.Collision input)
+        private void EventBus_Meteor_Collision(MeteorEvents.Collision input)
         {
             _controller.HandleCollision(GameManager.Instance.GetMeteorDamage(), 
                 input.Position, input.Rotation, input.Direction);

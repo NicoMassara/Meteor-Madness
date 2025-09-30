@@ -1,4 +1,6 @@
-﻿namespace _Main.Scripts.Gameplay.FSM.Earth
+﻿using UnityEngine;
+
+namespace _Main.Scripts.Gameplay.FSM.Earth
 {
     public class EarthDestructionState<T> : EarthBaseState<T>
     {

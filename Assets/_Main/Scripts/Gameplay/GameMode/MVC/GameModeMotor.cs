@@ -11,16 +11,29 @@ namespace _Main.Scripts.Gameplay.GameMode
         private int _meteorCollisionCount;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
 
+        private readonly GameLevelController _levelController;
+        
         private float _startTimer;
         private bool _isPaused;
-        private readonly GameLevelController _levelController;
+        private bool _doesRestartGameMode;
+        
 
         public GameModeMotor()
         {
             _levelController = new();
             _levelController.OnLevelChange += OnLevelChangeHandler;
         }
+
+        public void InitializeValues()
+        {
+            NotifyAll(GameModeObserverMessage.Initialize);
+        }
         
+        public void SetDoesRestartGameMode(bool doesRestart)
+        {
+            _doesRestartGameMode = doesRestart;
+        }
+
         public void StartCountdown(float time)
         {
             _startTimer = time + 1;
@@ -80,6 +93,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             NotifyAll(GameModeObserverMessage.EarthEndDestruction, _meteorDeflectCount);
         }
+        
+        public void EarthRestartFinish()
+        {
+            NotifyAll(GameModeObserverMessage.EarthRestartFinish, _doesRestartGameMode);
+        }
 
         #endregion
         
@@ -98,7 +116,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.GameFinish);
         }
         
-        
         private void OnLevelChangeHandler()
         {
             UpdateCurrentLevel();
@@ -107,11 +124,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void GameRestart()
         {
             NotifyAll(GameModeObserverMessage.GameRestart);
-        }
-
-        public void EarthRestartFinish()
-        {
-            NotifyAll(GameModeObserverMessage.EarthRestartFinish);
         }
 
         public void SetGamePaused(bool isPaused)
