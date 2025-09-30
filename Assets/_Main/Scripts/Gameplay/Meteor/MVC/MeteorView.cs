@@ -7,18 +7,13 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorController>, IMeteor, ITargetable
+    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorValuesData>, IMeteor, ITargetable
     {
         public UnityAction<MeteorCollisionData> OnEarthCollision { get; set; }
         public UnityAction<MeteorCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
         public event Action OnDeath;
-
-        public void SetMeteorValues(MeteorValuesData data)
-        {
-            Controller.SetMeteorValues(data);
-        }
-
+        
 
         public override void OnNotify(ulong message, params object[] args)
         {

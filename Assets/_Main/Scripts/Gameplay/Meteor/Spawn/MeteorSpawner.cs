@@ -32,13 +32,9 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             _meteorFactory = new MeteorFactory(meteorPrefab);
             spawnValues = new ProjectileSpawnValues(projectileSpawnDataSo);
-        }
-
-        private void Start()
-        {
+            
             SetEventBus();
         }
-        
         public void ManagedUpdate()
         {
             if (_travelledDistanceTracker.HasMeteor 
@@ -144,7 +140,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             Vector2 direction = cog - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
-            tempMeteor.SetMeteorValues(new MeteorValuesData
+            tempMeteor.SetValues(new MeteorValuesData
             {
                 MovementSpeed = meteorSpeed,
                 Rotation = tempRot,
@@ -173,7 +169,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             GameManager.Instance.EventManager.Publish
             (
-                new MeteorDeflected
+                new MeteorEvents.Deflected
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
@@ -192,7 +188,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             GameManager.Instance.EventManager.Publish
             (
-                new MeteorCollision
+                new MeteorEvents.Collision
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
@@ -210,18 +206,26 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<GameStart>(EnventBus_GameStart);
-            eventManager.Subscribe<UpdateLevel>(EnventBus_UpdateLevel);
-            eventManager.Subscribe<EnableMeteorSpawn>(EnventBus_EnableMeteorSpawn);
-            eventManager.Subscribe<SpawnRingMeteor>(EnventBus_SpawnRingMeteor);
-            eventManager.Subscribe<RecycleAllMeteors>(EnventBus_RecycleAllMeteors);
+            eventManager.Subscribe<GameModeEvents.Start>(EnventBus_GameMode_Start);
+            eventManager.Subscribe<GameModeEvents.UpdateLevel>(EnventBus_GameMode_UpdateLevel);
+            eventManager.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
+            eventManager.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
+            eventManager.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
+            eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
         }
-        private void EnventBus_UpdateLevel(UpdateLevel input)
+
+        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
+        {
+            TimerManager.Remove(_firstSpawnTimerId);
+            RecycleAll();
+        }
+
+        private void EnventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
         {
             spawnValues.SetIndex(input.CurrentLevel);
         }
         
-        private void EnventBus_EnableMeteorSpawn(EnableMeteorSpawn input)
+        private void EnventBus_Meteor_EnableSpawn(MeteorEvents.EnableSpawn input)
         {
             _canSpawn = input.CanSpawn;
             if (_isFirstSpawn)
@@ -234,17 +238,17 @@ namespace _Main.Scripts.Gameplay.Meteor
             }
         }
         
-        private void EnventBus_SpawnRingMeteor(SpawnRingMeteor input)
+        private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
         {
             SpawnRingMeteor(GameValues.MaxMeteorSpeed);
         }
 
-        private void EnventBus_RecycleAllMeteors(RecycleAllMeteors input)
+        private void EnventBus_Meteor_RecycleAll(MeteorEvents.RecycleAll input)
         {
             RecycleAll();
         }
         
-        private void EnventBus_GameStart(GameStart input)
+        private void EnventBus_GameMode_Start(GameModeEvents.Start input)
         {
             _isFirstSpawn = true;
             _travelledDistanceTracker.ClearValues();

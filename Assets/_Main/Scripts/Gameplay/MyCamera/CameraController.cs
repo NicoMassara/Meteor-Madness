@@ -23,7 +23,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
         private void Awake()
         {
-            SetEvents();
+            SetEventBus();
         }
 
         private void Start()
@@ -90,26 +90,26 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
         #region Event Bus
 
-        private void SetEvents()
+        private void SetEventBus()
         {
             var eventBus = GameManager.Instance.EventManager;
             
-            eventBus.Subscribe<CameraShake>(EventBus_StartShake);
-            eventBus.Subscribe<CameraZoomIn>(EventBus_ZoomIn);
-            eventBus.Subscribe<CameraZoomOut>(EventBus_ZoomOut);
+            eventBus.Subscribe<CameraEvents.Shake>(EventBus_Camera_StartShake);
+            eventBus.Subscribe<CameraEvents.ZoomIn>(EventBus_Camera_ZoomIn);
+            eventBus.Subscribe<CameraEvents.ZoomOut>(EventBus_Camera_ZoomOut);
         }
 
-        private void EventBus_ZoomOut(CameraZoomOut input)
+        private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)
         {
             ZoomOut();
         }
 
-        private void EventBus_ZoomIn(CameraZoomIn input)
+        private void EventBus_Camera_ZoomIn(CameraEvents.ZoomIn input)
         {
             ZoomIn();
         }
 
-        private void EventBus_StartShake(CameraShake input)
+        private void EventBus_Camera_StartShake(CameraEvents.Shake input)
         {
             StartShake(input.ShakeData);
         }

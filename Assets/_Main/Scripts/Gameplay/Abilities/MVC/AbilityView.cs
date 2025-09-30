@@ -4,14 +4,17 @@ using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityView : ManagedBehavior, IUpdatable, IObserver
     {
         private AbilityData _currentAbility;
-        private AbilityController _controller;
         private AbilityDataController abilityDataController;
+        
+        public UnityAction OnAbilitySelected;
+        public UnityAction OnAbilityFinished;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Ability;
 
@@ -41,11 +44,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                     break;
             }
         }
-
-        public void SetController(AbilityController controller)
-        {
-            _controller = controller;
-        }
+        
 
         #region Ability
 
@@ -57,18 +56,18 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return;
             }
             
-            _controller.TransitionToRunning();
+            OnAbilitySelected?.Invoke();
         }
 
         private void HandleTriggerAbility(AbilityType enumType)
         {
-            GameManager.Instance.EventManager.Publish(new EnableSpawner{IsEnable = true});
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.EnableSpawner{IsEnable = true});
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(enumType),SelfUpdateGroup);
         }
 
         private void HandleFinishAbility(AbilityType enumType)
         {
-            GameManager.Instance.EventManager.Publish(new EnableSpawner{IsEnable = false});
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.EnableSpawner{IsEnable = false});
             
             if (abilityDataController.GetHasInstantEffect(enumType)) return;
             
@@ -110,7 +109,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             TimerManager.Add(new TimerData
             {
                 Time = activeTime,
-                OnEndAction = ()=> _controller.TransitionToEnable()
+                OnEndAction = ()=> OnAbilityFinished?.Invoke()
             }, SelfUpdateGroup);
         }
 

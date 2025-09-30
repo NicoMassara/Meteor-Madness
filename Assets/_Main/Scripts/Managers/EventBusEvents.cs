@@ -5,136 +5,141 @@ using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
-    #region Earth
-    public struct EarthRestart { }
-    public struct EarthRestartFinish { }
-    public struct EarthShake { }
-
-    public struct HealEarth
-    {
-        public float HealAmount;
-    }
-
-    public struct EarthStartDestruction { }
-    public struct EarthEndDestruction { }
-
-    #endregion
-
-    #region Shield
-
-    public struct ShieldEnable
-    {
-        public bool IsEnabled;
-    }
-
-    public struct SetSuperShield { }
-    public struct SetNormalShield { }
-
-
-    #endregion
-
-    #region GameMode
-
-    public struct GameStart { };
-    public struct GameFinished { };
-    public struct GameRestart { };
-
-    public struct UpdateLevel
-    {
-        public int CurrentLevel;
-    };
     
-    public struct GamePause
+    public struct EarthEvents
     {
-        public bool IsPaused;
+        public struct Restart { }
+        public struct RestartFinished { }
+        public struct ShakeStart { }
+        public struct Heal { }
+        public struct SetEnableDamage
+        {
+            public bool DamageEnable;
+        }
+        
+        public struct DestructionStart {}
+        public struct DestructionFinished {}
     }
 
-    public struct MainMenu { }
-
-    #endregion
-
-    #region Meteor
-
-    public struct MeteorCollision
+    public struct ShieldEvents
     {
-        public Vector3 Position;
-        public Quaternion Rotation;
-        public Vector2 Direction;
+        public struct SetEnable
+        {
+            public bool IsEnabled;
+        }
+        public struct EnableSuperShield { }
+        public struct EnableNormalShield { }
     }
 
-    public struct MeteorDeflected
+    public struct GameScreenEvents
     {
-        public Vector3 Position;
-        public Quaternion Rotation;
-        public Vector2 Direction;
-        public float Value;
+        public struct MainMenuEnable { }
+        public struct GameModeEnable { }
+        
+        public struct SetGameScreen
+        {
+            public int Index;
+        }
     }
+
+    public struct GameModeEvents
+    {
+        public struct Initialize { };
+
+        public struct Disable { };
+
+        public struct Start { };
+        public struct Finish { };
+        public struct Restart { };
+
+        public struct UpdateLevel
+        {
+            public int CurrentLevel;
+        };
     
-    public struct EnableMeteorSpawn
-    {
-        public bool CanSpawn;
+        public struct SetPause
+        {
+            public bool IsPaused;
+        }
     }
+
+    public struct MeteorEvents
+    {
+        public struct Collision
+        {
+            public Vector3 Position;
+            public Quaternion Rotation;
+            public Vector2 Direction;
+        }
+
+        public struct Deflected
+        {
+            public Vector3 Position;
+            public Quaternion Rotation;
+            public Vector2 Direction;
+            public float Value;
+        }
     
-    public struct SpawnRingMeteor { }
+        public struct EnableSpawn
+        {
+            public bool CanSpawn;
+        }
     
-    public struct RecycleAllMeteors{}
-
-    #endregion
-
-    #region Particle
-
-    public struct SpawnParticle
-    {
-        public ParticleDataSo ParticleData; 
-        public Vector3 Position;
-        public Quaternion Rotation;
-        public Vector3 MoveDirection;
-    }
-
-    #endregion
+        public struct SpawnRing { }
     
-    #region Camera
-
-    public struct CameraShake
-    {
-        public ShakeDataSo ShakeData;
+        public struct RecycleAll{}
     }
 
-    public struct CameraZoomIn { }
-    public struct CameraZoomOut { }
-
-    #endregion
-
-    #region Inputs
-
-    public struct SetEnableInputs
+    public struct ParticleEvents
     {
-        public bool IsEnable;
+        public struct Spawn
+        {
+            public ParticleDataSo ParticleData; 
+            public Vector3 Position;
+            public Quaternion Rotation;
+            public Vector3 MoveDirection;
+        }
     }
 
-    #endregion
-
-    #region Abilities
-
-    public struct SetEnableAbility
+    public struct CameraEvents
     {
-        public bool IsEnable;
+        public struct Shake
+        {
+            public ShakeDataSo ShakeData;
+        }
+
+        public struct ZoomIn { }
+        public struct ZoomOut { }
     }
 
-    public struct AddAbility
+    public struct InputsEvents
     {
-        public AbilityType AbilityType;
+        public struct SetEnable
+        {
+            public bool IsEnable;
+        }
     }
 
-    public struct EnableSpawner
+    public struct AbilitiesEvents
     {
-        public bool IsEnable;
-    }
+        public struct SetEnable
+        {
+            public bool IsEnable;
+        }
 
-    public struct SetAbilityStorageFull
-    {
-        public bool IsFull;
-    }
+        public struct Add
+        {
+            public AbilityType AbilityType;
+        }
 
-    #endregion
+        public struct EnableSpawner
+        {
+            public bool IsEnable;
+        }
+
+        public struct SetStorageFull
+        {
+            public bool IsFull;
+        }
+    }
 }

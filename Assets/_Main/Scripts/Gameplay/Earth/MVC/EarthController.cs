@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.Earth;
 using _Main.Scripts.Gameplay.FSM.Earth;
-using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
@@ -18,7 +15,8 @@ namespace _Main.Scripts.Gameplay.Earth
             Default,
             Dead,
             Shaking,
-            Destruction
+            Destruction,
+            Heal
         }
 
         public EarthController(EarthMotor motor)
@@ -50,11 +48,13 @@ namespace _Main.Scripts.Gameplay.Earth
             var dead = new EarthDeadState<States>();
             var shaking = new EarthDeadShakingState<States>();
             var destruction = new EarthDestructionState<States>();
+            var heal = new EarthHealState<States>();
             
             temp.Add(defaultEarth);
             temp.Add(dead);
             temp.Add(shaking);
             temp.Add(destruction);
+            temp.Add(heal);
 
             #endregion
 
@@ -67,6 +67,9 @@ namespace _Main.Scripts.Gameplay.Earth
             shaking.AddTransition(States.Destruction, destruction);
             
             destruction.AddTransition(States.Default, defaultEarth);
+            destruction.AddTransition(States.Heal, heal);
+            
+            heal.AddTransition(States.Default, defaultEarth);
 
             #endregion
 
@@ -104,6 +107,11 @@ namespace _Main.Scripts.Gameplay.Earth
         public void TransitionToDestruction()
         {
             SetTransition(States.Destruction);
+        }
+
+        public void TransitionToHeal()
+        {
+            SetTransition(States.Heal);
         }
 
         #endregion
@@ -156,6 +164,11 @@ namespace _Main.Scripts.Gameplay.Earth
         public void SetRotation(bool canRotate)
         {
             _motor.SetRotation(canRotate);
+        }
+
+        public void SetEnableDamage(bool canTakeDamage)
+        {
+            _motor.SetEnableDamage(canTakeDamage);
         }
 
         #region Handlers

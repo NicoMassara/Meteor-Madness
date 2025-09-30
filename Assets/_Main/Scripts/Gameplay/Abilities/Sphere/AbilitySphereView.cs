@@ -7,17 +7,12 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere
 {
-    public class AbilitySphereView : FlyingObjectView<AbilitySphereMotor, AbilitySphereView, AbilitySphereController>
+    public class AbilitySphereView : FlyingObjectView<AbilitySphereMotor, AbilitySphereView, AbilitySphereValues>
     {
         public UnityAction<AbilitySphereCollisionData> OnEarthCollision { get; set; }
         public UnityAction<AbilitySphereCollisionData> OnDeflection { get; set; }
         public event Action OnDeath;
         
-        
-        public void SetSphereValues(AbilitySphereValues data)
-        {
-            Controller.SetSphereValues(data);
-        }
         
         public override void OnNotify(ulong message, params object[] args)
         {
