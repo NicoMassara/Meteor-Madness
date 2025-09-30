@@ -4,6 +4,7 @@ using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
@@ -16,11 +17,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         private GameModeController _controller;
         private GameModeUIView _uiView;
 
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public void ManagedUpdate()
-        {
+        
+        public UnityAction OnEarthRestarted;
 
-        }
+        
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public void ManagedUpdate() { }
 
         public void SetController(GameModeController controller)
         {
@@ -72,8 +74,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.EarthRestartFinish:
                     HandleEarthRestartFinish();
                     break;
-                case GameModeObserverMessage.MainMenu:
-                    HandleMainMenu();
+                case GameModeObserverMessage.Disable:
+                    HandleDisable();
                     break;
             }
         }
@@ -98,11 +100,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                     Time = 0.5f,
                     OnStartAction = () =>
                     {
-                        CustomTime.SetChannelPaused(UpdateGroup.Inputs, true);
+                        GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = false});
                     },
                     OnEndAction = () =>
                     {
-                        CustomTime.SetChannelPaused(UpdateGroup.Inputs, false);
+                        GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = true});
                     },
                     
                 }, UpdateGroup.Always);
@@ -111,32 +113,21 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameManager.Instance.IsPaused = isPaused;
         }
 
-        private void HandleMainMenu()
+        private void HandleDisable()
         {
-            TimerManager.Clear();
-            ActionManager.Clear();
-            GameManager.Instance.EventManager.Clear();
-            
-            TimerManager.Add(new TimerData
+            CustomTime.SetChannelPaused(new []
             {
-                Time = 1f,
-                OnEndAction = () =>
-                {
-                    CustomTime.SetChannelPaused(new []
-                    {
-                        UpdateGroup.Gameplay,
-                        UpdateGroup.Ability, 
-                        UpdateGroup.Shield,
-                        UpdateGroup.Earth,
-                        UpdateGroup.Effects,
-                        UpdateGroup.Camera
+                UpdateGroup.Gameplay,
+                UpdateGroup.Ability, 
+                UpdateGroup.Shield,
+                UpdateGroup.Earth,
+                UpdateGroup.Effects,
+                UpdateGroup.Camera
                 
-                    }, false);
-                    
-                    GameManager.Instance.LoadMainMenuScene();
-                }
-            }, UpdateGroup.Always);
-
+            }, false);
+            
+            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = false});
+            GameManager.Instance.EventManager.Publish(new GameModeEnable{IsEnabled = false});
         }
 
         private void HandleGameFinish()
@@ -163,7 +154,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleEarthRestartFinish()
         {
-            _controller.TransitionToStart();
+            OnEarthRestarted?.Invoke();
         }
 
         #region Start

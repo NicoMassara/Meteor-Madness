@@ -13,7 +13,6 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private float _startTimer;
         private bool _isPaused;
-
         private readonly GameLevelController _levelController;
 
         public GameModeMotor()
@@ -121,9 +120,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
         }
         
-        public void ChangeToMainMenu()
+        public void DisableGameMode()
         {
-            NotifyAll(GameModeObserverMessage.MainMenu);
+            NotifyAll(GameModeObserverMessage.Disable);
         }
     }
 }

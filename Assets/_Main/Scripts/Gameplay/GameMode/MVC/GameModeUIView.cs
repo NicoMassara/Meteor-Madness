@@ -18,8 +18,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private Text scoreText;
         [SerializeField] private Text deathScoreText;
         [SerializeField] private Text deathText;
-        [Space]
-        [Header("Panels")]
+
+        [Space] 
+        [Header("Panels")] 
+        [SerializeField] private GameObject mainPanel;
         [SerializeField] private GameObject pausePanel;
         [SerializeField] private GameObject countdownPanel;
         [SerializeField] private GameObject gameplayPanel;
@@ -41,10 +43,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
         
-        public void ManagedUpdate()
-        {
-
-        }
+        public void ManagedUpdate() { }
 
         private void Start()
         {
@@ -91,10 +90,17 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GamePaused:
                     HandleGamePaused((bool)args[0]);
                     break;
+                case GameModeObserverMessage.Disable:
+                    HandleDisable();
+                    break;
             }
         }
-        
 
+        private void HandleDisable()
+        {
+            mainPanel.SetActive(false);
+        }
+        
         public void SetController(GameModeController controller)
         {
             _controller = controller;
@@ -127,6 +133,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleStartCountdown()
         {
+            mainPanel.SetActive(true);
             DisableActivePanel();
             _numberIncrementer = new NumberIncrementer();
             SetActivePanel(countdownPanel);
@@ -211,7 +218,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void MainMenuButton_OnClickHandler()
         {
             buttonSound?.PlaySound();
-            GameManager.Instance.EventManager.Publish(new MainMenu());
+            GameManager.Instance.LoadMainMenu();
         }
         
         private void ResumeButton_OnClickHandler()

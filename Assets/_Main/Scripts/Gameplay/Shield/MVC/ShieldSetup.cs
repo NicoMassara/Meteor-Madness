@@ -63,13 +63,25 @@ namespace _Main.Scripts.Gameplay.Shield
             eventManager.Subscribe<ShieldEnable>(EventBus_OnEarthShake);
             eventManager.Subscribe<SetSuperShield>(EventBus_OnSetTotalShield);
             eventManager.Subscribe<SetNormalShield>(EventBus_OnSetNormalShield);
+            eventManager.Subscribe<GameModeEnable>(EventBus_OnGameModeEnable);
+        }
+
+        private void EventBus_OnGameModeEnable(GameModeEnable input)
+        {
+            if (input.IsEnabled)
+            {
+                
+            }
+            else
+            {
+                _controller.TransitionToUnactive();
+            }
         }
 
         private void EventBus_OnSetNormalShield(SetNormalShield input)
         {
             _controller.TransitionToActive();
         }
-
 
         private void EventBus_OnSetTotalShield(SetSuperShield input)
         {

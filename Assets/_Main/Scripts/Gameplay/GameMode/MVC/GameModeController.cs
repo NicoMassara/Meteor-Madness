@@ -18,7 +18,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             Gameplay,
             Finish,
             Death,
-            Restart
+            Restart,
+            Disable
         }
 
         public GameModeController(GameModeMotor motor)
@@ -50,12 +51,14 @@ namespace _Main.Scripts.Gameplay.GameMode
             var finish = new GameModeFinishState<States>();
             var death = new GameModeDeathState<States>();
             var restart = new GameModeRestartState<States>();
+            var disable = new GameModeDisableState<States>();
             
             temp.Add(start);
             temp.Add(gameplay);
             temp.Add(finish);
             temp.Add(death);
             temp.Add(restart);
+            temp.Add(disable);
 
             #endregion
 
@@ -64,13 +67,16 @@ namespace _Main.Scripts.Gameplay.GameMode
             start.AddTransition(States.Gameplay, gameplay);
             
             gameplay.AddTransition(States.Finish, finish);
+            gameplay.AddTransition(States.Disable, disable);
             
             finish.AddTransition(States.Death, death);
             
             death.AddTransition(States.Restart, restart);
+            death.AddTransition(States.Disable, disable);
             
             restart.AddTransition(States.Start, start);
             
+            disable.AddTransition(States.Start, start);
 
             #endregion
 
@@ -79,8 +85,15 @@ namespace _Main.Scripts.Gameplay.GameMode
                 state.Initialize(this);
             }
             
-            _fsm.SetInit(start);
+            _fsm.SetInit(disable);
             _fsm.FSMName = "GameMode";
+
+            _fsm.OnEnterState += OnEnterStateHandler;
+        }
+
+        private void OnEnterStateHandler(States state)
+        {
+            Debug.Log($"FSM: {_fsm.FSMName}, Current State: {state.ToString()}");
         }
 
         #region Transitions
@@ -115,6 +128,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetTransition(States.Restart);
         }
 
+        public void TransitionToDisable()
+        {
+            SetTransition(States.Disable);
+        }
 
         #endregion
 
@@ -163,7 +180,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.HandleMeteorDeflect(meteorDeflectValue);
         }
 
-
         public void SetEnableMeteorSpawn(bool canSpawn)
         {
             _motor.SetEnableMeteorSpawn(canSpawn);
@@ -194,9 +210,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.SetGamePaused(isPaused);
         }
         
-        public void ChangeToMainMenu()
+        public void DisableGameMode()
         {
-            _motor.ChangeToMainMenu();
+            _motor.DisableGameMode();
         }
     }
 }

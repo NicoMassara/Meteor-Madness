@@ -23,7 +23,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
         private void Awake()
         {
-            SetEvents();
+            SetEventBus();
         }
 
         private void Start()
@@ -90,7 +90,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
         #region Event Bus
 
-        private void SetEvents()
+        private void SetEventBus()
         {
             var eventBus = GameManager.Instance.EventManager;
             
