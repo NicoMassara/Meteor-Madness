@@ -30,6 +30,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void Initialize()
         {
             InitializeFsm();
+            InitializeValues();
         }
 
         public void Execute(float deltaTime)
@@ -206,6 +207,16 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void DisableGameMode()
         {
             _motor.DisableGameMode();
+        }
+
+        private void InitializeValues()
+        {
+            _motor.InitializeValues();
+        }
+
+        public void SetDoesRestartGameMode(bool doesRestart)
+        {
+            _motor.SetDoesRestartGameMode(doesRestart);
         }
     }
 }

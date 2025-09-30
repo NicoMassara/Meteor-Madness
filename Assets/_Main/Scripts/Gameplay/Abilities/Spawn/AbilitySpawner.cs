@@ -130,20 +130,13 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             eventManager.Subscribe<GameModeEvents.Start>(EventBus_OnGameStart);
             eventManager.Subscribe<AbilitiesEvents.EnableSpawner>(EventBus_OnAbilityInUse);
             eventManager.Subscribe<GameModeEvents.UpdateLevel>(EnventBus_OnUpdateLevel);
-            eventManager.Subscribe<GameModeEvents.SetEnable>(EventBus_OnGameModeEnable);
+            eventManager.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
         }
 
-        private void EventBus_OnGameModeEnable(GameModeEvents.SetEnable input)
+        private void EventBus_OnGameModeDisable(GameModeEvents.Disable input)
         {
-            if (input.IsEnabled)
-            {
-                
-            }
-            else
-            {
-                TimerManager.Remove(_spawnTimerId);
-                _factory.RecycleAll();
-            }
+            TimerManager.Remove(_spawnTimerId);
+            _factory.RecycleAll();
         }
 
         private void EnventBus_OnUpdateLevel(GameModeEvents.UpdateLevel input)

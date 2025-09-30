@@ -16,7 +16,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private GameModeUIView _uiView;
         
-        public UnityAction OnEarthRestarted;
+        public UnityAction<bool> OnEarthRestarted;
         public UnityAction OnCountdownFinished;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public void ManagedUpdate() { }
@@ -67,12 +67,20 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleGamePaused((bool)args[0]);
                     break;
                 case GameModeObserverMessage.EarthRestartFinish:
-                    HandleEarthRestartFinish();
+                    HandleEarthRestartFinish((bool)args[0]);
                     break;
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
+                case GameModeObserverMessage.Initialize:
+                    HandleInitialize();
+                    break;
+                    
             }
+        }
+        private void HandleInitialize()
+        {
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.Initialize());
         }
         
         private void HandleGamePaused(bool isPaused)
@@ -126,10 +134,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                 GameManager.Instance.EventManager.Publish(new EarthEvents.Restart());
             }
             
+            gameplayTheme?.StopSound();
+            deathTheme?.StopSound();
             _isFirstDisable = false;
-            
             SetEnableInputs(false);
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.SetEnable{IsEnabled = false});
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.Disable());
         }
 
         private void HandleGameFinish()
@@ -154,9 +163,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
         
-        private void HandleEarthRestartFinish()
+        private void HandleEarthRestartFinish(bool doesRestart)
         {
-            OnEarthRestarted?.Invoke();
+            OnEarthRestarted?.Invoke(doesRestart);
         }
 
         #region Start

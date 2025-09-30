@@ -71,43 +71,35 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var eventBus = GameManager.Instance.EventManager;
             
-            eventBus.Subscribe<AbilitiesEvents.SetEnable>(EventBus_OnSetEnableAbility);
-            eventBus.Subscribe<AbilitiesEvents.Add>(EventBus_OnAddAbility);
-            eventBus.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
-            eventBus.Subscribe<GameModeEvents.Start>(EventBus_OnGameStart);
-            eventBus.Subscribe<GameModeEvents.SetEnable>(EventBus_OnGameModeEnable);
+            eventBus.Subscribe<AbilitiesEvents.SetEnable>(EventBus_Ability_SetEnable);
+            eventBus.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
+            eventBus.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+            eventBus.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
+            eventBus.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
         }
-
-        private void EventBus_OnGameModeEnable(GameModeEvents.SetEnable input)
-        {
-            if (input.IsEnabled)
-            {
-                
-            }
-            else
-            {
-                _controller.TransitionToRestart();
-                _controller.TransitionToDisable();
-            }
-        }
-
-        private void EventBus_OnGameStart(GameModeEvents.Start input)
+        private void EventBus_GameMode_Start(GameModeEvents.Start input)
         {
             _controller.TransitionToEnable();
         }
 
-        private void EventBus_OnGameFinished(GameModeEvents.Finish input)
+        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
+        {
+            _controller.TransitionToRestart();
+            _controller.TransitionToDisable();
+        }
+        
+        private void EventBus_GameMode_Finish(GameModeEvents.Finish input)
         {
             _controller.TransitionToRestart();
             _controller.TransitionToDisable();
         }
 
-        private void EventBus_OnAddAbility(AbilitiesEvents.Add input)
+        private void EventBus_Ability_Add(AbilitiesEvents.Add input)
         {
             _controller.TryAddAbility(input.AbilityType);
         }
 
-        private void EventBus_OnSetEnableAbility(AbilitiesEvents.SetEnable input)
+        private void EventBus_Ability_SetEnable(AbilitiesEvents.SetEnable input)
         {
             if (input.IsEnable)
             {

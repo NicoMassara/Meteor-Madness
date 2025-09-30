@@ -59,41 +59,34 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             var eventManager = GameManager.Instance.EventManager;
             
-            eventManager.Subscribe<MeteorEvents.Deflected>(EventBus_ShieldDeflection);
-            eventManager.Subscribe<ShieldEvents.SetEnable>(EventBus_OnSetEnable);
-            eventManager.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_OnEnableSuperShield);
-            eventManager.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_OnEnableNormalShield);
-            eventManager.Subscribe<GameModeEvents.SetEnable>(EventBus_OnGameModeEnable);
+            eventManager.Subscribe<MeteorEvents.Deflected>(EventBus_Meteor_Deflected);
+            eventManager.Subscribe<ShieldEvents.SetEnable>(EventBus_Shield_SetEnable);
+            eventManager.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
+            eventManager.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_Shield_EnableNormalShield);
+            eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
         }
 
-        private void EventBus_OnGameModeEnable(GameModeEvents.SetEnable input)
+        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
         {
-            if (input.IsEnabled)
-            {
-                
-            }
-            else
-            {
-                _controller.TransitionToUnactive();
-            }
+            _controller.TransitionToUnactive();
         }
 
-        private void EventBus_OnEnableNormalShield(ShieldEvents.EnableNormalShield input)
+        private void EventBus_Shield_EnableNormalShield(ShieldEvents.EnableNormalShield input)
         {
             _controller.TransitionToActive();
         }
 
-        private void EventBus_OnEnableSuperShield(ShieldEvents.EnableSuperShield input)
+        private void EventBus_Shield_EnableSuperShield(ShieldEvents.EnableSuperShield input)
         {
             _controller.TransitionToSuper();
         }
 
-        private void EventBus_ShieldDeflection(MeteorEvents.Deflected input)
+        private void EventBus_Meteor_Deflected(MeteorEvents.Deflected input)
         {
             _controller.HandleHit(input.Position, input.Rotation,input.Direction);
         }
 
-        private void EventBus_OnSetEnable(ShieldEvents.SetEnable input)
+        private void EventBus_Shield_SetEnable(ShieldEvents.SetEnable input)
         {
             if (input.IsEnabled)
             {

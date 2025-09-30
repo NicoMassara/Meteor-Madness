@@ -8,7 +8,6 @@ namespace _Main.Scripts.Managers
     
     public struct EarthEvents
     {
-        public struct Initialize { }
         public struct Restart { }
         public struct RestartFinished { }
         public struct ShakeStart { }
@@ -24,7 +23,6 @@ namespace _Main.Scripts.Managers
 
     public struct ShieldEvents
     {
-        public struct Initialize { };
         public struct SetEnable
         {
             public bool IsEnabled;
@@ -46,12 +44,10 @@ namespace _Main.Scripts.Managers
 
     public struct GameModeEvents
     {
-        public struct SetEnable
-        {
-            public bool IsEnabled;
-        }
-
         public struct Initialize { };
+
+        public struct Disable { };
+
         public struct Start { };
         public struct Finish { };
         public struct Restart { };

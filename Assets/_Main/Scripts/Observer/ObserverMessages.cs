@@ -40,7 +40,8 @@
         public const ulong GameRestart = 0xA2013;
         public const ulong EarthRestartFinish = 0xA2014;
         public const ulong GamePaused = 0xA2015;
-        public const ulong Disable= 0xA2016;
+        public const ulong Disable = 0xA2016;
+        public const ulong Initialize = 0xA2017;
     }
 
     public struct FlyingObjectObserverMessage

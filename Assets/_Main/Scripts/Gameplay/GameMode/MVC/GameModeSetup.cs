@@ -47,7 +47,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
 
-        #region ViewHandlers
+        #region View Handlers
 
         private void SetViewHandlers()
         {
@@ -60,11 +60,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller.TransitionToGameplay();
         }
 
-        private void View_OnEarthRestartedHandler()
+        private void View_OnEarthRestartedHandler(bool doesRestart)
         {
-            //HACK
-            //REMOVE
-            if (_isDisable == false)
+            if (doesRestart)
             {
                 _controller.TransitionToStart();
             }
@@ -76,7 +74,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #endregion
 
-        #region ViewUIHandlers
+        #region UI View Handlers
 
 
         private void SetUIViewHandlers()
@@ -87,7 +85,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void UIView_OnMainMenuButtonPressedHandler()
         {
-            _isDisable = true;
+            _motor.SetDoesRestartGameMode(false);
             _controller.TransitionToDisable();
         }
 
@@ -122,13 +120,12 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void EventBus_OnGameModeScreenEnable(GameScreenEvents.GameModeEnable input)
         {
-            _isDisable = false;
+            _controller.SetDoesRestartGameMode(true);
             _controller.TransitionToStart();
         }
 
         private void EventBus_OnMainMenu(GameScreenEvents.MainMenuEnable input)
         {
-            _isDisable = true;
             _controller.TransitionToDisable();
         }
 

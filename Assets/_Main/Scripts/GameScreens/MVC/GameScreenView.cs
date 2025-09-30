@@ -27,13 +27,11 @@ namespace _Main.Scripts.GameScreens
         private void HandleSetMainMenu()
         {
             GameManager.Instance.EventManager.Publish(new GameScreenEvents.MainMenuEnable());
-            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
         }
         
         private void HandleSetGameplay()
         {
             GameManager.Instance.EventManager.Publish(new GameScreenEvents.GameModeEnable());
-            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomOut());
         }
     }
 }
