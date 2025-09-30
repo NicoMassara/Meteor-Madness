@@ -41,10 +41,10 @@ namespace _Main.Scripts.GameScreens
         {
             var eventManager = GameManager.Instance.EventManager;
             
-            eventManager.Subscribe<SetGameScreen>(EventBus_OnSetGameScreen);
+            eventManager.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_OnSetGameScreen);
         }
 
-        private void EventBus_OnSetGameScreen(SetGameScreen input)
+        private void EventBus_OnSetGameScreen(GameScreenEvents.SetGameScreen input)
         {
             switch (input.Index)
             {

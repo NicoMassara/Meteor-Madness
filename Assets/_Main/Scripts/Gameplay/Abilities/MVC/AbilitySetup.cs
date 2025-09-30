@@ -71,14 +71,14 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var eventBus = GameManager.Instance.EventManager;
             
-            eventBus.Subscribe<SetEnableAbility>(EventBus_OnSetEnableAbility);
-            eventBus.Subscribe<AddAbility>(EventBus_OnAddAbility);
-            eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
-            eventBus.Subscribe<GameStart>(EventBus_OnGameStart);
-            eventBus.Subscribe<GameModeEnable>(EventBus_OnGameModeEnable);
+            eventBus.Subscribe<AbilitiesEvents.SetEnable>(EventBus_OnSetEnableAbility);
+            eventBus.Subscribe<AbilitiesEvents.Add>(EventBus_OnAddAbility);
+            eventBus.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
+            eventBus.Subscribe<GameModeEvents.Start>(EventBus_OnGameStart);
+            eventBus.Subscribe<GameModeEvents.SetEnable>(EventBus_OnGameModeEnable);
         }
 
-        private void EventBus_OnGameModeEnable(GameModeEnable input)
+        private void EventBus_OnGameModeEnable(GameModeEvents.SetEnable input)
         {
             if (input.IsEnabled)
             {
@@ -91,23 +91,23 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
         }
 
-        private void EventBus_OnGameStart(GameStart input)
+        private void EventBus_OnGameStart(GameModeEvents.Start input)
         {
             _controller.TransitionToEnable();
         }
 
-        private void EventBus_OnGameFinished(GameFinished input)
+        private void EventBus_OnGameFinished(GameModeEvents.Finish input)
         {
             _controller.TransitionToRestart();
             _controller.TransitionToDisable();
         }
 
-        private void EventBus_OnAddAbility(AddAbility input)
+        private void EventBus_OnAddAbility(AbilitiesEvents.Add input)
         {
             _controller.TryAddAbility(input.AbilityType);
         }
 
-        private void EventBus_OnSetEnableAbility(SetEnableAbility input)
+        private void EventBus_OnSetEnableAbility(AbilitiesEvents.SetEnable input)
         {
             if (input.IsEnable)
             {

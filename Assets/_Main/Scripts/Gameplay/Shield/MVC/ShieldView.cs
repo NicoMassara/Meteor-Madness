@@ -141,7 +141,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
             GameManager.Instance.EventManager.Publish
             (
-                new SpawnParticle
+                new ParticleEvents.Spawn
                 {
                     ParticleData = deflectParticleData,
                     Position = position,
@@ -150,7 +150,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 }
             );
             
-            GameManager.Instance.EventManager.Publish(new CameraShake{ShakeData = cameraShakeData});
+            GameManager.Instance.EventManager.Publish(new CameraEvents.Shake{ShakeData = cameraShakeData});
         }
 
         private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)

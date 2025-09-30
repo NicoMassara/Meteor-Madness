@@ -59,14 +59,14 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             var eventManager = GameManager.Instance.EventManager;
             
-            eventManager.Subscribe<MeteorDeflected>(EventBus_ShieldDeflection);
-            eventManager.Subscribe<ShieldEnable>(EventBus_OnEarthShake);
-            eventManager.Subscribe<SetSuperShield>(EventBus_OnSetTotalShield);
-            eventManager.Subscribe<SetNormalShield>(EventBus_OnSetNormalShield);
-            eventManager.Subscribe<GameModeEnable>(EventBus_OnGameModeEnable);
+            eventManager.Subscribe<MeteorEvents.Deflected>(EventBus_ShieldDeflection);
+            eventManager.Subscribe<ShieldEvents.SetEnable>(EventBus_OnSetEnable);
+            eventManager.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_OnEnableSuperShield);
+            eventManager.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_OnEnableNormalShield);
+            eventManager.Subscribe<GameModeEvents.SetEnable>(EventBus_OnGameModeEnable);
         }
 
-        private void EventBus_OnGameModeEnable(GameModeEnable input)
+        private void EventBus_OnGameModeEnable(GameModeEvents.SetEnable input)
         {
             if (input.IsEnabled)
             {
@@ -78,22 +78,22 @@ namespace _Main.Scripts.Gameplay.Shield
             }
         }
 
-        private void EventBus_OnSetNormalShield(SetNormalShield input)
+        private void EventBus_OnEnableNormalShield(ShieldEvents.EnableNormalShield input)
         {
             _controller.TransitionToActive();
         }
 
-        private void EventBus_OnSetTotalShield(SetSuperShield input)
+        private void EventBus_OnEnableSuperShield(ShieldEvents.EnableSuperShield input)
         {
             _controller.TransitionToSuper();
         }
 
-        private void EventBus_ShieldDeflection(MeteorDeflected input)
+        private void EventBus_ShieldDeflection(MeteorEvents.Deflected input)
         {
             _controller.HandleHit(input.Position, input.Rotation,input.Direction);
         }
 
-        private void EventBus_OnEarthShake(ShieldEnable input)
+        private void EventBus_OnSetEnable(ShieldEvents.SetEnable input)
         {
             if (input.IsEnabled)
             {

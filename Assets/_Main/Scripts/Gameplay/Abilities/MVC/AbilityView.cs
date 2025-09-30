@@ -61,13 +61,13 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleTriggerAbility(AbilityType enumType)
         {
-            GameManager.Instance.EventManager.Publish(new EnableSpawner{IsEnable = true});
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.EnableSpawner{IsEnable = true});
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(enumType),SelfUpdateGroup);
         }
 
         private void HandleFinishAbility(AbilityType enumType)
         {
-            GameManager.Instance.EventManager.Publish(new EnableSpawner{IsEnable = false});
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.EnableSpawner{IsEnable = false});
             
             if (abilityDataController.GetHasInstantEffect(enumType)) return;
             

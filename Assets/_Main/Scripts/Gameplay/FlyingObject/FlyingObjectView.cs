@@ -115,7 +115,7 @@ namespace _Main.Scripts.FyingObject
             {
                 GameManager.Instance.EventManager.Publish
                 (
-                    new SpawnParticle
+                    new ParticleEvents.Spawn
                     {
                         ParticleData = collisionParticle,
                         Position = position,

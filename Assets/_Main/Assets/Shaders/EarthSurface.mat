@@ -96,7 +96,7 @@ Material:
     - _Float4: 0.75
     - _FlowIntensity: 1
     - _GrassTextureTiling: 0.25
-    - _HealthAmount: 0.6999999
+    - _HealthAmount: 0.79999995
     - _IceAmount: 0.75
     - _Intensity: -0.64
     - _LightNoiseStep: 0.921

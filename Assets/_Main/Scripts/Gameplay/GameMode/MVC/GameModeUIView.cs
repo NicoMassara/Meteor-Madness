@@ -217,13 +217,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void MainMenuButton_OnClickHandler()
         {
             buttonSound?.PlaySound();
-            GameManager.Instance.EventManager.Publish(new CameraZoomIn());
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
             OnMainMenuButtonPressed?.Invoke();
         }
         
         private void ResumeButton_OnClickHandler()
         {
-            GameManager.Instance.EventManager.Publish(new GamePause{IsPaused = false});
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.SetPause{IsPaused = false});
         }
 
 
