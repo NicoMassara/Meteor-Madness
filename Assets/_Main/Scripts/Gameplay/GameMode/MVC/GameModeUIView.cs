@@ -265,7 +265,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             SetActiveDeathText(false);
             SetActiveDeathScoreText(false);
-            SetActiveRestartButton(false);
+            SetActiveRestartButtonPanel(false);
             UpdateDeathScoreText(0);
             SetActivePanel(deathPanel);
 
@@ -288,7 +288,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                     {
                         _deathPanelActionQueue.AddAction(
                             new ActionData(
-                                () => SetActiveRestartButton(true),
+                                () => SetActiveRestartButtonPanel(true),
                                 UIPanelTimeValues.EnableRestartButton));
                     }
                 });
@@ -303,7 +303,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 tempList.Add(
                     new ActionData(
-                        ()=> SetActiveRestartButton(true),
+                        ()=> SetActiveRestartButtonPanel(true),
                         UIPanelTimeValues.EnableRestartButton));
             }
 
@@ -323,9 +323,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             deathScoreText.gameObject.SetActive(isActive);
         }
 
-        private void SetActiveRestartButton(bool isActive)
+        private void SetActiveRestartButtonPanel(bool isActive)
         {
-            restartButton.gameObject.SetActive(isActive);
+            deathButtonContainer.gameObject.SetActive(isActive);
         }
         
 

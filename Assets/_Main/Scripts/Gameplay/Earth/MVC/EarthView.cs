@@ -37,7 +37,6 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private ParticleDataSo collisionParticleData;
         
         private EarthMaterialController _earthMaterialController;
-        private EarthController _controller;
         private ShakerController _shakerController;
         private GameObject _currentSprite;
         private EarthRotator _earthRotator;
@@ -314,11 +313,6 @@ namespace _Main.Scripts.Gameplay.Earth
         private void UpdateColorByHealth(float currentHealth)
         {
             _earthMaterialController.SetMaterialHealth(currentHealth);
-        }
-
-        public void SetController(EarthController controller)
-        {
-            _controller = controller;
         }
     }
 }

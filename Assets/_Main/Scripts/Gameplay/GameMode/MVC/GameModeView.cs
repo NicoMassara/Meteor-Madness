@@ -14,20 +14,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private SoundBehavior gameplayTheme;
         [SerializeField] private SoundBehavior deathTheme;
         
-        private GameModeController _controller;
         private GameModeUIView _uiView;
-
         
         public UnityAction OnEarthRestarted;
-
-        
+        public UnityAction OnCountdownFinished;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public void ManagedUpdate() { }
-
-        public void SetController(GameModeController controller)
-        {
-            _controller = controller;
-        }
+        
         
         
         // ReSharper disable Unity.PerformanceAnalysis
@@ -170,7 +163,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameManager.Instance.EventManager.Publish(new GameStart());
             GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = true});
             GameManager.Instance.EventManager.Publish(new SetEnableAbility{IsEnable = true});
-            _controller.TransitionToGameplay();
+            OnCountdownFinished?.Invoke();
         }
 
         private void HandleStartGameplay()

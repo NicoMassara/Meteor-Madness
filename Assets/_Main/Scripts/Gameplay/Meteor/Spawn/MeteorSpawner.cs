@@ -140,7 +140,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             Vector2 direction = cog - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
-            tempMeteor.SetMeteorValues(new MeteorValuesData
+            tempMeteor.SetValues(new MeteorValuesData
             {
                 MovementSpeed = meteorSpeed,
                 Rotation = tempRot,

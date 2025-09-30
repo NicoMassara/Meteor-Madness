@@ -28,8 +28,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             _motor.Subscribe(_view);
             _motor.Subscribe(_ui);
             
-            _view.SetController(_controller);
-            
+            SetViewHandlers();
             EventBusSetup();
         }
 
@@ -45,6 +44,26 @@ namespace _Main.Scripts.Gameplay.Abilies
                 _controller.SelectAbility();
             }
         }
+
+        #region View Handlers
+
+        private void SetViewHandlers()
+        {
+            _view.OnAbilityFinished += View_OnAbilityFinishedHandler;
+            _view.OnAbilitySelected += View_OnAbilitySelectedHandler;
+        }
+
+        private void View_OnAbilitySelectedHandler()
+        {
+            _controller.TransitionToRunning();
+        }
+
+        private void View_OnAbilityFinishedHandler()
+        {
+            _controller.TransitionToEnable();
+        }
+
+        #endregion
 
         #region Event Bus
 

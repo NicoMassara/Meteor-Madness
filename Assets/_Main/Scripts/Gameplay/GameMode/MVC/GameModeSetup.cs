@@ -31,11 +31,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             _motor.Subscribe(_view);
             _motor.Subscribe(_ui);
-
-            _view.SetController(_controller);
+            
             _ui.SetController(_controller);
 
             SetViewHandlers();
+            SetUIViewHandlers();
             SetEventBus();
         }
 
@@ -54,14 +54,32 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void SetViewHandlers()
         {
             _view.OnEarthRestarted += View_OnEarthRestartedHandler;
+            _view.OnCountdownFinished += View_OnCountdownFinishedHandler;
+        }
+
+        private void View_OnCountdownFinishedHandler()
+        {
+            _controller.TransitionToGameplay();
         }
 
         private void View_OnEarthRestartedHandler()
         {
+            //HACK
+            //REMOVE
             if (_isDisable == false)
             {
                 _controller.TransitionToStart();
             }
+        }
+
+        #endregion
+
+        #region ViewUIHandlers
+
+
+        private void SetUIViewHandlers()
+        {
+            
         }
 
         #endregion

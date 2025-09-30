@@ -49,7 +49,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             Vector2 direction = spawnLocation.GetCenterOfGravity() - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
-            temp.SetSphereValues(new AbilitySphereValues
+            temp.SetValues(new AbilitySphereValues
             {
                 MovementSpeed = movementSpeed,
                 Rotation = tempRot,

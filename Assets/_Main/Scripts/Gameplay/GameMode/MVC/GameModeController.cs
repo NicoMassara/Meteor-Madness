@@ -87,13 +87,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             _fsm.SetInit(disable);
             _fsm.FSMName = "GameMode";
-
-            _fsm.OnEnterState += OnEnterStateHandler;
-        }
-
-        private void OnEnterStateHandler(States state)
-        {
-            Debug.Log($"FSM: {_fsm.FSMName}, Current State: {state.ToString()}");
         }
 
         #region Transitions

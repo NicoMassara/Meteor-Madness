@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere
 {
-    public class AbilitySphereController : FlyingObjectController<AbilitySphereMotor>
+    public class AbilitySphereController : FlyingObjectController<AbilitySphereMotor, AbilitySphereValues>
     {
         private readonly LayerMask _shieldLayerMask;
         private readonly LayerMask _earthLayerMask;
@@ -25,11 +25,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
             {
                 Motor.HandleEarthCollision(); 
             }
-        }
-
-        public void SetSphereValues(AbilitySphereValues data)
-        {
-            Motor.SetAbilityValues(data);
         }
     }
 }
