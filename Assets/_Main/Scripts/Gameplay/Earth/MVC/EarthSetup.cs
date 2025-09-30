@@ -46,6 +46,12 @@ namespace _Main.Scripts.Gameplay.Earth
             eventBus.Subscribe<EarthStartDestruction>(EventBus_OnEarthStartDestruction);
             eventBus.Subscribe<HealEarth>(EventBus_OnHealEarth);
             eventBus.Subscribe<GameModeEnable>(EventBus_OnGameModeEnable);
+            eventBus.Subscribe<EarthCanTakeDamage>(EventBus_OnEarthCanTakeDamage);
+        }
+
+        private void EventBus_OnEarthCanTakeDamage(EarthCanTakeDamage input)
+        {
+            _controller.SetEnableDamage(input.CanTakeDamage);
         }
 
         private void EventBus_OnGameModeEnable(GameModeEnable input)

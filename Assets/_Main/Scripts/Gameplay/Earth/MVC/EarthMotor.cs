@@ -9,6 +9,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private float _currentHealth = 1;
         private bool _canRotate;
         private bool _isShaking;
+        private bool _canTakeDamage = true;
         public event Action OnDeath;
         
 
@@ -20,6 +21,8 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void HandleCollision(float damage, Vector3 position, Quaternion rotation, Vector2 direction)
         {
+            if(_canTakeDamage == false) return;
+            
             _currentHealth -= damage;
             
             NotifyAll(EarthObserverMessage.EarthCollision, _currentHealth, position, rotation,direction);
@@ -63,6 +66,11 @@ namespace _Main.Scripts.Gameplay.Earth
         public void TriggerEndDestruction()
         {
             NotifyAll(EarthObserverMessage.TriggerEndDestruction);
+        }
+
+        public void SetEnableDamage(bool canTakeDamage)
+        {
+            _canTakeDamage = canTakeDamage;
         }
     }
 }

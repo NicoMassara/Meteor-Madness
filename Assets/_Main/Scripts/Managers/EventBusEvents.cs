@@ -15,6 +15,11 @@ namespace _Main.Scripts.Managers
         public float HealAmount;
     }
 
+    public struct EarthCanTakeDamage
+    {
+        public bool CanTakeDamage;
+    }
+    
     public struct EarthStartDestruction { }
     public struct EarthEndDestruction { }
 

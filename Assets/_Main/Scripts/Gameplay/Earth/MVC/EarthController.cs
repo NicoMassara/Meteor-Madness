@@ -158,6 +158,11 @@ namespace _Main.Scripts.Gameplay.Earth
             _motor.SetRotation(canRotate);
         }
 
+        public void SetEnableDamage(bool canTakeDamage)
+        {
+            _motor.SetEnableDamage(canTakeDamage);
+        }
+
         #region Handlers
 
         private void Motor_OnDeathHandler()

@@ -125,9 +125,11 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    GameManager.Instance.EventManager.Publish(new EarthCanTakeDamage{CanTakeDamage = false});
+                    CustomTime.SetChannelTimeScale(UpdateGroup.Shield, 0.25F);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
-                        UpdateGroups = new[] { UpdateGroup.Gameplay, UpdateGroup.Effects, UpdateGroup.Shield },
+                        UpdateGroups = new[] { UpdateGroup.Gameplay, UpdateGroup.Effects},
                         TargetTimeScale = minTimeScale,
                         CurrentTimeScale = 1.0f,
                         TimeToUpdate = SuperHealTimeValues.TimeToZoomIn,
@@ -144,12 +146,13 @@ namespace _Main.Scripts.Gameplay.Abilies
                 {
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
-                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects, UpdateGroup.Shield },
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects, UpdateGroup.Shield},
                         TargetTimeScale = 1f,
                         CurrentTimeScale = minTimeScale,
                         TimeToUpdate = 0.25f,
                     });
                     
+                    GameManager.Instance.EventManager.Publish(new EarthCanTakeDamage{CanTakeDamage = true});
                     OnAbilityStarted?.Invoke(0.1f);
                 }, SuperHealTimeValues.TimeBeforeIncreasingTimeScale),
             };
