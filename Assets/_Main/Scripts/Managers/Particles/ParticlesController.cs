@@ -65,18 +65,16 @@ namespace _Main.Scripts.Particles
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<SpawnParticle>(EventBus_OnSpawnParticle);
+            eventManager.Subscribe<ParticleEvents.Spawn>(EventBus_OnSpawnParticle);
         }
 
 
-        private void EventBus_OnSpawnParticle(SpawnParticle input)
+        private void EventBus_OnSpawnParticle(ParticleEvents.Spawn input)
         {
             SpawnParticle(input.ParticleData, input.Position, 
                 input.Rotation, input.MoveDirection);
         }
 
         #endregion
-        
-
     }
 }

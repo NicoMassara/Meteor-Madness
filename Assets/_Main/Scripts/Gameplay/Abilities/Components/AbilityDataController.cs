@@ -43,7 +43,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
-                    _eventBus.Publish(new SetEnableInputs { IsEnable = false });
+                    _eventBus.Publish(new InputsEvents.SetEnable { IsEnable = false });
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -52,11 +52,11 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = SuperShieldStartTimeValues.TimeToZoomIn,
                     });
                 }, 0f),
-                new ActionData(() => { _eventBus.Publish(new CameraZoomIn()); },
+                new ActionData(CameraZoomIn,
                     SuperShieldStartTimeValues.TimeToZoomIn),
-                new ActionData(() => { _eventBus.Publish(new SetSuperShield { }); },
+                new ActionData(() => { _eventBus.Publish(new ShieldEvents.EnableSuperShield()); },
                     SuperShieldStartTimeValues.TimeToMoveFastShield),
-                new ActionData(() => { _eventBus.Publish(new CameraZoomOut()); },
+                new ActionData(CameraZoomOut,
                     SuperShieldStartTimeValues.TimeToZoomOut),
                 new ActionData(() =>
                 {
@@ -67,7 +67,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = minTimeScale,
                         TimeToUpdate = 0.25f,
                     });
-                    _eventBus.Publish(new SpawnRingMeteor());
+                    _eventBus.Publish(new MeteorEvents.SpawnRing());
                 }, SuperShieldStartTimeValues.TimeBeforeIncreasingTimeScale),
                 new ActionData(() =>
                 {
@@ -89,11 +89,11 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = SuperShieldEndTimeValues.TimeBeforeDisableSuperShield
                     });
                 }, 0f),
-                new ActionData(() => { _eventBus.Publish(new SetNormalShield()); },
+                new ActionData(() => { _eventBus.Publish(new ShieldEvents.EnableNormalShield()); },
                     SuperShieldEndTimeValues.TimeBeforeDisableSuperShield),
                 new ActionData(() =>
                 {
-                    _eventBus.Publish(new SetEnableInputs { IsEnable = true });
+                    _eventBus.Publish(new InputsEvents.SetEnable { IsEnable = true });
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -125,7 +125,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
-                    GameManager.Instance.EventManager.Publish(new EarthCanTakeDamage{CanTakeDamage = false});
+                    GameManager.Instance.EventManager.Publish(new EarthEvents.SetEnableDamage{DamageEnable = false});
                     CustomTime.SetChannelTimeScale(UpdateGroup.Shield, 0.25F);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
@@ -136,11 +136,11 @@ namespace _Main.Scripts.Gameplay.Abilies
                     });
                     
                 }, 0f),
-                new ActionData(() => { _eventBus.Publish(new CameraZoomIn()); },
+                new ActionData(() => { _eventBus.Publish(new CameraEvents.ZoomIn()); },
                     SuperHealTimeValues.TimeToZoomIn),
-                new ActionData(() => { _eventBus.Publish(new HealEarth()); },
+                new ActionData(() => { _eventBus.Publish(new EarthEvents.Heal()); },
                     SuperHealTimeValues.TimeToHeal),
-                new ActionData(() => { _eventBus.Publish(new CameraZoomOut()); },
+                new ActionData(() => { _eventBus.Publish(new CameraEvents.ZoomOut()); },
                     SuperHealTimeValues.TimeToZoomOut),
                 new ActionData(() =>
                 {
@@ -152,7 +152,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = 0.25f,
                     });
                     
-                    GameManager.Instance.EventManager.Publish(new EarthCanTakeDamage{CanTakeDamage = true});
+                    GameManager.Instance.EventManager.Publish(new EarthEvents.SetEnableDamage{DamageEnable = true});
                     OnAbilityStarted?.Invoke(0.1f);
                 }, SuperHealTimeValues.TimeBeforeIncreasingTimeScale),
             };
@@ -170,6 +170,16 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         #endregion
 
+
+        private void CameraZoomIn()
+        {
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
+        }
+
+        private void CameraZoomOut()
+        {
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomOut());
+        }
 
         public bool HasAbilityData(AbilityType abilityType)
         {

@@ -101,17 +101,17 @@ namespace _Main.Scripts.Menu
         {
             var eventManager = GameManager.Instance.EventManager;
 
-            eventManager.Subscribe<MainMenuScreenEnable>(EventBus_OnMainMenuScreen);
-            eventManager.Subscribe<GameModeScreenEnable>(EventBus_OnGameplayScreen);
+            eventManager.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_OnMainMenuScreen);
+            eventManager.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_OnGameplayScreen);
         }
 
-        private void EventBus_OnGameplayScreen(GameModeScreenEnable input)
+        private void EventBus_OnGameplayScreen(GameScreenEvents.GameModeEnable input)
         {
             themeSound.StopSound();
             SetEnableMainPanel(false);
         }
 
-        private void EventBus_OnMainMenuScreen(MainMenuScreenEnable input)
+        private void EventBus_OnMainMenuScreen(GameScreenEvents.MainMenuEnable input)
         {
             SetEnableAllButtons(true);
             Initialize();

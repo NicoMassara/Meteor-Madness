@@ -95,11 +95,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                     Time = 0.5f,
                     OnStartAction = () =>
                     {
-                        GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = false});
+                        SetEnableInputs(false);
                     },
                     OnEndAction = () =>
                     {
-                        GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = true});
+                        SetEnableInputs(true);
                     },
                     
                 }, UpdateGroup.Always);
@@ -123,31 +123,31 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             if (_isFirstDisable == false)
             {
-                GameManager.Instance.EventManager.Publish(new EarthRestart());
+                GameManager.Instance.EventManager.Publish(new EarthEvents.Restart());
             }
             
             _isFirstDisable = false;
             
-            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = false});
-            GameManager.Instance.EventManager.Publish(new GameModeEnable{IsEnabled = false});
+            SetEnableInputs(false);
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.SetEnable{IsEnabled = false});
         }
 
         private void HandleGameFinish()
         {
             gameplayTheme?.StopSound();
             GameManager.Instance.CanPlay = false;
-            GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = false});
-            GameManager.Instance.EventManager.Publish(new RecycleAllMeteors());
-            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = false});
+            GameManager.Instance.EventManager.Publish(new ShieldEvents.SetEnable{IsEnabled = false});
+            GameManager.Instance.EventManager.Publish(new MeteorEvents.RecycleAll());
+            SetEnableInputs(false);
         }
         
         private void HandleGameRestart()
         {
             var tempActions = new ActionData[]
             {
-                new (()=>GameManager.Instance.EventManager.Publish(new GameRestart()),
+                new (()=>GameManager.Instance.EventManager.Publish(new GameModeEvents.Restart()),
                     GameRestartTimeValues.TriggerRestart),
-                new (()=>GameManager.Instance.EventManager.Publish(new EarthRestart()),
+                new (()=>GameManager.Instance.EventManager.Publish(new EarthEvents.Restart()),
                     GameRestartTimeValues.RestartEarth),
             };
             
@@ -164,21 +164,21 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             deathTheme?.StopSound();
-            GameManager.Instance.EventManager.Publish(new CameraZoomOut());
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomOut());
         }
         
         private void HandleCountdownFinish()
         {
-            GameManager.Instance.EventManager.Publish(new GameStart());
-            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = true});
-            GameManager.Instance.EventManager.Publish(new SetEnableAbility{IsEnable = true});
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.Start());
+            SetEnableInputs(true);
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetEnable{IsEnable = true});
             OnCountdownFinished?.Invoke();
         }
 
         private void HandleStartGameplay()
         {
             GameManager.Instance.CanPlay = true;
-            GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = true});
+            GameManager.Instance.EventManager.Publish(new ShieldEvents.SetEnable{IsEnabled = true});
             gameplayTheme?.PlaySound();
         }
 
@@ -188,12 +188,12 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleEarthStartDestruction()
         {
-            GameManager.Instance.EventManager.Publish(new EarthStartDestruction());
+            GameManager.Instance.EventManager.Publish(new EarthEvents.DestructionStart());
         }
         
         private void HandleEarthShake()
         {
-            GameManager.Instance.EventManager.Publish(new CameraZoomIn());
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
         }
         
         private void HandleEarthEndDestruction()
@@ -207,19 +207,24 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
-            GameManager.Instance.EventManager.Publish(new EnableMeteorSpawn { CanSpawn = canSpawn });
+            GameManager.Instance.EventManager.Publish(new MeteorEvents.EnableSpawn { CanSpawn = canSpawn });
         }
         
         private void HandleSpawnRingMeteor()
         {
-            GameManager.Instance.EventManager.Publish(new SpawnRingMeteor{});
+            GameManager.Instance.EventManager.Publish(new MeteorEvents.SpawnRing{});
         }
 
         #endregion
         
         private void HandleUpdateGameLevel(int currentLevel)
         {
-            GameManager.Instance.EventManager.Publish(new UpdateLevel{CurrentLevel = currentLevel});
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.UpdateLevel{CurrentLevel = currentLevel});
+        }
+
+        private void SetEnableInputs(bool isEnable)
+        {
+            GameManager.Instance.EventManager.Publish(new InputsEvents.SetEnable{IsEnable = isEnable});
         }
     }
 }

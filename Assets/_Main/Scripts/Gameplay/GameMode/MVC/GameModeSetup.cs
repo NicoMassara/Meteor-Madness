@@ -106,58 +106,58 @@ namespace _Main.Scripts.Gameplay.GameMode
             //Add events
             
             //Game
-            eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
-            eventBus.Subscribe<GamePause>(EventBus_OnGamePaused);
-            eventBus.Subscribe<MainMenuScreenEnable>(EventBus_OnMainMenu);
-            eventBus.Subscribe<GameModeScreenEnable>(EventBus_OnGameModeScreenEnable);
+            eventBus.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
+            eventBus.Subscribe<GameModeEvents.SetPause>(EventBus_OnGamePaused);
+            eventBus.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_OnMainMenu);
+            eventBus.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_OnGameModeScreenEnable);
             
             //Meteor
-            eventBus.Subscribe<MeteorDeflected>(EventBus_OnMeteorDeflected);
+            eventBus.Subscribe<MeteorEvents.Deflected>(EventBus_OnMeteorDeflected);
             
             //Earth
-            eventBus.Subscribe<EarthShake>(EventBus_OnEarthShake);
-            eventBus.Subscribe<EarthEndDestruction>(EventBus_OnEarthDestruction);
-            eventBus.Subscribe<EarthRestartFinish>(EventBus_OnEarthRestartFinish);
+            eventBus.Subscribe<EarthEvents.ShakeStart>(EventBus_OnEarthShake);
+            eventBus.Subscribe<EarthEvents.DestructionFinished>(EventBus_OnEarthDestruction);
+            eventBus.Subscribe<EarthEvents.RestartFinished>(EventBus_OnEarthRestartFinish);
         }
 
-        private void EventBus_OnGameModeScreenEnable(GameModeScreenEnable input)
+        private void EventBus_OnGameModeScreenEnable(GameScreenEvents.GameModeEnable input)
         {
             _isDisable = false;
             _controller.TransitionToStart();
         }
 
-        private void EventBus_OnMainMenu(MainMenuScreenEnable input)
+        private void EventBus_OnMainMenu(GameScreenEvents.MainMenuEnable input)
         {
             _isDisable = true;
             _controller.TransitionToDisable();
         }
 
-        private void EventBus_OnGamePaused(GamePause input)
+        private void EventBus_OnGamePaused(GameModeEvents.SetPause input)
         {
             _controller.SetGamePause(input.IsPaused);
         }
 
-        private void EventBus_OnEarthRestartFinish(EarthRestartFinish input)
+        private void EventBus_OnEarthRestartFinish(EarthEvents.RestartFinished input)
         {
             _controller.EarthRestartFinish();
         }
 
-        private void EventBus_OnGameFinished(GameFinished input)
+        private void EventBus_OnGameFinished(GameModeEvents.Finish input)
         {
             _controller.TransitionToFinish();
         }
 
-        private void EventBus_OnMeteorDeflected(MeteorDeflected input)
+        private void EventBus_OnMeteorDeflected(MeteorEvents.Deflected input)
         {
             _controller.HandleMeteorDeflect(input.Value);
         }
 
-        private void EventBus_OnEarthDestruction(EarthEndDestruction input)
+        private void EventBus_OnEarthDestruction(EarthEvents.DestructionFinished destructionFinished)
         {
             _controller.TransitionToDeath();
         }
 
-        private void EventBus_OnEarthShake(EarthShake input)
+        private void EventBus_OnEarthShake(EarthEvents.ShakeStart shakeStart)
         {
             _controller.HandleEarthShake();
         }

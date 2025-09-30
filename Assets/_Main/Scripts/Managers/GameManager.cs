@@ -36,12 +36,12 @@ namespace _Main.Scripts.Managers
 
         public void LoadGameplay()
         {
-            Instance.EventManager.Publish(new SetGameScreen{Index = 1});
+            Instance.EventManager.Publish(new GameScreenEvents.SetGameScreen{Index = 1});
         }
 
         public void LoadMainMenu()
         {
-            Instance.EventManager.Publish(new SetGameScreen{Index = 0});
+            Instance.EventManager.Publish(new GameScreenEvents.SetGameScreen{Index = 0});
         }
 
         #region Damage

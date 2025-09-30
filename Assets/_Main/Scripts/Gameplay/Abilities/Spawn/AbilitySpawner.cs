@@ -68,10 +68,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             data.Sphere.OnDeflection = null;
             data.Sphere.OnEarthCollision = null;
             
-            GameManager.Instance.EventManager.Publish(new AddAbility{AbilityType = data.Ability});
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.Add{AbilityType = data.Ability});
             GameManager.Instance.EventManager.Publish
             (
-                new MeteorDeflected
+                new MeteorEvents.Deflected
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
@@ -89,7 +89,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             GameManager.Instance.EventManager.Publish
             (
-                new MeteorCollision
+                new MeteorEvents.Collision
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
@@ -126,14 +126,14 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<GameFinished>(EventBus_OnGameFinished);
-            eventManager.Subscribe<GameStart>(EventBus_OnGameStart);
-            eventManager.Subscribe<EnableSpawner>(EventBus_OnAbilityInUse);
-            eventManager.Subscribe<UpdateLevel>(EnventBus_OnUpdateLevel);
-            eventManager.Subscribe<GameModeEnable>(EventBus_OnGameModeEnable);
+            eventManager.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
+            eventManager.Subscribe<GameModeEvents.Start>(EventBus_OnGameStart);
+            eventManager.Subscribe<AbilitiesEvents.EnableSpawner>(EventBus_OnAbilityInUse);
+            eventManager.Subscribe<GameModeEvents.UpdateLevel>(EnventBus_OnUpdateLevel);
+            eventManager.Subscribe<GameModeEvents.SetEnable>(EventBus_OnGameModeEnable);
         }
 
-        private void EventBus_OnGameModeEnable(GameModeEnable input)
+        private void EventBus_OnGameModeEnable(GameModeEvents.SetEnable input)
         {
             if (input.IsEnabled)
             {
@@ -146,17 +146,17 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
 
-        private void EnventBus_OnUpdateLevel(UpdateLevel input)
+        private void EnventBus_OnUpdateLevel(GameModeEvents.UpdateLevel input)
         {
             _spawnValues.SetIndex(input.CurrentLevel);
         }
 
-        private void EventBus_OnGameStart(GameStart input)
+        private void EventBus_OnGameStart(GameModeEvents.Start input)
         {
             SetTimer();
         }
 
-        private void EventBus_OnAbilityInUse(EnableSpawner input)
+        private void EventBus_OnAbilityInUse(AbilitiesEvents.EnableSpawner input)
         {
             if (input.IsEnable)
             {
@@ -168,7 +168,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
 
-        private void EventBus_OnGameFinished(GameFinished input)
+        private void EventBus_OnGameFinished(GameModeEvents.Finish input)
         {
             TimerManager.Remove(_spawnTimerId);
             _factory.RecycleAll();
