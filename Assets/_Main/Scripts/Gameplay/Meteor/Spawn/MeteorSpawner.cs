@@ -206,7 +206,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             eventManager.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
             eventManager.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventManager.Subscribe<ProjectileEvents.DistanceCheck>(EventBus_Projectile_DistanceCheck);
+            eventManager.Subscribe<ProjectileEvents.Request>(EventBus_Projectile_DistanceCheck);
         }
 
         private void EnventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
@@ -217,7 +217,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             }
         }
 
-        private void EventBus_Projectile_DistanceCheck(ProjectileEvents.DistanceCheck input)
+        private void EventBus_Projectile_DistanceCheck(ProjectileEvents.Request input)
         {
             SpawnSingleMeteor(input.Position, input.Direction, input.MovementMultiplier);
         }
