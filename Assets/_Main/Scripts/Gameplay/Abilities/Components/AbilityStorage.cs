@@ -5,12 +5,12 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityStorage
     {
-        private readonly Queue<AbilityType> _abilityQueue = new Queue<AbilityType>();
+        private readonly Queue<int> _abilityQueue = new Queue<int>();
         private readonly int _maxAbilityCount;
 
         public UnityAction OnStorageFilled;
-        public UnityAction<AbilityType> OnAbilityTaken;
-        public UnityAction<AbilityType> OnAbilityAdded;
+        public UnityAction<int> OnAbilityTaken;
+        public UnityAction<int> OnAbilityAdded;
 
         public AbilityStorage(int maxAbilityCount)
         {
@@ -22,18 +22,18 @@ namespace _Main.Scripts.Gameplay.Abilies
             _abilityQueue.Clear();
         }
 
-        public void AddAbility(AbilityType ability)
+        public void AddAbility(int abilityIndex)
         {
             if(_abilityQueue.Count >= _maxAbilityCount) return;
             
-            _abilityQueue.Enqueue(ability);
+            _abilityQueue.Enqueue(abilityIndex);
 
             if (_abilityQueue.Count == _maxAbilityCount)
             {
                 OnStorageFilled?.Invoke();
             }
             
-            OnAbilityAdded?.Invoke(ability);
+            OnAbilityAdded?.Invoke(abilityIndex);
         }
 
         public void TakeAbility()

@@ -105,9 +105,9 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         #endregion
 
-        public void TryAddAbility(AbilityType abilityType)
+        public void TryAddAbility(int abilityTypeIndex)
         {
-            _motor.TryAddAbility(abilityType);
+            _motor.TryAddAbility(abilityTypeIndex);
         }
 
         public void SelectAbility()
@@ -138,6 +138,11 @@ namespace _Main.Scripts.Gameplay.Abilies
         public void RestartAbilities()
         {
             _motor.RestartAbilities();
+        }
+
+        public void RunActiveTimer()
+        {
+            _motor.RunActiveTimer();
         }
     }
 }

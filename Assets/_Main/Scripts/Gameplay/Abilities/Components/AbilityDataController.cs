@@ -54,7 +54,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, 0f),
                 new ActionData(CameraZoomIn,
                     SuperShieldStartTimeValues.TimeToZoomIn),
-                new ActionData(() => { _eventBus.Publish(new ShieldEvents.EnableSuperShield()); },
+                new ActionData(() => { _eventBus.Publish(new ShieldEvents.EnableSuperShield());},
                     SuperShieldStartTimeValues.TimeToMoveFastShield),
                 new ActionData(CameraZoomOut,
                     SuperShieldStartTimeValues.TimeToZoomOut),
@@ -71,8 +71,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, SuperShieldStartTimeValues.TimeBeforeIncreasingTimeScale),
                 new ActionData(() =>
                 {
-                    var activeTime = _abilities[AbilityType.SuperShield].ActiveTime;
-                    OnAbilityStarted?.Invoke(activeTime);
+                    RunActiveTimer(AbilityType.SuperShield);
                 }),
             };
 
@@ -126,7 +125,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 new ActionData(() =>
                 {
                     GameManager.Instance.EventManager.Publish(new EarthEvents.SetEnableDamage{DamageEnable = false});
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Shield, 0.25F);
+                    CustomTime.SetChannelTimeScale(UpdateGroup.Shield, 0.5f);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new[] { UpdateGroup.Gameplay, UpdateGroup.Effects},
@@ -167,7 +166,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             _abilities.Add(healData.AbilityType, healData);
         }
 
-
         #endregion
 
 
@@ -199,6 +197,12 @@ namespace _Main.Scripts.Gameplay.Abilies
         public bool GetHasInstantEffect(AbilityType abilityType)
         {
             return _abilities[abilityType].GetHasInstantEffect();
+        }
+
+        public void RunActiveTimer(AbilityType abilityType)
+        {
+            var activeTime = _abilities[abilityType].ActiveTime;
+            OnAbilityStarted?.Invoke(activeTime);
         }
 
     }

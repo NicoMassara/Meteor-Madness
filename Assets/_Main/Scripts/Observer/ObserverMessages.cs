@@ -72,6 +72,7 @@
         public const ulong SelectAbility = 0xA4006;
         public const ulong StorageFilled = 0xA4007;
         public const ulong RestartAbilities = 0xA4008;
+        public const ulong RunActiveTimer = 0xA4009;
     }
     
     public struct GameScreenObserverMessage
