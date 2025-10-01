@@ -40,8 +40,6 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private LayerMask meteorLayer;
         [Range(0.5f, 3f)] 
         [SerializeField] private float meteorCheckRadius = 10f;
-        [Space] 
-        [Header("Degree Movement")] 
         
         private MeteorDetector _meteorDetector;
         private ShieldMovement _movement;

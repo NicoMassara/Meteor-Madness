@@ -317,6 +317,39 @@ namespace _Main.Scripts.Gameplay.Abilies
             _abilities.Add(abilityData.AbilityType, abilityData);
         }
 
+        private void CreateDoublePointData()
+        {
+            //Start Queue
+            var startActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    PublishAbilityActive(AbilityType.DoublePoints, true);
+                    RunActiveTimer(AbilityType.DoublePoints);
+                }),
+            };
+
+            //End Queue
+            var endActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    PublishAbilityActive(AbilityType.DoublePoints, false);
+                    OnAbilityFinished?.Invoke(AbilityType.SlowMotion);
+                }),
+            };
+
+            var abilityData = new AbilityData
+            {
+                ActiveTime = 5f,
+                AbilityType = AbilityType.DoublePoints,
+                StartActions = startActions,
+                EndActions = endActions,
+            };
+
+            _abilities.Add(abilityData.AbilityType, abilityData);
+        }
+
         #endregion
 
 
