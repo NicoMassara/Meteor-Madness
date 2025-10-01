@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
@@ -20,7 +19,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Awake()
         {
-            _motor = new AbilityMotor(GameValues.MaxAbilityCount);
+            _motor = new AbilityMotor(GameParameters.GameplayValues.MaxAbilityCount);
             _controller = new AbilityController(_motor);
             
             _view = GetComponent<AbilityView>();
@@ -29,8 +28,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             _motor.Subscribe(_view);
             _motor.Subscribe(_ui);
             
-            _view.SetController(_controller);
-            
+            SetViewHandlers();
             EventBusSetup();
         }
 
@@ -47,35 +45,71 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
         }
 
+        #region View Handlers
+
+        private void SetViewHandlers()
+        {
+            _view.OnAbilityFinished += View_OnAbilityFinishedHandler;
+            _view.OnAbilitySelected += View_OnAbilitySelectedHandler;
+        }
+
+        private void View_OnAbilitySelectedHandler()
+        {
+            _controller.TransitionToRunning();
+        }
+
+        private void View_OnAbilityFinishedHandler()
+        {
+            _controller.TransitionToEnable();
+        }
+
+        #endregion
+
         #region Event Bus
 
         private void EventBusSetup()
         {
             var eventBus = GameManager.Instance.EventManager;
             
-            eventBus.Subscribe<SetEnableAbility>(EventBus_OnSetEnableAbility);
-            eventBus.Subscribe<AddAbility>(EventBus_OnAddAbility);
-            eventBus.Subscribe<GameFinished>(EventBus_OnGameFinished);
-            eventBus.Subscribe<GameStart>(EventBus_OnGameStart);
+            eventBus.Subscribe<AbilitiesEvents.SetEnable>(EventBus_Ability_SetEnable);
+            eventBus.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
+            eventBus.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+            eventBus.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
+            eventBus.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            eventBus.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
         }
 
-        private void EventBus_OnGameStart(GameStart input)
+        private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
+        {
+            if (input.IsActive == false)
+            {
+                _controller.RunActiveTimer();
+            }
+        }
+
+        private void EventBus_GameMode_Start(GameModeEvents.Start input)
         {
             _controller.TransitionToEnable();
         }
 
-        private void EventBus_OnGameFinished(GameFinished input)
+        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
+        {
+            _controller.TransitionToRestart();
+            _controller.TransitionToDisable();
+        }
+        
+        private void EventBus_GameMode_Finish(GameModeEvents.Finish input)
         {
             _controller.TransitionToRestart();
             _controller.TransitionToDisable();
         }
 
-        private void EventBus_OnAddAbility(AddAbility input)
+        private void EventBus_Ability_Add(AbilitiesEvents.Add input)
         {
-            _controller.TryAddAbility(input.AbilityType);
+            _controller.TryAddAbility((int)input.AbilityType);
         }
 
-        private void EventBus_OnSetEnableAbility(SetEnableAbility input)
+        private void EventBus_Ability_SetEnable(AbilitiesEvents.SetEnable input)
         {
             if (input.IsEnable)
             {

@@ -5,11 +5,10 @@ namespace _Main.Scripts.Managers
 {
     public class GameManager : ManagedBehavior
     {
-        [SerializeField] private DamageTypes currentDamageType = DamageTypes.Brutal;
+        [SerializeField] private DamageParameters.DamageTypes currentDamageDamageType = DamageParameters.DamageTypes.Standard;
         public static GameManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         private static GameManager _instance;
         
-        private SceneController _sceneController;
         
         public bool CanPlay { get; set; }
         public bool IsPaused { get; set; }
@@ -29,33 +28,32 @@ namespace _Main.Scripts.Managers
 
         private void Awake()
         {
-            _sceneController = new SceneController();
-            currentDamageType = DamageTypes.Standard;
+            currentDamageDamageType = DamageParameters.DamageTypes.Standard;
             EventManager = new EventBusManager();
         }
 
-        public void LoadGameScene()
+        public void LoadGameplay()
         {
-            _sceneController.LoadGameScene();
+            Instance.EventManager.Publish(new GameScreenEvents.SetGameScreen{Index = 1});
         }
 
-        public void LoadMainMenuScene()
+        public void LoadMainMenu()
         {
-            _sceneController.LoadMainMenuScene();
+            Instance.EventManager.Publish(new GameScreenEvents.SetGameScreen{Index = 0});
         }
 
         #region Damage
 
         public float GetMeteorDamage()
         {
-            return currentDamageType switch
+            return currentDamageDamageType switch
             {
-                DamageTypes.None => DamageValues.NoneDamage,
-                DamageTypes.Standard => DamageValues.StandardMeteor,
-                DamageTypes.Hard => DamageValues.HardMeteor,
-                DamageTypes.Heavy => DamageValues.HeavyMeteor,
-                DamageTypes.Brutal => DamageValues.BrutalMeteor,
-                _ => DamageValues.StandardMeteor
+                DamageParameters.DamageTypes.None => DamageParameters.Values.NoneDamage,
+                DamageParameters.DamageTypes.Standard => DamageParameters.Values.StandardMeteor,
+                DamageParameters.DamageTypes.Hard => DamageParameters.Values.HardMeteor,
+                DamageParameters.DamageTypes.Heavy => DamageParameters.Values.HeavyMeteor,
+                DamageParameters.DamageTypes.Brutal => DamageParameters.Values.BrutalMeteor,
+                _ => DamageParameters.Values.StandardMeteor
             };
         }
 

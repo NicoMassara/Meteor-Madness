@@ -20,7 +20,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void Initialize()
         {
-            _pool = new GenericPool<AbilitySphereView>(_prefab);
+            _pool = new GenericPool<AbilitySphereView>(_prefab, 2, 5);
         }
 
         public AbilitySphereView SpawnAbilitySphere()
@@ -33,10 +33,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         
         public void RecycleAll()
         {
-            for (int i = _activeSpheres.Count - 1; i >= 0; i--)
-            {
-                _activeSpheres[i].ForceRecycle();
-            }
+            _pool.RecycleAll();
         }
 
         private void OnRecycleHandler(AbilitySphereView sphereView)

@@ -8,7 +8,7 @@
         {
             _actionQueue.AddAction(new ActionData(
                 () => Controller.HandleEarthEndDestruction(), 
-                UIPanelTimeValues.ShowDeathUI));
+                UIParameters.PanelTimeValues.ShowDeathUI));
         }
 
         public override void Execute(float deltaTime)

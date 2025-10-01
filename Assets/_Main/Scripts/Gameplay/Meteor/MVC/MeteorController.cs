@@ -3,13 +3,14 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class MeteorController : FlyingObjectController<MeteorMotor>
+    public class MeteorController : FlyingObjectController<MeteorMotor, MeteorValuesData>
     {
         private readonly LayerMask _shieldLayerMask;
         private readonly LayerMask _earthLayerMask;
 
-        public MeteorController(MeteorMotor motor, LayerMask shieldLayerMask, LayerMask earthLayerMask) : 
-            base(motor)
+
+        public MeteorController(MeteorMotor motor, LayerMask shieldLayerMask, LayerMask earthLayerMask) 
+            : base(motor)
         {
             _shieldLayerMask = shieldLayerMask;
             _earthLayerMask = earthLayerMask;
@@ -25,11 +26,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             {
                 Motor.HandleEarthCollision(); 
             }
-        }
-
-        public void SetMeteorValues(MeteorValuesData data)
-        {
-            Motor.SetMeteorValues(data);
         }
     }
 }

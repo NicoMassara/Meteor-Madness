@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Comet
 {
-    public class CometView : FlyingObjectView<CometMotor,CometView, CometController>
+    public class CometView : FlyingObjectView<CometMotor,CometView, FlyingObjectValues>
     {
         protected override void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)
         {

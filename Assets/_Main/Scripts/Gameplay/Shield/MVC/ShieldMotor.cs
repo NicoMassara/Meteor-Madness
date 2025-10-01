@@ -7,6 +7,7 @@ namespace _Main.Scripts.Gameplay.Shield
     {
         private float _lastDirection;
         private bool _isTotalActive;
+        private bool _isGolden;
 
         #region Movement
         public void Rotate(float direction = 1)
@@ -24,11 +25,6 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _lastDirection = 0;
             NotifyAll(ShieldObserverMessage.StopRotate);
-        }
-
-        public void RestartPosition()
-        {
-            NotifyAll(ShieldObserverMessage.RestartPosition);
         }
         
         public void SetActiveSuperShield(bool isActive)
@@ -56,6 +52,12 @@ namespace _Main.Scripts.Gameplay.Shield
         public void HandleHit(Vector3 position, Quaternion rotation, Vector2 direction)
         {
             NotifyAll(ShieldObserverMessage.Deflect,position, rotation, direction);
+        }
+
+        public void SetActiveGold(bool isActive)
+        {
+            _isGolden = isActive;
+            NotifyAll(ShieldObserverMessage.SetGold,_isGolden);
         }
     }
 }

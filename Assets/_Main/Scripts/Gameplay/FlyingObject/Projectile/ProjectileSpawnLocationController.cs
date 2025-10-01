@@ -18,7 +18,7 @@ namespace _Main.Scripts.Gameplay.FlyingObject
         [SerializeField] private int maxSlotProximity;
         
 
-        private const int SlotAmount = GameValues.AngleSlots;
+        private const int SlotAmount = GameParameters.GameplayValues.AngleSlots;
         private int _lastSlot;
         
         private void OnValidate()
@@ -37,7 +37,7 @@ namespace _Main.Scripts.Gameplay.FlyingObject
 
         private void Awake()
         {
-            GameManager.Instance.EventManager.Subscribe<GameStart>(EventBus_OnGameStart);
+            GameManager.Instance.EventManager.Subscribe<GameModeEvents.Start>(EventBus_OnGameModeStart);
         }
 
         #region Create Spawn Angle
@@ -121,7 +121,7 @@ namespace _Main.Scripts.Gameplay.FlyingObject
 
         #region Event Bus
 
-        private void EventBus_OnGameStart(GameStart input)
+        private void EventBus_OnGameModeStart(GameModeEvents.Start input)
         {
             RestartValues();
         }
