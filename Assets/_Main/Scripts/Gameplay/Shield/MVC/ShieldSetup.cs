@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
@@ -69,7 +70,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
         {
-            if ((int)input.AbilityType == 4) return;
+            if (input.AbilityType == AbilityType.DoublePoints) return;
             {
                 _controller.SetActiveGold(input.IsActive);
             }
