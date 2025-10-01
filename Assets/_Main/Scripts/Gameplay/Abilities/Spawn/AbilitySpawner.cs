@@ -73,8 +73,9 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             );
             
             data.Sphere.ForceRecycle();
-            
-            SetTimer();
+
+            var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
+            SetTimer(temp);
         }
         
         private void OnEarthCollisionHandler(AbilitySphereCollisionData data)
@@ -94,14 +95,15 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             data.Sphere.ForceRecycle();
             
-            SetTimer();
+            var temp = UnityEngine.Random.Range(spawnDelay * 0.75f, spawnDelay );
+            SetTimer(temp);
         }
 
-        private void SetTimer()
+        private void SetTimer(float time)
         {
             _spawnTimerId = TimerManager.Add(new TimerData
             {
-                Time = UnityEngine.Random.Range(spawnDelay * 0.85f, spawnDelay * 1.15f),
+                Time = time,
                 OnEndAction = SendAbility
             }, SelfUpdateGroup);
         }
@@ -132,7 +134,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             if (input.CurrentLevel == GameValues.LevelToSpawnAbilities)
             {
                 Debug.Log("Abilities Spawning");
-                SetTimer();
+                SetTimer(spawnDelay);
             }
         }
 
@@ -150,7 +152,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
             else
             {
-                SetTimer();
+                SetTimer(spawnDelay);
             }
         }
 
