@@ -14,6 +14,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
         public UnityAction<AbilitySphereCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
         public bool EnableMovement { get; set; }
+
         public event Action OnDeath;
         
         public override void ManagedFixedUpdate()
@@ -23,7 +24,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
                 base.ManagedFixedUpdate();
             }
         }
-
         
         public override void OnNotify(ulong message, params object[] args)
         {

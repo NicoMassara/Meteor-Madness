@@ -11,18 +11,13 @@ namespace _Main.Scripts.Gameplay.Meteor
     {
         [Header("Components")]
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
-        [SerializeField] private ProjectileLauncherQueue projectileLauncherQueue;
         [SerializeField] private MeteorView meteorPrefab;
         [Space]
         [Header("Testing")] 
         [SerializeField] private bool doesSpawn;
         
-        private readonly ProjectileDistanceTracker _distanceTracker = new ProjectileDistanceTracker();
         private MeteorFactory _meteorFactory;
-        private bool _canSpawn;
         private bool _isSpawningRing;
-        private bool _isFirstSpawn;
-        private ulong _firstSpawnTimerId;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -32,29 +27,31 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             SetEventBus();
         }
-
-        private void Start()
-        {
-            projectileLauncherQueue.OnDistanceCheck += OnDistanceCheck;
-        }
-
-        private void OnDistanceCheck()
-        {
-            SpawnSingleMeteor(GameValues.MaxMeteorSpeed);
-        }
-
+        
         public void ManagedUpdate() { }
 
         #region Spawn
 
-        private void SpawnSingleMeteor(float meteorSpeed)
+        private void SpawnSingleMeteor(Vector2 spawnPosition, Vector2 direction, float movementMultiplier)
         {
-            if(_canSpawn == false) return;
+            var finalSpeed = GameValues.MaxMeteorSpeed * movementMultiplier;
+            var tempMeteor = _meteorFactory.SpawnMeteor();
+                
+            //Set Direction and Rotation towards COG
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
+            tempMeteor.SetValues(new MeteorValuesData
+            {
+                MovementSpeed = finalSpeed,
+                Rotation = tempRot,
+                Position = spawnPosition,
+                Direction = direction.normalized,
+                Value = 1f
+            });
+            tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
+            tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
             
-            var position = spawnSettings.GetPositionByAngle(spawnSettings.GetSpawnAngle(), spawnSettings.GetSpawnRadius());
-            var finalSpeed = meteorSpeed * spawnSettings.GetMovementMultiplier();
-            var temp = CreateMeteor(finalSpeed, position);
-            projectileLauncherQueue.AddProjectile(temp);
+            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = tempMeteor});
         }
 
         private void SpawnRingMeteor(float meteorSpeed)
@@ -66,6 +63,8 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private IEnumerator CreateRingMeteor(float meteorSpeed)
         {
+            GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = true});
+            
             _isSpawningRing = true;
             
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
@@ -82,8 +81,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             {
                 for (int i = 0; i < MeteorRingValues.RingsAmount; i++)
                 {
-                    if(_canSpawn == false) yield break; 
-                
                     for (int j = 0; j < amountToSpawn; j++)
                     {
                         yield return new WaitForSeconds(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
@@ -109,6 +106,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
             yield return new WaitForSeconds(GameTimeValues.MeteorSpawnDelayAfterRing);
             
+            GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = false});
             _isSpawningRing = false;
         }
         
@@ -127,9 +125,9 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         // ReSharper disable Unity.PerformanceAnalysis
         
-        private IProjectile CreateMeteor(float meteorSpeed, Vector2 spawnPosition, float value = 1)
+        private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition, float value = 1)
         {
-            if(doesSpawn == false) return null;
+            if(doesSpawn == false) return;
             
             var tempMeteor = _meteorFactory.SpawnMeteor();
             var cog = spawnSettings.GetCenterOfGravity();
@@ -148,8 +146,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             });
             tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
             tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
-            _distanceTracker.SetProjectile(tempMeteor, cog);
-            return tempMeteor;
+            tempMeteor.EnableMovement = true;
         }
 
         private void RecycleAll()
@@ -205,31 +202,20 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<GameModeEvents.Start>(EnventBus_GameMode_Start);
-            eventManager.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
             eventManager.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
             eventManager.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            eventManager.Subscribe<ProjectileEvents.DistanceCheck>(EventBus_Projectile_DistanceCheck);
+        }
+
+        private void EventBus_Projectile_DistanceCheck(ProjectileEvents.DistanceCheck input)
+        {
+            SpawnSingleMeteor(input.Position, input.Direction, input.MovementMultiplier);
         }
 
         private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
         {
-            TimerManager.Remove(_firstSpawnTimerId);
             RecycleAll();
-        }
-        
-        
-        private void EnventBus_Meteor_EnableSpawn(MeteorEvents.EnableSpawn input)
-        {
-            _canSpawn = input.CanSpawn;
-            if (_isFirstSpawn)
-            {
-                _firstSpawnTimerId = TimerManager.Add(new TimerData
-                {
-                    Time = 1f,
-                    OnEndAction = ()=> SpawnSingleMeteor(GameValues.MaxMeteorSpeed)
-                }, SelfUpdateGroup);
-            }
         }
         
         private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
@@ -240,12 +226,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void EnventBus_Meteor_RecycleAll(MeteorEvents.RecycleAll input)
         {
             RecycleAll();
-        }
-        
-        private void EnventBus_GameMode_Start(GameModeEvents.Start input)
-        {
-            _isFirstSpawn = true;
-            _distanceTracker.ClearValues();
         }
 
         #endregion

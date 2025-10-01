@@ -25,7 +25,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             }
         }
 
-
         public override void OnNotify(ulong message, params object[] args)
         {
             switch (message)

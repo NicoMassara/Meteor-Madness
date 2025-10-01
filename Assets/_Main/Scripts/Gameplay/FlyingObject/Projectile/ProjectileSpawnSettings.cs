@@ -26,6 +26,11 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
            return _location.GetPositionByAngle(currAngle, radius);
         }
 
+        public Vector2 GetSpawnPosition()
+        {
+            return GetPositionByAngle(GetSpawnAngle(), GetSpawnRadius());
+        }
+
         public float GetSpawnAngle()
         {
             return _location.GetSpawnAngle();

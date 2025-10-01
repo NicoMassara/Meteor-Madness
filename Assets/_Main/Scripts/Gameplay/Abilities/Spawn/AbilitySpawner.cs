@@ -12,7 +12,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
     {
         [Header("Components")]
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
-        [SerializeField] private ProjectileLauncherQueue projectileLauncherQueue;
         [SerializeField] private AbilitySphereView prefab;
         [Header("Values")] 
         [Range(5, 15f)] 
@@ -57,8 +56,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             temp.OnDeflection += DeflectionHandler;
             temp.OnEarthCollision += OnEarthCollisionHandler;
             
-            projectileLauncherQueue.AddProjectile(temp);
-            
+            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = temp});
             SetTimer();
         }
 

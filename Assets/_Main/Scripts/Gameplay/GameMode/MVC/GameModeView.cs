@@ -51,9 +51,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SetEnableSpawnMeteor:
                     HandleSetEnableMeteorSpawn((bool)args[0]);
                     break;
-                case GameModeObserverMessage.SpawnRingMeteor:
-                    HandleSpawnRingMeteor();
-                    break;
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
                     break;
@@ -217,11 +214,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
             GameManager.Instance.EventManager.Publish(new MeteorEvents.EnableSpawn { CanSpawn = canSpawn });
-        }
-        
-        private void HandleSpawnRingMeteor()
-        {
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.SpawnRing{});
         }
 
         #endregion

@@ -34,7 +34,7 @@
         public const ulong EarthEndDestruction = 0xA2007;
         public const ulong EarthShaking = 0xA2008;
         public const ulong SetEnableSpawnMeteor = 0xA2009;
-        public const ulong SpawnRingMeteor = 0xA2010;
+        public const ulong Empty = 0xA2010;
         public const ulong GameFinish = 0xA2011;
         public const ulong UpdateGameLevel = 0xA2012;
         public const ulong GameRestart = 0xA2013;
