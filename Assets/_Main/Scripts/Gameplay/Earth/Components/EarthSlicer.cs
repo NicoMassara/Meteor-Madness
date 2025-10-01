@@ -17,6 +17,7 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private MeshFilter meshA;
         private MeshFilter meshB;
+        
         private bool _hasBeenSliced = false;
         private bool _isSliced;
         private bool _canMove;
@@ -72,8 +73,14 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void Slice() 
         {
-            if(_hasBeenSliced) return;
-            
+            if (_hasBeenSliced)
+            {
+                meshA.gameObject.SetActive(true);
+                meshB.gameObject.SetActive(true);
+                gameObject.GetComponent<MeshRenderer>().enabled = false;
+                return;
+            }
+
             GameObject planeObj = gameObject;
             
             SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, capMaterial);
@@ -168,45 +175,9 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void UniteMeshes() 
         {
-            Destroy(meshA);
-            Destroy(meshB);
+            meshA.gameObject.SetActive(false);
+            meshB.gameObject.SetActive(false);
             gameObject.GetComponent<MeshRenderer>().enabled = true;
-            
-            /*meshA.transform.localPosition = Vector3.zero;
-            meshB.transform.localPosition = Vector3.zero;
-
-            MeshFilter filterA = meshA.GetComponent<MeshFilter>();
-            MeshFilter filterB = meshB.GetComponent<MeshFilter>();
-
-            if (filterA == null || filterB == null) return;
-
-            // Prepare combine array
-            CombineInstance[] combine = new CombineInstance[2];
-            combine[0].mesh = filterA.sharedMesh;
-            combine[0].transform = filterA.transform.localToWorldMatrix;
-            combine[1].mesh = filterB.sharedMesh;
-            combine[1].transform = filterB.transform.localToWorldMatrix;
-
-            // Create new mesh
-            Mesh newMesh = new Mesh();
-            newMesh.CombineMeshes(combine);
-
-            // Create a new GameObject with the merged mesh
-            GameObject united = new GameObject("UnitedMesh");
-            united.transform.SetParent(slicePlane);
-            MeshFilter mf = united.AddComponent<MeshFilter>();
-            MeshRenderer mr = united.AddComponent<MeshRenderer>();
-
-            mf.mesh = newMesh;
-            mr.material = meshA.GetComponent<MeshRenderer>().sharedMaterial;
-
-            capMaterial = mr.material;
-
-            // Optional: destroy the originals
-            Destroy(meshA);
-            Destroy(meshB);
-
-            _isSliced = false;*/
         }
 
         #endregion

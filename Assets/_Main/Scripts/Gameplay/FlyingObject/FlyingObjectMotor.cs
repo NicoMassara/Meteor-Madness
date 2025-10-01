@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.FyingObject
 {
-    public abstract class FlyingObjectMotor : ObservableComponent
+    public abstract class FlyingObjectMotor<TVS> : ObservableComponent where TVS : FlyingObjectValues
     {
         protected float MovementSpeed { get; set; }
         public Vector2 Position { get; protected set; }
@@ -12,7 +12,7 @@ namespace _Main.Scripts.FyingObject
         protected bool CanMove { get; set; }
         
 
-        public virtual void SetValues(FlyingObjectValues data)
+        public virtual void SetValues(TVS data)
         {
             MovementSpeed = data.MovementSpeed;
             Rotation = data.Rotation;

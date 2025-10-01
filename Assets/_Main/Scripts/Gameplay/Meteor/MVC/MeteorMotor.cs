@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class MeteorMotor : FlyingObjectMotor
+    public class MeteorMotor : FlyingObjectMotor<MeteorValuesData>
     {
         private float _value = 1;
-     
-        public void SetMeteorValues(MeteorValuesData data)
+        
+
+        public override void SetValues(MeteorValuesData data)
         {
             base.SetValues(data);
             _value = data.Value;

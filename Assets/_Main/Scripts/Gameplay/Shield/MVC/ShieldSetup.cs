@@ -59,29 +59,34 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             var eventManager = GameManager.Instance.EventManager;
             
-            eventManager.Subscribe<MeteorDeflected>(EventBus_ShieldDeflection);
-            eventManager.Subscribe<ShieldEnable>(EventBus_OnEarthShake);
-            eventManager.Subscribe<SetSuperShield>(EventBus_OnSetTotalShield);
-            eventManager.Subscribe<SetNormalShield>(EventBus_OnSetNormalShield);
+            eventManager.Subscribe<MeteorEvents.Deflected>(EventBus_Meteor_Deflected);
+            eventManager.Subscribe<ShieldEvents.SetEnable>(EventBus_Shield_SetEnable);
+            eventManager.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
+            eventManager.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_Shield_EnableNormalShield);
+            eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
         }
 
-        private void EventBus_OnSetNormalShield(SetNormalShield input)
+        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
+        {
+            _controller.TransitionToUnactive();
+        }
+
+        private void EventBus_Shield_EnableNormalShield(ShieldEvents.EnableNormalShield input)
         {
             _controller.TransitionToActive();
         }
 
-
-        private void EventBus_OnSetTotalShield(SetSuperShield input)
+        private void EventBus_Shield_EnableSuperShield(ShieldEvents.EnableSuperShield input)
         {
             _controller.TransitionToSuper();
         }
 
-        private void EventBus_ShieldDeflection(MeteorDeflected input)
+        private void EventBus_Meteor_Deflected(MeteorEvents.Deflected input)
         {
             _controller.HandleHit(input.Position, input.Rotation,input.Direction);
         }
 
-        private void EventBus_OnEarthShake(ShieldEnable input)
+        private void EventBus_Shield_SetEnable(ShieldEvents.SetEnable input)
         {
             if (input.IsEnabled)
             {

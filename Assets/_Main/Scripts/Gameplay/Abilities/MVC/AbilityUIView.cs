@@ -19,10 +19,10 @@ namespace _Main.Scripts.Gameplay.Abilies
             switch (message)
             {
                 case AbilityObserverMessage.AddAbility:
-                    HandleAddAbility((AbilityType)args[0]);
+                    HandleAddAbility((int)args[0]);
                     break;
                 case AbilityObserverMessage.SelectAbility:
-                    HandleSelectAbility((AbilityType)args[0]);
+                    HandleSelectAbility((int)args[0]);
                     break;
                 case AbilityObserverMessage.RestartAbilities:
                     HandleRestartAbilities();
@@ -35,12 +35,12 @@ namespace _Main.Scripts.Gameplay.Abilies
             abilityUIData.RestartValues();
         }
 
-        private void HandleAddAbility(AbilityType abilityType)
+        private void HandleAddAbility(int abilityTypeIndex)
         {
-            abilityUIData.AddAbility(abilityType);
+            abilityUIData.AddAbility((AbilityType)abilityTypeIndex);
         }
         
-        private void HandleSelectAbility(AbilityType abilityType)
+        private void HandleSelectAbility(int abilityTypeIndex)
         {
             abilityUIData.RemoveAbility();
         }

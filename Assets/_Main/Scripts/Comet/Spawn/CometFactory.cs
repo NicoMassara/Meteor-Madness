@@ -25,7 +25,7 @@ namespace _Main.Scripts.Comet
 
         private void Start()
         {
-            _pool = new GenericPool<CometView>(cometPrefab);
+            _pool = new GenericPool<CometView>(cometPrefab, 1, 5);
             
             SetTimer(GameTimeValues.FirstCometSpawnDelay);
         }

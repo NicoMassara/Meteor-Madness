@@ -7,6 +7,7 @@ using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -18,8 +19,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private Text scoreText;
         [SerializeField] private Text deathScoreText;
         [SerializeField] private Text deathText;
-        [Space]
-        [Header("Panels")]
+
+        [Space] 
+        [Header("Panels")] 
+        [SerializeField] private GameObject mainPanel;
         [SerializeField] private GameObject pausePanel;
         [SerializeField] private GameObject countdownPanel;
         [SerializeField] private GameObject gameplayPanel;
@@ -34,17 +37,16 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private SoundBehavior buttonSound;
 
         private GameObject _currentPanel;
-        private GameModeController _controller;
         private NumberIncrementer _numberIncrementer;
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
         private Coroutine _gameplayPointsCoroutine;
         
+        public UnityAction OnMainMenuButtonPressed;
+        public UnityAction OnRestartButtonPressed;
+        
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
         
-        public void ManagedUpdate()
-        {
-
-        }
+        public void ManagedUpdate() { }
 
         private void Start()
         {
@@ -91,13 +93,15 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GamePaused:
                     HandleGamePaused((bool)args[0]);
                     break;
+                case GameModeObserverMessage.Disable:
+                    HandleDisable();
+                    break;
             }
         }
-        
 
-        public void SetController(GameModeController controller)
+        private void HandleDisable()
         {
-            _controller = controller;
+            mainPanel.SetActive(false);
         }
         
         private void HandleGamePaused(bool isPaused)
@@ -127,6 +131,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleStartCountdown()
         {
+            mainPanel.SetActive(true);
             DisableActivePanel();
             _numberIncrementer = new NumberIncrementer();
             SetActivePanel(countdownPanel);
@@ -205,18 +210,20 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void RestartButton_OnClickHandler()
         {
             buttonSound?.PlaySound();
-            _controller.TransitionToRestart();
+            OnRestartButtonPressed?.Invoke();
+
         }
         
         private void MainMenuButton_OnClickHandler()
         {
             buttonSound?.PlaySound();
-            GameManager.Instance.EventManager.Publish(new MainMenu());
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
+            OnMainMenuButtonPressed?.Invoke();
         }
         
         private void ResumeButton_OnClickHandler()
         {
-            GameManager.Instance.EventManager.Publish(new GamePause{IsPaused = false});
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.SetPause{IsPaused = false});
         }
 
 
@@ -258,7 +265,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             SetActiveDeathText(false);
             SetActiveDeathScoreText(false);
-            SetActiveRestartButton(false);
+            SetActiveRestartButtonPanel(false);
             UpdateDeathScoreText(0);
             SetActivePanel(deathPanel);
 
@@ -281,7 +288,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                     {
                         _deathPanelActionQueue.AddAction(
                             new ActionData(
-                                () => SetActiveRestartButton(true),
+                                () => SetActiveRestartButtonPanel(true),
                                 UIPanelTimeValues.EnableRestartButton));
                     }
                 });
@@ -296,7 +303,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 tempList.Add(
                     new ActionData(
-                        ()=> SetActiveRestartButton(true),
+                        ()=> SetActiveRestartButtonPanel(true),
                         UIPanelTimeValues.EnableRestartButton));
             }
 
@@ -316,9 +323,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             deathScoreText.gameObject.SetActive(isActive);
         }
 
-        private void SetActiveRestartButton(bool isActive)
+        private void SetActiveRestartButtonPanel(bool isActive)
         {
-            restartButton.gameObject.SetActive(isActive);
+            deathButtonContainer.gameObject.SetActive(isActive);
         }
         
 

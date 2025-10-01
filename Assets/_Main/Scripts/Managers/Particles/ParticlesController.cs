@@ -16,7 +16,7 @@ namespace _Main.Scripts.Particles
 
         private void Awake()
         {
-            _pool = new GenericPool<ParticleBehaviour>(particlePrefab, 5, 100);
+            _pool = new GenericPool<ParticleBehaviour>(particlePrefab, 100, 300);
         }
 
         private void Start()
@@ -26,10 +26,7 @@ namespace _Main.Scripts.Particles
 
         public void RecycleAll()
         {
-            for (int i = _activeParticles.Count - 1; i >= 0; i--)
-            {
-                _activeParticles[i].ForceRecycle();
-            }
+            _pool.RecycleAll();
         }
         
         private void SpawnParticle(ParticleDataSo particleData, 
@@ -65,18 +62,16 @@ namespace _Main.Scripts.Particles
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<SpawnParticle>(EventBus_OnSpawnParticle);
+            eventManager.Subscribe<ParticleEvents.Spawn>(EventBus_OnSpawnParticle);
         }
 
 
-        private void EventBus_OnSpawnParticle(SpawnParticle input)
+        private void EventBus_OnSpawnParticle(ParticleEvents.Spawn input)
         {
             SpawnParticle(input.ParticleData, input.Position, 
                 input.Rotation, input.MoveDirection);
         }
 
         #endregion
-        
-
     }
 }
