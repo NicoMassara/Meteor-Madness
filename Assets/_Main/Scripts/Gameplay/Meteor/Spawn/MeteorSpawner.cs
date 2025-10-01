@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _Main.Scripts.FyingObject;
 using _Main.Scripts.Gameplay.FlyingObject;
 using _Main.Scripts.Managers;
@@ -30,11 +31,16 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void Awake()
         {
-            _meteorFactory = new MeteorFactory(meteorPrefab);
             spawnValues = new ProjectileSpawnValues(projectileSpawnDataSo);
             
             SetEventBus();
         }
+
+        private void Start()
+        {
+            _meteorFactory = new MeteorFactory(meteorPrefab);
+        }
+
         public void ManagedUpdate()
         {
             if (_travelledDistanceTracker.HasMeteor 

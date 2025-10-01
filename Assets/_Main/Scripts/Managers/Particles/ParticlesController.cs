@@ -16,7 +16,7 @@ namespace _Main.Scripts.Particles
 
         private void Awake()
         {
-            _pool = new GenericPool<ParticleBehaviour>(particlePrefab, 5, 100);
+            _pool = new GenericPool<ParticleBehaviour>(particlePrefab, 100, 300);
         }
 
         private void Start()
@@ -26,10 +26,7 @@ namespace _Main.Scripts.Particles
 
         public void RecycleAll()
         {
-            for (int i = _activeParticles.Count - 1; i >= 0; i--)
-            {
-                _activeParticles[i].ForceRecycle();
-            }
+            _pool.RecycleAll();
         }
         
         private void SpawnParticle(ParticleDataSo particleData, 
