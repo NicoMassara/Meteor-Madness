@@ -1,7 +1,6 @@
-﻿using System;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Sounds;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace _Main.Scripts.Menu
@@ -10,21 +9,19 @@ namespace _Main.Scripts.Menu
     {
         [Header("Panels")]
         [SerializeField] private GameObject mainPanel;
+        [SerializeField] private GameObject menuPanel;
         [SerializeField] private GameObject lorePanel;
         [Header("Buttons")]
         [SerializeField] private Button playButton;
         [SerializeField] private Button loreButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private Button backButton;
-        [Header("Values")]
-        [SerializeField] private string gameplaySceneName;
 
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior themeSound;
         [SerializeField] private SoundBehavior menuSound;
         
         private GameObject _currentPanel;
-        private Timer _playTimer = new Timer();
 
         private void Awake()
         {
@@ -32,42 +29,35 @@ namespace _Main.Scripts.Menu
             loreButton.onClick.AddListener(SetActiveLorePanel);
             backButton.onClick.AddListener(SetActiveMainPanel);
             exitButton.onClick.AddListener(QuitGame);
+            
+            SetEventBus();
         }
 
-        private void Start()
-        {
-            mainPanel.SetActive(false);
+        private void Initialize()
+        {            
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
+            menuPanel.SetActive(false);
             lorePanel.SetActive(false);
-            SetActiveMainPanel();
             themeSound.PlaySound();
-            _playTimer.OnEnd += LoadGameplayScene;
+            SetEnableMainPanel(true);
+            SetActivePanel(menuPanel);
         }
 
-        private void Update()
-        {
-            _playTimer?.Run();
-        }
-
-        private void LoadGameplayScene()
-        {
-            _playTimer.OnEnd = null;
-            SceneManager.LoadScene(gameplaySceneName);
-        }
-
-        private void SetActivePanel(GameObject panel)
+        private void SetActivePanel(GameObject panelObject)
         {
             if (_currentPanel != null)
             {
                 _currentPanel.SetActive(false);
             }
-            _currentPanel = panel;
+            
+            _currentPanel = panelObject;
             _currentPanel.SetActive(true);
         }
 
         private void SetActiveMainPanel()
         {
             menuSound.PlaySound();
-            SetActivePanel(mainPanel);
+            SetActivePanel(menuPanel);
         }
 
         private void SetActiveLorePanel()
@@ -78,8 +68,21 @@ namespace _Main.Scripts.Menu
 
         private void StartGame()
         {
+            SetEnableAllButtons(false);
             menuSound.PlaySound();
-            _playTimer.Set(GameTimeValues.TimeToLoadGameScene);
+            TimerManager.Add(new TimerData
+            {
+                Time = GameParameters.TimeValues.TimeToLoadGameScene,
+                OnEndAction = ()=> GameManager.Instance.LoadGameplay()
+            });
+        }
+
+        private void SetEnableAllButtons(bool isEnable)
+        {
+            playButton.enabled = isEnable; 
+            loreButton.enabled = isEnable; 
+            backButton.enabled = isEnable; 
+            exitButton.enabled = isEnable; 
         }
 
         private void QuitGame()
@@ -87,5 +90,34 @@ namespace _Main.Scripts.Menu
             menuSound.PlaySound();
             Application.Quit();
         }
+
+        private void SetEnableMainPanel(bool isActive)
+        {
+            mainPanel.SetActive(isActive);
+        }
+
+        #region EventBus
+
+        private void SetEventBus()
+        {
+            var eventManager = GameManager.Instance.EventManager;
+
+            eventManager.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_OnMainMenuScreen);
+            eventManager.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_OnGameplayScreen);
+        }
+
+        private void EventBus_OnGameplayScreen(GameScreenEvents.GameModeEnable input)
+        {
+            themeSound.StopSound();
+            SetEnableMainPanel(false);
+        }
+
+        private void EventBus_OnMainMenuScreen(GameScreenEvents.MainMenuEnable input)
+        {
+            SetEnableAllButtons(true);
+            Initialize();
+        }
+
+        #endregion
     }
 }

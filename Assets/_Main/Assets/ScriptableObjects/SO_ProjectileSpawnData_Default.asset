@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe50dbb93a441789b0c4b240ddeae77, type: 3}
+  m_Name: SO_ProjectileSpawnData_Default
+  m_EditorClassIdentifier: 
+  spawnData:
+  - SpeedMultiplier: 0.5
+    TravelDistance: 0.099
+  - SpeedMultiplier: 0.6
+    TravelDistance: 0.123
+  - SpeedMultiplier: 0.7
+    TravelDistance: 0.151
+  - SpeedMultiplier: 0.75
+    TravelDistance: 0.216
+  - SpeedMultiplier: 0.8
+    TravelDistance: 0.243
+  - SpeedMultiplier: 0.8
+    TravelDistance: 0.291
+  - SpeedMultiplier: 0.8
+    TravelDistance: 0.336
+  - SpeedMultiplier: 0.95
+    TravelDistance: 0.366
+  - SpeedMultiplier: 0.95
+    TravelDistance: 0.394
+  - SpeedMultiplier: 1
+    TravelDistance: 0.42

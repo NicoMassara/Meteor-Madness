@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: EarthSurface
+  m_Shader: {fileID: 4800000, guid: aef45e26267d5bc45926b4780f388019, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Cloud:
+        m_Texture: {fileID: 2800000, guid: ee8207e613571014bb995d4f29e32c6d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CloudTexture:
+        m_Texture: {fileID: 2800000, guid: ee8207e613571014bb995d4f29e32c6d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EarthMap:
+        m_Texture: {fileID: 2800000, guid: c036000bb622eae43b6b10cd89a3a25d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 2800000, guid: a2567c79fcafff541bd097660979fea8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GassTexture:
+        m_Texture: {fileID: 2800000, guid: fcb3e019a33c36d41a3ebbc5b14f61a0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _S:
+        m_Texture: {fileID: 2800000, guid: c036000bb622eae43b6b10cd89a3a25d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceDamage:
+        m_Texture: {fileID: 2800000, guid: f0ec32efe9d542045877f97847d48f9f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceDefault:
+        m_Texture: {fileID: 2800000, guid: fcb3e019a33c36d41a3ebbc5b14f61a0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample0:
+        m_Texture: {fileID: 2800000, guid: ee8207e613571014bb995d4f29e32c6d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample1:
+        m_Texture: {fileID: 2800000, guid: 7bea6e4487f50884f9d91abf7953b2a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterDamage:
+        m_Texture: {fileID: 2800000, guid: 7bea6e4487f50884f9d91abf7953b2a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterDamage1:
+        m_Texture: {fileID: 2800000, guid: 7bea6e4487f50884f9d91abf7953b2a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterDefault:
+        m_Texture: {fileID: 2800000, guid: 6fe629e0670cf8c4d980fd5b34631dcb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterLava:
+        m_Texture: {fileID: 2800000, guid: 7bea6e4487f50884f9d91abf7953b2a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaCutoff: 0.5
+    - _AtmoshereSize: 1.5
+    - _BottomFadeLenght: 0.938
+    - _FadeLength: 1
+    - _Float0: 1
+    - _Float1: 2.31
+    - _Float2: 2.35
+    - _Float3: 2.02
+    - _Float4: 0.75
+    - _FlowIntensity: 1
+    - _GrassTextureTiling: 0.25
+    - _HealthAmount: 0
+    - _IceAmount: 0.75
+    - _Intensity: -0.64
+    - _LightNoiseStep: 0.921
+    - _LightsIntensity: 10
+    - _LightsNoiseScale: 245.41176
+    - _LightsNoiseTiling: 1
+    - _LowerIceAmount: 0.3585822
+    - _MinToIncreasePannerSpeed: 0.35
+    - _PannerSpeedMultiplier: 10
+    - _ShadowStrenght: 1
+    - _SolidAmountLeft: 0.34
+    - _SolidAmountRight: 1
+    - _SolidBottom: 0.683
+    - _SolidTop: 0.892
+    - _StepValue: 0.361
+    - _SurfaceIceIntensity: 1
+    - _Tiling: 1.7529414
+    - _TimeScale: 1
+    - _TopFadeLenght: 0.788
+    - _TopFadeStrength: 0
+    - _TransAmbient: 0.2
+    - _TransDirect: 1
+    - _TransNormalDistortion: 0.1
+    - _TransScattering: 2
+    - _TransShadow: 0.9
+    - _Translucency: 1
+    - _UpperIceAmount: 0.64934826
+    - _WaterIceIntensity: 0.5
+    - _WaterLavaTiling: 1.7529414
+    - _WaterTiling: 10
+    - __dirty: 0
+    m_Colors:
+    - _AtmosthereColor: {r: 0, g: 0.2627451, b: 0.23921569, a: 1}
+    - _Color0: {r: 0, g: 0, b: 0, a: 0}
+    - _Color1: {r: 0, g: 0, b: 0, a: 0}
+    - _Damage: {r: 0.4433962, g: 0.006274463, b: 0.015200939, a: 1}
+    - _DamageAtmoshere: {r: 1, g: 0, b: 0.15225315, a: 1}
+    - _DamageAtmosphere: {r: 2.828427, g: 0, b: 0, a: 1}
+    - _DefaultAtmosphere: {r: 0, g: 0.5254902, b: 0.47843137, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Surface: {r: 0, g: 1, b: 0, a: 1}
+    - _SurfaceDamage: {r: 1, g: 0, b: 0, a: 1}
+    - _Water: {r: 0, g: 0, b: 1, a: 1}
+    - _WaterDamage: {r: 0.42745098, g: 0, b: 0.009691238, a: 1}
+  m_BuildTextureStacks: []

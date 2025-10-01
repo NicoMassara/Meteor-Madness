@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: SO_ShakeData_CameraEarthHit
   m_EditorClassIdentifier: 
   shakeTime: 0.25
-  shakeIntensity: 20
+  shakeIntensity: 5
   xShakeMagnitude: 0.075
   yShakeMagnitude: 0.075

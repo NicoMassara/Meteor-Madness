@@ -15,6 +15,9 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 29924830025bf3d4f9539ddc8c6a739d, type: 3}
   positionOffset: {x: 0, y: -0.25, z: 0}
   rotationOffset: 90
+  moveSpeed: 0.25
+  timeToReachScale: 1
+  targetScale: 1.5
+  startScale: 0
+  ratioTimeToStartFade: 0.85
   timeToFade: 1
-  fadeSpeed: 2
-  fadeScale: 1.25

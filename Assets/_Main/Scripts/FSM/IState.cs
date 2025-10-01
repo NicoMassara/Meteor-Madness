@@ -3,9 +3,9 @@
     public interface IState<T>
     {
         void Awake();
-        void Execute();
-        void FixedExecute();
-        void LateExecute();
+        void Execute(float deltaTime);
+        void FixedExecute(float fixedDeltaTime);
+        void LateExecute(float deltaTime);
         void Sleep();
 
         IState<T> GetTransition(T input);

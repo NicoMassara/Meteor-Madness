@@ -16,7 +16,7 @@ MonoBehaviour:
   clips:
   - {fileID: 8300000, guid: 074cb0e0a7d88f347abb23868de65a1a, type: 3}
   sourceData:
-    mixerGroup: {fileID: 0}
+    mixerGroup: {fileID: -7627046891697709196, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0
@@ -27,4 +27,5 @@ MonoBehaviour:
     stereoPan: 0
     spatialBlend: 0
     reverbZoneMix: 1
+    dopplerLevel: 0
   randomPitchRange: 0

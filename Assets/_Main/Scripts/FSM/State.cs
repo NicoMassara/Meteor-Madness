@@ -7,9 +7,9 @@ namespace _Main.Scripts.FiniteStateMachine
         private readonly Dictionary<T, IState<T>> _transitions = new Dictionary<T, IState<T>>();
         
         public virtual void Awake(){}
-        public virtual void Execute(){}
-        public virtual void FixedExecute(){}
-        public virtual void LateExecute(){}
+        public virtual void Execute(float deltaTime){}
+        public virtual void FixedExecute(float fixedDeltaTime){}
+        public virtual void LateExecute(float deltaTime){}
         public virtual void Sleep(){}
         
 

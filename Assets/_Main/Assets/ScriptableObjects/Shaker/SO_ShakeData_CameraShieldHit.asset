@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c493fbfdd17541e68bd56b7fcabb75e0, type: 3}
   m_Name: SO_ShakeData_CameraShieldHit
   m_EditorClassIdentifier: 
-  shakeTime: 0.1
-  shakeIntensity: 1
-  xShakeMagnitude: 0.025
-  yShakeMagnitude: 0.025
+  shakeTime: 0.25
+  shakeIntensity: 1.25
+  xShakeMagnitude: 0.075
+  yShakeMagnitude: 0.075
