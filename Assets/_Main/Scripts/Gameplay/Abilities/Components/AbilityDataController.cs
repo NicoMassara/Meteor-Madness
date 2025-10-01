@@ -12,9 +12,9 @@ namespace _Main.Scripts.Gameplay.Abilies
     {
         private readonly Dictionary<AbilityType, AbilityData> _abilities = new Dictionary<AbilityType, AbilityData>();
         private readonly EventBusManager _eventBus;
-
+        
         public UnityAction<float> OnAbilityStarted;
-        public UnityAction OnAbilityFinished;
+        public UnityAction<AbilityType> OnAbilityFinished;
         public UnityAction<TimeScaleData> _updateTimeScale;
 
         public AbilityDataController(EventBusManager eventBus, UnityAction<TimeScaleData> updateTimeScale)
@@ -28,6 +28,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void CreateAbilityData()
         {
+            CreateSlowMotionData();
             CreateShieldData();
             CreateHealData();
         }
@@ -43,6 +44,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    PublishAbilityActive(AbilityType.SuperShield, true);
                     _eventBus.Publish(new InputsEvents.SetEnable { IsEnable = false });
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
@@ -54,7 +56,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, 0f),
                 new ActionData(CameraZoomIn,
                     SuperShieldStartTimeValues.TimeToZoomIn),
-                new ActionData(() => { _eventBus.Publish(new ShieldEvents.EnableSuperShield()); },
+                new ActionData(() => { _eventBus.Publish(new ShieldEvents.EnableSuperShield());},
                     SuperShieldStartTimeValues.TimeToMoveFastShield),
                 new ActionData(CameraZoomOut,
                     SuperShieldStartTimeValues.TimeToZoomOut),
@@ -71,8 +73,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, SuperShieldStartTimeValues.TimeBeforeIncreasingTimeScale),
                 new ActionData(() =>
                 {
-                    var activeTime = _abilities[AbilityType.SuperShield].ActiveTime;
-                    OnAbilityStarted?.Invoke(activeTime);
+                    RunActiveTimer(AbilityType.SuperShield);
                 }),
             };
 
@@ -101,7 +102,9 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = minTimeScale,
                         TimeToUpdate = 0.25f,
                     });
-                    OnAbilityFinished?.Invoke();
+                    
+                    PublishAbilityActive(AbilityType.SuperShield, false);
+                    OnAbilityFinished?.Invoke(AbilityType.SuperShield);
                 }, SuperShieldEndTimeValues.TimeBeforeRestoringTimeScale),
             };
 
@@ -119,14 +122,17 @@ namespace _Main.Scripts.Gameplay.Abilies
         private void CreateHealData()
         {
             var minTimeScale = 0.025f;
+            var shieldTimeScale = 0.75f;
+            var timeToFinish = 0.25f;
             
             //Start Queue
             var startActions = new[]
             {
                 new ActionData(() =>
                 {
+                    PublishAbilityActive(AbilityType.Health, true);
                     GameManager.Instance.EventManager.Publish(new EarthEvents.SetEnableDamage{DamageEnable = false});
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Shield, 0.25F);
+                    CustomTime.SetChannelTimeScale(UpdateGroup.Shield, shieldTimeScale);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new[] { UpdateGroup.Gameplay, UpdateGroup.Effects},
@@ -146,27 +152,170 @@ namespace _Main.Scripts.Gameplay.Abilies
                 {
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
-                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects, UpdateGroup.Shield},
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
                         TargetTimeScale = 1f,
                         CurrentTimeScale = minTimeScale,
-                        TimeToUpdate = 0.25f,
+                        TimeToUpdate = timeToFinish,
+                    });
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Shield},
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = shieldTimeScale,
+                        TimeToUpdate = timeToFinish,
                     });
                     
                     GameManager.Instance.EventManager.Publish(new EarthEvents.SetEnableDamage{DamageEnable = true});
-                    OnAbilityStarted?.Invoke(0.1f);
+                    OnAbilityStarted?.Invoke(timeToFinish);
                 }, SuperHealTimeValues.TimeBeforeIncreasingTimeScale),
+            };
+
+            var endActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    OnAbilityFinished?.Invoke(AbilityType.Health);
+                    PublishAbilityActive(AbilityType.Health, false);
+                })
             };
             
             var healData = new AbilityData
             {
                 AbilityType = AbilityType.Health,
                 StartActions = startActions,
+                EndActions = endActions,
                 HasInstantEffect = true
             };
             
             _abilities.Add(healData.AbilityType, healData);
         }
 
+        private void CreateSlowMotionData()
+        {
+            var minTimeScale = 0.5f;
+
+            //Start Queue
+            var startActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    PublishAbilityActive(AbilityType.SlowMotion, true);
+                    CustomTime.SetChannelTimeScale(UpdateGroup.Gameplay, 0.15f);
+                    CameraZoomIn();
+                    
+                }, 0f),
+                new ActionData(() =>
+                {
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Shield},
+                        TargetTimeScale = 0.85f,
+                        CurrentTimeScale = 1f,
+                        TimeToUpdate = 0.5f,
+                    });
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] 
+                        { 
+                            UpdateGroup.Gameplay, UpdateGroup.Camera
+                        },
+                        TargetTimeScale = minTimeScale,
+                        CurrentTimeScale = 1f,
+                        TimeToUpdate = 0.5f,
+                    });
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] 
+                        { 
+                            UpdateGroup.Earth, UpdateGroup.Effects, 
+                        },
+                        TargetTimeScale = minTimeScale/2,
+                        CurrentTimeScale = 1,
+                        TimeToUpdate = 0.5f,
+                    });
+                }, 0.25f),
+                new ActionData(CameraZoomOut,
+                    0.75f),
+                new ActionData(() =>
+                {
+                    CustomTime.SetChannelTimeScale(UpdateGroup.Gameplay, minTimeScale);
+                    CustomTime.SetChannelPaused(new [] 
+                    { 
+                        UpdateGroup.Gameplay, 
+                            
+                    }, false);
+                    RunActiveTimer(AbilityType.SlowMotion);
+                }),
+            };
+
+            //End Queue
+            var endActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    // ReSharper disable once ConvertClosureToMethodGroup
+                    CameraZoomIn();
+                    
+                }, 0f),
+                new ActionData(() =>
+                {
+                    CustomTime.SetChannelPaused(new [] 
+                    { 
+                        UpdateGroup.Gameplay, 
+                            
+                    }, true);
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Shield},
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = 0.85f,
+                        TimeToUpdate = 0.25f,
+                    });
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] 
+                        { 
+                            UpdateGroup.Gameplay, UpdateGroup.Camera
+                        },
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = minTimeScale,
+                        TimeToUpdate = 0.25f,
+                    });
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] 
+                        { 
+                            UpdateGroup.Earth, UpdateGroup.Effects, 
+                        },
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = minTimeScale/2,
+                        TimeToUpdate = 0.25f,
+                    });
+                }, 0.25f),
+                new ActionData(CameraZoomOut,
+                    0.5f),
+                new ActionData(() =>
+                {
+                    CustomTime.SetChannelPaused(new [] 
+                    { 
+                        UpdateGroup.Gameplay, 
+                            
+                    }, false);
+                    PublishAbilityActive(AbilityType.SlowMotion, false);
+                    OnAbilityFinished?.Invoke(AbilityType.SlowMotion);
+                }),
+            };
+
+            var abilityData = new AbilityData
+            {
+                ActiveTime = 5F,
+                AbilityType = AbilityType.SlowMotion,
+                StartActions = startActions,
+                EndActions = endActions,
+            };
+
+            _abilities.Add(abilityData.AbilityType, abilityData);
+        }
 
         #endregion
 
@@ -199,6 +348,18 @@ namespace _Main.Scripts.Gameplay.Abilies
         public bool GetHasInstantEffect(AbilityType abilityType)
         {
             return _abilities[abilityType].GetHasInstantEffect();
+        }
+
+        public void RunActiveTimer(AbilityType abilityType)
+        {
+            var activeTime = _abilities[abilityType].ActiveTime;
+            OnAbilityStarted?.Invoke(activeTime);
+        }
+
+        private void PublishAbilityActive(AbilityType abilityType, bool isActive)
+        {
+            GameManager.Instance.EventManager.Publish(
+                new AbilitiesEvents.SetActive{ AbilityType = abilityType, IsActive = isActive });
         }
 
     }

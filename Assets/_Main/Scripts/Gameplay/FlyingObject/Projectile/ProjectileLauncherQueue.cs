@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
@@ -78,12 +79,28 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
+            eventManager.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
             eventManager.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
             eventManager.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
             eventManager.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
             eventManager.Subscribe<GameModeEvents.Restart>(EventBus_GameMode_Restart);
             eventManager.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+        }
+
+        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        {
+            if (input.AbilityType == AbilityType.SlowMotion)
+            {
+                if (input.IsActive)
+                {
+                    spawnSettings.SetMultiplier(1.75f);
+                }
+                else
+                {
+                    spawnSettings.SetMultiplier(1);
+                }
+            }
         }
 
         private void EventBus_GameMode_Start(GameModeEvents.Start input)

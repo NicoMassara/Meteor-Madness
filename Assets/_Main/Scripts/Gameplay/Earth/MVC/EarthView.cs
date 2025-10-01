@@ -139,7 +139,7 @@ namespace _Main.Scripts.Gameplay.Earth
                     CustomTime.SetChannelTimeScale(new[]
                     {
                         UpdateGroup.Gameplay, UpdateGroup.Ability, 
-                        UpdateGroup.Effects, UpdateGroup.Shield
+                        UpdateGroup.Effects
                     }, 0f);
                     
                     StartCoroutine(Coroutine_HandleHeal(currentHealth, lastHealth, 
@@ -150,7 +150,7 @@ namespace _Main.Scripts.Gameplay.Earth
                     CustomTime.SetChannelTimeScale(new[]
                     {
                         UpdateGroup.Gameplay, UpdateGroup.Ability, 
-                        UpdateGroup.Effects, UpdateGroup.Shield
+                        UpdateGroup.Effects
                     }, 1f);
                     
                 },EarthRestartTimeValues.RestartHealth),
@@ -184,7 +184,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleRestartHealth(float currentHealth)
         {
-            var tempActions = new ActionData[1];
+            ActionData[] tempActions;
             
             if (currentHealth >= 1)
             {

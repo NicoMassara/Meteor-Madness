@@ -3806,9 +3806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnSettings: {fileID: 12163667}
-  projectileLauncherQueue: {fileID: 12163668}
   meteorPrefab: {fileID: 2969321756996762836, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
-  doesSpawn: 1
 --- !u!1 &724356219
 GameObject:
   m_ObjectHideFlags: 0
@@ -6133,10 +6131,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnSettings: {fileID: 12163667}
-  projectileLauncherQueue: {fileID: 12163668}
   prefab: {fileID: 8335861176009586927, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
   spawnDelay: 15
-  doesSpawn: 1
 --- !u!1 &1236263223
 GameObject:
   m_ObjectHideFlags: 0
@@ -7191,6 +7187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1482222718}
   - component: {fileID: 1482222717}
+  - component: {fileID: 1482222719}
   m_Layer: 0
   m_Name: Inputs
   m_TagString: Untagged
@@ -7225,6 +7222,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1482222719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482222716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36b98cb3ff5a44ca98c4150c8d1b43f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilityToAdd: 3
 --- !u!1 &1499242836
 GameObject:
   m_ObjectHideFlags: 0

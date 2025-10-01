@@ -30,7 +30,7 @@ Material:
     - _ChromaticAberration: 0.1
     - _Cutoff: 0.5
     - _Float0: 0.01
-    - _HealthAmount: 0.79999995
+    - _HealthAmount: 1
     - _Intensity: 1.1
     - _Size: 1.1294118
     - _Smoothnes: 0
