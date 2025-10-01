@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Gameplay.FlyingObject.Projectile;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using UnityEngine;
@@ -84,8 +85,12 @@ namespace _Main.Scripts.Managers
         {
             public bool CanSpawn;
         }
-    
-        public struct SpawnRing { }
+
+        public struct SpawnRing {}
+        public struct RingActive
+        {
+            public bool IsActive;
+        }
     
         public struct RecycleAll{}
     }
@@ -141,5 +146,20 @@ namespace _Main.Scripts.Managers
         {
             public bool IsFull;
         }
+    }
+
+    public struct ProjectileEvents
+    {
+        public struct Add
+        {
+            public IProjectile Projectile;
+        }
+
+        public struct DistanceCheck
+        {
+            public Vector2 Position;
+            public Vector2 Direction;
+            public float MovementMultiplier;
+        };
     }
 }

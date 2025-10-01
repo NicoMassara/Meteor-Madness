@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Managers;
 using UnityEngine;
 
@@ -10,11 +11,21 @@ namespace _Main.Scripts
         {
             if (Input.GetKeyDown(KeyCode.K))
             {
-                for (int i = 0; i < 10; i++)
-                {
-                    GameManager.Instance.EventManager.Publish(new MeteorEvents.Collision());
-                }
+                AddAbility(AbilityType.SuperShield);
             }
+        }
+
+        private void Kill()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                GameManager.Instance.EventManager.Publish(new MeteorEvents.Collision());
+            }
+        }
+        
+        private void AddAbility(AbilityType abilityType)
+        {
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.Add{AbilityType = abilityType});
         }
     }
 }

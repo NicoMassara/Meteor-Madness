@@ -1,8 +1,7 @@
 ﻿using System;
-using _Main.Scripts.FyingObject;
 using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Gameplay.Abilities.Sphere;
-using _Main.Scripts.Gameplay.FlyingObject;
+using _Main.Scripts.Gameplay.FlyingObject.Projectile;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
@@ -12,18 +11,13 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
     public class AbilitySpawner : ManagedBehavior, IUpdatable
     {
         [Header("Components")]
-        [SerializeField] private ProjectileSpawnLocationController spawnLocation;
+        [SerializeField] private ProjectileSpawnSettings spawnSettings;
         [SerializeField] private AbilitySphereView prefab;
-        [SerializeField] private ProjectileSpawnDataSo spawanData;
         [Header("Values")] 
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
-        [Space]
-        [Header("Testing")] 
-        [SerializeField] private bool doesSpawn;
         
         private AbilitySphereFactory _factory;
-        private ProjectileSpawnValues _spawnValues;
         private ulong _spawnTimerId;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
@@ -35,7 +29,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void Start()
         {
             _factory = new AbilitySphereFactory(prefab);
-            _spawnValues = new ProjectileSpawnValues(spawanData);
         }
 
         public void ManagedUpdate() { }
@@ -43,10 +36,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void SendAbility()
         {
             var temp = _factory.SpawnAbilitySphere();
-            var spawnPosition = spawnLocation.GetPositionByAngle(spawnLocation.GetSpawnAngle(), spawnLocation.GetSpawnRadius());
-            var movementSpeed = (GameValues.MaxMeteorSpeed/2) * _spawnValues.GetMovementMultiplier();
+            var spawnPosition = spawnSettings.GetPositionByAngle(spawnSettings.GetSpawnAngle(), spawnSettings.GetSpawnRadius());
+            var movementSpeed = (GameValues.MaxMeteorSpeed) * spawnSettings.GetMovementMultiplier();
             
-            Vector2 direction = spawnLocation.GetCenterOfGravity() - spawnPosition;
+            Vector2 direction = spawnSettings.GetCenterOfGravity() - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
             temp.SetValues(new AbilitySphereValues
@@ -60,7 +53,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             temp.OnDeflection += DeflectionHandler;
             temp.OnEarthCollision += OnEarthCollisionHandler;
             
-            SetTimer();
+            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = temp});
         }
 
         private void DeflectionHandler(AbilitySphereCollisionData data)
@@ -80,6 +73,9 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             );
             
             data.Sphere.ForceRecycle();
+
+            var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
+            SetTimer(temp);
         }
         
         private void OnEarthCollisionHandler(AbilitySphereCollisionData data)
@@ -98,15 +94,16 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             );
             
             data.Sphere.ForceRecycle();
+            
+            var temp = UnityEngine.Random.Range(spawnDelay * 0.75f, spawnDelay );
+            SetTimer(temp);
         }
 
-        private void SetTimer()
+        private void SetTimer(float time)
         {
-            if(doesSpawn == false) return;
-            
             _spawnTimerId = TimerManager.Add(new TimerData
             {
-                Time = spawnDelay,
+                Time = time,
                 OnEndAction = SendAbility
             }, SelfUpdateGroup);
         }
@@ -127,26 +124,24 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             var eventManager = GameManager.Instance.EventManager;
             eventManager.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
-            eventManager.Subscribe<GameModeEvents.Start>(EventBus_OnGameStart);
             eventManager.Subscribe<AbilitiesEvents.EnableSpawner>(EventBus_OnAbilityInUse);
-            eventManager.Subscribe<GameModeEvents.UpdateLevel>(EnventBus_OnUpdateLevel);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
+            eventManager.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+        }
+
+        private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
+        {
+            if (input.CurrentLevel == GameValues.LevelToSpawnAbilities)
+            {
+                Debug.Log("Abilities Spawning");
+                SetTimer(spawnDelay);
+            }
         }
 
         private void EventBus_OnGameModeDisable(GameModeEvents.Disable input)
         {
             TimerManager.Remove(_spawnTimerId);
             _factory.RecycleAll();
-        }
-
-        private void EnventBus_OnUpdateLevel(GameModeEvents.UpdateLevel input)
-        {
-            _spawnValues.SetIndex(input.CurrentLevel);
-        }
-
-        private void EventBus_OnGameStart(GameModeEvents.Start input)
-        {
-            SetTimer();
         }
 
         private void EventBus_OnAbilityInUse(AbilitiesEvents.EnableSpawner input)
@@ -157,13 +152,13 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
             else
             {
-                SetTimer();
+                SetTimer(spawnDelay);
             }
         }
 
         private void EventBus_OnGameFinished(GameModeEvents.Finish input)
         {
-            TimerManager.Remove(_spawnTimerId);
+            RemoveTimer();
             _factory.RecycleAll();
         }
 

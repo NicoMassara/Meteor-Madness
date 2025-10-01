@@ -133,6 +133,9 @@ GameObject:
   m_Component:
   - component: {fileID: 12163666}
   - component: {fileID: 12163665}
+  - component: {fileID: 12163669}
+  - component: {fileID: 12163667}
+  - component: {fileID: 12163668}
   m_Layer: 0
   m_Name: ProjectileSpawnLocation
   m_TagString: Untagged
@@ -171,6 +174,44 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &12163667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12163664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b0e882c8eb478d93ca7d8c5898d267, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &12163668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12163664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87caa6302f6d4c5eaa77310a89cd26c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnSettings: {fileID: 12163667}
+--- !u!114 &12163669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12163664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e69ca8462344d6d9d80b42e430e1722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectileSpawnDataSo: {fileID: 11400000, guid: 9d29848a0c7d74346a7b13c97f3dedba, type: 2}
 --- !u!1 &16885182
 GameObject:
   m_ObjectHideFlags: 0
@@ -3764,9 +3805,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ee54a6d324c1590f695999ffae034, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnLocation: {fileID: 12163665}
+  spawnSettings: {fileID: 12163667}
+  projectileLauncherQueue: {fileID: 12163668}
   meteorPrefab: {fileID: 2969321756996762836, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
-  projectileSpawnDataSo: {fileID: 11400000, guid: 9d29848a0c7d74346a7b13c97f3dedba, type: 2}
   doesSpawn: 1
 --- !u!1 &724356219
 GameObject:
@@ -6091,10 +6132,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f752bda47bf48b5afb8712e91bfbf3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnLocation: {fileID: 12163665}
+  spawnSettings: {fileID: 12163667}
+  projectileLauncherQueue: {fileID: 12163668}
   prefab: {fileID: 8335861176009586927, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
-  spawanData: {fileID: 11400000, guid: 9d29848a0c7d74346a7b13c97f3dedba, type: 2}
-  spawnDelay: 5
+  spawnDelay: 15
   doesSpawn: 1
 --- !u!1 &1236263223
 GameObject:
