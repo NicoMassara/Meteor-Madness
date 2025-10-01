@@ -324,7 +324,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void CreateDoublePointsData()
         {
-            float targetTimeScale = 0.25f;
+            float targetTimeScale = 0.025f;
             var selectedAbility = AbilityType.DoublePoints;
             
             //Start Queue
@@ -332,18 +332,29 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    PublishAbilityActive(selectedAbility, true);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
-                        UpdateGroups = new [] { UpdateGroup.Shield},
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = targetTimeScale,
+                        CurrentTimeScale = 1f,
+                        TimeToUpdate = AbilityParameters.DoublePoints.StartValues.TimeToGoldShield,
                     });
                     CameraZoomIn();
                 },0f),
                 new ActionData(() =>
                 {
-                    PublishAbilityActive(selectedAbility, true);
+                    GameManager.Instance.EventManager.Publish(new ShieldEvents.SetGold{IsActive = true});
                 },AbilityParameters.DoublePoints.StartValues.TimeToGoldShield),
                 new ActionData(() =>
                 {
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = targetTimeScale,
+                        TimeToUpdate = AbilityParameters.DoublePoints.StartValues.TimeToZoomOut,
+                    });
                     CameraZoomOut();
                     RunActiveTimer(AbilityType.DoublePoints);
                 },AbilityParameters.DoublePoints.StartValues.TimeToZoomOut),
@@ -354,6 +365,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    GameManager.Instance.EventManager.Publish(new ShieldEvents.SetGold{IsActive = false});
                     PublishAbilityActive(selectedAbility, false);
                     OnAbilityFinished?.Invoke(AbilityType.DoublePoints);
                 }),
