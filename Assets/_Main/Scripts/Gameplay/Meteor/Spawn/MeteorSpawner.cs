@@ -12,9 +12,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         [Header("Components")]
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
         [SerializeField] private MeteorView meteorPrefab;
-        [Space]
-        [Header("Testing")] 
-        [SerializeField] private bool doesSpawn;
         
         private MeteorFactory _meteorFactory;
         private bool _isSpawningRing;
@@ -127,8 +124,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition, float value = 1)
         {
-            if(doesSpawn == false) return;
-            
             var tempMeteor = _meteorFactory.SpawnMeteor();
             var cog = spawnSettings.GetCenterOfGravity();
                 

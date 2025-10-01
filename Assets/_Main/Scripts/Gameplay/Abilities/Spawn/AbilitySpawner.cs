@@ -16,9 +16,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         [Header("Values")] 
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
-        [Space]
-        [Header("Testing")] 
-        [SerializeField] private bool doesSpawn;
         
         private AbilitySphereFactory _factory;
         private ulong _spawnTimerId;
@@ -57,7 +54,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             temp.OnEarthCollision += OnEarthCollisionHandler;
             
             GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = temp});
-            SetTimer();
         }
 
         private void DeflectionHandler(AbilitySphereCollisionData data)
@@ -77,6 +73,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             );
             
             data.Sphere.ForceRecycle();
+            
+            SetTimer();
         }
         
         private void OnEarthCollisionHandler(AbilitySphereCollisionData data)
@@ -95,15 +93,15 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             );
             
             data.Sphere.ForceRecycle();
+            
+            SetTimer();
         }
 
         private void SetTimer()
         {
-            if(doesSpawn == false) return;
-            
             _spawnTimerId = TimerManager.Add(new TimerData
             {
-                Time = spawnDelay,
+                Time = UnityEngine.Random.Range(spawnDelay * 0.85f, spawnDelay * 1.15f),
                 OnEndAction = SendAbility
             }, SelfUpdateGroup);
         }
@@ -124,20 +122,24 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             var eventManager = GameManager.Instance.EventManager;
             eventManager.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
-            eventManager.Subscribe<GameModeEvents.Start>(EventBus_OnGameStart);
             eventManager.Subscribe<AbilitiesEvents.EnableSpawner>(EventBus_OnAbilityInUse);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
+            eventManager.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+        }
+
+        private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
+        {
+            if (input.CurrentLevel == GameValues.LevelToSpawnAbilities)
+            {
+                Debug.Log("Abilities Spawning");
+                SetTimer();
+            }
         }
 
         private void EventBus_OnGameModeDisable(GameModeEvents.Disable input)
         {
             TimerManager.Remove(_spawnTimerId);
             _factory.RecycleAll();
-        }
-
-        private void EventBus_OnGameStart(GameModeEvents.Start input)
-        {
-            SetTimer();
         }
 
         private void EventBus_OnAbilityInUse(AbilitiesEvents.EnableSpawner input)
@@ -154,7 +156,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void EventBus_OnGameFinished(GameModeEvents.Finish input)
         {
-            TimerManager.Remove(_spawnTimerId);
+            RemoveTimer();
             _factory.RecycleAll();
         }
 
