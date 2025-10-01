@@ -7,11 +7,13 @@ namespace _Main.Scripts
 {
     public class InputTester : MonoBehaviour
     {
+        [SerializeField] private AbilityType abilityToAdd;
+        
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.K))
             {
-                AddAbility(AbilityType.SuperShield);
+                AddAbility();
             }
         }
 
@@ -23,9 +25,9 @@ namespace _Main.Scripts
             }
         }
         
-        private void AddAbility(AbilityType abilityType)
+        private void AddAbility()
         {
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.Add{AbilityType = abilityType});
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.Add{AbilityType = abilityToAdd});
         }
     }
 }
