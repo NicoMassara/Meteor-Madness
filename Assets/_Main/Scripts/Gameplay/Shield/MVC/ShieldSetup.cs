@@ -60,7 +60,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             var eventManager = GameManager.Instance.EventManager;
             
-            eventManager.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
+            eventManager.Subscribe<ShieldEvents.SetGold>(EventBus_Shield_SetGold);
             eventManager.Subscribe<MeteorEvents.Deflected>(EventBus_Meteor_Deflected);
             eventManager.Subscribe<ShieldEvents.SetEnable>(EventBus_Shield_SetEnable);
             eventManager.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
@@ -68,12 +68,9 @@ namespace _Main.Scripts.Gameplay.Shield
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
         }
 
-        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        private void EventBus_Shield_SetGold(ShieldEvents.SetGold input)
         {
-            if (input.AbilityType == AbilityType.DoublePoints) return;
-            {
-                _controller.SetActiveGold(input.IsActive);
-            }
+            _controller.SetActiveGold(input.IsActive);
         }
 
         private void EventBus_GameMode_Disable(GameModeEvents.Disable input)

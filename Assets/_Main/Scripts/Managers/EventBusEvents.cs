@@ -28,6 +28,11 @@ namespace _Main.Scripts.Managers
         {
             public bool IsEnabled;
         }
+        
+        public struct SetGold
+        {
+            public bool IsActive;
+        }
         public struct EnableSuperShield { }
         public struct EnableNormalShield { }
     }
