@@ -18,7 +18,6 @@ namespace _Main.Scripts.Gameplay.Earth
         private MeshFilter meshA;
         private MeshFilter meshB;
         
-        private bool _hasBeenSliced = false;
         private bool _isSliced;
         private bool _canMove;
         private float _moveTargetDistance;
@@ -26,6 +25,11 @@ namespace _Main.Scripts.Gameplay.Earth
 
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
+
+        private void Start()
+        {
+            Slice();
+        }
 
         public void ManagedUpdate()
         {
@@ -55,7 +59,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 }),
                 new ActionData(() =>
                 {
-                    Slice();
+                    SetActiveSlices(true);
                     _canMove = true;
                 }, EarthParameters.TimeValues.Slice.StartSlice),
                 
@@ -74,14 +78,6 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void Slice() 
         {
-            if (_hasBeenSliced)
-            {
-                meshA.gameObject.SetActive(true);
-                meshB.gameObject.SetActive(true);
-                gameObject.GetComponent<MeshRenderer>().enabled = false;
-                return;
-            }
-
             GameObject planeObj = gameObject;
             
             SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, capMaterial);
@@ -110,8 +106,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 _isSliced = true;
 
                 planeObj.GetComponent<MeshRenderer>().enabled = false;
-
-                _hasBeenSliced = true;
+                
+                SetActiveSlices(false);
             }
         }
 
@@ -174,15 +170,19 @@ namespace _Main.Scripts.Gameplay.Earth
         }
 
 
-        private void UniteMeshes() 
+        private void UniteMeshes()
         {
-            meshA.gameObject.SetActive(false);
-            meshB.gameObject.SetActive(false);
-            gameObject.GetComponent<MeshRenderer>().enabled = true;
+            SetActiveSlices(false);
         }
 
         #endregion
-        
+
+        private void SetActiveSlices(bool isActive)
+        {
+            gameObject.GetComponent<MeshRenderer>().enabled = !isActive;
+            meshA.gameObject.SetActive(isActive);
+            meshB.gameObject.SetActive(isActive);
+        }
 
         private void OnDrawGizmosSelected()
         {
