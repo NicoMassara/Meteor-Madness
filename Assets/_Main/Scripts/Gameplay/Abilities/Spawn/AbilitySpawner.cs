@@ -1,5 +1,4 @@
 ﻿using System;
-using _Main.Scripts.FyingObject;
 using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Gameplay.Abilities.Sphere;
 using _Main.Scripts.Gameplay.FlyingObject.Projectile;
@@ -13,6 +12,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
     {
         [Header("Components")]
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
+        [SerializeField] private ProjectileLauncherQueue projectileLauncherQueue;
         [SerializeField] private AbilitySphereView prefab;
         [Header("Values")] 
         [Range(5, 15f)] 
@@ -41,7 +41,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             var temp = _factory.SpawnAbilitySphere();
             var spawnPosition = spawnSettings.GetPositionByAngle(spawnSettings.GetSpawnAngle(), spawnSettings.GetSpawnRadius());
-            var movementSpeed = (GameValues.MaxMeteorSpeed/2) * spawnSettings.GetMovementMultiplier();
+            var movementSpeed = (GameValues.MaxMeteorSpeed) * spawnSettings.GetMovementMultiplier();
             
             Vector2 direction = spawnSettings.GetCenterOfGravity() - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -56,6 +56,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             });
             temp.OnDeflection += DeflectionHandler;
             temp.OnEarthCollision += OnEarthCollisionHandler;
+            
+            projectileLauncherQueue.AddProjectile(temp);
             
             SetTimer();
         }

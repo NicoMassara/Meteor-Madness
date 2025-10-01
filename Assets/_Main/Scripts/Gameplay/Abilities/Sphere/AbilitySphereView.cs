@@ -1,18 +1,29 @@
 ﻿using System;
 using _Main.Scripts.FyingObject;
 using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Gameplay.FlyingObject.Projectile;
 using _Main.Scripts.Observer;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere
 {
-    public class AbilitySphereView : FlyingObjectView<AbilitySphereMotor, AbilitySphereView, AbilitySphereValues>
+    public class AbilitySphereView : FlyingObjectView<AbilitySphereMotor, AbilitySphereView, AbilitySphereValues>, IProjectile
     {
         public UnityAction<AbilitySphereCollisionData> OnEarthCollision { get; set; }
         public UnityAction<AbilitySphereCollisionData> OnDeflection { get; set; }
+        public Vector2 Position => (Vector2)transform.position;
+        public bool EnableMovement { get; set; }
         public event Action OnDeath;
         
+        public override void ManagedFixedUpdate()
+        {
+            if (EnableMovement)
+            {
+                base.ManagedFixedUpdate();
+            }
+        }
+
         
         public override void OnNotify(ulong message, params object[] args)
         {
