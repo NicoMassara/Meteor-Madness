@@ -73,6 +73,7 @@
         public const ulong StorageFilled = 0xA4007;
         public const ulong RestartAbilities = 0xA4008;
         public const ulong RunActiveTimer = 0xA4009;
+        public const ulong SetStorageFull = 0xA4010;
     }
     
     public struct GameScreenObserverMessage

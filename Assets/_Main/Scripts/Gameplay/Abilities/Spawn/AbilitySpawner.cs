@@ -123,10 +123,28 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
-            eventManager.Subscribe<AbilitiesEvents.EnableSpawner>(EventBus_OnAbilityInUse);
+            eventManager.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
+            eventManager.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
+            eventManager.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
             eventManager.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+        }
+
+        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        {
+            if (input.IsActive)
+            {
+                RemoveTimer();
+            }
+            else
+            {
+                SetTimer(spawnDelay);
+            }
+        }
+
+        private void EventBus_Ability_StorageFull(AbilitiesEvents.SetStorageFull input)
+        {
+            
         }
 
         private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
@@ -144,19 +162,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             _factory.RecycleAll();
         }
 
-        private void EventBus_OnAbilityInUse(AbilitiesEvents.EnableSpawner input)
-        {
-            if (input.IsEnable)
-            {
-                RemoveTimer();
-            }
-            else
-            {
-                SetTimer(spawnDelay);
-            }
-        }
-
-        private void EventBus_OnGameFinished(GameModeEvents.Finish input)
+        private void EventBus_GameMode_Finished(GameModeEvents.Finish input)
         {
             RemoveTimer();
             _factory.RecycleAll();

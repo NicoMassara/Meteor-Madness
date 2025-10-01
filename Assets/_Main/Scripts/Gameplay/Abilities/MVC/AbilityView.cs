@@ -45,9 +45,17 @@ namespace _Main.Scripts.Gameplay.Abilies
                 case AbilityObserverMessage.RunActiveTimer:
                     HandleRunActiveTimer((int)args[0]);
                     break;
+                case AbilityObserverMessage.SetStorageFull:
+                    HandleSetStorageFull((bool)args[0]);
+                    break;
             }
         }
-        
+
+        private void HandleSetStorageFull(bool isFull)
+        {
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
+        }
+
         private void HandleRunActiveTimer(int abilityIndex)
         {
             abilityDataController.RunActiveTimer((AbilityType)abilityIndex);
@@ -68,15 +76,12 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleTriggerAbility(int abilityIndex)
         {
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.EnableSpawner{IsEnable = true});
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(
                 (AbilityType)abilityIndex),SelfUpdateGroup);
         }
 
         private void HandleFinishAbility(int abilityIndex)
         {
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.EnableSpawner{IsEnable = false});
-            
             if (abilityDataController.GetHasInstantEffect((AbilityType)abilityIndex)) return;
             
             ActionManager.Add(abilityDataController.GetAbilityEndQueue(

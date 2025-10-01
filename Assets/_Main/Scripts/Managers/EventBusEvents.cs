@@ -137,14 +137,15 @@ namespace _Main.Scripts.Managers
             public AbilityType AbilityType;
         }
 
-        public struct EnableSpawner
-        {
-            public bool IsEnable;
-        }
-
         public struct SetStorageFull
         {
             public bool IsFull;
+        }
+        
+        public struct SetActive
+        {
+            public AbilityType AbilityType;
+            public bool IsActive;
         }
     }
 

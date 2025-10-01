@@ -91,12 +91,14 @@ namespace _Main.Scripts.Gameplay.Abilies
             _currentAbilityIndex = abilityTypeIndex;
             
             NotifyAll(AbilityObserverMessage.SelectAbility, _currentAbilityIndex);
+            NotifyAll(AbilityObserverMessage.SetStorageFull, false);
         }
 
         private void Storage_OnStorageFilledHandler()
         {
-            NotifyAll(AbilityObserverMessage.StorageFilled);
+            NotifyAll(AbilityObserverMessage.SetStorageFull, true);
         }
+        
 
         #endregion
 

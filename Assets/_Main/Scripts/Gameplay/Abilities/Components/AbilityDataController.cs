@@ -12,7 +12,7 @@ namespace _Main.Scripts.Gameplay.Abilies
     {
         private readonly Dictionary<AbilityType, AbilityData> _abilities = new Dictionary<AbilityType, AbilityData>();
         private readonly EventBusManager _eventBus;
-
+        
         public UnityAction<float> OnAbilityStarted;
         public UnityAction<AbilityType> OnAbilityFinished;
         public UnityAction<TimeScaleData> _updateTimeScale;
@@ -44,6 +44,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    PublishAbilityActive(AbilityType.SuperShield, true);
                     _eventBus.Publish(new InputsEvents.SetEnable { IsEnable = false });
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
@@ -102,6 +103,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = 0.25f,
                     });
                     
+                    PublishAbilityActive(AbilityType.SuperShield, false);
                     OnAbilityFinished?.Invoke(AbilityType.SuperShield);
                 }, SuperShieldEndTimeValues.TimeBeforeRestoringTimeScale),
             };
@@ -128,6 +130,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    PublishAbilityActive(AbilityType.Health, true);
                     GameManager.Instance.EventManager.Publish(new EarthEvents.SetEnableDamage{DamageEnable = false});
                     CustomTime.SetChannelTimeScale(UpdateGroup.Shield, shieldTimeScale);
                     _updateTimeScale.Invoke(new TimeScaleData
@@ -169,7 +172,11 @@ namespace _Main.Scripts.Gameplay.Abilies
 
             var endActions = new[]
             {
-                new ActionData(() => OnAbilityFinished?.Invoke(AbilityType.Health))
+                new ActionData(() =>
+                {
+                    OnAbilityFinished?.Invoke(AbilityType.Health);
+                    PublishAbilityActive(AbilityType.Health, false);
+                })
             };
             
             var healData = new AbilityData
@@ -192,8 +199,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    PublishAbilityActive(AbilityType.SlowMotion, true);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Gameplay, 0.15f);
-                    // ReSharper disable once ConvertClosureToMethodGroup
                     CameraZoomIn();
                     
                 }, 0f),
@@ -294,6 +301,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         UpdateGroup.Gameplay, 
                             
                     }, false);
+                    PublishAbilityActive(AbilityType.SlowMotion, false);
                     OnAbilityFinished?.Invoke(AbilityType.SlowMotion);
                 }),
             };
@@ -346,6 +354,12 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var activeTime = _abilities[abilityType].ActiveTime;
             OnAbilityStarted?.Invoke(activeTime);
+        }
+
+        private void PublishAbilityActive(AbilityType abilityType, bool isActive)
+        {
+            GameManager.Instance.EventManager.Publish(
+                new AbilitiesEvents.SetActive{ AbilityType = abilityType, IsActive = isActive });
         }
 
     }
