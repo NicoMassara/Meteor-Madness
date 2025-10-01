@@ -35,7 +35,6 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
             }
             else 
             {
-                Debug.Log($"Target Distance Ratio: {spawnSettings.GetMaxTravelDistance()}");
                 if (_distanceTracker.GetDistanceRatio() <= spawnSettings.GetMaxTravelDistance())
                 {
                     _distanceTracker.ClearValues();

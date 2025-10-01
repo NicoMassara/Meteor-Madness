@@ -40,7 +40,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         public void TryAddAbility(int abilityIndex)
         {
-            if (_storage.IsFull())
+            if (_storage.IsFull() || abilityIndex == 0)
             {
                 return;
             }
