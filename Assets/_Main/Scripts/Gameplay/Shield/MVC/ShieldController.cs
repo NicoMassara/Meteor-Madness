@@ -149,11 +149,6 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _motor.ForceRotate(direction);
         }
-
-        public void RestartPosition()
-        {
-            _motor.RestartPosition();
-        }
         
         #endregion
 
@@ -175,5 +170,10 @@ namespace _Main.Scripts.Gameplay.Shield
         
 
         #endregion
+
+        public void SetActiveGold(bool isActive)
+        {
+            _motor.SetActiveGold(isActive);
+        }
     }
 }
