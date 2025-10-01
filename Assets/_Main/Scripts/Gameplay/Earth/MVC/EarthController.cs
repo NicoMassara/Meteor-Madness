@@ -61,6 +61,7 @@ namespace _Main.Scripts.Gameplay.Earth
             #region Transitions
 
             defaultEarth.AddTransition(States.Dead, dead);
+            defaultEarth.AddTransition(States.Heal, heal);
             
             dead.AddTransition(States.Shaking, shaking);
             
