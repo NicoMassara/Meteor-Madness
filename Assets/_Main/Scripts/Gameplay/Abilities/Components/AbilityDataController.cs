@@ -73,10 +73,6 @@ namespace _Main.Scripts.Gameplay.Abilies
                     });
                     _eventBus.Publish(new MeteorEvents.SpawnRing());
                 }, AbilityParameters.SuperShield.StartValues.TimeBeforeIncreasingTimeScale),
-                new ActionData(() =>
-                {
-                    RunActiveTimer(selectedAbility);
-                }),
             };
 
             //End Queue
@@ -134,7 +130,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 new ActionData(() =>
                 {
                     PublishAbilityActive(selectedAbility, true);
-                    GameManager.Instance.EventManager.Publish(new EarthEvents.SetEnableDamage{DamageEnable = false});
+                    _eventBus.Publish(new EarthEvents.SetEnableDamage{DamageEnable = false});
                     CustomTime.SetChannelTimeScale(UpdateGroup.Shield, shieldTimeScale);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
@@ -168,8 +164,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeToFinish,
                     });
                     
-                    GameManager.Instance.EventManager.Publish(new EarthEvents.SetEnableDamage{DamageEnable = true});
-                    OnAbilityStarted?.Invoke(timeToFinish);
+                    _eventBus.Publish(new EarthEvents.SetEnableDamage{DamageEnable = true});
+                    RunActiveTimer(selectedAbility);
                 }, AbilityParameters.Heal.StartValues.TimeBeforeIncreasingTimeScale),
             };
 

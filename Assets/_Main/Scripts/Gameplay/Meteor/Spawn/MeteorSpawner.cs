@@ -63,7 +63,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         private IEnumerator CreateRingMeteor(float meteorSpeed)
         {
             GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = true});
-            
+
             _isSpawningRing = true;
             
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
@@ -103,6 +103,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
+            
             yield return new WaitForSeconds(GameParameters.TimeValues.MeteorSpawnDelayAfterRing);
             
             GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = false});
