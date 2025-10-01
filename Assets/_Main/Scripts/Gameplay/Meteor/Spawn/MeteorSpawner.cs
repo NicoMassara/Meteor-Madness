@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Gameplay.FlyingObject.Projectile;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -15,6 +16,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private MeteorFactory _meteorFactory;
         private bool _isSpawningRing;
+        private bool _isDoublePoints;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -158,6 +160,8 @@ namespace _Main.Scripts.Gameplay.Meteor
             data.Meteor.OnDeflection = null;
             data.Meteor.OnEarthCollision = null;
             
+            var finalValue = _isDoublePoints ? data.Value * 2 : data.Value;
+            
             GameManager.Instance.EventManager.Publish
             (
                 new MeteorEvents.Deflected
@@ -165,7 +169,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                     Position = data.Position,
                     Rotation = data.Rotation,
                     Direction = data.Direction,
-                    Value = data.Value
+                    Value = finalValue
                 }
             );
             
@@ -197,10 +201,19 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
+            eventManager.Subscribe<AbilitiesEvents.SetActive>(EnventBus_Ability_SetActive);
             eventManager.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
             eventManager.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
             eventManager.Subscribe<ProjectileEvents.DistanceCheck>(EventBus_Projectile_DistanceCheck);
+        }
+
+        private void EnventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        {
+            if (input.AbilityType == AbilityType.DoublePoints)
+            {
+                _isDoublePoints = input.IsActive;
+            }
         }
 
         private void EventBus_Projectile_DistanceCheck(ProjectileEvents.DistanceCheck input)

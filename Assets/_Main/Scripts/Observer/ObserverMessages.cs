@@ -9,6 +9,7 @@
         public const ulong RestartPosition = 0xA0005;
         public const ulong SetActiveShield = 0xA0006;
         public const ulong SetActiveSuperShield = 0xA0007;
+        public const ulong SetActiveGold = 0xA0008;
     }
 
     public struct EarthObserverMessage
@@ -70,7 +71,7 @@
         public const ulong SetCanUse = 0xA4004;
         public const ulong SetEnableUI = 0xA4005;
         public const ulong SelectAbility = 0xA4006;
-        public const ulong StorageFilled = 0xA4007;
+        public const ulong Empty = 0xA4007;
         public const ulong RestartAbilities = 0xA4008;
         public const ulong RunActiveTimer = 0xA4009;
         public const ulong SetStorageFull = 0xA4010;
