@@ -56,8 +56,9 @@ namespace _Main.Scripts.Gameplay.Abilities
             {
                 AbilityType.None => _disabledColor,
                 AbilityType.SuperShield => Color.cyan,
-                AbilityType.SlowMotion => Color.yellow,
+                AbilityType.SlowMotion => Color.green,
                 AbilityType.Health => Color.red,
+                AbilityType.DoublePoints => Color.yellow,
                 _ => Color.clear
             };
             

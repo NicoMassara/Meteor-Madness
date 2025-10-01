@@ -33,7 +33,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void SpawnSingleMeteor(Vector2 spawnPosition, Vector2 direction, float movementMultiplier)
         {
-            var finalSpeed = GameValues.MaxMeteorSpeed * movementMultiplier;
+            var finalSpeed = GameParameters.GameplayValues.MaxMeteorSpeed * movementMultiplier;
             var tempMeteor = _meteorFactory.SpawnMeteor();
                 
             //Set Direction and Rotation towards COG
@@ -103,7 +103,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
-            yield return new WaitForSeconds(GameTimeValues.MeteorSpawnDelayAfterRing);
+            yield return new WaitForSeconds(GameParameters.TimeValues.MeteorSpawnDelayAfterRing);
             
             GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = false});
             _isSpawningRing = false;
@@ -228,7 +228,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
         {
-            SpawnRingMeteor(GameValues.MaxMeteorSpeed);
+            SpawnRingMeteor(GameParameters.GameplayValues.MaxMeteorSpeed);
         }
 
         private void EnventBus_Meteor_RecycleAll(MeteorEvents.RecycleAll input)

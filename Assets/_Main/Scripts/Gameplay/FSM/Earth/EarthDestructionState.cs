@@ -17,11 +17,11 @@ namespace _Main.Scripts.Gameplay.FSM.Earth
             var temp = new ActionData[]
             {
                 new (()=>Controller.TriggerDestruction(),
-                    EarthDestructionTimeValues.StartTriggerDestructionTime),
+                    EarthParameters.TimeValues.Destruction.StartTriggerDestructionTime),
                 new (()=>Controller.SetRotation(true),
-                    EarthDestructionTimeValues.StartRotatingAfterDeath),
+                    EarthParameters.TimeValues.Destruction.StartRotatingAfterDeath),
                 new (()=>Controller.TriggerEndDestruction(),
-                    EarthDestructionTimeValues.EndTriggerDestructionTime),
+                    EarthParameters.TimeValues.Destruction.EndTriggerDestructionTime),
             };
 
             _queue.AddAction(temp);

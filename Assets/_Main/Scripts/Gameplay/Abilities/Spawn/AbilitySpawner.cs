@@ -41,7 +41,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             var temp = _factory.SpawnAbilitySphere();
             var spawnPosition = spawnSettings.GetPositionByAngle(spawnSettings.GetSpawnAngle(), spawnSettings.GetSpawnRadius());
-            var movementSpeed = (GameValues.MaxMeteorSpeed) * spawnSettings.GetMovementMultiplier();
+            var movementSpeed = (GameParameters.GameplayValues.MaxMeteorSpeed) * spawnSettings.GetMovementMultiplier();
             
             Vector2 direction = spawnSettings.GetCenterOfGravity() - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -217,9 +217,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         public AbilitySelector()
         {
-            _valuesDic.Add(AbilityType.SlowMotion, new AbilityValue(45, AbilityType.SlowMotion));
-            _valuesDic.Add(AbilityType.Health, new AbilityValue(30, AbilityType.Health));
-            _valuesDic.Add(AbilityType.SuperShield, new AbilityValue(25, AbilityType.SuperShield));
+            _valuesDic.Add(AbilityType.SlowMotion, new AbilityValue(30, AbilityType.SlowMotion));
+            _valuesDic.Add(AbilityType.Health, new AbilityValue(25, AbilityType.Health));
+            _valuesDic.Add(AbilityType.SuperShield, new AbilityValue(15, AbilityType.SuperShield));
+            _valuesDic.Add(AbilityType.DoublePoints, new AbilityValue(30, AbilityType.DoublePoints));
         }
 
 
@@ -229,9 +230,12 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             switch (_level)
             {
                 case 5:
+                    SetMultiplier(AbilityType.DoublePoints, 1f);
+                    break;
+                case 6:
                     SetMultiplier(AbilityType.SlowMotion, 1f);
                     break;
-                case 8:
+                case 9:
                     SetMultiplier(AbilityType.Health, 1f);
                     break;
                 case 10:

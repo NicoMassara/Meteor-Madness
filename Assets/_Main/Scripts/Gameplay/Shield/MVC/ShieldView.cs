@@ -87,16 +87,22 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.PlayMoveSound:
                     PlayMoveSound();
                     break;
-                case ShieldObserverMessage.RestartPosition:
-                    HandleRestartPosition();
-                    break;
                 case ShieldObserverMessage.SetActiveShield:
                     HandleSetActiveShield((bool)args[0]);
                     break;
                 case ShieldObserverMessage.SetActiveSuperShield:
                     HandleSetSuperActive((bool)args[0]);
                     break;
+                case ShieldObserverMessage.SetGold:
+                    HandleSetGold((bool)args[0]);
+                    break;
             }
+        }
+        private void HandleSetGold(bool isActive)
+        {
+            var color = isActive ? Color.yellow : Color.white;
+            normalSprite.GetComponent<SpriteRenderer>().color = color;
+            
         }
 
         #region Sprites
@@ -122,11 +128,6 @@ namespace _Main.Scripts.Gameplay.Shield
         private void PlayMoveSound()
         {
             moveSound?.PlaySound();
-        }
-        
-        private void HandleRestartPosition()
-        {
-            transform.rotation = Quaternion.Euler(0,0,0);
         }
 
         #endregion

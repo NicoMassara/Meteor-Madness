@@ -152,9 +152,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             var tempActions = new ActionData[]
             {
                 new (()=>GameManager.Instance.EventManager.Publish(new GameModeEvents.Restart()),
-                    GameRestartTimeValues.TriggerRestart),
+                    GameParameters.TimeValues.Restart.TriggerRestart),
                 new (()=>GameManager.Instance.EventManager.Publish(new EarthEvents.Restart()),
-                    GameRestartTimeValues.RestartEarth),
+                    GameParameters.TimeValues.Restart.RestartEarth),
             };
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);

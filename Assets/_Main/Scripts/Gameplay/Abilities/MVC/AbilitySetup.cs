@@ -19,7 +19,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Awake()
         {
-            _motor = new AbilityMotor(GameValues.MaxAbilityCount);
+            _motor = new AbilityMotor(GameParameters.GameplayValues.MaxAbilityCount);
             _controller = new AbilityController(_motor);
             
             _view = GetComponent<AbilityView>();

@@ -18,7 +18,7 @@ namespace _Main.Scripts.Gameplay.FlyingObject
         [SerializeField] private int maxSlotProximity;
         
 
-        private const int SlotAmount = GameValues.AngleSlots;
+        private const int SlotAmount = GameParameters.GameplayValues.AngleSlots;
         private int _lastSlot;
         
         private void OnValidate()
