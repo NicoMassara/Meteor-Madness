@@ -59,7 +59,8 @@ namespace _Main.Scripts.Gameplay.Earth
                     _canMove = true;
                 }, EarthParameters.TimeValues.Slice.StartSlice),
                 
-                new ActionData(() => _canMove = false, EarthParameters.TimeValues.Slice.MoveSlices),
+                new ActionData(() => _canMove = false, 
+                    EarthParameters.TimeValues.Slice.MoveSlices),
                 
                 new ActionData(() =>
                 {
