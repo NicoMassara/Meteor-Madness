@@ -102,10 +102,9 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         #endregion
 
-
         public void RunActiveTimer()
         {
-            NotifyAll(AbilityObserverMessage.RunActiveTimer,(int)_currentAbilityIndex);
+            NotifyAll(AbilityObserverMessage.RunActiveTimer,_currentAbilityIndex);
         }
     }
     

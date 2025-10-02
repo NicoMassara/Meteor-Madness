@@ -72,7 +72,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Initialize:
                     HandleInitialize();
                     break;
-                    
+                
             }
         }
         private void HandleInitialize()

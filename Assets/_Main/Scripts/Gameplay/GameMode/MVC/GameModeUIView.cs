@@ -96,7 +96,15 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
+                case GameModeObserverMessage.PointsGained:
+                    HandlePointsGained();
+                    break;
             }
+        }
+
+        private void HandlePointsGained()
+        {
+
         }
 
         private void HandleDisable()

@@ -146,7 +146,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void EventBus_OnMeteorDeflected(MeteorEvents.Deflected input)
         {
-            _controller.HandleMeteorDeflect(input.Value);
+            _controller.HandleMeteorDeflect(input.Position,input.Value);
         }
 
         private void EventBus_OnEarthDestruction(EarthEvents.DestructionFinished destructionFinished)

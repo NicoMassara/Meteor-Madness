@@ -57,7 +57,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.StartGameplay);
         }
 
-        public void HandleMeteorDeflect(float meteorDeflectValue)
+        public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
         {
             _meteorDeflectCount += meteorDeflectValue;
             
@@ -65,6 +65,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 _levelController.IncreaseStreak();
                 _levelController.CheckForNextLevel();
+            }
+
+            if (meteorDeflectValue > 0)
+            {
+                NotifyAll(GameModeObserverMessage.PointsGained,position,meteorDeflectValue);
             }
 
             NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);

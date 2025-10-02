@@ -161,7 +161,7 @@ namespace _Main.Scripts.Managers
             public IProjectile Projectile;
         }
 
-        public struct DistanceCheck
+        public struct Request
         {
             public Vector2 Position;
             public Vector2 Direction;

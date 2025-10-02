@@ -169,9 +169,9 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #endregion
         
-        public void HandleMeteorDeflect(float meteorDeflectValue)
+        public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
         {
-            _motor.HandleMeteorDeflect(meteorDeflectValue);
+            _motor.HandleMeteorDeflect(position, meteorDeflectValue);
         }
 
         public void SetEnableMeteorSpawn(bool canSpawn)
