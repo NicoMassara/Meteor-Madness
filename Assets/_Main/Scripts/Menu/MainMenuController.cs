@@ -34,7 +34,8 @@ namespace _Main.Scripts.Menu
         }
 
         private void Initialize()
-        {
+        {            
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
             menuPanel.SetActive(false);
             lorePanel.SetActive(false);
             themeSound.PlaySound();
@@ -71,7 +72,7 @@ namespace _Main.Scripts.Menu
             menuSound.PlaySound();
             TimerManager.Add(new TimerData
             {
-                Time = GameTimeValues.TimeToLoadGameScene,
+                Time = GameParameters.TimeValues.TimeToLoadGameScene,
                 OnEndAction = ()=> GameManager.Instance.LoadGameplay()
             });
         }

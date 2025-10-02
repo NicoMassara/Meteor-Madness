@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Gameplay.FlyingObject.Projectile;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using UnityEngine;
@@ -8,7 +9,6 @@ namespace _Main.Scripts.Managers
     
     public struct EarthEvents
     {
-        public struct Initialize { }
         public struct Restart { }
         public struct RestartFinished { }
         public struct ShakeStart { }
@@ -24,10 +24,14 @@ namespace _Main.Scripts.Managers
 
     public struct ShieldEvents
     {
-        public struct Initialize { };
         public struct SetEnable
         {
             public bool IsEnabled;
+        }
+        
+        public struct SetGold
+        {
+            public bool IsActive;
         }
         public struct EnableSuperShield { }
         public struct EnableNormalShield { }
@@ -46,12 +50,10 @@ namespace _Main.Scripts.Managers
 
     public struct GameModeEvents
     {
-        public struct SetEnable
-        {
-            public bool IsEnabled;
-        }
-
         public struct Initialize { };
+
+        public struct Disable { };
+
         public struct Start { };
         public struct Finish { };
         public struct Restart { };
@@ -88,8 +90,12 @@ namespace _Main.Scripts.Managers
         {
             public bool CanSpawn;
         }
-    
-        public struct SpawnRing { }
+
+        public struct SpawnRing {}
+        public struct RingActive
+        {
+            public bool IsActive;
+        }
     
         public struct RecycleAll{}
     }
@@ -134,16 +140,49 @@ namespace _Main.Scripts.Managers
         public struct Add
         {
             public AbilityType AbilityType;
-        }
-
-        public struct EnableSpawner
-        {
-            public bool IsEnable;
+            public Vector2 Position;
         }
 
         public struct SetStorageFull
         {
             public bool IsFull;
+        }
+        
+        public struct SetActive
+        {
+            public AbilityType AbilityType;
+            public bool IsActive;
+        }
+    }
+
+    public struct ProjectileEvents
+    {
+        public struct Add
+        {
+            public IProjectile Projectile;
+        }
+
+        public struct Request
+        {
+            public Vector2 Position;
+            public Vector2 Direction;
+            public float MovementMultiplier;
+        };
+    }
+
+    public struct FloatingTextEvents
+    {
+        public struct Points
+        {
+            public Vector2 Position;
+            public int Score;
+            public bool IsDouble;
+        }
+        
+        public struct Ability
+        {
+            public Vector2 Position;
+            public AbilityType AbilityType;
         }
     }
 }

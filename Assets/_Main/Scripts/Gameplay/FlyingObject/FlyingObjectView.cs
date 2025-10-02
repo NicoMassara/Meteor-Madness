@@ -69,7 +69,7 @@ namespace _Main.Scripts.FyingObject
             _sphereRotator.SetSpeed(GetRotationSpeed());
         }
         
-        public void ManagedUpdate()
+        public virtual void ManagedUpdate()
         {
             _sphereRotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             
@@ -80,7 +80,7 @@ namespace _Main.Scripts.FyingObject
             }
         }
 
-        public void ManagedFixedUpdate()
+        public virtual void ManagedFixedUpdate()
         {
             if (_canMove)
             {

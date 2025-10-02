@@ -11,16 +11,30 @@ namespace _Main.Scripts.Gameplay.GameMode
         private int _meteorCollisionCount;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
 
+        private readonly GameLevelController _levelController;
+        
         private float _startTimer;
         private bool _isPaused;
-        private readonly GameLevelController _levelController;
+        private bool _doesRestartGameMode;
+        private bool _hasDoublePoints;
+        
 
         public GameModeMotor()
         {
             _levelController = new();
             _levelController.OnLevelChange += OnLevelChangeHandler;
         }
+
+        public void InitializeValues()
+        {
+            NotifyAll(GameModeObserverMessage.Initialize);
+        }
         
+        public void SetDoesRestartGameMode(bool doesRestart)
+        {
+            _doesRestartGameMode = doesRestart;
+        }
+
         public void StartCountdown(float time)
         {
             _startTimer = time + 1;
@@ -44,14 +58,20 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.StartGameplay);
         }
 
-        public void HandleMeteorDeflect(float meteorDeflectValue)
+        public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
         {
-            _meteorDeflectCount += meteorDeflectValue;
+            var finalValue = _hasDoublePoints ? meteorDeflectValue*2 : meteorDeflectValue;
+            _meteorDeflectCount += finalValue;
             
             if (meteorDeflectValue >= 1)
             {
                 _levelController.IncreaseStreak();
                 _levelController.CheckForNextLevel();
+            }
+
+            if (meteorDeflectValue > 0)
+            {
+                NotifyAll(GameModeObserverMessage.PointsGained,position,finalValue,_hasDoublePoints);
             }
 
             NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);
@@ -80,6 +100,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             NotifyAll(GameModeObserverMessage.EarthEndDestruction, _meteorDeflectCount);
         }
+        
+        public void EarthRestartFinish()
+        {
+            NotifyAll(GameModeObserverMessage.EarthRestartFinish, _doesRestartGameMode);
+        }
 
         #endregion
         
@@ -98,7 +123,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.GameFinish);
         }
         
-        
         private void OnLevelChangeHandler()
         {
             UpdateCurrentLevel();
@@ -107,11 +131,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void GameRestart()
         {
             NotifyAll(GameModeObserverMessage.GameRestart);
-        }
-
-        public void EarthRestartFinish()
-        {
-            NotifyAll(GameModeObserverMessage.EarthRestartFinish);
         }
 
         public void SetGamePaused(bool isPaused)
@@ -123,6 +142,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void DisableGameMode()
         {
             NotifyAll(GameModeObserverMessage.Disable);
+        }
+
+        public void SetDoublePoints(bool isEnable)
+        {
+            _hasDoublePoints = isEnable;
         }
     }
 }

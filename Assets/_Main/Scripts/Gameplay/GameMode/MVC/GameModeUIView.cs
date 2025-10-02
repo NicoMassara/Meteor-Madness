@@ -6,6 +6,7 @@ using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -15,11 +16,10 @@ namespace _Main.Scripts.Gameplay.GameMode
     public class GameModeUIView : ManagedBehavior, IObserver, IUpdatable
     {
         [Header("Texts")]
-        [SerializeField] private Text countdownText;
-        [SerializeField] private Text scoreText;
-        [SerializeField] private Text deathScoreText;
-        [SerializeField] private Text deathText;
-
+        [SerializeField] private TMP_Text countdownText;
+        [SerializeField] private TMP_Text scoreText;
+        [SerializeField] private TMP_Text deathScoreText;
+        [SerializeField] private TMP_Text deathText;
         [Space] 
         [Header("Panels")] 
         [SerializeField] private GameObject mainPanel;
@@ -35,7 +35,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private Button[] mainMenuButtons;
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior buttonSound;
-
+        
         private GameObject _currentPanel;
         private NumberIncrementer _numberIncrementer;
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
@@ -56,7 +56,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 button.onClick.AddListener(MainMenuButton_OnClickHandler);
             }
-            deathText.text = UITextValues.DeathText;
+            deathText.text = UIParameters.UITextValues.DeathText;
         }
         
         public void OnNotify(ulong message, params object[] args)
@@ -96,6 +96,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
+
             }
         }
 
@@ -139,8 +140,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdown(float countdownTime)
         {
-            var text = countdownTime >= 1 ? $"{UITextValues.GameCountdownText} {(int)countdownTime}..." 
-                : UITextValues.GameCountdownFinish;
+            var text = countdownTime >= 1 ? $"{UIParameters.UITextValues.GameCountdownText} {(int)countdownTime}..." 
+                : UIParameters.UITextValues.GameCountdownFinish;
             countdownText.text = text;
         }
         
@@ -189,9 +190,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 _numberIncrementer.SetData(new NumberIncrementerData
                 {
-                    Target = (deflectCount * GameValues.VisualMultiplier),
+                    Target = (deflectCount * GameParameters.GameplayValues.VisualMultiplier),
                     Current = GetCurrentPoints(),
-                    TargetTime = UIPanelTimeValues.GameplayPointsTimeToIncrease
+                    TargetTime = UIParameters.PanelTimeValues.GameplayPointsTimeToIncrease
                 
                 });
                 
@@ -199,7 +200,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
             else
             {
-                _numberIncrementer.SetNewTarget(deflectCount * GameValues.VisualMultiplier);
+                _numberIncrementer.SetNewTarget(deflectCount * GameParameters.GameplayValues.VisualMultiplier);
             }
         }
 
@@ -233,13 +234,13 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void UpdateGameplayScoreText(int points)
         {
-            var text = $"{UITextValues.Points}: {points:D6}";
+            var text = $"{UIParameters.UITextValues.Points}: {points:D6}";
             scoreText.text = text;
         }
 
         private void UpdateDeathScoreText(int points)
         {
-            var text = $"{UITextValues.DeathPoints}: {points:D6}";
+            var text = $"{UIParameters.UITextValues.DeathPoints}: {points:D6}";
             deathScoreText.text = text;
         }
 
@@ -273,30 +274,30 @@ namespace _Main.Scripts.Gameplay.GameMode
             List<ActionData> tempList = new List<ActionData>
             {
                 new (()=> SetActiveDeathText(true), 
-                    UIPanelTimeValues.SetEnableDeathText),
+                    UIParameters.PanelTimeValues.SetEnableDeathText),
                 new (()=> SetActiveDeathScoreText(true), 
-                    UIPanelTimeValues.SetEnableDeathScore)
+                    UIParameters.PanelTimeValues.SetEnableDeathScore)
             };
             
             if (deflectCount > 0)
             {
                 _numberIncrementer.SetData(new NumberIncrementerData
                 {
-                    Target = deflectCount * GameValues.VisualMultiplier,
-                    TargetTime = UIPanelTimeValues.DeathPointsTimeToIncrease,
+                    Target = deflectCount * GameParameters.GameplayValues.VisualMultiplier,
+                    TargetTime = UIParameters.PanelTimeValues.DeathPointsTimeToIncrease,
                     ActionOnFinish = ()=>
                     {
                         _deathPanelActionQueue.AddAction(
                             new ActionData(
                                 () => SetActiveRestartButtonPanel(true),
-                                UIPanelTimeValues.EnableRestartButton));
+                                UIParameters.PanelTimeValues.EnableRestartButton));
                     }
                 });
                 
                 tempList.Add(
                     new ActionData(
                         ()=> StartCoroutine(IncreasePointsText(UpdateDeathScoreText)),
-                        UIPanelTimeValues.CountDeathScore));
+                        UIParameters.PanelTimeValues.CountDeathScore));
                 ;
             }
             else
@@ -304,7 +305,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 tempList.Add(
                     new ActionData(
                         ()=> SetActiveRestartButtonPanel(true),
-                        UIPanelTimeValues.EnableRestartButton));
+                        UIParameters.PanelTimeValues.EnableRestartButton));
             }
 
             

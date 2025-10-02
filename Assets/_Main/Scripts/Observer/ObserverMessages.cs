@@ -6,9 +6,10 @@
         public const ulong StopRotate = 0xA0002;
         public const ulong Deflect = 0xA0003;
         public const ulong PlayMoveSound = 0xA0004;
-        public const ulong RestartPosition = 0xA0005;
+        public const ulong SetGold = 0xA0005;
         public const ulong SetActiveShield = 0xA0006;
         public const ulong SetActiveSuperShield = 0xA0007;
+        public const ulong Empty = 0xA0008;
     }
 
     public struct EarthObserverMessage
@@ -34,13 +35,14 @@
         public const ulong EarthEndDestruction = 0xA2007;
         public const ulong EarthShaking = 0xA2008;
         public const ulong SetEnableSpawnMeteor = 0xA2009;
-        public const ulong SpawnRingMeteor = 0xA2010;
+        public const ulong PointsGained = 0xA2010;
         public const ulong GameFinish = 0xA2011;
         public const ulong UpdateGameLevel = 0xA2012;
         public const ulong GameRestart = 0xA2013;
         public const ulong EarthRestartFinish = 0xA2014;
         public const ulong GamePaused = 0xA2015;
-        public const ulong Disable= 0xA2016;
+        public const ulong Disable = 0xA2016;
+        public const ulong Initialize = 0xA2017;
     }
 
     public struct FlyingObjectObserverMessage
@@ -69,8 +71,10 @@
         public const ulong SetCanUse = 0xA4004;
         public const ulong SetEnableUI = 0xA4005;
         public const ulong SelectAbility = 0xA4006;
-        public const ulong StorageFilled = 0xA4007;
+        public const ulong Empty = 0xA4007;
         public const ulong RestartAbilities = 0xA4008;
+        public const ulong RunActiveTimer = 0xA4009;
+        public const ulong SetStorageFull = 0xA4010;
     }
     
     public struct GameScreenObserverMessage

@@ -1,4 +1,6 @@
-﻿namespace _Main.Scripts.Gameplay.FSM.Earth
+﻿using UnityEngine;
+
+namespace _Main.Scripts.Gameplay.FSM.Earth
 {
     public class EarthDestructionState<T> : EarthBaseState<T>
     {
@@ -6,16 +8,22 @@
         
         public override void Awake()
         {
+            if (Controller == null)
+            {
+                Debug.Log("Controller is null");
+                return;
+            }
+
             var temp = new ActionData[]
             {
                 new (()=>Controller.TriggerDestruction(),
-                    EarthDestructionTimeValues.StartTriggerDestructionTime),
+                    EarthParameters.TimeValues.Destruction.StartTriggerDestructionTime),
                 new (()=>Controller.SetRotation(true),
-                    EarthDestructionTimeValues.StartRotatingAfterDeath),
+                    EarthParameters.TimeValues.Destruction.StartRotatingAfterDeath),
                 new (()=>Controller.TriggerEndDestruction(),
-                    EarthDestructionTimeValues.EndTriggerDestructionTime),
+                    EarthParameters.TimeValues.Destruction.EndTriggerDestructionTime),
             };
-            
+
             _queue.AddAction(temp);
         }
 

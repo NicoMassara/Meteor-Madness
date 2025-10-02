@@ -139,21 +139,21 @@ namespace _Main.Scripts.Gameplay.Earth
                     CustomTime.SetChannelTimeScale(new[]
                     {
                         UpdateGroup.Gameplay, UpdateGroup.Ability, 
-                        UpdateGroup.Effects, UpdateGroup.Shield
+                        UpdateGroup.Effects
                     }, 0f);
                     
                     StartCoroutine(Coroutine_HandleHeal(currentHealth, lastHealth, 
-                        EarthRestartTimeValues.RestartHealth));
+                        EarthParameters.TimeValues.Restart.RestartHealth));
                 }),
                 new (() =>
                 {
                     CustomTime.SetChannelTimeScale(new[]
                     {
                         UpdateGroup.Gameplay, UpdateGroup.Ability, 
-                        UpdateGroup.Effects, UpdateGroup.Shield
+                        UpdateGroup.Effects
                     }, 1f);
                     
-                },EarthRestartTimeValues.RestartHealth),
+                },EarthParameters.TimeValues.Restart.RestartHealth),
             };
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
@@ -184,7 +184,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleRestartHealth(float currentHealth)
         {
-            var tempActions = new ActionData[1];
+            ActionData[] tempActions;
             
             if (currentHealth >= 1)
             {
@@ -192,8 +192,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 {
                     new (() =>  HandleSetRotation(false)),
                     new (() => StartCoroutine(
-                            Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform)), 
-                        EarthRestartTimeValues.TimeBeforeRotateY),
+                            Coroutine_RestartRotation(EarthParameters.TimeValues.Restart.RestartYRotation, modelContainer.transform)), 
+                        EarthParameters.TimeValues.Restart.TimeBeforeRotateY),
                     new (() =>
                     {
                         SetShakeMultiplier(1);
@@ -204,7 +204,7 @@ namespace _Main.Scripts.Gameplay.Earth
                         OnHealed?.Invoke();
                         GameManager.Instance.EventManager.Publish(new EarthEvents.RestartFinished());
                     
-                    }, EarthRestartTimeValues.FinishRestart),
+                    }, EarthParameters.TimeValues.Restart.FinishRestart),
                 };
             }
             else if(currentHealth < 1 && currentHealth > 0)
@@ -213,11 +213,11 @@ namespace _Main.Scripts.Gameplay.Earth
                 {
                     new (() =>  HandleSetRotation(false)),
                     new (() => StartCoroutine(
-                            Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform)), 
-                        EarthRestartTimeValues.TimeBeforeRotateY),
+                            Coroutine_RestartRotation(EarthParameters.TimeValues.Restart.RestartYRotation, modelContainer.transform)), 
+                        EarthParameters.TimeValues.Restart.TimeBeforeRotateY),
                     new (() => StartCoroutine(
-                            Coroutine_RestartHealthColor(EarthRestartTimeValues.RestartHealth, currentHealth)), 
-                        EarthRestartTimeValues.RestartYRotation),
+                            Coroutine_RestartHealthColor(EarthParameters.TimeValues.Restart.RestartHealth, currentHealth)), 
+                        EarthParameters.TimeValues.Restart.RestartYRotation),
                     new (() =>
                     {
                         SetShakeMultiplier(1);
@@ -225,14 +225,14 @@ namespace _Main.Scripts.Gameplay.Earth
                         _shakerController.SetShakeData(healthShakeData);
                         _isDead = false;
                     
-                    }, EarthRestartTimeValues.RestartHealth),
+                    }, EarthParameters.TimeValues.Restart.RestartHealth),
                     new ActionData(() =>
                     {
                         HandleSetRotation(true);
                         OnHealed?.Invoke();
                         GameManager.Instance.EventManager.Publish(new EarthEvents.RestartFinished());
                     
-                    }, EarthRestartTimeValues.FinishRestart),
+                    }, EarthParameters.TimeValues.Restart.FinishRestart),
                 };
             }
             else
@@ -241,17 +241,17 @@ namespace _Main.Scripts.Gameplay.Earth
                 {
                     new (() =>  HandleSetRotation(false)),
                     new (() => StartCoroutine(
-                            Coroutine_RestartRotation(EarthRestartTimeValues.RestartZRotation, 
+                            Coroutine_RestartRotation(EarthParameters.TimeValues.Restart.RestartZRotation, 
                                 planeMeshContainer.transform)), 
-                        EarthRestartTimeValues.TimeBeforeRotateZ),
+                        EarthParameters.TimeValues.Restart.TimeBeforeRotateZ),
                     new (() => earthMeshSlicer?.StartUnite(), 
-                        EarthRestartTimeValues.RestartZRotation),
+                        EarthParameters.TimeValues.Restart.RestartZRotation),
                     new (() => StartCoroutine(
-                            Coroutine_RestartRotation(EarthRestartTimeValues.RestartYRotation, modelContainer.transform)), 
-                        EarthRestartTimeValues.TimeBeforeRotateY),
+                            Coroutine_RestartRotation(EarthParameters.TimeValues.Restart.RestartYRotation, modelContainer.transform)), 
+                        EarthParameters.TimeValues.Restart.TimeBeforeRotateY),
                     new (() => StartCoroutine(
-                            Coroutine_RestartHealthColor(EarthRestartTimeValues.RestartHealth, currentHealth)), 
-                        EarthRestartTimeValues.RestartYRotation),
+                            Coroutine_RestartHealthColor(EarthParameters.TimeValues.Restart.RestartHealth, currentHealth)), 
+                        EarthParameters.TimeValues.Restart.RestartYRotation),
                     new (() =>
                     {
                         SetShakeMultiplier(1);
@@ -259,14 +259,14 @@ namespace _Main.Scripts.Gameplay.Earth
                         _shakerController.SetShakeData(healthShakeData);
                         _isDead = false;
                     
-                    }, EarthRestartTimeValues.RestartHealth),
+                    }, EarthParameters.TimeValues.Restart.RestartHealth),
                     new ActionData(() =>
                     {
                         HandleSetRotation(true);
                         OnHealed?.Invoke();
                         GameManager.Instance.EventManager.Publish(new EarthEvents.RestartFinished());
                     
-                    }, EarthRestartTimeValues.FinishRestart),
+                    }, EarthParameters.TimeValues.Restart.FinishRestart),
                 };
             }
 

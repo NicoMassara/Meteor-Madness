@@ -10,7 +10,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityView : ManagedBehavior, IUpdatable, IObserver
     {
-        private AbilityData _currentAbility;
+        private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
         
         public UnityAction OnAbilitySelected;
@@ -33,24 +33,51 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             switch (message)
             {
+                case AbilityObserverMessage.AddAbility:
+                    HandleAddAbility((int)args[0],(Vector2)args[1]);
+                    break;
                 case AbilityObserverMessage.SelectAbility:
-                    HandleSelectAbility((AbilityType)args[0]);
+                    HandleSelectAbility((int)args[0]);
                     break;
                 case AbilityObserverMessage.TriggerAbility:
-                    HandleTriggerAbility((AbilityType)args[0]);
+                    HandleTriggerAbility((int)args[0]);
                     break;
                 case AbilityObserverMessage.FinishAbility:
-                    HandleFinishAbility((AbilityType)args[0]);
+                    HandleFinishAbility((int)args[0]);
+                    break;
+                case AbilityObserverMessage.RunActiveTimer:
+                    HandleRunActiveTimer((int)args[0]);
+                    break;
+                case AbilityObserverMessage.SetStorageFull:
+                    HandleSetStorageFull((bool)args[0]);
                     break;
             }
         }
-        
+
+        private void HandleAddAbility(int index, Vector2 position)
+        {
+            GameManager.Instance.EventManager.Publish(new FloatingTextEvents.Ability
+            {
+                Position = position,
+                AbilityType = (AbilityType)index,
+            });
+        }
+
+        private void HandleSetStorageFull(bool isFull)
+        {
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
+        }
+
+        private void HandleRunActiveTimer(int abilityIndex)
+        {
+            abilityDataController.RunActiveTimer((AbilityType)abilityIndex);
+        }
 
         #region Ability
 
-        private void HandleSelectAbility(AbilityType enumType)
+        private void HandleSelectAbility(int abilityIndex)
         {
-            if (!abilityDataController.HasAbilityData(enumType))
+            if (!abilityDataController.HasAbilityData((AbilityType)abilityIndex))
             {
                 Debug.LogWarning("AbilityData Does not exist");
                 return;
@@ -59,19 +86,18 @@ namespace _Main.Scripts.Gameplay.Abilies
             OnAbilitySelected?.Invoke();
         }
 
-        private void HandleTriggerAbility(AbilityType enumType)
+        private void HandleTriggerAbility(int abilityIndex)
         {
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.EnableSpawner{IsEnable = true});
-            ActionManager.Add(abilityDataController.GetAbilityStartQueue(enumType),SelfUpdateGroup);
+            ActionManager.Add(abilityDataController.GetAbilityStartQueue(
+                (AbilityType)abilityIndex),SelfUpdateGroup);
         }
 
-        private void HandleFinishAbility(AbilityType enumType)
+        private void HandleFinishAbility(int abilityIndex)
         {
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.EnableSpawner{IsEnable = false});
+            if (abilityDataController.GetHasInstantEffect((AbilityType)abilityIndex)) return;
             
-            if (abilityDataController.GetHasInstantEffect(enumType)) return;
-            
-            ActionManager.Add(abilityDataController.GetAbilityEndQueue(enumType),SelfUpdateGroup);
+            ActionManager.Add(abilityDataController.GetAbilityEndQueue(
+                (AbilityType)abilityIndex),SelfUpdateGroup);
         }
 
         #endregion

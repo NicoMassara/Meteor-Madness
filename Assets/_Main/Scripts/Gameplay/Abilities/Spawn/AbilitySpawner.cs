@@ -1,10 +1,11 @@
 ﻿using System;
-using _Main.Scripts.FyingObject;
+using System.Collections.Generic;
 using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Gameplay.Abilities.Sphere;
-using _Main.Scripts.Gameplay.FlyingObject;
+using _Main.Scripts.Gameplay.FlyingObject.Projectile;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.MyTools;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Spawn
@@ -12,18 +13,15 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
     public class AbilitySpawner : ManagedBehavior, IUpdatable
     {
         [Header("Components")]
-        [SerializeField] private ProjectileSpawnLocationController spawnLocation;
+        [SerializeField] private ProjectileSpawnSettings spawnSettings;
         [SerializeField] private AbilitySphereView prefab;
-        [SerializeField] private ProjectileSpawnDataSo spawanData;
         [Header("Values")] 
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
-        [Space]
-        [Header("Testing")] 
-        [SerializeField] private bool doesSpawn;
-        
+
+        private bool _isStorageFull;
         private AbilitySphereFactory _factory;
-        private ProjectileSpawnValues _spawnValues;
+        private AbilitySelector _selector = new AbilitySelector();
         private ulong _spawnTimerId;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
@@ -35,7 +33,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void Start()
         {
             _factory = new AbilitySphereFactory(prefab);
-            _spawnValues = new ProjectileSpawnValues(spawanData);
         }
 
         public void ManagedUpdate() { }
@@ -43,10 +40,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void SendAbility()
         {
             var temp = _factory.SpawnAbilitySphere();
-            var spawnPosition = spawnLocation.GetPositionByAngle(spawnLocation.GetSpawnAngle(), spawnLocation.GetSpawnRadius());
-            var movementSpeed = (GameValues.MaxMeteorSpeed/2) * _spawnValues.GetMovementMultiplier();
+            var spawnPosition = spawnSettings.GetPositionByAngle(spawnSettings.GetSpawnAngle(), spawnSettings.GetSpawnRadius());
+            var movementSpeed = (GameParameters.GameplayValues.MaxMeteorSpeed) * spawnSettings.GetMovementMultiplier();
             
-            Vector2 direction = spawnLocation.GetCenterOfGravity() - spawnPosition;
+            Vector2 direction = spawnSettings.GetCenterOfGravity() - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
             temp.SetValues(new AbilitySphereValues
@@ -60,15 +57,17 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             temp.OnDeflection += DeflectionHandler;
             temp.OnEarthCollision += OnEarthCollisionHandler;
             
-            SetTimer();
+            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = temp});
         }
 
         private void DeflectionHandler(AbilitySphereCollisionData data)
         {
             data.Sphere.OnDeflection = null;
             data.Sphere.OnEarthCollision = null;
+            _selector.AddAbility(data.Ability);
             
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.Add{AbilityType = data.Ability});
+            GameManager.Instance.EventManager.Publish(
+                new AbilitiesEvents.Add{AbilityType = data.Ability, Position = data.Position});
             GameManager.Instance.EventManager.Publish
             (
                 new MeteorEvents.Deflected
@@ -80,6 +79,11 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             );
             
             data.Sphere.ForceRecycle();
+            
+
+            var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
+            temp = _isStorageFull ? temp/2 : temp;
+            SetTimer(temp);
         }
         
         private void OnEarthCollisionHandler(AbilitySphereCollisionData data)
@@ -98,15 +102,17 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             );
             
             data.Sphere.ForceRecycle();
+            
+            var temp = UnityEngine.Random.Range(spawnDelay * 0.75f, spawnDelay);
+            temp = _isStorageFull ? temp/2 : temp;
+            SetTimer(temp);
         }
 
-        private void SetTimer()
+        private void SetTimer(float time)
         {
-            if(doesSpawn == false) return;
-            
             _spawnTimerId = TimerManager.Add(new TimerData
             {
-                Time = spawnDelay,
+                Time = time,
                 OnEndAction = SendAbility
             }, SelfUpdateGroup);
         }
@@ -118,7 +124,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private AbilityType GetAbilityToAdd()
         {
-            return (AbilityType)UnityEngine.Random.Range(1, Enum.GetValues(typeof(AbilityType)).Length-1);
+            return _selector.GetAbility();
         }
 
         #region EventBus
@@ -126,54 +132,154 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
-            eventManager.Subscribe<GameModeEvents.Start>(EventBus_OnGameStart);
-            eventManager.Subscribe<AbilitiesEvents.EnableSpawner>(EventBus_OnAbilityInUse);
-            eventManager.Subscribe<GameModeEvents.UpdateLevel>(EnventBus_OnUpdateLevel);
-            eventManager.Subscribe<GameModeEvents.SetEnable>(EventBus_OnGameModeEnable);
+            eventManager.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
+            eventManager.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
+            eventManager.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
+            eventManager.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
+            eventManager.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
         }
 
-        private void EventBus_OnGameModeEnable(GameModeEvents.SetEnable input)
+        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
         {
-            if (input.IsEnabled)
-            {
-                
-            }
-            else
-            {
-                TimerManager.Remove(_spawnTimerId);
-                _factory.RecycleAll();
-            }
-        }
-
-        private void EnventBus_OnUpdateLevel(GameModeEvents.UpdateLevel input)
-        {
-            _spawnValues.SetIndex(input.CurrentLevel);
-        }
-
-        private void EventBus_OnGameStart(GameModeEvents.Start input)
-        {
-            SetTimer();
-        }
-
-        private void EventBus_OnAbilityInUse(AbilitiesEvents.EnableSpawner input)
-        {
-            if (input.IsEnable)
+            if (input.IsActive)
             {
                 RemoveTimer();
+                _selector.RemoveAbility(input.AbilityType);
             }
             else
             {
-                SetTimer();
+                SetTimer(spawnDelay);
             }
         }
 
-        private void EventBus_OnGameFinished(GameModeEvents.Finish input)
+        private void EventBus_Ability_StorageFull(AbilitiesEvents.SetStorageFull input)
+        {
+            _selector.IsStorageFull = input.IsFull;
+        }
+
+        private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
+        {
+            if (input.CurrentLevel == 5)
+            {
+                _selector.SetLevel(input.CurrentLevel);
+                SetTimer(spawnDelay);
+            }
+        }
+
+        private void EventBus_OnGameModeDisable(GameModeEvents.Disable input)
         {
             TimerManager.Remove(_spawnTimerId);
             _factory.RecycleAll();
         }
 
+        private void EventBus_GameMode_Finished(GameModeEvents.Finish input)
+        {
+            RemoveTimer();
+            _factory.RecycleAll();
+        }
+
         #endregion
+    }
+
+    public class AbilitySelector
+    {
+        private int _level;
+        public bool IsStorageFull { get; set; }
+
+        private readonly Roulette _roulette = new Roulette();
+        private readonly List<AbilityType> _storedAbilities = new List<AbilityType>();
+        private readonly Dictionary<AbilityType, int> _dic = new Dictionary<AbilityType, int>();
+        private readonly Dictionary<AbilityType, AbilityValue> _valuesDic = new Dictionary<AbilityType, AbilityValue>();
+
+        private class AbilityValue
+        {
+            private readonly int _selectValue;
+            private float _multiplier;
+            public float Multiplier => _multiplier;
+            public AbilityType AbilityType { get; private set; }
+
+            public AbilityValue(int selectValue, AbilityType abilityType)
+            {
+                _selectValue = selectValue;
+                AbilityType = abilityType;
+                _multiplier = 0;
+            }
+
+            public void SetMultiplier(float value)
+            {
+                _multiplier = value;
+            }
+
+            public int GetSelectValue()
+            {
+                return (int)Math.Round(_selectValue * _multiplier);
+            }
+        }
+
+        public AbilitySelector()
+        {
+            _valuesDic.Add(AbilityType.SlowMotion, new AbilityValue(30, AbilityType.SlowMotion));
+            _valuesDic.Add(AbilityType.Health, new AbilityValue(25, AbilityType.Health));
+            _valuesDic.Add(AbilityType.SuperShield, new AbilityValue(15, AbilityType.SuperShield));
+            _valuesDic.Add(AbilityType.DoublePoints, new AbilityValue(30, AbilityType.DoublePoints));
+        }
+
+
+        public void SetLevel(int level)
+        {
+            _level = level;
+            switch (_level)
+            {
+                case 5:
+                    SetMultiplier(AbilityType.DoublePoints, 1f);
+                    break;
+                case 6:
+                    SetMultiplier(AbilityType.SlowMotion, 1f);
+                    break;
+                case 9:
+                    SetMultiplier(AbilityType.Health, 1f);
+                    break;
+                case 10:
+                    SetMultiplier(AbilityType.SuperShield, 1f);
+                    break;
+            }
+        }
+
+        public void AddAbility(AbilityType abilityType)
+        {
+            _storedAbilities.Add(abilityType);
+
+            var currMultiplier = GetMultiplier(abilityType);
+            SetMultiplier(abilityType, currMultiplier * 0.5f);
+        }
+
+        public void RemoveAbility(AbilityType abilityType)
+        {
+            _storedAbilities.Remove(abilityType);
+            var currMultiplier = GetMultiplier(abilityType);
+            SetMultiplier(abilityType, currMultiplier / 0.5f);
+        }
+
+        private void SetMultiplier(AbilityType abilityType, float value = 1f)
+        {
+            _valuesDic[abilityType].SetMultiplier(value);
+        }
+
+        private float GetMultiplier(AbilityType abilityType)
+        {
+            return _valuesDic[abilityType].Multiplier;
+        }
+
+        public AbilityType GetAbility()
+        {
+            _dic.Clear();
+
+            foreach (var ability in _valuesDic.Values)
+            {
+                _dic.Add(ability.AbilityType, ability.GetSelectValue());
+            }
+
+            return _roulette.Run(_dic);
+        }
     }
 }

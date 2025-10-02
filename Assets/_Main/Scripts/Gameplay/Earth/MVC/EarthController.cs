@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.Earth;
 using _Main.Scripts.Gameplay.FSM.Earth;
-using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
@@ -56,6 +53,7 @@ namespace _Main.Scripts.Gameplay.Earth
             temp.Add(defaultEarth);
             temp.Add(dead);
             temp.Add(shaking);
+            temp.Add(destruction);
             temp.Add(heal);
 
             #endregion
@@ -71,7 +69,7 @@ namespace _Main.Scripts.Gameplay.Earth
             
             destruction.AddTransition(States.Default, defaultEarth);
             destruction.AddTransition(States.Heal, heal);
-                
+            
             heal.AddTransition(States.Default, defaultEarth);
 
             #endregion

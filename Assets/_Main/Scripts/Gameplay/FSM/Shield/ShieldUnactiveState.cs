@@ -5,6 +5,7 @@
         public override void Awake()
         {
             Controller.SetActiveShield(false);
+            Controller.SetActiveGold(false);
         }
     }
 }

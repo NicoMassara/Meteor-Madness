@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
 
-        #region ViewHandlers
+        #region View Handlers
 
         private void SetViewHandlers()
         {
@@ -60,11 +61,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller.TransitionToGameplay();
         }
 
-        private void View_OnEarthRestartedHandler()
+        private void View_OnEarthRestartedHandler(bool doesRestart)
         {
-            //HACK
-            //REMOVE
-            if (_isDisable == false)
+            if (doesRestart)
             {
                 _controller.TransitionToStart();
             }
@@ -76,7 +75,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #endregion
 
-        #region ViewUIHandlers
+        #region UI View Handlers
 
 
         private void SetUIViewHandlers()
@@ -87,7 +86,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void UIView_OnMainMenuButtonPressedHandler()
         {
-            _isDisable = true;
+            _motor.SetDoesRestartGameMode(false);
             _controller.TransitionToDisable();
         }
 
@@ -118,17 +117,27 @@ namespace _Main.Scripts.Gameplay.GameMode
             eventBus.Subscribe<EarthEvents.ShakeStart>(EventBus_OnEarthShake);
             eventBus.Subscribe<EarthEvents.DestructionFinished>(EventBus_OnEarthDestruction);
             eventBus.Subscribe<EarthEvents.RestartFinished>(EventBus_OnEarthRestartFinish);
+            
+            //Abilities
+            eventBus.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_SetActive);
+        }
+
+        private void EventBus_Abilities_SetActive(AbilitiesEvents.SetActive inputs)
+        {
+            if (inputs.AbilityType == AbilityType.DoublePoints)
+            {
+                _controller.SetDoublePoints(inputs.IsActive);
+            }
         }
 
         private void EventBus_OnGameModeScreenEnable(GameScreenEvents.GameModeEnable input)
         {
-            _isDisable = false;
+            _controller.SetDoesRestartGameMode(true);
             _controller.TransitionToStart();
         }
 
         private void EventBus_OnMainMenu(GameScreenEvents.MainMenuEnable input)
         {
-            _isDisable = true;
             _controller.TransitionToDisable();
         }
 
@@ -149,7 +158,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void EventBus_OnMeteorDeflected(MeteorEvents.Deflected input)
         {
-            _controller.HandleMeteorDeflect(input.Value);
+            _controller.HandleMeteorDeflect(input.Position,input.Value);
         }
 
         private void EventBus_OnEarthDestruction(EarthEvents.DestructionFinished destructionFinished)

@@ -16,7 +16,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private GameModeUIView _uiView;
         
-        public UnityAction OnEarthRestarted;
+        public UnityAction<bool> OnEarthRestarted;
         public UnityAction OnCountdownFinished;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public void ManagedUpdate() { }
@@ -51,9 +51,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SetEnableSpawnMeteor:
                     HandleSetEnableMeteorSpawn((bool)args[0]);
                     break;
-                case GameModeObserverMessage.SpawnRingMeteor:
-                    HandleSpawnRingMeteor();
-                    break;
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
                     break;
@@ -67,12 +64,30 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleGamePaused((bool)args[0]);
                     break;
                 case GameModeObserverMessage.EarthRestartFinish:
-                    HandleEarthRestartFinish();
+                    HandleEarthRestartFinish((bool)args[0]);
                     break;
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
+                case GameModeObserverMessage.Initialize:
+                    HandleInitialize();
+                    break;
+                case GameModeObserverMessage.PointsGained:
+                    HandlePointsGained((Vector2)args[0],(float)args[1],(bool)args[2]);
+                    break;
+                
             }
+        }
+        private void HandleInitialize()
+        {
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.Initialize());
+        }
+        
+        private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
+        {
+            var finalScore = (int)(pointsAmount * GameParameters.GameplayValues.VisualMultiplier);
+            GameManager.Instance.EventManager.Publish(
+                new FloatingTextEvents.Points{ Position = position, Score = finalScore, IsDouble = isDouble });
         }
         
         private void HandleGamePaused(bool isPaused)
@@ -126,10 +141,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                 GameManager.Instance.EventManager.Publish(new EarthEvents.Restart());
             }
             
+            gameplayTheme?.StopSound();
+            deathTheme?.StopSound();
             _isFirstDisable = false;
-            
             SetEnableInputs(false);
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.SetEnable{IsEnabled = false});
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.Disable());
         }
 
         private void HandleGameFinish()
@@ -146,17 +162,17 @@ namespace _Main.Scripts.Gameplay.GameMode
             var tempActions = new ActionData[]
             {
                 new (()=>GameManager.Instance.EventManager.Publish(new GameModeEvents.Restart()),
-                    GameRestartTimeValues.TriggerRestart),
+                    GameParameters.TimeValues.Restart.TriggerRestart),
                 new (()=>GameManager.Instance.EventManager.Publish(new EarthEvents.Restart()),
-                    GameRestartTimeValues.RestartEarth),
+                    GameParameters.TimeValues.Restart.RestartEarth),
             };
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
         
-        private void HandleEarthRestartFinish()
+        private void HandleEarthRestartFinish(bool doesRestart)
         {
-            OnEarthRestarted?.Invoke();
+            OnEarthRestarted?.Invoke(doesRestart);
         }
 
         #region Start
@@ -208,11 +224,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
             GameManager.Instance.EventManager.Publish(new MeteorEvents.EnableSpawn { CanSpawn = canSpawn });
-        }
-        
-        private void HandleSpawnRingMeteor()
-        {
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.SpawnRing{});
         }
 
         #endregion
