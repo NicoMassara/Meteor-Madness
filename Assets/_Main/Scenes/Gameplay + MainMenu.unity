@@ -913,7 +913,8 @@ MonoBehaviour:
   meteorLayer:
     serializedVersion: 2
     m_Bits: 64
-  meteorCheckRadius: 1.727
+  meteorCheckRadius: 1.3
+  meteorCheckOffset: {x: 1.07, y: 0}
 --- !u!4 &168416677
 Transform:
   m_ObjectHideFlags: 0
