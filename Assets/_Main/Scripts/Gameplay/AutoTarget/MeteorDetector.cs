@@ -50,9 +50,9 @@ namespace _Main.Scripts.Gameplay.AutoTarget
         private int GetSlotByAngle(float angle)
         {
             int slot = -1;
-            float anglePerSlot = 360f / GameValues.AngleSlots;
+            float anglePerSlot = 360f / GameParameters.GameplayValues.AngleSlots;
             
-            for (int i = 0; i < GameValues.AngleSlots; i++)
+            for (int i = 0; i < GameParameters.GameplayValues.AngleSlots; i++)
             {
                 var currentAngle = i * anglePerSlot;
                 if (Mathf.Approximately(currentAngle, angle))

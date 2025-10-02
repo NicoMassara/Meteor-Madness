@@ -16,7 +16,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private MeteorFactory _meteorFactory;
         private bool _isSpawningRing;
-        private bool _isDoublePoints;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -33,7 +32,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void SpawnSingleMeteor(Vector2 spawnPosition, Vector2 direction, float movementMultiplier)
         {
-            var finalSpeed = GameValues.MaxMeteorSpeed * movementMultiplier;
+            var finalSpeed = GameParameters.GameplayValues.MaxMeteorSpeed * movementMultiplier;
             var tempMeteor = _meteorFactory.SpawnMeteor();
                 
             //Set Direction and Rotation towards COG
@@ -63,7 +62,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         private IEnumerator CreateRingMeteor(float meteorSpeed)
         {
             GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = true});
-            
+
             _isSpawningRing = true;
             
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
@@ -103,7 +102,8 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
-            yield return new WaitForSeconds(GameTimeValues.MeteorSpawnDelayAfterRing);
+            
+            yield return new WaitForSeconds(GameParameters.TimeValues.MeteorSpawnDelayAfterRing);
             
             GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = false});
             _isSpawningRing = false;
@@ -160,8 +160,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             data.Meteor.OnDeflection = null;
             data.Meteor.OnEarthCollision = null;
             
-            var finalValue = _isDoublePoints ? data.Value * 2 : data.Value;
-            
             GameManager.Instance.EventManager.Publish
             (
                 new MeteorEvents.Deflected
@@ -169,7 +167,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                     Position = data.Position,
                     Rotation = data.Rotation,
                     Direction = data.Direction,
-                    Value = finalValue
+                    Value = data.Value
                 }
             );
             
@@ -201,22 +199,13 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<AbilitiesEvents.SetActive>(EnventBus_Ability_SetActive);
             eventManager.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
             eventManager.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventManager.Subscribe<ProjectileEvents.DistanceCheck>(EventBus_Projectile_DistanceCheck);
+            eventManager.Subscribe<ProjectileEvents.Request>(EventBus_Projectile_DistanceCheck);
         }
 
-        private void EnventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
-        {
-            if (input.AbilityType == AbilityType.DoublePoints)
-            {
-                _isDoublePoints = input.IsActive;
-            }
-        }
-
-        private void EventBus_Projectile_DistanceCheck(ProjectileEvents.DistanceCheck input)
+        private void EventBus_Projectile_DistanceCheck(ProjectileEvents.Request input)
         {
             SpawnSingleMeteor(input.Position, input.Direction, input.MovementMultiplier);
         }
@@ -228,7 +217,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
         {
-            SpawnRingMeteor(GameValues.MaxMeteorSpeed);
+            SpawnRingMeteor(GameParameters.GameplayValues.MaxMeteorSpeed);
         }
 
         private void EnventBus_Meteor_RecycleAll(MeteorEvents.RecycleAll input)

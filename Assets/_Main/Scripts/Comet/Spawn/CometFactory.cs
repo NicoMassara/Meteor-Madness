@@ -27,7 +27,7 @@ namespace _Main.Scripts.Comet
         {
             _pool = new GenericPool<CometView>(cometPrefab, 1, 5);
             
-            SetTimer(GameTimeValues.FirstCometSpawnDelay);
+            SetTimer(GameParameters.TimeValues.FirstCometSpawnDelay);
         }
 
         public void ManagedUpdate() { }
@@ -46,8 +46,8 @@ namespace _Main.Scripts.Comet
             if(playerCamera == null) return;
             
             SpawnComet(GetSpawnPosition(), GetTargetPosition());
-            var spawnDelayRange = Random.Range(GameTimeValues.CometSpawnDelay*0.75f,
-                GameTimeValues.CometSpawnDelay*1.25f);
+            var spawnDelayRange = Random.Range(GameParameters.TimeValues.CometSpawnDelay*0.75f,
+                GameParameters.TimeValues.CometSpawnDelay*1.25f);
             
             SetTimer(spawnDelayRange);
         }

@@ -135,7 +135,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void StartCountdown()
         {
-            _motor.StartCountdown(GameTimeValues.StartGameCount);
+            _motor.StartCountdown(GameParameters.TimeValues.StartGameCount);
         }
 
         public void StartGameplay()
@@ -169,9 +169,9 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #endregion
         
-        public void HandleMeteorDeflect(float meteorDeflectValue)
+        public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
         {
-            _motor.HandleMeteorDeflect(meteorDeflectValue);
+            _motor.HandleMeteorDeflect(position, meteorDeflectValue);
         }
 
         public void SetEnableMeteorSpawn(bool canSpawn)
@@ -217,6 +217,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void SetDoesRestartGameMode(bool doesRestart)
         {
             _motor.SetDoesRestartGameMode(doesRestart);
+        }
+
+        public void SetDoublePoints(bool isEnable)
+        {
+            _motor.SetDoublePoints(isEnable);
         }
     }
 }

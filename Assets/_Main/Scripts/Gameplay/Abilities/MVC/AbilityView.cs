@@ -10,7 +10,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityView : ManagedBehavior, IUpdatable, IObserver
     {
-        private AbilityData _currentAbility;
+        private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
         
         public UnityAction OnAbilitySelected;
@@ -33,6 +33,9 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             switch (message)
             {
+                case AbilityObserverMessage.AddAbility:
+                    HandleAddAbility((int)args[0],(Vector2)args[1]);
+                    break;
                 case AbilityObserverMessage.SelectAbility:
                     HandleSelectAbility((int)args[0]);
                     break;
@@ -49,6 +52,15 @@ namespace _Main.Scripts.Gameplay.Abilies
                     HandleSetStorageFull((bool)args[0]);
                     break;
             }
+        }
+
+        private void HandleAddAbility(int index, Vector2 position)
+        {
+            GameManager.Instance.EventManager.Publish(new FloatingTextEvents.Ability
+            {
+                Position = position,
+                AbilityType = (AbilityType)index,
+            });
         }
 
         private void HandleSetStorageFull(bool isFull)
