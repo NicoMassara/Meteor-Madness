@@ -140,6 +140,7 @@ namespace _Main.Scripts.Managers
         public struct Add
         {
             public AbilityType AbilityType;
+            public Vector2 Position;
         }
 
         public struct SetStorageFull

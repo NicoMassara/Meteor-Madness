@@ -66,7 +66,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             data.Sphere.OnEarthCollision = null;
             _selector.AddAbility(data.Ability);
             
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.Add{AbilityType = data.Ability});
+            GameManager.Instance.EventManager.Publish(
+                new AbilitiesEvents.Add{AbilityType = data.Ability, Position = data.Position});
             GameManager.Instance.EventManager.Publish
             (
                 new MeteorEvents.Deflected

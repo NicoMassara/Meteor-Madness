@@ -34,7 +34,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             switch (message)
             {
                 case AbilityObserverMessage.AddAbility:
-                    HandleAddAbility((int)args[0]);
+                    HandleAddAbility((int)args[0],(Vector2)args[1]);
                     break;
                 case AbilityObserverMessage.SelectAbility:
                     HandleSelectAbility((int)args[0]);
@@ -54,11 +54,11 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
         }
 
-        private void HandleAddAbility(int index)
+        private void HandleAddAbility(int index, Vector2 position)
         {
             GameManager.Instance.EventManager.Publish(new FloatingTextEvents.Ability
             {
-                Position = Vector2.zero,
+                Position = position,
                 AbilityType = (AbilityType)index,
             });
         }
