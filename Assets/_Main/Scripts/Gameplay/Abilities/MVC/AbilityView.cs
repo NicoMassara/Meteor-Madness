@@ -10,7 +10,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityView : ManagedBehavior, IUpdatable, IObserver
     {
-        private AbilityData _currentAbility;
+        private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
         
         public UnityAction OnAbilitySelected;

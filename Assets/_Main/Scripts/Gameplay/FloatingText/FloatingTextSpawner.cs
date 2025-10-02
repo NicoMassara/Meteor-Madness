@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Gameplay.Abilities;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
@@ -26,26 +27,22 @@ namespace _Main.Scripts.Gameplay.FloatingScore
                 Position = position,
                 Text = $"+{score}",
                 Color = isDouble ? Color.yellow : Color.white,
+                DoesFade = true,
+                DoesMove = true
             });
         }
 
         private void SpawnAbility(Vector2 position, AbilityType ability)
         {
             var temp = _factory.Get();
-            var newColor = ability switch
-            {
-                AbilityType.SuperShield => Color.cyan,
-                AbilityType.SlowMotion => Color.green,
-                AbilityType.Health => Color.red,
-                AbilityType.DoublePoints => Color.yellow,
-                _ => Color.clear
-            };
             
             temp.SetValues(new FloatingTextValues
             {
                 Position = position,
-                Text = ability.ToString(),
-                Color = newColor,
+                Text = AbilityDataGetter.GetDisplayName(ability),
+                Color = AbilityDataGetter.GetColor(ability),
+                DoesFade = true,
+                DoesMove = false
             });
         }
 
