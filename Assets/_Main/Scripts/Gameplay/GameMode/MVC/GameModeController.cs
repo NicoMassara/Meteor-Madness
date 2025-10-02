@@ -218,5 +218,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _motor.SetDoesRestartGameMode(doesRestart);
         }
+
+        public void SetDoublePoints(bool isEnable)
+        {
+            _motor.SetDoublePoints(isEnable);
+        }
     }
 }

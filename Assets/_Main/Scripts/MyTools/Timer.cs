@@ -1,4 +1,5 @@
-﻿using UnityEngine.Events;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace _Main.Scripts
 {
@@ -34,7 +35,7 @@ namespace _Main.Scripts
         /// <param name="aboutToEndRatio">Time Ratio Left to trigger 'OnAboutToEnd' event</param>
         public void Set(float time, float aboutToEndRatio = -1)
         {
-            _currentTime = time;
+            _currentTime = Mathf.Clamp(time, 0.001f, float.MaxValue);
             _targetTime = _currentTime; 
             _aboutToEndRatio = aboutToEndRatio;
             HasEnded = false;

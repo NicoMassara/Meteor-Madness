@@ -16,6 +16,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private float _startTimer;
         private bool _isPaused;
         private bool _doesRestartGameMode;
+        private bool _hasDoublePoints;
         
 
         public GameModeMotor()
@@ -59,7 +60,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
         {
-            _meteorDeflectCount += meteorDeflectValue;
+            var finalValue = _hasDoublePoints ? meteorDeflectValue*2 : meteorDeflectValue;
+            _meteorDeflectCount += finalValue;
             
             if (meteorDeflectValue >= 1)
             {
@@ -69,7 +71,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             if (meteorDeflectValue > 0)
             {
-                NotifyAll(GameModeObserverMessage.PointsGained,position,meteorDeflectValue);
+                NotifyAll(GameModeObserverMessage.PointsGained,position,finalValue,_hasDoublePoints);
             }
 
             NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);
@@ -140,6 +142,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void DisableGameMode()
         {
             NotifyAll(GameModeObserverMessage.Disable);
+        }
+
+        public void SetDoublePoints(bool isEnable)
+        {
+            _hasDoublePoints = isEnable;
         }
     }
 }

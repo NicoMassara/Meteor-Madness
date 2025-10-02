@@ -33,6 +33,9 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             switch (message)
             {
+                case AbilityObserverMessage.AddAbility:
+                    HandleAddAbility((int)args[0]);
+                    break;
                 case AbilityObserverMessage.SelectAbility:
                     HandleSelectAbility((int)args[0]);
                     break;
@@ -49,6 +52,15 @@ namespace _Main.Scripts.Gameplay.Abilies
                     HandleSetStorageFull((bool)args[0]);
                     break;
             }
+        }
+
+        private void HandleAddAbility(int index)
+        {
+            GameManager.Instance.EventManager.Publish(new FloatingTextEvents.Ability
+            {
+                Position = Vector2.zero,
+                AbilityType = (AbilityType)index,
+            });
         }
 
         private void HandleSetStorageFull(bool isFull)

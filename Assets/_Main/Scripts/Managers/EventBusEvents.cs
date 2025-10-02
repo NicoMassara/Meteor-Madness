@@ -168,4 +168,20 @@ namespace _Main.Scripts.Managers
             public float MovementMultiplier;
         };
     }
+
+    public struct FloatingTextEvents
+    {
+        public struct Points
+        {
+            public Vector2 Position;
+            public int Score;
+            public bool IsDouble;
+        }
+        
+        public struct Ability
+        {
+            public Vector2 Position;
+            public AbilityType AbilityType;
+        }
+    }
 }
