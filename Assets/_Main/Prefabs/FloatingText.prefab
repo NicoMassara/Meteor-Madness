@@ -47,7 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshText: {fileID: 2462941764947261801}
   movementSpeed: 2
-  movementTime: 1.5
+  fadeTime: 1.5
+  fadeDelay: 0.5
 --- !u!1 &8847273995998976203
 GameObject:
   m_ObjectHideFlags: 0

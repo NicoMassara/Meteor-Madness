@@ -10,7 +10,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityDataController
     {
-        private readonly Dictionary<AbilityType, AbilityData> _abilities = new Dictionary<AbilityType, AbilityData>();
+        private readonly Dictionary<AbilityType, AbilityStoredData> _abilities = new Dictionary<AbilityType, AbilityStoredData>();
         private readonly EventBusManager _eventBus;
         
         public UnityAction<float> OnAbilityStarted;
@@ -106,7 +106,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, AbilityParameters.SuperShield.EndValues.TimeBeforeRestoringTimeScale),
             };
 
-            var shieldData = new AbilityData
+            var shieldData = new AbilityStoredData
             {
                 ActiveTime = AbilityParameters.SuperShield.ActiveTime,
                 AbilityType = selectedAbility,
@@ -178,7 +178,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 })
             };
             
-            var healData = new AbilityData
+            var healData = new AbilityStoredData
             {
                 AbilityType = selectedAbility,
                 StartActions = startActions,
@@ -307,7 +307,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }),
             };
 
-            var abilityData = new AbilityData
+            var abilityData = new AbilityStoredData
             {
                 ActiveTime = AbilityParameters.SlowMotion.ActiveTime,
                 AbilityType = selectedAbility,
@@ -367,7 +367,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }),
             };
 
-            var abilityData = new AbilityData
+            var abilityData = new AbilityStoredData
             {
                 ActiveTime = AbilityParameters.DoublePoints.ActiveTime,
                 AbilityType = selectedAbility,
@@ -433,7 +433,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         public float TimeToUpdate;
     }
 
-    public class AbilityData
+    public class AbilityStoredData
     {
         public float ActiveTime;
         public bool HasInstantEffect;
