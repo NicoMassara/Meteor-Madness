@@ -4,6 +4,7 @@ using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
@@ -13,19 +14,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private SoundBehavior gameplayTheme;
         [SerializeField] private SoundBehavior deathTheme;
         
-        private GameModeController _controller;
         private GameModeUIView _uiView;
-
+        
+        public UnityAction<bool> OnEarthRestarted;
+        public UnityAction OnCountdownFinished;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public void ManagedUpdate()
-        {
-
-        }
-
-        public void SetController(GameModeController controller)
-        {
-            _controller = controller;
-        }
+        public void ManagedUpdate() { }
+        
+        //Hack
+        private bool _isFirstDisable = true;
         
         
         // ReSharper disable Unity.PerformanceAnalysis
@@ -54,9 +51,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SetEnableSpawnMeteor:
                     HandleSetEnableMeteorSpawn((bool)args[0]);
                     break;
-                case GameModeObserverMessage.SpawnRingMeteor:
-                    HandleSpawnRingMeteor();
-                    break;
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
                     break;
@@ -70,12 +64,30 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleGamePaused((bool)args[0]);
                     break;
                 case GameModeObserverMessage.EarthRestartFinish:
-                    HandleEarthRestartFinish();
+                    HandleEarthRestartFinish((bool)args[0]);
                     break;
-                case GameModeObserverMessage.MainMenu:
-                    HandleMainMenu();
+                case GameModeObserverMessage.Disable:
+                    HandleDisable();
                     break;
+                case GameModeObserverMessage.Initialize:
+                    HandleInitialize();
+                    break;
+                case GameModeObserverMessage.PointsGained:
+                    HandlePointsGained((Vector2)args[0],(float)args[1],(bool)args[2]);
+                    break;
+                
             }
+        }
+        private void HandleInitialize()
+        {
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.Initialize());
+        }
+        
+        private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
+        {
+            var finalScore = (int)(pointsAmount * GameParameters.GameplayValues.VisualMultiplier);
+            GameManager.Instance.EventManager.Publish(
+                new FloatingTextEvents.Points{ Position = position, Score = finalScore, IsDouble = isDouble });
         }
         
         private void HandleGamePaused(bool isPaused)
@@ -98,11 +110,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                     Time = 0.5f,
                     OnStartAction = () =>
                     {
-                        CustomTime.SetChannelPaused(UpdateGroup.Inputs, true);
+                        SetEnableInputs(false);
                     },
                     OnEndAction = () =>
                     {
-                        CustomTime.SetChannelPaused(UpdateGroup.Inputs, false);
+                        SetEnableInputs(true);
                     },
                     
                 }, UpdateGroup.Always);
@@ -111,58 +123,56 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameManager.Instance.IsPaused = isPaused;
         }
 
-        private void HandleMainMenu()
+        private void HandleDisable()
         {
-            TimerManager.Add(new TimerData
+            CustomTime.SetChannelPaused(new []
             {
-                Time = 1f,
-                OnEndAction = () =>
-                {
-                    CustomTime.SetChannelPaused(new []
-                    {
-                        UpdateGroup.Gameplay,
-                        UpdateGroup.Ability, 
-                        UpdateGroup.Shield,
-                        UpdateGroup.Earth,
-                        UpdateGroup.Effects,
-                        UpdateGroup.Camera
+                UpdateGroup.Gameplay,
+                UpdateGroup.Ability, 
+                UpdateGroup.Shield,
+                UpdateGroup.Earth,
+                UpdateGroup.Effects,
+                UpdateGroup.Camera
                 
-                    }, false);
-                    
-                    GameManager.Instance.EventManager.Clear();
-                    TimerManager.Clear();
-                    ActionManager.Clear();
-                    GameManager.Instance.LoadMainMenuScene();
-                }
-            }, UpdateGroup.Always);
+            }, false);
 
+            if (_isFirstDisable == false)
+            {
+                GameManager.Instance.EventManager.Publish(new EarthEvents.Restart());
+            }
+            
+            gameplayTheme?.StopSound();
+            deathTheme?.StopSound();
+            _isFirstDisable = false;
+            SetEnableInputs(false);
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.Disable());
         }
 
         private void HandleGameFinish()
         {
             gameplayTheme?.StopSound();
             GameManager.Instance.CanPlay = false;
-            GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = false});
-            GameManager.Instance.EventManager.Publish(new RecycleAllMeteors());
-            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = false});
+            GameManager.Instance.EventManager.Publish(new ShieldEvents.SetEnable{IsEnabled = false});
+            GameManager.Instance.EventManager.Publish(new MeteorEvents.RecycleAll());
+            SetEnableInputs(false);
         }
         
         private void HandleGameRestart()
         {
             var tempActions = new ActionData[]
             {
-                new (()=>GameManager.Instance.EventManager.Publish(new GameRestart()),
-                    GameRestartTimeValues.TriggerRestart),
-                new (()=>GameManager.Instance.EventManager.Publish(new EarthRestart()),
-                    GameRestartTimeValues.RestartEarth),
+                new (()=>GameManager.Instance.EventManager.Publish(new GameModeEvents.Restart()),
+                    GameParameters.TimeValues.Restart.TriggerRestart),
+                new (()=>GameManager.Instance.EventManager.Publish(new EarthEvents.Restart()),
+                    GameParameters.TimeValues.Restart.RestartEarth),
             };
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
         
-        private void HandleEarthRestartFinish()
+        private void HandleEarthRestartFinish(bool doesRestart)
         {
-            _controller.TransitionToStart();
+            OnEarthRestarted?.Invoke(doesRestart);
         }
 
         #region Start
@@ -170,21 +180,21 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             deathTheme?.StopSound();
-            GameManager.Instance.EventManager.Publish(new CameraZoomOut());
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomOut());
         }
         
         private void HandleCountdownFinish()
         {
-            GameManager.Instance.EventManager.Publish(new GameStart());
-            GameManager.Instance.EventManager.Publish(new SetEnableInputs{IsEnable = true});
-            GameManager.Instance.EventManager.Publish(new SetEnableAbility{IsEnable = true});
-            _controller.TransitionToGameplay();
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.Start());
+            SetEnableInputs(true);
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetEnable{IsEnable = true});
+            OnCountdownFinished?.Invoke();
         }
 
         private void HandleStartGameplay()
         {
             GameManager.Instance.CanPlay = true;
-            GameManager.Instance.EventManager.Publish(new ShieldEnable{IsEnabled = true});
+            GameManager.Instance.EventManager.Publish(new ShieldEvents.SetEnable{IsEnabled = true});
             gameplayTheme?.PlaySound();
         }
 
@@ -194,12 +204,12 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleEarthStartDestruction()
         {
-            GameManager.Instance.EventManager.Publish(new EarthStartDestruction());
+            GameManager.Instance.EventManager.Publish(new EarthEvents.DestructionStart());
         }
         
         private void HandleEarthShake()
         {
-            GameManager.Instance.EventManager.Publish(new CameraZoomIn());
+            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
         }
         
         private void HandleEarthEndDestruction()
@@ -213,19 +223,19 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
-            GameManager.Instance.EventManager.Publish(new EnableMeteorSpawn { CanSpawn = canSpawn });
-        }
-        
-        private void HandleSpawnRingMeteor()
-        {
-            GameManager.Instance.EventManager.Publish(new SpawnRingMeteor{});
+            GameManager.Instance.EventManager.Publish(new MeteorEvents.EnableSpawn { CanSpawn = canSpawn });
         }
 
         #endregion
         
         private void HandleUpdateGameLevel(int currentLevel)
         {
-            GameManager.Instance.EventManager.Publish(new UpdateLevel{CurrentLevel = currentLevel});
+            GameManager.Instance.EventManager.Publish(new GameModeEvents.UpdateLevel{CurrentLevel = currentLevel});
+        }
+
+        private void SetEnableInputs(bool isEnable)
+        {
+            GameManager.Instance.EventManager.Publish(new InputsEvents.SetEnable{IsEnable = isEnable});
         }
     }
 }

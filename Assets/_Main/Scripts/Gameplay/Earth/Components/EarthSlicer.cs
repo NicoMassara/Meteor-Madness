@@ -17,7 +17,7 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private MeshFilter meshA;
         private MeshFilter meshB;
-        private bool _hasBeenSliced = false;
+        
         private bool _isSliced;
         private bool _canMove;
         private float _moveTargetDistance;
@@ -25,6 +25,11 @@ namespace _Main.Scripts.Gameplay.Earth
 
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
+
+        private void Start()
+        {
+            Slice();
+        }
 
         public void ManagedUpdate()
         {
@@ -39,7 +44,7 @@ namespace _Main.Scripts.Gameplay.Earth
         public void StartSlicing()
         {
             _moveTargetDistance = sliceDistance;
-            _moveTargetTime = EarthSliceTimeValues.MoveSlices;
+            _moveTargetTime = EarthParameters.TimeValues.Slice.MoveSlices;
             SetSliceQueue();
         }
         
@@ -54,17 +59,18 @@ namespace _Main.Scripts.Gameplay.Earth
                 }),
                 new ActionData(() =>
                 {
-                    Slice();
+                    SetActiveSlices(true);
                     _canMove = true;
-                }, EarthSliceTimeValues.StartSlice),
+                }, EarthParameters.TimeValues.Slice.StartSlice),
                 
-                new ActionData(() => _canMove = false, EarthSliceTimeValues.MoveSlices),
+                new ActionData(() => _canMove = false, 
+                    EarthParameters.TimeValues.Slice.MoveSlices),
                 
                 new ActionData(() =>
                 {
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
-                }, EarthSliceTimeValues.ReturnToNormalTime),
+                }, EarthParameters.TimeValues.Slice.ReturnToNormalTime),
             };
             
             ActionManager.Add(new ActionQueue(temp),SelfUpdateGroup);
@@ -72,8 +78,6 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void Slice() 
         {
-            if(_hasBeenSliced) return;
-            
             GameObject planeObj = gameObject;
             
             SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, capMaterial);
@@ -102,8 +106,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 _isSliced = true;
 
                 planeObj.GetComponent<MeshRenderer>().enabled = false;
-
-                _hasBeenSliced = true;
+                
+                SetActiveSlices(false);
             }
         }
 
@@ -132,7 +136,7 @@ namespace _Main.Scripts.Gameplay.Earth
             if(!_isSliced) return;
             
             _moveTargetDistance = 0;
-            _moveTargetTime = EarthSliceTimeValues.ReturnSlices;
+            _moveTargetTime = EarthParameters.TimeValues.Slice.ReturnSlices;
             SetUniteQueue();
         }
         
@@ -152,65 +156,33 @@ namespace _Main.Scripts.Gameplay.Earth
                     UniteMeshes();
                     _canMove = false;
                     
-                }, EarthSliceTimeValues.ReturnSlices),
+                }, EarthParameters.TimeValues.Slice.ReturnSlices),
                 
                 new ActionData(() =>
                 {
                     UniteMeshes();
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
-                }, EarthSliceTimeValues.ReturnSlices),
+                }, EarthParameters.TimeValues.Slice.ReturnSlices),
             };
             
             ActionManager.Add(new ActionQueue(temp),SelfUpdateGroup);
         }
 
 
-        private void UniteMeshes() 
+        private void UniteMeshes()
         {
-            Destroy(meshA);
-            Destroy(meshB);
-            gameObject.GetComponent<MeshRenderer>().enabled = true;
-            
-            /*meshA.transform.localPosition = Vector3.zero;
-            meshB.transform.localPosition = Vector3.zero;
-
-            MeshFilter filterA = meshA.GetComponent<MeshFilter>();
-            MeshFilter filterB = meshB.GetComponent<MeshFilter>();
-
-            if (filterA == null || filterB == null) return;
-
-            // Prepare combine array
-            CombineInstance[] combine = new CombineInstance[2];
-            combine[0].mesh = filterA.sharedMesh;
-            combine[0].transform = filterA.transform.localToWorldMatrix;
-            combine[1].mesh = filterB.sharedMesh;
-            combine[1].transform = filterB.transform.localToWorldMatrix;
-
-            // Create new mesh
-            Mesh newMesh = new Mesh();
-            newMesh.CombineMeshes(combine);
-
-            // Create a new GameObject with the merged mesh
-            GameObject united = new GameObject("UnitedMesh");
-            united.transform.SetParent(slicePlane);
-            MeshFilter mf = united.AddComponent<MeshFilter>();
-            MeshRenderer mr = united.AddComponent<MeshRenderer>();
-
-            mf.mesh = newMesh;
-            mr.material = meshA.GetComponent<MeshRenderer>().sharedMaterial;
-
-            capMaterial = mr.material;
-
-            // Optional: destroy the originals
-            Destroy(meshA);
-            Destroy(meshB);
-
-            _isSliced = false;*/
+            SetActiveSlices(false);
         }
 
         #endregion
-        
+
+        private void SetActiveSlices(bool isActive)
+        {
+            gameObject.GetComponent<MeshRenderer>().enabled = !isActive;
+            meshA.gameObject.SetActive(isActive);
+            meshB.gameObject.SetActive(isActive);
+        }
 
         private void OnDrawGizmosSelected()
         {

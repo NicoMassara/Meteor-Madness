@@ -19,7 +19,7 @@ namespace _Main.Scripts.Gameplay
         public UnityAction OnStopMovement;
         private void Awake()
         {
-            GameManager.Instance.EventManager.Subscribe<SetEnableInputs>(EventBus_OnSetEnableInputs);
+            GameManager.Instance.EventManager.Subscribe<InputsEvents.SetEnable>(EventBus_OnSetEnableInputs);
         }
 
         public void ManagedUpdate()
@@ -52,7 +52,7 @@ namespace _Main.Scripts.Gameplay
             if (Input.GetKeyDown(KeyCode.P))
             {
                 GameManager.Instance.EventManager.Publish(
-                    new GamePause{IsPaused = !GameManager.Instance.IsPaused});
+                    new GameModeEvents.SetPause{IsPaused = !GameManager.Instance.IsPaused});
             }
         }
 
@@ -81,7 +81,7 @@ namespace _Main.Scripts.Gameplay
             return Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
         }
 
-        private void EventBus_OnSetEnableInputs(SetEnableInputs input)
+        private void EventBus_OnSetEnableInputs(InputsEvents.SetEnable input)
         {
             _areInputEnabled = input.IsEnable;
         }

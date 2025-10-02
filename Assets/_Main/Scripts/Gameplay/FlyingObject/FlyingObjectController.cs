@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Comet;
+using UnityEngine;
 
 namespace _Main.Scripts.FyingObject
 {
-    public abstract class FlyingObjectController<T> where T : FlyingObjectMotor
+    public abstract class FlyingObjectController<T, TVS> 
+        where T : FlyingObjectMotor<TVS> 
+        where TVS : FlyingObjectValues
     {
         protected T Motor { get; private set; }
 
@@ -11,7 +14,7 @@ namespace _Main.Scripts.FyingObject
             Motor = motor;
         }
 
-        public virtual void SetValues(FlyingObjectValues data)
+        public virtual void SetValues(TVS data)
         {
             Motor.SetValues(data);
         }

@@ -45,7 +45,6 @@ namespace _Main.Scripts.Managers
             
             if (_running.Count == 0) return;
             
-            
             foreach (var data in _running.ToList())
             {
                 var dt = CustomTime.GetDeltaTimeByChannel(data.UpdateGroup);
