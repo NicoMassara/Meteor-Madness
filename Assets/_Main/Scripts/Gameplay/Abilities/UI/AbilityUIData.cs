@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.Gameplay.Abilies;
+﻿using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,16 +51,7 @@ namespace _Main.Scripts.Gameplay.Abilities
 
         private Color GetAbilityColor(AbilityType ability)
         {
-            var newColor = ability switch
-            {
-                AbilityType.None => _disabledColor,
-                AbilityType.SuperShield => Color.cyan,
-                AbilityType.SlowMotion => Color.yellow,
-                AbilityType.Health => Color.red,
-                _ => Color.clear
-            };
-            
-            return newColor;
+            return AbilityDataGetter.GetColor(ability);
         }
 
         public void RestartValues()

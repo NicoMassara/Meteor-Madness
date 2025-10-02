@@ -40,8 +40,6 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private LayerMask meteorLayer;
         [Range(0.5f, 3f)] 
         [SerializeField] private float meteorCheckRadius = 10f;
-        [Space] 
-        [Header("Degree Movement")] 
         
         private MeteorDetector _meteorDetector;
         private ShieldMovement _movement;
@@ -89,16 +87,22 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.PlayMoveSound:
                     PlayMoveSound();
                     break;
-                case ShieldObserverMessage.RestartPosition:
-                    HandleRestartPosition();
-                    break;
                 case ShieldObserverMessage.SetActiveShield:
                     HandleSetActiveShield((bool)args[0]);
                     break;
                 case ShieldObserverMessage.SetActiveSuperShield:
                     HandleSetSuperActive((bool)args[0]);
                     break;
+                case ShieldObserverMessage.SetGold:
+                    HandleSetGold((bool)args[0]);
+                    break;
             }
+        }
+        private void HandleSetGold(bool isActive)
+        {
+            var color = isActive ? Color.yellow : Color.white;
+            normalSprite.GetComponent<SpriteRenderer>().color = color;
+            
         }
 
         #region Sprites
@@ -125,11 +129,6 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             moveSound?.PlaySound();
         }
-        
-        private void HandleRestartPosition()
-        {
-            transform.rotation = Quaternion.Euler(0,0,0);
-        }
 
         #endregion
 
@@ -141,7 +140,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
             GameManager.Instance.EventManager.Publish
             (
-                new SpawnParticle
+                new ParticleEvents.Spawn
                 {
                     ParticleData = deflectParticleData,
                     Position = position,
@@ -150,7 +149,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 }
             );
             
-            GameManager.Instance.EventManager.Publish(new CameraShake{ShakeData = cameraShakeData});
+            GameManager.Instance.EventManager.Publish(new CameraEvents.Shake{ShakeData = cameraShakeData});
         }
 
         private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)

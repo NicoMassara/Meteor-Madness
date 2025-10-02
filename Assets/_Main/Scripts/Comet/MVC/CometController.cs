@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Comet
 {
-    public class CometController : FlyingObjectController<CometMotor>
+    public class CometController : FlyingObjectController<CometMotor, FlyingObjectValues>
     {
         private readonly LayerMask _cometWallMask;
         

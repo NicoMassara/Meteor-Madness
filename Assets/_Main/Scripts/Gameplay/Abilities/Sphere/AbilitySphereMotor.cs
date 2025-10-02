@@ -4,16 +4,16 @@ using _Main.Scripts.Observer;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere
 {
-    public class AbilitySphereMotor : FlyingObjectMotor
+    public class AbilitySphereMotor : FlyingObjectMotor<AbilitySphereValues>
     {
         private AbilityType _abilityStored;
-        
-        public void SetAbilityValues(AbilitySphereValues data)
+
+        public override void SetValues(AbilitySphereValues data)
         {
             base.SetValues(data);
             _abilityStored = data.AbilityType;
         }
-        
+
         public void HandleShieldDeflection()
         {
             NotifyAll(AbilitySphereObserverMessage.ShieldDeflection, Position, Rotation, Direction, _abilityStored);
