@@ -19,7 +19,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private Text scoreText;
         [SerializeField] private Text deathScoreText;
         [SerializeField] private Text deathText;
-
         [Space] 
         [Header("Panels")] 
         [SerializeField] private GameObject mainPanel;
@@ -35,7 +34,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private Button[] mainMenuButtons;
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior buttonSound;
-
+        
         private GameObject _currentPanel;
         private NumberIncrementer _numberIncrementer;
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
@@ -96,15 +95,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
-                case GameModeObserverMessage.PointsGained:
-                    HandlePointsGained();
-                    break;
+
             }
-        }
-
-        private void HandlePointsGained()
-        {
-
         }
 
         private void HandleDisable()
