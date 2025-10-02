@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Managers;
+using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
 namespace _Main.Scripts
@@ -7,6 +8,8 @@ namespace _Main.Scripts
     public class InputTester : MonoBehaviour
     {
         [SerializeField] private AbilityType abilityToAdd;
+
+        private bool _timeScaleHalved;
         
         private void Update()
         {
@@ -17,6 +20,10 @@ namespace _Main.Scripts
             else if (Input.GetKeyDown(KeyCode.L))
             {
                 Deflect();
+            }
+            else if (Input.GetKeyDown(KeyCode.M))
+            {
+                ChangeTimeScale();
             }
         }
 
@@ -39,6 +46,14 @@ namespace _Main.Scripts
             {
                 Value = 1f
             });
+        }
+
+        private void ChangeTimeScale()
+        {
+            _timeScaleHalved = !_timeScaleHalved;
+            
+            CustomTime.GlobalTimeScale = _timeScaleHalved ? 1f : 0.5f;
+            CustomTime.GlobalFixedTimeScale = _timeScaleHalved ? 1f : 0.5f;
         }
     }
 }

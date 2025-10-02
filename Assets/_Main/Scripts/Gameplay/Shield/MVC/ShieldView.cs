@@ -46,6 +46,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldSpeeder _shieldSpeeder;
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
+
+        private bool _isAutoCorrectionEnable;
         
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
@@ -60,12 +62,16 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void Start()
         {
+            _meteorDetector.OnTargetFound += Detector_OnTargetFoundHandler;
+            _meteorDetector.OnTargetLost += Detector_OnTargetLostHandler;
+            
             superSprite.gameObject.SetActive(false);
             _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
         }
 
         public void ManagedUpdate()
         {
+            _meteorDetector.CheckForNearMeteor(_movement.GetPosition(), Mathf.Infinity, true);
             _movement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
 
@@ -96,13 +102,21 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.SetGold:
                     HandleSetGold((bool)args[0]);
                     break;
+                case ShieldObserverMessage.RestartPosition:
+                    HandleRestartPosition();
+                    break;
             }
         }
+
+        private void HandleRestartPosition()
+        {
+            _movement.Restart();
+        }
+
         private void HandleSetGold(bool isActive)
         {
             var color = isActive ? Color.yellow : Color.white;
             normalSprite.GetComponent<SpriteRenderer>().color = color;
-            
         }
 
         #region Sprites
@@ -117,6 +131,8 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
+            if(_isAutoCorrectionEnable) return;
+            
             _movement.HandleMove((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
         
@@ -242,6 +258,30 @@ namespace _Main.Scripts.Gameplay.Shield
         
         #endregion
 
+        private float GetDirectionToMeteor()
+        {
+            return _meteorDetector.GetDirectionToMeteor(_movement.GetPosition(), _movement.GetAngle());
+        }
+
+        private IEnumerator Coroutine_AutoCorrection()
+        {
+            _isAutoCorrectionEnable = true;
+            var currentDirection = GetDirectionToMeteor();
+            
+            while (currentDirection != 0 && _isAutoCorrectionEnable == true)
+            {
+                currentDirection = GetDirectionToMeteor();
+                Debug.Log(currentDirection);
+                _movement.HandleMove((int)currentDirection,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                
+                yield return null;
+            }
+            
+            HandleStopRotate();
+            
+            _isAutoCorrectionEnable = false;
+        }
+
         private IEnumerator Coroutine_RotateTowardsNearestMeteor()
         {
             _meteorDetector.CheckForNearMeteor(_movement.GetPosition(), Mathf.Infinity);
@@ -275,6 +315,16 @@ namespace _Main.Scripts.Gameplay.Shield
                 
                 yield return null;
             }
+        }
+        
+        private void Detector_OnTargetLostHandler()
+        {
+            _isAutoCorrectionEnable = false;
+        }
+
+        private void Detector_OnTargetFoundHandler()
+        {
+            StartCoroutine(Coroutine_AutoCorrection());
         }
 
         private void OnDrawGizmosSelected()

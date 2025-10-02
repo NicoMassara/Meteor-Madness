@@ -14,6 +14,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
         public bool HasActiveTarget { get; private set; }
 
         public UnityAction OnTargetLost;
+        public UnityAction OnTargetFound;
         
 
         public MeteorDetector(LayerMask meteorLayer)
@@ -21,7 +22,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             _meteorLayer = meteorLayer;
         }
         
-        public void CheckForNearMeteor(Vector2 position, float checkRadius)
+        public void CheckForNearMeteor(Vector2 position, float checkRadius, bool findTarget = false)
         {
             if(HasActiveTarget) return;
             
@@ -33,6 +34,9 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             }
             
             _activeTarget = _colliders[GetNearestMeteor(position, hitCount)].GetComponent<ITargetable>();
+            
+            if(_activeTarget == null)
+                return;
 
             _activeTarget.OnDeath += Target_OnDeathHandler;
             
@@ -44,6 +48,12 @@ namespace _Main.Scripts.Gameplay.AutoTarget
                 dir * checkRadius, Color.magenta, 0.1f);
             
             _currentAngleSlot = GetSlotByAngle(angle);
+
+            if (findTarget)
+            {
+                OnTargetFound?.Invoke();
+            }
+
             HasActiveTarget = true;
         }
 
@@ -64,6 +74,18 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             
             return slot;
         }
+        
+        int GetSlotFromPosition(Vector2 from, Vector2 to)
+        {
+            var totalSlots = GameParameters.GameplayValues.AngleSlots;
+            Vector2 dir = to - from;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg; // ángulo en grados
+            if (angle < 0) angle += 360f; // normalizamos 0-360°
+            
+            int slot = Mathf.FloorToInt(angle / (360f / totalSlots)) % totalSlots;
+            return slot;
+        }
+
 
         public int GetMeteorAngleSlot()
         {
@@ -89,7 +111,20 @@ namespace _Main.Scripts.Gameplay.AutoTarget
 
             return selectedIndex;
         }
-        
+
+        public int GetDirectionToMeteor(Vector2 shieldPosition, float shieldAngle)
+        {
+            if (_activeTarget == null) return 0;
+            
+            float anglePerSlot = 360f / GameParameters.GameplayValues.AngleSlots;
+            Vector2 direction = _activeTarget.Position - shieldPosition;
+            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            var delta= Mathf.DeltaAngle(shieldAngle + anglePerSlot, targetAngle);
+            const float tolerance = 0.3f;
+            
+            return Mathf.Abs(delta) < tolerance ? 0 : (int)Mathf.Sign(delta);
+        }
+
         private void Target_OnDeathHandler()
         {
             _activeTarget.OnDeath -= Target_OnDeathHandler;

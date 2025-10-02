@@ -112,6 +112,11 @@ namespace _Main.Scripts.Gameplay.Shield
             UpdateTargetAngle();
         }
 
+        public void Restart()
+        {
+            _shieldTransform.localRotation = Quaternion.identity;
+        }
+
         private float GetFinalSpeed()
         {
             return _data.RotationSpeed * _speedMultiplier;

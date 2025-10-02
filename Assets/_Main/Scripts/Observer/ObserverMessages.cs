@@ -9,7 +9,7 @@
         public const ulong SetGold = 0xA0005;
         public const ulong SetActiveShield = 0xA0006;
         public const ulong SetActiveSuperShield = 0xA0007;
-        public const ulong Empty = 0xA0008;
+        public const ulong RestartPosition = 0xA0008;
     }
 
     public struct EarthObserverMessage

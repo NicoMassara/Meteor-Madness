@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
@@ -23,8 +24,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         //Hack
         private bool _isFirstDisable = true;
-        
-        
+
         // ReSharper disable Unity.PerformanceAnalysis
         public void OnNotify(ulong message, params object[] args)
         {

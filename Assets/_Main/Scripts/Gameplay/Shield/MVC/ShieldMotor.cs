@@ -38,6 +38,11 @@ namespace _Main.Scripts.Gameplay.Shield
             NotifyAll(ShieldObserverMessage.Rotate, direction);
         }
 
+        public void RestartPosition()
+        {
+            NotifyAll(ShieldObserverMessage.RestartPosition);
+        }
+
         #endregion
 
         #region Sprites
