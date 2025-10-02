@@ -6,7 +6,6 @@ namespace _Main.Scripts.Gameplay.FSM.Ability
     {
         public override void Awake()
         {
-
             Controller.TriggerAbility();
         }
 

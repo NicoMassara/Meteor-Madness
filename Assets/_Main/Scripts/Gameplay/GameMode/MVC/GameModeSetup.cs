@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
@@ -116,6 +117,17 @@ namespace _Main.Scripts.Gameplay.GameMode
             eventBus.Subscribe<EarthEvents.ShakeStart>(EventBus_OnEarthShake);
             eventBus.Subscribe<EarthEvents.DestructionFinished>(EventBus_OnEarthDestruction);
             eventBus.Subscribe<EarthEvents.RestartFinished>(EventBus_OnEarthRestartFinish);
+            
+            //Abilities
+            eventBus.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_SetActive);
+        }
+
+        private void EventBus_Abilities_SetActive(AbilitiesEvents.SetActive inputs)
+        {
+            if (inputs.AbilityType == AbilityType.DoublePoints)
+            {
+                _controller.SetDoublePoints(inputs.IsActive);
+            }
         }
 
         private void EventBus_OnGameModeScreenEnable(GameScreenEvents.GameModeEnable input)
@@ -146,7 +158,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void EventBus_OnMeteorDeflected(MeteorEvents.Deflected input)
         {
-            _controller.HandleMeteorDeflect(input.Value);
+            _controller.HandleMeteorDeflect(input.Position,input.Value);
         }
 
         private void EventBus_OnEarthDestruction(EarthEvents.DestructionFinished destructionFinished)

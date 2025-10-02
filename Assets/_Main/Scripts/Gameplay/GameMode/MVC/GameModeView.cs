@@ -72,12 +72,22 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Initialize:
                     HandleInitialize();
                     break;
-                    
+                case GameModeObserverMessage.PointsGained:
+                    HandlePointsGained((Vector2)args[0],(float)args[1],(bool)args[2]);
+                    break;
+                
             }
         }
         private void HandleInitialize()
         {
             GameManager.Instance.EventManager.Publish(new GameModeEvents.Initialize());
+        }
+        
+        private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
+        {
+            var finalScore = (int)(pointsAmount * GameParameters.GameplayValues.VisualMultiplier);
+            GameManager.Instance.EventManager.Publish(
+                new FloatingTextEvents.Points{ Position = position, Score = finalScore, IsDouble = isDouble });
         }
         
         private void HandleGamePaused(bool isPaused)

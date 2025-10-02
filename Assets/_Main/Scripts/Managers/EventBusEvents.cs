@@ -140,6 +140,7 @@ namespace _Main.Scripts.Managers
         public struct Add
         {
             public AbilityType AbilityType;
+            public Vector2 Position;
         }
 
         public struct SetStorageFull
@@ -161,11 +162,27 @@ namespace _Main.Scripts.Managers
             public IProjectile Projectile;
         }
 
-        public struct DistanceCheck
+        public struct Request
         {
             public Vector2 Position;
             public Vector2 Direction;
             public float MovementMultiplier;
         };
+    }
+
+    public struct FloatingTextEvents
+    {
+        public struct Points
+        {
+            public Vector2 Position;
+            public int Score;
+            public bool IsDouble;
+        }
+        
+        public struct Ability
+        {
+            public Vector2 Position;
+            public AbilityType AbilityType;
+        }
     }
 }
