@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
@@ -29,7 +30,7 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
                 }
                 else if (_projectileQueue.Count == 0 && _canLaunch)
                 {
-                    CheckDistance();
+                    RequestProjectile();
                 }
             }
             else 
@@ -40,19 +41,19 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
 
                     if (_projectileQueue.Count == 0 && _canLaunch)
                     {
-                        CheckDistance();
+                        RequestProjectile();
                     }
                 }
             }
         }
 
-        private void CheckDistance()
+        private void RequestProjectile()
         {
             var spawnPosition = spawnSettings.GetSpawnPosition();
             var direction = spawnSettings.GetCenterOfGravity() - spawnPosition;
             
             GameManager.Instance.EventManager.Publish(
-                new ProjectileEvents.DistanceCheck
+                new ProjectileEvents.Request
             {
                 Position = spawnPosition,
                 Direction = direction,
@@ -78,24 +79,27 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
+            eventManager.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
             eventManager.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
             eventManager.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
             eventManager.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
             eventManager.Subscribe<GameModeEvents.Restart>(EventBus_GameMode_Restart);
-            eventManager.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
         }
 
-        private void EventBus_GameMode_Start(GameModeEvents.Start input)
+        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
         {
-            _firstSpawnTimerId = TimerManager.Add(new TimerData
+            if (input.AbilityType == AbilityType.SlowMotion)
             {
-                Time = 1f,
-                OnEndAction = () =>
+                if (input.IsActive)
                 {
-                    _canLaunch = true;
+                    spawnSettings.SetMultiplier(1.75f);
                 }
-            }, SelfUpdateGroup);
+                else
+                {
+                    spawnSettings.SetMultiplier(1);
+                }
+            }
         }
 
         private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
@@ -116,11 +120,27 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
         
         private void EnventBus_Meteor_EnableSpawn(MeteorEvents.EnableSpawn input)
         {
-            _canLaunch = input.CanSpawn;
+            if (input.CanSpawn)
+            {
+                _firstSpawnTimerId = TimerManager.Add(new TimerData
+                {
+                    Time = 1f,
+                    OnEndAction = () =>
+                    {
+                        _canLaunch = true;
+                    }
+                }, SelfUpdateGroup);
+            }
+            else
+            {
+                _canLaunch = false;
+            }
         }
         
         private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
         {
+            _canLaunch = false;
+            _distanceTracker.ClearValues();
             TimerManager.Remove(_firstSpawnTimerId);
         }
 

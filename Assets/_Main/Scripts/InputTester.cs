@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.Gameplay.Abilies;
+﻿using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Managers;
 using UnityEngine;
 
@@ -7,11 +6,17 @@ namespace _Main.Scripts
 {
     public class InputTester : MonoBehaviour
     {
+        [SerializeField] private AbilityType abilityToAdd;
+        
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.K))
             {
-                AddAbility(AbilityType.SuperShield);
+                AddAbility();
+            }
+            else if (Input.GetKeyDown(KeyCode.L))
+            {
+                Deflect();
             }
         }
 
@@ -23,9 +28,17 @@ namespace _Main.Scripts
             }
         }
         
-        private void AddAbility(AbilityType abilityType)
+        private void AddAbility()
         {
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.Add{AbilityType = abilityType});
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.Add{AbilityType = abilityToAdd});
+        }
+
+        private void Deflect()
+        {
+            GameManager.Instance.EventManager.Publish(new MeteorEvents.Deflected
+            {
+                Value = 1f
+            });
         }
     }
 }

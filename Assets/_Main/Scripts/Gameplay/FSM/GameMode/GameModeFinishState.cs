@@ -10,7 +10,7 @@
             
             _actionQueue.AddAction(new ActionData(
                 () => Controller.HandleEarthStartDestruction(), 
-                EarthDestructionTimeValues.StartEarthDestruction));
+                EarthParameters.TimeValues.Destruction.StartEarthDestruction));
         }
 
         public override void Execute(float deltaTime)

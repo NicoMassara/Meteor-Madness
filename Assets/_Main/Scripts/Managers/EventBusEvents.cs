@@ -28,6 +28,11 @@ namespace _Main.Scripts.Managers
         {
             public bool IsEnabled;
         }
+        
+        public struct SetGold
+        {
+            public bool IsActive;
+        }
         public struct EnableSuperShield { }
         public struct EnableNormalShield { }
     }
@@ -135,16 +140,18 @@ namespace _Main.Scripts.Managers
         public struct Add
         {
             public AbilityType AbilityType;
-        }
-
-        public struct EnableSpawner
-        {
-            public bool IsEnable;
+            public Vector2 Position;
         }
 
         public struct SetStorageFull
         {
             public bool IsFull;
+        }
+        
+        public struct SetActive
+        {
+            public AbilityType AbilityType;
+            public bool IsActive;
         }
     }
 
@@ -155,11 +162,27 @@ namespace _Main.Scripts.Managers
             public IProjectile Projectile;
         }
 
-        public struct DistanceCheck
+        public struct Request
         {
             public Vector2 Position;
             public Vector2 Direction;
             public float MovementMultiplier;
         };
+    }
+
+    public struct FloatingTextEvents
+    {
+        public struct Points
+        {
+            public Vector2 Position;
+            public int Score;
+            public bool IsDouble;
+        }
+        
+        public struct Ability
+        {
+            public Vector2 Position;
+            public AbilityType AbilityType;
+        }
     }
 }

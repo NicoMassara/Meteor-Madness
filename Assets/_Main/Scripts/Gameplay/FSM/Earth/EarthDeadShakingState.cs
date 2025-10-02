@@ -11,11 +11,11 @@ namespace _Main.Scripts.Gameplay.FSM.Earth
             var temp = new ActionData[]
             {
                 new(()=>Controller.SetDeathShake(true),
-                    EarthDestructionTimeValues.StartShake),
+                    EarthParameters.TimeValues.Destruction.StartShake),
                 new(()=>Controller.SetDeathShake(false),
-                    EarthDestructionTimeValues.DeathShakeDuration),
+                    EarthParameters.TimeValues.Destruction.DeathShakeDuration),
                 new(()=>Controller.TransitionToDestruction(),
-                    EarthDestructionTimeValues.ShowEarthDestruction)
+                    EarthParameters.TimeValues.Destruction.ShowEarthDestruction)
             };
             
             _queue.AddAction(temp);

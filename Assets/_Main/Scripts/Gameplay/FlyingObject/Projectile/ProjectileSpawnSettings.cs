@@ -10,6 +10,8 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
         private ProjectileSpawnSpeedController _speed;
         private ProjectileSpawnLocationController _location;
 
+        private float multiplier = 1;
+
         private void Awake()
         {
             _speed = GetComponent<ProjectileSpawnSpeedController>();
@@ -38,7 +40,7 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
 
         public float GetMaxTravelDistance()
         {
-            return _speed.GetMaxTravelDistance();
+            return _speed.GetMaxTravelDistance() * multiplier;
         }
 
         public float GetMovementMultiplier()
@@ -50,7 +52,13 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
         {
             return _location.GetCenterOfGravity();
         }
-        
+
+        public void SetMultiplier(float value = 1)
+        {
+            value = Mathf.Clamp(value, 0.01f, 10);
+            multiplier = value;
+        }
+
         #region Gizmos
 
         private void OnDrawGizmos()
