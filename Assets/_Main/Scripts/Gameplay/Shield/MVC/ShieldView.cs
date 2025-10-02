@@ -40,6 +40,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private LayerMask meteorLayer;
         [Range(0.5f, 3f)] 
         [SerializeField] private float meteorCheckRadius = 10f;
+        [SerializeField] private Vector2 meteorCheckOffset;
         
         private MeteorDetector _meteorDetector;
         private ShieldMovement _movement;
@@ -134,6 +135,7 @@ namespace _Main.Scripts.Gameplay.Shield
             if(_isAutoCorrectionEnable) return;
             
             _movement.HandleMove((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            //_meteorDetector.CheckForNearMeteor(_movement.GetPosition() + meteorCheckOffset, meteorCheckRadius, true);
         }
         
         private void HandleStopRotate()
@@ -271,7 +273,6 @@ namespace _Main.Scripts.Gameplay.Shield
             while (currentDirection != 0 && _isAutoCorrectionEnable == true)
             {
                 currentDirection = GetDirectionToMeteor();
-                Debug.Log(currentDirection);
                 _movement.HandleMove((int)currentDirection,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 
                 yield return null;
@@ -327,10 +328,15 @@ namespace _Main.Scripts.Gameplay.Shield
             StartCoroutine(Coroutine_AutoCorrection());
         }
 
+        private Vector2 CheckMeteorPosition()
+        {
+            return _movement.GetPosition() + meteorCheckOffset;
+        }
+
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(normalSprite.transform.position, meteorCheckRadius);
+            Gizmos.DrawWireSphere((Vector2)normalSprite.transform.position + meteorCheckOffset, meteorCheckRadius);
         }
     }
 }
