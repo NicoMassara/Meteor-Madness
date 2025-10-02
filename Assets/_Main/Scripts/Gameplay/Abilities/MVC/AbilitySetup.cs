@@ -106,7 +106,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBus_Ability_Add(AbilitiesEvents.Add input)
         {
-            _controller.TryAddAbility((int)input.AbilityType);
+            _controller.TryAddAbility((int)input.AbilityType, input.Position);
         }
 
         private void EventBus_Ability_SetEnable(AbilitiesEvents.SetEnable input)
