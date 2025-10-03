@@ -58,9 +58,12 @@ namespace _Main.Scripts.Gameplay.Abilities
         {
             _inUseCount = 0;
             
+            if(abilitySprite == null) return;
+            
             for (int i = 0; i < abilitySprite.Length; i++)
             {
                 var spriteToUse = abilitySprite[i];
+                if(spriteToUse == null) continue;
                 spriteToUse.color = GetAbilityColor(AbilityType.None);
             }
         }
