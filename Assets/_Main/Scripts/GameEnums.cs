@@ -23,4 +23,13 @@
         DoublePoints,
         Automatic
     }
+    
+    public enum DamageTypes
+    {
+        None,
+        Standard,
+        Hard,
+        Heavy,
+        Brutal
+    }
 }
