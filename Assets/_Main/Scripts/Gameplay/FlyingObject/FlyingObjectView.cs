@@ -71,7 +71,7 @@ namespace _Main.Scripts.FyingObject
         
         public virtual void ManagedUpdate()
         {
-            _sphereRotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _sphereRotator?.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             
             if (_hasFire)
             {

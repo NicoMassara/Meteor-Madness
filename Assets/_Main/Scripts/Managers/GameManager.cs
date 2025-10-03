@@ -57,6 +57,11 @@ namespace _Main.Scripts.Managers
             };
         }
 
+        public void SetMeteorDamage(DamageParameters.DamageTypes damage)
+        {
+            currentDamageDamageType = damage;
+        }
+        
         #endregion
     }
 }
