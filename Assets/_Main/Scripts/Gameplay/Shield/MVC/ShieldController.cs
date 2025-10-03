@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.FSM.Shield;
+using _Main.Scripts.Gameplay.Shield.States;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
@@ -17,7 +17,7 @@ namespace _Main.Scripts.Gameplay.Shield
             {
                 fsm.OnEnterState += state =>
                 {
-                    RotationEnable = state == States.Active;
+                    RotationEnable = state is States.Active or States.Gold;
                 };
             }
         }
@@ -26,7 +26,9 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             Unactive,
             Active,
-            Super
+            Super,
+            Gold,
+            Automatic
         }
 
         private FSM<States> _fsm;
@@ -72,10 +74,14 @@ namespace _Main.Scripts.Gameplay.Shield
             var unactive = new ShieldUnactiveState<States>();
             var active = new ShieldActivateState<States>();
             var super = new ShieldSuperState<States>();
+            var gold = new ShieldGoldState<States>();
+            var automatic = new ShieldAutomaticState<States>();
             
             temp.Add(unactive);
             temp.Add(active);
             temp.Add(super);
+            temp.Add(gold);
+            temp.Add(automatic);
 
             #endregion
 
@@ -83,10 +89,14 @@ namespace _Main.Scripts.Gameplay.Shield
 
             unactive.AddTransition(States.Active, active);
             
-            active.AddTransition(States.Super, super);
             active.AddTransition(States.Unactive, unactive);
+            active.AddTransition(States.Super, super);
+            active.AddTransition(States.Gold, gold);
+            active.AddTransition(States.Automatic, automatic);
             
             super.AddTransition(States.Active, active);
+            gold.AddTransition(States.Active, active);
+            automatic.AddTransition(States.Active, active);
 
             #endregion
 
@@ -117,6 +127,16 @@ namespace _Main.Scripts.Gameplay.Shield
         public void TransitionToSuper()
         {
             SetTransitions(States.Super);
+        }
+        
+        public void TransitionToGold()
+        {
+            SetTransitions(States.Gold);
+        }
+        
+        public void TransitionToAutomatic()
+        {
+            SetTransitions(States.Automatic);
         }
 
         #endregion
@@ -149,6 +169,11 @@ namespace _Main.Scripts.Gameplay.Shield
             _motor.ForceRotate(direction);
         }
         
+        public void RestartPosition()
+        {
+            _motor.RestartPosition();
+        }
+        
         #endregion
 
         #region Sprites
@@ -156,6 +181,11 @@ namespace _Main.Scripts.Gameplay.Shield
         public void SetActiveShield(bool isActive)
         {
             _motor.SetActiveShield(isActive);
+        }
+        
+        public void SetActiveGold(bool isActive)
+        {
+            _motor.SetActiveGold(isActive);
         }
 
         #endregion
@@ -165,19 +195,15 @@ namespace _Main.Scripts.Gameplay.Shield
             _motor.HandleHit(position,rotation,direction);
         }
 
+        public void SetActiveAutomatic(bool isActive)
+        {
+            _motor.SetActiveAutomatic(isActive);
+        }
+
+
         #region Handlers
         
 
         #endregion
-
-        public void SetActiveGold(bool isActive)
-        {
-            _motor.SetActiveGold(isActive);
-        }
-
-        public void RestartPosition()
-        {
-            _motor.RestartPosition();
-        }
     }
 }

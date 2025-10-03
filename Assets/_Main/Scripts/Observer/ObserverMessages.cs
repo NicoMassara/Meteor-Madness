@@ -10,6 +10,7 @@
         public const ulong SetActiveShield = 0xA0006;
         public const ulong SetActiveSuperShield = 0xA0007;
         public const ulong RestartPosition = 0xA0008;
+        public const ulong SetAutomatic = 0xA0009;
     }
 
     public struct EarthObserverMessage

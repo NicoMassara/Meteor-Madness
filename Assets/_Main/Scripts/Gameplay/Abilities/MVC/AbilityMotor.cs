@@ -116,6 +116,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         SuperShield,
         Health,
         SlowMotion,
-        DoublePoints
+        DoublePoints,
+        Automatic
     }
 }

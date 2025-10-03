@@ -37,6 +37,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float timeToDisableSuperShield;
         [Range(0, 1000)]
         [SerializeField] private float decayConstant = 100f;
+        [SerializeField] private bool autoCorrectEnable;
         
         private MeteorDetector _meteorDetector;
         private ShieldMovement _movement;
@@ -44,8 +45,9 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
 
-        private bool _isAutoCorrectionEnable;
+        private bool _isPlayerInputEnable;
         private bool _canAutoCorrect = true;
+        private bool _automaticEnable;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
@@ -69,13 +71,12 @@ namespace _Main.Scripts.Gameplay.Shield
 
         public void ManagedUpdate()
         {
-            //_meteorDetector.CheckForMeteor(_movement.GetPosition());
             _movement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-            
-            if(_canAutoCorrect == false) return;
-            
-            _meteorDetector.CheckForNearMeteorInSlotRange(
-                _movement.GetPosition(), _movement.GetCurrentSlot());
+
+            if (_automaticEnable)
+            {
+                _meteorDetector.CheckForMeteor(_movement.GetPosition());
+            }
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -105,6 +106,9 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.SetGold:
                     HandleSetGold((bool)args[0]);
                     break;
+                case ShieldObserverMessage.SetAutomatic:
+                    HandleSetAutomatic((bool)args[0]);
+                    break;
                 case ShieldObserverMessage.RestartPosition:
                     HandleRestartPosition();
                     break;
@@ -115,15 +119,22 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _movement.Restart();
         }
+        
+        #region States
+
+        private void HandleSetAutomatic(bool isActive)
+        {
+            _automaticEnable = isActive;
+            var color = isActive ? Color.red : Color.white;
+            normalSprite.GetComponent<SpriteRenderer>().color = color;
+        }
 
         private void HandleSetGold(bool isActive)
         {
             var color = isActive ? Color.yellow : Color.white;
             normalSprite.GetComponent<SpriteRenderer>().color = color;
         }
-
-        #region Sprites
-
+        
         private void HandleSetActiveShield(bool isActive)
         {
             spriteContainer.SetActive(isActive);
@@ -134,11 +145,11 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
-            if(_isAutoCorrectionEnable) return;
+            if(_isPlayerInputEnable) return;
             
             _movement.HandleMove((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             
-            if(_canAutoCorrect == false) return;
+            if(_canAutoCorrect == false || autoCorrectEnable == false) return;
             
             _meteorDetector.CheckForNearMeteorInSlotRange(
                 _movement.GetPosition(),_movement.GetCurrentSlot());
@@ -155,6 +166,8 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
+
+        #region Deflect
 
         private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
         {
@@ -176,20 +189,8 @@ namespace _Main.Scripts.Gameplay.Shield
             GameManager.Instance.EventManager.Publish(new CameraEvents.Shake{ShakeData = cameraShakeData});
         }
 
-        private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)
-        {
-            var elapsedTime = 0f;
-            
-            while (elapsedTime < targetTime)
-            {
-                var deltaTime = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-                elapsedTime += deltaTime;
-                action?.Invoke(deltaTime);
-                
-                yield return null;
-            }
-        }
-
+        #endregion
+        
         #region Change Form 
 
         private void HandleSetSuperActive(bool isActive)
@@ -266,14 +267,29 @@ namespace _Main.Scripts.Gameplay.Shield
         
         #endregion
 
+        #region Coroutine
+        
+        private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)
+        {
+            var elapsedTime = 0f;
+            
+            while (elapsedTime < targetTime)
+            {
+                var deltaTime = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
+                elapsedTime += deltaTime;
+                action?.Invoke(deltaTime);
+                
+                yield return null;
+            }
+        }
+
         private IEnumerator Coroutine_AutoCorrection()
         {
-            _isAutoCorrectionEnable = true;
+            _isPlayerInputEnable = true;
             var currentDirection = _meteorDetector.GetSlotDirection(_movement.GetCurrentSlot());
             
-            //Debug.Log("Auto Correction Started");
             
-            while (currentDirection != 0 && _isAutoCorrectionEnable == true)
+            while (currentDirection != 0 && _isPlayerInputEnable == true)
             {
                 currentDirection = _meteorDetector.GetSlotDirection(_movement.GetCurrentSlot()) * 10;
                 _movement.HandleMove((int)currentDirection,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
@@ -281,21 +297,19 @@ namespace _Main.Scripts.Gameplay.Shield
                 yield return null;
             }
             
-            //Debug.Log("Auto Correction Ended");
-            
             HandleStopRotate();
             _canAutoCorrect = false;
 
             TimerManager.Add(new TimerData
             {
-                Time = 1.5f,
+                Time = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup) * 5,
                 OnEndAction = () => { _canAutoCorrect = true; }
             });
             
             TimerManager.Add(new TimerData
             {
-                Time = 1,
-                OnEndAction = () => { _isAutoCorrectionEnable = false; }
+                Time = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup) * 30,
+                OnEndAction = () => { _isPlayerInputEnable = false; }
             });
         }
 
@@ -333,10 +347,14 @@ namespace _Main.Scripts.Gameplay.Shield
                 yield return null;
             }
         }
-        
+
+        #endregion
+
+        #region Handlers
+
         private void Detector_OnTargetLostHandler()
         {
-            _isAutoCorrectionEnable = false;
+            _isPlayerInputEnable = false;
         }
 
         private void Detector_OnTargetFoundHandler()
@@ -346,5 +364,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 StartCoroutine(Coroutine_AutoCorrection());
             }
         }
+
+        #endregion
     }
 }

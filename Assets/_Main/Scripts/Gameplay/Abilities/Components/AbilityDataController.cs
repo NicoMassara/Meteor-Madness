@@ -32,6 +32,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             CreateShieldData();
             CreateHealData();
             CreateDoublePointsData();
+            CreateAutomaticData();
         }
 
         #region Abilities Data
@@ -352,7 +353,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = AbilityParameters.DoublePoints.StartValues.TimeToZoomOut,
                     });
                     CameraZoomOut();
-                    RunActiveTimer(AbilityType.DoublePoints);
+                    RunActiveTimer(selectedAbility);
                 },AbilityParameters.DoublePoints.StartValues.TimeToZoomOut),
             };
 
@@ -363,8 +364,90 @@ namespace _Main.Scripts.Gameplay.Abilies
                 {
                     GameManager.Instance.EventManager.Publish(new ShieldEvents.SetGold{IsActive = false});
                     PublishAbilityActive(selectedAbility, false);
-                    OnAbilityFinished?.Invoke(AbilityType.DoublePoints);
+                    OnAbilityFinished?.Invoke(selectedAbility);
                 }),
+            };
+
+            var abilityData = new AbilityStoredData
+            {
+                ActiveTime = AbilityParameters.DoublePoints.ActiveTime,
+                AbilityType = selectedAbility,
+                StartActions = startActions,
+                EndActions = endActions,
+            };
+
+            _abilities.Add(selectedAbility, abilityData);
+        }
+        
+        private void CreateAutomaticData()
+        {
+            float targetTimeScale = 0.025f;
+            var selectedAbility = AbilityType.Automatic;
+            
+            //Start Queue
+            var startActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    PublishAbilityActive(selectedAbility, true);
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = targetTimeScale,
+                        CurrentTimeScale = 1f,
+                        TimeToUpdate = 0.25f,
+                    });
+                    CameraZoomIn();
+                },0f),
+                new ActionData(() =>
+                {
+                    GameManager.Instance.EventManager.Publish(new ShieldEvents.SetAutomatic{IsActive = true});
+                },0.25f),
+                new ActionData(() =>
+                {
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = targetTimeScale,
+                        TimeToUpdate = 0.25f,
+                    });
+                    CameraZoomOut();
+                    RunActiveTimer(selectedAbility);
+                },0.25f),
+            };
+
+            //End Queue
+            var endActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    CameraZoomIn();
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = targetTimeScale,
+                        CurrentTimeScale = 1f,
+                        TimeToUpdate = 0.5f,
+                    });
+                }),
+                new ActionData(() =>
+                {
+                    GameManager.Instance.EventManager.Publish(new ShieldEvents.SetAutomatic{IsActive = false});
+                },0.5f),
+                new ActionData(() =>
+                {
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = targetTimeScale,
+                        TimeToUpdate = 0.5f,
+                    });
+                    CameraZoomOut();
+                    PublishAbilityActive(selectedAbility, false);
+                    OnAbilityFinished?.Invoke(selectedAbility);
+                },0.5f),
             };
 
             var abilityData = new AbilityStoredData

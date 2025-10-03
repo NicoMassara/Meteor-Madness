@@ -10,7 +10,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
     {
         [Header("Meteor Detector")]
         [SerializeField] private LayerMask meteorLayer;
-        [Range(0.5f, 15f)] 
+        [Range(2.5f, 15f)] 
         [SerializeField] private float checkDistance = 10f;
         [SerializeField] private Vector2Int slotRange;
         
@@ -60,7 +60,6 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             _activeTarget = tempTarget;
             _activeTarget.OnDeath += Target_OnDeathHandler;
             HasActiveTarget = true;
-            OnTargetFound?.Invoke();
         }
 
         public void CheckForNearMeteorInSlotRange(Vector2 position, int shieldSlot)
@@ -174,7 +173,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             return transform.position;
         }
         
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
             for (int i = 0; i < GameParameters.GameplayValues.AngleSlots; i++)

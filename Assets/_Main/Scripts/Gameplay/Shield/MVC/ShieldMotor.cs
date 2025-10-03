@@ -8,10 +8,12 @@ namespace _Main.Scripts.Gameplay.Shield
         private float _lastDirection;
         private bool _isTotalActive;
         private bool _isGolden;
+        private bool _isAutomatic;
 
         #region Movement
         public void Rotate(float direction = 1)
         {
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (direction != _lastDirection)
             {
                 _lastDirection = direction;
@@ -63,6 +65,12 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _isGolden = isActive;
             NotifyAll(ShieldObserverMessage.SetGold,_isGolden);
+        }
+
+        public void SetActiveAutomatic(bool isActive)
+        {
+            _isAutomatic = isActive;
+            NotifyAll(ShieldObserverMessage.SetAutomatic,_isAutomatic);
         }
     }
 }
