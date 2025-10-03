@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1815323068979676637}
   - component: {fileID: 5136780786273061443}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: NormalSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 6351426985224968225}
   - component: {fileID: 1062298756893298317}
   - component: {fileID: 2028866992308588399}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,7 +235,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1363689716878219453}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sprites
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 7779817624001456119}
   - component: {fileID: 6018189826576287001}
   - component: {fileID: 2550002458397255613}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Comet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,7 +410,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1244006394522276032}
   - component: {fileID: 4082935008701432472}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}

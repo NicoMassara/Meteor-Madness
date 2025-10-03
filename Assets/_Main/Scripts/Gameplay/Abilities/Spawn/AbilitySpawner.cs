@@ -82,7 +82,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             data.Sphere.ForceRecycle();
             
-
             var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
             temp = _isStorageFull ? temp/2 : temp;
             SetTimer(temp);

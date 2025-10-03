@@ -49,6 +49,8 @@ namespace _Main.Scripts
 
         public void Release(T item)
         {
+            if(!_active.Contains(item)) return;
+            
             _pool.Release(item);
         }
 
