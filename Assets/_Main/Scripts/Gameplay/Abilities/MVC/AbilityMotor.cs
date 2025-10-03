@@ -9,6 +9,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         private int _currentAbilityIndex;
         private bool _canUseAbility;
         private bool _isUIEnable;
+        private Vector2 _abilityAddedPosition;
 
         public AbilityMotor(int maxAbilityStorage)
         {
@@ -38,13 +39,14 @@ namespace _Main.Scripts.Gameplay.Abilies
             _storage.TakeAbility();
         }
         
-        public void TryAddAbility(int abilityIndex)
+        public void TryAddAbility(int abilityIndex, Vector2 abilityPosition)
         {
             if (_storage.IsFull() || abilityIndex == 0)
             {
                 return;
             }
 
+            _abilityAddedPosition = abilityPosition;
             _storage.AddAbility(abilityIndex);
         }
 
@@ -83,7 +85,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Storage_OnAbilityAddedHandler(int abilityTypeIndex)
         {
-            NotifyAll(AbilityObserverMessage.AddAbility, abilityTypeIndex);
+            NotifyAll(AbilityObserverMessage.AddAbility, abilityTypeIndex,_abilityAddedPosition);
         }
 
         private void Storage_OnAbilityTakenHandler(int abilityTypeIndex)
@@ -106,14 +108,5 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             NotifyAll(AbilityObserverMessage.RunActiveTimer,_currentAbilityIndex);
         }
-    }
-    
-    public enum AbilityType
-    {
-        None,
-        SuperShield,
-        Health,
-        SlowMotion,
-        DoublePoints
     }
 }

@@ -6,6 +6,7 @@ using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -15,11 +16,10 @@ namespace _Main.Scripts.Gameplay.GameMode
     public class GameModeUIView : ManagedBehavior, IObserver, IUpdatable
     {
         [Header("Texts")]
-        [SerializeField] private Text countdownText;
-        [SerializeField] private Text scoreText;
-        [SerializeField] private Text deathScoreText;
-        [SerializeField] private Text deathText;
-
+        [SerializeField] private TMP_Text countdownText;
+        [SerializeField] private TMP_Text scoreText;
+        [SerializeField] private TMP_Text deathScoreText;
+        [SerializeField] private TMP_Text deathText;
         [Space] 
         [Header("Panels")] 
         [SerializeField] private GameObject mainPanel;
@@ -35,7 +35,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private Button[] mainMenuButtons;
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior buttonSound;
-
+        
         private GameObject _currentPanel;
         private NumberIncrementer _numberIncrementer;
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
@@ -96,6 +96,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
+
             }
         }
 

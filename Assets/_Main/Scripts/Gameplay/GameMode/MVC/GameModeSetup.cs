@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
@@ -103,9 +104,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             var eventBus = GameManager.Instance.EventManager;
             //Add events
             
-            //Game
+            //GameMode
             eventBus.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
             eventBus.Subscribe<GameModeEvents.SetPause>(EventBus_OnGamePaused);
+            //GameScreen
             eventBus.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_OnMainMenu);
             eventBus.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_OnGameModeScreenEnable);
             
@@ -116,6 +118,28 @@ namespace _Main.Scripts.Gameplay.GameMode
             eventBus.Subscribe<EarthEvents.ShakeStart>(EventBus_OnEarthShake);
             eventBus.Subscribe<EarthEvents.DestructionFinished>(EventBus_OnEarthDestruction);
             eventBus.Subscribe<EarthEvents.RestartFinished>(EventBus_OnEarthRestartFinish);
+            
+            //Abilities
+            eventBus.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_SetActive);
+            
+            //Projectiles
+            eventBus.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
+        }
+
+        private void EventBus_Projectile_RequestSpawn(ProjectileEvents.RequestSpawn input)
+        {
+            if(input.RequestType == EventRequestType.Request)
+            {
+                _controller.GrantProjectileSpawn((int)input.ProjectileType);
+            }
+        }
+
+        private void EventBus_Abilities_SetActive(AbilitiesEvents.SetActive inputs)
+        {
+            if (inputs.AbilityType == AbilityType.DoublePoints)
+            {
+                _controller.SetDoublePoints(inputs.IsActive);
+            }
         }
 
         private void EventBus_OnGameModeScreenEnable(GameScreenEvents.GameModeEnable input)
@@ -146,7 +170,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void EventBus_OnMeteorDeflected(MeteorEvents.Deflected input)
         {
-            _controller.HandleMeteorDeflect(input.Value);
+            _controller.HandleMeteorDeflect(input.Position,input.Value);
         }
 
         private void EventBus_OnEarthDestruction(EarthEvents.DestructionFinished destructionFinished)

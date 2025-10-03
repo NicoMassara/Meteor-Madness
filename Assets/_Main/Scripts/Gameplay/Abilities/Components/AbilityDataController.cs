@@ -10,7 +10,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityDataController
     {
-        private readonly Dictionary<AbilityType, AbilityData> _abilities = new Dictionary<AbilityType, AbilityData>();
+        private readonly Dictionary<AbilityType, AbilityStoredData> _abilities = new Dictionary<AbilityType, AbilityStoredData>();
         private readonly EventBusManager _eventBus;
         
         public UnityAction<float> OnAbilityStarted;
@@ -32,6 +32,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             CreateShieldData();
             CreateHealData();
             CreateDoublePointsData();
+            CreateAutomaticData();
         }
 
         #region Abilities Data
@@ -106,7 +107,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, AbilityParameters.SuperShield.EndValues.TimeBeforeRestoringTimeScale),
             };
 
-            var shieldData = new AbilityData
+            var shieldData = new AbilityStoredData
             {
                 ActiveTime = AbilityParameters.SuperShield.ActiveTime,
                 AbilityType = selectedAbility,
@@ -178,7 +179,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 })
             };
             
-            var healData = new AbilityData
+            var healData = new AbilityStoredData
             {
                 AbilityType = selectedAbility,
                 StartActions = startActions,
@@ -307,7 +308,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }),
             };
 
-            var abilityData = new AbilityData
+            var abilityData = new AbilityStoredData
             {
                 ActiveTime = AbilityParameters.SlowMotion.ActiveTime,
                 AbilityType = selectedAbility,
@@ -352,7 +353,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = AbilityParameters.DoublePoints.StartValues.TimeToZoomOut,
                     });
                     CameraZoomOut();
-                    RunActiveTimer(AbilityType.DoublePoints);
+                    RunActiveTimer(selectedAbility);
                 },AbilityParameters.DoublePoints.StartValues.TimeToZoomOut),
             };
 
@@ -363,11 +364,93 @@ namespace _Main.Scripts.Gameplay.Abilies
                 {
                     GameManager.Instance.EventManager.Publish(new ShieldEvents.SetGold{IsActive = false});
                     PublishAbilityActive(selectedAbility, false);
-                    OnAbilityFinished?.Invoke(AbilityType.DoublePoints);
+                    OnAbilityFinished?.Invoke(selectedAbility);
                 }),
             };
 
-            var abilityData = new AbilityData
+            var abilityData = new AbilityStoredData
+            {
+                ActiveTime = AbilityParameters.DoublePoints.ActiveTime,
+                AbilityType = selectedAbility,
+                StartActions = startActions,
+                EndActions = endActions,
+            };
+
+            _abilities.Add(selectedAbility, abilityData);
+        }
+        
+        private void CreateAutomaticData()
+        {
+            float targetTimeScale = 0.025f;
+            var selectedAbility = AbilityType.Automatic;
+            
+            //Start Queue
+            var startActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    PublishAbilityActive(selectedAbility, true);
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = targetTimeScale,
+                        CurrentTimeScale = 1f,
+                        TimeToUpdate = 0.25f,
+                    });
+                    CameraZoomIn();
+                },0f),
+                new ActionData(() =>
+                {
+                    GameManager.Instance.EventManager.Publish(new ShieldEvents.SetAutomatic{IsActive = true});
+                },0.25f),
+                new ActionData(() =>
+                {
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = targetTimeScale,
+                        TimeToUpdate = 0.25f,
+                    });
+                    CameraZoomOut();
+                    RunActiveTimer(selectedAbility);
+                },0.25f),
+            };
+
+            //End Queue
+            var endActions = new[]
+            {
+                new ActionData(() =>
+                {
+                    CameraZoomIn();
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = targetTimeScale,
+                        CurrentTimeScale = 1f,
+                        TimeToUpdate = 0.5f,
+                    });
+                }),
+                new ActionData(() =>
+                {
+                    GameManager.Instance.EventManager.Publish(new ShieldEvents.SetAutomatic{IsActive = false});
+                },0.5f),
+                new ActionData(() =>
+                {
+                    _updateTimeScale.Invoke(new TimeScaleData
+                    {
+                        UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = targetTimeScale,
+                        TimeToUpdate = 0.5f,
+                    });
+                    CameraZoomOut();
+                    PublishAbilityActive(selectedAbility, false);
+                    OnAbilityFinished?.Invoke(selectedAbility);
+                },0.5f),
+            };
+
+            var abilityData = new AbilityStoredData
             {
                 ActiveTime = AbilityParameters.DoublePoints.ActiveTime,
                 AbilityType = selectedAbility,
@@ -433,7 +516,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         public float TimeToUpdate;
     }
 
-    public class AbilityData
+    public class AbilityStoredData
     {
         public float ActiveTime;
         public bool HasInstantEffect;

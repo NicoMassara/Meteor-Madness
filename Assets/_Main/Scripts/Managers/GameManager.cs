@@ -5,7 +5,7 @@ namespace _Main.Scripts.Managers
 {
     public class GameManager : ManagedBehavior
     {
-        [SerializeField] private DamageParameters.DamageTypes currentDamageDamageType = DamageParameters.DamageTypes.Standard;
+        [SerializeField] private DamageTypes currentDamageDamageType = DamageTypes.Standard;
         public static GameManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         private static GameManager _instance;
         
@@ -28,7 +28,7 @@ namespace _Main.Scripts.Managers
 
         private void Awake()
         {
-            currentDamageDamageType = DamageParameters.DamageTypes.Standard;
+            currentDamageDamageType = DamageTypes.Standard;
             EventManager = new EventBusManager();
         }
 
@@ -48,15 +48,20 @@ namespace _Main.Scripts.Managers
         {
             return currentDamageDamageType switch
             {
-                DamageParameters.DamageTypes.None => DamageParameters.Values.NoneDamage,
-                DamageParameters.DamageTypes.Standard => DamageParameters.Values.StandardMeteor,
-                DamageParameters.DamageTypes.Hard => DamageParameters.Values.HardMeteor,
-                DamageParameters.DamageTypes.Heavy => DamageParameters.Values.HeavyMeteor,
-                DamageParameters.DamageTypes.Brutal => DamageParameters.Values.BrutalMeteor,
+                DamageTypes.None => DamageParameters.Values.NoneDamage,
+                DamageTypes.Standard => DamageParameters.Values.StandardMeteor,
+                DamageTypes.Hard => DamageParameters.Values.HardMeteor,
+                DamageTypes.Heavy => DamageParameters.Values.HeavyMeteor,
+                DamageTypes.Brutal => DamageParameters.Values.BrutalMeteor,
                 _ => DamageParameters.Values.StandardMeteor
             };
         }
 
+        public void SetMeteorDamage(DamageTypes damage)
+        {
+            currentDamageDamageType = damage;
+        }
+        
         #endregion
     }
 }

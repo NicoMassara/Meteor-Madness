@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Gameplay.FlyingObject.Projectile;
+using _Main.Scripts.Gameplay.Projectile;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -16,7 +16,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private MeteorFactory _meteorFactory;
         private bool _isSpawningRing;
-        private bool _isDoublePoints;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -161,8 +160,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             data.Meteor.OnDeflection = null;
             data.Meteor.OnEarthCollision = null;
             
-            var finalValue = _isDoublePoints ? data.Value * 2 : data.Value;
-            
             GameManager.Instance.EventManager.Publish
             (
                 new MeteorEvents.Deflected
@@ -170,7 +167,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                     Position = data.Position,
                     Rotation = data.Rotation,
                     Direction = data.Direction,
-                    Value = finalValue
+                    Value = data.Value
                 }
             );
             
@@ -202,24 +199,18 @@ namespace _Main.Scripts.Gameplay.Meteor
         private void SetEventBus()
         {
             var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<AbilitiesEvents.SetActive>(EnventBus_Ability_SetActive);
             eventManager.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
             eventManager.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventManager.Subscribe<ProjectileEvents.Request>(EventBus_Projectile_DistanceCheck);
+            eventManager.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
         }
 
-        private void EnventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
         {
-            if (input.AbilityType == AbilityType.DoublePoints)
+            if (input.ProjectileType == ProjectileType.Meteor)
             {
-                _isDoublePoints = input.IsActive;
+                SpawnSingleMeteor(input.Position, input.Direction, input.MovementMultiplier);
             }
-        }
-
-        private void EventBus_Projectile_DistanceCheck(ProjectileEvents.Request input)
-        {
-            SpawnSingleMeteor(input.Position, input.Direction, input.MovementMultiplier);
         }
 
         private void EventBus_GameMode_Disable(GameModeEvents.Disable input)

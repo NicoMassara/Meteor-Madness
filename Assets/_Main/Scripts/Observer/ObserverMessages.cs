@@ -9,7 +9,8 @@
         public const ulong SetGold = 0xA0005;
         public const ulong SetActiveShield = 0xA0006;
         public const ulong SetActiveSuperShield = 0xA0007;
-        public const ulong SetActiveGold = 0xA0008;
+        public const ulong RestartPosition = 0xA0008;
+        public const ulong SetAutomatic = 0xA0009;
     }
 
     public struct EarthObserverMessage
@@ -35,7 +36,7 @@
         public const ulong EarthEndDestruction = 0xA2007;
         public const ulong EarthShaking = 0xA2008;
         public const ulong SetEnableSpawnMeteor = 0xA2009;
-        public const ulong Empty = 0xA2010;
+        public const ulong PointsGained = 0xA2010;
         public const ulong GameFinish = 0xA2011;
         public const ulong UpdateGameLevel = 0xA2012;
         public const ulong GameRestart = 0xA2013;
@@ -43,6 +44,8 @@
         public const ulong GamePaused = 0xA2015;
         public const ulong Disable = 0xA2016;
         public const ulong Initialize = 0xA2017;
+        public const ulong GrantProjectileSpawn = 0xA2018;
+        public const ulong Empty = 0xA2019;
     }
 
     public struct FlyingObjectObserverMessage
