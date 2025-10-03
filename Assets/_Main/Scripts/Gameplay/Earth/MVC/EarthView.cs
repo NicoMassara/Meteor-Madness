@@ -4,12 +4,11 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
-using _Main.Scripts.Particles;
+using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Gameplay.Earth
 {

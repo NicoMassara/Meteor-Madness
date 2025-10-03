@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Interfaces;
+using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
+namespace _Main.Scripts.Gameplay.Projectile
 {
     public class ProjectileDistanceTracker
     {

@@ -864,8 +864,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 168416677}
-  - component: {fileID: 168416676}
   - component: {fileID: 168416675}
+  - component: {fileID: 168416676}
   - component: {fileID: 168416678}
   m_Layer: 0
   m_Name: ShieldController
@@ -7188,7 +7188,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f752bda47bf48b5afb8712e91bfbf3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnSettings: {fileID: 12163667}
   prefab: {fileID: 8335861176009586927, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
   spawnDelay: 15
 --- !u!1 &1236263223

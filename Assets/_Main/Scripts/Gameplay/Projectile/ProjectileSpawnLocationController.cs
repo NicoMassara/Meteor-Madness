@@ -3,7 +3,7 @@ using _Main.Scripts.Managers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace _Main.Scripts.Gameplay.FlyingObject
+namespace _Main.Scripts.Gameplay.Projectile
 {
     public class ProjectileSpawnLocationController : MonoBehaviour
     {

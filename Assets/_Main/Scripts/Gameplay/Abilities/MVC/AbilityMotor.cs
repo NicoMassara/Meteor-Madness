@@ -109,14 +109,4 @@ namespace _Main.Scripts.Gameplay.Abilies
             NotifyAll(AbilityObserverMessage.RunActiveTimer,_currentAbilityIndex);
         }
     }
-    
-    public enum AbilityType
-    {
-        None,
-        SuperShield,
-        Health,
-        SlowMotion,
-        DoublePoints,
-        Automatic
-    }
 }

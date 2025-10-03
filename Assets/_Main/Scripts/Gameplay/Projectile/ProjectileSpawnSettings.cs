@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
+namespace _Main.Scripts.Gameplay.Projectile
 {
     [RequireComponent(typeof(ProjectileSpawnSpeedController))]
     [RequireComponent(typeof(ProjectileSpawnLocationController))]

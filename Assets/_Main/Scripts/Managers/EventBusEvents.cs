@@ -1,7 +1,5 @@
-﻿using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Gameplay.FlyingObject.Projectile;
-using _Main.Scripts.Particles;
-using _Main.Scripts.Shaker;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
@@ -167,8 +165,15 @@ namespace _Main.Scripts.Managers
             public IProjectile Projectile;
         }
 
-        public struct Request
+        public struct RequestSpawn
         {
+            public ProjectileType ProjectileType;
+            public EventRequestType RequestType;
+        }
+
+        public struct Spawn
+        {
+            public ProjectileType ProjectileType;
             public Vector2 Position;
             public Vector2 Direction;
             public float MovementMultiplier;

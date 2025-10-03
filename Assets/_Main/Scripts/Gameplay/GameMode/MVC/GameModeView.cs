@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.Projectile;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -75,9 +76,23 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.PointsGained:
                     HandlePointsGained((Vector2)args[0],(float)args[1],(bool)args[2]);
                     break;
+                case GameModeObserverMessage.GrantProjectileSpawn:
+                    HandleGrantProjectileSpawn((int)args[0]);
+                    break;
                 
             }
         }
+
+        private void HandleGrantProjectileSpawn(int projectileTypeIndex)
+        {
+            GameManager.Instance.EventManager.Publish(
+                new ProjectileEvents.RequestSpawn
+                {
+                    ProjectileType = (ProjectileType)projectileTypeIndex, 
+                    RequestType = EventRequestType.Granted
+                });
+        }
+
         private void HandleInitialize()
         {
             GameManager.Instance.EventManager.Publish(new GameModeEvents.Initialize());

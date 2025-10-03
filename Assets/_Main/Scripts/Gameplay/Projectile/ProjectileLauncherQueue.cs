@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
-namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
+namespace _Main.Scripts.Gameplay.Projectile
 {
     public class ProjectileLauncherQueue : ManagedBehavior, IUpdatable
     {
@@ -49,16 +50,23 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
 
         private void RequestProjectile()
         {
+            GameManager.Instance.EventManager.Publish(
+                new ProjectileEvents.RequestSpawn{ProjectileType = ProjectileType.Meteor, RequestType = EventRequestType.Request});
+        }
+        
+        private void SpawnProjectile(ProjectileType projectileType)
+        {
             var spawnPosition = spawnSettings.GetSpawnPosition();
             var direction = spawnSettings.GetCenterOfGravity() - spawnPosition;
             
             GameManager.Instance.EventManager.Publish(
-                new ProjectileEvents.Request
-            {
-                Position = spawnPosition,
-                Direction = direction,
-                MovementMultiplier = spawnSettings.GetMovementMultiplier(),
-            });
+                new ProjectileEvents.Spawn
+                {
+                    ProjectileType = projectileType,
+                    Position = spawnPosition,
+                    Direction = direction,
+                    MovementMultiplier = spawnSettings.GetMovementMultiplier(),
+                });
         }
 
         private void LaunchProjectile()
@@ -81,10 +89,19 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
             var eventManager = GameManager.Instance.EventManager;
             eventManager.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
             eventManager.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
+            eventManager.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_SpawnRequest);
             eventManager.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
             eventManager.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
             eventManager.Subscribe<GameModeEvents.Restart>(EventBus_GameMode_Restart);
+        }
+
+        private void EventBus_Projectile_SpawnRequest(ProjectileEvents.RequestSpawn input)
+        {
+            if (input.RequestType == EventRequestType.Granted)
+            {
+                SpawnProjectile(input.ProjectileType);  
+            }
         }
 
         private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)

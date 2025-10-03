@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace _Main.Scripts.FyingObject
+namespace _Main.Scripts.Gameplay.Projectile
 {
     [CreateAssetMenu(fileName = "SO_MeteorSpawnData_Name", menuName = "Scriptable Objects/Meteor/Spawn Data", order = 0)]
     public class ProjectileSpawnDataSo : ScriptableObject

@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.Gameplay.Meteor;
 using UnityEngine;
 
-namespace _Main.Scripts.FyingObject
+namespace _Main.Scripts.Gameplay.Projectile
 {
     public class ProjectileSpawnValues
     {

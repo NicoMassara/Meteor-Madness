@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace _Main.Scripts.Particles
+namespace _Main.Scripts.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "SO_ParticleData_Name", menuName = "Scriptable Objects/Particles/Particle Data", order = 0)]
     public class ParticleDataSo : ScriptableObject
