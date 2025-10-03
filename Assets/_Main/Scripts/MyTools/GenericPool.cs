@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -7,6 +8,7 @@ namespace _Main.Scripts
     public class GenericPool<T> where T : MonoBehaviour
     {
         private readonly ObjectPool<T> _pool;
+        private readonly List<T> _active = new List<T>();
 
         public GenericPool(T prefab, int defaultCapacity = 20, int maxSize = 100)
         {
@@ -16,19 +18,28 @@ namespace _Main.Scripts
                 actionOnRelease: OnRelease,
                 actionOnDestroy: b => UnityEngine.Object.Destroy(b.gameObject),
                 collectionCheck: true,
-                defaultCapacity: 20,
-                maxSize: 500
+                defaultCapacity: defaultCapacity,
+                maxSize: maxSize
             );
+
+            for (int i = 0; i < defaultCapacity; i++)
+            { 
+                Get();
+            }
+            
+            RecycleAll();
         }
 
         private void OnGet(T meteor)
         {
             meteor.gameObject.SetActive(true);
+            _active.Add(meteor);
         }
 
         private void OnRelease(T meteor)
         {
             meteor.gameObject.SetActive(false);
+            _active.Remove(meteor);
         }
 
         public T Get()
@@ -38,14 +49,18 @@ namespace _Main.Scripts
 
         public void Release(T item)
         {
+            if(!_active.Contains(item)) return;
+            
             _pool.Release(item);
         }
 
         public void RecycleAll()
         {
-            for (int i = 0; i < _pool.CountActive; i++)
+            int activeCount = _active.Count;
+
+            for (int i = activeCount - 1; i >= 0; i--)
             {
-                var item = _pool.Get();
+                var item = _active[i];
                 _pool.Release(item);
             }
         }

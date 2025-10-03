@@ -1,24 +1,30 @@
 ﻿using System;
 using _Main.Scripts.FyingObject;
 using _Main.Scripts.Gameplay.AutoTarget;
+using _Main.Scripts.Gameplay.Projectile;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Observer;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorController>, IMeteor, ITargetable
+    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorValuesData>, IMeteor, ITargetable, IProjectile
     {
         public UnityAction<MeteorCollisionData> OnEarthCollision { get; set; }
         public UnityAction<MeteorCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
+
+        public bool EnableMovement { get; set; }
         public event Action OnDeath;
 
-        public void SetMeteorValues(MeteorValuesData data)
+        public override void ManagedFixedUpdate()
         {
-            Controller.SetMeteorValues(data);
+            if (EnableMovement)
+            {
+                base.ManagedFixedUpdate();
+            }
         }
-
 
         public override void OnNotify(ulong message, params object[] args)
         {

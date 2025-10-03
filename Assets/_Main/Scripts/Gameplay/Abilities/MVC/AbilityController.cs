@@ -2,6 +2,7 @@
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay.FSM.Ability;
 using _Main.Scripts.Managers;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
@@ -105,9 +106,9 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         #endregion
 
-        public void TryAddAbility(AbilityType abilityType)
+        public void TryAddAbility(int abilityTypeIndex, Vector2 abilityPosition)
         {
-            _motor.TryAddAbility(abilityType);
+            _motor.TryAddAbility(abilityTypeIndex,abilityPosition);
         }
 
         public void SelectAbility()
@@ -138,6 +139,11 @@ namespace _Main.Scripts.Gameplay.Abilies
         public void RestartAbilities()
         {
             _motor.RestartAbilities();
+        }
+
+        public void RunActiveTimer()
+        {
+            _motor.RunActiveTimer();
         }
     }
 }

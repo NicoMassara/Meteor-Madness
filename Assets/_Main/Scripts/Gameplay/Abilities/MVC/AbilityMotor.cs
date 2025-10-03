@@ -6,9 +6,10 @@ namespace _Main.Scripts.Gameplay.Abilies
     public class AbilityMotor : ObservableComponent
     {
         private readonly AbilityStorage _storage;
-        private AbilityType _currentAbility;
+        private int _currentAbilityIndex;
         private bool _canUseAbility;
         private bool _isUIEnable;
+        private Vector2 _abilityAddedPosition;
 
         public AbilityMotor(int maxAbilityStorage)
         {
@@ -38,25 +39,26 @@ namespace _Main.Scripts.Gameplay.Abilies
             _storage.TakeAbility();
         }
         
-        public void TryAddAbility(AbilityType ability)
+        public void TryAddAbility(int abilityIndex, Vector2 abilityPosition)
         {
-            if (_storage.IsFull())
+            if (_storage.IsFull() || abilityIndex == 0)
             {
                 return;
             }
 
-            _storage.AddAbility(ability);
+            _abilityAddedPosition = abilityPosition;
+            _storage.AddAbility(abilityIndex);
         }
 
         public void TriggerAbility()
         {
-            NotifyAll(AbilityObserverMessage.TriggerAbility, _currentAbility);
+            NotifyAll(AbilityObserverMessage.TriggerAbility, _currentAbilityIndex);
         }
 
         public void FinishAbility()
         {
-            NotifyAll(AbilityObserverMessage.FinishAbility, _currentAbility);
-            _currentAbility = AbilityType.None;
+            NotifyAll(AbilityObserverMessage.FinishAbility, _currentAbilityIndex);
+            _currentAbilityIndex = 0;
         }
 
         public void SetCanUseAbility(bool canUse)
@@ -73,7 +75,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         public void RestartAbilities()
         {
-            _currentAbility = AbilityType.None;
+            _currentAbilityIndex = 0;
             _canUseAbility = false;
             _storage.Restart();
             NotifyAll(AbilityObserverMessage.RestartAbilities);
@@ -81,33 +83,30 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         #region Handlers
 
-        private void Storage_OnAbilityAddedHandler(AbilityType abilityType)
+        private void Storage_OnAbilityAddedHandler(int abilityTypeIndex)
         {
-            NotifyAll(AbilityObserverMessage.AddAbility, abilityType);
+            NotifyAll(AbilityObserverMessage.AddAbility, abilityTypeIndex,_abilityAddedPosition);
         }
 
-        private void Storage_OnAbilityTakenHandler(AbilityType abilityType)
+        private void Storage_OnAbilityTakenHandler(int abilityTypeIndex)
         {
-            _currentAbility = abilityType;
+            _currentAbilityIndex = abilityTypeIndex;
             
-            NotifyAll(AbilityObserverMessage.SelectAbility, _currentAbility);
+            NotifyAll(AbilityObserverMessage.SelectAbility, _currentAbilityIndex);
+            NotifyAll(AbilityObserverMessage.SetStorageFull, false);
         }
 
         private void Storage_OnStorageFilledHandler()
         {
-            NotifyAll(AbilityObserverMessage.StorageFilled);
+            NotifyAll(AbilityObserverMessage.SetStorageFull, true);
         }
+        
 
         #endregion
 
-
-    }
-    
-    public enum AbilityType
-    {
-        None,
-        SuperShield,
-        Health,
-        SlowMotion
+        public void RunActiveTimer()
+        {
+            NotifyAll(AbilityObserverMessage.RunActiveTimer,_currentAbilityIndex);
+        }
     }
 }

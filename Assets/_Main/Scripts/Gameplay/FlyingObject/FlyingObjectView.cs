@@ -2,20 +2,19 @@
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
-using _Main.Scripts.Particles;
+using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.FyingObject
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class FlyingObjectView<T, TS, TC> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable
-    where T : FlyingObjectMotor
-    where TS : FlyingObjectView<T, TS, TC>
-    where TC : FlyingObjectController<T>
+    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable
+    where T : FlyingObjectMotor<TVS>
+    where TS : FlyingObjectView<T, TS, TVS>
+    where TVS : FlyingObjectValues
     {
         [Header("Sounds")]
         [SerializeField] protected SoundBehavior moveSound;
@@ -27,8 +26,7 @@ namespace _Main.Scripts.FyingObject
         [SerializeField] private GameObject fireObject;
         [Header("Particles")]
         [SerializeField] private ParticleDataSo collisionParticle;
-
-        protected TC Controller { get; private set; }
+        
         private Rigidbody2D _rigidbody2D;
         private Oscillator _fireScaleOscillator;
         private Oscillator _fireRotationOscillator;
@@ -36,6 +34,10 @@ namespace _Main.Scripts.FyingObject
         private bool _hasFire;
         private bool _canMove;
         private float _movementSpeed;
+        
+        public UnityAction<Vector2> OnPositionChanged;
+        public UnityAction<TVS> OnValuesChanged;
+        public UnityAction<Collider2D> OnCollisionDetected;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public UpdateGroup SelfFixedUpdateGroup { get; } = UpdateGroup.Gameplay;
@@ -67,9 +69,9 @@ namespace _Main.Scripts.FyingObject
             _sphereRotator.SetSpeed(GetRotationSpeed());
         }
         
-        public void ManagedUpdate()
+        public virtual void ManagedUpdate()
         {
-            _sphereRotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _sphereRotator?.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             
             if (_hasFire)
             {
@@ -78,13 +80,13 @@ namespace _Main.Scripts.FyingObject
             }
         }
 
-        public void ManagedFixedUpdate()
+        public virtual void ManagedFixedUpdate()
         {
             if (_canMove)
             {
                 var dt = CustomTime.GetFixedDeltaTimeByChannel(SelfFixedUpdateGroup);
                 _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * dt));
-                Controller.UpdatePosition( _rigidbody2D.transform.position);
+                OnPositionChanged?.Invoke(_rigidbody2D.position);
             }
         }
 
@@ -101,9 +103,9 @@ namespace _Main.Scripts.FyingObject
             }
         }
 
-        public void SetValues(FlyingObjectValues data)
+        public void SetValues(TVS data)
         {
-            Controller.SetValues(data);
+            OnValuesChanged?.Invoke(data);
         }
 
         protected virtual void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)
@@ -113,7 +115,7 @@ namespace _Main.Scripts.FyingObject
             {
                 GameManager.Instance.EventManager.Publish
                 (
-                    new SpawnParticle
+                    new ParticleEvents.Spawn
                     {
                         ParticleData = collisionParticle,
                         Position = position,
@@ -123,11 +125,6 @@ namespace _Main.Scripts.FyingObject
             }
 
             moveSound?.StopSound();
-        }
-        
-        public void SetController(TC controller)
-        {
-            Controller = controller;
         }
 
         private void HandleSetValues(float movementSpeed, Quaternion rotation, Vector2 position, bool canMove)
@@ -146,7 +143,7 @@ namespace _Main.Scripts.FyingObject
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            Controller.HandleTriggerEnter2D(other);
+            OnCollisionDetected?.Invoke(other);
         }
 
         public void ForceRecycle()
