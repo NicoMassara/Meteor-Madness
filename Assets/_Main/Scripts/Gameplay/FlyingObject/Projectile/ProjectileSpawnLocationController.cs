@@ -129,7 +129,7 @@ namespace _Main.Scripts.Gameplay.FlyingObject
 
         #region Gizmos
 
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(centerOfGravity.position, spawnRadius);

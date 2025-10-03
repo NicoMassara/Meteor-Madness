@@ -1,6 +1,5 @@
-﻿using _Main.Scripts.Gameplay.Shield;
-
-namespace _Main.Scripts.Gameplay.FSM.Shield
+﻿
+namespace _Main.Scripts.Gameplay.Shield.States
 {
     public class ShieldActivateState<T> : ShieldBaseState<T>
     {

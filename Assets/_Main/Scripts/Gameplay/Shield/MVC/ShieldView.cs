@@ -12,6 +12,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
+    [RequireComponent(typeof(MeteorDetector))]
     public class ShieldView : ManagedBehavior, IObserver, IUpdatable
     {
         [Header("Components")] 
@@ -36,17 +37,17 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float timeToDisableSuperShield;
         [Range(0, 1000)]
         [SerializeField] private float decayConstant = 100f;
-        [Header("Meteor Detector")]
-        [SerializeField] private LayerMask meteorLayer;
-        [Range(0.5f, 3f)] 
-        [SerializeField] private float meteorCheckRadius = 10f;
+        [SerializeField] private bool autoCorrectEnable;
         
         private MeteorDetector _meteorDetector;
         private ShieldMovement _movement;
         private ShieldSpeeder _shieldSpeeder;
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
-        
+
+        private bool _isPlayerInputEnable;
+        private bool _canAutoCorrect = true;
+        private bool _automaticEnable;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
@@ -55,11 +56,15 @@ namespace _Main.Scripts.Gameplay.Shield
             _movement = new ShieldMovement(spriteContainer.transform,movementData);
             _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
-            _meteorDetector = new MeteorDetector(meteorLayer);
+            _meteorDetector = GetComponent<MeteorDetector>();
+            _meteorDetector.SetMovement(_movement);
         }
 
         private void Start()
         {
+            _meteorDetector.OnTargetFound += Detector_OnTargetFoundHandler;
+            _meteorDetector.OnTargetLost += Detector_OnTargetLostHandler;
+            
             superSprite.gameObject.SetActive(false);
             _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
         }
@@ -67,6 +72,11 @@ namespace _Main.Scripts.Gameplay.Shield
         public void ManagedUpdate()
         {
             _movement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+
+            if (_automaticEnable)
+            {
+                _meteorDetector.CheckForMeteor(_movement.GetPosition());
+            }
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -96,17 +106,35 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.SetGold:
                     HandleSetGold((bool)args[0]);
                     break;
+                case ShieldObserverMessage.SetAutomatic:
+                    HandleSetAutomatic((bool)args[0]);
+                    break;
+                case ShieldObserverMessage.RestartPosition:
+                    HandleRestartPosition();
+                    break;
             }
         }
+
+        private void HandleRestartPosition()
+        {
+            _movement.Restart();
+        }
+        
+        #region States
+
+        private void HandleSetAutomatic(bool isActive)
+        {
+            _automaticEnable = isActive;
+            var color = isActive ? Color.red : Color.white;
+            normalSprite.GetComponent<SpriteRenderer>().color = color;
+        }
+
         private void HandleSetGold(bool isActive)
         {
             var color = isActive ? Color.yellow : Color.white;
             normalSprite.GetComponent<SpriteRenderer>().color = color;
-            
         }
-
-        #region Sprites
-
+        
         private void HandleSetActiveShield(bool isActive)
         {
             spriteContainer.SetActive(isActive);
@@ -117,7 +145,14 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
+            if(_isPlayerInputEnable) return;
+            
             _movement.HandleMove((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            
+            if(_canAutoCorrect == false || autoCorrectEnable == false) return;
+            
+            _meteorDetector.CheckForNearMeteorInSlotRange(
+                _movement.GetPosition(),_movement.GetCurrentSlot());
         }
         
         private void HandleStopRotate()
@@ -131,6 +166,8 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
+
+        #region Deflect
 
         private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
         {
@@ -152,20 +189,8 @@ namespace _Main.Scripts.Gameplay.Shield
             GameManager.Instance.EventManager.Publish(new CameraEvents.Shake{ShakeData = cameraShakeData});
         }
 
-        private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)
-        {
-            var elapsedTime = 0f;
-            
-            while (elapsedTime < targetTime)
-            {
-                var deltaTime = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-                elapsedTime += deltaTime;
-                action?.Invoke(deltaTime);
-                
-                yield return null;
-            }
-        }
-
+        #endregion
+        
         #region Change Form 
 
         private void HandleSetSuperActive(bool isActive)
@@ -242,9 +267,55 @@ namespace _Main.Scripts.Gameplay.Shield
         
         #endregion
 
+        #region Coroutine
+        
+        private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)
+        {
+            var elapsedTime = 0f;
+            
+            while (elapsedTime < targetTime)
+            {
+                var deltaTime = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
+                elapsedTime += deltaTime;
+                action?.Invoke(deltaTime);
+                
+                yield return null;
+            }
+        }
+
+        private IEnumerator Coroutine_AutoCorrection()
+        {
+            _isPlayerInputEnable = true;
+            var currentDirection = _meteorDetector.GetSlotDirection(_movement.GetCurrentSlot());
+            
+            
+            while (currentDirection != 0 && _isPlayerInputEnable == true)
+            {
+                currentDirection = _meteorDetector.GetSlotDirection(_movement.GetCurrentSlot()) * 10;
+                _movement.HandleMove((int)currentDirection,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                
+                yield return null;
+            }
+            
+            HandleStopRotate();
+            _canAutoCorrect = false;
+
+            TimerManager.Add(new TimerData
+            {
+                Time = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup) * 5,
+                OnEndAction = () => { _canAutoCorrect = true; }
+            });
+            
+            TimerManager.Add(new TimerData
+            {
+                Time = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup) * 30,
+                OnEndAction = () => { _isPlayerInputEnable = false; }
+            });
+        }
+
         private IEnumerator Coroutine_RotateTowardsNearestMeteor()
         {
-            _meteorDetector.CheckForNearMeteor(_movement.GetPosition(), Mathf.Infinity);
+            _meteorDetector.CheckForMeteor(_movement.GetPosition());
             var meteorSlot = _meteorDetector.GetMeteorAngleSlot();
 
             if (meteorSlot > -1)
@@ -277,10 +348,23 @@ namespace _Main.Scripts.Gameplay.Shield
             }
         }
 
-        private void OnDrawGizmosSelected()
+        #endregion
+
+        #region Handlers
+
+        private void Detector_OnTargetLostHandler()
         {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(normalSprite.transform.position, meteorCheckRadius);
+            _isPlayerInputEnable = false;
         }
+
+        private void Detector_OnTargetFoundHandler()
+        {
+            if (_canAutoCorrect)
+            {
+                StartCoroutine(Coroutine_AutoCorrection());
+            }
+        }
+
+        #endregion
     }
 }

@@ -33,6 +33,11 @@ namespace _Main.Scripts.Managers
         {
             public bool IsActive;
         }
+        
+        public struct SetAutomatic
+        {
+            public bool IsActive;
+        }
         public struct EnableSuperShield { }
         public struct EnableNormalShield { }
     }

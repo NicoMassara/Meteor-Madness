@@ -1,7 +1,6 @@
 ﻿using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.Shield;
 
-namespace _Main.Scripts.Gameplay.FSM.Shield
+namespace _Main.Scripts.Gameplay.Shield.States
 {
     public class ShieldBaseState<T> : State<T>
     {

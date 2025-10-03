@@ -218,10 +218,11 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         public AbilitySelector()
         {
-            _valuesDic.Add(AbilityType.SlowMotion, new AbilityValue(30, AbilityType.SlowMotion));
-            _valuesDic.Add(AbilityType.Health, new AbilityValue(25, AbilityType.Health));
-            _valuesDic.Add(AbilityType.SuperShield, new AbilityValue(15, AbilityType.SuperShield));
-            _valuesDic.Add(AbilityType.DoublePoints, new AbilityValue(30, AbilityType.DoublePoints));
+            _valuesDic.Add(AbilityType.DoublePoints, new AbilityValue(10, AbilityType.DoublePoints));
+            _valuesDic.Add(AbilityType.SlowMotion, new AbilityValue(8, AbilityType.SlowMotion));
+            _valuesDic.Add(AbilityType.Health, new AbilityValue(6, AbilityType.Health));
+            _valuesDic.Add(AbilityType.SuperShield, new AbilityValue(4, AbilityType.SuperShield));
+            _valuesDic.Add(AbilityType.Automatic, new AbilityValue(2, AbilityType.Automatic));
         }
 
 
@@ -236,8 +237,11 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 case 6:
                     SetMultiplier(AbilityType.SlowMotion, 1f);
                     break;
-                case 9:
+                case 7:
                     SetMultiplier(AbilityType.Health, 1f);
+                    break;
+                case 8:
+                    SetMultiplier(AbilityType.Automatic, 1f);
                     break;
                 case 10:
                     SetMultiplier(AbilityType.SuperShield, 1f);

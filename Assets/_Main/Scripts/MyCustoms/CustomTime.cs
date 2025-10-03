@@ -7,6 +7,9 @@ namespace _Main.Scripts.MyCustoms
     public static class CustomTime
     {
         private static readonly Dictionary<UpdateGroup, TimeChannel> Channels = new();
+
+        public static float GlobalTimeScale = 1;
+        public static float GlobalFixedTimeScale = 1;
         
         public static TimeChannel GetChannel(UpdateGroup key)
         {
@@ -33,13 +36,13 @@ namespace _Main.Scripts.MyCustoms
         internal static void UpdateAll(float unscaledDeltaTime)
         {
             foreach (var kv in Channels)
-                kv.Value.Update(unscaledDeltaTime);
+                kv.Value.Update(unscaledDeltaTime * GlobalTimeScale);
         }
         
         internal static void FixedUpdateAll(float unscaledDeltaTime)
         {
             foreach (var kv in Channels)
-                kv.Value.UpdateFixed(unscaledDeltaTime);
+                kv.Value.UpdateFixed(unscaledDeltaTime * GlobalFixedTimeScale);
         }
 
         public static void SetChannelPaused(UpdateGroup updateGroup, bool isPaused)
