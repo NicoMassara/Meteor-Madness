@@ -1,6 +1,7 @@
 ﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
+using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Shaker;
 using UnityEngine;
 

@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Interfaces;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    public class ShieldMovement
+    public class ShieldMovement : IMovement
     {
         private readonly Transform _shieldTransform;
         private readonly ShieldMovementDataSo _data;
@@ -110,6 +111,11 @@ namespace _Main.Scripts.Gameplay.Shield
             }
             
             UpdateTargetAngle();
+        }
+
+        public void Restart()
+        {
+            _shieldTransform.localRotation = Quaternion.identity;
         }
 
         private float GetFinalSpeed()

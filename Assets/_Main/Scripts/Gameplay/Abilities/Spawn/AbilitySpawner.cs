@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Gameplay.Abilities.Sphere;
-using _Main.Scripts.Gameplay.FlyingObject.Projectile;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyTools;
@@ -13,7 +12,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
     public class AbilitySpawner : ManagedBehavior, IUpdatable
     {
         [Header("Components")]
-        [SerializeField] private ProjectileSpawnSettings spawnSettings;
         [SerializeField] private AbilitySphereView prefab;
         [Header("Values")] 
         [Range(5, 15f)] 
@@ -39,25 +37,29 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         
         private void SendAbility()
         {
-            var temp = _factory.SpawnAbilitySphere();
-            var spawnPosition = spawnSettings.GetPositionByAngle(spawnSettings.GetSpawnAngle(), spawnSettings.GetSpawnRadius());
-            var movementSpeed = (GameParameters.GameplayValues.MaxMeteorSpeed) * spawnSettings.GetMovementMultiplier();
+            GameManager.Instance.EventManager.Publish(
+                new ProjectileEvents.RequestSpawn{ProjectileType = ProjectileType.AbilitySphere});
+        }
+
+        private void CreateAbilitySphere(Vector2 position, Vector2 direction, float movementMultiplier)
+        {
+            var tempSphere = _factory.SpawnAbilitySphere();
+            var movementSpeed = (GameParameters.GameplayValues.MaxMeteorSpeed) * movementMultiplier;
             
-            Vector2 direction = spawnSettings.GetCenterOfGravity() - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
-            temp.SetValues(new AbilitySphereValues
+            tempSphere.SetValues(new AbilitySphereValues
             {
                 MovementSpeed = movementSpeed,
                 Rotation = tempRot,
-                Position = spawnPosition,
+                Position = position,
                 Direction = direction.normalized,
                 AbilityType = GetAbilityToAdd()
             });
-            temp.OnDeflection += DeflectionHandler;
-            temp.OnEarthCollision += OnEarthCollisionHandler;
+            tempSphere.OnDeflection += DeflectionHandler;
+            tempSphere.OnEarthCollision += OnEarthCollisionHandler;
             
-            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = temp});
+            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = tempSphere});
         }
 
         private void DeflectionHandler(AbilitySphereCollisionData data)
@@ -80,7 +82,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             data.Sphere.ForceRecycle();
             
-
             var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
             temp = _isStorageFull ? temp/2 : temp;
             SetTimer(temp);
@@ -137,6 +138,15 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             eventManager.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
             eventManager.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+            eventManager.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
+        }
+
+        private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
+        {
+            if (input.ProjectileType == ProjectileType.AbilitySphere)
+            {
+                CreateAbilitySphere(input.Position, input.Direction, input.MovementMultiplier);
+            }
         }
 
         private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
@@ -176,6 +186,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             RemoveTimer();
             _factory.RecycleAll();
+            _selector.CleanMultiplier();
         }
 
         #endregion
@@ -218,10 +229,11 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         public AbilitySelector()
         {
-            _valuesDic.Add(AbilityType.SlowMotion, new AbilityValue(30, AbilityType.SlowMotion));
-            _valuesDic.Add(AbilityType.Health, new AbilityValue(25, AbilityType.Health));
-            _valuesDic.Add(AbilityType.SuperShield, new AbilityValue(15, AbilityType.SuperShield));
-            _valuesDic.Add(AbilityType.DoublePoints, new AbilityValue(30, AbilityType.DoublePoints));
+            _valuesDic.Add(AbilityType.DoublePoints, new AbilityValue(10, AbilityType.DoublePoints));
+            _valuesDic.Add(AbilityType.SlowMotion, new AbilityValue(8, AbilityType.SlowMotion));
+            _valuesDic.Add(AbilityType.Health, new AbilityValue(6, AbilityType.Health));
+            _valuesDic.Add(AbilityType.SuperShield, new AbilityValue(4, AbilityType.SuperShield));
+            _valuesDic.Add(AbilityType.Automatic, new AbilityValue(2, AbilityType.Automatic));
         }
 
 
@@ -236,8 +248,11 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 case 6:
                     SetMultiplier(AbilityType.SlowMotion, 1f);
                     break;
-                case 9:
+                case 7:
                     SetMultiplier(AbilityType.Health, 1f);
+                    break;
+                case 8:
+                    SetMultiplier(AbilityType.Automatic, 1f);
                     break;
                 case 10:
                     SetMultiplier(AbilityType.SuperShield, 1f);
@@ -268,6 +283,14 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private float GetMultiplier(AbilityType abilityType)
         {
             return _valuesDic[abilityType].Multiplier;
+        }
+
+        public void CleanMultiplier()
+        {
+            for (int i = 1; i < (int)AbilityType.Automatic+1; i++)
+            {
+                SetMultiplier((AbilityType)i, 0f);
+            }
         }
 
         public AbilityType GetAbility()

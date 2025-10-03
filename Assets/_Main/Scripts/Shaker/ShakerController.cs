@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.ScriptableObjects;
+using UnityEngine;
 
 namespace _Main.Scripts.Shaker
 {

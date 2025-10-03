@@ -223,5 +223,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _motor.SetDoublePoints(isEnable);
         }
+
+        public void GrantProjectileSpawn(int projectileTypeIndex)
+        {
+            _motor.GrantSpawnMeteor(projectileTypeIndex);
+        }
     }
 }
