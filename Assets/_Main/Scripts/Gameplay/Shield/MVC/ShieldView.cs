@@ -4,10 +4,10 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
-using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
 using _Main.Scripts.Gameplay.AutoTarget;
+using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
@@ -75,7 +75,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
             if (_automaticEnable)
             {
-                _meteorDetector.CheckForMeteor(_movement.GetPosition());
+                _meteorDetector.CheckForMeteor(_movement.GetPosition(), true);
             }
         }
 
@@ -357,11 +357,14 @@ namespace _Main.Scripts.Gameplay.Shield
             _isPlayerInputEnable = false;
         }
 
-        private void Detector_OnTargetFoundHandler()
+        private void Detector_OnTargetFoundHandler(bool doesCheckForMore)
         {
-            if (_canAutoCorrect)
+            if (doesCheckForMore)
             {
-                StartCoroutine(Coroutine_AutoCorrection());
+                if (_canAutoCorrect)
+                {
+                    StartCoroutine(Coroutine_AutoCorrection());
+                }
             }
         }
 

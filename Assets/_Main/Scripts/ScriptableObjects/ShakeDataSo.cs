@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace _Main.Scripts.Shaker
+namespace _Main.Scripts.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "SO_ShakeData_Name", menuName = "Scriptable Objects/Shaker/Shake Data", order = 0)]
     public class ShakeDataSo : ScriptableObject

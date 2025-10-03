@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
+namespace _Main.Scripts.Interfaces
 {
     public interface IProjectile
     {

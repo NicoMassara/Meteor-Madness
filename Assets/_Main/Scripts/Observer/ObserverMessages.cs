@@ -44,6 +44,8 @@
         public const ulong GamePaused = 0xA2015;
         public const ulong Disable = 0xA2016;
         public const ulong Initialize = 0xA2017;
+        public const ulong GrantProjectileSpawn = 0xA2018;
+        public const ulong Empty = 0xA2019;
     }
 
     public struct FlyingObjectObserverMessage

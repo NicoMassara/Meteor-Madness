@@ -1,9 +1,8 @@
-﻿using _Main.Scripts.FyingObject;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.FlyingObject
+namespace _Main.Scripts.Gameplay.Projectile
 {
     public class ProjectileSpawnSpeedController : ManagedBehavior
     {

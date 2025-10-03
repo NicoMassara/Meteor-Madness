@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Gameplay.Abilities.Sphere;
-using _Main.Scripts.Gameplay.FlyingObject.Projectile;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyTools;
@@ -13,7 +12,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
     public class AbilitySpawner : ManagedBehavior, IUpdatable
     {
         [Header("Components")]
-        [SerializeField] private ProjectileSpawnSettings spawnSettings;
         [SerializeField] private AbilitySphereView prefab;
         [Header("Values")] 
         [Range(5, 15f)] 
@@ -39,25 +37,29 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         
         private void SendAbility()
         {
-            var temp = _factory.SpawnAbilitySphere();
-            var spawnPosition = spawnSettings.GetPositionByAngle(spawnSettings.GetSpawnAngle(), spawnSettings.GetSpawnRadius());
-            var movementSpeed = (GameParameters.GameplayValues.MaxMeteorSpeed) * spawnSettings.GetMovementMultiplier();
+            GameManager.Instance.EventManager.Publish(
+                new ProjectileEvents.RequestSpawn{ProjectileType = ProjectileType.AbilitySphere});
+        }
+
+        private void CreateAbilitySphere(Vector2 position, Vector2 direction, float movementMultiplier)
+        {
+            var tempSphere = _factory.SpawnAbilitySphere();
+            var movementSpeed = (GameParameters.GameplayValues.MaxMeteorSpeed) * movementMultiplier;
             
-            Vector2 direction = spawnSettings.GetCenterOfGravity() - spawnPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
-            temp.SetValues(new AbilitySphereValues
+            tempSphere.SetValues(new AbilitySphereValues
             {
                 MovementSpeed = movementSpeed,
                 Rotation = tempRot,
-                Position = spawnPosition,
+                Position = position,
                 Direction = direction.normalized,
                 AbilityType = GetAbilityToAdd()
             });
-            temp.OnDeflection += DeflectionHandler;
-            temp.OnEarthCollision += OnEarthCollisionHandler;
+            tempSphere.OnDeflection += DeflectionHandler;
+            tempSphere.OnEarthCollision += OnEarthCollisionHandler;
             
-            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = temp});
+            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = tempSphere});
         }
 
         private void DeflectionHandler(AbilitySphereCollisionData data)
@@ -137,6 +139,15 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             eventManager.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
             eventManager.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+            eventManager.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
+        }
+
+        private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
+        {
+            if (input.ProjectileType == ProjectileType.AbilitySphere)
+            {
+                CreateAbilitySphere(input.Position, input.Direction, input.MovementMultiplier);
+            }
         }
 
         private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)

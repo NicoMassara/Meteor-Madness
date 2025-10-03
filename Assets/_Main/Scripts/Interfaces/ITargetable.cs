@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.AutoTarget
+namespace _Main.Scripts.Interfaces
 {
     public interface ITargetable
     {

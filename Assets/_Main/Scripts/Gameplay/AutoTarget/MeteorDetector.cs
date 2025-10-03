@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.Gameplay.Shield;
+﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,7 +13,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
         [SerializeField] private float checkDistance = 10f;
         [SerializeField] private Vector2Int slotRange;
         
-        private ShieldMovement _movement;
+        private IMovement _movement;
         private readonly Collider2D[] _colliders = new Collider2D[5];
         private ITargetable _activeTarget;
         private int _targetSlot = -1;
@@ -22,10 +21,10 @@ namespace _Main.Scripts.Gameplay.AutoTarget
         private const float CheckInterval = 0.01f;
         public bool HasActiveTarget { get; private set; }
 
+        public UnityAction<bool> OnTargetFound;
         public UnityAction OnTargetLost;
-        public UnityAction OnTargetFound;
 
-        public void SetMovement(ShieldMovement movement)
+        public void SetMovement(IMovement movement)
         {
             _movement = movement;
         }
@@ -42,14 +41,13 @@ namespace _Main.Scripts.Gameplay.AutoTarget
                 _colliders[GetNearestMeteor(position, hitCount)].GetComponent<ITargetable>();
         }
 
-        public void CheckForMeteor(Vector2 position)
+        public void CheckForMeteor(Vector2 position, bool doesCheckForMore = false)
         {
             if(HasActiveTarget) return;
-            
             var tempTarget = GetActiveTarget(position);
             
             if(tempTarget == null) return;
-
+            
             var targetPos = tempTarget.Position;
             var direction = (targetPos - position).normalized;
             
@@ -60,6 +58,8 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             _activeTarget = tempTarget;
             _activeTarget.OnDeath += Target_OnDeathHandler;
             HasActiveTarget = true;
+            
+            OnTargetFound?.Invoke(doesCheckForMore);
         }
 
         public void CheckForNearMeteorInSlotRange(Vector2 position, int shieldSlot)
@@ -73,7 +73,6 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             var targetPos = tempTarget.Position;
             var direction = (targetPos - position).normalized;
             var tempSlot = GetSlotFromPosition(targetPos);
-            var slotDistance = Mathf.Abs(tempSlot - shieldSlot);
             
             var isInRange = IsSlotInRange(tempSlot, shieldSlot,
                 slotRange.x, slotRange.y);
@@ -92,7 +91,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             _activeTarget = tempTarget;
             _activeTarget.OnDeath += Target_OnDeathHandler;
             HasActiveTarget = true;
-            OnTargetFound?.Invoke();
+            OnTargetFound?.Invoke(true);
         }
         
         private static bool IsSlotInRange(int current, int target, int minDist, int maxDist)
