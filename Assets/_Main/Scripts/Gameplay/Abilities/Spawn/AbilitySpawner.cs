@@ -82,7 +82,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             data.Sphere.ForceRecycle();
             
-
             var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
             temp = _isStorageFull ? temp/2 : temp;
             SetTimer(temp);
@@ -187,6 +186,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             RemoveTimer();
             _factory.RecycleAll();
+            _selector.CleanMultiplier();
         }
 
         #endregion
@@ -283,6 +283,14 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private float GetMultiplier(AbilityType abilityType)
         {
             return _valuesDic[abilityType].Multiplier;
+        }
+
+        public void CleanMultiplier()
+        {
+            for (int i = 1; i < (int)AbilityType.Automatic+1; i++)
+            {
+                SetMultiplier((AbilityType)i, 0f);
+            }
         }
 
         public AbilityType GetAbility()

@@ -95,7 +95,10 @@ namespace _Main.Scripts.Gameplay.Shield
             active.AddTransition(States.Automatic, automatic);
             
             super.AddTransition(States.Active, active);
+            
             gold.AddTransition(States.Active, active);
+            gold.AddTransition(States.Unactive, unactive);
+            
             automatic.AddTransition(States.Active, active);
 
             #endregion
