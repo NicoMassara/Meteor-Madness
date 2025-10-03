@@ -104,15 +104,6 @@
             public const float HeavyMeteor = 0.5f;
             public const float BrutalMeteor = 1f;
         }
-        
-        public enum DamageTypes
-        {
-            None,
-            Standard,
-            Hard,
-            Heavy,
-            Brutal
-        }
     }
     
 

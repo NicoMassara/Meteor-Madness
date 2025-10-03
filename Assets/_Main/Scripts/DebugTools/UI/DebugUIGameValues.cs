@@ -17,7 +17,7 @@ namespace _Main.Scripts.DebugTools
 
         private int _currentLevel = 0;
         
-        public UnityAction<DamageParameters.DamageTypes> OnDamageChange;
+        public UnityAction<DamageTypes> OnDamageChange;
         public UnityAction<int> OnLevelChange;
         
         private void OnValidate()   
@@ -53,7 +53,7 @@ namespace _Main.Scripts.DebugTools
 
         private void OnValueChangedHandler(int value)
         {
-            var temp = (DamageParameters.DamageTypes)value;
+            var temp = (DamageTypes)value;
             OnDamageChange?.Invoke(temp);
         }
 
@@ -63,7 +63,7 @@ namespace _Main.Scripts.DebugTools
             {
                 dropdown.ClearOptions();
                 
-                foreach (var ability in Enum.GetValues(typeof(DamageParameters.DamageTypes)))
+                foreach (var ability in Enum.GetValues(typeof(DamageTypes)))
                 {
                     dropdown.options.Add(new TMP_Dropdown.OptionData { text = ability.ToString() });
                 }
