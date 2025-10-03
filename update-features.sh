@@ -1,16 +1,18 @@
 #!/bin/bash
 
-# Traer los últimos cambios
+# Traer los últimos cambios de origin
 git fetch origin
 
-# Lista de ramas feature/
+# Recorrer todas las ramas feature/*
 for branch in $(git branch --list "feature/*" | sed 's/* //'); do
     echo "======================================"
     echo "Actualizando $branch desde develop..."
     echo "======================================"
 
     git checkout $branch || continue
-    git merge origin/develop
+
+    # Hacer merge con mensaje custom
+    git merge origin/develop -m "Merge develop into $branch [AUTO]"
 done
 
 # Volver a develop al final
