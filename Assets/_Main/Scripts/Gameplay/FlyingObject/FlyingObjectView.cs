@@ -2,7 +2,7 @@
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
-using _Main.Scripts.Particles;
+using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.Events;
@@ -71,7 +71,7 @@ namespace _Main.Scripts.FyingObject
         
         public virtual void ManagedUpdate()
         {
-            _sphereRotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _sphereRotator?.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             
             if (_hasFire)
             {

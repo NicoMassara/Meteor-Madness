@@ -12,8 +12,9 @@ namespace _Main.Scripts.Gameplay.Abilities
             {
                 AbilityType.SuperShield => Color.cyan,
                 AbilityType.SlowMotion => Color.green,
-                AbilityType.Health => Color.red,
+                AbilityType.Health => Color.blue,
                 AbilityType.DoublePoints => Color.yellow,
+                AbilityType.Automatic => Color.red,
                 _ => Color.clear
             };
             
@@ -26,8 +27,9 @@ namespace _Main.Scripts.Gameplay.Abilities
             {
                 AbilityType.SuperShield => "Super Shield",
                 AbilityType.SlowMotion => "Slow Motion",
-                AbilityType.Health => "Health",
+                AbilityType.Health => "Reconstruction",
                 AbilityType.DoublePoints => "Double Points",
+                AbilityType.Automatic => "Auto-Shield",
                 AbilityType.None => "None",
                 _ => throw new ArgumentOutOfRangeException(nameof(ability), ability, null)
             };

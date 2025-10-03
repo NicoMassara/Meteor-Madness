@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
+using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Events;
 

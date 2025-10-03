@@ -104,9 +104,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             var eventBus = GameManager.Instance.EventManager;
             //Add events
             
-            //Game
+            //GameMode
             eventBus.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
             eventBus.Subscribe<GameModeEvents.SetPause>(EventBus_OnGamePaused);
+            //GameScreen
             eventBus.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_OnMainMenu);
             eventBus.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_OnGameModeScreenEnable);
             
@@ -120,6 +121,17 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             //Abilities
             eventBus.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_SetActive);
+            
+            //Projectiles
+            eventBus.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
+        }
+
+        private void EventBus_Projectile_RequestSpawn(ProjectileEvents.RequestSpawn input)
+        {
+            if(input.RequestType == EventRequestType.Request)
+            {
+                _controller.GrantProjectileSpawn((int)input.ProjectileType);
+            }
         }
 
         private void EventBus_Abilities_SetActive(AbilitiesEvents.SetActive inputs)
