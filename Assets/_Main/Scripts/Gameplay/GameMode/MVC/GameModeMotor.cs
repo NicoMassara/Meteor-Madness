@@ -148,5 +148,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _hasDoublePoints = isEnable;
         }
+        
+        public void GrantSpawnMeteor(int projectileTypeIndex)
+        {
+            NotifyAll(GameModeObserverMessage.GrantProjectileSpawn,projectileTypeIndex);
+        }
     }
 }
