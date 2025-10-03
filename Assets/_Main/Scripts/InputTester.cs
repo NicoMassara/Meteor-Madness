@@ -1,5 +1,4 @@
-﻿using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
