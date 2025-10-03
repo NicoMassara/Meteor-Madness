@@ -66,6 +66,12 @@ namespace _Main.Scripts.Gameplay.Shield
             eventManager.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
             eventManager.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_Shield_EnableNormalShield);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            eventManager.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+        }
+
+        private void EventBus_GameMode_Start(GameModeEvents.Start obj)
+        {
+            _controller.RestartPosition();
         }
 
         private void EventBus_Shield_SetGold(ShieldEvents.SetGold input)

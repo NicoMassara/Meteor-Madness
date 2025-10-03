@@ -32,8 +32,7 @@ namespace _Main.Scripts.Gameplay.FlyingObject
         {
             return projectileSpawnDataSo.SpawnData;
         }
-
-
+        
         #region EventBus
 
         private void SetEventBus()

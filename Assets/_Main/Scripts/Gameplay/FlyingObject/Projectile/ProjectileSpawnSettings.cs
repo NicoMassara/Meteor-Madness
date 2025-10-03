@@ -61,7 +61,7 @@ namespace _Main.Scripts.Gameplay.FlyingObject.Projectile
 
         #region Gizmos
 
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             if(_location == null || 
                _speed == null) return;

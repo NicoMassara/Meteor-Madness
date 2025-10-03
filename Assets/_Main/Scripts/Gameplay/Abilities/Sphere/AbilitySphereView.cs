@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.FyingObject;
 using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Gameplay.AutoTarget;
 using _Main.Scripts.Gameplay.FlyingObject.Projectile;
 using _Main.Scripts.Observer;
 using UnityEngine;
@@ -8,7 +9,9 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere
 {
-    public class AbilitySphereView : FlyingObjectView<AbilitySphereMotor, AbilitySphereView, AbilitySphereValues>, IProjectile
+    public class AbilitySphereView : 
+        FlyingObjectView<AbilitySphereMotor, AbilitySphereView, AbilitySphereValues>, 
+        IProjectile, ITargetable
     {
         public UnityAction<AbilitySphereCollisionData> OnEarthCollision { get; set; }
         public UnityAction<AbilitySphereCollisionData> OnDeflection { get; set; }
