@@ -61,16 +61,42 @@ namespace _Main.Scripts.Gameplay.Shield
             var eventManager = GameManager.Instance.EventManager;
             
             eventManager.Subscribe<ShieldEvents.SetGold>(EventBus_Shield_SetGold);
+            eventManager.Subscribe<ShieldEvents.SetAutomatic>(EventBus_Shield_SetAutomatic);
             eventManager.Subscribe<MeteorEvents.Deflected>(EventBus_Meteor_Deflected);
             eventManager.Subscribe<ShieldEvents.SetEnable>(EventBus_Shield_SetEnable);
             eventManager.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
             eventManager.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_Shield_EnableNormalShield);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            eventManager.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+        }
+
+        private void EventBus_Shield_SetAutomatic(ShieldEvents.SetAutomatic input)
+        {
+            if (input.IsActive)
+            {
+                _controller.TransitionToAutomatic();
+            }
+            else
+            {
+                _controller.TransitionToActive();
+            }
+        }
+
+        private void EventBus_GameMode_Start(GameModeEvents.Start obj)
+        {
+            _controller.RestartPosition();
         }
 
         private void EventBus_Shield_SetGold(ShieldEvents.SetGold input)
         {
-            _controller.SetActiveGold(input.IsActive);
+            if (input.IsActive)
+            {
+                _controller.TransitionToGold();
+            }
+            else
+            {
+                _controller.TransitionToActive();
+            }
         }
 
         private void EventBus_GameMode_Disable(GameModeEvents.Disable input)

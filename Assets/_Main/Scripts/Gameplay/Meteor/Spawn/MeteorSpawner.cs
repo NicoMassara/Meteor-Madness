@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Gameplay.FlyingObject.Projectile;
+using _Main.Scripts.Gameplay.Projectile;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -202,12 +202,15 @@ namespace _Main.Scripts.Gameplay.Meteor
             eventManager.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
             eventManager.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
             eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventManager.Subscribe<ProjectileEvents.Request>(EventBus_Projectile_DistanceCheck);
+            eventManager.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
         }
 
-        private void EventBus_Projectile_DistanceCheck(ProjectileEvents.Request input)
+        private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
         {
-            SpawnSingleMeteor(input.Position, input.Direction, input.MovementMultiplier);
+            if (input.ProjectileType == ProjectileType.Meteor)
+            {
+                SpawnSingleMeteor(input.Position, input.Direction, input.MovementMultiplier);
+            }
         }
 
         private void EventBus_GameMode_Disable(GameModeEvents.Disable input)

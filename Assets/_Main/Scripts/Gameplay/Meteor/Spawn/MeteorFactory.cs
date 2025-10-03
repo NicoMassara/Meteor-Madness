@@ -37,10 +37,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         public void RecycleAll()
         {
-            for (int i = _activeMeteors.Count - 1; i >= 0; i--)
-            {
-                _activeMeteors[i].ForceRecycle();
-            }
+            _pool.RecycleAll();
         }
 
         private void OnRecycleHandler(MeteorView meteorMotor)
