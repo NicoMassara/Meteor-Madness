@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay.FSM.GameMode;
-using _Main.Scripts.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode

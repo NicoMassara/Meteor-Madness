@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Main.Scripts.InspectorTools;
+using _Main.Scripts.Interfaces;
 using UnityEngine;
 
 namespace _Main.Scripts.ScriptableObjects
@@ -20,13 +21,18 @@ namespace _Main.Scripts.ScriptableObjects
         [SerializeField] private GameLevelData levelData;
         
         [Serializable]
-        public class GameLevelData
+        public class GameLevelData : IGameLevelData
         {
             [Space] 
             [Tooltip("Meteor deflect count needed to increase each internal level")] 
             [Range(1, 100)]
             [SerializeField] private int[] gameplayLevelRequierment;
-            
+
+            public int[] GetGameplayLevelRequierment()
+            {
+                return gameplayLevelRequierment;
+            }
+
             public void ValidateByLevel(int levelAmount)
             {
                 UpdateArray(ref gameplayLevelRequierment, levelAmount);
@@ -58,7 +64,7 @@ namespace _Main.Scripts.ScriptableObjects
         [SerializeField] private GameAbilitySelector abilitySelector;
 
         [Serializable]
-        public class GameAbilitySelector
+        public class GameAbilitySelector : IGameAbilitySelector
         {
             [ReadOnly]
             public int minUnlockLevel;
@@ -82,7 +88,7 @@ namespace _Main.Scripts.ScriptableObjects
             [SerializeField] private RarityValues[] rarityValues;
             
             [Serializable]
-            private class RarityValues
+            private class RarityValues 
             {
                 [ReadOnly]
                 public AbilityType type;
@@ -90,46 +96,34 @@ namespace _Main.Scripts.ScriptableObjects
                 [Range(0,10)]
                 public int value;
             }
+
+            private void SetRarityDefault(int abilityCount)
+            {
+                for (int i = 0; i < abilityCount; i++)
+                {
+                    rarityValues[i] = new RarityValues
+                    {
+                        type = (AbilityType)i+1,
+                        value = 10
+                    };
+                }
+            }
+
+            public (AbilityType[] abilityTypes, int[] rarityValues) GetRarityValues()
+            {
+                var length = rarityValues.Length;
+                var tempItem1 = new AbilityType[length];
+                var tempItem2 = new int[length];
             
-            private void UpdateRarityArray(int abilityCount)
-            {
-                if (rarityValues == null || rarityValues.Length != abilityCount)
+                for (int i = 0; i < length; i++)
                 {
-                    var oldArray = rarityValues;
-                    rarityValues = new RarityValues[abilityCount];
-                    for (int i = 0; i < abilityCount; i++)
-                    {
-                        rarityValues[i] = new RarityValues
-                        {
-                            type = (AbilityType)i+1,
-                            value = 10
-                        };
-                    }
-
-                    if (oldArray != null)
-                    {
-                        for (int i = 1; i < Mathf.Min(oldArray.Length, rarityValues.Length); i++)
-                        {
-                            rarityValues[i] = oldArray[i];
-                        }
-                    }
+                    tempItem1[i] = rarityValues[i].type;
+                    tempItem2[i] = rarityValues[i].value;
                 }
+            
+                return  (tempItem1, tempItem2);
             }
-
-            public Dictionary<AbilityType, int> GetRarityValuesDic()
-            {
-                var tempDic = new Dictionary<AbilityType, int>();
-
-                for (int i = 0; i < rarityValues.Length; i++)
-                {
-                    var item = rarityValues[i];
-                    if (tempDic.ContainsKey(item.type)) continue;
-                    
-                    tempDic.Add(item.type, item.value);
-                }
-                
-                return tempDic;
-            }
+            
 
             [Space]
             [SerializeField] private LevelUnlock[] levelToUnlock;
@@ -153,20 +147,20 @@ namespace _Main.Scripts.ScriptableObjects
                     }
                 }
             }
-
-            public Dictionary<int, AbilityType> GetLevelToUnlockDic()
+            
+            public (int[] unlockLevels, AbilityType[] abilityTypes) GetUnlockLevelValues()
             {
-                var tempDic = new Dictionary<int, AbilityType>();
-
-                for (int i = 0; i < levelToUnlock.Length; i++)
+                var length = levelToUnlock.Length;
+                var tempItem1 = new int[length];
+                var tempItem2 = new AbilityType[length];
+            
+                for (int i = 0; i < length; i++)
                 {
-                    var item = levelToUnlock[i];
-                    if (tempDic.ContainsKey(item.levelToSet)) continue;
-                    
-                    tempDic.Add(item.levelToSet, item.type);
+                    tempItem1[i] = levelToUnlock[i].levelToSet;
+                    tempItem2[i] = levelToUnlock[i].type;
                 }
-
-                return tempDic;
+            
+                return  (tempItem1, tempItem2);
             }
             
             
@@ -174,7 +168,7 @@ namespace _Main.Scripts.ScriptableObjects
             {
                 //Substracts 1 to ignore Ability.None
                 int abilityCount = (int)AbilityType.Default_MAX-1;
-                UpdateRarityArray(abilityCount);
+                GameConfigUtilities.UpdateArray(ref rarityValues, abilityCount, SetRarityDefault);
                 UpdateMinUnlockLevel();
                 SetLevelToUnlockLimit(levelAmount);
             }
@@ -187,62 +181,110 @@ namespace _Main.Scripts.ScriptableObjects
         [SerializeField] private GameProjectileData projectileData;
         
         [System.Serializable]
-        public class GameProjectileData
+        public class GameProjectileData : IGameProjectileData
         {
             [Range(1, 50)] 
             [SerializeField] private int maxProjectileSpeed;
-            [Space]
             
-            [SerializeField] private SpawnMultiplier[] spawnMultiplier;
+            public int MaxProjectileSpeed => maxProjectileSpeed;
+            
+            
+            [Space]
+            [SerializeField] private TravelMultiplier[] travelMultiplier;
             
             [Serializable]
-            public class SpawnMultiplier
+            private class TravelMultiplier
             {
-                [Range(1,2)]
+                [Range(0.1f,2)]
                 public float speedMultiplier;
-                [Tooltip("1 is full distance")]
+                [Tooltip("0 = Earth, 1 = Spawn")]
                 [Range(0,1f)]
                 public float travelRatio;
             }
-            
-            private void SetSpawnMultiplierLimits()
+
+            public (float[] speed, float[] travel) GetTravelData()
             {
-                for (int i = 1; i < spawnMultiplier.Length; i++)
+                var lenght = slotDistanceData.Length;
+                
+                var speedTemp = new float[lenght];
+                var travelTemp = new float[lenght];
+                
+                for (int i = 0; i < lenght; i++)
                 {
-                    if (spawnMultiplier[i].travelRatio < spawnMultiplier[i - 1].travelRatio)
+                    speedTemp[i] = travelMultiplier[i].speedMultiplier;
+                    travelTemp[i] = travelMultiplier[i].travelRatio;
+                }
+                
+                return (speedTemp, travelTemp);
+            }
+
+            private void SetTravelLimits()
+            {
+                for (int i = 1; i < travelMultiplier.Length; i++)
+                {
+                    if (travelMultiplier[i].travelRatio < travelMultiplier[i - 1].travelRatio)
                     {
-                        spawnMultiplier[i].travelRatio = spawnMultiplier[i - 1].travelRatio; // clamp upward
+                        travelMultiplier[i].travelRatio = travelMultiplier[i - 1].travelRatio; // clamp upward
                     }
                 
-                    if (spawnMultiplier[i].speedMultiplier < spawnMultiplier[i - 1].speedMultiplier)
+                    if (travelMultiplier[i].speedMultiplier < travelMultiplier[i - 1].speedMultiplier)
                     {
-                        spawnMultiplier[i].speedMultiplier = spawnMultiplier[i - 1].speedMultiplier; // clamp upward
+                        travelMultiplier[i].speedMultiplier = travelMultiplier[i - 1].speedMultiplier; // clamp upward
                     }
                 }
+            }
+
+            [SerializeField] private SlotDistanceData[] slotDistanceData;
+            
+            [Serializable]
+            private class SlotDistanceData
+            {
+                [Range(1, GameParameters.GameplayValues.AngleSlots)]
+                public int minSlotProximity;
+                [Range(2, GameParameters.GameplayValues.AngleSlots)] 
+                public int maxSlotProximity;
             }
             
-            private void UpdateArray<T>(ref T[] array, int maxSize)
+            private void SetSlotLimits()
             {
-                if (array == null || array.Length != maxSize)
+                for (int i = 1; i < travelMultiplier.Length; i++)
                 {
-                    var oldArray = array;
-                    array = new T[maxSize];
-
-                    // Copiar valores existentes para no perder referencias
-                    if (oldArray != null)
+                    if (slotDistanceData[i].minSlotProximity >= slotDistanceData[i].maxSlotProximity)
                     {
-                        for (int i = 0; i < Mathf.Min(oldArray.Length, array.Length); i++)
-                        {
-                            array[i] = oldArray[i];
-                        }
+                        slotDistanceData[i].minSlotProximity = slotDistanceData[i].maxSlotProximity-1;
+                    }
+
+                    if (slotDistanceData[i].maxSlotProximity <= slotDistanceData[i].minSlotProximity)
+                    {
+                        slotDistanceData[i].maxSlotProximity = slotDistanceData[i].minSlotProximity + 1;
                     }
                 }
+                
             }
+            
+            public (int[] minSlot, int[] maxSlot) GetSlotData()
+            {
+                var lenght = slotDistanceData.Length;
+                
+                var tempMin = new int[lenght];
+                var tempMax = new int[lenght];
+                
+                for (int i = 0; i < lenght; i++)
+                {
+                    tempMin[i] = slotDistanceData[i].minSlotProximity;
+                    tempMax[i] = slotDistanceData[i].maxSlotProximity;
+                }
+                
+                return (tempMin, tempMax);
+            }
+            
 
             public void Validate(int levelAmount)
             {
-                UpdateArray(ref spawnMultiplier, levelAmount);
-                SetSpawnMultiplierLimits();
+                GameConfigUtilities.UpdateArray(ref travelMultiplier, levelAmount);
+                GameConfigUtilities.UpdateArray(ref slotDistanceData, levelAmount);
+                SetTravelLimits();
+                SetSlotLimits();
             }
         }
 
@@ -254,14 +296,13 @@ namespace _Main.Scripts.ScriptableObjects
 
         public int PointsMultiplier => pointsMultiplier;
         
-        public GameLevelData LevelData => levelData;
+        public IGameLevelData LevelData => levelData;
 
-        public GameAbilitySelector AbilitySelector => abilitySelector;
+        public IGameAbilitySelector AbilitySelector => abilitySelector;
 
-        public GameProjectileData ProjectileData => projectileData;
+        public IGameProjectileData ProjectileData => projectileData;
 
         #endregion
-        
         
         private void OnValidate()
         {

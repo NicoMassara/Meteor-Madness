@@ -19,9 +19,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         private bool _hasDoublePoints;
         
 
-        public GameModeMotor()
+        public GameModeMotor(int[] levelStreakAmount)
         {
-            _levelController = new();
+            _levelController = new(levelStreakAmount);
             _levelController.OnLevelChange += OnLevelChangeHandler;
         }
 

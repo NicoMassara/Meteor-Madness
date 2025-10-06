@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.DebugTools

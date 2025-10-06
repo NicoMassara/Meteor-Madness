@@ -1,7 +1,6 @@
 ﻿using _Main.Scripts.FyingObject;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

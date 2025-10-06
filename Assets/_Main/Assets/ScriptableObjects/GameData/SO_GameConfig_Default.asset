@@ -12,20 +12,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3263a8629176435aa52c5f4c14955d80, type: 3}
   m_Name: SO_GameConfig_Default
   m_EditorClassIdentifier: 
-  levelAmount: 0
-  visualMultiplier: 0
-  maxMeteorSpeed: 0
+  levelAmount: 10
+  pointsMultiplier: 500
   levelData:
-    gameplayLevelRequierment: 
+    gameplayLevelRequierment: 0300000004000000020000000500000006000000060000000700000007000000080000000a000000
   abilitySelector:
+    minUnlockLevel: 5
     rarityValues:
     - type: 1
-      value: 0
+      value: 3
     - type: 2
-      value: 0
+      value: 8
     - type: 3
-      value: 0
+      value: 5
     - type: 4
-      value: 0
+      value: 10
     - type: 5
-      value: 0
+      value: 1
+    levelToUnlock:
+    - type: 4
+      levelToSet: 5
+    - type: 2
+      levelToSet: 6
+    - type: 3
+      levelToSet: 7
+    - type: 1
+      levelToSet: 8
+    - type: 5
+      levelToSet: 10
+  projectileData:
+    maxProjectileSpeed: 20
+    travelMultiplier:
+    - speedMultiplier: 0.5
+      travelRatio: 0.139
+    - speedMultiplier: 0.55
+      travelRatio: 0.239
+    - speedMultiplier: 0.6
+      travelRatio: 0.345
+    - speedMultiplier: 0.65
+      travelRatio: 0.445
+    - speedMultiplier: 0.7
+      travelRatio: 0.545
+    - speedMultiplier: 0.75
+      travelRatio: 0.632
+    - speedMultiplier: 0.8
+      travelRatio: 0.65
+    - speedMultiplier: 0.85
+      travelRatio: 0.7
+    - speedMultiplier: 0.9
+      travelRatio: 0.7
+    - speedMultiplier: 1
+      travelRatio: 0.75
+    slotDistanceData:
+    - minSlotProximity: 0
+      maxSlotProximity: 6
+    - minSlotProximity: -1
+      maxSlotProximity: 8
+    - minSlotProximity: 2
+      maxSlotProximity: 10
+    - minSlotProximity: 2
+      maxSlotProximity: 11
+    - minSlotProximity: 2
+      maxSlotProximity: 13
+    - minSlotProximity: 3
+      maxSlotProximity: 14
+    - minSlotProximity: 3
+      maxSlotProximity: 16
+    - minSlotProximity: 3
+      maxSlotProximity: 18
+    - minSlotProximity: 3
+      maxSlotProximity: 19
+    - minSlotProximity: 4
+      maxSlotProximity: 20

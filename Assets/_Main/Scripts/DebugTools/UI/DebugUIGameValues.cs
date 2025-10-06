@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,19 +28,21 @@ namespace _Main.Scripts.DebugTools
 
         private void Awake()
         {
+            int maxLevel = GameConfigManager.Instance.GetGameplayData().LevelAmount-1;
+            
             damageDropdown.onValueChanged.AddListener(OnValueChangedHandler);
             increaseLevelButton.onClick.AddListener(() =>
             {
                 _currentLevel++;
-                _currentLevel = Mathf.Clamp(_currentLevel, 0, 10);
-                levelText.text = _currentLevel.ToString();
+                _currentLevel = Mathf.Clamp(_currentLevel, 0, maxLevel);
+                levelText.text = (_currentLevel+1).ToString();
                 OnLevelChange.Invoke(_currentLevel);
             });
             decreaseLevelButton.onClick.AddListener(() =>
             {
                 _currentLevel--;
-                _currentLevel = Mathf.Clamp(_currentLevel, 0, 10);
-                levelText.text = _currentLevel.ToString();
+                _currentLevel = Mathf.Clamp(_currentLevel, 0, maxLevel);
+                levelText.text = (_currentLevel+1).ToString();
                 OnLevelChange.Invoke(_currentLevel);
             });
 

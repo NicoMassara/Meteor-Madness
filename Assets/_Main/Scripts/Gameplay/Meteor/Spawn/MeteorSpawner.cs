@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using _Main.Scripts.Gameplay.Projectile;
-using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -16,6 +15,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private MeteorFactory _meteorFactory;
         private bool _isSpawningRing;
+        private float _meteorSpeed;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -25,14 +25,19 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             SetEventBus();
         }
-        
+
+        private void Start()
+        {
+            _meteorSpeed = GameConfigManager.Instance.GetGameplayData().ProjectileData.MaxProjectileSpeed;
+        }
+
         public void ManagedUpdate() { }
 
         #region Spawn
 
         private void SpawnSingleMeteor(Vector2 spawnPosition, Vector2 direction, float movementMultiplier)
         {
-            var finalSpeed = GameParameters.GameplayValues.MaxMeteorSpeed * movementMultiplier;
+            var finalSpeed = _meteorSpeed * movementMultiplier;
             var tempMeteor = _meteorFactory.SpawnMeteor();
                 
             //Set Direction and Rotation towards COG
@@ -83,7 +88,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                     {
                         yield return new WaitForSeconds(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
 
-                        CreateMeteor(meteorSpeed * speedMultiplier, spawnSettings.GetPositionByAngle(currAngle, spawnSettings.GetSpawnRadius()), 
+                        CreateMeteor(meteorSpeed * speedMultiplier, spawnSettings.GetPositionByAngle(currAngle), 
                             GetRingMeteorValue(amountToSpawn, ringsToUse));
                         currAngle += angleOffset;
                         currAngle = Mathf.Repeat(currAngle, 360f);
@@ -220,7 +225,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
         {
-            SpawnRingMeteor(GameParameters.GameplayValues.MaxMeteorSpeed);
+            SpawnRingMeteor(_meteorSpeed);
         }
 
         private void EnventBus_Meteor_RecycleAll(MeteorEvents.RecycleAll input)

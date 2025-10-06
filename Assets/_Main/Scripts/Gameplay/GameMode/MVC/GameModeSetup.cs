@@ -1,9 +1,7 @@
-﻿using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
@@ -24,7 +22,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void Awake()
         {
-            _motor = new GameModeMotor();
+            var gameplayData = GameConfigManager.Instance.GetGameplayData();
+            
+            _motor = new GameModeMotor(gameplayData.LevelData.GetGameplayLevelRequierment());
             _controller = new GameModeController(_motor);
             
             _view = GetComponent<GameModeView>();
