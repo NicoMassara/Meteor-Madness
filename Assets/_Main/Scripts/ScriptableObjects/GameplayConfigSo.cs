@@ -6,7 +6,7 @@ using UnityEngine;
 namespace _Main.Scripts.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "SO_GameConfig_Name", menuName = "Scriptable Objects/Game Config/Game Data", order = 0)]
-    public class GameConfigSo : ScriptableObject
+    public class GameplayConfigSo : ScriptableObject
     {
         [Header("Values")]
         [Range(1,25)]

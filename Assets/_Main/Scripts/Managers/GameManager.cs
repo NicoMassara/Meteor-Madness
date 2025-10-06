@@ -1,10 +1,12 @@
 ﻿using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
     public class GameManager : ManagedBehavior
     {
+        [SerializeField] private GameplayConfigSo gameplayConfigData;
         [SerializeField] private DamageTypes currentDamageDamageType = DamageTypes.Standard;
         public static GameManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         private static GameManager _instance;
