@@ -105,7 +105,6 @@
             public const float BrutalMeteor = 1f;
         }
     }
-    
 
     public struct MeteorRingValues
     {
@@ -118,7 +117,6 @@
         public const float TotalTime = (((RingsAmount-1) * DelayBetweenRings)*(WavesAmount-1)) + 
                                        ((WavesAmount-1) * DelayBetweenWaves);
     }
-
 
     public struct EarthParameters
     {
