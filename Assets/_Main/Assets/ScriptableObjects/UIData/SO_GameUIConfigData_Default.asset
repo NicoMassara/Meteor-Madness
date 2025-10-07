@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 638548a68ba24fefabe6bb8169d7fba1, type: 3}
+  m_Name: SO_GameUIConfigData_Default
+  m_EditorClassIdentifier: 
+  gameplayPointsTimeToIncrease: 0.35
+  closePauseMenu: 0.25
+  deathUITimeData: {fileID: 11400000, guid: 370bcc68c810ebb46bc46d243c8bd383, type: 2}
+  textData: {fileID: 11400000, guid: 2a2f639ac9fe9cb47be9da7ea250d35b, type: 2}
