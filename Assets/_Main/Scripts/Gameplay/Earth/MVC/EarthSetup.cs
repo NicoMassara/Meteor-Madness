@@ -91,7 +91,7 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void EventBus_Meteor_Collision(MeteorEvents.Collision input)
         {
-            _controller.HandleCollision(GameConfigManager.Instance.GetDamage(), 
+            _controller.HandleCollision(GameConfigManager.Instance.GetDamageValue(), 
                 input.Position, input.Rotation, input.Direction);
         }
         

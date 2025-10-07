@@ -47,11 +47,17 @@ namespace _Main.Scripts.DebugTools
             });
 
             _currentLevel = int.Parse(levelText.text);
+            
+            var damageValue = GameConfigManager.Instance.GetDamageType();
+            
+            damageDropdown.value = (int)damageValue;
+            damageDropdown.RefreshShownValue();
         }
 
         private void Start()
         {
             OnLevelChange.Invoke(_currentLevel);
+
         }
 
         private void OnValueChangedHandler(int value)

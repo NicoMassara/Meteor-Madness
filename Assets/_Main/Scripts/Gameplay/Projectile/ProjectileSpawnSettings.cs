@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile
 {
-    [ExecuteAlways]
     public class ProjectileSpawnSettings : MonoBehaviour
     {
         [Header("Components")]
@@ -90,7 +89,6 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
         {
-            Debug.Log($"GameMode Level: {input.CurrentLevel}");
             _speed.SetLevelIndex(input.CurrentLevel);
             _slot.SetLevel(input.CurrentLevel);
         }

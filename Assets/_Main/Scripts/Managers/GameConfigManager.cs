@@ -32,7 +32,7 @@ namespace _Main.Scripts.Managers
         
         #region Damage
 
-        public float GetDamage()
+        public float GetDamageValue()
         {
             return currentDamageDamageType switch
             {
@@ -43,6 +43,11 @@ namespace _Main.Scripts.Managers
                 DamageTypes.Brutal => DamageParameters.Values.BrutalMeteor,
                 _ => DamageParameters.Values.StandardMeteor
             };
+        }
+
+        public DamageTypes GetDamageType()
+        {
+            return currentDamageDamageType;
         }
 
         public void SetDamage(DamageTypes damage)
