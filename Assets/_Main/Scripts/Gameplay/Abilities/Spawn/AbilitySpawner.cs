@@ -83,7 +83,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
-                    Direction = data.Direction
+                    Direction = data.Direction,
+                    Type = ProjectileType.AbilitySphere
                 }
             );
             
@@ -105,7 +106,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
-                    Direction = data.Direction
+                    Direction = data.Direction,
+                    Type = ProjectileType.AbilitySphere
                 }
             );
             
