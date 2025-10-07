@@ -85,4 +85,15 @@
         public const ulong SetMainMenu = 0xA5001;
         public const ulong SetGameplay = 0xA5002;
     }
+    
+    public struct TutorialObserverMessage
+    {
+        public const ulong Empty = 0xA6001;
+        public const ulong Empty1 = 0xA6002;
+        public const ulong Empty2= 0xA6003;
+        public const ulong Empty3 = 0xA6004;
+        public const ulong Empty4 = 0xA6005;
+        public const ulong Empty5 = 0xA6006;
+        public const ulong Empty6 = 0xA6007;
+    }
 }

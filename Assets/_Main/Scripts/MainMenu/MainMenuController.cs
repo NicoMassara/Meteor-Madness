@@ -3,7 +3,7 @@ using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Main.Scripts.Menu
+namespace _Main.Scripts.MainMenu
 {
     public class MainMenuController : MonoBehaviour
     {
