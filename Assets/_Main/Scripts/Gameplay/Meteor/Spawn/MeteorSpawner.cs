@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class MeteorSpawner : ManagedBehavior, IUpdatable
+    public class MeteorSpawner : ManagedBehavior
     {
         [Header("Components")]
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
@@ -15,7 +15,6 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private MeteorFactory _meteorFactory;
         private bool _isSpawningRing;
-        private float _meteorSpeed;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -25,19 +24,17 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             SetEventBus();
         }
-
-        private void Start()
+        
+        private float GetMovementSpeed()
         {
-            _meteorSpeed = GameConfigManager.Instance.GetGameplayData().ProjectileData.MaxProjectileSpeed;
+            return GameConfigManager.Instance.GetGameplayData().ProjectileData.MaxProjectileSpeed;
         }
-
-        public void ManagedUpdate() { }
 
         #region Spawn
 
         private void SpawnSingleMeteor(Vector2 spawnPosition, Vector2 direction, float movementMultiplier)
         {
-            var finalSpeed = _meteorSpeed * movementMultiplier;
+            var finalSpeed = GetMovementSpeed() * movementMultiplier;
             var tempMeteor = _meteorFactory.SpawnMeteor();
                 
             //Set Direction and Rotation towards COG
@@ -225,7 +222,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         
         private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
         {
-            SpawnRingMeteor(_meteorSpeed);
+            SpawnRingMeteor(GetMovementSpeed());
         }
 
         private void EnventBus_Meteor_RecycleAll(MeteorEvents.RecycleAll input)
@@ -234,5 +231,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         }
 
         #endregion
+
+
     }
 }

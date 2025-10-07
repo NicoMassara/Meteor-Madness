@@ -163,13 +163,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 12163664}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06b0e882c8eb478d93ca7d8c5898d267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 26
+  showSpawnRadius: 0
+  showAngleSlots: 0
+  showTravelDistance: 1
 --- !u!114 &12163668
 MonoBehaviour:
   m_ObjectHideFlags: 0

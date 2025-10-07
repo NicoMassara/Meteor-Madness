@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.Projectile.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -55,10 +56,9 @@ namespace _Main.Scripts.Gameplay.Projectile
             return diff >= minSlotProximity && diff <= maxSlotProximity;
         }
 
-        public float GetAngleBySlot(int selectedSlot)
+        private float GetAngleBySlot(int selectedSlot)
         {
-            float anglePerSlot = 360f / _slotAmount;
-            return selectedSlot * anglePerSlot;
+            return AngleCalculations.GetAngleBySlot(selectedSlot, _slotAmount);
         }
 
         #endregion
@@ -68,11 +68,7 @@ namespace _Main.Scripts.Gameplay.Projectile
         //Used by Ring Meteor
         public Vector2 GetPositionByAngle(float angle, float radius)
         {
-            float radians = angle * Mathf.Deg2Rad;
-            
-            //Point in Radius
-            Vector2 point = new Vector2(MathF.Cos(radians), Mathf.Sin(radians)) * radius;
-            return point;
+            return AngleCalculations.GetPositionByAngle(angle,radius);
         }
 
         #endregion

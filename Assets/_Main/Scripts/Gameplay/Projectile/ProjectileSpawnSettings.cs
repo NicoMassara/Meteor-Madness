@@ -1,8 +1,10 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Gameplay.Projectile.Utilities;
+using _Main.Scripts.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile
 {
+    [ExecuteAlways]
     public class ProjectileSpawnSettings : MonoBehaviour
     {
         [Header("Components")]
@@ -11,6 +13,12 @@ namespace _Main.Scripts.Gameplay.Projectile
         [Header("Values")] 
         [Range(22f, 100f)]
         [SerializeField] private float spawnRadius = 26;
+
+        [Header("Gizmos")] 
+        [SerializeField] private bool showSpawnRadius;
+        [SerializeField] private bool showAngleSlots;
+        [SerializeField] private bool showTravelDistance;
+        
         
         private ProjectileTravelController _speed;
         private ProjectileAngleController _location;
@@ -21,19 +29,20 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void Awake()
         {
-            var projectileData = GameConfigManager.Instance.GetGameplayData().ProjectileData;
-            var travelData = projectileData.GetTravelData();
+            var gameplayData = GameConfigManager.Instance.GetGameplayData();
+            var projectileData = gameplayData.ProjectileData;
+
             var slotData = projectileData.GetSlotData();
             
-            _speed = new ProjectileTravelController(travelData.speed, travelData.speed);
+            _speed = new ProjectileTravelController(
+                projectileData.GetSpeedMultiplier,projectileData.GetTravelRatio);
             _slot = new ProjectileSlotController(slotData.minSlot, slotData.maxSlot);
             _location = new ProjectileAngleController(SlotAmount);
             
             SetEventBus();
         }
 
-
-
+        
         public Vector2 GetPositionByAngle(float currAngle)
         {
            return _location.GetPositionByAngle(currAngle, spawnRadius);
@@ -81,15 +90,16 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
         {
-            _speed.SetLevel(input.CurrentLevel);
+            Debug.Log($"GameMode Level: {input.CurrentLevel}");
+            _speed.SetLevelIndex(input.CurrentLevel);
             _slot.SetLevel(input.CurrentLevel);
         }
 
         private void EventBus_GameMode_Start(GameModeEvents.Start input)
         {
             _location.RestartValues();
-            _speed.SetLevel(0);
-            _slot.SetLevel(0);
+            var gameplayData = GameConfigManager.Instance.GetGameplayData();
+            _speed.SetLevelAmount(gameplayData.LevelAmount);
         }
 
         #endregion
@@ -98,34 +108,40 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void OnDrawGizmosSelected()
         {
-            if (centerOfGravity != null)
+            if (centerOfGravity != null && showSpawnRadius)
             {
                 Gizmos.color = Color.cyan;
                 Gizmos.DrawWireSphere(centerOfGravity.position, spawnRadius);
-
             }
             
-            if (_location != null)
+            if (showAngleSlots)
             {
+                Gizmos.color = Color.cyan;
                 for (int i = 0; i < SlotAmount; i++)
                 {
-                    var angle = _location.GetAngleBySlot(i);
-                    Gizmos.DrawLine(centerOfGravity.position, GetPositionByAngle(angle));
+                    var angle = AngleCalculations.GetAngleBySlot(i,SlotAmount);
+                    Gizmos.DrawLine(centerOfGravity.position, AngleCalculations.GetPositionByAngle(angle, spawnRadius));
                 }
             }
             
-            /*if (_speed != null && _location != null)
+            if (showTravelDistance)
             {
                 var cog = GetCenterOfGravity();
-                float temp = cog.x + GetSpawnRadius();
+                float temp = cog.x + spawnRadius;
 
-                foreach (var t in _speed.GetSpawnData())
+                var gameplayData = FindObjectOfType<GameConfigManager>().GetGameplayData();
+                var levelAmount = gameplayData.LevelAmount;
+                var projectileData = gameplayData.ProjectileData;
+
+                for (int i = 0; i < levelAmount; i++)
                 {
-                    var multiplier = t.TravelDistance;
-                    Gizmos.color = new Color(multiplier, .5f, multiplier/2f, 1);
-                    Gizmos.DrawWireSphere(cog, multiplier * temp);
+                    var t = i / (float)(levelAmount - 1);
+                    var curveValue = projectileData.GetTravelRatio(t);
+                    var currentRadius = curveValue * temp;
+                    Gizmos.color = Color.Lerp(Color.green, Color.red, t);
+                    Gizmos.DrawWireSphere(cog, currentRadius);
                 }
-            }*/
+            }
         }
 
         #endregion

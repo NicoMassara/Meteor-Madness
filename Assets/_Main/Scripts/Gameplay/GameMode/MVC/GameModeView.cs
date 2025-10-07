@@ -100,7 +100,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
         {
-            var finalScore = (int)(pointsAmount * GameParameters.GameplayValues.VisualMultiplier);
+            var finalScore = (int)(pointsAmount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
             GameManager.Instance.EventManager.Publish(
                 new FloatingTextEvents.Points{ Position = position, Score = finalScore, IsDouble = isDouble });
         }

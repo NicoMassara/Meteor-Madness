@@ -190,7 +190,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 _numberIncrementer.SetData(new NumberIncrementerData
                 {
-                    Target = (deflectCount * GameParameters.GameplayValues.VisualMultiplier),
+                    Target = (deflectCount * GetPointsMultiplier()),
                     Current = GetCurrentPoints(),
                     TargetTime = UIParameters.PanelTimeValues.GameplayPointsTimeToIncrease
                 
@@ -200,7 +200,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
             else
             {
-                _numberIncrementer.SetNewTarget(deflectCount * GameParameters.GameplayValues.VisualMultiplier);
+                _numberIncrementer.SetNewTarget(deflectCount * GetPointsMultiplier());
             }
         }
 
@@ -283,7 +283,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 _numberIncrementer.SetData(new NumberIncrementerData
                 {
-                    Target = deflectCount * GameParameters.GameplayValues.VisualMultiplier,
+                    Target = deflectCount * GetPointsMultiplier(),
                     TargetTime = UIParameters.PanelTimeValues.DeathPointsTimeToIncrease,
                     ActionOnFinish = ()=>
                     {
@@ -335,6 +335,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         private int GetCurrentPoints()
         {
             return (int)_numberIncrementer.CurrentValue;
+        }
+
+        private int GetPointsMultiplier()
+        {
+            return GameConfigManager.Instance.GetGameplayData().PointsMultiplier;
         }
     }
 }

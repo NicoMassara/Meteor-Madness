@@ -50,7 +50,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void CreateAbilitySphere(Vector2 position, Vector2 direction, float movementMultiplier)
         {
             var tempSphere = _factory.SpawnAbilitySphere();
-            var movementSpeed = (GameParameters.GameplayValues.MaxMeteorSpeed) * movementMultiplier;
+            var movementSpeed = GameConfigManager.Instance.GetGameplayData().ProjectileData.MaxProjectileSpeed 
+                                * movementMultiplier;
             
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -234,7 +235,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
         
-        public AbilitySelector(
+        public  AbilitySelector(
             AbilityType[] rarityTupleAbilityTypes, int[] rarityTupleRarityValues, 
             int[] unlockLevels, AbilityType[] unlockAbility)
         {

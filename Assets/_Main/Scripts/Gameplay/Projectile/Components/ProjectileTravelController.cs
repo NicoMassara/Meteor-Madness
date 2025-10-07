@@ -1,53 +1,46 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile
 {
     public class ProjectileTravelController 
     {
-        private TravelData _travelData;
-        
-        private class TravelData
+        private int _levelIndex;
+        private int _levelAmount;
+        private readonly Func<float, float> _getSpeedMultiplier;
+        private readonly Func<float, float> _getTravelRatio;
+
+        public ProjectileTravelController(
+            Func<float, float> getSpeedMultiplier, 
+            Func<float, float> getTravelRatio)
         {
-            public int LevelIndex;
-            private float[] movementMultiplier;
-            private float[] travelRatio;
-
-            public TravelData(float[] movementMultiplier, float[] travelRatio)
-            {
-                this.movementMultiplier = movementMultiplier;
-                this.travelRatio = travelRatio;
-                LevelIndex = 0;
-            }
-
-            public float GetMovementMultiplier()
-            {
-                return movementMultiplier[LevelIndex];
-            }
-
-            public float GetTravelRatio()
-            {
-                return travelRatio[LevelIndex];
-            }
-        }
-
-        public ProjectileTravelController(float[] movementMultiplier, float[] travelRatio)
-        {
-            _travelData = new TravelData(movementMultiplier, travelRatio);
+            _getSpeedMultiplier = getSpeedMultiplier;
+            _getTravelRatio = getTravelRatio;
         }
 
         public float GetMaxTravelDistance()
         {
-            return _travelData.GetTravelRatio();
+            return _getTravelRatio.Invoke(GetLevelRatio());
         }
 
         public float GetMovementMultiplier()
         {
-            return _travelData.GetMovementMultiplier();
+            return _getSpeedMultiplier.Invoke(GetLevelRatio());
         }
 
-        public void SetLevel(int levelIndex)
+        private float GetLevelRatio()
         {
-            _travelData.LevelIndex = levelIndex;
+            return _levelIndex / (float)(_levelAmount - 1);
+        }
+
+        public void SetLevelIndex(int levelIndex)
+        {
+            _levelIndex = levelIndex;
+        }
+
+        public void SetLevelAmount(int levelAmount)
+        {
+            _levelAmount = levelAmount;
         }
     }
 }
