@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22a3b52952ac4ec4bbcccaf5f8099f10, type: 3}
+  m_Name: SO_DeathUITimeData_Default
+  m_EditorClassIdentifier: 
+  showDeathUI: 1.5
+  setEnableDeathText: 1.5
+  setEnableDeathScore: 1
+  deathPointsTimeToIncrease: 1
+  countDeathScore: 0.75
+  enableRestartButton: 1

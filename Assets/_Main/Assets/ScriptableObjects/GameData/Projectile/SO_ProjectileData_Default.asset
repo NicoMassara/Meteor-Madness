@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9017fd01993b407ea8fa2639a17a80b7, type: 3}
+  m_Name: SO_ProjectileData_Default
+  m_EditorClassIdentifier: 
+  maxProjectileSpeed: 24
+  speedMultiplier:
+    animationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    minValue: 0.35
+    maxValue: 1
+  travelRatioCurve:
+    animationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -0.03956929
+        value: -0.013603747
+        inSlope: -0.119741894
+        outSlope: -0.119741894
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.08198726
+      - serializedVersion: 3
+        time: 0.41166654
+        value: 0.3990581
+        inSlope: 1.3203784
+        outSlope: 1.3203784
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.15577789
+        outWeight: 0.10163129
+      - serializedVersion: 3
+        time: 0.6168887
+        value: 0.6233287
+        inSlope: 2.8924384
+        outSlope: 2.8924384
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.28665435
+      - serializedVersion: 3
+        time: 0.7799206
+        value: 0.783043
+        inSlope: 0.52576965
+        outSlope: 0.52576965
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.2033695
+        outWeight: 0.40522382
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0.07208897
+        outSlope: 0.07208897
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.045388192
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    minValue: 0.1
+    maxValue: 0.35
+  slotDistanceData:
+  - minSlotProximity: 1
+    maxSlotProximity: 16
+  - minSlotProximity: -1
+    maxSlotProximity: 16
+  - minSlotProximity: 1
+    maxSlotProximity: 16
+  - minSlotProximity: 1
+    maxSlotProximity: 16
+  - minSlotProximity: 1
+    maxSlotProximity: 16
+  - minSlotProximity: 1
+    maxSlotProximity: 16
+  - minSlotProximity: 1
+    maxSlotProximity: 16
+  - minSlotProximity: 1
+    maxSlotProximity: 16
+  - minSlotProximity: 1
+    maxSlotProximity: 16
+  - minSlotProximity: 4
+    maxSlotProximity: 28
+  meteorRingData: {fileID: 11400000, guid: 6df1d717a849c814ab27c7edef3a830b, type: 2}
+  meteorSpawnDelayAfterRing: 1

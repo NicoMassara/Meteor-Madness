@@ -16,8 +16,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private SoundBehavior gameplayTheme;
         [SerializeField] private SoundBehavior deathTheme;
         
-        private GameModeUIView _uiView;
-        
         public UnityAction<bool> OnEarthRestarted;
         public UnityAction OnCountdownFinished;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
@@ -100,7 +98,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
         {
-            var finalScore = (int)(pointsAmount * GameParameters.GameplayValues.VisualMultiplier);
+            var finalScore = (int)(pointsAmount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
             GameManager.Instance.EventManager.Publish(
                 new FloatingTextEvents.Points{ Position = position, Score = finalScore, IsDouble = isDouble });
         }
@@ -174,12 +172,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleGameRestart()
         {
+            var temp = GameConfigManager.Instance.GetGameplayData().GameTimeData;
+            
             var tempActions = new ActionData[]
             {
                 new (()=>GameManager.Instance.EventManager.Publish(new GameModeEvents.Restart()),
-                    GameParameters.TimeValues.Restart.TriggerRestart),
+                    temp.TriggerRestart),
                 new (()=>GameManager.Instance.EventManager.Publish(new EarthEvents.Restart()),
-                    GameParameters.TimeValues.Restart.RestartEarth),
+                    temp.RestartEarth),
             };
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);

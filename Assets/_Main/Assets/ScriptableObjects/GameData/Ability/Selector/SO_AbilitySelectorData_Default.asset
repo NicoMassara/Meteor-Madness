@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecbe94bf57844a7cb3294dd4e81be3c3, type: 3}
+  m_Name: SO_AbilitySelectorData_Default
+  m_EditorClassIdentifier: 
+  minUnlockLevel: 1
+  rarityValues:
+  - type: 1
+    value: 10
+  - type: 2
+    value: 10
+  - type: 3
+    value: 10
+  - type: 4
+    value: 10
+  - type: 5
+    value: 10
+  levelToUnlock:
+  - type: 4
+    levelToSet: 1
+  - type: 2
+    levelToSet: 1
+  - type: 3
+    levelToSet: 1
+  - type: 1
+    levelToSet: 1
+  - type: 5
+    levelToSet: 1
