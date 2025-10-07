@@ -9,27 +9,64 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebe50dbb93a441789b0c4b240ddeae77, type: 3}
+  m_Script: {fileID: 11500000, guid: 9017fd01993b407ea8fa2639a17a80b7, type: 3}
   m_Name: SO_ProjectileSpawnData_Default
   m_EditorClassIdentifier: 
-  spawnData:
-  - SpeedMultiplier: 0.5
-    TravelDistance: 0.099
-  - SpeedMultiplier: 0.6
-    TravelDistance: 0.123
-  - SpeedMultiplier: 0.7
-    TravelDistance: 0.151
-  - SpeedMultiplier: 0.75
-    TravelDistance: 0.216
-  - SpeedMultiplier: 0.8
-    TravelDistance: 0.243
-  - SpeedMultiplier: 0.8
-    TravelDistance: 0.291
-  - SpeedMultiplier: 0.8
-    TravelDistance: 0.336
-  - SpeedMultiplier: 0.95
-    TravelDistance: 0.366
-  - SpeedMultiplier: 0.95
-    TravelDistance: 0.394
-  - SpeedMultiplier: 1
-    TravelDistance: 0.42
+  maxProjectileSpeed: 0
+  speedMultiplier:
+    animationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    minValue: 0.35
+    maxValue: 1
+  travelRatioCurve:
+    animationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    minValue: 0.35
+    maxValue: 1
+  slotDistanceData: []
+  meteorRingData: {fileID: 0}
+  meteorSpawnDelayAfterRing: 1

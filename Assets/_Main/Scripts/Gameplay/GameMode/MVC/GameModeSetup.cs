@@ -24,7 +24,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var gameplayData = GameConfigManager.Instance.GetGameplayData();
             
-            _motor = new GameModeMotor(gameplayData.LevelData.GetGameplayLevelRequierment());
+            _motor = new GameModeMotor(gameplayData.LevelData.GetGameplayLevelRequierment(),
+                gameplayData.GameTimeData.StartGameCount);
             _controller = new GameModeController(_motor);
             
             _view = GetComponent<GameModeView>();

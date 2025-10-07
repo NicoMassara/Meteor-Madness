@@ -115,3 +115,5 @@ MonoBehaviour:
     maxSlotProximity: 16
   - minSlotProximity: 4
     maxSlotProximity: 28
+  meteorRingData: {fileID: 11400000, guid: 6df1d717a849c814ab27c7edef3a830b, type: 2}
+  meteorSpawnDelayAfterRing: 1

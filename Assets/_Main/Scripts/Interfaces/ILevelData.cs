@@ -1,6 +1,6 @@
 ﻿namespace _Main.Scripts.Interfaces
 {
-    public interface IGameLevelData
+    public interface ILevelData
     {
         public int[] GetGameplayLevelRequierment();
     }

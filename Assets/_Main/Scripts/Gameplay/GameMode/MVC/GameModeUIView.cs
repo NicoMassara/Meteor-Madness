@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -40,6 +41,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private NumberIncrementer _numberIncrementer;
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
         private Coroutine _gameplayPointsCoroutine;
+        private IGameUIConfig _gameUIConfig;
         
         public UnityAction OnMainMenuButtonPressed;
         public UnityAction OnRestartButtonPressed;
@@ -50,13 +52,15 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void Start()
         {
+            _gameUIConfig = GameConfigManager.Instance.GetUIData();
+            
             restartButton.onClick.AddListener(RestartButton_OnClickHandler);
             resumeButton.onClick.AddListener(ResumeButton_OnClickHandler);
             foreach (var button in mainMenuButtons)
             {
                 button.onClick.AddListener(MainMenuButton_OnClickHandler);
             }
-            deathText.text = UIParameters.UITextValues.DeathText;
+            deathText.text = _gameUIConfig.TextData.DeathText;
         }
         
         public void OnNotify(ulong message, params object[] args)
@@ -140,8 +144,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdown(float countdownTime)
         {
-            var text = countdownTime >= 1 ? $"{UIParameters.UITextValues.GameCountdownText} {(int)countdownTime}..." 
-                : UIParameters.UITextValues.GameCountdownFinish;
+            var text = countdownTime >= 1 ? $"{_gameUIConfig.TextData.GameCountdownText} {(int)countdownTime}..." 
+                : _gameUIConfig.TextData.GameCountdownFinish;
             countdownText.text = text;
         }
         
@@ -192,7 +196,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 {
                     Target = (deflectCount * GetPointsMultiplier()),
                     Current = GetCurrentPoints(),
-                    TargetTime = UIParameters.PanelTimeValues.GameplayPointsTimeToIncrease
+                    TargetTime = _gameUIConfig.GameplayPointsTimeToIncrease
                 
                 });
                 
@@ -234,13 +238,13 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void UpdateGameplayScoreText(int points)
         {
-            var text = $"{UIParameters.UITextValues.Points}: {points:D6}";
+            var text = $"{_gameUIConfig.TextData.Points}: {points:D6}";
             scoreText.text = text;
         }
 
         private void UpdateDeathScoreText(int points)
         {
-            var text = $"{UIParameters.UITextValues.DeathPoints}: {points:D6}";
+            var text = $"{_gameUIConfig.TextData.DeathPoints}: {points:D6}";
             deathScoreText.text = text;
         }
 
@@ -270,13 +274,17 @@ namespace _Main.Scripts.Gameplay.GameMode
             UpdateDeathScoreText(0);
             SetActivePanel(deathPanel);
 
+            var deathPanelData = _gameUIConfig.DeathUITimeData;
+            
 
             List<ActionData> tempList = new List<ActionData>
             {
+                new (null, 
+                    deathPanelData.ShowDeathUI),
                 new (()=> SetActiveDeathText(true), 
-                    UIParameters.PanelTimeValues.SetEnableDeathText),
+                    deathPanelData.SetEnableDeathText),
                 new (()=> SetActiveDeathScoreText(true), 
-                    UIParameters.PanelTimeValues.SetEnableDeathScore)
+                    deathPanelData.SetEnableDeathScore)
             };
             
             if (deflectCount > 0)
@@ -284,20 +292,20 @@ namespace _Main.Scripts.Gameplay.GameMode
                 _numberIncrementer.SetData(new NumberIncrementerData
                 {
                     Target = deflectCount * GetPointsMultiplier(),
-                    TargetTime = UIParameters.PanelTimeValues.DeathPointsTimeToIncrease,
+                    TargetTime = deathPanelData.DeathPointsTimeToIncrease,
                     ActionOnFinish = ()=>
                     {
                         _deathPanelActionQueue.AddAction(
                             new ActionData(
                                 () => SetActiveRestartButtonPanel(true),
-                                UIParameters.PanelTimeValues.EnableRestartButton));
+                                deathPanelData.EnableRestartButton));
                     }
                 });
                 
                 tempList.Add(
                     new ActionData(
                         ()=> StartCoroutine(IncreasePointsText(UpdateDeathScoreText)),
-                        UIParameters.PanelTimeValues.CountDeathScore));
+                        deathPanelData.CountDeathScore));
                 ;
             }
             else
@@ -305,7 +313,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 tempList.Add(
                     new ActionData(
                         ()=> SetActiveRestartButtonPanel(true),
-                        UIParameters.PanelTimeValues.EnableRestartButton));
+                        deathPanelData.EnableRestartButton));
             }
 
             

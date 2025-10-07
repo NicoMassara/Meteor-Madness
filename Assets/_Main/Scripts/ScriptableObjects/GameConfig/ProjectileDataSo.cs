@@ -2,10 +2,10 @@
 using _Main.Scripts.Interfaces;
 using UnityEngine;
 
-namespace _Main.Scripts.ScriptableObjects
+namespace _Main.Scripts.ScriptableObjects.GameConfig
 {
     [CreateAssetMenu(fileName = "SO_ProjectileData_Name", menuName = "Scriptable Objects/Game Config/Projectile Data", order = 0)]
-    public class GameProjectileDataSo : ScriptableObject, IGameProjectileData
+    public class ProjectileDataSo : ScriptableObject, IProjectileData
     {
         [Header("Movement")]
         [Range(1, 50)] 
@@ -15,11 +15,17 @@ namespace _Main.Scripts.ScriptableObjects
         [Space]
         [SerializeField] private AnimationCurveData travelRatioCurve;
         [Space]
-        [Space]
         [Header("Slots")]
         [SerializeField] private SlotDistanceData[] slotDistanceData;
+        [Space]
+        [Header("Meteor Ring")]
+        [SerializeField] private MeteorRingDataSo meteorRingData;
+        [Range(0, 2f)] 
+        [SerializeField] private float meteorSpawnDelayAfterRing = 1f;
         
         public float MaxProjectileSpeed => maxProjectileSpeed;
+        public float MeteorSpawnDelayAfterRing => meteorSpawnDelayAfterRing;
+        public IMeteorRingData MeteorRingData => meteorRingData;
 
         public float GetSpeedMultiplier(float index)
         {

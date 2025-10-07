@@ -30,7 +30,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void Start()
         {
-            var selectorData = GameConfigManager.Instance.GetGameplayData().AbilitySelector;
+            var selectorData = GameConfigManager.Instance.GetGameplayData().AbilitySelectorData;
             var rarityTuple = selectorData.GetRarityValues();
             var levelUnlockTuple = selectorData.GetUnlockLevelValues();
             

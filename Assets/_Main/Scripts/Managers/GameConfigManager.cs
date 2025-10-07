@@ -1,6 +1,4 @@
-﻿using System;
-using _Main.Scripts.Gameplay.Projectile;
-using _Main.Scripts.Managers.UpdateManager;
+﻿using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
@@ -10,6 +8,7 @@ namespace _Main.Scripts.Managers
     {
         [SerializeField] private DamageTypes currentDamageDamageType = DamageTypes.Standard;
         [SerializeField] private GameplayConfigSo gameplayConfigSo;
+        [SerializeField] private GameUIConfigSo gameUIConfigSo;
         
         public static GameConfigManager Instance { get; private set; }
         
@@ -27,6 +26,11 @@ namespace _Main.Scripts.Managers
         public GameplayConfigSo GetGameplayData()
         {
             return gameplayConfigSo;
+        }
+        
+        public GameUIConfigSo GetUIData()
+        {
+            return gameUIConfigSo;
         }
         
         

@@ -14,15 +14,17 @@ namespace _Main.Scripts.Gameplay.GameMode
         private readonly GameLevelController _levelController;
         
         private float _startTimer;
+        private readonly int _startDelay;
         private bool _isPaused;
         private bool _doesRestartGameMode;
         private bool _hasDoublePoints;
         
 
-        public GameModeMotor(int[] levelStreakAmount)
+        public GameModeMotor(int[] levelStreakAmount, int startTimer)
         {
             _levelController = new(levelStreakAmount);
             _levelController.OnLevelChange += OnLevelChangeHandler;
+            _startDelay = startTimer + 1;
         }
 
         public void InitializeValues()
@@ -35,9 +37,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             _doesRestartGameMode = doesRestart;
         }
 
-        public void StartCountdown(float time)
+        public void StartCountdown()
         {
-            _startTimer = time + 1;
+            _startTimer = _startDelay;
             NotifyAll(GameModeObserverMessage.StartCountdown);
         }
         

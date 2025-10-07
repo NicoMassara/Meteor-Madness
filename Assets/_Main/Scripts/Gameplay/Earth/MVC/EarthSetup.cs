@@ -20,7 +20,7 @@ namespace _Main.Scripts.Gameplay.Earth
             
             _motor = new EarthMotor();
             _motor.Subscribe(_view);
-            _controller = new EarthController(_motor);
+            _controller = new EarthController(_motor, GameConfigManager.Instance.GetGameplayData().EarthTimeData.Destruction);
 
             SetViewHandlers();
             SetEventBus();

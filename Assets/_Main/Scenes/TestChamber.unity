@@ -9460,6 +9460,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentDamageDamageType: 1
   gameplayConfigSo: {fileID: 11400000, guid: a74efcfbecc48e24e999588daad87761, type: 2}
+  gameUIConfigSo: {fileID: 11400000, guid: f811a441d0693324a9983e0028ba7405, type: 2}
 --- !u!4 &1634272169
 Transform:
   m_ObjectHideFlags: 0

@@ -64,29 +64,30 @@ namespace _Main.Scripts.Gameplay.Meteor
         private IEnumerator CreateRingMeteor(float meteorSpeed)
         {
             GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = true});
+            var projectileData = GameConfigManager.Instance.GetGameplayData().ProjectileData;
+            var ringValues = projectileData.MeteorRingData;
 
             _isSpawningRing = true;
             
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
             
             var currAngle = 0f;
-            var amountToSpawn = MeteorRingValues.MeteorAmount;
-            var ringsToUse = MeteorRingValues.RingsAmount;
+            var amountToSpawn = ringValues.MeteorAmount;
             var angleOffset = 360f / amountToSpawn;
             var startAngleOffset = angleOffset/2;
             var startOffset = 0f;
             var speedMultiplier = 2f;
 
-            for (int a = 0; a < MeteorRingValues.WavesAmount; a++)
+            for (int a = 0; a < ringValues.WavesAmount; a++)
             {
-                for (int i = 0; i < MeteorRingValues.RingsAmount; i++)
+                for (int i = 0; i < ringValues.RingsAmount; i++)
                 {
                     for (int j = 0; j < amountToSpawn; j++)
                     {
                         yield return new WaitForSeconds(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
 
                         CreateMeteor(meteorSpeed * speedMultiplier, spawnSettings.GetPositionByAngle(currAngle), 
-                            GetRingMeteorValue(amountToSpawn, ringsToUse));
+                            GetRingMeteorValue(amountToSpawn, ringValues.RingsAmount));
                         currAngle += angleOffset;
                         currAngle = Mathf.Repeat(currAngle, 360f);
                     }
@@ -95,17 +96,16 @@ namespace _Main.Scripts.Gameplay.Meteor
                     startOffset = Mathf.Repeat(startOffset, 360f);
                     currAngle = startOffset;
                     
-                    yield return new WaitForSeconds(MeteorRingValues.DelayBetweenRings);
+                    yield return new WaitForSeconds(ringValues.DelayBetweenRings);
                 }
                 
-                
-                yield return new WaitForSeconds(MeteorRingValues.DelayBetweenWaves);
+                yield return new WaitForSeconds(ringValues.DelayBetweenWaves);
             }
             
             
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
             
-            yield return new WaitForSeconds(GameParameters.TimeValues.MeteorSpawnDelayAfterRing);
+            yield return new WaitForSeconds(projectileData.MeteorSpawnDelayAfterRing);
             
             GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = false});
             _isSpawningRing = false;

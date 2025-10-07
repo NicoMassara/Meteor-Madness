@@ -15,5 +15,8 @@ MonoBehaviour:
   levelAmount: 10
   pointsMultiplier: 500
   levelData: {fileID: 11400000, guid: 1aa0fbf8cccb4424eba34fb8936e9611, type: 2}
-  abilitySelector: {fileID: 11400000, guid: 390f8558c7d373d44935795fe6c31128, type: 2}
+  abilitySelectorData: {fileID: 11400000, guid: 390f8558c7d373d44935795fe6c31128, type: 2}
   projectileData: {fileID: 11400000, guid: 752c1653bde0af54883e0de5e868c228, type: 2}
+  gameTimeData: {fileID: 11400000, guid: ef8936844b36af448a08e62d473b2a20, type: 2}
+  abilityTimeData: {fileID: 11400000, guid: ce4bcdecd89003b44a8bd6aa137b27e6, type: 2}
+  earthTimeData: {fileID: 11400000, guid: f3808ca405c62394594215dae67d3ab4, type: 2}

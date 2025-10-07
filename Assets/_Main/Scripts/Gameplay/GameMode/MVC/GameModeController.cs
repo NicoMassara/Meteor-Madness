@@ -133,7 +133,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void StartCountdown()
         {
-            _motor.StartCountdown(GameParameters.TimeValues.StartGameCount);
+            _motor.StartCountdown();
         }
 
         public void StartGameplay()

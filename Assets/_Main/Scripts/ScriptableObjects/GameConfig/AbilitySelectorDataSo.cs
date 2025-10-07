@@ -3,10 +3,10 @@ using _Main.Scripts.InspectorTools;
 using _Main.Scripts.Interfaces;
 using UnityEngine;
 
-namespace _Main.Scripts.ScriptableObjects
+namespace _Main.Scripts.ScriptableObjects.GameConfig
 {
-    [CreateAssetMenu(fileName = "SO_AbilityData_Name", menuName = "Scriptable Objects/Game Config/Ability Data", order = 0)]
-    public class GameAbilitySelectorSo : ScriptableObject, IGameAbilitySelector
+    [CreateAssetMenu(fileName = "SO_AbilityData_Name", menuName = "Scriptable Objects/Game Config/Ability/Selector Data", order = -1)]
+    public class AbilitySelectorDataSo : ScriptableObject, IAbilitySelector
     {
         [ReadOnly]
         public int minUnlockLevel;

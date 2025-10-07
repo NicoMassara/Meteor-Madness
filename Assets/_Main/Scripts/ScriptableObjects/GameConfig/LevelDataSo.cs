@@ -1,10 +1,10 @@
 ﻿using _Main.Scripts.Interfaces;
 using UnityEngine;
 
-namespace _Main.Scripts.ScriptableObjects
+namespace _Main.Scripts.ScriptableObjects.GameConfig
 {
     [CreateAssetMenu(fileName = "SO_LevelData_Name", menuName = "Scriptable Objects/Game Config/Level Data", order = 0)]
-    public class GameLevelDataSo : ScriptableObject, IGameLevelData
+    public class LevelDataSo : ScriptableObject, ILevelData
     {
         [Tooltip("Meteor deflect count needed to increase each internal level")] 
         [Range(1, 100)]
