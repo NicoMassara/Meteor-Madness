@@ -88,12 +88,10 @@
     
     public struct TutorialObserverMessage
     {
-        public const ulong Empty = 0xA6001;
-        public const ulong Empty1 = 0xA6002;
-        public const ulong Empty2= 0xA6003;
-        public const ulong Empty3 = 0xA6004;
-        public const ulong Empty4 = 0xA6005;
-        public const ulong Empty5 = 0xA6006;
-        public const ulong Empty6 = 0xA6007;
+        public const ulong Start = 0xA6001;
+        public const ulong FirstMovement = 0xA6002;
+        public const ulong SecondMovement= 0xA6003;
+        public const ulong AbilityTest = 0xA6004;
+        public const ulong Finish = 0xA6005;
     }
 }

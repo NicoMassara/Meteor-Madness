@@ -9,7 +9,16 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             switch (message)
             {
-                
+                case TutorialObserverMessage.Start:
+                    break;
+                case TutorialObserverMessage.FirstMovement:
+                    break;
+                case TutorialObserverMessage.SecondMovement:
+                    break;
+                case TutorialObserverMessage.AbilityTest:
+                    break;
+                case TutorialObserverMessage.Finish:
+                    break;
             }
         }
     }

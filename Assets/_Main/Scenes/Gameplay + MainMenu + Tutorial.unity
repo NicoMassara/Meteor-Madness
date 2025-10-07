@@ -10120,6 +10120,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1901379612}
+  - component: {fileID: 1901379615}
+  - component: {fileID: 1901379614}
+  - component: {fileID: 1901379613}
   m_Layer: 0
   m_Name: TutorialController
   m_TagString: Untagged
@@ -10136,12 +10139,48 @@ Transform:
   m_GameObject: {fileID: 1901379611}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.53088, y: -0.8270855, z: -0.34062368}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1901379613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901379611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3100fa7e4af249de856bb6f506dad2f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1901379614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901379611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74e0bd68d4f843968f812be7e4486d5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1901379615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901379611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b53ad387eee45cbb54b3cfba868225b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1925727190
 GameObject:
   m_ObjectHideFlags: 0
@@ -12817,8 +12856,8 @@ SceneRoots:
   - {fileID: 809164426}
   - {fileID: 2106846611}
   - {fileID: 1253651364}
-  - {fileID: 1901379612}
   - {fileID: 1482222718}
+  - {fileID: 1901379612}
   - {fileID: 168416677}
   - {fileID: 234428181}
   - {fileID: 1004163051}
