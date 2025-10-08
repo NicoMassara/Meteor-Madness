@@ -1,4 +1,4 @@
-﻿namespace _Main.Scripts.Gameplay.FSM.GameMode
+﻿namespace _Main.Scripts.Gameplay.GameMode.States
 {
     public class GameModeDisableState<T> : GameModeStateBase<T>
     {

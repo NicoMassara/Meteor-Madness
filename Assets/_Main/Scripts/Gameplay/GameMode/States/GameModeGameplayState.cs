@@ -1,6 +1,6 @@
 ﻿using _Main.Scripts.Managers;
 
-namespace _Main.Scripts.Gameplay.FSM.GameMode
+namespace _Main.Scripts.Gameplay.GameMode.States
 {
     public class GameModeGameplayState<T> : GameModeStateBase<T>
     {

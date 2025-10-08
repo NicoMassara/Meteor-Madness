@@ -31,15 +31,20 @@ namespace _Main.Scripts.Managers
         {
             EventManager = new EventBusManager();
         }
-
-        public void LoadGameplay()
+        
+        public void LoadTutorial()
         {
-            Instance.EventManager.Publish(new GameScreenEvents.SetGameScreen{Index = 1});
+            GameScreenEventCaller.SetGameScreen(ScreenType.Tutorial, true);
+        }
+
+        public void LoadGameMode()
+        {
+            GameScreenEventCaller.SetGameScreen(ScreenType.GameMode, true);
         }
 
         public void LoadMainMenu()
         {
-            Instance.EventManager.Publish(new GameScreenEvents.SetGameScreen{Index = 0});
+            GameScreenEventCaller.SetGameScreen(ScreenType.MainMenu, true);
         }
         
     }

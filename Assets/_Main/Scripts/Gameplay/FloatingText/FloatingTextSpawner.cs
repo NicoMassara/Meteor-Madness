@@ -26,8 +26,7 @@ namespace _Main.Scripts.Gameplay.FloatingScore
 
         private void SetEventBus()
         {
-            var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<FloatingTextEvents.Spawn>(EventBus_FloatingText_Spawn);
+            GameEventCaller.Subscribe<FloatingTextEvents.Spawn>(EventBus_FloatingText_Spawn);
         }
 
         private void EventBus_FloatingText_Spawn(FloatingTextEvents.Spawn input)

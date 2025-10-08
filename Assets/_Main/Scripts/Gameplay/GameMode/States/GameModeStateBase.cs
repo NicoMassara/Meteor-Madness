@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay.GameMode;
 
-namespace _Main.Scripts.Gameplay.FSM.GameMode
+namespace _Main.Scripts.Gameplay.GameMode.States
 {
     public class GameModeStateBase<T> : State<T>
     {

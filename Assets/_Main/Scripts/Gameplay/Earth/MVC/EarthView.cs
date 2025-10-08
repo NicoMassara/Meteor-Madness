@@ -117,18 +117,15 @@ namespace _Main.Scripts.Gameplay.Earth
             UpdateColorByHealth(healthAmount);
             SetRotationSpeed(healthAmount);
             
-            GameManager.Instance.EventManager.Publish
-            (
-                new ParticleEvents.Spawn
-                {
-                    ParticleData = collisionParticleData,
-                    Position = position,
-                    Rotation = rotation,
-                    MoveDirection = -direction
-                }
-            );
+            ParticleEventCaller.Spawn(new ParticleSpawnData
+            {
+                ParticleData = collisionParticleData,
+                Position = position,
+                Rotation = rotation,
+                MoveDirection = -direction
+            });
             
-            GameManager.Instance.EventManager.Publish(new CameraEvents.Shake{ShakeData = cameraShakeData});
+            CameraEventCaller.Shake(cameraShakeData);
         }
 
         private void HandleHeal(float currentHealth, float lastHealth)
@@ -204,8 +201,7 @@ namespace _Main.Scripts.Gameplay.Earth
                         _isDead = false;
                         HandleSetRotation(true);
                         OnHealed?.Invoke();
-                        GameManager.Instance.EventManager.Publish(new EarthEvents.RestartFinished());
-                    
+                        EarthEventCaller.RestartFinished();
                     }, _restartTimeValues.FinishRestart),
                 };
             }
@@ -232,8 +228,7 @@ namespace _Main.Scripts.Gameplay.Earth
                     {
                         HandleSetRotation(true);
                         OnHealed?.Invoke();
-                        GameManager.Instance.EventManager.Publish(new EarthEvents.RestartFinished());
-                    
+                        EarthEventCaller.RestartFinished();
                     }, _restartTimeValues.FinishRestart),
                 };
             }
@@ -266,13 +261,10 @@ namespace _Main.Scripts.Gameplay.Earth
                     {
                         HandleSetRotation(true);
                         OnHealed?.Invoke();
-                        GameManager.Instance.EventManager.Publish(new EarthEvents.RestartFinished());
-                    
+                        EarthEventCaller.RestartFinished();
                     }, _restartTimeValues.FinishRestart),
                 };
             }
-
-
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
@@ -324,7 +316,7 @@ namespace _Main.Scripts.Gameplay.Earth
             if (isShaking)
             {
                 _shakerController.SetMultiplier(1);
-                GameManager.Instance.EventManager.Publish(new EarthEvents.ShakeStart());
+                EarthEventCaller.ShakeStart();
             }
             else
             {
@@ -345,12 +337,12 @@ namespace _Main.Scripts.Gameplay.Earth
             UpdateColorByHealth(0);
             _shakerController.SetMultiplier(0);
             _shakerController.SetShakeData(deathShakeData);
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.Finish());
+            GameModeEventCaller.Finish();
         }
         
         private void TriggerEndDestruction()
         {
-            GameManager.Instance.EventManager.Publish(new EarthEvents.DestructionFinished());
+            EarthEventCaller.DestructionFinished();
         }
 
         #endregion

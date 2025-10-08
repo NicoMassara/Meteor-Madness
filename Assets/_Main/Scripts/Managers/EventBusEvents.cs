@@ -42,18 +42,16 @@ namespace _Main.Scripts.Managers
 
     public struct GameScreenEvents
     {
-        public struct MainMenuEnable { }
-        public struct GameModeEnable { }
-        
         public struct SetGameScreen
         {
-            public int Index;
+            public ScreenType ScreenType;
+            public bool IsEnable;
         }
     }
 
     public struct GameModeEvents
     {
-        public struct Initialize { };
+        public struct InitializeValues { };
 
         public struct Disable { };
 
@@ -72,7 +70,7 @@ namespace _Main.Scripts.Managers
         }
     }
 
-    public struct MeteorEvents
+    public struct ProjectileEvents
     {
         public struct Collision
         {
@@ -90,7 +88,29 @@ namespace _Main.Scripts.Managers
             public float Value;
             public ProjectileType Type;
         }
+        
+        public struct Add
+        {
+            public IProjectile Projectile;
+        }
+
+        public struct RequestSpawn
+        {
+            public ProjectileType ProjectileType;
+            public EventRequestType RequestType;
+        }
+
+        public struct Spawn
+        {
+            public ProjectileType ProjectileType;
+            public Vector2 Position;
+            public Vector2 Direction;
+            public float MovementMultiplier;
+        };
+    }
     
+    public struct MeteorEvents
+    {
         public struct EnableSpawn
         {
             public bool CanSpawn;
@@ -137,9 +157,9 @@ namespace _Main.Scripts.Managers
 
     public struct AbilitiesEvents
     {
-        public struct SetEnable
+        public struct SetCanUse
         {
-            public bool IsEnable;
+            public bool CanUse;
         }
 
         public struct Add
@@ -158,28 +178,6 @@ namespace _Main.Scripts.Managers
             public AbilityType AbilityType;
             public bool IsActive;
         }
-    }
-
-    public struct ProjectileEvents
-    {
-        public struct Add
-        {
-            public IProjectile Projectile;
-        }
-
-        public struct RequestSpawn
-        {
-            public ProjectileType ProjectileType;
-            public EventRequestType RequestType;
-        }
-
-        public struct Spawn
-        {
-            public ProjectileType ProjectileType;
-            public Vector2 Position;
-            public Vector2 Direction;
-            public float MovementMultiplier;
-        };
     }
 
     public struct FloatingTextEvents

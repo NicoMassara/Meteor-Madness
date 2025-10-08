@@ -3,7 +3,7 @@ using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Main.Scripts.Menu
+namespace _Main.Scripts.MainMenu
 {
     public class MainMenuController : MonoBehaviour
     {
@@ -13,6 +13,7 @@ namespace _Main.Scripts.Menu
         [SerializeField] private GameObject lorePanel;
         [Header("Buttons")]
         [SerializeField] private Button playButton;
+        [SerializeField] private Button tutorialButton;
         [SerializeField] private Button loreButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private Button backButton;
@@ -26,16 +27,17 @@ namespace _Main.Scripts.Menu
         private void Awake()
         {
             playButton.onClick.AddListener(StartGame);
+            tutorialButton.onClick.AddListener(StartTutorial);
             loreButton.onClick.AddListener(SetActiveLorePanel);
             backButton.onClick.AddListener(SetActiveMainPanel);
             exitButton.onClick.AddListener(QuitGame);
             
-            SetEventBus();
+            GameEventCaller.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_GameScreen_SetScreen);
         }
 
         private void Initialize()
         {            
-            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
+            CameraEventCaller.ZoomIn();
             menuPanel.SetActive(false);
             lorePanel.SetActive(false);
             themeSound.PlaySound();
@@ -73,7 +75,18 @@ namespace _Main.Scripts.Menu
             TimerManager.Add(new TimerData
             {
                 Time = GameConfigManager.Instance.GetGameplayData().GameTimeData.TimeToLoadGameScene,
-                OnEndAction = ()=> GameManager.Instance.LoadGameplay()
+                OnEndAction = ()=> GameManager.Instance.LoadGameMode()
+            });
+        }
+        
+        private void StartTutorial()
+        {
+            SetEnableAllButtons(false);
+            menuSound.PlaySound();
+            TimerManager.Add(new TimerData
+            {
+                Time = GameConfigManager.Instance.GetGameplayData().GameTimeData.TimeToLoadGameScene,
+                OnEndAction = ()=> GameManager.Instance.LoadTutorial()
             });
         }
 
@@ -96,28 +109,31 @@ namespace _Main.Scripts.Menu
             mainPanel.SetActive(isActive);
         }
 
-        #region EventBus
-
-        private void SetEventBus()
-        {
-            var eventManager = GameManager.Instance.EventManager;
-
-            eventManager.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_OnMainMenuScreen);
-            eventManager.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_OnGameplayScreen);
-        }
-
-        private void EventBus_OnGameplayScreen(GameScreenEvents.GameModeEnable input)
-        {
-            themeSound.StopSound();
-            SetEnableMainPanel(false);
-        }
-
-        private void EventBus_OnMainMenuScreen(GameScreenEvents.MainMenuEnable input)
+        private void EnableMainMenu()
         {
             SetEnableAllButtons(true);
             Initialize();
         }
 
+        private void DisableMainMenu()
+        {
+            themeSound.StopSound();
+            SetEnableMainPanel(false);
+        }
+
+        #region EventBus
+
+        private void EventBus_GameScreen_SetScreen(GameScreenEvents.SetGameScreen input)
+        {
+            if (input.ScreenType == ScreenType.MainMenu)
+            {
+                EnableMainMenu();
+            }
+            else
+            {
+                DisableMainMenu();
+            }
+        }
         #endregion
     }
 }
