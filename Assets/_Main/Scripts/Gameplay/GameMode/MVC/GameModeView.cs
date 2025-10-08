@@ -84,35 +84,26 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleGrantProjectileSpawn(int projectileTypeIndex)
         {
-            GameManager.Instance.EventManager.Publish(
-                new ProjectileEvents.RequestSpawn
-                {
-                    ProjectileType = (ProjectileType)projectileTypeIndex, 
-                    RequestType = EventRequestType.Granted
-                });
+            ProjectileEventCaller.GrantSpawn((ProjectileType)projectileTypeIndex);
         }
 
         private void HandleInitialize()
         {
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.Initialize());
+            GameModeEventCaller.Initialize();
         }
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
         {
             var finalScore = (int)(pointsAmount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
-            GameManager.Instance.EventManager.Publish(new FloatingTextEvents.Spawn
+            FloatingTextEventCaller.Spawn(new FloatingTextValues
             {
-                Data = new FloatingTextValues
-                {
-                    Position = position, 
-                    Offset = new Vector2(0,1f),
-                    Text = $"+{finalScore.ToString()}",
-                    Color = isDouble ? Color.yellow : Color.white,
-                    DoesFade = true,
-                    DoesMove = true
-                }
+                Position = position, 
+                Offset = new Vector2(0,1f),
+                Text = $"+{finalScore.ToString()}",
+                Color = isDouble ? Color.yellow : Color.white,
+                DoesFade = true,
+                DoesMove = true
             });
-
         }
         
         private void HandleGamePaused(bool isPaused)
@@ -163,22 +154,22 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             if (_isFirstDisable == false)
             {
-                GameManager.Instance.EventManager.Publish(new EarthEvents.Restart());
+                EarthEventCaller.Restart();
             }
             
             gameplayTheme?.StopSound();
             deathTheme?.StopSound();
             _isFirstDisable = false;
             SetEnableInputs(false);
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.Disable());
+            GameModeEventCaller.Disable();
         }
 
         private void HandleGameFinish()
         {
             gameplayTheme?.StopSound();
             GameManager.Instance.CanPlay = false;
-            GameManager.Instance.EventManager.Publish(new ShieldEvents.SetEnable{IsEnabled = false});
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.RecycleAll());
+            ShieldEventCaller.SetEnableShield(false);
+            MeteorEventCaller.RecycleAll();
             SetEnableInputs(false);
         }
         
@@ -188,10 +179,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             var tempActions = new ActionData[]
             {
-                new (()=>GameManager.Instance.EventManager.Publish(new GameModeEvents.Restart()),
-                    temp.TriggerRestart),
-                new (()=>GameManager.Instance.EventManager.Publish(new EarthEvents.Restart()),
-                    temp.RestartEarth),
+                new (GameModeEventCaller.Restart, temp.TriggerRestart),
+                new (EarthEventCaller.Restart, temp.RestartEarth),
             };
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
@@ -231,12 +220,12 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleEarthStartDestruction()
         {
-            GameManager.Instance.EventManager.Publish(new EarthEvents.DestructionStart());
+            EarthEventCaller.DestructionStart();
         }
         
         private void HandleEarthShake()
         {
-            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
+            GameEventCaller.Publish(new CameraEvents.ZoomIn());
         }
         
         private void HandleEarthEndDestruction()

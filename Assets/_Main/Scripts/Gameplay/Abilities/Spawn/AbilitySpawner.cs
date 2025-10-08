@@ -79,7 +79,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 new AbilitiesEvents.Add{AbilityType = data.Ability, Position = data.Position});
             GameManager.Instance.EventManager.Publish
             (
-                new MeteorEvents.Deflected
+                new ProjectileEvents.Deflected
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
@@ -102,7 +102,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             GameManager.Instance.EventManager.Publish
             (
-                new MeteorEvents.Collision
+                new ProjectileEvents.Collision
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,

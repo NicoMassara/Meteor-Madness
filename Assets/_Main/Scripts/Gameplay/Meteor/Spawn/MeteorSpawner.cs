@@ -164,7 +164,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             GameManager.Instance.EventManager.Publish
             (
-                new MeteorEvents.Deflected
+                new ProjectileEvents.Deflected
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
@@ -184,7 +184,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             GameManager.Instance.EventManager.Publish
             (
-                new MeteorEvents.Collision
+                new ProjectileEvents.Collision
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,

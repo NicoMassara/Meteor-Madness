@@ -30,7 +30,7 @@ namespace _Main.Scripts
         {
             for (int i = 0; i < 10; i++)
             {
-                GameManager.Instance.EventManager.Publish(new MeteorEvents.Collision());
+                GameManager.Instance.EventManager.Publish(new ProjectileEvents.Collision());
             }
         }
         
@@ -41,7 +41,7 @@ namespace _Main.Scripts
 
         private void Deflect()
         {
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.Deflected
+            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Deflected
             {
                 Value = 1f
             });

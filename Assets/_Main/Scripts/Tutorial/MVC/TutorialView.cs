@@ -34,31 +34,31 @@ namespace _Main.Scripts.Tutorial.MVC
         private void HandleMovement()
         {
             GameEventCaller.Publish(new CameraEvents.ZoomOut());
-            EventCallerGameValues.SetCanPlay(true);
-            EventCallerShield.SetEnableShield(true);
-            EventCallerInputs.SetEnable(true);
+            GameManager.Instance.CanPlay = true;
+            ShieldEventCaller.SetEnableShield(true);
+            InputsEventCaller.SetEnable(true);
             
             for (int i = 0; i < 1; i++)
             {
-                EventCallerMeteor.GrantSpawnSingle();
+                MeteorEventCaller.GrantSpawnSingle();
             }
         }
         
         private void HandleAbility()
         {
-            EventCallerAbility.GrantSpawn();
+            AbilitiesEventCaller.GrantSpawn();
             
             for (int i = 0; i < 5; i++)
             {
-                EventCallerMeteor.GrantSpawnSingle();
+                MeteorEventCaller.GrantSpawnSingle();
             }
         }
         
         private void HandleFinish()
         {
-            EventCallerInputs.SetEnable(false);
-            EventCallerGameValues.SetCanPlay(false);
-            EventCallerShield.SetEnableShield(false);
+            InputsEventCaller.SetEnable(false);
+            GameManager.Instance.CanPlay = false;
+            ShieldEventCaller.SetEnableShield(false);
             GameEventCaller.Publish(new CameraEvents.ZoomIn());
         }
     }

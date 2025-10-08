@@ -70,7 +70,7 @@ namespace _Main.Scripts.Tutorial.MVC
             GameEventCaller.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_GameScreen_MainMenu);
             
             //Projectile
-            GameEventCaller.Subscribe<MeteorEvents.Deflected>(EventBus_Meteor_Deflected);
+            GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
         }
 
@@ -84,7 +84,7 @@ namespace _Main.Scripts.Tutorial.MVC
             _controller.TransitionToStart();
         }
         
-        private void EventBus_Meteor_Deflected(MeteorEvents.Deflected input)
+        private void EventBus_Meteor_Deflected(ProjectileEvents.Deflected input)
         {
             if (input.Type == ProjectileType.Meteor)
             {

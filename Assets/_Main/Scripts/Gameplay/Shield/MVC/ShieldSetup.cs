@@ -62,7 +62,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
             eventManager.Subscribe<ShieldEvents.SetGold>(EventBus_Shield_SetGold);
             eventManager.Subscribe<ShieldEvents.SetAutomatic>(EventBus_Shield_SetAutomatic);
-            eventManager.Subscribe<MeteorEvents.Deflected>(EventBus_Meteor_Deflected);
+            eventManager.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             eventManager.Subscribe<ShieldEvents.SetEnable>(EventBus_Shield_SetEnable);
             eventManager.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
             eventManager.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_Shield_EnableNormalShield);
@@ -114,7 +114,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _controller.TransitionToSuper();
         }
 
-        private void EventBus_Meteor_Deflected(MeteorEvents.Deflected input)
+        private void EventBus_Meteor_Deflected(ProjectileEvents.Deflected input)
         {
             _controller.HandleHit(input.Position, input.Rotation,input.Direction);
         }

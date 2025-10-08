@@ -61,7 +61,7 @@ namespace _Main.Scripts.Gameplay.Earth
             eventBus.Subscribe<EarthEvents.Heal>(EventBus_Earth_Heal);
             eventBus.Subscribe<EarthEvents.SetEnableDamage>(EventBus_Earth_SetEnableDamage);
             eventBus.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventBus.Subscribe<MeteorEvents.Collision>(EventBus_Meteor_Collision);
+            eventBus.Subscribe<ProjectileEvents.Collision>(EventBus_Meteor_Collision);
         }
 
         private void EventBus_Earth_SetEnableDamage(EarthEvents.SetEnableDamage input)
@@ -89,7 +89,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _controller.TransitionToShaking();
         }
         
-        private void EventBus_Meteor_Collision(MeteorEvents.Collision input)
+        private void EventBus_Meteor_Collision(ProjectileEvents.Collision input)
         {
             _controller.HandleCollision(GameConfigManager.Instance.GetDamageValue(), 
                 input.Position, input.Rotation, input.Direction);

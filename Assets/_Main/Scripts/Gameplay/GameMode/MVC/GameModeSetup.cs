@@ -113,7 +113,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             eventBus.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_GameScreen_MainMenu);
             
             //Meteor
-            eventBus.Subscribe<MeteorEvents.Deflected>(EventBus_Meteor_Deflected);
+            eventBus.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             
             //Earth
             eventBus.Subscribe<EarthEvents.ShakeStart>(EventBus_Earth_ShakeStart);
@@ -169,7 +169,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller.TransitionToFinish();
         }
 
-        private void EventBus_Meteor_Deflected(MeteorEvents.Deflected input)
+        private void EventBus_Meteor_Deflected(ProjectileEvents.Deflected input)
         {
             _controller.HandleMeteorDeflect(input.Position,input.Value);
         }
