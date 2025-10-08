@@ -83,17 +83,36 @@ namespace _Main.Scripts.Gameplay.Projectile
             projectileCount = _projectileQueue.Count;
         }
 
+        private void ClearProjectiles()
+        {
+            _projectileQueue.Clear();
+            _distanceTracker.ClearValues();
+        }
+
         #region Event Bus
 
         private void SetEventBus()
         {
             GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
-            GameEventCaller.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
-            GameEventCaller.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_SpawnRequest);
-            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
             GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
             GameEventCaller.Subscribe<GameModeEvents.Restart>(EventBus_GameMode_Restart);
+            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
             GameEventCaller.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
+            GameEventCaller.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
+            GameEventCaller.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_SpawnRequest);
+            GameEventCaller.Subscribe<ProjectileEvents.ClearQueue>(EnventBus_Projectile_ClearQueue);
+        }
+
+        private void EventBus_GameMode_Start(GameModeEvents.Start input)
+        {
+            ClearProjectiles();
+        }
+
+
+        private void EnventBus_Projectile_ClearQueue(ProjectileEvents.ClearQueue input)
+        {
+            ClearProjectiles();
         }
 
         private void EventBus_Projectile_SpawnRequest(ProjectileEvents.RequestSpawn input)
@@ -131,8 +150,7 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void EventBus_GameMode_Restart(GameModeEvents.Restart input)
         {
-            _distanceTracker.ClearValues();
-            _projectileQueue.Clear();
+            ClearProjectiles();
         }
         
         private void EnventBus_Meteor_EnableSpawn(MeteorEvents.EnableSpawn input)

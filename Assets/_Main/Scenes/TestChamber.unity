@@ -1052,7 +1052,7 @@ MonoBehaviour:
   timeToEnableSuperShield: 0.75
   timeToDisableSuperShield: 0.75
   decayConstant: 500
-  autoCorrectEnable: 0
+  autoCorrectEnable: 1
 --- !u!4 &168416677
 Transform:
   m_ObjectHideFlags: 0
@@ -4269,7 +4269,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 1.77
+  m_Radius: 1.41
 --- !u!1 &739222426
 GameObject:
   m_ObjectHideFlags: 0
@@ -9882,7 +9882,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 2.53
+  m_Radius: 2.57
 --- !u!212 &1667250007
 SpriteRenderer:
   m_ObjectHideFlags: 0

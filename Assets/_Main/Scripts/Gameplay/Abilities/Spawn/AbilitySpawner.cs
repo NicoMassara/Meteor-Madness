@@ -44,8 +44,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         
         private void SendAbility()
         {
-            GameManager.Instance.EventManager.Publish(
-                new ProjectileEvents.RequestSpawn{ProjectileType = ProjectileType.AbilitySphere});
+            AbilitiesEventCaller.RequestSpawn();
         }
 
         private void CreateAbilitySphere(Vector2 position, Vector2 direction, float movementMultiplier)
@@ -217,8 +216,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private readonly Roulette _roulette = new Roulette();
         private readonly List<AbilityType> _storedAbilities = new List<AbilityType>();
         private readonly Dictionary<AbilityType, int> _dic = new Dictionary<AbilityType, int>();
-        private readonly Dictionary<AbilityType, AbilityValue> _valuesDic = new Dictionary<AbilityType, AbilityValue>();
-        private readonly Dictionary<int, AbilityType> _unlockDic = new Dictionary<int, AbilityType>();
+        private readonly Dictionary<AbilityType, AbilityValue> _valuesDic;
+        private readonly Dictionary<int, AbilityType> _unlockDic;
 
         private class AbilityValue
         {

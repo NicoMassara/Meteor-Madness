@@ -95,23 +95,25 @@ namespace _Main.Scripts.Gameplay.Abilies
                     });
                 }, 0f),
                 new ActionData(() =>
+                {
+                    _eventBus.Publish(new ShieldEvents.EnableNormalShield());
+                }, timeData.StopAction),
+                new ActionData(() =>
+                {
+                    _updateTimeScale.Invoke(new TimeScaleData
                     {
-                        _eventBus.Publish(new ShieldEvents.EnableNormalShield());
-                        _updateTimeScale.Invoke(new TimeScaleData
-                        {
-                            UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                            TargetTimeScale = 1f,
-                            CurrentTimeScale = minTimeScale,
-                            TimeToUpdate = timeData.SpeedUp,
-                        });
-                    },
-                    timeData.StopAction),
+                        UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
+                        TargetTimeScale = 1f,
+                        CurrentTimeScale = minTimeScale,
+                        TimeToUpdate = timeData.SpeedUp,
+                    });
+                }, timeData.SpeedUp),
                 new ActionData(() =>
                 {
                     _eventBus.Publish(new InputsEvents.SetEnable { IsEnable = true });
                     PublishAbilityActive(selectedAbility, false);
                     OnAbilityFinished?.Invoke(selectedAbility);
-                }, timeData.SpeedUp),
+                }, 0f),
             };
 
             var shieldData = new AbilityStoredData

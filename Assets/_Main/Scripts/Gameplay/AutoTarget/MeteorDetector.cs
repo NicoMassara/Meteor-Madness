@@ -35,8 +35,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             
             var filter = new ContactFilter2D
             {
-                layerMask = meteorLayer,
-                useTriggers = true
+                layerMask = meteorLayer
             };
 
             var hitCount = Physics2D.OverlapCircle(position, checkRadius, filter,_colliders);

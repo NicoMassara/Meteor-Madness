@@ -62,6 +62,8 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleExtraMeteors()
         {
+            GameModeEventCaller.UpdateLevel(9);
+            
             for (int i = 0; i < 5; i++)
             {
                 MeteorEventCaller.GrantSpawnSingle();
