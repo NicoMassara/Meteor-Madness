@@ -96,7 +96,7 @@ Material:
     - _Float4: 0.75
     - _FlowIntensity: 1
     - _GrassTextureTiling: 0.25
-    - _HealthAmount: 1
+    - _HealthAmount: 0
     - _IceAmount: 0.75
     - _Intensity: -0.64
     - _LightNoiseStep: 0.921
@@ -142,3 +142,4 @@ Material:
     - _Water: {r: 0, g: 0, b: 1, a: 1}
     - _WaterDamage: {r: 0.42745098, g: 0, b: 0.009691238, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
