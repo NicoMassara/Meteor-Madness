@@ -39,5 +39,10 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             NotifyAll(TutorialObserverMessage.ExtraMeteors);
         }
+        
+        public void SendAdditionalProjectile(int projectileTypeIndex)
+        {
+            NotifyAll(TutorialObserverMessage.AdditionalProjectile, projectileTypeIndex);
+        }
     }
 }

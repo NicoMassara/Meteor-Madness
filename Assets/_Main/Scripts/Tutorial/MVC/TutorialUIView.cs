@@ -20,7 +20,7 @@ namespace _Main.Scripts.Tutorial.MVC
         [Space] 
         [Header("Buttons")] 
         [SerializeField] private Button nextButton;
-        [SerializeField] private Button finishButton;
+        [SerializeField] private Button[] mainMenuButtons;
 
         private GameObject _currentActivePanel;
 
@@ -29,7 +29,11 @@ namespace _Main.Scripts.Tutorial.MVC
         private void Awake()
         {
             nextButton.onClick.AddListener(NextButtonOnClickHandler);
-            finishButton.onClick.AddListener(FinishButtonOnClickHandler);
+
+            foreach (var button in mainMenuButtons)
+            {
+                button.onClick.AddListener(FinishButtonOnClickHandler);
+            }
         }
         
         public void OnNotify(ulong message, params object[] args)

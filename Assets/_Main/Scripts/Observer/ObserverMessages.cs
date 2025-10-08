@@ -98,5 +98,17 @@
         public const ulong Empty2 = 0xA6007;
         public const ulong Enable = 0xA6008;
         public const ulong ExtraMeteors = 0xA6009;
+        public const ulong AdditionalProjectile = 0xA6010;
+    }
+
+    public struct MainMenuObserverMessage
+    {
+        public const ulong Enable = 0xA7001;
+        public const ulong Disable = 0xA7002;
+        public const ulong MainMenu = 0xA7003;
+        public const ulong LoreMenu = 0xA7004;
+        public const ulong GameMode = 0xA7005;
+        public const ulong Tutorial = 0xA7006;
+        public const ulong Quit = 0xA7007;
     }
 }

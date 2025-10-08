@@ -14,9 +14,24 @@ namespace _Main.Scripts.Tutorial.MVC
             Start,
             Movement,
             Ability,
+            AbilityRunning,
             Finish,
             Disable
         }
+        
+        private class ActionGate
+        {
+            public bool ProjectileReStockEnable { get; private set; }
+            public ActionGate(FSM<States> fsm)
+            {
+                fsm.OnEnterState += state =>
+                {
+                    ProjectileReStockEnable = state is States.Ability or States.Movement;
+                };
+            }
+        }
+        
+        private ActionGate _actionGate;
         
         public TutorialController(TutorialMotor motor)
         {
@@ -39,6 +54,7 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             var temp = new List<TutorialStateBase<States>>();
             _fsm = new FSM<States>();
+            _actionGate = new ActionGate(_fsm);
 
             #region Variables
 
@@ -48,10 +64,12 @@ namespace _Main.Scripts.Tutorial.MVC
             var movement = new TutorialMovementState<States>();
             var ability = new TutorialAbilityState<States>();
             var finish = new TutorialFinishState<States>();
+            var abilityRunning = new TutorialAbilityRunningState<States>();
             
             temp.Add(disable);
             temp.Add(enable);
             temp.Add(start);
+            temp.Add(abilityRunning);
             temp.Add(movement);
             temp.Add(ability);
             temp.Add(finish);
@@ -63,10 +81,13 @@ namespace _Main.Scripts.Tutorial.MVC
             enable.AddTransition(States.Start, start);
             
             start.AddTransition(States.Movement, movement);
+            start.AddTransition(States.Disable, disable);
             
             movement.AddTransition(States.Ability, ability);
             
-            ability.AddTransition(States.Finish, finish);
+            ability.AddTransition(States.AbilityRunning, abilityRunning);
+            
+            abilityRunning.AddTransition(States.Finish, finish);
             
             finish.AddTransition(States.Disable, disable);
             
@@ -114,6 +135,10 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             SetTransition(States.Ability);
         }
+        public void TransitionToAbilityRunning()
+        {
+            SetTransition(States.AbilityRunning);
+        }
         
         public void TransitionToFinish()
         {
@@ -158,5 +183,67 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             _motor.SpawnExtraMeteors();
         }
+
+        public void SendAdditionalProjectile(int projectileTypeIndex)
+        {
+            if (_actionGate.ProjectileReStockEnable)
+            {
+                _motor.SendAdditionalProjectile(projectileTypeIndex);
+            }
+        }
+        
     }
+
+    #region States
+    public class TutorialAbilityState<T> : TutorialStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetAbility();
+        }
+    }
+    
+    public class TutorialDisableState<T> : TutorialStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetDisable();
+        }
+    }
+    
+    public class TutorialEnableState<T> : TutorialStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetEnable();
+        }
+    }
+    
+    public class TutorialFinishState<T> : TutorialStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetFinish();
+        }
+    }
+    
+    public class TutorialMovementState<T> : TutorialStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetMovement();
+        }
+    }
+    
+    public class TutorialStartState<T> : TutorialStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetStart();
+        }
+    }
+    
+    public class TutorialAbilityRunningState<T> : TutorialStateBase<T> { }
+
+    #endregion
 }

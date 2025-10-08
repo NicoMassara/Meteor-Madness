@@ -36,7 +36,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetViewHandlers();
             SetUIViewHandlers();
             
-            GameEventCaller.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_GameScreen_SetScreen);
+            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetScreen);
         }
 
         private void Start()
@@ -148,7 +148,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameEventCaller.Unsubscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
         }
 
-        private void EventBus_GameScreen_SetScreen(GameScreenEvents.SetGameScreen input)
+        private void EventBus_GameScreen_SetScreen(GameScreenEvents.SetScreen input)
         {
             if (input.ScreenType == ScreenType.GameMode &&
                 input.IsEnable == true)
