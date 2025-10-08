@@ -1,7 +1,6 @@
 ﻿using _Main.Scripts.FyingObject;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -27,7 +26,7 @@ namespace _Main.Scripts.Comet
         {
             _pool = new GenericPool<CometView>(cometPrefab, 1, 5);
             
-            SetTimer(GameParameters.TimeValues.FirstCometSpawnDelay);
+            SetTimer(GameConfigManager.Instance.GetGameplayData().GameTimeData.FirstCometSpawnDelay);
         }
 
         public void ManagedUpdate() { }
@@ -46,8 +45,8 @@ namespace _Main.Scripts.Comet
             if(playerCamera == null) return;
             
             SpawnComet(GetSpawnPosition(), GetTargetPosition());
-            var spawnDelayRange = Random.Range(GameParameters.TimeValues.CometSpawnDelay*0.75f,
-                GameParameters.TimeValues.CometSpawnDelay*1.25f);
+            var spawnDelay = GameConfigManager.Instance.GetGameplayData().GameTimeData.CometSpawnDelay;
+            var spawnDelayRange = Random.Range(spawnDelay*0.75f, spawnDelay*1.25f);
             
             SetTimer(spawnDelayRange);
         }

@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay.FSM.Earth;
+using _Main.Scripts.Interfaces;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
     public class EarthController 
     {
+        private readonly IEarthDestruction _earthDestructionTimeValues;
         private readonly EarthMotor _motor;
         private FSM<States> _fsm;
 
@@ -19,9 +21,10 @@ namespace _Main.Scripts.Gameplay.Earth
             Heal
         }
 
-        public EarthController(EarthMotor motor)
+        public EarthController(EarthMotor motor, IEarthDestruction earthDestructionTimeValues)
         {
             _motor = motor;
+            _earthDestructionTimeValues = earthDestructionTimeValues;
         }
 
         public void Initialize()
@@ -118,7 +121,12 @@ namespace _Main.Scripts.Gameplay.Earth
         #endregion
 
         #endregion
-        
+
+        public IEarthDestruction GetEarthDestructionTimeValues()
+        {
+            return _earthDestructionTimeValues;
+        }
+
         #region Health
 
         public void RestartHealth()

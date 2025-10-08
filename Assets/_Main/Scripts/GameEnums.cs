@@ -21,7 +21,9 @@
         Health,
         SlowMotion,
         DoublePoints,
-        Automatic
+        Automatic,
+        
+        Default_MAX
     }
     
     public enum DamageTypes
