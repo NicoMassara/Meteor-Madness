@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using _Main.Scripts.Gameplay.Abilities;
-using _Main.Scripts.Gameplay.AutoTarget;
-using _Main.Scripts.Gameplay.FloatingScore;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -62,23 +59,20 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var ability = (AbilityType)index;
             
-            GameManager.Instance.EventManager.Publish(new FloatingTextEvents.Spawn
+            FloatingTextEventCaller.Spawn(new FloatingTextValues
             {
-                Data = new FloatingTextValues
-                {
-                    Position = position,
-                    Offset = new Vector2(0, 1f),
-                    Text = AbilityDataGetter.GetDisplayName(ability),
-                    Color = AbilityDataGetter.GetColor(ability),
-                    DoesFade = true,
-                    DoesMove = true
-                }
+                Position = position,
+                Offset = new Vector2(0, 1f),
+                Text = AbilityDataGetter.GetDisplayName(ability),
+                Color = AbilityDataGetter.GetColor(ability),
+                DoesFade = true,
+                DoesMove = true
             });
         }
 
         private void HandleSetStorageFull(bool isFull)
         {
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
+            AbilitiesEventCaller.SetStorageFull(isFull);
         }
 
         private void HandleRunActiveTimer(int abilityIndex)

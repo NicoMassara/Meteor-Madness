@@ -29,7 +29,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void InitializeValues()
         {
-            NotifyAll(GameModeObserverMessage.Initialize);
+            NotifyAll(GameModeObserverMessage.InitializeValues);
         }
         
         public void SetDoesRestartGameMode(bool doesRestart)
@@ -154,6 +154,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void GrantSpawnMeteor(int projectileTypeIndex)
         {
             NotifyAll(GameModeObserverMessage.GrantProjectileSpawn,projectileTypeIndex);
+        }
+
+        public void Enable()
+        {
+            NotifyAll(GameModeObserverMessage.Enable);
         }
     }
 }

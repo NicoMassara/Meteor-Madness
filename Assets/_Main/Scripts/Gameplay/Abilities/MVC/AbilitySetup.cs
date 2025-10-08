@@ -69,14 +69,12 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBusSetup()
         {
-            var eventBus = GameManager.Instance.EventManager;
-            
-            eventBus.Subscribe<AbilitiesEvents.SetCanUse>(EventBus_Ability_SetEnable);
-            eventBus.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
-            eventBus.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            eventBus.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
-            eventBus.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventBus.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            GameEventCaller.Subscribe<AbilitiesEvents.SetCanUse>(EventBus_Ability_SetEnable);
+            GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
+            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+            GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
+            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
         }
 
         private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)

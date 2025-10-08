@@ -14,6 +14,8 @@ namespace _Main.Scripts.Tutorial.MVC
         private TutorialView _view;
         private TutorialUIView _ui;
 
+        private bool _isEnable;
+
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         
         private void Awake()
@@ -28,7 +30,9 @@ namespace _Main.Scripts.Tutorial.MVC
             _motor.Subscribe(_ui);
             
             SetViewHandlers();
-            SetEventBus();
+            SubscribeEventBus();
+            
+            GameEventCaller.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_GameScreen_SetGameScreen);
         }
 
         private void Start()
@@ -38,15 +42,38 @@ namespace _Main.Scripts.Tutorial.MVC
         
         public void ManagedUpdate()
         {
-            _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            if (_isEnable)
+            {
+                _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            }
+        }
+
+        private void TutorialEnable()
+        {
+            _isEnable = true;
+            SubscribeEventBus();
+            _controller.TransitionToStart();
+        }
+
+        private void TutorialDisable()
+        {
+            _isEnable = false;
+            UnsubscribeEventBus();
+            _controller.TransitionToDisable();
         }
 
         #region Event Handlers
 
         private void SetViewHandlers()
         {
-            _ui.OnFinish += UI_OnFinishHandler;
             _ui.OnNext += UI_OnNextHandler;
+
+            _view.OnTutorialEnable += ViewOnTutorialEnable;
+        }
+
+        private void ViewOnTutorialEnable()
+        {
+            TutorialEnable();
         }
 
         private void UI_OnNextHandler()
@@ -54,37 +81,46 @@ namespace _Main.Scripts.Tutorial.MVC
             _controller.TransitionToMovement();
         }
 
-        private void UI_OnFinishHandler()
-        {
-            _controller.TransitionToDisable();
-        }
-
         #endregion
         
         #region Event Bus
 
-        private void SetEventBus()
+        private void SubscribeEventBus()
         {
-            //Screen
-            GameEventCaller.Subscribe<GameScreenEvents.TutorialEnable>(EventBus_GameScreen_Tutorial);
-            GameEventCaller.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_GameScreen_MainMenu);
-            
-            //Projectile
-            GameEventCaller.Subscribe<MeteorEvents.Deflected>(EventBus_Meteor_Deflected);
+            GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
+            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
         }
 
-        private void EventBus_GameScreen_MainMenu(GameScreenEvents.MainMenuEnable input)
+        private void UnsubscribeEventBus()
         {
-            _controller.TransitionToDisable();
-        }
-
-        private void EventBus_GameScreen_Tutorial(GameScreenEvents.TutorialEnable input)
-        {
-            _controller.TransitionToStart();
+            GameEventCaller.Unsubscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
+            GameEventCaller.Unsubscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
+            GameEventCaller.Unsubscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
         }
         
-        private void EventBus_Meteor_Deflected(MeteorEvents.Deflected input)
+        private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
+        {
+            if (input.IsActive == false)
+            {
+                _controller.SpawnExtraMeteors();
+            }
+        }
+
+        private void EventBus_GameScreen_SetGameScreen(GameScreenEvents.SetGameScreen input)
+        {
+            if (input.ScreenType == ScreenType.Tutorial && 
+                input.IsEnable)
+            {
+                _controller.TransitionToEnable();
+            }
+            else
+            {
+                TutorialDisable();
+            }
+        }
+        
+        private void EventBus_Meteor_Deflected(ProjectileEvents.Deflected input)
         {
             if (input.Type == ProjectileType.Meteor)
             {

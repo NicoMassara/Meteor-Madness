@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
 namespace _Main.Scripts.Particles
@@ -61,8 +60,7 @@ namespace _Main.Scripts.Particles
 
         private void SetEventBus()
         {
-            var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<ParticleEvents.Spawn>(EventBus_OnSpawnParticle);
+            GameEventCaller.Subscribe<ParticleEvents.Spawn>(EventBus_OnSpawnParticle);
         }
 
 

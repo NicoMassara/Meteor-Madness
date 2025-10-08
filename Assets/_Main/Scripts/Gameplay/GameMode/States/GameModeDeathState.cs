@@ -1,13 +1,12 @@
-﻿namespace _Main.Scripts.Gameplay.FSM.GameMode
+﻿namespace _Main.Scripts.Gameplay.GameMode.States
 {
-    public class GameModeFinishState<T> : GameModeStateBase<T>
+    public class GameModeDeathState<T> : GameModeStateBase<T>
     {
         private ActionQueue _actionQueue = new ActionQueue();
         
         public override void Awake()
         {
-            Controller.HandleGameFinish();
-            Controller.HandleEarthStartDestruction();
+            Controller.HandleEarthEndDestruction();
         }
 
         public override void Execute(float deltaTime)

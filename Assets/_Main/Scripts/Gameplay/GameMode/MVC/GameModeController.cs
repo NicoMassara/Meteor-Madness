@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.FSM.GameMode;
+using _Main.Scripts.Gameplay.GameMode.States;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -12,6 +12,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private enum States
         {
+            Enable,
             Start,
             Gameplay,
             Finish,
@@ -51,7 +52,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             var death = new GameModeDeathState<States>();
             var restart = new GameModeRestartState<States>();
             var disable = new GameModeDisableState<States>();
+            var enable = new GameModeEnableState<States>();
             
+            temp.Add(enable);
             temp.Add(start);
             temp.Add(gameplay);
             temp.Add(finish);
@@ -62,7 +65,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             #endregion
 
             #region Transitions
-
+            
+            enable.AddTransition(States.Start, start);
+            
             start.AddTransition(States.Gameplay, gameplay);
             
             gameplay.AddTransition(States.Finish, finish);
@@ -75,7 +80,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             restart.AddTransition(States.Start, start);
             
-            disable.AddTransition(States.Start, start);
+            disable.AddTransition(States.Enable, enable);
 
             #endregion
 
@@ -93,6 +98,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void SetTransition(States state)
         {
             _fsm?.Transitions(state);
+        }
+        
+        public void TransitionToEnable()
+        {
+            SetTransition(States.Enable);
         }
         
         public void TransitionToStart()
@@ -225,6 +235,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void GrantProjectileSpawn(int projectileTypeIndex)
         {
             _motor.GrantSpawnMeteor(projectileTypeIndex);
+        }
+
+        public void SetEnable()
+        {
+            _motor.Enable();
         }
     }
 }

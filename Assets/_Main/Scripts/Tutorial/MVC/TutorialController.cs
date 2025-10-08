@@ -10,6 +10,7 @@ namespace _Main.Scripts.Tutorial.MVC
         private FSM<States> _fsm;
         private enum States
         {
+            Enable,
             Start,
             Movement,
             Ability,
@@ -42,12 +43,14 @@ namespace _Main.Scripts.Tutorial.MVC
             #region Variables
 
             var disable = new TutorialDisableState<States>();
+            var enable = new TutorialEnableState<States>();
             var start = new TutorialStartState<States>();
             var movement = new TutorialMovementState<States>();
             var ability = new TutorialAbilityState<States>();
             var finish = new TutorialFinishState<States>();
             
             temp.Add(disable);
+            temp.Add(enable);
             temp.Add(start);
             temp.Add(movement);
             temp.Add(ability);
@@ -57,8 +60,8 @@ namespace _Main.Scripts.Tutorial.MVC
 
             #region Transitions
             
-            disable.AddTransition(States.Start, start);
-
+            enable.AddTransition(States.Start, start);
+            
             start.AddTransition(States.Movement, movement);
             
             movement.AddTransition(States.Ability, ability);
@@ -66,6 +69,8 @@ namespace _Main.Scripts.Tutorial.MVC
             ability.AddTransition(States.Finish, finish);
             
             finish.AddTransition(States.Disable, disable);
+            
+            disable.AddTransition(States.Enable, enable);
             
             #endregion
             
@@ -85,6 +90,11 @@ namespace _Main.Scripts.Tutorial.MVC
             _fsm?.Transitions(state);
         }
         
+        public void TransitionToEnable()
+        {
+            SetTransition(States.Enable);
+        }
+
         public void TransitionToStart()
         {
             SetTransition(States.Start);
@@ -137,6 +147,16 @@ namespace _Main.Scripts.Tutorial.MVC
         public void SetDisable()
         {
             _motor.Disable();
+        }
+
+        public void SetEnable()
+        {
+            _motor.Enable();
+        }
+
+        public void SpawnExtraMeteors()
+        {
+            _motor.SpawnExtraMeteors();
         }
     }
 }

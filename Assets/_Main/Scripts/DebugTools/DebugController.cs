@@ -18,16 +18,22 @@ namespace _Main.Scripts.DebugTools
             _viewUI.Initialize();
             
             // Ability
-            _viewUI.Ability.OnAdded = EventCallerAbility.AddAbility;
-            _viewUI.Ability.OnRandomSpawned = EventCallerAbility.GrantSpawn;
+            _viewUI.Ability.OnAdded = (abilityType) =>
+            {
+                AbilitiesEventCaller.Add(new AbilityAddData{AbilityType = abilityType});
+            };
+            _viewUI.Ability.OnRandomSpawned = AbilitiesEventCaller.GrantSpawn;
             
             //Meteor
-            _viewUI.Meteor.OnSingleSpawned = EventCallerMeteor.GrantSpawnSingle;
-            _viewUI.Meteor.OnRingSpawned = EventCallerMeteor.SpawnRing;
+            _viewUI.Meteor.OnSingleSpawned = MeteorEventCaller.GrantSpawnSingle;
+            _viewUI.Meteor.OnRingSpawned = MeteorEventCaller.SpawnRing;
             
             //Game Values
-            _viewUI.GameValues.OnDamageChange = EventCallerGameValues.SetDamageType;
-            _viewUI.GameValues.OnLevelChange = EventCallerGameValues.UpdateLevel;
+            _viewUI.GameValues.OnDamageChange = (damageType)=>
+            {
+                GameConfigManager.Instance.SetDamage(damageType);
+            };
+            _viewUI.GameValues.OnLevelChange = GameModeEventCaller.UpdateLevel;
             
         }
 
@@ -40,9 +46,9 @@ namespace _Main.Scripts.DebugTools
                 OnEndAction = () =>
                 {
                     GameManager.Instance.CanPlay = true;
-                    GameManager.Instance.EventManager.Publish(new GameModeEvents.Start());
-                    GameManager.Instance.EventManager.Publish(new InputsEvents.SetEnable{IsEnable = true});
-                    EventCallerShield.SetEnableShield(true);
+                    GameModeEventCaller.Start();
+                    InputsEventCaller.SetEnable(true);
+                    ShieldEventCaller.SetEnableShield(true);
                 }
             });
         }

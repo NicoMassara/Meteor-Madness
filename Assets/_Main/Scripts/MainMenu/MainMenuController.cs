@@ -32,12 +32,12 @@ namespace _Main.Scripts.MainMenu
             backButton.onClick.AddListener(SetActiveMainPanel);
             exitButton.onClick.AddListener(QuitGame);
             
-            SetEventBus();
+            GameEventCaller.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_GameScreen_SetScreen);
         }
 
         private void Initialize()
         {            
-            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
+            CameraEventCaller.ZoomIn();
             menuPanel.SetActive(false);
             lorePanel.SetActive(false);
             themeSound.PlaySound();
@@ -75,7 +75,7 @@ namespace _Main.Scripts.MainMenu
             TimerManager.Add(new TimerData
             {
                 Time = GameConfigManager.Instance.GetGameplayData().GameTimeData.TimeToLoadGameScene,
-                OnEndAction = ()=> GameManager.Instance.LoadGameplay()
+                OnEndAction = ()=> GameManager.Instance.LoadGameMode()
             });
         }
         
@@ -109,35 +109,31 @@ namespace _Main.Scripts.MainMenu
             mainPanel.SetActive(isActive);
         }
 
-        #region EventBus
-
-        private void SetEventBus()
-        {
-            var eventManager = GameManager.Instance.EventManager;
-
-            eventManager.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_GameScreen_MainMenu);
-            eventManager.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_GameScreen_Gameplay);
-            eventManager.Subscribe<GameScreenEvents.TutorialEnable>(EventBus_GameScreen_Tutorial);
-        }
-
-        private void EventBus_GameScreen_Tutorial(GameScreenEvents.TutorialEnable input)
-        {
-            themeSound.StopSound();
-            SetEnableMainPanel(false);
-        }
-
-        private void EventBus_GameScreen_Gameplay(GameScreenEvents.GameModeEnable input)
-        {
-            themeSound.StopSound();
-            SetEnableMainPanel(false);
-        }
-
-        private void EventBus_GameScreen_MainMenu(GameScreenEvents.MainMenuEnable input)
+        private void EnableMainMenu()
         {
             SetEnableAllButtons(true);
             Initialize();
         }
 
+        private void DisableMainMenu()
+        {
+            themeSound.StopSound();
+            SetEnableMainPanel(false);
+        }
+
+        #region EventBus
+
+        private void EventBus_GameScreen_SetScreen(GameScreenEvents.SetGameScreen input)
+        {
+            if (input.ScreenType == ScreenType.MainMenu)
+            {
+                EnableMainMenu();
+            }
+            else
+            {
+                DisableMainMenu();
+            }
+        }
         #endregion
     }
 }

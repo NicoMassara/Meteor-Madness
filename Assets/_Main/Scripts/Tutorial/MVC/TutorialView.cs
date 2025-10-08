@@ -1,19 +1,18 @@
-﻿using _Main.Scripts.Managers;
+﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
-using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
     public class TutorialView : ManagedBehavior, IObserver
     {
+        public event Action OnTutorialEnable;
+        
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
-                case TutorialObserverMessage.Start:
-                    HandleStart();
-                    break;
                 case TutorialObserverMessage.Movement:
                     HandleMovement();
                     break;
@@ -23,43 +22,59 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.Finish:
                     HandleFinish();
                     break;
+                case TutorialObserverMessage.Enable:
+                    HandleEnable();
+                    break;
+                case TutorialObserverMessage.ExtraMeteors:
+                    HandleExtraMeteors();
+                    break;
             }
         }
-        
-        private void HandleStart()
-        {
 
+        private void HandleEnable()
+        {
+            OnTutorialEnable?.Invoke();
         }
 
         private void HandleMovement()
         {
-            GameEventCaller.Publish(new CameraEvents.ZoomOut());
-            EventCallerGameValues.SetCanPlay(true);
-            EventCallerShield.SetEnableShield(true);
-            EventCallerInputs.SetEnable(true);
+            GameManager.Instance.CanPlay = true;
+            CameraEventCaller.ZoomOut();
+            ShieldEventCaller.SetEnableShield(true);
+            InputsEventCaller.SetEnable(true);
+            GameConfigManager.Instance.SetDamage(DamageTypes.None);
             
             for (int i = 0; i < 1; i++)
             {
-                EventCallerMeteor.GrantSpawnSingle();
+                MeteorEventCaller.GrantSpawnSingle();
             }
         }
         
         private void HandleAbility()
         {
-            EventCallerAbility.GrantSpawn();
+            AbilitiesEventCaller.GrantSpawn();
+            AbilitiesEventCaller.SetCanUse(true);
+        }
+        
+        private void HandleExtraMeteors()
+        {
+            GameModeEventCaller.UpdateLevel(9);
             
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
-                EventCallerMeteor.GrantSpawnSingle();
+                MeteorEventCaller.GrantSpawnSingle();
             }
         }
         
         private void HandleFinish()
         {
-            EventCallerInputs.SetEnable(false);
-            EventCallerGameValues.SetCanPlay(false);
-            EventCallerShield.SetEnableShield(false);
-            GameEventCaller.Publish(new CameraEvents.ZoomIn());
+            MeteorEventCaller.RecycleAll();
+            GameModeEventCaller.UpdateLevel(0);
+            AbilitiesEventCaller.SetCanUse(false);
+            GameManager.Instance.CanPlay = false;
+            GameModeEventCaller.Finish();
+            ShieldEventCaller.SetEnableShield(false);
+            CameraEventCaller.ZoomIn();
         }
     }
 }

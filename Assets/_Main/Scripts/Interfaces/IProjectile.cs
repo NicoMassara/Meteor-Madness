@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.MyTools;
+﻿using System;
 using UnityEngine;
 
 namespace _Main.Scripts.Interfaces
@@ -7,5 +7,6 @@ namespace _Main.Scripts.Interfaces
     {
         public Vector2 Position { get; }
         public bool EnableMovement { get; set; }
+        public event Action OnDeath;
     }
 }

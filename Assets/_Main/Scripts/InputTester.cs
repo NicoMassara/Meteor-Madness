@@ -30,21 +30,18 @@ namespace _Main.Scripts
         {
             for (int i = 0; i < 10; i++)
             {
-                GameManager.Instance.EventManager.Publish(new MeteorEvents.Collision());
+                ProjectileEventCaller.Collision(new CollisionData());
             }
         }
         
         private void AddAbility()
         {
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.Add{AbilityType = abilityToAdd});
+            AbilitiesEventCaller.Add(new AbilityAddData{AbilityType = abilityToAdd});
         }
 
         private void Deflect()
         {
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.Deflected
-            {
-                Value = 1f
-            });
+            ProjectileEventCaller.Deflected(new DeflectData{Value = 1f});
         }
 
         private void ChangeTimeScale()

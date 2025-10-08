@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.InspectorTools;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -13,6 +13,7 @@ namespace _Main.Scripts.Gameplay.Projectile
         private readonly Queue<IProjectile> _projectileQueue = new Queue<IProjectile>();
         private ulong _firstSpawnTimerId;
         private bool _canLaunch = false;
+        [SerializeField] [ReadOnly] private int projectileCount;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
@@ -50,8 +51,7 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void RequestProjectile()
         {
-            GameManager.Instance.EventManager.Publish(
-                new ProjectileEvents.RequestSpawn{ProjectileType = ProjectileType.Meteor, RequestType = EventRequestType.Request});
+            ProjectileEventCaller.RequestSpawn(ProjectileType.Meteor);
         }
         
         private void SpawnProjectile(ProjectileType projectileType)
@@ -59,14 +59,13 @@ namespace _Main.Scripts.Gameplay.Projectile
             var spawnPosition = spawnSettings.GetSpawnPosition();
             var direction = spawnSettings.GetCenterOfGravity() - spawnPosition;
             
-            GameManager.Instance.EventManager.Publish(
-                new ProjectileEvents.Spawn
-                {
-                    ProjectileType = projectileType,
-                    Position = spawnPosition,
-                    Direction = direction,
-                    MovementMultiplier = spawnSettings.GetMovementMultiplier(),
-                });
+            ProjectileEventCaller.Spawn(new ProjectileSpawnData
+            {
+                ProjectileType = projectileType,
+                Position = spawnPosition,
+                Direction = direction,
+                MovementMultiplier = spawnSettings.GetMovementMultiplier(),
+            });
         }
 
         private void LaunchProjectile()
@@ -74,26 +73,27 @@ namespace _Main.Scripts.Gameplay.Projectile
             var temp = _projectileQueue.Dequeue();
             temp.EnableMovement = true;
             _distanceTracker.SetProjectile(temp, spawnSettings.GetCenterOfGravity());
+            projectileCount = _projectileQueue.Count;
         }
 
         private void AddProjectile(IProjectile projectile)
         {
             projectile.EnableMovement = false;
             _projectileQueue.Enqueue(projectile);
+            projectileCount = _projectileQueue.Count;
         }
 
         #region Event Bus
 
         private void SetEventBus()
         {
-            var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
-            eventManager.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
-            eventManager.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_SpawnRequest);
-            eventManager.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
-            eventManager.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
-            eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventManager.Subscribe<GameModeEvents.Restart>(EventBus_GameMode_Restart);
+            GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
+            GameEventCaller.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
+            GameEventCaller.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_SpawnRequest);
+            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            GameEventCaller.Subscribe<GameModeEvents.Restart>(EventBus_GameMode_Restart);
+            GameEventCaller.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
         }
 
         private void EventBus_Projectile_SpawnRequest(ProjectileEvents.RequestSpawn input)

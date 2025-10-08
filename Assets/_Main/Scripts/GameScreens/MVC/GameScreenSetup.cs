@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
@@ -39,22 +38,22 @@ namespace _Main.Scripts.GameScreens
 
         private void SetEventBus()
         {
-            var eventManager = GameManager.Instance.EventManager;
-            
-            eventManager.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_OnSetGameScreen);
+            GameEventCaller.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_OnSetGameScreen);
         }
 
         private void EventBus_OnSetGameScreen(GameScreenEvents.SetGameScreen input)
         {
-            switch (input.Index)
+            if(input.IsEnable == true) return;
+            
+            switch (input.ScreenType)
             {
-                case 0:
+                case ScreenType.MainMenu:
                     _controller.TransitionToMainMenu();
                     break;
-                case 1:
+                case ScreenType.GameMode:
                     _controller.TransitionToGameplay();
                     break;
-                case 2:
+                case ScreenType.Tutorial:
                     _controller.TransitionToTutorial();
                     break;
                 default:
