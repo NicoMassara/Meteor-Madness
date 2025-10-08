@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.FloatingScore;
 using _Main.Scripts.Gameplay.Projectile;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -99,8 +100,19 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
         {
             var finalScore = (int)(pointsAmount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
-            GameManager.Instance.EventManager.Publish(
-                new FloatingTextEvents.Points{ Position = position, Score = finalScore, IsDouble = isDouble });
+            GameManager.Instance.EventManager.Publish(new FloatingTextEvents.Spawn
+            {
+                Data = new FloatingTextValues
+                {
+                    Position = position, 
+                    Offset = new Vector2(0,1f),
+                    Text = $"+{finalScore.ToString()}",
+                    Color = isDouble ? Color.yellow : Color.white,
+                    DoesFade = true,
+                    DoesMove = true
+                }
+            });
+
         }
         
         private void HandleGamePaused(bool isPaused)
