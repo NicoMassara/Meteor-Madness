@@ -214,7 +214,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             GameManager.Instance.EventManager.Publish(new GameModeEvents.Start());
             SetEnableInputs(true);
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetEnable{IsEnable = true});
+            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetCanUse{CanUse = true});
             OnCountdownFinished?.Invoke();
         }
 

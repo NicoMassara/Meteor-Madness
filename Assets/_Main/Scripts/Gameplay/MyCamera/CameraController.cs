@@ -2,7 +2,6 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
-using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Shaker;
 using UnityEngine;
 
@@ -66,13 +65,13 @@ namespace _Main.Scripts.Gameplay.MyCamera
             mainCamera.orthographicSize = newSize;
         }
 
-        public void ZoomIn()
+        private void ZoomIn()
         {
             _targetSize = _zoomSize;
             _doesChangeSize = true;
         }
 
-        public void ZoomOut()
+        private void ZoomOut()
         {
             _targetSize = _defaultSize;
             _doesChangeSize = true;

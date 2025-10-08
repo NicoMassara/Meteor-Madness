@@ -71,7 +71,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var eventBus = GameManager.Instance.EventManager;
             
-            eventBus.Subscribe<AbilitiesEvents.SetEnable>(EventBus_Ability_SetEnable);
+            eventBus.Subscribe<AbilitiesEvents.SetCanUse>(EventBus_Ability_SetEnable);
             eventBus.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
             eventBus.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
             eventBus.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
@@ -109,9 +109,9 @@ namespace _Main.Scripts.Gameplay.Abilies
             _controller.TryAddAbility((int)input.AbilityType, input.Position);
         }
 
-        private void EventBus_Ability_SetEnable(AbilitiesEvents.SetEnable input)
+        private void EventBus_Ability_SetEnable(AbilitiesEvents.SetCanUse input)
         {
-            if (input.IsEnable)
+            if (input.CanUse)
             {
                 _controller.TransitionToEnable();
             }

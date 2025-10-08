@@ -9,3 +9,4 @@ EditorBuildSettings:
     path: Assets/_Main/Scenes/Gameplay + MainMenu + Tutorial.unity
     guid: 56f7ca3c2c0d86646a915c5855bb9ce3
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

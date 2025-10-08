@@ -16,7 +16,7 @@ namespace _Main.Scripts.GameScreens
 
         public void SetActiveTutorial()
         {
-            //NotifyAll(GameScreenObserverMessage.SetGameplay);
+            NotifyAll(GameScreenObserverMessage.SetTutorial);
         }
     }
 }

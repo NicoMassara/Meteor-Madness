@@ -44,6 +44,7 @@ namespace _Main.Scripts.Managers
     {
         public struct MainMenuEnable { }
         public struct GameModeEnable { }
+        public struct TutorialEnable { }
         
         public struct SetGameScreen
         {
@@ -137,9 +138,9 @@ namespace _Main.Scripts.Managers
 
     public struct AbilitiesEvents
     {
-        public struct SetEnable
+        public struct SetCanUse
         {
-            public bool IsEnable;
+            public bool CanUse;
         }
 
         public struct Add
