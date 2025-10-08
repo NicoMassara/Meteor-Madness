@@ -106,19 +106,19 @@ namespace _Main.Scripts.Gameplay.GameMode
             //Add events
             
             //GameMode
-            eventBus.Subscribe<GameModeEvents.Finish>(EventBus_OnGameFinished);
-            eventBus.Subscribe<GameModeEvents.SetPause>(EventBus_OnGamePaused);
+            eventBus.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
+            eventBus.Subscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
             //GameScreen
-            eventBus.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_OnMainMenu);
-            eventBus.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_OnGameModeScreenEnable);
+            eventBus.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_GameScreen_GameMode);
+            eventBus.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_GameScreen_MainMenu);
             
             //Meteor
-            eventBus.Subscribe<MeteorEvents.Deflected>(EventBus_OnMeteorDeflected);
+            eventBus.Subscribe<MeteorEvents.Deflected>(EventBus_Meteor_Deflected);
             
             //Earth
-            eventBus.Subscribe<EarthEvents.ShakeStart>(EventBus_OnEarthShake);
-            eventBus.Subscribe<EarthEvents.DestructionFinished>(EventBus_OnEarthDestruction);
-            eventBus.Subscribe<EarthEvents.RestartFinished>(EventBus_OnEarthRestartFinish);
+            eventBus.Subscribe<EarthEvents.ShakeStart>(EventBus_Earth_ShakeStart);
+            eventBus.Subscribe<EarthEvents.DestructionFinished>(EventBus_Earth_DestructionFinished);
+            eventBus.Subscribe<EarthEvents.RestartFinished>(EventBus_Earth_RestartFinish);
             
             //Abilities
             eventBus.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_SetActive);
@@ -143,43 +143,43 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
         }
 
-        private void EventBus_OnGameModeScreenEnable(GameScreenEvents.GameModeEnable input)
+        private void EventBus_GameScreen_GameMode(GameScreenEvents.GameModeEnable input)
         {
             _controller.SetDoesRestartGameMode(true);
             _controller.TransitionToStart();
         }
 
-        private void EventBus_OnMainMenu(GameScreenEvents.MainMenuEnable input)
+        private void EventBus_GameScreen_MainMenu(GameScreenEvents.MainMenuEnable input)
         {
             _controller.TransitionToDisable();
         }
 
-        private void EventBus_OnGamePaused(GameModeEvents.SetPause input)
+        private void EventBus_GameMode_SetPaused(GameModeEvents.SetPause input)
         {
             _controller.SetGamePause(input.IsPaused);
         }
 
-        private void EventBus_OnEarthRestartFinish(EarthEvents.RestartFinished input)
+        private void EventBus_Earth_RestartFinish(EarthEvents.RestartFinished input)
         {
             _controller.EarthRestartFinish();
         }
 
-        private void EventBus_OnGameFinished(GameModeEvents.Finish input)
+        private void EventBus_GameMode_Finished(GameModeEvents.Finish input)
         {
             _controller.TransitionToFinish();
         }
 
-        private void EventBus_OnMeteorDeflected(MeteorEvents.Deflected input)
+        private void EventBus_Meteor_Deflected(MeteorEvents.Deflected input)
         {
             _controller.HandleMeteorDeflect(input.Position,input.Value);
         }
 
-        private void EventBus_OnEarthDestruction(EarthEvents.DestructionFinished destructionFinished)
+        private void EventBus_Earth_DestructionFinished(EarthEvents.DestructionFinished destructionFinished)
         {
             _controller.TransitionToDeath();
         }
 
-        private void EventBus_OnEarthShake(EarthEvents.ShakeStart shakeStart)
+        private void EventBus_Earth_ShakeStart(EarthEvents.ShakeStart shakeStart)
         {
             _controller.HandleEarthShake();
         }

@@ -54,6 +54,9 @@ namespace _Main.Scripts.GameScreens
                 case 1:
                     _controller.TransitionToGameplay();
                     break;
+                case 2:
+                    _controller.TransitionToTutorial();
+                    break;
                 default:
                     Debug.LogWarning("GameScene Index is out of range.");
                     break;

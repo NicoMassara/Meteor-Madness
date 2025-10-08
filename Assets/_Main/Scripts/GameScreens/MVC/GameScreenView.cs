@@ -1,7 +1,6 @@
 ﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
-using UnityEngine;
 
 namespace _Main.Scripts.GameScreens
 {
@@ -21,7 +20,15 @@ namespace _Main.Scripts.GameScreens
                 case GameScreenObserverMessage.SetGameplay:
                     HandleSetGameplay();
                     break;
+                case GameScreenObserverMessage.SetTutorial:
+                    HandleSetTutorial();
+                    break;
             }
+        }
+
+        private void HandleSetTutorial()
+        {
+            GameManager.Instance.EventManager.Publish(new GameScreenEvents.TutorialEnable());
         }
 
         private void HandleSetMainMenu()

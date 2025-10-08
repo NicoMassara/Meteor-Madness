@@ -88,7 +88,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 }
             );
             
-            data.Sphere.ForceRecycle();
+            data.Sphere.Recycle();
             
             var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
             temp = _isStorageFull ? temp/2 : temp;
@@ -111,7 +111,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 }
             );
             
-            data.Sphere.ForceRecycle();
+            data.Sphere.Recycle();
             
             var temp = UnityEngine.Random.Range(spawnDelay * 0.75f, spawnDelay);
             temp = _isStorageFull ? temp/2 : temp;

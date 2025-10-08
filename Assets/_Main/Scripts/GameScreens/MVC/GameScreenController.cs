@@ -12,7 +12,8 @@ namespace _Main.Scripts.GameScreens
         private enum States
         {
             MainMenu,
-            Gameplay
+            Gameplay,
+            Tutorial,
         }
 
         public GameScreenController(GameScreenMotor motor)
@@ -41,9 +42,11 @@ namespace _Main.Scripts.GameScreens
 
             var mainMenu = new GameScreenMainMenuState<States>();
             var gameplay = new GameScreenGameplayState<States>();
+            var tutorial = new GameScreenTutorialState<States>();
             
             temp.Add(mainMenu);
             temp.Add(gameplay);
+            temp.Add(tutorial);
 
 
             #endregion
@@ -51,8 +54,11 @@ namespace _Main.Scripts.GameScreens
             #region Transitions
 
             mainMenu.AddTransition(States.Gameplay, gameplay);
+            mainMenu.AddTransition(States.Tutorial, tutorial);
             
             gameplay.AddTransition(States.MainMenu, mainMenu);
+            
+            tutorial.AddTransition(States.MainMenu, mainMenu);
 
             #endregion
 
@@ -82,6 +88,11 @@ namespace _Main.Scripts.GameScreens
             SetTransition(States.Gameplay);
         }
         
+        public void TransitionToTutorial()
+        {
+            SetTransition(States.Tutorial);
+        }
+        
         #endregion
 
         #endregion
@@ -94,6 +105,11 @@ namespace _Main.Scripts.GameScreens
         public void SetActiveGameplay()
         {
             _motor.SetActiveGameplay();
+        }
+
+        public void SetActiveTutorial()
+        {
+            _motor.SetActiveTutorial();
         }
     }
 }

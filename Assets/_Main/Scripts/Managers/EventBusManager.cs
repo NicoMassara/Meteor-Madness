@@ -38,6 +38,4 @@ namespace _Main.Scripts.Managers
             _listeners.Clear();
         }
     }
-    
-    
 }

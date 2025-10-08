@@ -31,6 +31,11 @@ namespace _Main.Scripts.Managers
         {
             EventManager = new EventBusManager();
         }
+        
+        public void LoadTutorial()
+        {
+            Instance.EventManager.Publish(new GameScreenEvents.SetGameScreen{Index = 2});
+        }
 
         public void LoadGameplay()
         {

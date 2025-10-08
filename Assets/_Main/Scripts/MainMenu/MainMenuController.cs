@@ -3,7 +3,7 @@ using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Main.Scripts.Menu
+namespace _Main.Scripts.MainMenu
 {
     public class MainMenuController : MonoBehaviour
     {
@@ -13,6 +13,7 @@ namespace _Main.Scripts.Menu
         [SerializeField] private GameObject lorePanel;
         [Header("Buttons")]
         [SerializeField] private Button playButton;
+        [SerializeField] private Button tutorialButton;
         [SerializeField] private Button loreButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private Button backButton;
@@ -26,6 +27,7 @@ namespace _Main.Scripts.Menu
         private void Awake()
         {
             playButton.onClick.AddListener(StartGame);
+            tutorialButton.onClick.AddListener(StartTutorial);
             loreButton.onClick.AddListener(SetActiveLorePanel);
             backButton.onClick.AddListener(SetActiveMainPanel);
             exitButton.onClick.AddListener(QuitGame);
@@ -76,6 +78,17 @@ namespace _Main.Scripts.Menu
                 OnEndAction = ()=> GameManager.Instance.LoadGameplay()
             });
         }
+        
+        private void StartTutorial()
+        {
+            SetEnableAllButtons(false);
+            menuSound.PlaySound();
+            TimerManager.Add(new TimerData
+            {
+                Time = GameConfigManager.Instance.GetGameplayData().GameTimeData.TimeToLoadGameScene,
+                OnEndAction = ()=> GameManager.Instance.LoadTutorial()
+            });
+        }
 
         private void SetEnableAllButtons(bool isEnable)
         {
@@ -102,17 +115,24 @@ namespace _Main.Scripts.Menu
         {
             var eventManager = GameManager.Instance.EventManager;
 
-            eventManager.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_OnMainMenuScreen);
-            eventManager.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_OnGameplayScreen);
+            eventManager.Subscribe<GameScreenEvents.MainMenuEnable>(EventBus_GameScreen_MainMenu);
+            eventManager.Subscribe<GameScreenEvents.GameModeEnable>(EventBus_GameScreen_Gameplay);
+            eventManager.Subscribe<GameScreenEvents.TutorialEnable>(EventBus_GameScreen_Tutorial);
         }
 
-        private void EventBus_OnGameplayScreen(GameScreenEvents.GameModeEnable input)
+        private void EventBus_GameScreen_Tutorial(GameScreenEvents.TutorialEnable input)
         {
             themeSound.StopSound();
             SetEnableMainPanel(false);
         }
 
-        private void EventBus_OnMainMenuScreen(GameScreenEvents.MainMenuEnable input)
+        private void EventBus_GameScreen_Gameplay(GameScreenEvents.GameModeEnable input)
+        {
+            themeSound.StopSound();
+            SetEnableMainPanel(false);
+        }
+
+        private void EventBus_GameScreen_MainMenu(GameScreenEvents.MainMenuEnable input)
         {
             SetEnableAllButtons(true);
             Initialize();

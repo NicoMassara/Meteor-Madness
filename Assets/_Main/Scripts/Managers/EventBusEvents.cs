@@ -44,6 +44,7 @@ namespace _Main.Scripts.Managers
     {
         public struct MainMenuEnable { }
         public struct GameModeEnable { }
+        public struct TutorialEnable { }
         
         public struct SetGameScreen
         {
@@ -109,7 +110,7 @@ namespace _Main.Scripts.Managers
     {
         public struct Spawn
         {
-            public ParticleDataSo ParticleData; 
+            public IParticleData ParticleData; 
             public Vector3 Position;
             public Quaternion Rotation;
             public Vector3 MoveDirection;
@@ -120,7 +121,7 @@ namespace _Main.Scripts.Managers
     {
         public struct Shake
         {
-            public ShakeDataSo ShakeData;
+            public IShakeData ShakeData;
         }
 
         public struct ZoomIn { }
@@ -137,9 +138,9 @@ namespace _Main.Scripts.Managers
 
     public struct AbilitiesEvents
     {
-        public struct SetEnable
+        public struct SetCanUse
         {
-            public bool IsEnable;
+            public bool CanUse;
         }
 
         public struct Add
@@ -184,17 +185,9 @@ namespace _Main.Scripts.Managers
 
     public struct FloatingTextEvents
     {
-        public struct Points
+        public struct Spawn
         {
-            public Vector2 Position;
-            public int Score;
-            public bool IsDouble;
-        }
-        
-        public struct Ability
-        {
-            public Vector2 Position;
-            public AbilityType AbilityType;
+            public FloatingTextValues Data;
         }
     }
 }
