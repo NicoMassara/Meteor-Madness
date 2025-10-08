@@ -142,13 +142,13 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void SetEventBus()
         {
+            GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
             GameEventCaller.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
             GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
             GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
             GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
+            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
             GameEventCaller.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
-            GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
         }
 
         private void EventBus_GameMode_Start(GameModeEvents.Start input)
@@ -184,14 +184,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
         {
-            if (input.CurrentLevel == 5)
-            {
-                _selector.SetLevel(input.CurrentLevel);
-                SetTimer(spawnDelay);
-            }
+            _selector.SetLevel(input.CurrentLevel);
         }
 
-        private void EventBus_OnGameModeDisable(GameModeEvents.Disable input)
+        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
         {
             _isTimerEnable = false;
             TimerManager.Remove(_spawnTimerId);
