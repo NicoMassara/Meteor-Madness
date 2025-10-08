@@ -106,7 +106,9 @@ namespace _Main.Scripts.Managers
             public Vector2 Position;
             public Vector2 Direction;
             public float MovementMultiplier;
-        };
+        }
+        
+        public struct ClearQueue {}
     }
     
     public struct MeteorEvents
