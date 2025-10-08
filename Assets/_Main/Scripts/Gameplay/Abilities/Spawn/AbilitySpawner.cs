@@ -19,7 +19,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private bool _isStorageFull;
         private AbilitySphereFactory _factory;
-        private AbilitySelector _selector = new AbilitySelector();
+        private AbilitySelector _selector;
         private ulong _spawnTimerId;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
@@ -30,6 +30,12 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void Start()
         {
+            var selectorData = GameConfigManager.Instance.GetGameplayData().AbilitySelectorData;
+            var rarityTuple = selectorData.GetRarityValues();
+            var levelUnlockTuple = selectorData.GetUnlockLevelValues();
+            
+            _selector = new AbilitySelector(rarityTuple.abilityTypes, rarityTuple.rarityValues, 
+                levelUnlockTuple.unlockLevels, levelUnlockTuple.abilityTypes);
             _factory = new AbilitySphereFactory(prefab);
         }
 
@@ -44,7 +50,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void CreateAbilitySphere(Vector2 position, Vector2 direction, float movementMultiplier)
         {
             var tempSphere = _factory.SpawnAbilitySphere();
-            var movementSpeed = (GameParameters.GameplayValues.MaxMeteorSpeed) * movementMultiplier;
+            var movementSpeed = GameConfigManager.Instance.GetGameplayData().ProjectileData.MaxProjectileSpeed 
+                                * movementMultiplier;
             
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -76,7 +83,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
-                    Direction = data.Direction
+                    Direction = data.Direction,
+                    Type = ProjectileType.AbilitySphere
                 }
             );
             
@@ -98,7 +106,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
-                    Direction = data.Direction
+                    Direction = data.Direction,
+                    Type = ProjectileType.AbilitySphere
                 }
             );
             
@@ -201,6 +210,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private readonly List<AbilityType> _storedAbilities = new List<AbilityType>();
         private readonly Dictionary<AbilityType, int> _dic = new Dictionary<AbilityType, int>();
         private readonly Dictionary<AbilityType, AbilityValue> _valuesDic = new Dictionary<AbilityType, AbilityValue>();
+        private readonly Dictionary<int, AbilityType> _unlockDic = new Dictionary<int, AbilityType>();
 
         private class AbilityValue
         {
@@ -226,37 +236,45 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 return (int)Math.Round(_selectValue * _multiplier);
             }
         }
-
-        public AbilitySelector()
+        
+        public  AbilitySelector(
+            AbilityType[] rarityTupleAbilityTypes, int[] rarityTupleRarityValues, 
+            int[] unlockLevels, AbilityType[] unlockAbility)
         {
-            _valuesDic.Add(AbilityType.DoublePoints, new AbilityValue(10, AbilityType.DoublePoints));
-            _valuesDic.Add(AbilityType.SlowMotion, new AbilityValue(8, AbilityType.SlowMotion));
-            _valuesDic.Add(AbilityType.Health, new AbilityValue(6, AbilityType.Health));
-            _valuesDic.Add(AbilityType.SuperShield, new AbilityValue(4, AbilityType.SuperShield));
-            _valuesDic.Add(AbilityType.Automatic, new AbilityValue(2, AbilityType.Automatic));
+            _unlockDic = CreateDic(unlockLevels, unlockAbility);
+            
+            var abilityValues = new AbilityValue[rarityTupleAbilityTypes.Length];
+            
+            for (int i = 0; i < rarityTupleAbilityTypes.Length; i++)
+            {
+                abilityValues[i] = new AbilityValue(
+                    rarityTupleRarityValues[i],
+                    rarityTupleAbilityTypes[i]);
+            }
+            
+            _valuesDic = CreateDic(rarityTupleAbilityTypes, abilityValues);
         }
 
+        private Dictionary<T,TS> CreateDic<T, TS>(T[] keyArray, TS[] valueArray)
+        {
+            var dic = new Dictionary<T,TS>();
+            
+            for (int i = 0; i < keyArray.Length; i++)
+            {
+                var key = keyArray[i];
+                if(dic.ContainsKey(key)) continue;
+                dic.Add(key, valueArray[i]);
+            }
+            
+            return dic;
+        }
 
+        
         public void SetLevel(int level)
         {
-            _level = level;
-            switch (_level)
+            if (_unlockDic.TryGetValue(level, out var value))
             {
-                case 5:
-                    SetMultiplier(AbilityType.DoublePoints, 1f);
-                    break;
-                case 6:
-                    SetMultiplier(AbilityType.SlowMotion, 1f);
-                    break;
-                case 7:
-                    SetMultiplier(AbilityType.Health, 1f);
-                    break;
-                case 8:
-                    SetMultiplier(AbilityType.Automatic, 1f);
-                    break;
-                case 10:
-                    SetMultiplier(AbilityType.SuperShield, 1f);
-                    break;
+                SetMultiplier(value, 1f);
             }
         }
 

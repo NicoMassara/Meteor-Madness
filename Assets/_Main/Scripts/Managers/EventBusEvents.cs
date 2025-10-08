@@ -79,6 +79,7 @@ namespace _Main.Scripts.Managers
             public Vector3 Position;
             public Quaternion Rotation;
             public Vector2 Direction;
+            public ProjectileType Type;
         }
 
         public struct Deflected
@@ -87,6 +88,7 @@ namespace _Main.Scripts.Managers
             public Quaternion Rotation;
             public Vector2 Direction;
             public float Value;
+            public ProjectileType Type;
         }
     
         public struct EnableSpawn

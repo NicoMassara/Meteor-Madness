@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -44,11 +45,12 @@ namespace _Main.Scripts.Gameplay.Earth
         public void StartSlicing()
         {
             _moveTargetDistance = sliceDistance;
-            _moveTargetTime = EarthParameters.TimeValues.Slice.MoveSlices;
-            SetSliceQueue();
+            var sliceTimes = GameConfigManager.Instance.GetGameplayData().EarthTimeData.Slice;
+            _moveTargetTime = sliceTimes.MoveSlices;
+            SetSliceQueue(sliceTimes);
         }
         
-        private void SetSliceQueue()
+        private void SetSliceQueue(IEarthSlice sliceTimes)
         {
             var temp = new[]
             {
@@ -61,16 +63,16 @@ namespace _Main.Scripts.Gameplay.Earth
                 {
                     SetActiveSlices(true);
                     _canMove = true;
-                }, EarthParameters.TimeValues.Slice.StartSlice),
+                }, sliceTimes.StartSlice),
                 
                 new ActionData(() => _canMove = false, 
-                    EarthParameters.TimeValues.Slice.MoveSlices),
+                    sliceTimes.MoveSlices),
                 
                 new ActionData(() =>
                 {
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
-                }, EarthParameters.TimeValues.Slice.ReturnToNormalTime),
+                }, sliceTimes.ReturnToNormalTime),
             };
             
             ActionManager.Add(new ActionQueue(temp),SelfUpdateGroup);
@@ -136,11 +138,12 @@ namespace _Main.Scripts.Gameplay.Earth
             if(!_isSliced) return;
             
             _moveTargetDistance = 0;
-            _moveTargetTime = EarthParameters.TimeValues.Slice.ReturnSlices;
-            SetUniteQueue();
+            var sliceTimes = GameConfigManager.Instance.GetGameplayData().EarthTimeData.Slice;
+            _moveTargetTime = sliceTimes.ReturnSlices;
+            SetUniteQueue(sliceTimes);
         }
         
-        private void SetUniteQueue()
+        private void SetUniteQueue(IEarthSlice sliceTimes)
         {
             var temp = new[]
             {
@@ -156,14 +159,14 @@ namespace _Main.Scripts.Gameplay.Earth
                     UniteMeshes();
                     _canMove = false;
                     
-                }, EarthParameters.TimeValues.Slice.ReturnSlices),
+                }, sliceTimes.ReturnSlices),
                 
                 new ActionData(() =>
                 {
                     UniteMeshes();
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
-                }, EarthParameters.TimeValues.Slice.ReturnSlices),
+                }, sliceTimes.ReturnSlices),
             };
             
             ActionManager.Add(new ActionQueue(temp),SelfUpdateGroup);
