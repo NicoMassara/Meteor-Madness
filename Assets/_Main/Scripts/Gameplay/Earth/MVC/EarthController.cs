@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.FSM.Earth;
+using _Main.Scripts.Gameplay.Earth.States;
 using _Main.Scripts.Interfaces;
 using UnityEngine;
 
@@ -127,6 +127,8 @@ namespace _Main.Scripts.Gameplay.Earth
             return _earthDestructionTimeValues;
         }
 
+        #region Motor
+
         #region Health
 
         public void RestartHealth()
@@ -180,6 +182,8 @@ namespace _Main.Scripts.Gameplay.Earth
             _motor.SetEnableDamage(canTakeDamage);
         }
 
+        #endregion
+
         #region Handlers
 
         private void Motor_OnDeathHandler()
@@ -189,4 +193,90 @@ namespace _Main.Scripts.Gameplay.Earth
 
         #endregion
     }
+
+    #region States
+
+    public class EarthDeadShakingState<T> : EarthBaseState<T>
+    {
+        private readonly ActionQueue _queue = new ActionQueue();
+
+        public override void Awake()
+        {
+            var temp = new ActionData[]
+            {
+                new(()=>Controller.SetDeathShake(true),
+                    Controller.GetEarthDestructionTimeValues().StartShake),
+                new(()=>Controller.SetDeathShake(false),
+                    Controller.GetEarthDestructionTimeValues().DeathShakeDuration),
+                new(()=>Controller.TransitionToDestruction(),
+                    Controller.GetEarthDestructionTimeValues().ShowEarthDestruction)
+            };
+            
+            _queue.AddAction(temp);
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            _queue.Run(deltaTime);
+        }
+    }
+    
+    public class EarthDeadState<T> : EarthBaseState<T>
+    {
+        
+        public override void Awake()
+        {
+            Controller.SetRotation(false);
+            Controller.TriggerDeath();
+        }
+    }
+    
+    public class EarthDefaultState<T> : EarthBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetRotation(true);
+        }
+    }
+    
+    public class EarthDestructionState<T> : EarthBaseState<T>
+    {
+        private readonly ActionQueue _queue = new ActionQueue();
+
+        public override void Awake()
+        {
+            if (Controller == null)
+            {
+                Debug.Log("Controller is null");
+                return;
+            }
+
+            var temp = new ActionData[]
+            {
+                new (()=>Controller.TriggerDestruction(),
+                    Controller.GetEarthDestructionTimeValues().StartTriggerDestructionTime),
+                new (()=>Controller.SetRotation(true),
+                    Controller.GetEarthDestructionTimeValues().StartRotatingAfterDeath),
+                new (()=>Controller.TriggerEndDestruction(),
+                    Controller.GetEarthDestructionTimeValues().EndTriggerDestructionTime),
+            };
+
+            _queue.AddAction(temp);
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            _queue.Run(deltaTime);
+        }
+    }
+    
+    public class EarthHealState<T> : EarthBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.RestartHealth();
+        }
+    }
+
+    #endregion
 }
