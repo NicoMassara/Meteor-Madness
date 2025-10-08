@@ -1,5 +1,4 @@
-﻿using _Main.Scripts.Gameplay.FloatingScore;
-using _Main.Scripts.Interfaces;
+﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
