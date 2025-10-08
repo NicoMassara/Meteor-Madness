@@ -521,7 +521,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
     }
 
-    public class TimeScaleData
+    public struct TimeScaleData
     {
         public UpdateGroup[] UpdateGroups;
         public float TargetTimeScale;

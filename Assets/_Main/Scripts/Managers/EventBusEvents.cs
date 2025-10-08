@@ -109,7 +109,7 @@ namespace _Main.Scripts.Managers
     {
         public struct Spawn
         {
-            public ParticleDataSo ParticleData; 
+            public IParticleData ParticleData; 
             public Vector3 Position;
             public Quaternion Rotation;
             public Vector3 MoveDirection;
@@ -120,7 +120,7 @@ namespace _Main.Scripts.Managers
     {
         public struct Shake
         {
-            public ShakeDataSo ShakeData;
+            public IShakeData ShakeData;
         }
 
         public struct ZoomIn { }
@@ -187,13 +187,6 @@ namespace _Main.Scripts.Managers
         public struct Spawn
         {
             public FloatingTextValues Data;
-        }
-        
-        public struct Ability
-        {
-            public Vector2 Position;
-            public Vector2 Offset;
-            public AbilityType AbilityType;
         }
     }
 }

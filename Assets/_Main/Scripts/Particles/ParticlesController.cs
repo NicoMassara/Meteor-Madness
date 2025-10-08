@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Particles
 {
@@ -30,7 +29,7 @@ namespace _Main.Scripts.Particles
             _pool.RecycleAll();
         }
         
-        private void SpawnParticle(ParticleDataSo particleData, 
+        private void SpawnParticle(IParticleData particleData, 
             Vector3 position, Quaternion rotation, Vector3 moveDirection)
         {
             if (particleData == null)
