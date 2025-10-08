@@ -25,14 +25,12 @@ namespace _Main.Scripts.MainMenu.MVC
             _motor.Subscribe(_ui);
             _motor.Subscribe(_view);
             
+            
             SetViewHandlers();
             
-            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetScreen);
-        }
-
-        private void Start()
-        {
             _controller.Initialize();
+            
+            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetScreen);
         }
 
         private void EnableMainMenu()

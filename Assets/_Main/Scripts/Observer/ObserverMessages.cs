@@ -85,6 +85,7 @@
         public const ulong SetMainMenu = 0xA5001;
         public const ulong SetGameplay = 0xA5002;
         public const ulong SetTutorial = 0xA5003;
+        public const ulong SetStartLoading = 0xA5004;
     }
     
     public struct TutorialObserverMessage

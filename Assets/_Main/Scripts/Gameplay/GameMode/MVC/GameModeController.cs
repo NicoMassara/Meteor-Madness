@@ -138,7 +138,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         #endregion
 
         #endregion
-
+        
+        #region Motor
+        
         #region Level 
 
         public void StartCountdown()
@@ -176,8 +178,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
-        
-        public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
+
+        public void HandleProjectileDeflect(Vector2 position, float meteorDeflectValue)
         {
             _motor.HandleMeteorDeflect(position, meteorDeflectValue);
         }
@@ -241,5 +243,98 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _motor.Enable();
         }
+
+        #endregion
     }
+
+    #region States
+
+    public class GameModeEnableState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetEnable();
+        }
+    }
+    
+    public class GameModeDisableState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.DisableGameMode();
+        }
+    }
+    
+    public class GameModeDeathState<T> : GameModeStateBase<T>
+    {
+        private ActionQueue _actionQueue = new ActionQueue();
+        
+        public override void Awake()
+        {
+            Controller.HandleEarthEndDestruction();
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            _actionQueue.Run(deltaTime);
+        }
+    }
+    
+    public class GameModeFinishState<T> : GameModeStateBase<T>
+    {
+        private ActionQueue _actionQueue = new ActionQueue();
+        
+        public override void Awake()
+        {
+            Controller.HandleGameFinish();
+            Controller.HandleEarthStartDestruction();
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            _actionQueue.Run(deltaTime);
+        }
+    }
+    
+    public class GameModeGameplayState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetEnableMeteorSpawn(true);
+        }
+        
+        public override void Sleep()
+        {
+            Controller.SetEnableMeteorSpawn(false);
+        }
+    }
+    
+    public class GameModeRestartState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.GameRestart();
+        }
+    }
+    
+    public class GameModeStartState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.RestartValues();
+            Controller.StartCountdown();
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            Controller.HandleCountdownTimer(deltaTime);
+        }
+
+        public override void Sleep()
+        {
+            Controller.StartGameplay();
+        }
+    }
+
+    #endregion
 }

@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
@@ -6,13 +7,11 @@ using UnityEngine;
 namespace _Main.Scripts.GameScreens
 {
     [RequireComponent(typeof(GameScreenView))]
-    public class GameScreenSetup : ManagedBehavior, IUpdatable
+    public class GameScreenSetup : ManagedBehavior
     {
         private GameScreenMotor _motor;
         private GameScreenController _controller;
         private GameScreenView _view;
-        
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
 
         private void Awake()
         {
@@ -20,18 +19,16 @@ namespace _Main.Scripts.GameScreens
             _controller = new GameScreenController(_motor);
             _view = GetComponent<GameScreenView>();
             
+            _motor.Subscribe(_view);
+            
             SetEventBus();
+            
+            _controller.Initialize();
         }
 
         private void Start()
         {
-            _motor.Subscribe(_view);
-            _controller.Initialize();
-        }
-
-        public void ManagedUpdate()
-        {
-            _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _controller.TransitionToMainMenu();
         }
 
         #region EventBus
