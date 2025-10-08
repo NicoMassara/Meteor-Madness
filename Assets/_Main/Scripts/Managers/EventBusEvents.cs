@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Interfaces;
+﻿using _Main.Scripts.Gameplay.FloatingScore;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
@@ -184,16 +185,15 @@ namespace _Main.Scripts.Managers
 
     public struct FloatingTextEvents
     {
-        public struct Points
+        public struct Spawn
         {
-            public Vector2 Position;
-            public int Score;
-            public bool IsDouble;
+            public FloatingTextValues Data;
         }
         
         public struct Ability
         {
             public Vector2 Position;
+            public Vector2 Offset;
             public AbilityType AbilityType;
         }
     }
