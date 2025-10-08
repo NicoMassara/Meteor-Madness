@@ -33,9 +33,15 @@ namespace _Main.Scripts.Gameplay.AutoTarget
         {
             if((Time.time - _lastCheckTime) < CheckInterval) return null;
             
-            var hitCount = Physics2D.OverlapCircleNonAlloc(position, checkRadius, _colliders,meteorLayer);
-            _lastCheckTime = Time.time;
+            var filter = new ContactFilter2D
+            {
+                layerMask = meteorLayer,
+                useTriggers = true
+            };
 
+            var hitCount = Physics2D.OverlapCircle(position, checkRadius, filter,_colliders);
+            
+            _lastCheckTime = Time.time;
             return hitCount == 0 ? 
                 null : 
                 _colliders[GetNearestMeteor(position, hitCount)].GetComponent<ITargetable>();
