@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.Gameplay.Abilities;
 using _Main.Scripts.Gameplay.AutoTarget;
+using _Main.Scripts.Gameplay.FloatingScore;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -58,10 +60,19 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleAddAbility(int index, Vector2 position)
         {
-            GameManager.Instance.EventManager.Publish(new FloatingTextEvents.Ability
+            var ability = (AbilityType)index;
+            
+            GameManager.Instance.EventManager.Publish(new FloatingTextEvents.Spawn
             {
-                Position = position,
-                AbilityType = (AbilityType)index,
+                Data = new FloatingTextValues
+                {
+                    Position = position,
+                    Offset = new Vector2(0, 1f),
+                    Text = AbilityDataGetter.GetDisplayName(ability),
+                    Color = AbilityDataGetter.GetColor(ability),
+                    DoesFade = true,
+                    DoesMove = true
+                }
             });
         }
 
