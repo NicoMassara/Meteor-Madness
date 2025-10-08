@@ -1,7 +1,6 @@
 ﻿using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.Earth;
 
-namespace _Main.Scripts.Gameplay.FSM.Earth
+namespace _Main.Scripts.Gameplay.Earth.States
 {
     public class EarthBaseState<T> : State<T>
     {

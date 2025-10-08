@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay.Abilies;
 
-namespace _Main.Scripts.Gameplay.FSM.Ability
+namespace _Main.Scripts.Gameplay.Ability.States
 {
     public class AbilityBaseState<T> : State<T>
     {
