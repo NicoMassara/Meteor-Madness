@@ -1,7 +1,5 @@
-﻿using System;
-using _Main.Scripts.FyingObject;
+﻿using _Main.Scripts.FyingObject;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Comet
 {

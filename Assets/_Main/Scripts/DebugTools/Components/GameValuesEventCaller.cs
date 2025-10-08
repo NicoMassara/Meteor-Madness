@@ -6,7 +6,7 @@ namespace _Main.Scripts.DebugTools
     {
         public static void SetDamageType(DamageTypes damageType)
         {
-            GameManager.Instance.SetMeteorDamage(damageType);
+            GameConfigManager.Instance.SetDamage(damageType);
         }
 
         public static void UpdateLevel(int level)
