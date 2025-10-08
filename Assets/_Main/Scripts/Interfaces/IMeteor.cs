@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Gameplay.Meteor;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace _Main.Scripts.Gameplay.Meteor
+namespace _Main.Scripts.Interfaces
 {
     public interface IMeteor
     {

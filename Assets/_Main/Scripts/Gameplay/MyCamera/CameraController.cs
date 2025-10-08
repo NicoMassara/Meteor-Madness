@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.ScriptableObjects;
@@ -81,7 +82,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
         
         #region Shake
 
-        private void StartShake(ShakeDataSo shakeData)
+        private void StartShake(IShakeData shakeData)
         {
             _shakerController.SetShakeData(shakeData);
             _shakerController.StartShake();

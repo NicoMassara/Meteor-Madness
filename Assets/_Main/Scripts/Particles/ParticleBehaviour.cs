@@ -1,24 +1,25 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
+﻿using System;
+using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
-using _Main.Scripts.ScriptableObjects;
+using _Main.Scripts.MyTools;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Particles
 {
-    public class ParticleBehaviour : ManagedBehavior, IUpdatable
+    public class ParticleBehaviour : ManagedBehavior, IUpdatable, IPoolable<ParticleBehaviour>
     {
         [SerializeField] private SpriteRenderer sprite;
-        private ParticleDataSo _data;
+        private IParticleData _data;
         private float _alpha;
         private float _scaleTimer;
         private float _fadeTimer;
         private Vector3 _moveDirection = Vector3.up;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
-        public UnityAction<ParticleBehaviour> OnRecycle;
+        public event Action<ParticleBehaviour> OnRecycle;
 
-        public void SetValues(ParticleDataSo particleData, Vector3 position, float rotation, Vector3 moveDirection)
+        public void SetValues(IParticleData particleData, Vector3 position, float rotation, Vector3 moveDirection)
         {
             _data = particleData;
             sprite.sprite = _data.Sprite;
@@ -53,16 +54,14 @@ namespace _Main.Scripts.Particles
 
                 if (_alpha <= 0)
                 {
-                    ForceRecycle();
+                    Recycle();
                 }
             }
         }
-
-        public void ForceRecycle()
+        
+        public void Recycle()
         {
             OnRecycle?.Invoke(this);
         }
-
-
     }
 }

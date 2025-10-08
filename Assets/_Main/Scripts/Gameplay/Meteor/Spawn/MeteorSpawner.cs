@@ -174,7 +174,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                 }
             );
             
-            data.Meteor.ForceRecycle();
+            data.Meteor.Recycle();
         }
 
         private void Meteor_OnEarthCollisionHandler(MeteorCollisionData data)
@@ -193,7 +193,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                 }
             );
             
-            data.Meteor.ForceRecycle();
+            data.Meteor.Recycle();
         }
 
         #endregion

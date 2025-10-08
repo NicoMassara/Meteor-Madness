@@ -95,5 +95,10 @@ namespace _Main.Scripts.GameScreens
         {
             _motor.SetActiveGameplay();
         }
+
+        public void SetActiveTutorial()
+        {
+            _motor.SetActiveTutorial();
+        }
     }
 }
