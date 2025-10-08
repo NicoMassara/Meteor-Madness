@@ -28,17 +28,17 @@ namespace _Main.Scripts.GameScreens
 
         private void HandleSetTutorial()
         {
-            GameManager.Instance.EventManager.Publish(new GameScreenEvents.TutorialEnable());
+            GameScreenEventCaller.SetGameScreen(ScreenType.Tutorial, true);
         }
 
         private void HandleSetMainMenu()
         {
-            GameManager.Instance.EventManager.Publish(new GameScreenEvents.MainMenuEnable());
+            GameScreenEventCaller.SetGameScreen(ScreenType.MainMenu, true);
         }
         
         private void HandleSetGameplay()
         {
-            GameManager.Instance.EventManager.Publish(new GameScreenEvents.GameModeEnable());
+            GameScreenEventCaller.SetGameScreen(ScreenType.GameMode, true);
         }
     }
 }

@@ -100,8 +100,16 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
+                case GameModeObserverMessage.Enable:
+                    HandleEnable();
+                    break;
 
             }
+        }
+
+        private void HandleEnable()
+        {
+            mainPanel.SetActive(true);
         }
 
         private void HandleDisable()
@@ -136,7 +144,6 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleStartCountdown()
         {
-            mainPanel.SetActive(true);
             DisableActivePanel();
             _numberIncrementer = new NumberIncrementer();
             SetActivePanel(countdownPanel);
@@ -222,13 +229,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void MainMenuButton_OnClickHandler()
         {
             buttonSound?.PlaySound();
-            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
+            CameraEventCaller.ZoomIn();
             OnMainMenuButtonPressed?.Invoke();
         }
         
         private void ResumeButton_OnClickHandler()
         {
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.SetPause{IsPaused = false});
+            GameModeEventCaller.SetPause(false);
         }
 
 

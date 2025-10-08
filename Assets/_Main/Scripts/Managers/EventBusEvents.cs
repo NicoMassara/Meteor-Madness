@@ -42,19 +42,16 @@ namespace _Main.Scripts.Managers
 
     public struct GameScreenEvents
     {
-        public struct MainMenuEnable { }
-        public struct GameModeEnable { }
-        public struct TutorialEnable { }
-        
         public struct SetGameScreen
         {
-            public int Index;
+            public ScreenType ScreenType;
+            public bool IsEnable;
         }
     }
 
     public struct GameModeEvents
     {
-        public struct Initialize { };
+        public struct InitializeValues { };
 
         public struct Disable { };
 

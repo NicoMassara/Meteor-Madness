@@ -46,7 +46,7 @@ namespace _Main.Scripts.DebugTools
                 OnEndAction = () =>
                 {
                     GameManager.Instance.CanPlay = true;
-                    GameManager.Instance.EventManager.Publish(new GameModeEvents.Start());
+                    GameModeEventCaller.Start();
                     InputsEventCaller.SetEnable(true);
                     ShieldEventCaller.SetEnableShield(true);
                 }

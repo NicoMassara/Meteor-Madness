@@ -58,16 +58,14 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void SetEventBus()
         {
-            var eventManager = GameManager.Instance.EventManager;
-            
-            eventManager.Subscribe<ShieldEvents.SetGold>(EventBus_Shield_SetGold);
-            eventManager.Subscribe<ShieldEvents.SetAutomatic>(EventBus_Shield_SetAutomatic);
-            eventManager.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
-            eventManager.Subscribe<ShieldEvents.SetEnable>(EventBus_Shield_SetEnable);
-            eventManager.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
-            eventManager.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_Shield_EnableNormalShield);
-            eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventManager.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+            GameEventCaller.Subscribe<ShieldEvents.SetGold>(EventBus_Shield_SetGold);
+            GameEventCaller.Subscribe<ShieldEvents.SetAutomatic>(EventBus_Shield_SetAutomatic);
+            GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
+            GameEventCaller.Subscribe<ShieldEvents.SetEnable>(EventBus_Shield_SetEnable);
+            GameEventCaller.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
+            GameEventCaller.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_Shield_EnableNormalShield);
+            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
         }
 
         private void EventBus_Shield_SetAutomatic(ShieldEvents.SetAutomatic input)

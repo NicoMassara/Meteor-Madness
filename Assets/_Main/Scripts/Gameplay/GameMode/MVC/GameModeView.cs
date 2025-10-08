@@ -1,26 +1,24 @@
 ﻿using System;
-using _Main.Scripts.Gameplay.FloatingScore;
-using _Main.Scripts.Gameplay.Projectile;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeView : ManagedBehavior, IObserver, IUpdatable
+    public class GameModeView : ManagedBehavior, IObserver
     {
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior gameplayTheme;
         [SerializeField] private SoundBehavior deathTheme;
         
-        public UnityAction<bool> OnEarthRestarted;
-        public UnityAction OnCountdownFinished;
+        public event Action<bool> OnEarthRestarted;
+        public event Action OnCountdownFinished;
+        public event Action OnGameModeEnable;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public void ManagedUpdate() { }
+
         
         //Hack
         private bool _isFirstDisable = true;
@@ -69,7 +67,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
-                case GameModeObserverMessage.Initialize:
+                case GameModeObserverMessage.InitializeValues:
                     HandleInitialize();
                     break;
                 case GameModeObserverMessage.PointsGained:
@@ -78,8 +76,16 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GrantProjectileSpawn:
                     HandleGrantProjectileSpawn((int)args[0]);
                     break;
+                case GameModeObserverMessage.Enable:
+                    HandleEnable();
+                    break;
                 
             }
+        }
+
+        private void HandleEnable()
+        {
+            OnGameModeEnable?.Invoke();
         }
 
         private void HandleGrantProjectileSpawn(int projectileTypeIndex)
@@ -89,7 +95,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleInitialize()
         {
-            GameModeEventCaller.Initialize();
+            GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
+            GameModeEventCaller.InitializeValues();
         }
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
@@ -196,21 +203,21 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             deathTheme?.StopSound();
-            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomOut());
+            CameraEventCaller.ZoomOut();
         }
         
         private void HandleCountdownFinish()
         {
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.Start());
+            GameModeEventCaller.Start();
             SetEnableInputs(true);
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetCanUse{CanUse = true});
+            AbilitiesEventCaller.SetCanUse(true);
             OnCountdownFinished?.Invoke();
         }
 
         private void HandleStartGameplay()
         {
             GameManager.Instance.CanPlay = true;
-            GameManager.Instance.EventManager.Publish(new ShieldEvents.SetEnable{IsEnabled = true});
+            ShieldEventCaller.SetEnableShield(true);
             gameplayTheme?.PlaySound();
         }
 
@@ -239,19 +246,19 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.EnableSpawn { CanSpawn = canSpawn });
+            MeteorEventCaller.EnableSpawn(canSpawn);
         }
 
         #endregion
         
         private void HandleUpdateGameLevel(int currentLevel)
         {
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.UpdateLevel{CurrentLevel = currentLevel});
+            GameModeEventCaller.UpdateLevel(currentLevel);
         }
 
         private void SetEnableInputs(bool isEnable)
         {
-            GameManager.Instance.EventManager.Publish(new InputsEvents.SetEnable{IsEnable = isEnable});
+            InputsEventCaller.SetEnable(isEnable);
         }
     }
 }

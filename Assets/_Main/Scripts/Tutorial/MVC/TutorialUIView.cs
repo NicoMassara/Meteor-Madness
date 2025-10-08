@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
 using UnityEngine;
@@ -24,7 +25,6 @@ namespace _Main.Scripts.Tutorial.MVC
         private GameObject _currentActivePanel;
 
         public event Action OnNext;
-        public event Action OnFinish;
         
         private void Awake()
         {
@@ -51,12 +51,19 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.Disable:
                     HandleDisable();
                     break;
+                case TutorialObserverMessage.Enable:
+                    HandleEnable();
+                    break;
             }
+        }
+
+        private void HandleEnable()
+        {
+            mainPanel.SetActive(true);
         }
 
         private void HandleStart()
         {
-            mainPanel.SetActive(true);
             SetActivePanel(startPanel);
         }
         
@@ -77,6 +84,7 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleDisable()
         {
+            DisableActivePanel();
             mainPanel.SetActive(false);
         }
 
@@ -85,6 +93,12 @@ namespace _Main.Scripts.Tutorial.MVC
             _currentActivePanel?.SetActive(false);
             _currentActivePanel = input;
             _currentActivePanel?.SetActive(true);
+        }
+
+        private void DisableActivePanel()
+        {
+            _currentActivePanel?.SetActive(false);
+            _currentActivePanel = null;
         }
 
         #region Handlers
@@ -96,7 +110,7 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void FinishButtonOnClickHandler()
         {
-            OnFinish?.Invoke();
+            GameManager.Instance.LoadMainMenu();
         }
 
         #endregion

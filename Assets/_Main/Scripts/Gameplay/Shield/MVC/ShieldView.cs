@@ -175,18 +175,15 @@ namespace _Main.Scripts.Gameplay.Shield
             
             StartCoroutine(Coroutine_Shake());
             
-            GameManager.Instance.EventManager.Publish
-            (
-                new ParticleEvents.Spawn
-                {
-                    ParticleData = deflectParticleData,
-                    Position = position,
-                    Rotation = rotation,
-                    MoveDirection = direction
-                }
-            );
+            ParticleEventCaller.Spawn(new ParticleSpawnData
+            {
+                ParticleData = deflectParticleData,
+                Position = position,
+                Rotation = rotation,
+                MoveDirection = direction
+            });
             
-            GameManager.Instance.EventManager.Publish(new CameraEvents.Shake{ShakeData = cameraShakeData});
+            CameraEventCaller.Shake(cameraShakeData);
         }
 
         #endregion

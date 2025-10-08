@@ -29,5 +29,15 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             NotifyAll(TutorialObserverMessage.Disable);
         }
+
+        public void Enable()
+        {
+            NotifyAll(TutorialObserverMessage.Enable);
+        }
+
+        public void SpawnExtraMeteors()
+        {
+            NotifyAll(TutorialObserverMessage.ExtraMeteors);
+        }
     }
 }

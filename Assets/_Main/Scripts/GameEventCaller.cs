@@ -1,7 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using Unity.Android.Gradle.Manifest;
 
 namespace _Main.Scripts
 {
@@ -88,30 +87,20 @@ namespace _Main.Scripts
     }
     public static class GameScreenEventCaller
     {
-        public static void MainMenuEnable()
+        public static void SetGameScreen(ScreenType type, bool isEnable = false)
         {
-            GameEventCaller.Publish(new GameScreenEvents.MainMenuEnable());
-        }
-        
-        public static void GameModeEnable()
-        {
-            GameEventCaller.Publish(new GameScreenEvents.GameModeEnable());
-        }
-        
-        public static void TutorialEnable()
-        {
-            GameEventCaller.Publish(new GameScreenEvents.TutorialEnable());
-        }
-        public static void SetGameScreen(int index)
-        {
-            GameEventCaller.Publish(new GameScreenEvents.SetGameScreen{Index = index});
+            GameEventCaller.Publish(new GameScreenEvents.SetGameScreen
+            {
+                ScreenType = type,
+                IsEnable = isEnable
+            });
         }
     }
     public static class GameModeEventCaller
     {
-        public static void Initialize()
+        public static void InitializeValues()
         {
-            GameEventCaller.Publish(new GameModeEvents.Initialize());
+            GameEventCaller.Publish(new GameModeEvents.InitializeValues());
         }
         
         public static void Disable()
@@ -230,6 +219,11 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new MeteorEvents.RecycleAll());
         }
+
+        public static void EnableSpawn(bool canSpawn)
+        {
+            GameEventCaller.Publish(new MeteorEvents.EnableSpawn{CanSpawn = canSpawn});
+        }
     }
     public static class ParticleEventCaller
     {
@@ -253,7 +247,7 @@ namespace _Main.Scripts
         
         public static void ZoomOut()
         {
-            GameEventCaller.Publish(new CameraEvents.ZoomIn());
+            GameEventCaller.Publish(new CameraEvents.ZoomOut());
         }
 
         public static void Shake(IShakeData shake)

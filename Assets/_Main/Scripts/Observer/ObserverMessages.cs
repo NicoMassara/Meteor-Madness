@@ -43,9 +43,9 @@
         public const ulong EarthRestartFinish = 0xA2014;
         public const ulong GamePaused = 0xA2015;
         public const ulong Disable = 0xA2016;
-        public const ulong Initialize = 0xA2017;
+        public const ulong InitializeValues = 0xA2017;
         public const ulong GrantProjectileSpawn = 0xA2018;
-        public const ulong Empty = 0xA2019;
+        public const ulong Enable = 0xA2019;
     }
 
     public struct FlyingObjectObserverMessage
@@ -94,5 +94,9 @@
         public const ulong Disable = 0xA6003;
         public const ulong Ability = 0xA6004;
         public const ulong Finish = 0xA6005;
+        public const ulong Empty1 = 0xA6006;
+        public const ulong Empty2 = 0xA6007;
+        public const ulong Enable = 0xA6008;
+        public const ulong ExtraMeteors = 0xA6009;
     }
 }

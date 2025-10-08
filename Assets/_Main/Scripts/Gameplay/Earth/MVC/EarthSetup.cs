@@ -54,14 +54,12 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void SetEventBus()
         {
-            var eventBus = GameManager.Instance.EventManager;
-            
-            eventBus.Subscribe<EarthEvents.Restart>(EventBus_Earth_Restart);
-            eventBus.Subscribe<EarthEvents.DestructionStart>(EventBus_Earth_DestructionStart);
-            eventBus.Subscribe<EarthEvents.Heal>(EventBus_Earth_Heal);
-            eventBus.Subscribe<EarthEvents.SetEnableDamage>(EventBus_Earth_SetEnableDamage);
-            eventBus.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventBus.Subscribe<ProjectileEvents.Collision>(EventBus_Meteor_Collision);
+            GameEventCaller.Subscribe<EarthEvents.Restart>(EventBus_Earth_Restart);
+            GameEventCaller.Subscribe<EarthEvents.DestructionStart>(EventBus_Earth_DestructionStart);
+            GameEventCaller.Subscribe<EarthEvents.Heal>(EventBus_Earth_Heal);
+            GameEventCaller.Subscribe<EarthEvents.SetEnableDamage>(EventBus_Earth_SetEnableDamage);
+            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            GameEventCaller.Subscribe<ProjectileEvents.Collision>(EventBus_Meteor_Collision);
         }
 
         private void EventBus_Earth_SetEnableDamage(EarthEvents.SetEnableDamage input)

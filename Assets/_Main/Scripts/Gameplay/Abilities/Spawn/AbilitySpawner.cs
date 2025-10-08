@@ -17,6 +17,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
 
+        private bool _isTimerEnable;
         private bool _isStorageFull;
         private AbilitySphereFactory _factory;
         private AbilitySelector _selector;
@@ -66,7 +67,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             tempSphere.OnDeflection += DeflectionHandler;
             tempSphere.OnEarthCollision += OnEarthCollisionHandler;
             
-            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = tempSphere});
+            ProjectileEventCaller.Add(tempSphere);
         }
 
         private void DeflectionHandler(AbilitySphereCollisionData data)
@@ -75,24 +76,28 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             data.Sphere.OnEarthCollision = null;
             _selector.AddAbility(data.Ability);
             
-            GameManager.Instance.EventManager.Publish(
-                new AbilitiesEvents.Add{AbilityType = data.Ability, Position = data.Position});
-            GameManager.Instance.EventManager.Publish
-            (
-                new ProjectileEvents.Deflected
-                {
-                    Position = data.Position,
-                    Rotation = data.Rotation,
-                    Direction = data.Direction,
-                    Type = ProjectileType.AbilitySphere
-                }
-            );
+            AbilitiesEventCaller.Add(new AbilityAddData
+            {
+                AbilityType = data.Ability,
+                Position = data.Position
+            });
+            
+            ProjectileEventCaller.Deflected(new DeflectData
+            {
+                Position = data.Position,
+                Rotation = data.Rotation,
+                Direction = data.Direction,
+                Type = ProjectileType.AbilitySphere
+            });
             
             data.Sphere.Recycle();
-            
-            var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
-            temp = _isStorageFull ? temp/2 : temp;
-            SetTimer(temp);
+
+            if (_isTimerEnable)
+            {
+                var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
+                temp = _isStorageFull ? temp/2 : temp;
+                SetTimer(temp);
+            }
         }
         
         private void OnEarthCollisionHandler(AbilitySphereCollisionData data)
@@ -100,16 +105,13 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             data.Sphere.OnDeflection = null;
             data.Sphere.OnEarthCollision = null;
             
-            GameManager.Instance.EventManager.Publish
-            (
-                new ProjectileEvents.Collision
-                {
-                    Position = data.Position,
-                    Rotation = data.Rotation,
-                    Direction = data.Direction,
-                    Type = ProjectileType.AbilitySphere
-                }
-            );
+            ProjectileEventCaller.Collision(new CollisionData
+            {
+                Position = data.Position,
+                Rotation = data.Rotation,
+                Direction = data.Direction,
+                Type = ProjectileType.AbilitySphere
+            });
             
             data.Sphere.Recycle();
             
@@ -141,13 +143,18 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void SetEventBus()
         {
-            var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
-            eventManager.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
-            eventManager.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
-            eventManager.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
-            eventManager.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
-            eventManager.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
+            GameEventCaller.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
+            GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
+            GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
+            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_OnGameModeDisable);
+            GameEventCaller.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+            GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
+        }
+
+        private void EventBus_GameMode_Start(GameModeEvents.Start input)
+        {
+            _isTimerEnable = true;
         }
 
         private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
@@ -187,6 +194,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void EventBus_OnGameModeDisable(GameModeEvents.Disable input)
         {
+            _isTimerEnable = false;
             TimerManager.Remove(_spawnTimerId);
             _factory.RecycleAll();
         }

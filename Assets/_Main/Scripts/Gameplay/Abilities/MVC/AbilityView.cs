@@ -72,7 +72,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleSetStorageFull(bool isFull)
         {
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
+            AbilitiesEventCaller.SetStorageFull(isFull);
         }
 
         private void HandleRunActiveTimer(int abilityIndex)
