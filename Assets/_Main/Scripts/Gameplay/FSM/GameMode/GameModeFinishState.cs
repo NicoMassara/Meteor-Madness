@@ -7,10 +7,7 @@
         public override void Awake()
         {
             Controller.HandleGameFinish();
-            
-            _actionQueue.AddAction(new ActionData(
-                () => Controller.HandleEarthStartDestruction(), 
-                EarthParameters.TimeValues.Destruction.StartEarthDestruction));
+            Controller.HandleEarthStartDestruction();
         }
 
         public override void Execute(float deltaTime)

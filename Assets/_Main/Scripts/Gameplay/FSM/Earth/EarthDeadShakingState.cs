@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Interfaces;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.FSM.Earth
 {
@@ -11,11 +12,11 @@ namespace _Main.Scripts.Gameplay.FSM.Earth
             var temp = new ActionData[]
             {
                 new(()=>Controller.SetDeathShake(true),
-                    EarthParameters.TimeValues.Destruction.StartShake),
+                    Controller.GetEarthDestructionTimeValues().StartShake),
                 new(()=>Controller.SetDeathShake(false),
-                    EarthParameters.TimeValues.Destruction.DeathShakeDuration),
+                    Controller.GetEarthDestructionTimeValues().DeathShakeDuration),
                 new(()=>Controller.TransitionToDestruction(),
-                    EarthParameters.TimeValues.Destruction.ShowEarthDestruction)
+                    Controller.GetEarthDestructionTimeValues().ShowEarthDestruction)
             };
             
             _queue.AddAction(temp);
