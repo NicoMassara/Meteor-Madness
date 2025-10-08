@@ -127,7 +127,7 @@ namespace _Main.Scripts.Gameplay.Projectile
                 var cog = GetCenterOfGravity();
                 float temp = cog.x + spawnRadius;
 
-                var gameplayData = FindObjectOfType<GameConfigManager>().GetGameplayData();
+                var gameplayData = FindAnyObjectByType<GameConfigManager>().GetGameplayData();
                 var levelAmount = gameplayData.LevelAmount;
                 var projectileData = gameplayData.ProjectileData;
 
