@@ -89,7 +89,7 @@ namespace _Main.Scripts
     {
         public static void SetGameScreen(ScreenType type, bool isEnable = false)
         {
-            GameEventCaller.Publish(new GameScreenEvents.SetGameScreen
+            GameEventCaller.Publish(new GameScreenEvents.SetScreen
             {
                 ScreenType = type,
                 IsEnable = isEnable

@@ -28,8 +28,12 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.ExtraMeteors:
                     HandleExtraMeteors();
                     break;
+                case TutorialObserverMessage.AdditionalProjectile:
+                    HandleAdditionalProjectile((int)args[0]);
+                    break;
             }
         }
+        
 
         private void HandleEnable()
         {
@@ -58,11 +62,23 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleExtraMeteors()
         {
-            GameModeEventCaller.UpdateLevel(9);
-            
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 MeteorEventCaller.GrantSpawnSingle();
+            }
+        }
+        
+        private void HandleAdditionalProjectile(int index)
+        {
+            var tempType = (ProjectileType)index;
+
+            if (tempType == ProjectileType.Meteor)
+            {
+                MeteorEventCaller.GrantSpawnSingle();
+            }
+            else if (tempType == ProjectileType.AbilitySphere)
+            {
+                AbilitiesEventCaller.GrantSpawn();
             }
         }
         

@@ -46,6 +46,10 @@ namespace _Main.Scripts.Managers
         {
             GameScreenEventCaller.SetGameScreen(ScreenType.MainMenu, true);
         }
-        
+
+        public void QuitGame()
+        {
+            Application.Quit();
+        }
     }
 }

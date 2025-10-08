@@ -162,17 +162,15 @@ namespace _Main.Scripts.Gameplay.Meteor
             data.Meteor.OnDeflection = null;
             data.Meteor.OnEarthCollision = null;
             
-            GameManager.Instance.EventManager.Publish
-            (
-                new ProjectileEvents.Deflected
-                {
-                    Position = data.Position,
-                    Rotation = data.Rotation,
-                    Direction = data.Direction,
-                    Value = data.Value,
-                    Type = ProjectileType.Meteor
-                }
-            );
+            ProjectileEventCaller.Deflected(new DeflectData
+            {
+                Position = data.Position,
+                Rotation = data.Rotation,
+                Direction = data.Direction,
+                Value = data.Value,
+                Type = ProjectileType.Meteor
+            });
+            
             
             data.Meteor.Recycle();
         }
@@ -182,16 +180,13 @@ namespace _Main.Scripts.Gameplay.Meteor
             data.Meteor.OnDeflection = null;
             data.Meteor.OnEarthCollision = null;
             
-            GameManager.Instance.EventManager.Publish
-            (
-                new ProjectileEvents.Collision
-                {
-                    Position = data.Position,
-                    Rotation = data.Rotation,
-                    Direction = data.Direction,
-                    Type = ProjectileType.AbilitySphere
-                }
-            );
+            ProjectileEventCaller.Collision(new CollisionData
+            {
+                Position = data.Position,
+                Rotation = data.Rotation,
+                Direction = data.Direction,
+                Type = ProjectileType.Meteor
+            });
             
             data.Meteor.Recycle();
         }

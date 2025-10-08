@@ -30,9 +30,8 @@ namespace _Main.Scripts.Tutorial.MVC
             _motor.Subscribe(_ui);
             
             SetViewHandlers();
-            SubscribeEventBus();
             
-            GameEventCaller.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_GameScreen_SetGameScreen);
+            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetGameScreen);
         }
 
         private void Start()
@@ -88,10 +87,10 @@ namespace _Main.Scripts.Tutorial.MVC
         private void SubscribeEventBus()
         {
             GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
+            GameEventCaller.Subscribe<ProjectileEvents.Collision>(EventBus_Projectile_Collision);
             GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
             GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
         }
-
         private void UnsubscribeEventBus()
         {
             GameEventCaller.Unsubscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
@@ -99,15 +98,7 @@ namespace _Main.Scripts.Tutorial.MVC
             GameEventCaller.Unsubscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
         }
         
-        private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
-        {
-            if (input.IsActive == false)
-            {
-                _controller.SpawnExtraMeteors();
-            }
-        }
-
-        private void EventBus_GameScreen_SetGameScreen(GameScreenEvents.SetGameScreen input)
+        private void EventBus_GameScreen_SetGameScreen(GameScreenEvents.SetScreen input)
         {
             if (input.ScreenType == ScreenType.Tutorial && 
                 input.IsEnable)
@@ -120,6 +111,14 @@ namespace _Main.Scripts.Tutorial.MVC
             }
         }
         
+        private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
+        {
+            if (input.IsActive == false)
+            {
+                _controller.SpawnExtraMeteors();
+            }
+        }
+        
         private void EventBus_Meteor_Deflected(ProjectileEvents.Deflected input)
         {
             if (input.Type == ProjectileType.Meteor)
@@ -128,11 +127,21 @@ namespace _Main.Scripts.Tutorial.MVC
             }
         }
         
+        private void EventBus_Projectile_Collision(ProjectileEvents.Collision input)
+        {
+            _controller.SendAdditionalProjectile((int)input.Type);
+        }
+
+        
         private void EventBus_Abilities_Active(AbilitiesEvents.SetActive input)
         {
             if (input.IsActive == false)
             {
                 _controller.TransitionToFinish();
+            }
+            else
+            {
+                _controller.TransitionToAbilityRunning();
             }
         }
         

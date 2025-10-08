@@ -38,10 +38,10 @@ namespace _Main.Scripts.GameScreens
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_OnSetGameScreen);
+            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_OnSetGameScreen);
         }
 
-        private void EventBus_OnSetGameScreen(GameScreenEvents.SetGameScreen input)
+        private void EventBus_OnSetGameScreen(GameScreenEvents.SetScreen input)
         {
             if(input.IsEnable == true) return;
             
