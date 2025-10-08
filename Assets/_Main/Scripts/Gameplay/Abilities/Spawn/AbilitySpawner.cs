@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Spawn
 {
-    public class AbilitySpawner : ManagedBehavior, IUpdatable
+    public class AbilitySpawner : ManagedBehavior
     {
         [Header("Components")]
         [SerializeField] private AbilitySphereView prefab;
@@ -17,11 +17,14 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
 
-        private bool _isTimerEnable;
+        private bool _isGameplayActive;
         private bool _isStorageFull;
+        private bool _isTimerRunning;
+        private ulong _spawnTimerId;
+        private int _minUnlockLevel;
+        private int _currentLevel;
         private AbilitySphereFactory _factory;
         private AbilitySelector _selector;
-        private ulong _spawnTimerId;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
         private void Awake()
@@ -29,18 +32,27 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             SetEventBus();
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    Debug.Log(GetAbilityToAdd());
+                }
+            }
+        }
+
         private void Start()
         {
             var selectorData = GameConfigManager.Instance.GetGameplayData().AbilitySelectorData;
             var rarityTuple = selectorData.GetRarityValues();
             var levelUnlockTuple = selectorData.GetUnlockLevelValues();
+            _minUnlockLevel = selectorData.MinUnlockLevel;
             
-            _selector = new AbilitySelector(rarityTuple.abilityTypes, rarityTuple.rarityValues, 
-                levelUnlockTuple.unlockLevels, levelUnlockTuple.abilityTypes);
+            _selector = new AbilitySelector(rarityTuple,levelUnlockTuple);
             _factory = new AbilitySphereFactory(prefab);
         }
-
-        public void ManagedUpdate() { }
         
         private void SendAbility()
         {
@@ -91,12 +103,9 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             data.Sphere.Recycle();
 
-            if (_isTimerEnable)
-            {
-                var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
-                temp = _isStorageFull ? temp/2 : temp;
-                SetTimer(temp);
-            }
+            var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
+            temp = _isStorageFull ? temp/2 : temp;
+            TryRunTimer(temp);
         }
         
         private void OnEarthCollisionHandler(AbilitySphereCollisionData data)
@@ -116,15 +125,22 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             var temp = UnityEngine.Random.Range(spawnDelay * 0.75f, spawnDelay);
             temp = _isStorageFull ? temp/2 : temp;
-            SetTimer(temp);
+            TryRunTimer(temp);
         }
 
         private void SetTimer(float time)
         {
+            Debug.Log($"Timer Set To: {time}");
+
+            _isTimerRunning = true;
             _spawnTimerId = TimerManager.Add(new TimerData
             {
                 Time = time,
-                OnEndAction = SendAbility
+                OnEndAction = () =>
+                {
+                    SendAbility();
+                    _isTimerRunning = false;
+                }
             }, SelfUpdateGroup);
         }
 
@@ -133,9 +149,23 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             TimerManager.Remove(_spawnTimerId);
         }
 
+        private void TryRunTimer(float time)
+        {
+            if(GetCanRunTimer() == false) return;
+            
+            SetTimer(time);
+        }
+        
         private AbilityType GetAbilityToAdd()
         {
             return _selector.GetAbility();
+        }
+
+        private bool GetCanRunTimer()
+        {
+            return _isGameplayActive && 
+                   _currentLevel >= _minUnlockLevel && 
+                   _isTimerRunning == false;
         }
 
         #region EventBus
@@ -153,7 +183,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void EventBus_GameMode_Start(GameModeEvents.Start input)
         {
-            _isTimerEnable = true;
+            _isGameplayActive = true;
         }
 
         private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
@@ -169,11 +199,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             if (input.IsActive)
             {
                 RemoveTimer();
-                _selector.RemoveAbility(input.AbilityType);
             }
             else
             {
-                SetTimer(spawnDelay);
+                TryRunTimer(spawnDelay);
             }
         }
 
@@ -184,12 +213,17 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
         {
+            _currentLevel = input.CurrentLevel;
             _selector.SetLevel(input.CurrentLevel);
+            if (GetCanRunTimer())
+            {
+                TryRunTimer(spawnDelay);
+            }
         }
 
         private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
         {
-            _isTimerEnable = false;
+            _isGameplayActive = false;
             TimerManager.Remove(_spawnTimerId);
             _factory.RecycleAll();
         }
@@ -239,24 +273,25 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 return (int)Math.Round(_selectValue * _multiplier);
             }
         }
-        
-        public  AbilitySelector(
-            AbilityType[] rarityTupleAbilityTypes, int[] rarityTupleRarityValues, 
-            int[] unlockLevels, AbilityType[] unlockAbility)
+
+        public AbilitySelector(
+            Tuple<AbilityType[], int[]> rarity, 
+            Tuple<int[], AbilityType[]> unlock)
         {
-            _unlockDic = CreateDic(unlockLevels, unlockAbility);
+            _unlockDic = CreateDic(unlock.Item1, unlock.Item2);
             
-            var abilityValues = new AbilityValue[rarityTupleAbilityTypes.Length];
+            var abilityValues = new AbilityValue[rarity.Item1.Length];
             
-            for (int i = 0; i < rarityTupleAbilityTypes.Length; i++)
+            for (int i = 0; i < rarity.Item1.Length; i++)
             {
                 abilityValues[i] = new AbilityValue(
-                    rarityTupleRarityValues[i],
-                    rarityTupleAbilityTypes[i]);
+                    rarity.Item2[i],
+                    rarity.Item1[i]);
             }
             
-            _valuesDic = CreateDic(rarityTupleAbilityTypes, abilityValues);
+            _valuesDic = CreateDic(rarity.Item1, abilityValues);
         }
+        
 
         private Dictionary<T,TS> CreateDic<T, TS>(T[] keyArray, TS[] valueArray)
         {

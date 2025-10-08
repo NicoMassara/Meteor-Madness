@@ -15,9 +15,9 @@ MonoBehaviour:
   minUnlockLevel: 1
   rarityValues:
   - type: 1
-    value: 10
+    value: 0
   - type: 2
-    value: 10
+    value: 0
   - type: 3
     value: 10
   - type: 4
