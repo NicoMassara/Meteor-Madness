@@ -6,29 +6,25 @@ namespace _Main.Scripts.Gameplay.GameMode
     {
         private int _currentLevel;
         private int _currentStreak;
-        private readonly int[] levelStreakAmount = new int[]
-        {
-            1,
-            1,
-            1,
-            2,
-            2,
-            3,
-            3,
-            3,
-            4,
-            5
-        };
+        private readonly int[] levelStreakAmount;
+        private int LevelLength => levelStreakAmount.Length-1;
 
         public event Action OnLevelChange;
 
+        public GameLevelController(int[] levelStreakAmount)
+        {
+            this.levelStreakAmount = levelStreakAmount;
+        }
+
+
         public void CheckForNextLevel()
         {
-            if(_currentLevel >= levelStreakAmount.Length) return;
+            if(_currentLevel == LevelLength) return;
 
             if (_currentStreak >= levelStreakAmount[_currentLevel])
             {
                 _currentLevel++;
+                _currentStreak = 0;
                 OnLevelChange?.Invoke();
             }
         }
