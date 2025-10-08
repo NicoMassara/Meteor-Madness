@@ -72,7 +72,7 @@ namespace _Main.Scripts.Menu
             menuSound.PlaySound();
             TimerManager.Add(new TimerData
             {
-                Time = GameParameters.TimeValues.TimeToLoadGameScene,
+                Time = GameConfigManager.Instance.GetGameplayData().GameTimeData.TimeToLoadGameScene,
                 OnEndAction = ()=> GameManager.Instance.LoadGameplay()
             });
         }
