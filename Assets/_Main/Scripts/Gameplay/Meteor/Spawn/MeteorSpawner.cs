@@ -169,7 +169,8 @@ namespace _Main.Scripts.Gameplay.Meteor
                     Position = data.Position,
                     Rotation = data.Rotation,
                     Direction = data.Direction,
-                    Value = data.Value
+                    Value = data.Value,
+                    Type = ProjectileType.Meteor
                 }
             );
             
@@ -187,7 +188,8 @@ namespace _Main.Scripts.Gameplay.Meteor
                 {
                     Position = data.Position,
                     Rotation = data.Rotation,
-                    Direction = data.Direction
+                    Direction = data.Direction,
+                    Type = ProjectileType.AbilitySphere
                 }
             );
             
