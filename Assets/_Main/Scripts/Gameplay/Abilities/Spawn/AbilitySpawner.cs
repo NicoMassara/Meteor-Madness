@@ -188,10 +188,16 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             GameEventCaller.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
             GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
             GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
+            GameEventCaller.Subscribe<AbilitiesEvents.SetNextSpawn>(EventBus_Ability_NextSpawn);
             GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
             GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
             GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
             GameEventCaller.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+        }
+
+        private void EventBus_Ability_NextSpawn(AbilitiesEvents.SetNextSpawn input)
+        {
+            _selector.SetAbilityToDrop(input.AbilityType);
         }
 
         private void EventBus_Ability_StorageFull(AbilitiesEvents.SetStorageFull input)
@@ -270,6 +276,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private readonly Func<Tuple<AbilityType[], int[]>> _getValuesAction;
         private readonly Func<Tuple<int[],AbilityType[]>> _getUnlockAction;
         private readonly Dictionary<AbilityType, ActionValue> _multipliers = new Dictionary<AbilityType, ActionValue>();
+        private AbilityType _abilityToDrop;
 
         private class ActionValue
         {
@@ -386,19 +393,33 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         public AbilityType GetAbilityToAdd()
         {
-            var tempDic = new Dictionary<AbilityType, int>();
-            var values = _getValuesAction();
-            var length = values.Item1.Length;
-            
-            for (int i = 0; i < length; i++)
+            if (_abilityToDrop == AbilityType.None)
             {
-                var ability = values.Item1[i];
-                var finalValue = values.Item2[i] * GetAbilityValue(ability);
-                
-                tempDic.Add(ability, finalValue);
+                var tempDic = new Dictionary<AbilityType, int>();
+                var values = _getValuesAction();
+                var length = values.Item1.Length;
+
+                for (int i = 0; i < length; i++)
+                {
+                    var ability = values.Item1[i];
+                    var finalValue = values.Item2[i] * GetAbilityValue(ability);
+
+                    tempDic.Add(ability, finalValue);
+                }
+
+                _abilityToDrop = _roulette.Run(tempDic);
+
+                return _abilityToDrop;
             }
-            
-            return _roulette.Run(tempDic);
+
+            var tempValue = _abilityToDrop;
+            _abilityToDrop = AbilityType.None;
+            return tempValue;
+        }
+
+        public void SetAbilityToDrop(AbilityType ability)
+        {
+            _abilityToDrop = ability;
         }
     }
 }
