@@ -1052,7 +1052,11 @@ MonoBehaviour:
   timeToEnableSuperShield: 0.75
   timeToDisableSuperShield: 0.75
   decayConstant: 500
-  autoCorrectEnable: 1
+  detectorData:
+    ProjectileLayer:
+      serializedVersion: 2
+      m_Bits: 0
+    CheckRadius: 0
 --- !u!4 &168416677
 Transform:
   m_ObjectHideFlags: 0
@@ -1081,10 +1085,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meteorLayer:
-    serializedVersion: 2
     m_Bits: 64
-  checkDistance: 4
-  slotRange: {x: 2, y: 5}
+  checkDistance: 10
+  _targetSlot: -1
+  _lastCheckTime: 0
+  <HasActiveTarget>k__BackingField: 0
 --- !u!1 &190913155
 GameObject:
   m_ObjectHideFlags: 0
