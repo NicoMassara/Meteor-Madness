@@ -36,9 +36,24 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                for (int i = 0; i < 1000; i++)
+                var tempDic = new Dictionary<AbilityType, int>();
+                
+                for (int i = 0; i < 10; i++)
                 {
-                    Debug.Log(GetAbilityToAdd());
+                    var ability = GetAbilityToAdd();
+                    if (tempDic.ContainsKey(ability))
+                    {
+                        tempDic[ability]++;
+                    }
+                    else
+                    {
+                        tempDic.Add(ability, 1);
+                    }
+                }
+
+                foreach (var item in tempDic)
+                {
+                    Debug.Log($"Ability: {item.Key}, Times Selected: {item.Value}");
                 }
             }
         }
@@ -46,11 +61,9 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void Start()
         {
             var selectorData = GameConfigManager.Instance.GetGameplayData().AbilitySelectorData;
-            var rarityTuple = selectorData.GetRarityValues();
-            var levelUnlockTuple = selectorData.GetUnlockLevelValues();
             _minUnlockLevel = selectorData.MinUnlockLevel;
             
-            _selector = new AbilitySelector(rarityTuple,levelUnlockTuple);
+            _selector = new AbilitySelector(selectorData.GetRarityValues,selectorData.GetUnlockLevelValues);
             _factory = new AbilitySphereFactory(prefab);
         }
         
@@ -85,7 +98,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             data.Sphere.OnDeflection = null;
             data.Sphere.OnEarthCollision = null;
-            _selector.AddAbility(data.Ability);
             
             AbilitiesEventCaller.Add(new AbilityAddData
             {
@@ -158,7 +170,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         
         private AbilityType GetAbilityToAdd()
         {
-            return _selector.GetAbility();
+            return _selector.GetAbilityToAdd();
         }
 
         private bool GetCanRunTimer()
@@ -175,10 +187,39 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
             GameEventCaller.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
             GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
+            GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
             GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
             GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
             GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
             GameEventCaller.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+        }
+
+        private void EventBus_Ability_StorageFull(AbilitiesEvents.SetStorageFull input)
+        {
+            _selector.IsStorageFull = input.IsFull;
+        }
+        
+        private void EventBus_Ability_Add(AbilitiesEvents.Add input)
+        {
+            if (_isGameplayActive)
+            {
+                _selector.DecreaseValue(input.AbilityType);
+            }
+        }
+        
+        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        {
+            if (_isGameplayActive == false) return;
+            
+            if (input.IsActive)
+            {
+                _selector.IncreaseValue(input.AbilityType);
+                RemoveTimer();
+            }
+            else
+            {
+                TryRunTimer(spawnDelay);
+            }
         }
 
         private void EventBus_GameMode_Start(GameModeEvents.Start input)
@@ -193,28 +234,11 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 CreateAbilitySphere(input.Position, input.Direction, input.MovementMultiplier);
             }
         }
-
-        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
-        {
-            if (input.IsActive)
-            {
-                RemoveTimer();
-            }
-            else
-            {
-                TryRunTimer(spawnDelay);
-            }
-        }
-
-        private void EventBus_Ability_StorageFull(AbilitiesEvents.SetStorageFull input)
-        {
-            _selector.IsStorageFull = input.IsFull;
-        }
-
+        
         private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
         {
             _currentLevel = input.CurrentLevel;
-            _selector.SetLevel(input.CurrentLevel);
+            _selector.UpdateLevel(_currentLevel);
             if (GetCanRunTimer())
             {
                 TryRunTimer(spawnDelay);
@@ -231,8 +255,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void EventBus_GameMode_Finished(GameModeEvents.Finish input)
         {
             RemoveTimer();
+            _selector.Reset();
             _factory.RecycleAll();
-            _selector.CleanMultiplier();
         }
 
         #endregion
@@ -240,125 +264,168 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
     public class AbilitySelector
     {
-        private int _level;
         public bool IsStorageFull { get; set; }
 
         private readonly Roulette _roulette = new Roulette();
-        private readonly List<AbilityType> _storedAbilities = new List<AbilityType>();
-        private readonly Dictionary<AbilityType, int> _dic = new Dictionary<AbilityType, int>();
-        private readonly Dictionary<AbilityType, AbilityValue> _valuesDic;
-        private readonly Dictionary<int, AbilityType> _unlockDic;
+        private readonly Func<Tuple<AbilityType[], int[]>> _getValuesAction;
+        private readonly Func<Tuple<int[],AbilityType[]>> _getUnlockAction;
+        private readonly Dictionary<AbilityType, ActionValue> _multipliers = new Dictionary<AbilityType, ActionValue>();
 
-        private class AbilityValue
+        private class ActionValue
         {
-            private readonly int _selectValue;
-            private float _multiplier;
-            public float Multiplier => _multiplier;
-            public AbilityType AbilityType { get; private set; }
+            public readonly AbilityType AbilityType;
+            public int Value { get; private set; }
 
-            public AbilityValue(int selectValue, AbilityType abilityType)
+            public ActionValue(AbilityType abilityType)
             {
-                _selectValue = selectValue;
                 AbilityType = abilityType;
-                _multiplier = 0;
             }
 
-            public void SetMultiplier(float value)
+            public void IncreaseValue()
             {
-                _multiplier = value;
+                Value += 5;
             }
 
-            public int GetSelectValue()
+            public void DecreaseValue()
             {
-                return (int)Math.Round(_selectValue * _multiplier);
+                Value -= 5;
+            }
+
+            public void EnableValue()
+            {
+                Value = 10;
+            }
+
+            public void DisableValue()
+            {
+                Value = 0;
             }
         }
 
         public AbilitySelector(
-            Tuple<AbilityType[], int[]> rarity, 
-            Tuple<int[], AbilityType[]> unlock)
+            Func<Tuple<AbilityType[], int[]>> getValuesAction, 
+            Func<Tuple<int[],AbilityType[]>> getUnlockAction)
         {
-            _unlockDic = CreateDic(unlock.Item1, unlock.Item2);
-            
-            var abilityValues = new AbilityValue[rarity.Item1.Length];
-            
-            for (int i = 0; i < rarity.Item1.Length; i++)
+            _getValuesAction = getValuesAction;
+            _getUnlockAction = getUnlockAction;
+
+            for (int i = 0; i < (int)AbilityType.Default_MAX; i++)
             {
-                abilityValues[i] = new AbilityValue(
-                    rarity.Item2[i],
-                    rarity.Item1[i]);
+                var ability = (AbilityType)i;
+                _multipliers.Add(ability,new ActionValue(ability));
             }
+        }
+
+        private AbilityType GetAbilityToUnlock(int level)
+        {
+            var tempValues = _getUnlockAction();
+            var length = tempValues.Item1.Length;
             
-            _valuesDic = CreateDic(rarity.Item1, abilityValues);
+            for (int i = 0; i < length; i++)
+            {
+                var unlockLevel = tempValues.Item1[i];
+
+                if (unlockLevel == level)
+                {
+                    return tempValues.Item2[i];
+                }
+            }
+
+            return AbilityType.None;
+        }
+
+        private void ResetMultipliers()
+        {
+            foreach (var item in _multipliers)
+            {
+                item.Value.DisableValue();
+            }
+        }
+
+        private int GetAbilityValue(AbilityType abilityType)
+        {
+            if (_multipliers.TryGetValue(abilityType, out var multiplier))
+            {
+                return multiplier.Value;
+            }
+
+            return 1;
+        }
+
+        public void IncreaseValue(AbilityType ability)
+        {
+            if (_multipliers.TryGetValue(ability, out var multiplier))
+            {
+                multiplier.IncreaseValue();
+            }
+        }
+
+        public void DecreaseValue(AbilityType ability)
+        {
+            if (_multipliers.TryGetValue(ability, out var multiplier))
+            {
+                multiplier.DecreaseValue();
+            }
+        }
+
+        public void UpdateLevel(int level)
+        {
+            var ability = GetAbilityToUnlock(level);
+            if (ability == AbilityType.None) return;
+
+            if (_multipliers.TryGetValue(ability, out var multiplier))
+            {
+                multiplier.EnableValue();
+            }
         }
         
-
-        private Dictionary<T,TS> CreateDic<T, TS>(T[] keyArray, TS[] valueArray)
+        public void Reset()
         {
-            var dic = new Dictionary<T,TS>();
+            ResetMultipliers();
+        }
+
+        public AbilityType GetAbilityToAdd()
+        {
+            var tempDic = new Dictionary<AbilityType, int>();
+            var values = _getValuesAction();
+            var length = values.Item1.Length;
             
-            for (int i = 0; i < keyArray.Length; i++)
+            for (int i = 0; i < length; i++)
             {
-                var key = keyArray[i];
-                if(dic.ContainsKey(key)) continue;
-                dic.Add(key, valueArray[i]);
+                var ability = values.Item1[i];
+                var finalValue = values.Item2[i] * GetAbilityValue(ability);
+                
+                Debug.Log($"Ability: {ability}, Final Value: {finalValue}");
+                tempDic.Add(ability, finalValue);
             }
             
-            return dic;
-        }
-
-        
-        public void SetLevel(int level)
-        {
-            if (_unlockDic.TryGetValue(level, out var value))
-            {
-                SetMultiplier(value, 1f);
-            }
-        }
-
-        public void AddAbility(AbilityType abilityType)
-        {
-            _storedAbilities.Add(abilityType);
-
-            var currMultiplier = GetMultiplier(abilityType);
-            SetMultiplier(abilityType, currMultiplier * 0.5f);
-        }
-
-        public void RemoveAbility(AbilityType abilityType)
-        {
-            _storedAbilities.Remove(abilityType);
-            var currMultiplier = GetMultiplier(abilityType);
-            SetMultiplier(abilityType, currMultiplier / 0.5f);
-        }
-
-        private void SetMultiplier(AbilityType abilityType, float value = 1f)
-        {
-            _valuesDic[abilityType].SetMultiplier(value);
-        }
-
-        private float GetMultiplier(AbilityType abilityType)
-        {
-            return _valuesDic[abilityType].Multiplier;
-        }
-
-        public void CleanMultiplier()
-        {
-            for (int i = 1; i < (int)AbilityType.Automatic+1; i++)
-            {
-                SetMultiplier((AbilityType)i, 0f);
-            }
-        }
-
-        public AbilityType GetAbility()
-        {
-            _dic.Clear();
-
-            foreach (var ability in _valuesDic.Values)
-            {
-                _dic.Add(ability.AbilityType, ability.GetSelectValue());
-            }
-
-            return _roulette.Run(_dic);
+            return _roulette.Run(tempDic);
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
