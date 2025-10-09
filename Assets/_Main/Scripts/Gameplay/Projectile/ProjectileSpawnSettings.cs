@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.Gameplay.Projectile.Utilities;
+﻿using _Main.Scripts.Utilities;
 using _Main.Scripts.Managers;
 using UnityEngine;
 
