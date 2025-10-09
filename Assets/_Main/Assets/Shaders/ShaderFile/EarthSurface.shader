@@ -197,10 +197,11 @@ Shader "EarthSurface"
 				float WaterMask44 = ( 1.0 - temp_output_24_0 );
 				float4 LavaWater150 = ( tex2D( _WaterDamage, Panner138 ) * color146 * WaterMask44 );
 				float4 color151 = IsGammaSpace() ? float4(0,0.4434402,1,1) : float4(0,0.1653733,1,1);
-				float temp_output_2_0_g14 = ( 1.0 - (0.0 + (_SolidTop - 0.0) * (0.5 - 0.0) / (1.0 - 0.0)) );
+				float temp_output_1061_0 = ( HealthAmount61 * 0.5 );
+				float temp_output_2_0_g14 = ( 1.0 - (0.0 + (_SolidTop - 0.0) * (temp_output_1061_0 - 0.0) / (1.0 - 0.0)) );
 				float2 texCoord775 = i.ase_texcoord1.xy * float2( 1,1 ) + float2( 0,0 );
 				float smoothstepResult5_g14 = smoothstep( temp_output_2_0_g14 , ( temp_output_2_0_g14 + (0.0 + (_TopFadeLenght - 0.0) * (0.25 - 0.0) / (1.0 - 0.0)) ) , texCoord775.y);
-				float temp_output_2_0_g13 = ( 1.0 - (0.0 + (_SolidBottom - 0.0) * (0.5 - 0.0) / (1.0 - 0.0)) );
+				float temp_output_2_0_g13 = ( 1.0 - (0.0 + (_SolidBottom - 0.0) * (temp_output_1061_0 - 0.0) / (1.0 - 0.0)) );
 				float smoothstepResult5_g13 = smoothstep( temp_output_2_0_g13 , ( temp_output_2_0_g13 + (0.0 + (_BottomFadeLenght - 0.0) * (0.25 - 0.0) / (1.0 - 0.0)) ) , ( 1.0 - texCoord775.y ));
 				float IceMask706 = ( saturate( smoothstepResult5_g14 ) + saturate( smoothstepResult5_g13 ) );
 				float4 Water172 = saturate( ( ( tex2D( _WaterDefault, Panner138 ) * color151 * WaterMask44 ) + saturate( ( WaterMask44 * IceMask706 * _WaterIceIntensity ) ) ) );
@@ -232,7 +233,7 @@ Shader "EarthSurface"
 /*ASEBEGIN
 Version=19105
 Node;AmplifyShaderEditor.CommentaryNode;898;-4852.508,-365.4926;Inherit;False;1757.623;792.3076;Comment;22;180;175;185;177;158;160;598;182;179;615;611;616;178;719;169;109;705;572;600;599;29;176;Grass;1,1,1,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;892;-4873.436,494.9089;Inherit;False;1658.505;683.0768;Comment;9;706;867;897;862;864;873;831;824;775;Ice Mask;1,1,1,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode;892;-4873.436,494.9089;Inherit;False;1725.855;900.2791;Comment;14;867;706;1056;1055;864;897;862;873;831;824;775;1061;1062;1063;Ice Mask;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;607;-4845.723,-1189.729;Inherit;False;1420.33;772.4872;Comment;12;143;151;45;137;454;604;606;31;573;559;570;172;Water;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;452;-2057.724,-1268.097;Inherit;False;1063.058;548.2256;Comment;3;1052;372;592;Out;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;52;-3021.392,-1297.786;Inherit;False;847.9467;613.9975;Masking;7;4;17;24;46;27;44;77;Mask;1,1,1,1;0;0
@@ -332,8 +333,11 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;372;-1377.882,-1157.785;Flo
 Node;AmplifyShaderEditor.GetLocalVarNode;1052;-2020.3,-1162.49;Inherit;False;402;FinalSurface;1;0;OBJECT;;False;1;COLOR;0
 Node;AmplifyShaderEditor.FunctionNode;1055;-4121.389,880.2159;Inherit;False;FadeMask;-1;;13;82343dc598e55714e83c410ab3b8d20a;0;4;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;12;FLOAT;0.5;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;1056;-4116.043,590.5623;Inherit;False;FadeMask;-1;;14;82343dc598e55714e83c410ab3b8d20a;0;4;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;12;FLOAT;0.5;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleAddOpNode;867;-3687.504,830.9921;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;706;-3487.331,799.4509;Inherit;True;IceMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode;706;-3491.11,757.8768;Inherit;True;IceMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleAddOpNode;867;-3708.66,765.2217;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;1061;-4190.977,1078.367;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;1063;-4174.01,1199.479;Inherit;False;Constant;_SolidMax;_SolidMax;20;0;Create;True;0;0;0;False;0;False;0.5;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode;1062;-4563.955,1147.698;Inherit;False;61;HealthAmount;1;0;OBJECT;;False;1;FLOAT;0
 WireConnection;17;0;4;3
 WireConnection;61;0;43;0
 WireConnection;24;0;17;0
@@ -419,11 +423,15 @@ WireConnection;372;0;592;0
 WireConnection;1055;8;862;0
 WireConnection;1055;9;873;0
 WireConnection;1055;10;864;0
+WireConnection;1055;12;1061;0
 WireConnection;1056;8;775;2
 WireConnection;1056;9;824;0
 WireConnection;1056;10;831;0
+WireConnection;1056;12;1061;0
+WireConnection;706;0;867;0
 WireConnection;867;0;1056;0
 WireConnection;867;1;1055;0
-WireConnection;706;0;867;0
+WireConnection;1061;0;1062;0
+WireConnection;1061;1;1063;0
 ASEEND*/
-//CHKSM=67BB4B9B66D332436B1FDD5CA452D2FEA734FBE3
+//CHKSM=7CE947EF63176D8EC48F900B63A730F476D5E599

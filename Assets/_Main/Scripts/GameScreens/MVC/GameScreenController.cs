@@ -11,8 +11,10 @@ namespace _Main.Scripts.GameScreens
         
         private enum States
         {
+            Disable,
             MainMenu,
-            Gameplay
+            Gameplay,
+            Tutorial,
         }
 
         public GameScreenController(GameScreenMotor motor)
@@ -41,18 +43,27 @@ namespace _Main.Scripts.GameScreens
 
             var mainMenu = new GameScreenMainMenuState<States>();
             var gameplay = new GameScreenGameplayState<States>();
+            var tutorial = new GameScreenTutorialState<States>();
+            var disable = new GameScreenStartLoadingState<States>();
             
             temp.Add(mainMenu);
             temp.Add(gameplay);
+            temp.Add(tutorial);
+            temp.Add(disable);
 
 
             #endregion
 
             #region Transitions
+            
+            disable.AddTransition(States.MainMenu, mainMenu);
 
             mainMenu.AddTransition(States.Gameplay, gameplay);
+            mainMenu.AddTransition(States.Tutorial, tutorial);
             
             gameplay.AddTransition(States.MainMenu, mainMenu);
+            
+            tutorial.AddTransition(States.MainMenu, mainMenu);
 
             #endregion
 
@@ -61,7 +72,7 @@ namespace _Main.Scripts.GameScreens
                 state.Initialize(this);
             }
             
-            _fsm.SetInit(mainMenu);
+            _fsm.SetInit(disable);
             _fsm.FSMName = "GameScreen";
         }
 
@@ -82,10 +93,17 @@ namespace _Main.Scripts.GameScreens
             SetTransition(States.Gameplay);
         }
         
+        public void TransitionToTutorial()
+        {
+            SetTransition(States.Tutorial);
+        }
+        
         #endregion
 
         #endregion
-        
+
+        #region Motor
+
         public void SetActiveMainMenu()
         {
             _motor.SetActiveMainMenu();
@@ -95,5 +113,56 @@ namespace _Main.Scripts.GameScreens
         {
             _motor.SetActiveGameplay();
         }
+
+        public void SetActiveTutorial()
+        {
+            _motor.SetActiveTutorial();
+        }
+        
+        public void SetActiveStartLoading()
+        {
+            _motor.SetActiveStartLoading();
+        }
+
+        #endregion
+
+
     }
+
+    #region States
+
+    public class GameScreenMainMenuState<T> : GameScreenStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetActiveMainMenu();
+        }
+    }
+    
+    public class GameScreenGameplayState<T> : GameScreenStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetActiveGameplay();
+        }
+    }
+    
+    public class GameScreenTutorialState<T> : GameScreenStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetActiveTutorial();
+        }
+    }
+
+    public class GameScreenStartLoadingState<T> : GameScreenStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetActiveStartLoading();
+        }
+    }
+
+
+    #endregion
 }

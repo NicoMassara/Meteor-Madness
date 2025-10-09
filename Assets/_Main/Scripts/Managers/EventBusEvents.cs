@@ -42,18 +42,16 @@ namespace _Main.Scripts.Managers
 
     public struct GameScreenEvents
     {
-        public struct MainMenuEnable { }
-        public struct GameModeEnable { }
-        
-        public struct SetGameScreen
+        public struct SetScreen
         {
-            public int Index;
+            public ScreenType ScreenType;
+            public bool IsEnable;
         }
     }
 
     public struct GameModeEvents
     {
-        public struct Initialize { };
+        public struct InitializeValues { };
 
         public struct Disable { };
 
@@ -72,7 +70,7 @@ namespace _Main.Scripts.Managers
         }
     }
 
-    public struct MeteorEvents
+    public struct ProjectileEvents
     {
         public struct Collision
         {
@@ -90,7 +88,31 @@ namespace _Main.Scripts.Managers
             public float Value;
             public ProjectileType Type;
         }
+        
+        public struct Add
+        {
+            public IProjectile Projectile;
+        }
+
+        public struct RequestSpawn
+        {
+            public ProjectileType ProjectileType;
+            public EventRequestType RequestType;
+        }
+
+        public struct Spawn
+        {
+            public ProjectileType ProjectileType;
+            public Vector2 Position;
+            public Vector2 Direction;
+            public float MovementMultiplier;
+        }
+        
+        public struct ClearQueue {}
+    }
     
+    public struct MeteorEvents
+    {
         public struct EnableSpawn
         {
             public bool CanSpawn;
@@ -109,7 +131,7 @@ namespace _Main.Scripts.Managers
     {
         public struct Spawn
         {
-            public ParticleDataSo ParticleData; 
+            public IParticleData ParticleData; 
             public Vector3 Position;
             public Quaternion Rotation;
             public Vector3 MoveDirection;
@@ -120,7 +142,7 @@ namespace _Main.Scripts.Managers
     {
         public struct Shake
         {
-            public ShakeDataSo ShakeData;
+            public IShakeData ShakeData;
         }
 
         public struct ZoomIn { }
@@ -137,9 +159,9 @@ namespace _Main.Scripts.Managers
 
     public struct AbilitiesEvents
     {
-        public struct SetEnable
+        public struct SetCanUse
         {
-            public bool IsEnable;
+            public bool CanUse;
         }
 
         public struct Add
@@ -160,41 +182,11 @@ namespace _Main.Scripts.Managers
         }
     }
 
-    public struct ProjectileEvents
-    {
-        public struct Add
-        {
-            public IProjectile Projectile;
-        }
-
-        public struct RequestSpawn
-        {
-            public ProjectileType ProjectileType;
-            public EventRequestType RequestType;
-        }
-
-        public struct Spawn
-        {
-            public ProjectileType ProjectileType;
-            public Vector2 Position;
-            public Vector2 Direction;
-            public float MovementMultiplier;
-        };
-    }
-
     public struct FloatingTextEvents
     {
-        public struct Points
+        public struct Spawn
         {
-            public Vector2 Position;
-            public int Score;
-            public bool IsDouble;
-        }
-        
-        public struct Ability
-        {
-            public Vector2 Position;
-            public AbilityType AbilityType;
+            public FloatingTextValues Data;
         }
     }
 }

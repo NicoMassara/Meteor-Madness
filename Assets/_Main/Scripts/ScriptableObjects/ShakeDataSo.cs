@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Interfaces;
+using UnityEngine;
 
 namespace _Main.Scripts.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "SO_ShakeData_Name", menuName = "Scriptable Objects/Shaker/Shake Data", order = 0)]
-    public class ShakeDataSo : ScriptableObject
+    public class ShakeDataSo : ScriptableObject, IShakeData
     {
         [SerializeField] private float shakeTime;
         [Range(0.1f, 500)] 

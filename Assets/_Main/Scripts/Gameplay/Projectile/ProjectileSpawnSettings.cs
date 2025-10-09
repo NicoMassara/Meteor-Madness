@@ -82,9 +82,8 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void SetEventBus()
         {
-            var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            eventManager.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+            GameEventCaller.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
         }
 
         private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
