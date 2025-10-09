@@ -1043,7 +1043,7 @@ MonoBehaviour:
   spriteContainer: {fileID: 1499242836}
   normalSprite: {fileID: 610377037}
   superSprite: {fileID: 1667250004}
-  shieldCollider: {fileID: 0}
+  shieldCollider: {fileID: 610377043}
   hitSound: {fileID: 163182589}
   moveSound: {fileID: 1982406300}
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
