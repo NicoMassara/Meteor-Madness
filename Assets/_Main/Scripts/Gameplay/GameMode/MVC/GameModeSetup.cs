@@ -54,6 +54,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void EnableGameMode()
         {
+            if (_isEnable == true) return;
             SubscribeToEventBus();
             _controller.SetDoesRestartGameMode(true);
             _controller.TransitionToStart();
@@ -62,6 +63,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void DisableGameMode()
         {
+            if (_isEnable == false) return;
+            
             _isEnable = false;
             UnsubscribeToEventBus();
             _controller.TransitionToDisable();
