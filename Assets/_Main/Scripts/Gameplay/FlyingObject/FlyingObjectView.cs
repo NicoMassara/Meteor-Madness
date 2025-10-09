@@ -106,7 +106,7 @@ namespace _Main.Scripts.FyingObject
             }
         }
 
-        public void SetValues(TVS data)
+        public virtual void SetValues(TVS data)
         {
             OnValuesChanged?.Invoke(data);
         }
