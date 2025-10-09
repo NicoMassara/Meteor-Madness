@@ -66,17 +66,18 @@ namespace _Main.Scripts.Gameplay.Shield
         
         #region Movement
 
-        public void Rotate(int direction)
+        public bool TryRotate(int direction)
         {
-            if (_isPlayerInputDisable == false)
-            {
-                _movement.HandleMove(direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-            }
+            if (_isPlayerInputDisable) return false;
+            
+            _movement.HandleMove(direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            return true;
         }
 
-        public void ForceStop()
+        public bool TryForceStop()
         {
             _movement.HandleMove(0,0);
+            return true;
         }
 
         public void RestartPosition()
@@ -136,7 +137,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 yield return null;
             }
             
-            ForceStop();
+            TryForceStop();
             
             _isPlayerInputDisable = false;
         }

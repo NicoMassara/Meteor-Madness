@@ -20,6 +20,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private GameObject spriteContainer;
         [SerializeField] private GameObject normalSprite;
         [SerializeField] private GameObject superSprite;
+        [SerializeField] private CapsuleCollider2D shieldCollider;
         [Space]
         [Header("Sounds")]
         [SerializeField] private SoundBehavior hitSound;
@@ -40,6 +41,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldMovement _movement;
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
+        private ShieldColliderExtender _colliderExtender;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
@@ -48,13 +50,15 @@ namespace _Main.Scripts.Gameplay.Shield
             _movement = GetComponent<ShieldMovement>();
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, 
                 timeToEnableSuperShield,timeToDisableSuperShield);
+            _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
+            _colliderExtender = new ShieldColliderExtender(shieldCollider);
         }
 
         private void Start()
         {
             superSprite.gameObject.SetActive(false);
-            _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
         }
+
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -63,7 +67,8 @@ namespace _Main.Scripts.Gameplay.Shield
                     HandleRotation((float)args[0]);
                     break;
                 case ShieldObserverMessage.Deflect:
-                    HandleDeflect((Vector3)args[0],
+                    HandleDeflect(
+                        (Vector3)args[0],
                         (Quaternion)args[1],
                         (Vector2)args[2]);
                     break;
@@ -113,12 +118,18 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandleRotation(float direction)
         {
-            _movement.Rotate((int)direction);
+            if (_movement.TryRotate((int)direction))
+            {
+                _colliderExtender.Extend();
+            }
         }
         
         private void HandleStopRotate()
         {
-            _movement.ForceStop();
+            if (_movement.TryForceStop())
+            {
+                _colliderExtender.Retract();
+            }
         }
         
         private void HandlePlayMoveSound()

@@ -1163,6 +1163,7 @@ MonoBehaviour:
   spriteContainer: {fileID: 1499242836}
   normalSprite: {fileID: 610377037}
   superSprite: {fileID: 1667250004}
+  shieldCollider: {fileID: 0}
   hitSound: {fileID: 163182589}
   moveSound: {fileID: 1982406300}
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
@@ -4287,7 +4288,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: -0.1, y: 0}
-  m_Size: {x: 0.5, y: 2}
+  m_Size: {x: 0.35, y: 2}
   m_Direction: 0
 --- !u!1 &619992303
 GameObject:
