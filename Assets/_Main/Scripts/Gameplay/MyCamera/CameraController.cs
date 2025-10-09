@@ -1,7 +1,7 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
-using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Shaker;
 using UnityEngine;
 
@@ -65,13 +65,13 @@ namespace _Main.Scripts.Gameplay.MyCamera
             mainCamera.orthographicSize = newSize;
         }
 
-        public void ZoomIn()
+        private void ZoomIn()
         {
             _targetSize = _zoomSize;
             _doesChangeSize = true;
         }
 
-        public void ZoomOut()
+        private void ZoomOut()
         {
             _targetSize = _defaultSize;
             _doesChangeSize = true;
@@ -81,7 +81,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
         
         #region Shake
 
-        private void StartShake(ShakeDataSo shakeData)
+        private void StartShake(IShakeData shakeData)
         {
             _shakerController.SetShakeData(shakeData);
             _shakerController.StartShake();
@@ -93,11 +93,9 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
         private void SetEventBus()
         {
-            var eventBus = GameManager.Instance.EventManager;
-            
-            eventBus.Subscribe<CameraEvents.Shake>(EventBus_Camera_StartShake);
-            eventBus.Subscribe<CameraEvents.ZoomIn>(EventBus_Camera_ZoomIn);
-            eventBus.Subscribe<CameraEvents.ZoomOut>(EventBus_Camera_ZoomOut);
+            GameEventCaller.Subscribe<CameraEvents.Shake>(EventBus_Camera_StartShake);
+            GameEventCaller.Subscribe<CameraEvents.ZoomIn>(EventBus_Camera_ZoomIn);
+            GameEventCaller.Subscribe<CameraEvents.ZoomOut>(EventBus_Camera_ZoomOut);
         }
 
         private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)

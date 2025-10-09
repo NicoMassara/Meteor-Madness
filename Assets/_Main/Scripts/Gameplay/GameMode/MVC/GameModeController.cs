@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.FSM.GameMode;
+using _Main.Scripts.Gameplay.GameMode.States;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -12,6 +12,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private enum States
         {
+            Enable,
             Start,
             Gameplay,
             Finish,
@@ -19,6 +20,20 @@ namespace _Main.Scripts.Gameplay.GameMode
             Restart,
             Disable
         }
+        
+        private class ActionGate
+        {
+            public bool IsInGameplay { get; private set; }
+            public ActionGate(FSM<States> fsm)
+            {
+                fsm.OnEnterState += state =>
+                {
+                    IsInGameplay = state is States.Gameplay or States.Enable or States.Start;
+                };
+            }
+        }
+        
+        private ActionGate _actionGate;
 
         public GameModeController(GameModeMotor motor)
         {
@@ -42,6 +57,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var temp = new List<GameModeStateBase<States>>();
             _fsm = new FSM<States>();
+            _actionGate = new ActionGate(_fsm);
 
             #region Variables
 
@@ -51,7 +67,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             var death = new GameModeDeathState<States>();
             var restart = new GameModeRestartState<States>();
             var disable = new GameModeDisableState<States>();
+            var enable = new GameModeEnableState<States>();
             
+            temp.Add(enable);
             temp.Add(start);
             temp.Add(gameplay);
             temp.Add(finish);
@@ -62,7 +80,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             #endregion
 
             #region Transitions
-
+            
+            enable.AddTransition(States.Start, start);
+            
             start.AddTransition(States.Gameplay, gameplay);
             
             gameplay.AddTransition(States.Finish, finish);
@@ -75,7 +95,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             restart.AddTransition(States.Start, start);
             
-            disable.AddTransition(States.Start, start);
+            disable.AddTransition(States.Enable, enable);
 
             #endregion
 
@@ -93,6 +113,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void SetTransition(States state)
         {
             _fsm?.Transitions(state);
+        }
+        
+        public void TransitionToEnable()
+        {
+            SetTransition(States.Enable);
         }
         
         public void TransitionToStart()
@@ -128,7 +153,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         #endregion
 
         #endregion
-
+        
+        #region Motor
+        
         #region Level 
 
         public void StartCountdown()
@@ -166,14 +193,17 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
-        
-        public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
+
+        public void HandleProjectileDeflect(Vector2 position, float meteorDeflectValue)
         {
+            if(_actionGate.IsInGameplay == false) return;
             _motor.HandleMeteorDeflect(position, meteorDeflectValue);
         }
 
         public void SetEnableMeteorSpawn(bool canSpawn)
         {
+            if(_actionGate.IsInGameplay == false) return;
+            
             _motor.SetEnableMeteorSpawn(canSpawn);
         }
 
@@ -219,12 +249,114 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void SetDoublePoints(bool isEnable)
         {
+            if(_actionGate.IsInGameplay == false) return;
+            
             _motor.SetDoublePoints(isEnable);
         }
 
         public void GrantProjectileSpawn(int projectileTypeIndex)
         {
+            if(_actionGate.IsInGameplay == false) return;
+            
             _motor.GrantSpawnMeteor(projectileTypeIndex);
         }
+
+        public void SetEnable()
+        {
+            _motor.Enable();
+        }
+
+        #endregion
     }
+
+    #region States
+
+    public class GameModeEnableState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetEnable();
+        }
+    }
+    
+    public class GameModeDisableState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.DisableGameMode();
+        }
+    }
+    
+    public class GameModeDeathState<T> : GameModeStateBase<T>
+    {
+        private ActionQueue _actionQueue = new ActionQueue();
+        
+        public override void Awake()
+        {
+            Controller.HandleEarthEndDestruction();
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            _actionQueue.Run(deltaTime);
+        }
+    }
+    
+    public class GameModeFinishState<T> : GameModeStateBase<T>
+    {
+        private ActionQueue _actionQueue = new ActionQueue();
+        
+        public override void Awake()
+        {
+            Controller.HandleGameFinish();
+            Controller.HandleEarthStartDestruction();
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            _actionQueue.Run(deltaTime);
+        }
+    }
+    
+    public class GameModeGameplayState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetEnableMeteorSpawn(true);
+        }
+        
+        public override void Sleep()
+        {
+            Controller.SetEnableMeteorSpawn(false);
+        }
+    }
+    
+    public class GameModeRestartState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.GameRestart();
+        }
+    }
+    
+    public class GameModeStartState<T> : GameModeStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.RestartValues();
+            Controller.StartCountdown();
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            Controller.HandleCountdownTimer(deltaTime);
+        }
+
+        public override void Sleep()
+        {
+            Controller.StartGameplay();
+        }
+    }
+
+    #endregion
 }

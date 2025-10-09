@@ -1,7 +1,5 @@
 ﻿using System;
 using _Main.Scripts.FyingObject;
-using _Main.Scripts.Gameplay.AutoTarget;
-using _Main.Scripts.Gameplay.Projectile;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Observer;
 using UnityEngine;
@@ -11,6 +9,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 {
     public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorValuesData>, IMeteor, ITargetable, IProjectile
     {
+        private IProjectile projectileImplementation;
         public UnityAction<MeteorCollisionData> OnEarthCollision { get; set; }
         public UnityAction<MeteorCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
@@ -77,7 +76,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         }
     }
 
-    public class MeteorCollisionData
+    public struct MeteorCollisionData
     {
         public MeteorView Meteor;
         public Vector3 Position;

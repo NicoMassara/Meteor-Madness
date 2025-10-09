@@ -8,7 +8,7 @@ namespace _Main.Scripts.Comet
         protected override void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)
         {
             base.HandleCollision(canMove, position, direction,doesShowParticles);
-            ForceRecycle();
+            Recycle();
         }
     }
 }
