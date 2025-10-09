@@ -1127,7 +1127,6 @@ GameObject:
   - component: {fileID: 168416677}
   - component: {fileID: 168416675}
   - component: {fileID: 168416676}
-  - component: {fileID: 168416678}
   m_Layer: 0
   m_Name: ShieldController
   m_TagString: Untagged
@@ -1172,7 +1171,11 @@ MonoBehaviour:
   timeToEnableSuperShield: 0.75
   timeToDisableSuperShield: 0.75
   decayConstant: 500
-  autoCorrectEnable: 1
+  detectorData:
+    ProjectileLayer:
+      serializedVersion: 2
+      m_Bits: 64
+    CheckRadius: 15
 --- !u!4 &168416677
 Transform:
   m_ObjectHideFlags: 0
@@ -1188,23 +1191,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &168416678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 168416674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f9d951fac384e8b981e5c9bd16451ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meteorLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  checkDistance: 3.5
-  slotRange: {x: 3, y: 5}
 --- !u!1 &200166475
 GameObject:
   m_ObjectHideFlags: 0
