@@ -13,12 +13,14 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    public class ShieldView : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable
+    [RequireComponent(typeof(ShieldMovement))]
+    public class ShieldView : ManagedBehavior, IObserver
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
         [SerializeField] private GameObject normalSprite;
         [SerializeField] private GameObject superSprite;
+        [SerializeField] private CapsuleCollider2D shieldCollider;
         [Space]
         [Header("Sounds")]
         [SerializeField] private SoundBehavior hitSound;
@@ -35,53 +37,28 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float timeToEnableSuperShield;
         [Range(0.1f, 5f)]
         [SerializeField] private float timeToDisableSuperShield;
-        [Range(0, 1000)]
-        [SerializeField] private float decayConstant = 100f;
-        [SerializeField] private ProjectileDetectorData detectorData;
-        
-        private ProjectileDetector projectileDetector;
+
         private ShieldMovement _movement;
-        private ShieldSpeeder _shieldSpeeder;
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
-
-        private bool _isPlayerInputDisable;
-        private bool _automaticEnable;
+        private ShieldColliderExtender _colliderExtender;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
-        public UpdateGroup SelfFixedUpdateGroup { get; } = UpdateGroup.Shield;
 
         private void Awake()
         {
-            _movement = new ShieldMovement(spriteContainer.transform,movementData);
-            _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
-            _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
-            projectileDetector = new ProjectileDetector(detectorData,_movement);
+            _movement = GetComponent<ShieldMovement>();
+            _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, 
+                timeToEnableSuperShield,timeToDisableSuperShield);
+            _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
+            _colliderExtender = new ShieldColliderExtender(shieldCollider);
         }
 
         private void Start()
         {
-            projectileDetector.OnTargetFound += Detector_OnTargetFoundHandler;
-            projectileDetector.OnTargetLost += Detector_OnTargetLostHandler;
-            
             superSprite.gameObject.SetActive(false);
-            _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
         }
 
-        public void ManagedUpdate()
-        {
-            _movement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-            
-        }
-        
-        public void ManagedFixedUpdate()
-        {
-            if (_automaticEnable)
-            {
-                projectileDetector.CheckForProjectile();
-            }
-        }
-        
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -90,7 +67,8 @@ namespace _Main.Scripts.Gameplay.Shield
                     HandleRotation((float)args[0]);
                     break;
                 case ShieldObserverMessage.Deflect:
-                    HandleDeflect((Vector3)args[0],
+                    HandleDeflect(
+                        (Vector3)args[0],
                         (Quaternion)args[1],
                         (Vector2)args[2]);
                     break;
@@ -98,7 +76,7 @@ namespace _Main.Scripts.Gameplay.Shield
                     HandleStopRotate();
                     break;
                 case ShieldObserverMessage.PlayMoveSound:
-                    PlayMoveSound();
+                    HandlePlayMoveSound();
                     break;
                 case ShieldObserverMessage.SetActiveShield:
                     HandleSetActiveShield((bool)args[0]);
@@ -117,17 +95,12 @@ namespace _Main.Scripts.Gameplay.Shield
                     break;
             }
         }
-
-        private void HandleRestartPosition()
-        {
-            _movement.Restart();
-        }
         
-        #region States
+        #region ObserverHandlers
 
         private void HandleSetAutomatic(bool isActive)
         {
-            _automaticEnable = isActive;
+            _movement.SetAutomaticEnable(isActive);
             var color = isActive ? Color.red : Color.white;
             normalSprite.GetComponent<SpriteRenderer>().color = color;
         }
@@ -142,32 +115,33 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             spriteContainer.SetActive(isActive);
         }
-
-        #endregion
-
-        #region Movement
+        
         private void HandleRotation(float direction)
         {
-            if (_isPlayerInputDisable == false)
+            if (_movement.TryRotate((int)direction))
             {
-                _movement.HandleMove((int)direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                _colliderExtender.Extend();
             }
         }
         
         private void HandleStopRotate()
         {
-            _movement.HandleMove(0,0);
+            if (_movement.TryForceStop())
+            {
+                _colliderExtender.Retract();
+            }
         }
         
-        private void PlayMoveSound()
+        private void HandlePlayMoveSound()
         {
             moveSound?.PlaySound();
         }
-
-        #endregion
-
-        #region Deflect
-
+        
+        private void HandleRestartPosition()
+        {
+            _movement.RestartPosition();
+        }
+        
         private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
         {
             hitSound?.PlaySound();
@@ -215,7 +189,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set to 1");
-                    _shieldSpeeder.RestartValues();
+                    _movement.RestartSpeedValues();
                     _spriteAlphaSetter.RestartValues();
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                 },timeToEnableSuperShield),
@@ -241,8 +215,8 @@ namespace _Main.Scripts.Gameplay.Shield
                     //Debug.Log("Ability Time Scale Set To 1");
                     superSprite.gameObject.SetActive(false);
                     _spriteAlphaSetter.RestartValues();
-                    _shieldSpeeder.RestartValues();
-                    StartCoroutine(Coroutine_RotateTowardsNearestMeteor());
+                    _movement.RestartSpeedValues();
+                    _movement.RotateTowardsNearestProjectileSlot();
                 },timeToDisableSuperShield),
             };
             
@@ -252,13 +226,13 @@ namespace _Main.Scripts.Gameplay.Shield
         private void HandleSuperShieldEnable(float deltaTime)
         {
             _spriteAlphaSetter.EnableSuper(deltaTime);
-            _shieldSpeeder.IncreaseSpeed(deltaTime);
+            _movement.IncreaseSpeed(deltaTime);
         }
 
         private void HandleNormalShieldEnable(float deltaTime)
         {
             _spriteAlphaSetter.EnableNormal(deltaTime);
-            _shieldSpeeder.DecreaseSpeed(deltaTime);
+            _movement.DecreaseSpeed(deltaTime);
         }
         
         #endregion
@@ -279,51 +253,6 @@ namespace _Main.Scripts.Gameplay.Shield
             }
         }
 
-        private IEnumerator Coroutine_AutoCorrection()
-        {
-            _isPlayerInputDisable = true;
-            var currentDirection = projectileDetector.GetSlotDirection();
-            var initialDiff = projectileDetector.GetSlotDiff();
-
-            while (currentDirection != 0 && _isPlayerInputDisable == true)
-            {
-                var distanceRatio = (float)projectileDetector.GetSlotDiff() / initialDiff;
-                distanceRatio = 1 -distanceRatio;
-                var multiplier = MathfCalculations.Remap(distanceRatio, 0, 1f, 1, 1.75f);
-                currentDirection = projectileDetector.GetSlotDirection() * 10;
-                _movement.HandleMove((int)currentDirection * multiplier,
-                    CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-                
-                yield return null;
-            }
-            
-            HandleStopRotate();
-            
-            _isPlayerInputDisable = false;
-        }
-
-        private IEnumerator Coroutine_RotateTowardsNearestMeteor()
-        {
-            var meteorSlot = projectileDetector.GetNearestProjectileSlot();
-            
-            if (meteorSlot > -1)
-            {
-                _movement.SetSpeedMultiplier(0.5f);
-            
-                while (meteorSlot != _movement.GetCurrentSlot())
-                {
-                    _movement.HandleMove(1, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-                
-                    yield return null;
-                }
-            
-                _movement.HandleMove(0, 0);
-                _movement.SetSpeedMultiplier(1);
-            }
-            
-            CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
-        }
-
         private IEnumerator Coroutine_Shake()
         {
             _shakerController.StartShake();
@@ -337,32 +266,6 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
-
-        #region Handlers
-
-        private void Detector_OnTargetLostHandler()
-        {
-            _isPlayerInputDisable = false;
-        }
-
-        private void Detector_OnTargetFoundHandler()
-        {
-            StartCoroutine(Coroutine_AutoCorrection());
-        }
-
-        #endregion
-
-
-        #region Gizmos
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, detectorData.CheckRadius);
-        }
-
-        #endregion
-
-
+        
     }
 }
