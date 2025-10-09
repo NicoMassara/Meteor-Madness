@@ -395,7 +395,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 var ability = values.Item1[i];
                 var finalValue = values.Item2[i] * GetAbilityValue(ability);
                 
-                Debug.Log($"Ability: {ability}, Final Value: {finalValue}");
                 tempDic.Add(ability, finalValue);
             }
             
