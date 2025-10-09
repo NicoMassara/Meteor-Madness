@@ -1,7 +1,5 @@
 ﻿using System;
 using _Main.Scripts.FyingObject;
-using _Main.Scripts.Gameplay.AutoTarget;
-using _Main.Scripts.Gameplay.Projectile;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Observer;
 using UnityEngine;

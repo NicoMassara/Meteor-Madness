@@ -192,6 +192,11 @@ namespace _Main.Scripts
                 MovementMultiplier = data.MovementMultiplier
             });
         }
+
+        public static void ClearQueue()
+        {
+            GameEventCaller.Publish(new ProjectileEvents.ClearQueue());
+        }
     }
     public static class MeteorEventCaller
     {

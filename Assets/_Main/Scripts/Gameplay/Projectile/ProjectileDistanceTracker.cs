@@ -26,6 +26,11 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         public void ClearValues()
         {
+            if (_projectile != null)
+            {
+                _projectile.OnDeath -= OnDeathHandler;
+            }
+            
             _projectile = null;
             _targetPosition = Vector2.zero;
             _totalDistance = float.PositiveInfinity;

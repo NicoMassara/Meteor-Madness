@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.FSM.Ability;
-using _Main.Scripts.Managers;
+using _Main.Scripts.Gameplay.Ability.States;
+using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilies
@@ -146,4 +146,53 @@ namespace _Main.Scripts.Gameplay.Abilies
             _motor.RunActiveTimer();
         }
     }
+    
+    #region States
+
+    public class AbilityRunningState<T> : AbilityBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.TriggerAbility();
+        }
+
+        public override void Sleep()
+        {
+            Controller.FinishAbility();
+        }
+    }
+    
+    public class AbilityRestartState<T> : AbilityBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.RestartAbilities();
+            Controller.TransitionToEnable();
+        }
+    }
+    
+    public class AbilityEnableState<T> : AbilityBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetCanUseAbility(true);
+            Controller.SetEnableUIAbility(true);
+        }
+
+        public override void Sleep()
+        {
+            Controller.SetCanUseAbility(false);
+        }
+    }
+    
+    public class AbilityDisableState<T> : AbilityBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetCanUseAbility(false);
+            Controller.SetEnableUIAbility(false);
+        }
+    }
+
+    #endregion
 }

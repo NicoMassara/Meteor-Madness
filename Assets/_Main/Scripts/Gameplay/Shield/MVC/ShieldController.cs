@@ -143,7 +143,9 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
-        
+
+        #region Motor
+
         #region Movement
 
         public void TryRotate(float direction)
@@ -203,10 +205,78 @@ namespace _Main.Scripts.Gameplay.Shield
             _motor.SetActiveAutomatic(isActive);
         }
 
+        #endregion
 
         #region Handlers
         
 
         #endregion
     }
+
+    #region States
+
+    public class ShieldActivateState<T> : ShieldBaseState<T>
+    {
+        // ReSharper disable Unity.PerformanceAnalysis
+        public override void Awake()
+        {
+            Controller.SetActiveShield(true);
+        }
+    }
+    
+    public class ShieldAutomaticState<T> : ShieldBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetActiveAutomatic(true);
+        }
+
+        public override void Sleep()
+        {
+            Controller.SetActiveAutomatic(false);
+        }
+    }
+    
+    public class ShieldGoldState<T> : ShieldBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetActiveGold(true);
+        }
+
+        public override void Sleep()
+        {
+            Controller.SetActiveGold(false);
+        }
+    }
+    
+    public class ShieldSuperState<T> : ShieldBaseState<T>
+    {
+        private const float MovementDirection = 1f;
+        
+        public override void Awake()
+        {
+            Controller.SetActiveSuperShield(true);
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            Controller.ForceRotate(MovementDirection);
+        }
+
+        public override void Sleep()
+        {
+            Controller.SetActiveSuperShield(false);
+        }
+    }
+    
+    public class ShieldUnactiveState<T> : ShieldBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetActiveShield(false);
+        }
+    }
+
+    #endregion
 }
