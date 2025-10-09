@@ -1,6 +1,9 @@
-﻿using _Main.Scripts.Managers;
+﻿using System;
+using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
+using _Main.Scripts.MyTools;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Sounds;
@@ -11,7 +14,7 @@ using Random = UnityEngine.Random;
 namespace _Main.Scripts.FyingObject
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable
+    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable, IPoolable<TS>
     where T : FlyingObjectMotor<TVS>
     where TS : FlyingObjectView<T, TS, TVS>
     where TVS : FlyingObjectValues
@@ -41,7 +44,7 @@ namespace _Main.Scripts.FyingObject
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public UpdateGroup SelfFixedUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public UnityAction<TS> OnRecycle;
+        public event Action<TS> OnRecycle;
         
         private void Awake()
         {
@@ -146,7 +149,7 @@ namespace _Main.Scripts.FyingObject
             OnCollisionDetected?.Invoke(other);
         }
 
-        public void ForceRecycle()
+        public void Recycle()
         {
             moveSound?.StopSound();
             OnRecycle?.Invoke((TS)this);

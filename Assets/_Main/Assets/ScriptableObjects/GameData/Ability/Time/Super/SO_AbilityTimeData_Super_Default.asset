@@ -18,4 +18,4 @@ MonoBehaviour:
   startAction: 0.45
   stopAction: 0.5
   slowDown: 0.25
-  speedUp: 0.15
+  speedUp: 0.25

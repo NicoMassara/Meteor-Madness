@@ -10,7 +10,10 @@ namespace _Main.Scripts.ScriptableObjects.GameConfig
     {
         [ReadOnly]
         public int minUnlockLevel;
-            
+
+        private int _maxLevel;
+        public int MinUnlockLevel => minUnlockLevel;
+
         private void UpdateMinUnlockLevel()
         {
             int level = int.MaxValue;
@@ -51,7 +54,7 @@ namespace _Main.Scripts.ScriptableObjects.GameConfig
             }
         }
 
-        public (AbilityType[] abilityTypes, int[] rarityValues) GetRarityValues()
+        public Tuple<AbilityType[], int[]> GetRarityValues()
         {
             var length = rarityValues.Length;
             var tempItem1 = new AbilityType[length];
@@ -63,9 +66,8 @@ namespace _Main.Scripts.ScriptableObjects.GameConfig
                 tempItem2[i] = rarityValues[i].value;
             }
         
-            return  (tempItem1, tempItem2);
+            return new Tuple<AbilityType[], int[]>(tempItem1, tempItem2);
         }
-        
 
         [Space]
         [SerializeField] private LevelUnlock[] levelToUnlock;
@@ -90,7 +92,7 @@ namespace _Main.Scripts.ScriptableObjects.GameConfig
             }
         }
         
-        public (int[] unlockLevels, AbilityType[] abilityTypes) GetUnlockLevelValues()
+        public Tuple<int[],AbilityType[]> GetUnlockLevelValues()
         {
             var length = levelToUnlock.Length;
             var tempItem1 = new int[length];
@@ -102,7 +104,20 @@ namespace _Main.Scripts.ScriptableObjects.GameConfig
                 tempItem2[i] = levelToUnlock[i].type;
             }
         
-            return  (tempItem1, tempItem2);
+            return  new Tuple<int[], AbilityType[]>(tempItem1, tempItem2);
+        }
+
+
+        private void LimitMaxLevel()
+        {
+            for (int i = 0; i < levelToUnlock.Length; i++)
+            {
+                var item = levelToUnlock[i];
+                if (item.levelToSet >= _maxLevel)
+                {
+                    item.levelToSet = _maxLevel-1;
+                }
+            }
         }
 
 
@@ -113,10 +128,12 @@ namespace _Main.Scripts.ScriptableObjects.GameConfig
             int abilityCount = (int)AbilityType.Default_MAX-1;
             GameConfigUtilities.UpdateArray(ref rarityValues, abilityCount, SetRarityDefault);
             UpdateMinUnlockLevel();
+            LimitMaxLevel();
         }
 
         public void ValidateByLevelAmount(int levelAmount)
         {
+            _maxLevel = levelAmount;
             SetLevelToUnlockLimit(levelAmount);
         }
     }

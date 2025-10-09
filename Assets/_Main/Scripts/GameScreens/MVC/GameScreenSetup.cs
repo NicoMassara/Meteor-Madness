@@ -7,13 +7,11 @@ using UnityEngine;
 namespace _Main.Scripts.GameScreens
 {
     [RequireComponent(typeof(GameScreenView))]
-    public class GameScreenSetup : ManagedBehavior, IUpdatable
+    public class GameScreenSetup : ManagedBehavior
     {
         private GameScreenMotor _motor;
         private GameScreenController _controller;
         private GameScreenView _view;
-        
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
 
         private void Awake()
         {
@@ -21,38 +19,39 @@ namespace _Main.Scripts.GameScreens
             _controller = new GameScreenController(_motor);
             _view = GetComponent<GameScreenView>();
             
+            _motor.Subscribe(_view);
+            
             SetEventBus();
+            
+            _controller.Initialize();
         }
 
         private void Start()
         {
-            _motor.Subscribe(_view);
-            _controller.Initialize();
-        }
-
-        public void ManagedUpdate()
-        {
-            _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _controller.TransitionToMainMenu();
         }
 
         #region EventBus
 
         private void SetEventBus()
         {
-            var eventManager = GameManager.Instance.EventManager;
-            
-            eventManager.Subscribe<GameScreenEvents.SetGameScreen>(EventBus_OnSetGameScreen);
+            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_OnSetGameScreen);
         }
 
-        private void EventBus_OnSetGameScreen(GameScreenEvents.SetGameScreen input)
+        private void EventBus_OnSetGameScreen(GameScreenEvents.SetScreen input)
         {
-            switch (input.Index)
+            if(input.IsEnable == true) return;
+            
+            switch (input.ScreenType)
             {
-                case 0:
+                case ScreenType.MainMenu:
                     _controller.TransitionToMainMenu();
                     break;
-                case 1:
+                case ScreenType.GameMode:
                     _controller.TransitionToGameplay();
+                    break;
+                case ScreenType.Tutorial:
+                    _controller.TransitionToTutorial();
                     break;
                 default:
                     Debug.LogWarning("GameScene Index is out of range.");
