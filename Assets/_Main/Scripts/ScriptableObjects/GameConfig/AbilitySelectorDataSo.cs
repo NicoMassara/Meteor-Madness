@@ -83,6 +83,8 @@ namespace _Main.Scripts.ScriptableObjects.GameConfig
         
         private void SetLevelToUnlockLimit(int levelAmount)
         {
+            if (levelToUnlock.Length == 0) return;
+            
             for (int i = 0; i < levelToUnlock.Length; i++)
             {
                 if (levelToUnlock[i].levelToSet > levelAmount)

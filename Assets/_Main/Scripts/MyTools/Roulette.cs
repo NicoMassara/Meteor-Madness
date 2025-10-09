@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace _Main.Scripts.MyTools
 {
@@ -11,7 +12,8 @@ namespace _Main.Scripts.MyTools
             {
                 total += item.Value;
             }
-            int random = UnityEngine.Random.Range(0, total);
+            
+            int random = UnityEngine.Random.Range(1, total);
 
             foreach (var item in items)
             {

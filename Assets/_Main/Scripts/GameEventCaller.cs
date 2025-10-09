@@ -314,6 +314,11 @@ namespace _Main.Scripts
                 RequestType = EventRequestType.Request
             });
         }
+
+        public static void SetNextSpawn(AbilityType type)
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.SetNextSpawn{AbilityType = type});
+        }
     }
     public static class FloatingTextEventCaller
     {
