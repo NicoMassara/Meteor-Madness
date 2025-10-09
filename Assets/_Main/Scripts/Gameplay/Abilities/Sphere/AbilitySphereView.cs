@@ -16,20 +16,20 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
         public UnityAction<AbilitySphereCollisionData> OnEarthCollision { get; set; }
         public UnityAction<AbilitySphereCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
-        public bool HasBeenTargeted { get; private set; }
+        public bool CanBeTargeted { get; private set; }
         public bool EnableMovement { get; set; }
 
         public event Action OnDeath;
         
-        public void SetTargeted()
+        public void DisableTargetable()
         {
-            HasBeenTargeted = true;
+            CanBeTargeted = false;
         }
         
         public override void SetValues(AbilitySphereValues data)
         {
             base.SetValues(data);
-            HasBeenTargeted = false;
+            CanBeTargeted = true;
         }
 
         public override void ManagedFixedUpdate()

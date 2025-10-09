@@ -14,7 +14,7 @@ namespace _Main.Scripts.Gameplay.Meteor
         public UnityAction<MeteorCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
 
-        public bool HasBeenTargeted { get; private set; }
+        public bool CanBeTargeted { get; private set; }
         public bool EnableMovement { get; set; }
         public event Action OnDeath;
 
@@ -25,15 +25,15 @@ namespace _Main.Scripts.Gameplay.Meteor
                 base.ManagedFixedUpdate();
             }
         }
-        public void SetTargeted()
+        public void DisableTargetable()
         {
-            HasBeenTargeted = true;
+            CanBeTargeted = false;
         }
 
         public override void SetValues(MeteorValuesData data)
         {
             base.SetValues(data);
-            HasBeenTargeted = false;
+            CanBeTargeted = true;
         }
 
         public override void OnNotify(ulong message, params object[] args)

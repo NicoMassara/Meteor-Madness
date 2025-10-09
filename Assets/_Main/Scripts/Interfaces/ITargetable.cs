@@ -6,8 +6,8 @@ namespace _Main.Scripts.Interfaces
     public interface ITargetable
     {
         public Vector2 Position { get;}
-        public bool HasBeenTargeted { get;}
+        public bool CanBeTargeted { get;}
         public event Action OnDeath;
-        public void SetTargeted();
+        public void DisableTargetable();
     }
 }
