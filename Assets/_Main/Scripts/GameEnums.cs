@@ -34,4 +34,12 @@
         Heavy,
         Brutal
     }
+
+    public enum ScreenType
+    {
+        None,
+        MainMenu,
+        GameMode,
+        Tutorial
+    }
 }

@@ -162,19 +162,17 @@ namespace _Main.Scripts.Gameplay.Meteor
             data.Meteor.OnDeflection = null;
             data.Meteor.OnEarthCollision = null;
             
-            GameManager.Instance.EventManager.Publish
-            (
-                new MeteorEvents.Deflected
-                {
-                    Position = data.Position,
-                    Rotation = data.Rotation,
-                    Direction = data.Direction,
-                    Value = data.Value,
-                    Type = ProjectileType.Meteor
-                }
-            );
+            ProjectileEventCaller.Deflected(new DeflectData
+            {
+                Position = data.Position,
+                Rotation = data.Rotation,
+                Direction = data.Direction,
+                Value = data.Value,
+                Type = ProjectileType.Meteor
+            });
             
-            data.Meteor.ForceRecycle();
+            
+            data.Meteor.Recycle();
         }
 
         private void Meteor_OnEarthCollisionHandler(MeteorCollisionData data)
@@ -182,18 +180,15 @@ namespace _Main.Scripts.Gameplay.Meteor
             data.Meteor.OnDeflection = null;
             data.Meteor.OnEarthCollision = null;
             
-            GameManager.Instance.EventManager.Publish
-            (
-                new MeteorEvents.Collision
-                {
-                    Position = data.Position,
-                    Rotation = data.Rotation,
-                    Direction = data.Direction,
-                    Type = ProjectileType.AbilitySphere
-                }
-            );
+            ProjectileEventCaller.Collision(new CollisionData
+            {
+                Position = data.Position,
+                Rotation = data.Rotation,
+                Direction = data.Direction,
+                Type = ProjectileType.Meteor
+            });
             
-            data.Meteor.ForceRecycle();
+            data.Meteor.Recycle();
         }
 
         #endregion
@@ -202,11 +197,10 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void SetEventBus()
         {
-            var eventManager = GameManager.Instance.EventManager;
-            eventManager.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
-            eventManager.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
-            eventManager.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventManager.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
+            GameEventCaller.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
+            GameEventCaller.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
+            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
         }
 
         private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
@@ -233,7 +227,5 @@ namespace _Main.Scripts.Gameplay.Meteor
         }
 
         #endregion
-
-
     }
 }

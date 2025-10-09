@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.ScriptableObjects;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
 namespace _Main.Scripts.Shaker
@@ -7,7 +8,7 @@ namespace _Main.Scripts.Shaker
     {
         private float _shakeTimer;
         private readonly Vector3 _startPosition;
-        private ShakeDataSo _shakeData;
+        private IShakeData _shakeData;
         private readonly Transform _transform;
         private float _multiplier = 1f;
         
@@ -26,7 +27,7 @@ namespace _Main.Scripts.Shaker
             SetShakeData(data);
         }
 
-        public void SetShakeData(ShakeDataSo data)
+        public void SetShakeData(IShakeData data)
         {
             _shakeData = data;
         }

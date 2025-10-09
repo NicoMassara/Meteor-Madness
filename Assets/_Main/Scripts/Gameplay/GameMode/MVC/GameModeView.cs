@@ -1,25 +1,23 @@
 ﻿using System;
-using _Main.Scripts.Gameplay.Projectile;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeView : ManagedBehavior, IObserver, IUpdatable
+    public class GameModeView : ManagedBehavior, IObserver
     {
         [Header("Sounds")] 
         [SerializeField] private SoundBehavior gameplayTheme;
         [SerializeField] private SoundBehavior deathTheme;
         
-        public UnityAction<bool> OnEarthRestarted;
-        public UnityAction OnCountdownFinished;
+        public event Action<bool> OnEarthRestarted;
+        public event Action OnCountdownFinished;
+        public event Action OnGameModeEnable;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public void ManagedUpdate() { }
         
         //Hack
         private bool _isFirstDisable = true;
@@ -68,7 +66,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
-                case GameModeObserverMessage.Initialize:
+                case GameModeObserverMessage.InitializeValues:
                     HandleInitialize();
                     break;
                 case GameModeObserverMessage.PointsGained:
@@ -77,30 +75,41 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GrantProjectileSpawn:
                     HandleGrantProjectileSpawn((int)args[0]);
                     break;
+                case GameModeObserverMessage.Enable:
+                    HandleEnable();
+                    break;
                 
             }
         }
 
+        private void HandleEnable()
+        {
+            OnGameModeEnable?.Invoke();
+        }
+
         private void HandleGrantProjectileSpawn(int projectileTypeIndex)
         {
-            GameManager.Instance.EventManager.Publish(
-                new ProjectileEvents.RequestSpawn
-                {
-                    ProjectileType = (ProjectileType)projectileTypeIndex, 
-                    RequestType = EventRequestType.Granted
-                });
+            ProjectileEventCaller.GrantSpawn((ProjectileType)projectileTypeIndex);
         }
 
         private void HandleInitialize()
         {
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.Initialize());
+            GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
+            GameModeEventCaller.InitializeValues();
         }
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
         {
             var finalScore = (int)(pointsAmount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
-            GameManager.Instance.EventManager.Publish(
-                new FloatingTextEvents.Points{ Position = position, Score = finalScore, IsDouble = isDouble });
+            FloatingTextEventCaller.Spawn(new FloatingTextValues
+            {
+                Position = position, 
+                Offset = new Vector2(0,1f),
+                Text = $"+{finalScore.ToString()}",
+                Color = isDouble ? Color.yellow : Color.white,
+                DoesFade = true,
+                DoesMove = true
+            });
         }
         
         private void HandleGamePaused(bool isPaused)
@@ -151,22 +160,22 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             if (_isFirstDisable == false)
             {
-                GameManager.Instance.EventManager.Publish(new EarthEvents.Restart());
+                EarthEventCaller.Restart();
             }
             
             gameplayTheme?.StopSound();
             deathTheme?.StopSound();
             _isFirstDisable = false;
             SetEnableInputs(false);
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.Disable());
+            GameModeEventCaller.Disable();
         }
 
         private void HandleGameFinish()
         {
             gameplayTheme?.StopSound();
             GameManager.Instance.CanPlay = false;
-            GameManager.Instance.EventManager.Publish(new ShieldEvents.SetEnable{IsEnabled = false});
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.RecycleAll());
+            ShieldEventCaller.SetEnableShield(false);
+            MeteorEventCaller.RecycleAll();
             SetEnableInputs(false);
         }
         
@@ -176,10 +185,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             var tempActions = new ActionData[]
             {
-                new (()=>GameManager.Instance.EventManager.Publish(new GameModeEvents.Restart()),
-                    temp.TriggerRestart),
-                new (()=>GameManager.Instance.EventManager.Publish(new EarthEvents.Restart()),
-                    temp.RestartEarth),
+                new (GameModeEventCaller.Restart, temp.TriggerRestart),
+                new (EarthEventCaller.Restart, temp.RestartEarth),
             };
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
@@ -195,21 +202,21 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             deathTheme?.StopSound();
-            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomOut());
+            CameraEventCaller.ZoomOut();
         }
         
         private void HandleCountdownFinish()
         {
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.Start());
+            GameModeEventCaller.Start();
             SetEnableInputs(true);
-            GameManager.Instance.EventManager.Publish(new AbilitiesEvents.SetEnable{IsEnable = true});
+            AbilitiesEventCaller.SetCanUse(true);
             OnCountdownFinished?.Invoke();
         }
 
         private void HandleStartGameplay()
         {
             GameManager.Instance.CanPlay = true;
-            GameManager.Instance.EventManager.Publish(new ShieldEvents.SetEnable{IsEnabled = true});
+            ShieldEventCaller.SetEnableShield(true);
             gameplayTheme?.PlaySound();
         }
 
@@ -219,12 +226,12 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleEarthStartDestruction()
         {
-            GameManager.Instance.EventManager.Publish(new EarthEvents.DestructionStart());
+            EarthEventCaller.DestructionStart();
         }
         
         private void HandleEarthShake()
         {
-            GameManager.Instance.EventManager.Publish(new CameraEvents.ZoomIn());
+            GameEventCaller.Publish(new CameraEvents.ZoomIn());
         }
         
         private void HandleEarthEndDestruction()
@@ -238,19 +245,19 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.EnableSpawn { CanSpawn = canSpawn });
+            MeteorEventCaller.EnableSpawn(canSpawn);
         }
 
         #endregion
         
         private void HandleUpdateGameLevel(int currentLevel)
         {
-            GameManager.Instance.EventManager.Publish(new GameModeEvents.UpdateLevel{CurrentLevel = currentLevel});
+            GameModeEventCaller.UpdateLevel(currentLevel);
         }
 
         private void SetEnableInputs(bool isEnable)
         {
-            GameManager.Instance.EventManager.Publish(new InputsEvents.SetEnable{IsEnable = isEnable});
+            InputsEventCaller.SetEnable(isEnable);
         }
     }
 }
