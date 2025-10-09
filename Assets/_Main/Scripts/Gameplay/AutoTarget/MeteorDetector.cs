@@ -61,6 +61,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
             
             _targetSlot = GetSlotFromPosition(targetPos);
             _activeTarget = tempTarget;
+            _activeTarget.SetTargeted();
             _activeTarget.OnDeath += Target_OnDeathHandler;
             HasActiveTarget = true;
             
@@ -94,6 +95,7 @@ namespace _Main.Scripts.Gameplay.AutoTarget
 
             _targetSlot = tempSlot;
             _activeTarget = tempTarget;
+            _activeTarget.SetTargeted();
             _activeTarget.OnDeath += Target_OnDeathHandler;
             HasActiveTarget = true;
             OnTargetFound?.Invoke(true);

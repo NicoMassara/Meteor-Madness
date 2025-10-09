@@ -16,10 +16,22 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
         public UnityAction<AbilitySphereCollisionData> OnEarthCollision { get; set; }
         public UnityAction<AbilitySphereCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
+        public bool HasBeenTargeted { get; private set; }
         public bool EnableMovement { get; set; }
 
         public event Action OnDeath;
         
+        public void SetTargeted()
+        {
+            HasBeenTargeted = true;
+        }
+        
+        public override void SetValues(AbilitySphereValues data)
+        {
+            base.SetValues(data);
+            HasBeenTargeted = false;
+        }
+
         public override void ManagedFixedUpdate()
         {
             if (EnableMovement)
@@ -27,7 +39,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
                 base.ManagedFixedUpdate();
             }
         }
-        
+
         public override void OnNotify(ulong message, params object[] args)
         {
             switch (message)
