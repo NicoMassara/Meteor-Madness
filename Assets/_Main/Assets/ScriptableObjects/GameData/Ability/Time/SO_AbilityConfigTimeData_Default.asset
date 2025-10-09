@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilities:
   - type: 1
-    timeData: {fileID: 11400000, guid: 93a2d5163598a8e4ebe621ac9878f0c4, type: 2}
+    timeData: {fileID: 11400000, guid: ca6fd35370a54364191117f460a9d7b8, type: 2}
   - type: 2
     timeData: {fileID: 11400000, guid: 3b0337d273d70e24899cea5b756fbc77, type: 2}
   - type: 3

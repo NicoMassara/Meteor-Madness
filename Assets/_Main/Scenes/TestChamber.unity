@@ -1086,7 +1086,7 @@ MonoBehaviour:
   detectorData:
     ProjectileLayer:
       serializedVersion: 2
-      m_Bits: 16
+      m_Bits: 80
     CheckRadius: 13
 --- !u!1 &190913155
 GameObject:

@@ -55,14 +55,12 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (_automaticEnable)
             {
-                Debug.Log("Here");
                 _projectileDetector.CheckForProjectile();
             }
         }
         
         public void SetAutomaticEnable(bool automaticEnable)
         {
-            Debug.Log("Here");
             _automaticEnable = automaticEnable;
         }
         
