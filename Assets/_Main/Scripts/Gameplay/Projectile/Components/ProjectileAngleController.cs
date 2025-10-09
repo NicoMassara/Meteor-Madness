@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Gameplay.Projectile.Utilities;
+using _Main.Scripts.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

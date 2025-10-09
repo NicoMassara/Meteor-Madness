@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.Projectile.Utilities
+namespace _Main.Scripts.Utilities
 {
     public struct AngleCalculations
     {

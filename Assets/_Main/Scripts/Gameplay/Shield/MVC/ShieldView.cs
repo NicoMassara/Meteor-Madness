@@ -8,12 +8,12 @@ using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
 using _Main.Scripts.Gameplay.AutoTarget;
 using _Main.Scripts.ScriptableObjects;
+using _Main.Scripts.Utilities;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    [RequireComponent(typeof(MeteorDetector))]
-    public class ShieldView : ManagedBehavior, IObserver, IUpdatable
+    public class ShieldView : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
@@ -37,33 +37,32 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float timeToDisableSuperShield;
         [Range(0, 1000)]
         [SerializeField] private float decayConstant = 100f;
-        [SerializeField] private bool autoCorrectEnable;
+        [SerializeField] private ProjectileDetectorData detectorData;
         
-        private MeteorDetector _meteorDetector;
+        private ProjectileDetector projectileDetector;
         private ShieldMovement _movement;
         private ShieldSpeeder _shieldSpeeder;
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
 
-        private bool _isPlayerInputEnable;
-        private bool _canAutoCorrect = true;
+        private bool _isPlayerInputDisable;
         private bool _automaticEnable;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
+        public UpdateGroup SelfFixedUpdateGroup { get; } = UpdateGroup.Shield;
 
         private void Awake()
         {
             _movement = new ShieldMovement(spriteContainer.transform,movementData);
             _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, timeToEnableSuperShield,timeToDisableSuperShield);
-            _meteorDetector = GetComponent<MeteorDetector>();
-            _meteorDetector.SetMovement(_movement);
+            projectileDetector = new ProjectileDetector(detectorData,_movement);
         }
 
         private void Start()
         {
-            _meteorDetector.OnTargetFound += Detector_OnTargetFoundHandler;
-            _meteorDetector.OnTargetLost += Detector_OnTargetLostHandler;
+            projectileDetector.OnTargetFound += Detector_OnTargetFoundHandler;
+            projectileDetector.OnTargetLost += Detector_OnTargetLostHandler;
             
             superSprite.gameObject.SetActive(false);
             _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
@@ -72,13 +71,17 @@ namespace _Main.Scripts.Gameplay.Shield
         public void ManagedUpdate()
         {
             _movement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-
+            
+        }
+        
+        public void ManagedFixedUpdate()
+        {
             if (_automaticEnable)
             {
-                _meteorDetector.CheckForMeteor(_movement.GetPosition(), true);
+                projectileDetector.CheckForProjectile();
             }
         }
-
+        
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -145,14 +148,10 @@ namespace _Main.Scripts.Gameplay.Shield
         #region Movement
         private void HandleRotation(float direction)
         {
-            if(_isPlayerInputEnable) return;
-            
-            _movement.HandleMove((int)direction,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-            
-            if(_canAutoCorrect == false || autoCorrectEnable == false) return;
-            
-            _meteorDetector.CheckForNearMeteorInSlotRange(
-                _movement.GetPosition(),_movement.GetCurrentSlot());
+            if (_isPlayerInputDisable == false)
+            {
+                _movement.HandleMove((int)direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            }
         }
         
         private void HandleStopRotate()
@@ -282,39 +281,31 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private IEnumerator Coroutine_AutoCorrection()
         {
-            _isPlayerInputEnable = true;
-            var currentDirection = _meteorDetector.GetSlotDirection(_movement.GetCurrentSlot());
-            
-            
-            while (currentDirection != 0 && _isPlayerInputEnable == true)
+            _isPlayerInputDisable = true;
+            var currentDirection = projectileDetector.GetSlotDirection();
+            var initialDiff = projectileDetector.GetSlotDiff();
+
+            while (currentDirection != 0 && _isPlayerInputDisable == true)
             {
-                currentDirection = _meteorDetector.GetSlotDirection(_movement.GetCurrentSlot()) * 10;
-                _movement.HandleMove((int)currentDirection,CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                var distanceRatio = (float)projectileDetector.GetSlotDiff() / initialDiff;
+                distanceRatio = 1 -distanceRatio;
+                var multiplier = MathfCalculations.Remap(distanceRatio, 0, 1f, 1, 1.75f);
+                currentDirection = projectileDetector.GetSlotDirection() * 10;
+                _movement.HandleMove((int)currentDirection * multiplier,
+                    CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
                 
                 yield return null;
             }
             
             HandleStopRotate();
-            _canAutoCorrect = false;
-
-            TimerManager.Add(new TimerData
-            {
-                Time = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup) * 5,
-                OnEndAction = () => { _canAutoCorrect = true; }
-            });
             
-            TimerManager.Add(new TimerData
-            {
-                Time = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup) * 30,
-                OnEndAction = () => { _isPlayerInputEnable = false; }
-            });
+            _isPlayerInputDisable = false;
         }
 
         private IEnumerator Coroutine_RotateTowardsNearestMeteor()
         {
-            _meteorDetector.CheckForMeteor(_movement.GetPosition());
-            var meteorSlot = _meteorDetector.GetMeteorAngleSlot();
-
+            var meteorSlot = projectileDetector.GetNearestProjectileSlot();
+            
             if (meteorSlot > -1)
             {
                 _movement.SetSpeedMultiplier(0.5f);
@@ -351,20 +342,27 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void Detector_OnTargetLostHandler()
         {
-            _isPlayerInputEnable = false;
+            _isPlayerInputDisable = false;
         }
 
-        private void Detector_OnTargetFoundHandler(bool doesCheckForMore)
+        private void Detector_OnTargetFoundHandler()
         {
-            if (doesCheckForMore)
-            {
-                if (_canAutoCorrect)
-                {
-                    StartCoroutine(Coroutine_AutoCorrection());
-                }
-            }
+            StartCoroutine(Coroutine_AutoCorrection());
         }
 
         #endregion
+
+
+        #region Gizmos
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, detectorData.CheckRadius);
+        }
+
+        #endregion
+
+
     }
 }

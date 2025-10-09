@@ -1127,7 +1127,6 @@ GameObject:
   - component: {fileID: 168416677}
   - component: {fileID: 168416675}
   - component: {fileID: 168416676}
-  - component: {fileID: 168416678}
   m_Layer: 0
   m_Name: ShieldController
   m_TagString: Untagged
@@ -1168,11 +1167,15 @@ MonoBehaviour:
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
   cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 11400000, guid: 5ce58a01a5bf45a4389c9d0c8a108114, type: 2}
-  movementData: {fileID: 11400000, guid: 5170044f9f0b6f74aae35b1c7e5a849f, type: 2}
+  movementData: {fileID: 11400000, guid: 9ccba14033a3a5c429b5de117eeb9cb0, type: 2}
   timeToEnableSuperShield: 0.75
   timeToDisableSuperShield: 0.75
   decayConstant: 500
-  autoCorrectEnable: 0
+  detectorData:
+    ProjectileLayer:
+      serializedVersion: 2
+      m_Bits: 64
+    CheckRadius: 15
 --- !u!4 &168416677
 Transform:
   m_ObjectHideFlags: 0
@@ -1188,23 +1191,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &168416678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 168416674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f9d951fac384e8b981e5c9bd16451ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meteorLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  checkDistance: 3.5
-  slotRange: {x: 3, y: 5}
 --- !u!1 &200166475
 GameObject:
   m_ObjectHideFlags: 0
@@ -9984,7 +9970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36b98cb3ff5a44ca98c4150c8d1b43f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityToAdd: 1
+  abilityToAdd: 5
 --- !u!1 &1499242836
 GameObject:
   m_ObjectHideFlags: 0
