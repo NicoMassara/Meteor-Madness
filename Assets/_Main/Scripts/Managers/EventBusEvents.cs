@@ -180,6 +180,11 @@ namespace _Main.Scripts.Managers
             public AbilityType AbilityType;
             public bool IsActive;
         }
+        
+        public struct SetNextSpawn
+        {
+            public AbilityType AbilityType;
+        }
     }
 
     public struct FloatingTextEvents

@@ -57,8 +57,9 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleAbility()
         {
-            AbilitiesEventCaller.GrantSpawn();
+            AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
             AbilitiesEventCaller.SetCanUse(true);
+            AbilitiesEventCaller.GrantSpawn();
         }
         
         private void HandleExtraMeteors()
