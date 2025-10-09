@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
@@ -20,7 +21,9 @@ namespace _Main.Scripts.Managers
         {
             Type eventType = typeof(T);
             if (_listeners.ContainsKey(eventType))
+            {
                 _listeners[eventType].RemoveAll(a => a.Equals((Action<object>)(obj => callback((T)obj))));
+            }
         }
         
         public void Publish<T>(T eventData)

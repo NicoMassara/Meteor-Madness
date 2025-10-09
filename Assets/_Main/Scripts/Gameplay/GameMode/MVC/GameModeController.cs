@@ -20,6 +20,20 @@ namespace _Main.Scripts.Gameplay.GameMode
             Restart,
             Disable
         }
+        
+        private class ActionGate
+        {
+            public bool IsInGameplay { get; private set; }
+            public ActionGate(FSM<States> fsm)
+            {
+                fsm.OnEnterState += state =>
+                {
+                    IsInGameplay = state is States.Gameplay or States.Enable or States.Start;
+                };
+            }
+        }
+        
+        private ActionGate _actionGate;
 
         public GameModeController(GameModeMotor motor)
         {
@@ -43,6 +57,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var temp = new List<GameModeStateBase<States>>();
             _fsm = new FSM<States>();
+            _actionGate = new ActionGate(_fsm);
 
             #region Variables
 
@@ -181,11 +196,14 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void HandleProjectileDeflect(Vector2 position, float meteorDeflectValue)
         {
+            if(_actionGate.IsInGameplay == false) return;
             _motor.HandleMeteorDeflect(position, meteorDeflectValue);
         }
 
         public void SetEnableMeteorSpawn(bool canSpawn)
         {
+            if(_actionGate.IsInGameplay == false) return;
+            
             _motor.SetEnableMeteorSpawn(canSpawn);
         }
 
@@ -231,11 +249,15 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void SetDoublePoints(bool isEnable)
         {
+            if(_actionGate.IsInGameplay == false) return;
+            
             _motor.SetDoublePoints(isEnable);
         }
 
         public void GrantProjectileSpawn(int projectileTypeIndex)
         {
+            if(_actionGate.IsInGameplay == false) return;
+            
             _motor.GrantSpawnMeteor(projectileTypeIndex);
         }
 
