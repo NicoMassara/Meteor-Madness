@@ -79,7 +79,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
         }
     }
     
-    public class AbilitySphereCollisionData
+    public struct AbilitySphereCollisionData
     {
         public AbilitySphereView Sphere;
         public Vector3 Position;

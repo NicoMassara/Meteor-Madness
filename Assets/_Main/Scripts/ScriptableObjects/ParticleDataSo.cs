@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using _Main.Scripts.Interfaces;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace _Main.Scripts.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "SO_ParticleData_Name", menuName = "Scriptable Objects/Particles/Particle Data", order = 0)]
-    public class ParticleDataSo : ScriptableObject
+    public class ParticleDataSo : ScriptableObject, IParticleData
     {
         [SerializeField] private Sprite sprite;
         [SerializeField] private Vector3 positionOffset;

@@ -69,14 +69,12 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBusSetup()
         {
-            var eventBus = GameManager.Instance.EventManager;
-            
-            eventBus.Subscribe<AbilitiesEvents.SetEnable>(EventBus_Ability_SetEnable);
-            eventBus.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
-            eventBus.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            eventBus.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
-            eventBus.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            eventBus.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            GameEventCaller.Subscribe<AbilitiesEvents.SetCanUse>(EventBus_Ability_SetEnable);
+            GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
+            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+            GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
+            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
         }
 
         private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
@@ -109,9 +107,9 @@ namespace _Main.Scripts.Gameplay.Abilies
             _controller.TryAddAbility((int)input.AbilityType, input.Position);
         }
 
-        private void EventBus_Ability_SetEnable(AbilitiesEvents.SetEnable input)
+        private void EventBus_Ability_SetEnable(AbilitiesEvents.SetCanUse input)
         {
-            if (input.IsEnable)
+            if (input.CanUse)
             {
                 _controller.TransitionToEnable();
             }

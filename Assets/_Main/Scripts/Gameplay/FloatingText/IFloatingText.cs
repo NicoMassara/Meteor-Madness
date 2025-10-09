@@ -1,5 +1,4 @@
-﻿using _Main.Scripts.MyTools;
-using UnityEngine;
+﻿using _Main.Scripts.Interfaces;
 
 namespace _Main.Scripts.Gameplay.FloatingScore
 {

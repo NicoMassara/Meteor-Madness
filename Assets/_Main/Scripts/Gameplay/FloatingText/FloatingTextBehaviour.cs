@@ -1,5 +1,4 @@
 ﻿using System;
-using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using TMPro;
@@ -68,7 +67,7 @@ namespace _Main.Scripts.Gameplay.FloatingScore
 
         public void SetValues(FloatingTextValues values)
         {
-            transform.position = values.Position;
+            transform.position = values.Position + values.Offset;
             meshText.text = values.Text;
             meshText.color = values.Color;
             
@@ -90,14 +89,5 @@ namespace _Main.Scripts.Gameplay.FloatingScore
             ResetValues();
             OnRecycle?.Invoke(this);
         }
-    }
-
-    public class FloatingTextValues
-    {
-        public Vector2 Position;
-        public Color Color;
-        public bool DoesMove;
-        public bool DoesFade;
-        public string Text;
     }
 }

@@ -1,7 +1,6 @@
 ﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
-using UnityEngine;
 
 namespace _Main.Scripts.GameScreens
 {
@@ -21,17 +20,25 @@ namespace _Main.Scripts.GameScreens
                 case GameScreenObserverMessage.SetGameplay:
                     HandleSetGameplay();
                     break;
+                case GameScreenObserverMessage.SetTutorial:
+                    HandleSetTutorial();
+                    break;
             }
+        }
+
+        private void HandleSetTutorial()
+        {
+            GameScreenEventCaller.SetGameScreen(ScreenType.Tutorial, true);
         }
 
         private void HandleSetMainMenu()
         {
-            GameManager.Instance.EventManager.Publish(new GameScreenEvents.MainMenuEnable());
+            GameScreenEventCaller.SetGameScreen(ScreenType.MainMenu, true);
         }
         
         private void HandleSetGameplay()
         {
-            GameManager.Instance.EventManager.Publish(new GameScreenEvents.GameModeEnable());
+            GameScreenEventCaller.SetGameScreen(ScreenType.GameMode, true);
         }
     }
 }
