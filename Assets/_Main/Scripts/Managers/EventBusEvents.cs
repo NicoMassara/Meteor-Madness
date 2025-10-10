@@ -31,7 +31,12 @@ namespace _Main.Scripts.Managers
         {
             public bool IsActive;
         }
-        
+
+        public struct SetSlow
+        {
+            public bool IsActive;
+        }
+
         public struct SetAutomatic
         {
             public bool IsActive;

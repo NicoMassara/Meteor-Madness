@@ -60,6 +60,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             GameEventCaller.Subscribe<ShieldEvents.SetGold>(EventBus_Shield_SetGold);
             GameEventCaller.Subscribe<ShieldEvents.SetAutomatic>(EventBus_Shield_SetAutomatic);
+            GameEventCaller.Subscribe<ShieldEvents.SetSlow>(EventBus_Shield_SetSlow);
             GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             GameEventCaller.Subscribe<ShieldEvents.SetEnable>(EventBus_Shield_SetEnable);
             GameEventCaller.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
@@ -68,6 +69,11 @@ namespace _Main.Scripts.Gameplay.Shield
             GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
         }
 
+        private void EventBus_GameMode_Start(GameModeEvents.Start obj)
+        {
+            _controller.RestartPosition();
+        }
+        
         private void EventBus_Shield_SetAutomatic(ShieldEvents.SetAutomatic input)
         {
             if (input.IsActive)
@@ -80,16 +86,23 @@ namespace _Main.Scripts.Gameplay.Shield
             }
         }
 
-        private void EventBus_GameMode_Start(GameModeEvents.Start obj)
-        {
-            _controller.RestartPosition();
-        }
-
         private void EventBus_Shield_SetGold(ShieldEvents.SetGold input)
         {
             if (input.IsActive)
             {
                 _controller.TransitionToGold();
+            }
+            else
+            {
+                _controller.TransitionToActive();
+            }
+        }
+
+        private void EventBus_Shield_SetSlow(ShieldEvents.SetSlow input)
+        {
+            if (input.IsActive)
+            {
+                _controller.TransitionToSlow();
             }
             else
             {

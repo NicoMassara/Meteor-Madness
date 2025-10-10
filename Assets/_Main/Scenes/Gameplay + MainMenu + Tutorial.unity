@@ -1041,6 +1041,8 @@ GameObject:
   - component: {fileID: 168416675}
   - component: {fileID: 168416676}
   - component: {fileID: 168416678}
+  - component: {fileID: 168416679}
+  - component: {fileID: 168416680}
   m_Layer: 0
   m_Name: ShieldController
   m_TagString: Untagged
@@ -1074,8 +1076,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteContainer: {fileID: 1499242836}
-  normalSprite: {fileID: 610377037}
-  superSprite: {fileID: 1667250004}
   shieldCollider: {fileID: 610377043}
   hitSound: {fileID: 163182589}
   moveSound: {fileID: 1982406300}
@@ -1083,8 +1083,6 @@ MonoBehaviour:
   cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 11400000, guid: 5ce58a01a5bf45a4389c9d0c8a108114, type: 2}
   movementData: {fileID: 11400000, guid: 9ccba14033a3a5c429b5de117eeb9cb0, type: 2}
-  timeToEnableSuperShield: 0.75
-  timeToDisableSuperShield: 0.75
 --- !u!4 &168416677
 Transform:
   m_ObjectHideFlags: 0
@@ -1122,6 +1120,36 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 64
     CheckRadius: 15
+--- !u!114 &168416679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168416674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76f706f077c649a49f708f592e448797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalSprite: {fileID: 610377037}
+  superSprite: {fileID: 1667250004}
+  timeToEnableSuperShield: 0.75
+  timeToDisableSuperShield: 0.75
+--- !u!114 &168416680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168416674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1351605bc8de45cda13ceae563fa2b81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trailMaterial: {fileID: 2100000, guid: 5bb8d64ee1521564aa1575949d88443a, type: 2}
+  defaultColor: {r: 0, g: 0.913288, b: 0.9811321, a: 1}
 --- !u!1 &200166475
 GameObject:
   m_ObjectHideFlags: 0

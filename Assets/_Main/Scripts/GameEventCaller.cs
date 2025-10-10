@@ -69,6 +69,12 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new ShieldEvents.SetGold{IsActive = isActive});
         }
+
+        public static void SetSlow(bool isActive)
+        {
+            GameEventCaller.Publish(new ShieldEvents.SetSlow{IsActive = isActive});
+        }
+
         public static void SetAutomatic(bool isActive)
         {
             GameEventCaller.Publish(new ShieldEvents.SetAutomatic{IsActive = isActive});
