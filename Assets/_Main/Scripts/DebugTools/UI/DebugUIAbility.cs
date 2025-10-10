@@ -34,6 +34,7 @@ namespace _Main.Scripts.DebugTools
                 
                 foreach (var ability in Enum.GetValues(typeof(AbilityType)))
                 {
+                    if(ability is AbilityType.None or AbilityType.Default_MAX) continue;
                     dropdown.options.Add(new TMP_Dropdown.OptionData { text = ability.ToString() });
                 }
                 

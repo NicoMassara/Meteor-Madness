@@ -34,6 +34,8 @@ namespace _Main.Scripts.DebugTools
                 GameConfigManager.Instance.SetDamage(damageType);
             };
             _viewUI.GameValues.OnLevelChange = GameModeEventCaller.UpdateLevel;
+            _viewUI.Camera.OnZoomIn = CameraEventCaller.ZoomIn;
+            _viewUI.Camera.OnZoomOut = CameraEventCaller.ZoomOut;
             
         }
 
