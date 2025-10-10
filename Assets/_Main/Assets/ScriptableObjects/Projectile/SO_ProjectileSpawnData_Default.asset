@@ -68,5 +68,5 @@ MonoBehaviour:
     minValue: 0.35
     maxValue: 1
   slotDistanceData: []
-  meteorRingData: {fileID: 0}
+  meteorRingData: {fileID: 11400000, guid: 0bb448761c8f9dc49a393884abdc5564, type: 2}
   meteorSpawnDelayAfterRing: 1
