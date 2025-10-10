@@ -33,16 +33,36 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Float0: 10.73
-    - _Float1: 0.6
+    - _Float0: 25
+    - _Float1: 0.71
     - _Float2: 1
     - _Float3: 0.3509737
     - _Luminosity: 0
+    - _MaskInnerIntensity: 8.83
+    - _MaskIntensity: 4.63
+    - _MaskOutterIntensity: 7.5
+    - _MaskSize: 0.546
+    - _NebulaIntensity: 0.399
+    - _NebulaMagnitude: 32.25
+    - _NebulaMax: 0.9
+    - _NebulaMin: 0.25882354
+    - _NebulaNoiseIntensity: 0.341
+    - _NebulaOpacity: 0.314
+    - _NebulaPower: 18.45
+    - _NebulaScale: 2.96
+    - _NebulaSize: 22.8
     - _NoiseScale: 1
     - _StarAmount: 0
     - _StarsSize: 1
+    - _TransAmbient: 0.2
+    - _TransDirect: 1
+    - _TransNormalDistortion: 0.1
+    - _TransScattering: 2
+    - _TransShadow: 0.9
+    - _Translucency: 1
     - __dirty: 0
     m_Colors:
+    - _NebulaColor: {r: 0.42212582, g: 0, b: 1, a: 0}
     - _Vector0: {r: -0.52, g: -0.9, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
