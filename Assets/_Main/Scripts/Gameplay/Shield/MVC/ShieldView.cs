@@ -14,12 +14,11 @@ using UnityEngine;
 namespace _Main.Scripts.Gameplay.Shield
 {
     [RequireComponent(typeof(ShieldMovement))]
+    [RequireComponent(typeof(ShieldAppereance))]
     public class ShieldView : ManagedBehavior, IObserver
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
-        [SerializeField] private GameObject normalSprite;
-        [SerializeField] private GameObject superSprite;
         [SerializeField] private CapsuleCollider2D shieldCollider;
         [Space]
         [Header("Sounds")]
@@ -31,15 +30,9 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
         [SerializeField] private ShieldMovementDataSo movementData;
-        [Space]
-        [Header("Values")]
-        [Range(0.1f, 5f)]
-        [SerializeField] private float timeToEnableSuperShield;
-        [Range(0.1f, 5f)]
-        [SerializeField] private float timeToDisableSuperShield;
 
+        private ShieldAppereance _appereance;
         private ShieldMovement _movement;
-        private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
         private ShieldColliderExtender _colliderExtender;
         
@@ -48,15 +41,15 @@ namespace _Main.Scripts.Gameplay.Shield
         private void Awake()
         {
             _movement = GetComponent<ShieldMovement>();
-            _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, 
-                timeToEnableSuperShield,timeToDisableSuperShield);
+            _appereance = GetComponent<ShieldAppereance>();
+            
             _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
         }
 
         private void Start()
         {
-            superSprite.gameObject.SetActive(false);
+            _appereance.SetActiveSuperShieldSprite(false);;
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -101,14 +94,12 @@ namespace _Main.Scripts.Gameplay.Shield
         private void HandleSetAutomatic(bool isActive)
         {
             _movement.SetAutomaticEnable(isActive);
-            var color = isActive ? Color.red : Color.white;
-            normalSprite.GetComponent<SpriteRenderer>().color = color;
+            _appereance.SetAutomaticEnable(isActive);
         }
 
         private void HandleSetGold(bool isActive)
         {
-            var color = isActive ? Color.yellow : Color.white;
-            normalSprite.GetComponent<SpriteRenderer>().color = color;
+            _appereance.SetGoldEnable(isActive);
         }
         
         private void HandleSetActiveShield(bool isActive)
@@ -182,17 +173,17 @@ namespace _Main.Scripts.Gameplay.Shield
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set to 0");
-                    superSprite.gameObject.SetActive(true);
+                    _appereance.SetActiveSuperShieldSprite(true);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
-                    StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, timeToEnableSuperShield));
+                    StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, _appereance.TimeToEnableSuperShield));
                 }),
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set to 1");
                     _movement.RestartSpeedValues();
-                    _spriteAlphaSetter.RestartValues();
+                    _appereance.RestartValues();
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
-                },timeToEnableSuperShield),
+                },_appereance.TimeToEnableSuperShield),
             };
             
             
@@ -208,16 +199,16 @@ namespace _Main.Scripts.Gameplay.Shield
                     //Debug.Log("Ability Time Scale Set To 0");
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
                     StartCoroutine(
-                        Coroutine_RunActionByTime(HandleNormalShieldEnable, timeToDisableSuperShield));
+                        Coroutine_RunActionByTime(HandleNormalShieldEnable, _appereance.TimeToDisableSuperShield));
                 }),
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set To 1");
-                    superSprite.gameObject.SetActive(false);
-                    _spriteAlphaSetter.RestartValues();
+                    _appereance.SetActiveSuperShieldSprite(false);
+                    _appereance.RestartValues();
                     _movement.RestartSpeedValues();
                     _movement.RotateTowardsNearestProjectileSlot();
-                },timeToDisableSuperShield),
+                },_appereance.TimeToDisableSuperShield),
             };
             
             ActionManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
@@ -225,13 +216,13 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandleSuperShieldEnable(float deltaTime)
         {
-            _spriteAlphaSetter.EnableSuper(deltaTime);
+            _appereance.EnableSuperShield(deltaTime);
             _movement.IncreaseSpeed(deltaTime);
         }
 
         private void HandleNormalShieldEnable(float deltaTime)
         {
-            _spriteAlphaSetter.EnableNormal(deltaTime);
+            _appereance.EnableNormalShield(deltaTime);
             _movement.DecreaseSpeed(deltaTime);
         }
         
