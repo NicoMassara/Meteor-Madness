@@ -1690,9 +1690,9 @@ RectTransform:
   - {fileID: 1481195654}
   m_Father: {fileID: 1314422993}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 146.3188, y: -31.93285}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 59.49, y: 45.23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &302846928
@@ -1872,9 +1872,9 @@ RectTransform:
   - {fileID: 2120007672}
   m_Father: {fileID: 1413808312}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -70.96301}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 125, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &368335251
@@ -3536,9 +3536,9 @@ RectTransform:
   - {fileID: 2005693885}
   m_Father: {fileID: 1806877376}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 146.3188, y: -38.600704}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 96.5514, y: 50.6688}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &712704552
@@ -3714,9 +3714,9 @@ RectTransform:
   - {fileID: 1343050774}
   m_Father: {fileID: 1314422993}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 248.51701, y: -31.93285}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 31.5759, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &721146444
@@ -6214,9 +6214,9 @@ RectTransform:
   - {fileID: 833871669}
   m_Father: {fileID: 1413808312}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -70.96301}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 125, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1139545233
@@ -7757,9 +7757,9 @@ RectTransform:
   - {fileID: 1665522915}
   m_Father: {fileID: 1413808312}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -70.96301}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 125, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1345905904
@@ -8391,9 +8391,9 @@ RectTransform:
   - {fileID: 672813159}
   m_Father: {fileID: 1314422993}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 44.120583, y: -31.93285}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 31.5759, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1552400047
@@ -8559,9 +8559,9 @@ RectTransform:
   - {fileID: 1146518225}
   m_Father: {fileID: 1806877376}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 254.69392, y: -38.600704}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 31.5759, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1639416746
@@ -10114,7 +10114,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2023637909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11221,9 +11221,9 @@ RectTransform:
   - {fileID: 668478916}
   m_Father: {fileID: 1806877376}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 37.943726, y: -38.600708}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 31.5759, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2131196280
