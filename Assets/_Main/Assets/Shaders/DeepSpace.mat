@@ -55,7 +55,8 @@ Material:
     - _NoiseScale: 1
     - _SmallStarsAmount: 0
     - _StarAmount: 0
-    - _StarsSize: 1
+    - _StarsAmount: 0
+    - _StarsSize: 213.43
     - _TransAmbient: 0.2
     - _TransDirect: 1
     - _TransNormalDistortion: 0.1
