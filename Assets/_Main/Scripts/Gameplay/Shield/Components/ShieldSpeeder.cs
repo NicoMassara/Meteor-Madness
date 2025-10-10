@@ -4,7 +4,7 @@ namespace _Main.Scripts.Gameplay.Shield
 {
     public class ShieldSpeeder
     {
-        private readonly ShieldMovement _movement;
+        private readonly ShieldMovementComponent movementComponent;
         private readonly float _timeToIncrease;
         private readonly float _timeToDecrease;
         private readonly float _decayConstant;
@@ -13,9 +13,9 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private const float TargetVelocity = 150f;
 
-        public ShieldSpeeder(ShieldMovement movement, float timeToIncrease, float timeToDecrease, float decayConstant)
+        public ShieldSpeeder(ShieldMovementComponent movementComponent, float timeToIncrease, float timeToDecrease, float decayConstant)
         {
-            _movement = movement;
+            this.movementComponent = movementComponent;
             _timeToIncrease = timeToIncrease;
             _timeToDecrease = timeToDecrease;
             _decayConstant = decayConstant;
@@ -37,7 +37,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 _isSpeedingUp = false;
             }
             
-            _movement.HandleMove(1, deltaTime);
+            movementComponent.HandleMove(1, deltaTime);
         }
 
         public void DecreaseSpeed(float deltaTime)
@@ -52,7 +52,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 _isSpeedingUp = false;
             }
             
-            _movement.HandleMove(1, deltaTime);
+            movementComponent.HandleMove(1, deltaTime);
         }
         
         public void RestartValues()
