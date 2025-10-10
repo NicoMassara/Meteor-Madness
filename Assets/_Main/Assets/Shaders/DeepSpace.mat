@@ -33,6 +33,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BigStarsAmount: 0.498
     - _Float0: 25
     - _Float1: 0.71
     - _Float2: 1
@@ -52,6 +53,7 @@ Material:
     - _NebulaScale: 2.96
     - _NebulaSize: 22.8
     - _NoiseScale: 1
+    - _SmallStarsAmount: 0
     - _StarAmount: 0
     - _StarsSize: 1
     - _TransAmbient: 0.2
