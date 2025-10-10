@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.Managers;
+using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
 namespace _Main.Scripts.DebugTools
@@ -34,8 +35,19 @@ namespace _Main.Scripts.DebugTools
                 GameConfigManager.Instance.SetDamage(damageType);
             };
             _viewUI.GameValues.OnLevelChange = GameModeEventCaller.UpdateLevel;
+            
+            //Camera
             _viewUI.Camera.OnZoomIn = CameraEventCaller.ZoomIn;
             _viewUI.Camera.OnZoomOut = CameraEventCaller.ZoomOut;
+            
+            //Time Scale
+            _viewUI.TimeScale.OnChangeScale += (timeScale) =>
+            {
+                CustomTime.GlobalTimeScale = timeScale;
+                CustomTime.GlobalFixedTimeScale = timeScale;
+                /*Time.timeScale = timeScale;
+                Time.fixedDeltaTime = timeScale;*/
+            };
             
         }
 
