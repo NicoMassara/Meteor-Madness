@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    public class ShieldMovement : IMovement
+    public class ShieldMovementComponent : IMovement
     {
         private readonly Transform _shieldTransform;
         private readonly ShieldMovementDataSo _data;
@@ -23,7 +23,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private float _speedMultiplier = 1;
 
 
-        public ShieldMovement(Transform shieldTransform, ShieldMovementDataSo data)
+        public ShieldMovementComponent(Transform shieldTransform, ShieldMovementDataSo data)
         {
             _shieldTransform = shieldTransform;
             _data = data;

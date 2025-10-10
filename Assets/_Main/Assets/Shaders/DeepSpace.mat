@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: EarthRenderer
-  m_Shader: {fileID: 4800000, guid: 111ca641830afba4dbd9dacf9fb54ea0, type: 3}
+  m_Name: DeepSpace
+  m_Shader: {fileID: 4800000, guid: a4398390571edcf479b60ff32814afb7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,12 +23,8 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _RenderTexture:
-        m_Texture: {fileID: 8400000, guid: 6a656ec0709165b4982d7dc908bdc6a5, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _TextureSample0:
-        m_Texture: {fileID: 8400000, guid: 6a656ec0709165b4982d7dc908bdc6a5, type: 2}
+    - _MainTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -37,10 +33,27 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaCutoff: 0.5
-    - _AtmoshereSize1: 2
-    - _Cutoff: 0.5
-    - _Float0: 50
+    - _Float0: 25
+    - _Float1: 0.71
+    - _Float2: 1
+    - _Float3: 0.3509737
+    - _Luminosity: 0
+    - _MaskInnerIntensity: 8.83
+    - _MaskIntensity: 4.63
+    - _MaskOutterIntensity: 7.5
+    - _MaskSize: 0.546
+    - _NebulaIntensity: 0.399
+    - _NebulaMagnitude: 32.25
+    - _NebulaMax: 0.9
+    - _NebulaMin: 0.25882354
+    - _NebulaNoiseIntensity: 0.341
+    - _NebulaOpacity: 0.314
+    - _NebulaPower: 18.45
+    - _NebulaScale: 2.96
+    - _NebulaSize: 22.8
+    - _NoiseScale: 1
+    - _StarAmount: 0
+    - _StarsSize: 1
     - _TransAmbient: 0.2
     - _TransDirect: 1
     - _TransNormalDistortion: 0.1
@@ -49,8 +62,7 @@ Material:
     - _Translucency: 1
     - __dirty: 0
     m_Colors:
-    - _DamageAtmoshere1: {r: 1, g: 0, b: 0.1522532, a: 1}
-    - _DefaultAtmosphere1: {r: 0, g: 0.2627451, b: 0.2392157, a: 1}
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _NebulaColor: {r: 0.42212582, g: 0, b: 1, a: 0}
+    - _Vector0: {r: -0.52, g: -0.9, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

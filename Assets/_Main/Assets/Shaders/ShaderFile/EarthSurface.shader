@@ -201,9 +201,9 @@ Shader "EarthSurface"
 				float temp_output_2_0_g14 = ( 1.0 - (0.0 + (_SolidTop - 0.0) * (temp_output_1061_0 - 0.0) / (1.0 - 0.0)) );
 				float2 texCoord775 = i.ase_texcoord1.xy * float2( 1,1 ) + float2( 0,0 );
 				float smoothstepResult5_g14 = smoothstep( temp_output_2_0_g14 , ( temp_output_2_0_g14 + (0.0 + (_TopFadeLenght - 0.0) * (0.25 - 0.0) / (1.0 - 0.0)) ) , texCoord775.y);
-				float temp_output_2_0_g13 = ( 1.0 - (0.0 + (_SolidBottom - 0.0) * (temp_output_1061_0 - 0.0) / (1.0 - 0.0)) );
-				float smoothstepResult5_g13 = smoothstep( temp_output_2_0_g13 , ( temp_output_2_0_g13 + (0.0 + (_BottomFadeLenght - 0.0) * (0.25 - 0.0) / (1.0 - 0.0)) ) , ( 1.0 - texCoord775.y ));
-				float IceMask706 = ( saturate( smoothstepResult5_g14 ) + saturate( smoothstepResult5_g13 ) );
+				float temp_output_2_0_g15 = ( 1.0 - (0.0 + (_SolidBottom - 0.0) * (temp_output_1061_0 - 0.0) / (1.0 - 0.0)) );
+				float smoothstepResult5_g15 = smoothstep( temp_output_2_0_g15 , ( temp_output_2_0_g15 + (0.0 + (_BottomFadeLenght - 0.0) * (0.25 - 0.0) / (1.0 - 0.0)) ) , ( 1.0 - texCoord775.y ));
+				float IceMask706 = ( saturate( smoothstepResult5_g14 ) + saturate( smoothstepResult5_g15 ) );
 				float4 Water172 = saturate( ( ( tex2D( _WaterDefault, Panner138 ) * color151 * WaterMask44 ) + saturate( ( WaterMask44 * IceMask706 * _WaterIceIntensity ) ) ) );
 				float4 lerpResult59 = lerp( LavaWater150 , Water172 , HealthAmount61);
 				float2 uv_SurfaceDamage = i.ase_texcoord1.xy * _SurfaceDamage_ST.xy + _SurfaceDamage_ST.zw;
@@ -331,13 +331,13 @@ Node;AmplifyShaderEditor.GetLocalVarNode;170;-2950.923,-218.3686;Inherit;False;1
 Node;AmplifyShaderEditor.SaturateNode;592;-1604.554,-1154.447;Inherit;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;372;-1377.882,-1157.785;Float;False;True;-1;2;ASEMaterialInspector;100;5;EarthSurface;0770190933193b94aaa3065e307002fa;True;Unlit;0;0;Unlit;2;False;True;0;1;False;;0;False;;0;1;False;;0;False;;True;0;False;;0;False;;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;255;False;;255;False;;255;False;;7;False;;1;False;;1;False;;1;False;;7;False;;1;False;;1;False;;1;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;RenderType=Opaque=RenderType;True;2;False;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;0;;0;0;Standard;1;Vertex Position,InvertActionOnDeselection;1;0;0;1;True;False;;False;0
 Node;AmplifyShaderEditor.GetLocalVarNode;1052;-2020.3,-1162.49;Inherit;False;402;FinalSurface;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.FunctionNode;1055;-4121.389,880.2159;Inherit;False;FadeMask;-1;;13;82343dc598e55714e83c410ab3b8d20a;0;4;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;12;FLOAT;0.5;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;1056;-4116.043,590.5623;Inherit;False;FadeMask;-1;;14;82343dc598e55714e83c410ab3b8d20a;0;4;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;12;FLOAT;0.5;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;706;-3491.11,757.8768;Inherit;True;IceMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;867;-3708.66,765.2217;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;1061;-4190.977,1078.367;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;1063;-4174.01,1199.479;Inherit;False;Constant;_SolidMax;_SolidMax;20;0;Create;True;0;0;0;False;0;False;0.5;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;1062;-4563.955,1147.698;Inherit;False;61;HealthAmount;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode;1055;-4121.389,880.2159;Inherit;False;FadeMask;-1;;15;82343dc598e55714e83c410ab3b8d20a;0;4;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;12;FLOAT;0.5;False;1;FLOAT;0
 WireConnection;17;0;4;3
 WireConnection;61;0;43;0
 WireConnection;24;0;17;0
@@ -420,10 +420,6 @@ WireConnection;169;0;719;0
 WireConnection;402;0;593;0
 WireConnection;592;0;1052;0
 WireConnection;372;0;592;0
-WireConnection;1055;8;862;0
-WireConnection;1055;9;873;0
-WireConnection;1055;10;864;0
-WireConnection;1055;12;1061;0
 WireConnection;1056;8;775;2
 WireConnection;1056;9;824;0
 WireConnection;1056;10;831;0
@@ -433,5 +429,9 @@ WireConnection;867;0;1056;0
 WireConnection;867;1;1055;0
 WireConnection;1061;0;1062;0
 WireConnection;1061;1;1063;0
+WireConnection;1055;8;862;0
+WireConnection;1055;9;873;0
+WireConnection;1055;10;864;0
+WireConnection;1055;12;1061;0
 ASEEND*/
-//CHKSM=7CE947EF63176D8EC48F900B63A730F476D5E599
+//CHKSM=33648342AE57B34CBE882F38BDBCC37EFACCF61F
