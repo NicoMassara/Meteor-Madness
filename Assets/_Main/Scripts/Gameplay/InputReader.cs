@@ -1,6 +1,4 @@
-﻿using System;
-using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 using UnityEngine.Events;
@@ -78,7 +76,7 @@ namespace _Main.Scripts.Gameplay
         
         private bool GetIsRightUp()
         {
-            return Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
+            return Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.RightArrow);
         }
 
         private void EventBus_Inputs_SetEnable(InputsEvents.SetEnable input)
