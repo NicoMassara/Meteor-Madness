@@ -23,7 +23,7 @@ namespace _Main.Scripts.Shaker
         public ShakerController(Transform transform, ShakeDataSo data)
         {
             _transform = transform;
-            _startPosition = _transform.position;
+            _startPosition = _transform.localPosition;
             SetShakeData(data);
         }
 

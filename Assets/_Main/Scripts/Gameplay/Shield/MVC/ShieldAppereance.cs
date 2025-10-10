@@ -2,6 +2,7 @@
 
 namespace _Main.Scripts.Gameplay.Shield
 {
+    [RequireComponent(typeof(ShieldTrail))]
     public class ShieldAppereance : MonoBehaviour
     {
         [Header("Components")] 
@@ -14,6 +15,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float timeToDisableSuperShield;
         
         private ShieldSpriteAlphaSetter _spriteAlphaSetter;
+        private ShieldTrail _shieldTrail;
 
         public float TimeToEnableSuperShield => timeToEnableSuperShield;
 
@@ -23,6 +25,8 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, 
                 timeToEnableSuperShield,timeToDisableSuperShield);
+
+            _shieldTrail = GetComponent<ShieldTrail>();
         }
         
         private void Start()
@@ -54,12 +58,43 @@ namespace _Main.Scripts.Gameplay.Shield
         public void SetAutomaticEnable(bool isActive)
         {
             var color = isActive ? Color.red : Color.white;
+            if (isActive)
+            {
+                _shieldTrail.SetTrailColor(color);
+            }
+            else
+            {
+                _shieldTrail.SetDefault();
+            }
+            
             normalSprite.GetComponent<SpriteRenderer>().color = color;
         }
         
         public void SetGoldEnable(bool isActive)
         {
             var color = isActive ? Color.yellow : Color.white;
+            if (isActive)
+            {
+                _shieldTrail.SetTrailColor(color);
+            }
+            else
+            {
+                _shieldTrail.SetDefault();
+            }
+            normalSprite.GetComponent<SpriteRenderer>().color = color;
+        }
+
+        public void SetSlowEnable(bool isActive)
+        {
+            var color = isActive ? Color.green : Color.white;
+            if (isActive)
+            {
+                _shieldTrail.SetTrailColor(color);
+            }
+            else
+            {
+                _shieldTrail.SetDefault();
+            }
             normalSprite.GetComponent<SpriteRenderer>().color = color;
         }
 

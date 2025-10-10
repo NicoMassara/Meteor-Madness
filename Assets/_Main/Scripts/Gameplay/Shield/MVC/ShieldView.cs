@@ -19,6 +19,7 @@ namespace _Main.Scripts.Gameplay.Shield
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
+        [SerializeField] private GameObject normalShieldSprite;
         [SerializeField] private CapsuleCollider2D shieldCollider;
         [Space]
         [Header("Sounds")]
@@ -43,7 +44,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _movement = GetComponent<ShieldMovement>();
             _appereance = GetComponent<ShieldAppereance>();
             
-            _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
+            _shakerController = new ShakerController(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
         }
 
@@ -86,9 +87,14 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.RestartPosition:
                     HandleRestartPosition();
                     break;
+                case ShieldObserverMessage.SetSlow:
+                    HandleSetSlow((bool)args[0]);
+                    break;
             }
         }
-        
+
+
+
         #region ObserverHandlers
 
         private void HandleSetAutomatic(bool isActive)
@@ -100,6 +106,10 @@ namespace _Main.Scripts.Gameplay.Shield
         private void HandleSetGold(bool isActive)
         {
             _appereance.SetGoldEnable(isActive);
+        }
+        private void HandleSetSlow(bool isActive)
+        {
+            _appereance.SetSlowEnable(isActive);
         }
         
         private void HandleSetActiveShield(bool isActive)

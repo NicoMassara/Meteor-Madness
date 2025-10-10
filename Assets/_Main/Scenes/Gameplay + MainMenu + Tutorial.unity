@@ -1042,6 +1042,7 @@ GameObject:
   - component: {fileID: 168416676}
   - component: {fileID: 168416678}
   - component: {fileID: 168416679}
+  - component: {fileID: 168416680}
   m_Layer: 0
   m_Name: ShieldController
   m_TagString: Untagged
@@ -1135,6 +1136,20 @@ MonoBehaviour:
   superSprite: {fileID: 1667250004}
   timeToEnableSuperShield: 0.75
   timeToDisableSuperShield: 0.75
+--- !u!114 &168416680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168416674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1351605bc8de45cda13ceae563fa2b81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trailMaterial: {fileID: 2100000, guid: 5bb8d64ee1521564aa1575949d88443a, type: 2}
+  defaultColor: {r: 0, g: 0.913288, b: 0.9811321, a: 1}
 --- !u!1 &200166475
 GameObject:
   m_ObjectHideFlags: 0
