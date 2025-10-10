@@ -31,8 +31,8 @@ Material:
     - _Cutoff: 0.5
     - _Float0: 0.01
     - _HealthAmount: 1
-    - _Intensity: 1.1
-    - _Size: 2
+    - _Intensity: 1.233
+    - _Size: 1.057
     - _Smoothnes: 0
     - _Smoothness: 1.23
     - _TransAmbient: 0.2
