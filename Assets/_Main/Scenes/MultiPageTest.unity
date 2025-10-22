@@ -644,7 +644,9 @@ GameObject:
   m_Component:
   - component: {fileID: 878546592}
   - component: {fileID: 878546594}
-  - component: {fileID: 878546593}
+  - component: {fileID: 878546597}
+  - component: {fileID: 878546596}
+  - component: {fileID: 878546595}
   m_Layer: 0
   m_Name: MultiPageController
   m_TagString: Untagged
@@ -667,27 +669,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &878546593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 878546591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1ae49b782ae499f9f9b2611ff46fdca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  texts:
-  - Xd
-  - Puto
-  - El
-  - Que
-  screenText: {fileID: 886995401}
-  previousButton: {fileID: 1339150834}
-  nextButton: {fileID: 67245143}
-  nextButtonText: {fileID: 792540803}
 --- !u!1652712579 &878546594
 MultiplayerRolesData:
   m_ObjectHideFlags: 2
@@ -697,6 +678,48 @@ MultiplayerRolesData:
   m_GameObject: {fileID: 878546591}
   m_GameObjectRolesMask: 7
   m_ComponentsRolesMasks: []
+--- !u!114 &878546595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878546591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6d43424f893449e9843a8d0229bcbf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startData: {fileID: 11400000, guid: 73a438166a2e1614abe3dd5aeff332c8, type: 2}
+--- !u!114 &878546596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878546591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9efd2c3517f3457da2b77bbee1bbd70e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelText: {fileID: 886995401}
+  nextButtonText: {fileID: 792540803}
+  previousButton: {fileID: 1339150834}
+  nextButton: {fileID: 67245143}
+  mainPanel: {fileID: 723436231}
+--- !u!114 &878546597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878546591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d11c73d37551450fb09b7984cd56dff5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &886995399
 GameObject:
   m_ObjectHideFlags: 0
