@@ -9,9 +9,10 @@ namespace _Main.Scripts.MultiPage
     {
         private IMultiPageData _data;
         private int _currentPageIndex;
+        private ulong _createId;
         public string NextButtonDefaultText { get; set; }
 
-        public event Action OnFinished;
+        public event Action<ulong> OnFinished;
         public event Action<string> OnNextButtonTextChanged;
         public event Action<bool> OnPreviousButtonSetEnable;
         public event Action<string> OnPageChanged;
@@ -25,7 +26,7 @@ namespace _Main.Scripts.MultiPage
         {
             if (_currentPageIndex == _data.MaxTextIndex)
             {
-                OnFinished?.Invoke();
+                OnFinished?.Invoke(_createId);
             }
             else
             {
@@ -97,6 +98,11 @@ namespace _Main.Scripts.MultiPage
         private void UpdateText()
         {
             OnPageChanged?.Invoke(_data.TextsArray[_currentPageIndex]);
+        }
+
+        public void SetCreateId(ulong createId)
+        {
+            _createId = createId;
         }
     }
 }
