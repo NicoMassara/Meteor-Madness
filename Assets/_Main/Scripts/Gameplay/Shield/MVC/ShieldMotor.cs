@@ -9,6 +9,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private bool _isTotalActive;
         private bool _isGolden;
         private bool _isAutomatic;
+        private bool _isSlow;
 
         #region Movement
         public void Rotate(float direction = 1)
@@ -71,6 +72,12 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _isAutomatic = isActive;
             NotifyAll(ShieldObserverMessage.SetAutomatic,_isAutomatic);
+        }
+
+        public void SetActiveSlow(bool isActive)
+        {
+            _isSlow = isActive;
+            NotifyAll(ShieldObserverMessage.SetSlow,_isSlow);
         }
     }
 }
