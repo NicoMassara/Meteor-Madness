@@ -333,4 +333,17 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new FloatingTextEvents.Spawn { Data = data });
         }
     }
+
+    public static class MultiPageUIEventCaller
+    {
+        public static void Create(IMultiPageData data, ulong createId)
+        {
+            GameEventCaller.Publish(new MultiPageUIEvents.Create{Data = data, CreateId = createId});
+        }
+
+        public static void Finished(ulong createId)
+        {
+            GameEventCaller.Publish(new MultiPageUIEvents.Finished{CreateId = createId});
+        }
+    }
 }
