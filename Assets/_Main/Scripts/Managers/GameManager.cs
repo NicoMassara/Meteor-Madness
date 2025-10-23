@@ -1,6 +1,4 @@
-﻿using System;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.ScriptableObjects;
+﻿using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
@@ -30,6 +28,7 @@ namespace _Main.Scripts.Managers
         private void Awake()
         {
             EventManager = new EventBusManager();
+            SceneLoader.LoadModules();
         }
         
         public void LoadTutorial()
