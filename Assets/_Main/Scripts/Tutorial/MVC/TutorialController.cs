@@ -23,11 +23,13 @@ namespace _Main.Scripts.Tutorial.MVC
         private class ActionGate
         {
             public bool ProjectileReStockEnable { get; private set; }
+            public bool CanMultiPage { get; private set; }
             public ActionGate(FSM<States> fsm)
             {
                 fsm.OnEnterState += state =>
                 {
                     ProjectileReStockEnable = state is States.Ability or States.Movement;
+                    CanMultiPage = state is not States.Disable;
                 };
             }
         }
@@ -100,9 +102,7 @@ namespace _Main.Scripts.Tutorial.MVC
             finish.AddTransition(States.MultiPage, multiPage);
             
             disable.AddTransition(States.Enable, enable);
-            disable.AddTransition(States.MultiPage, multiPage);
             
-            multiPage.AddTransition(States.Disable, disable);
             multiPage.AddTransition(States.Enable, enable);
             multiPage.AddTransition(States.Start, start);
             multiPage.AddTransition(States.Movement, movement);
@@ -219,7 +219,10 @@ namespace _Main.Scripts.Tutorial.MVC
 
         public void SetMultiPage()
         {
-            _motor.SetMultiPage();
+            if (_actionGate.CanMultiPage)
+            {
+                _motor.SetMultiPage();
+            }
         }
 
         public void TriggerSphereDeflected()
