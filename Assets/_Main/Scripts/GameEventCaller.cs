@@ -69,6 +69,12 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new ShieldEvents.SetGold{IsActive = isActive});
         }
+
+        public static void SetSlow(bool isActive)
+        {
+            GameEventCaller.Publish(new ShieldEvents.SetSlow{IsActive = isActive});
+        }
+
         public static void SetAutomatic(bool isActive)
         {
             GameEventCaller.Publish(new ShieldEvents.SetAutomatic{IsActive = isActive});
@@ -325,6 +331,19 @@ namespace _Main.Scripts
         public static void Spawn(FloatingTextValues data)
         {
             GameEventCaller.Publish(new FloatingTextEvents.Spawn { Data = data });
+        }
+    }
+
+    public static class MultiPageUIEventCaller
+    {
+        public static void Create(IMultiPageData data, ulong createId)
+        {
+            GameEventCaller.Publish(new MultiPageUIEvents.Create{Data = data, CreateId = createId});
+        }
+
+        public static void Finished(ulong createId)
+        {
+            GameEventCaller.Publish(new MultiPageUIEvents.Finished{CreateId = createId});
         }
     }
 }
