@@ -65,7 +65,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void SetViewHandlers()
         {
-            _ui.OnNext += UI_OnNextHandler;
+            _ui.OnStartTutorialButtonPressed += UIOnStartTutorialButtonPressedHandler;
 
             _view.OnTutorialEnable += ViewOnTutorialEnable;
         }
@@ -75,9 +75,9 @@ namespace _Main.Scripts.Tutorial.MVC
             TutorialEnable();
         }
 
-        private void UI_OnNextHandler()
+        private void UIOnStartTutorialButtonPressedHandler()
         {
-            _controller.TransitionToMovement();
+            _controller.TransitionToMultiPage();
         }
 
         #endregion
@@ -90,12 +90,35 @@ namespace _Main.Scripts.Tutorial.MVC
             GameEventCaller.Subscribe<ProjectileEvents.Collision>(EventBus_Projectile_Collision);
             GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
             GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            GameEventCaller.Subscribe<MultiPageUIEvents.Finished>(EventBus_MultiPage_Finished);
         }
+
         private void UnsubscribeEventBus()
         {
             GameEventCaller.Unsubscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             GameEventCaller.Unsubscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
             GameEventCaller.Unsubscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            GameEventCaller.Unsubscribe<MultiPageUIEvents.Finished>(EventBus_MultiPage_Finished);
+        }
+        
+        private void EventBus_MultiPage_Finished(MultiPageUIEvents.Finished input)
+        {
+            switch (input.CreateId)
+            {
+                case 0:
+                    _controller.TransitionToMovement();
+                    break;
+                case 1:
+                    _controller.TransitionToAbility();
+                    break;
+                case 2:
+                    TutorialDisable();
+                    GameManager.Instance.LoadMainMenu();
+                    break;
+                default:
+                    Debug.Log("MultiPage_Finished - Finish Action Not Found");
+                    break;
+            }
         }
         
         private void EventBus_GameScreen_SetGameScreen(GameScreenEvents.SetScreen input)
@@ -123,7 +146,16 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             if (input.Type == ProjectileType.Meteor)
             {
-                _controller.TransitionToAbility();
+                TimerManager.Add(new TimerData
+                {
+                    Time = 0.5f,
+                    OnEndAction = ()=> _controller.TransitionToMultiPage()
+                }, UpdateGroup.Always);
+                
+            }
+            else if (input.Type == ProjectileType.AbilitySphere)
+            {
+                _controller.TriggerSphereDeflected();
             }
         }
         
