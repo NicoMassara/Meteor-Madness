@@ -42,4 +42,11 @@
         GameMode,
         Tutorial
     }
+    
+    public enum MusicType
+    {
+        MainMenu,
+        Gameplay,
+        EndGame
+    }
 }
