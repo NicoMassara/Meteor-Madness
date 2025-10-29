@@ -189,6 +189,11 @@ namespace _Main.Scripts.Managers
         {
             public AbilityType AbilityType;
         }
+        
+        public struct SetEnableUI
+        {
+            public bool IsEnable;
+        }
     }
 
     public struct FloatingTextEvents
