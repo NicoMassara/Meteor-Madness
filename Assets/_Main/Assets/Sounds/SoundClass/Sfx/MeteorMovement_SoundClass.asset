@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: MeteorMovement_SoundClass
   m_EditorClassIdentifier: 
   className: MeteorMovement
+  channel: 0
+  is3dSound: 1
   clips:
   - {fileID: 8300000, guid: d5859bdbef2da08448756eb4391736ab, type: 3}
   sourceData:

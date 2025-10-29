@@ -16,6 +16,7 @@ namespace _Main.Scripts.Sounds
         private AudioSource _audioSource;
         public float VolumeMultiplier { get; private set; }
         public ISoundData SoundClass { get; private set; }
+        public string AudioName => SoundClass.ClassName;
         
         public event Action<SoundBehavior> OnFinished;
         public event Action<SoundBehavior> OnRecycle;
@@ -26,6 +27,12 @@ namespace _Main.Scripts.Sounds
 
         public void TriggerFinish()
         {
+            Recycle();
+            if (SoundClass.Is3DSound)
+            {
+                transform.parent = null;
+            }
+
             OnFinished?.Invoke(this);
         }
 
@@ -43,7 +50,7 @@ namespace _Main.Scripts.Sounds
                 _hasSoundClass = true;
                 SoundClass = soundClass;
 #if UNITY_EDITOR_WIN
-                gameObject.name = SoundClass.ClassName;
+                gameObject.name = $"Sound_{SoundClass.ClassName}";
 #endif
                 SetAudioData(SoundClass.SourceData);
             }
@@ -82,13 +89,15 @@ namespace _Main.Scripts.Sounds
             _audioSource.volume *= VolumeMultiplier;
         }
 
-        public void PlaySound()
+        public void PlayAudio()
         {
             if (!_hasSoundClass)
             {
                 Debug.Log("Sound class is null");
                 return;
             }
+            
+            //Debug.Log($"Playing {SoundClass.ClassName}");
             
             if (!_isUniqueClip)
             {
@@ -131,7 +140,5 @@ namespace _Main.Scripts.Sounds
         {
             return _hasSoundClass && _audioSource.isPlaying && _isPlaying;
         }
-
-
     }
 }

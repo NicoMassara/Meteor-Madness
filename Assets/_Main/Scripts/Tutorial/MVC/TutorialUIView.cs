@@ -127,6 +127,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void NextButtonOnClickHandler()
         {
+            SoundEventCaller.PlayUIButton(UISoundType.Accept);
             OnStartTutorialButtonPressed?.Invoke();
         }
         

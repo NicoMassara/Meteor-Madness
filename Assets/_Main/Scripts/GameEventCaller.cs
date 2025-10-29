@@ -374,5 +374,10 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new SoundEvents.SetMusicLevel{Volume = volume});
         }
+
+        public static void PlayUIButton(UISoundType uiButtonType)
+        {
+            GameEventCaller.Publish(new SoundEvents.PlayUIButton{Type = uiButtonType});
+        }
     }
 }

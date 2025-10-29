@@ -95,5 +95,6 @@ namespace _Main.Scripts.Sounds
         Music,
         Collision,
         Deflection,
+        UI
     }
 }
