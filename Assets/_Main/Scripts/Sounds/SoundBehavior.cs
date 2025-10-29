@@ -97,6 +97,8 @@ namespace _Main.Scripts.Sounds
                 return;
             }
             
+            Debug.Log($"Playing {SoundClass.ClassName}");
+            
             if (!_isUniqueClip)
             {
                 _audioSource.clip = SoundClass.GetAudioClip();

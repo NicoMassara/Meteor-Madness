@@ -35,7 +35,7 @@ namespace _Main.Scripts.Sounds
             {
                 foreach (var item in _toAdd)
                 {
-                    Debug.Log($"Adding: {item.AudioName}");
+                    //Debug.Log($"Adding: {item.AudioName}");
                     _trackedAudios.Add(item);
                     item.PlayAudio();
                 }
@@ -47,7 +47,7 @@ namespace _Main.Scripts.Sounds
             {
                 foreach (var item in _toRemove)
                 {
-                    Debug.Log($"Removing: {item.AudioName}");
+                    //Debug.Log($"Removing: {item.AudioName}");
                     item.TriggerFinish();
                     _trackedAudios.Remove(item);
                 }
