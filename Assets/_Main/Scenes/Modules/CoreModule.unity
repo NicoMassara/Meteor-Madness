@@ -671,6 +671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilityUIData: {fileID: 234428182}
+  abilityPanel: {fileID: 2031748171}
 --- !u!114 &234428179
 MonoBehaviour:
   m_ObjectHideFlags: 0
