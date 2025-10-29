@@ -1,5 +1,4 @@
-﻿using _Main.Scripts.Gameplay.Meteor;
-using _Main.Scripts.Observer;
+﻿using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -14,6 +13,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private readonly GameLevelController _levelController;
         
         private float _startTimer;
+        private float _lastDisplayedTimer;
         private readonly int _startDelay;
         private bool _isPaused;
         private bool _doesRestartGameMode;
@@ -47,11 +47,17 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _startTimer -= deltaTime;
 
-            NotifyAll(GameModeObserverMessage.UpdateCountdown, _startTimer);
-            
-            if (_startTimer <= 0)
+            int seconds = Mathf.CeilToInt(_startTimer);
+
+            if (seconds != _lastDisplayedTimer)
             {
-                NotifyAll(GameModeObserverMessage.CountdownFinish);
+                _lastDisplayedTimer = seconds;
+                NotifyAll(GameModeObserverMessage.UpdateCountdown, _startTimer);
+                
+                if (_startTimer <= 0)
+                {
+                    NotifyAll(GameModeObserverMessage.CountdownFinish);
+                }
             }
         }
 

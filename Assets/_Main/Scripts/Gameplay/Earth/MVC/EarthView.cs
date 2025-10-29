@@ -21,8 +21,9 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private EarthSlicer earthMeshSlicer;
         [Space]
         [Header("Sounds")]
-        [SerializeField] private SoundBehavior collisionSound;
-        [SerializeField] private SoundBehavior deathSound;
+        [SerializeField] private SoundClassSo collisionSound;
+        [SerializeField] private SoundClassSo deathSound;
+        [SerializeField] private SoundClassSo healSound;
         [Space]
         [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
@@ -112,7 +113,7 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void HandleCollision(float healthAmount, Vector3 position, Quaternion rotation, Vector2 direction)
         {
-            collisionSound?.PlaySound();
+            SoundEventCaller.PlaySound(collisionSound, null, null);
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
             SetRotationSpeed(healthAmount);
@@ -156,6 +157,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 },restartHealthTime),
             };
             
+            
+            SoundEventCaller.PlaySound(healSound, null, null);
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
         
@@ -328,7 +331,7 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             earthMeshSlicer.StartSlicing();
             _isDead = true;
-            deathSound?.PlaySound();
+            SoundEventCaller.PlaySound(deathSound, null, null);
             _earthRotator.SetRotationSpeed(rotationSpeed/2);
         }
 

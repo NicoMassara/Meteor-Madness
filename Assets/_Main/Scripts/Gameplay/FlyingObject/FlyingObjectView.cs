@@ -14,13 +14,13 @@ using Random = UnityEngine.Random;
 namespace _Main.Scripts.FyingObject
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable, IPoolable<TS>
+    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable, IPoolable<TS>, ILoopableSound
     where T : FlyingObjectMotor<TVS>
     where TS : FlyingObjectView<T, TS, TVS>
     where TVS : FlyingObjectValues
     {
         [Header("Sounds")]
-        [SerializeField] protected SoundBehavior moveSound;
+        [SerializeField] protected SoundClassSo moveSound;
         [Header("Sphere Sprite")]
         [Range(0, 100f)]
         [SerializeField] private float maxRotationSpeed = 25;
@@ -41,6 +41,7 @@ namespace _Main.Scripts.FyingObject
         public UnityAction<Vector2> OnPositionChanged;
         public UnityAction<TVS> OnValuesChanged;
         public UnityAction<Collider2D> OnCollisionDetected;
+        public event Action OnLoopFinished;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public UpdateGroup SelfFixedUpdateGroup { get; } = UpdateGroup.Gameplay;
@@ -126,8 +127,6 @@ namespace _Main.Scripts.FyingObject
                     }
                 );
             }
-
-            moveSound?.StopSound();
         }
 
         private void HandleSetValues(float movementSpeed, Quaternion rotation, Vector2 position, bool canMove)
@@ -136,7 +135,7 @@ namespace _Main.Scripts.FyingObject
             _rigidbody2D.transform.rotation = rotation;
             _rigidbody2D.transform.position = position;
             _canMove = canMove;
-            moveSound?.PlaySound(1);
+            SoundEventCaller.PlaySound(moveSound, transform, this);
         }
         
         protected float GetRotationSpeed()
@@ -146,13 +145,21 @@ namespace _Main.Scripts.FyingObject
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            TriggerLoopFinished();
             OnCollisionDetected?.Invoke(other);
         }
 
         public void Recycle()
         {
-            moveSound?.StopSound();
+            TriggerLoopFinished();
             OnRecycle?.Invoke((TS)this);
         }
+
+        private void TriggerLoopFinished()
+        {
+            OnLoopFinished?.Invoke();
+            OnLoopFinished = null;
+        }
+
     }
 }
