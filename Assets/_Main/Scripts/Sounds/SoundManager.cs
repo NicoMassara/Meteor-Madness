@@ -67,6 +67,12 @@ namespace _Main.Scripts.Sounds
 
         private void SpawnSound(ISoundData soundData, Transform soundParent, ILoopableSound loopableSound)
         {
+            if (soundData == null)
+            {
+                Debug.Log("Sound Data is NULL");
+                return;
+            }
+
             if (GetIsChannelFull(soundData.Channel))
             {
                 return;
@@ -88,7 +94,10 @@ namespace _Main.Scripts.Sounds
             {
                 loopableSound.OnLoopFinished += tempSound.TriggerFinish;
             }
+            
             _activeByChannel[soundData.Channel].Add(tempSound);
+            
+            tempSound.PlaySound();
             
             tempSound.OnFinished += Sound_OnFinishedHandler;
         }

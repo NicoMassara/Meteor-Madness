@@ -3,17 +3,12 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
-using _Main.Scripts.Sounds;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeView : ManagedBehavior, IObserver
     {
-        [Header("Sounds")] 
-        [SerializeField] private SoundBehavior gameplayTheme;
-        [SerializeField] private SoundBehavior deathTheme;
-        
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
         public event Action OnGameModeEnable;
@@ -163,8 +158,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 EarthEventCaller.Restart();
             }
             
-            gameplayTheme?.StopSound();
-            deathTheme?.StopSound();
             _isFirstDisable = false;
             SetEnableInputs(false);
             GameModeEventCaller.Disable();
@@ -172,7 +165,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleGameFinish()
         {
-            gameplayTheme?.StopSound();
+            SoundEventCaller.StopMusic();
             GameManager.Instance.CanPlay = false;
             ShieldEventCaller.SetEnableShield(false);
             MeteorEventCaller.RecycleAll();
@@ -201,7 +194,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleStartCountdown()
         {
-            deathTheme?.StopSound();
+            SoundEventCaller.StopMusic();
             CameraEventCaller.ZoomOut();
         }
         
@@ -217,7 +210,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.SetEnableShield(true);
-            gameplayTheme?.PlaySound();
+            SoundEventCaller.PlayMusic(MusicType.Gameplay);
         }
 
         #endregion
@@ -236,7 +229,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleEarthEndDestruction()
         {
-            deathTheme?.PlaySound();
+            SoundEventCaller.PlayMusic(MusicType.EndGame);
         }
 
         #endregion

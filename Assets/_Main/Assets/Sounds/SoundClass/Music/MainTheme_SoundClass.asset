@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: MainTheme_SoundClass
   m_EditorClassIdentifier: 
   className: MainTheme
+  channel: 1
+  is3dSound: 0
   clips:
   - {fileID: 8300000, guid: 1d1c6669b660cda4c9950ad6c7740ece, type: 3}
   sourceData:

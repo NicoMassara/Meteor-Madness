@@ -6,9 +6,7 @@ using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
-using _Main.Scripts.Gameplay.AutoTarget;
 using _Main.Scripts.ScriptableObjects;
-using _Main.Scripts.Utilities;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
@@ -23,8 +21,8 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private CapsuleCollider2D shieldCollider;
         [Space]
         [Header("Sounds")]
-        [SerializeField] private SoundBehavior hitSound;
-        [SerializeField] private SoundBehavior moveSound;
+        [SerializeField] private SoundClassSo hitSound;
+        [SerializeField] private SoundClassSo moveSound;
         [Space] 
         [Header("Scriptable Objects")]
         [SerializeField] private ShakeDataSo hitShakeData;
@@ -135,7 +133,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandlePlayMoveSound()
         {
-            moveSound?.PlaySound();
+            SoundEventCaller.PlaySound(moveSound, null, null);
         }
         
         private void HandleRestartPosition()
@@ -145,8 +143,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
         {
-            hitSound?.PlaySound();
-            
+            SoundEventCaller.PlaySound(hitSound, null, null);
             StartCoroutine(Coroutine_Shake());
             
             ParticleEventCaller.Spawn(new ParticleSpawnData
