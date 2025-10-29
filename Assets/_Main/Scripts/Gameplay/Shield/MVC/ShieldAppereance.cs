@@ -102,7 +102,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         public void SetActiveSuperShieldSprite(bool isActive)
         {
-            superSprite.SetActive(true);
+            superSprite.SetActive(isActive);
         }
 
     }

@@ -127,11 +127,13 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void NextButtonOnClickHandler()
         {
+            SoundEventCaller.PlayUIButton(UISoundType.Accept);
             OnStartTutorialButtonPressed?.Invoke();
         }
         
         private void FinishButtonOnClickHandler()
         {
+            SoundEventCaller.PlayUIButton(UISoundType.Back);
             GameManager.Instance.LoadMainMenu();
         }
 
