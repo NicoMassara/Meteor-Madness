@@ -54,6 +54,12 @@ namespace _Main.Scripts.Sounds
 
         private void AddMusic(MusicType type, ISoundData soundData)
         {
+            if (soundData == null)
+            {
+                Debug.LogWarning($"{type} Music SoundData is not assigned");
+                return;
+            }
+
             var tempSound = _factory.GetSound();
             tempSound.SetData(soundData);
             _musicController.AddMusic(type, tempSound);
@@ -101,7 +107,6 @@ namespace _Main.Scripts.Sounds
 
         private void SetEventBus()
         {
-            
             GameEventCaller.Subscribe<SoundEvents.PlaySound>(EventBus_Sounds_PlaySound);
             GameEventCaller.Subscribe<SoundEvents.PlayMusic>(EventBus_Sounds_PlayMusic);
             GameEventCaller.Subscribe<SoundEvents.StopMusic>(EventBus_Sounds_StopMusic);
