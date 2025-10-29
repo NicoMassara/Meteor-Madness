@@ -1,5 +1,4 @@
 ﻿using System;
-using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
@@ -15,8 +14,6 @@ namespace _Main.Scripts.MainMenu.MVC
         [Header("Sub Panels")]
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private GameObject lorePanel;
-        [Header("Sounds")] 
-        [SerializeField] private SoundClassSo buttonSound;
         [Header("Buttons")]
         [SerializeField] private Button playButton;
         [SerializeField] private Button tutorialButton;
@@ -82,7 +79,7 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void PlayButtonSound()
         {
-            SoundEventCaller.PlaySound(buttonSound, null, null);
+            SoundEventCaller.PlayUIButton(UISoundType.Accept);
         }
 
         private void HandleEnable()

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: ShieldHit_SoundClass
   m_EditorClassIdentifier: 
   className: ShieldHit
+  channel: 3
+  is3dSound: 0
   clips:
   - {fileID: 8300000, guid: 8b3836daf909c78469aaf3d586e55619, type: 3}
   sourceData:

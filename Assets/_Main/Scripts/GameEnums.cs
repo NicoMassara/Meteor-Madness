@@ -49,4 +49,11 @@
         Gameplay,
         EndGame
     }
+
+    public enum UISoundType
+    {
+        Default,
+        Accept,
+        Back
+    }
 }

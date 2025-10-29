@@ -22,13 +22,18 @@ namespace _Main.Scripts.Sounds
                 }
 
                 _currentMusic = type;
-                GetMusicBehavior(type).PlaySound();
+                GetMusicBehavior(type).PlayAudio();
             }
         }
 
         public void StopCurrentMusic()
         {
             GetMusicBehavior(_currentMusic).StopSound();
+        }
+        
+        public void PauseCurrentMusic()
+        {
+            GetMusicBehavior(_currentMusic).PauseSound();
         }
 
         public void SetMusicVolume(float volume = 1)

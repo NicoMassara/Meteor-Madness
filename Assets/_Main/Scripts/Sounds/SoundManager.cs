@@ -15,6 +15,10 @@ namespace _Main.Scripts.Sounds
         [SerializeField] private SoundClassSo menuMusic;
         [SerializeField] private SoundClassSo gameplayMusic;
         [SerializeField] private SoundClassSo defeatMusic;
+        [Header("UI Button Sound")]
+        [SerializeField] private SoundClassSo defaultUISound;
+        [SerializeField] private SoundClassSo acceptUISound;
+        [SerializeField] private SoundClassSo backUISound;
         
         private SoundBehaviourFactory _factory;
         private AudioPlaybackTracker _playbackTracker = new AudioPlaybackTracker();
@@ -23,8 +27,9 @@ namespace _Main.Scripts.Sounds
         private readonly Dictionary<SoundChannel, int> _channelLimits = new()
         {
             { SoundChannel.Sfx, 5},
-            { SoundChannel.Collision, 3},
-            { SoundChannel.Deflection, 3},
+            { SoundChannel.Collision, 1},
+            { SoundChannel.Deflection, 1},
+            { SoundChannel.UI, 3},
         };
         
         private readonly Dictionary<SoundChannel, List<SoundBehavior>> _activeByChannel = new()
@@ -32,6 +37,7 @@ namespace _Main.Scripts.Sounds
             { SoundChannel.Sfx, new List<SoundBehavior>() },
             { SoundChannel.Collision, new List<SoundBehavior>()},
             { SoundChannel.Deflection, new List<SoundBehavior>()},
+            { SoundChannel.UI, new List<SoundBehavior>()},
         };
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
@@ -75,6 +81,7 @@ namespace _Main.Scripts.Sounds
 
             if (GetIsChannelFull(soundData.Channel))
             {
+                Debug.Log($"{soundData.Channel} channel is full");
                 return;
             }
             
@@ -92,12 +99,11 @@ namespace _Main.Scripts.Sounds
             }
             else
             {
+                tempSound.PlayAudio();
                 loopableSound.OnLoopFinished += tempSound.TriggerFinish;
             }
             
             _activeByChannel[soundData.Channel].Add(tempSound);
-            
-            tempSound.PlaySound();
             
             tempSound.OnFinished += Sound_OnFinishedHandler;
         }
@@ -120,6 +126,20 @@ namespace _Main.Scripts.Sounds
             GameEventCaller.Subscribe<SoundEvents.PlayMusic>(EventBus_Sounds_PlayMusic);
             GameEventCaller.Subscribe<SoundEvents.StopMusic>(EventBus_Sounds_StopMusic);
             GameEventCaller.Subscribe<SoundEvents.SetMusicLevel>(EventBus_Sounds_SetMusicLevel);
+            GameEventCaller.Subscribe<SoundEvents.PlayUIButton>(EventBus_Sounds_PlayUIButton);
+        }
+
+        private void EventBus_Sounds_PlayUIButton(SoundEvents.PlayUIButton input)
+        {
+            var soundData = input.Type switch
+            {
+                UISoundType.Default => defaultUISound,
+                UISoundType.Accept => acceptUISound,
+                UISoundType.Back => backUISound,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            
+            SpawnSound(soundData, null, null);
         }
 
         private void EventBus_Sounds_PlaySound(SoundEvents.PlaySound input)

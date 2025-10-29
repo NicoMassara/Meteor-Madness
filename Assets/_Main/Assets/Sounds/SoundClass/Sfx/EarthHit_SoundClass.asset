@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: EarthHit_SoundClass
   m_EditorClassIdentifier: 
   className: EarthHit
+  channel: 0
+  is3dSound: 0
   clips:
   - {fileID: 8300000, guid: 074cb0e0a7d88f347abb23868de65a1a, type: 3}
   sourceData:

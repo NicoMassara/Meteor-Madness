@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Comet_SoundClass
   m_EditorClassIdentifier: 
   className: Comet
+  channel: 0
+  is3dSound: 1
   clips:
   - {fileID: 8300000, guid: ab9f8ca25f4a19c4d8814f6ab7817fb1, type: 3}
   sourceData:

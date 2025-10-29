@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ButtonSound_SoundClass
   m_EditorClassIdentifier: 
   className: Button
-  channel: 0
+  channel: 4
   is3dSound: 0
   clips:
   - {fileID: 8300000, guid: a64b7a73b3cc4404eb6a77a39ddbccaf, type: 3}

@@ -233,5 +233,10 @@ namespace _Main.Scripts.Managers
         {
             public float Volume;
         }
+
+        public struct PlayUIButton
+        {
+            public UISoundType Type;
+        }
     }
 }
