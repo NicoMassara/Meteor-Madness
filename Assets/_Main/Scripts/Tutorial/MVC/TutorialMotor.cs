@@ -44,5 +44,20 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             NotifyAll(TutorialObserverMessage.AdditionalProjectile, projectileTypeIndex);
         }
+
+        public void SetMultiPage()
+        {
+            NotifyAll(TutorialObserverMessage.MultiPage);
+        }
+
+        public void TriggerSphereDeflected()
+        {
+            NotifyAll(TutorialObserverMessage.SphereDeflected);
+        }
+
+        public void SetAbilityRunning()
+        {
+            NotifyAll(TutorialObserverMessage.AbilityRunning);
+        }
     }
 }

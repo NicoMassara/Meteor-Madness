@@ -1,5 +1,4 @@
 ﻿using _Main.Scripts.Interfaces;
-using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
@@ -197,6 +196,42 @@ namespace _Main.Scripts.Managers
         public struct Spawn
         {
             public FloatingTextValues Data;
+        }
+    }
+
+    public struct MultiPageUIEvents
+    {
+        public struct Create
+        {
+            public IMultiPageData Data;
+            public ulong CreateId;
+        }
+        
+        public struct Finished
+        {
+            public ulong CreateId;
+        }
+    }
+
+    public struct SoundEvents
+    {
+        public struct PlaySound
+        {
+            public ISoundData Data;
+            public Transform SoundParent;
+            public ILoopableSound LoopableSound;
+        }
+        
+        public struct PlayMusic
+        {
+            public MusicType Type;
+        }
+        
+        public struct StopMusic { }
+
+        public struct SetMusicLevel
+        {
+            public float Volume;
         }
     }
 }
