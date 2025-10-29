@@ -97,7 +97,7 @@ namespace _Main.Scripts.Sounds
                 return;
             }
             
-            Debug.Log($"Playing {SoundClass.ClassName}");
+            //Debug.Log($"Playing {SoundClass.ClassName}");
             
             if (!_isUniqueClip)
             {

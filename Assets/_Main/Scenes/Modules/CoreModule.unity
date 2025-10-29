@@ -4717,6 +4717,9 @@ MonoBehaviour:
   menuMusic: {fileID: 11400000, guid: e1ad69c12b88bcd4d8e10173a029e54f, type: 2}
   gameplayMusic: {fileID: 11400000, guid: 2e659106af03afc4c9382e8803fa99ec, type: 2}
   defeatMusic: {fileID: 11400000, guid: 0f014e71c17eae64bba859824d37f7be, type: 2}
+  defaultUISound: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
+  acceptUISound: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
+  backUISound: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
 --- !u!4 &2012589694
 Transform:
   m_ObjectHideFlags: 0
