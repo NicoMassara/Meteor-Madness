@@ -42,4 +42,18 @@
         GameMode,
         Tutorial
     }
+    
+    public enum MusicType
+    {
+        MainMenu,
+        Gameplay,
+        EndGame
+    }
+
+    public enum UISoundType
+    {
+        Default,
+        Accept,
+        Back
+    }
 }

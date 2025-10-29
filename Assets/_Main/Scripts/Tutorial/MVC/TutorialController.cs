@@ -16,17 +16,20 @@ namespace _Main.Scripts.Tutorial.MVC
             Ability,
             AbilityRunning,
             Finish,
-            Disable
+            Disable,
+            MultiPage
         }
         
         private class ActionGate
         {
             public bool ProjectileReStockEnable { get; private set; }
+            public bool CanMultiPage { get; private set; }
             public ActionGate(FSM<States> fsm)
             {
                 fsm.OnEnterState += state =>
                 {
                     ProjectileReStockEnable = state is States.Ability or States.Movement;
+                    CanMultiPage = state is not States.Disable;
                 };
             }
         }
@@ -65,6 +68,7 @@ namespace _Main.Scripts.Tutorial.MVC
             var ability = new TutorialAbilityState<States>();
             var finish = new TutorialFinishState<States>();
             var abilityRunning = new TutorialAbilityRunningState<States>();
+            var multiPage = new TutorialMultiPageState<States>();
             
             temp.Add(disable);
             temp.Add(enable);
@@ -73,25 +77,36 @@ namespace _Main.Scripts.Tutorial.MVC
             temp.Add(movement);
             temp.Add(ability);
             temp.Add(finish);
+            temp.Add(multiPage);
 
             #endregion
 
             #region Transitions
             
             enable.AddTransition(States.Start, start);
+            enable.AddTransition(States.MultiPage, multiPage);
             
             start.AddTransition(States.Movement, movement);
             start.AddTransition(States.Disable, disable);
+            start.AddTransition(States.MultiPage, multiPage);
             
             movement.AddTransition(States.Ability, ability);
+            movement.AddTransition(States.MultiPage, multiPage);
             
             ability.AddTransition(States.AbilityRunning, abilityRunning);
+            ability.AddTransition(States.MultiPage, multiPage);
             
             abilityRunning.AddTransition(States.Finish, finish);
             
             finish.AddTransition(States.Disable, disable);
+            finish.AddTransition(States.MultiPage, multiPage);
             
             disable.AddTransition(States.Enable, enable);
+            
+            multiPage.AddTransition(States.Enable, enable);
+            multiPage.AddTransition(States.Start, start);
+            multiPage.AddTransition(States.Movement, movement);
+            multiPage.AddTransition(States.Ability, ability);
             
             #endregion
             
@@ -145,6 +160,11 @@ namespace _Main.Scripts.Tutorial.MVC
             SetTransition(States.Finish);
         }
 
+        public void TransitionToMultiPage()
+        {
+            SetTransition(States.MultiPage);
+        }
+
         #endregion
         
         #endregion
@@ -184,6 +204,11 @@ namespace _Main.Scripts.Tutorial.MVC
             _motor.SpawnExtraMeteors();
         }
 
+        public void SetAbilityRunning()
+        {
+            _motor.SetAbilityRunning();
+        }
+
         public void SendAdditionalProjectile(int projectileTypeIndex)
         {
             if (_actionGate.ProjectileReStockEnable)
@@ -191,7 +216,19 @@ namespace _Main.Scripts.Tutorial.MVC
                 _motor.SendAdditionalProjectile(projectileTypeIndex);
             }
         }
-        
+
+        public void SetMultiPage()
+        {
+            if (_actionGate.CanMultiPage)
+            {
+                _motor.SetMultiPage();
+            }
+        }
+
+        public void TriggerSphereDeflected()
+        {
+            _motor.TriggerSphereDeflected();
+        }
     }
 
     #region States
@@ -224,6 +261,7 @@ namespace _Main.Scripts.Tutorial.MVC
         public override void Awake()
         {
             Controller.SetFinish();
+            Controller.TransitionToMultiPage();
         }
     }
     
@@ -242,8 +280,22 @@ namespace _Main.Scripts.Tutorial.MVC
             Controller.SetStart();
         }
     }
-    
-    public class TutorialAbilityRunningState<T> : TutorialStateBase<T> { }
+
+    public class TutorialAbilityRunningState<T> : TutorialStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetAbilityRunning();
+        }
+    }
+
+    public class TutorialMultiPageState<T> : TutorialStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetMultiPage();
+        }
+    }
 
     #endregion
 }
