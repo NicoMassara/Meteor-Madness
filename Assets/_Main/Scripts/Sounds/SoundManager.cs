@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
@@ -8,7 +9,13 @@ namespace _Main.Scripts.Sounds
 {
     public class SoundManager : ManagedBehavior, IUpdatable
     {
+        [Header("Prefab References")]
         [SerializeField] private SoundBehavior soundPrefab;
+        [Header("Music Data")]
+        [SerializeField] private SoundClassSo menuMusic;
+        [SerializeField] private SoundClassSo gameplayMusic;
+        [SerializeField] private SoundClassSo defeatMusic;
+        
         private SoundBehaviourFactory _factory;
         private AudioPlaybackTracker _playbackTracker = new AudioPlaybackTracker();
         private MusicController _musicController = new MusicController();
@@ -33,33 +40,16 @@ namespace _Main.Scripts.Sounds
         {
             _factory = new SoundBehaviourFactory(soundPrefab);
             
+            AddMusic(MusicType.MainMenu, menuMusic);
+            AddMusic(MusicType.Gameplay, gameplayMusic);
+            AddMusic(MusicType.EndGame, defeatMusic);
+            
             SetEventBus();
         }
         
         public void ManagedUpdate()
         {
             _playbackTracker.Execute();
-        }
-
-
-        private void Play2dSound(ISoundData soundData, ILoopableSound loopableSound)
-        {
-            if (GetIsChannelFull(soundData.Channel))
-            {
-                return;
-            }
-
-            SpawnSound(soundData, null, loopableSound);
-        }
-
-        private void Play3dSound(ISoundData soundData, Transform soundParent, ILoopableSound loopableSound)
-        {
-            if (GetIsChannelFull(soundData.Channel))
-            {
-                return;
-            }
-            
-            SpawnSound(soundData, soundParent, loopableSound);
         }
 
         private void AddMusic(MusicType type, ISoundData soundData)
@@ -71,6 +61,11 @@ namespace _Main.Scripts.Sounds
 
         private void SpawnSound(ISoundData soundData, Transform soundParent, ILoopableSound loopableSound)
         {
+            if (GetIsChannelFull(soundData.Channel))
+            {
+                return;
+            }
+            
             var tempSound = _factory.GetSound();
             tempSound.SetData(soundData);
 
@@ -106,7 +101,31 @@ namespace _Main.Scripts.Sounds
 
         private void SetEventBus()
         {
-            //Add Event Manager Events and Set Them
+            
+            GameEventCaller.Subscribe<SoundEvents.PlaySound>(EventBus_Sounds_PlaySound);
+            GameEventCaller.Subscribe<SoundEvents.PlayMusic>(EventBus_Sounds_PlayMusic);
+            GameEventCaller.Subscribe<SoundEvents.StopMusic>(EventBus_Sounds_StopMusic);
+            GameEventCaller.Subscribe<SoundEvents.SetMusicLevel>(EventBus_Sounds_SetMusicLevel);
+        }
+
+        private void EventBus_Sounds_PlaySound(SoundEvents.PlaySound input)
+        {
+            SpawnSound(input.Data, input.SoundParent, input.LoopableSound);
+        }
+
+        private void EventBus_Sounds_PlayMusic(SoundEvents.PlayMusic input)
+        {
+            _musicController.PlayMusic(input.Type);
+        }
+
+        private void EventBus_Sounds_StopMusic(SoundEvents.StopMusic input)
+        {
+            _musicController.StopCurrentMusic();
+        }
+
+        private void EventBus_Sounds_SetMusicLevel(SoundEvents.SetMusicLevel input)
+        {
+            _musicController.SetMusicVolume(input.Volume);
         }
 
         #endregion

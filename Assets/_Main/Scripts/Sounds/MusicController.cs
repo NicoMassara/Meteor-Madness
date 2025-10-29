@@ -46,11 +46,4 @@ namespace _Main.Scripts.Sounds
             return _musicDictionary.ContainsKey(type);
         }
     }
-
-    public enum MusicType
-    {
-        MainMenu,
-        Gameplay,
-        EndGame
-    }
 }
