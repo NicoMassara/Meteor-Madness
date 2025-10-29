@@ -82,16 +82,14 @@ namespace _Main.Scripts.Sounds
             _audioSource.volume *= VolumeMultiplier;
         }
 
-        public void PlaySound(float volumeMultiplier = 1)
+        public void PlaySound()
         {
             if (!_hasSoundClass)
             {
                 Debug.Log("Sound class is null");
                 return;
             }
-
-            SetVolumeMultiplier(volumeMultiplier);
-             
+            
             if (!_isUniqueClip)
             {
                 _audioSource.clip = SoundClass.GetAudioClip();

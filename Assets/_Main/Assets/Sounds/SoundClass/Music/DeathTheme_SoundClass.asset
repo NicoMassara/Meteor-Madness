@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: DeathTheme_SoundClass
   m_EditorClassIdentifier: 
   className: DeathTheme
+  channel: 1
+  is3dSound: 0
   clips:
   - {fileID: 8300000, guid: 0ad9c31e27ec98246a3654a8b6048c37, type: 3}
   sourceData:
