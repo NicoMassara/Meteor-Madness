@@ -1,15 +1,17 @@
 ﻿using System;
+using _Main.Scripts.Interfaces;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Sounds
 {
     [CreateAssetMenu(fileName = "SO_SoundData_Sound", menuName = "Scriptable Objects/Sound/Sound Class", order = 0)]
-    public class SoundClassSo : ScriptableObject
+    public class SoundClassSo : ScriptableObject, ISoundData
     {
         [SerializeField] private string className = "SoundClass";
+        [SerializeField] private SoundChannel channel;
+        [SerializeField] private bool is3dSound;
         [SerializeField] private AudioClip[] clips;
         [SerializeField] private AudioSourceData sourceData;
         [Range(0,1)]
@@ -17,8 +19,13 @@ namespace _Main.Scripts.Sounds
         private int _lastIndex;
         
         public AudioSourceData SourceData => sourceData;
+
+        public SoundChannel Channel => channel;
+        public bool Is3DSound => is3dSound;
+
         public string ClassName => className;
         public bool IsUniqueClip => clips.Length == 1;
+        public bool DoesLoop => sourceData.loop;
 
         public bool HasRandomPitch => randomPitchRange > 0;
 
@@ -80,5 +87,14 @@ namespace _Main.Scripts.Sounds
         public float reverbZoneMix = 1;
         [Range(0,1f)]
         public float dopplerLevel = 0;
+    }
+    
+    public enum SoundChannel
+    {
+        Sfx,
+        Music,
+        Collision,
+        Deflection,
+        UI
     }
 }

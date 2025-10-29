@@ -212,4 +212,31 @@ namespace _Main.Scripts.Managers
             public ulong CreateId;
         }
     }
+
+    public struct SoundEvents
+    {
+        public struct PlaySound
+        {
+            public ISoundData Data;
+            public Transform SoundParent;
+            public ILoopableSound LoopableSound;
+        }
+        
+        public struct PlayMusic
+        {
+            public MusicType Type;
+        }
+        
+        public struct StopMusic { }
+
+        public struct SetMusicLevel
+        {
+            public float Volume;
+        }
+
+        public struct PlayUIButton
+        {
+            public UISoundType Type;
+        }
+    }
 }
