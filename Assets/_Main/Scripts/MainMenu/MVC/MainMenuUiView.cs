@@ -1,5 +1,4 @@
 ﻿using System;
-using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
@@ -15,8 +14,6 @@ namespace _Main.Scripts.MainMenu.MVC
         [Header("Sub Panels")]
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private GameObject lorePanel;
-        [Header("Sounds")] 
-        [SerializeField] private SoundBehavior buttonSound;
         [Header("Buttons")]
         [SerializeField] private Button playButton;
         [SerializeField] private Button tutorialButton;
@@ -37,27 +34,27 @@ namespace _Main.Scripts.MainMenu.MVC
             playButton.onClick.AddListener(() =>
             {
                 OnGameModeStarted?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
             tutorialButton.onClick.AddListener(() =>
             {
                 OnTutorialStarted?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
             loreButton.onClick.AddListener(() =>
             {
                 OnLoreOpen?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
             backButton.onClick.AddListener(() =>
             {
                 OnLoreClosed?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
             exitButton.onClick.AddListener(() =>
             {
                 OnExit?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
         }
         
@@ -79,7 +76,12 @@ namespace _Main.Scripts.MainMenu.MVC
                     break;
             }
         }
-        
+
+        private void PlayButtonSound()
+        {
+            SoundEventCaller.PlayUIButton(UISoundType.Accept);
+        }
+
         private void HandleEnable()
         {
             mainPanel.SetActive(true);

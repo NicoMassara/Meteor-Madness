@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
@@ -17,10 +18,7 @@ namespace _Main.Scripts.MultiPage
         {
             _view = GetComponent<MultiPageView>();
             _ui = GetComponent<MultiPageViewUI>();
-        }
 
-        private void Start()
-        {
             //View
             _view.OnFinished += View_OnFinishedHandler;
             _view.OnNextButtonTextChanged += (newText) => {_ui.SetNextButtonText(newText);};
@@ -30,23 +28,46 @@ namespace _Main.Scripts.MultiPage
             //UI
             _ui.OnNextButtonPressed += ()=> _view.TryIncreasePageIndex();
             _ui.OnPreviousButtonPressed += ()=> _view.TryDecreasePageIndex();
+            
+            SetupEventBus();
+        }
 
+        private void Start()
+        {
             if (startData != null)
             {
                 SetTextData(startData);
             }
         }
-
-        private void View_OnFinishedHandler()
+        
+        private void View_OnFinishedHandler(ulong createId)
         {
             _ui.SetActiveMainPanel(false);
-            Debug.Log("Multi Page Finished");
+            Debug.Log($"Multi Page Finished, ID: {createId}");
+            GameEventCaller.Publish(new MultiPageUIEvents.Finished{CreateId = createId});
         }
 
-        private void SetTextData(MultiPageTextDataSo newText)
+        private void SetTextData(IMultiPageData newText, ulong createId = 0)
         {
             _view.SetTextData(newText);
+            _view.SetCreateId(createId);
             _ui.SetActiveMainPanel(true);
         }
+
+        #region EventBus
+
+        private void SetupEventBus()
+        {
+            GameEventCaller.Subscribe<MultiPageUIEvents.Create>(EventBus_MultiPage_Create);
+        }
+
+        private void EventBus_MultiPage_Create(MultiPageUIEvents.Create input)
+        {
+            SetTextData(input.Data, input.CreateId);
+        }
+
+        #endregion
+        
+
     }
 }

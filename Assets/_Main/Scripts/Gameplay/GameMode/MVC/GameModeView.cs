@@ -11,9 +11,8 @@ namespace _Main.Scripts.Gameplay.GameMode
     public class GameModeView : ManagedBehavior, IObserver
     {
         [Header("Sounds")] 
-        [SerializeField] private SoundBehavior gameplayTheme;
-        [SerializeField] private SoundBehavior deathTheme;
-        
+        [SerializeField] private SoundClassSo countdownSound;
+        [SerializeField] private SoundClassSo countdownFinish;
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
         public event Action OnGameModeEnable;
@@ -32,6 +31,9 @@ namespace _Main.Scripts.Gameplay.GameMode
                     break;
                 case GameModeObserverMessage.CountdownFinish:
                     HandleCountdownFinish();
+                    break;
+                case GameModeObserverMessage.UpdateCountdown:
+                    HandleCountdown((float)args[0]);
                     break;
                 case GameModeObserverMessage.StartGameplay:
                     HandleStartGameplay();
@@ -79,6 +81,18 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleEnable();
                     break;
                 
+            }
+        }
+
+        private void HandleCountdown(float amount)
+        {
+            if (amount > 1)
+            {
+                SoundEventCaller.PlaySound(countdownSound,null,null);
+            }
+            else if (amount <= 1 && amount > 0)
+            {
+                SoundEventCaller.PlaySound(countdownFinish,null,null);
             }
         }
 
@@ -163,8 +177,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 EarthEventCaller.Restart();
             }
             
-            gameplayTheme?.StopSound();
-            deathTheme?.StopSound();
             _isFirstDisable = false;
             SetEnableInputs(false);
             GameModeEventCaller.Disable();
@@ -172,10 +184,11 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleGameFinish()
         {
-            gameplayTheme?.StopSound();
+            SoundEventCaller.StopMusic();
             GameManager.Instance.CanPlay = false;
             ShieldEventCaller.SetEnableShield(false);
             MeteorEventCaller.RecycleAll();
+            SoundEventCaller.PlaySound(countdownFinish,null,null);
             SetEnableInputs(false);
         }
         
@@ -201,7 +214,6 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleStartCountdown()
         {
-            deathTheme?.StopSound();
             CameraEventCaller.ZoomOut();
         }
         
@@ -217,7 +229,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.SetEnableShield(true);
-            gameplayTheme?.PlaySound();
+            SoundEventCaller.PlayMusic(MusicType.Gameplay);
         }
 
         #endregion
@@ -236,7 +248,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleEarthEndDestruction()
         {
-            deathTheme?.PlaySound();
+            SoundEventCaller.PlayMusic(MusicType.EndGame);
         }
 
         #endregion

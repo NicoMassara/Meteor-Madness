@@ -6,7 +6,6 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
-using _Main.Scripts.Sounds;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -34,8 +33,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private Button restartButton;
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button[] mainMenuButtons;
-        [Header("Sounds")] 
-        [SerializeField] private SoundBehavior buttonSound;
         
         private GameObject _currentPanel;
         private NumberIncrementer _numberIncrementer;
@@ -221,20 +218,21 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void RestartButton_OnClickHandler()
         {
-            buttonSound?.PlaySound();
+            SoundEventCaller.PlayUIButton(UISoundType.Back);
             OnRestartButtonPressed?.Invoke();
 
         }
         
         private void MainMenuButton_OnClickHandler()
         {
-            buttonSound?.PlaySound();
+            SoundEventCaller.PlayUIButton(UISoundType.Accept);
             CameraEventCaller.ZoomIn();
             OnMainMenuButtonPressed?.Invoke();
         }
         
         private void ResumeButton_OnClickHandler()
         {
+            SoundEventCaller.PlayUIButton(UISoundType.Accept);
             GameModeEventCaller.SetPause(false);
         }
 
