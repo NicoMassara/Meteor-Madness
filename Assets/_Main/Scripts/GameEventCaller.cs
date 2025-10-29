@@ -281,6 +281,11 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new AbilitiesEvents.SetCanUse{CanUse = canUse});
         }
 
+        public static void SetEnableUI(bool isEnable)
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = isEnable});
+        }
+
         public static void Add(AbilityAddData data)
         {
             GameEventCaller.Publish(new AbilitiesEvents.Add
