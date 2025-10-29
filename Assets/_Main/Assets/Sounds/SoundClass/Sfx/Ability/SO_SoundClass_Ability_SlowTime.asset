@@ -10,24 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
-  m_Name: MeteorMovement_SoundClass
+  m_Name: SO_SoundClass_Ability_SlowTime
   m_EditorClassIdentifier: 
-  className: MeteorMovement
+  className: Ability-SlowTime
   channel: 0
-  is3dSound: 1
+  is3dSound: 0
   clips:
-  - {fileID: 8300000, guid: d5859bdbef2da08448756eb4391736ab, type: 3}
+  - {fileID: 8300000, guid: 4456035091a2d9f4d9dca573e95a1ae4, type: 3}
   sourceData:
-    mixerGroup: {fileID: -260289917397533630, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    mixerGroup: {fileID: 2098195027529867182, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0
-    loop: 1
+    loop: 0
     priority: 128
-    volume: 0.25
-    pitch: 1.25
+    volume: 1
+    pitch: 1
     stereoPan: 0
-    spatialBlend: 0.5
+    spatialBlend: 0
     reverbZoneMix: 1
-    dopplerLevel: 1
-  randomPitchRange: 0.15
+    dopplerLevel: 0
+  randomPitchRange: 0

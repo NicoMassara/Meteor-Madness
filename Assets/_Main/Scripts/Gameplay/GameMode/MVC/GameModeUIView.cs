@@ -232,6 +232,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void ResumeButton_OnClickHandler()
         {
+            SoundEventCaller.PlayUIButton(UISoundType.Accept);
             GameModeEventCaller.SetPause(false);
         }
 

@@ -133,6 +133,7 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void FinishButtonOnClickHandler()
         {
+            SoundEventCaller.PlayUIButton(UISoundType.Back);
             GameManager.Instance.LoadMainMenu();
         }
 
