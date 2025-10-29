@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
-  m_Name: ShieldMove_SoundClass
+  m_Name: SO_SoundClass_Shield_Hit
   m_EditorClassIdentifier: 
-  className: ShieldMove
+  className: ShieldHit
+  channel: 3
+  is3dSound: 0
   clips:
   - {fileID: 8300000, guid: 8b3836daf909c78469aaf3d586e55619, type: 3}
   sourceData:
@@ -22,10 +24,10 @@ MonoBehaviour:
     ignoreReverbZones: 0
     loop: 0
     priority: 128
-    volume: 0.35
-    pitch: 0.35
+    volume: 0.5
+    pitch: 1
     stereoPan: 0
     spatialBlend: 0
-    reverbZoneMix: 0
-    dopplerLevel: 0
-  randomPitchRange: 0.05
+    reverbZoneMix: 1
+    dopplerLevel: 1
+  randomPitchRange: 0

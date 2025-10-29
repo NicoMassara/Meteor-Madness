@@ -23,6 +23,7 @@ namespace _Main.Scripts.Gameplay.Earth
         [Header("Sounds")]
         [SerializeField] private SoundClassSo collisionSound;
         [SerializeField] private SoundClassSo deathSound;
+        [SerializeField] private SoundClassSo healSound;
         [Space]
         [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
@@ -156,6 +157,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 },restartHealthTime),
             };
             
+            
+            SoundEventCaller.PlaySound(healSound, null, null);
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
         

@@ -10,24 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
-  m_Name: DeathTheme_SoundClass
+  m_Name: SO_SoundClass_Shield_Gold
   m_EditorClassIdentifier: 
-  className: DeathTheme
-  channel: 1
+  className: Shield-Gold
+  channel: 0
   is3dSound: 0
   clips:
-  - {fileID: 8300000, guid: 0ad9c31e27ec98246a3654a8b6048c37, type: 3}
+  - {fileID: 8300000, guid: fc58e46227ceadc40a47d94086fba8ad, type: 3}
   sourceData:
-    mixerGroup: {fileID: 3634656711945720681, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    mixerGroup: {fileID: -7029012848971564562, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0
-    loop: 0
+    loop: 1
     priority: 128
-    volume: 0.75
-    pitch: 0.75
+    volume: 2
+    pitch: 0.35
     stereoPan: 0
     spatialBlend: 0
-    reverbZoneMix: 1
+    reverbZoneMix: 0
     dopplerLevel: 0
-  randomPitchRange: 0
+  randomPitchRange: 0.05

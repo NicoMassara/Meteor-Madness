@@ -1748,7 +1748,6 @@ MonoBehaviour:
   mainMenuButtons:
   - {fileID: 2067162182}
   - {fileID: 410984989}
-  buttonSound: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
 --- !u!114 &1253651367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1761,6 +1760,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f12934bf659c4ad6aa6a0eb01ed6af54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  countdownSound: {fileID: 11400000, guid: 72349cb5a1b79094090034040d420787, type: 2}
+  countdownFinish: {fileID: 11400000, guid: 53106164b81249c4bbf7a598ffde2cb3, type: 2}
 --- !u!1 &1254674026
 GameObject:
   m_ObjectHideFlags: 0

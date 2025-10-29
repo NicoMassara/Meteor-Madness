@@ -447,6 +447,10 @@ MonoBehaviour:
   shieldCollider: {fileID: 610377043}
   hitSound: {fileID: 11400000, guid: 4a8c99e88d1f9f845baf4cc0d97ec4c4, type: 2}
   moveSound: {fileID: 11400000, guid: 30834b7f58717fe4da7245e37bb3f894, type: 2}
+  superSoundStart: {fileID: 11400000, guid: 8f898851c32c1a04690d91db3b54a687, type: 2}
+  superSoundRunning: {fileID: 11400000, guid: ca692e5cc1edb654fbede31373d9b037, type: 2}
+  goldSound: {fileID: 11400000, guid: 4bbc6ada151c3e14497c6cadc457f3c2, type: 2}
+  automaticSound: {fileID: 11400000, guid: f4ce311d51b119340a519f3941aedfd9, type: 2}
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
   cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 11400000, guid: 5ce58a01a5bf45a4389c9d0c8a108114, type: 2}
@@ -679,6 +683,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f6865758b734b238a7930c936969ff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  abilityAdd: {fileID: 11400000, guid: 3bce302caa370c1419625550e57641c3, type: 2}
+  abilityTrigger: {fileID: 11400000, guid: b68795043512e7c4ea9058d9358b23b5, type: 2}
+  slowTime: {fileID: 11400000, guid: f3b2a5b7e04386140a1a91ca12b80989, type: 2}
+  speedTime: {fileID: 11400000, guid: 2cc5a9a2335cf7d4abe2311b2d9c640b, type: 2}
 --- !u!114 &234428180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1996,6 +2004,7 @@ MonoBehaviour:
   earthMeshSlicer: {fileID: 502172933}
   collisionSound: {fileID: 11400000, guid: 94363bb788b608844ba498128deecf5e, type: 2}
   deathSound: {fileID: 11400000, guid: 051954dee5fdeee4792dd763766ff152, type: 2}
+  healSound: {fileID: 11400000, guid: b7a8e37fc5048ea4a80c908817adfb1d, type: 2}
   shakeMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -4718,8 +4727,8 @@ MonoBehaviour:
   gameplayMusic: {fileID: 11400000, guid: 2e659106af03afc4c9382e8803fa99ec, type: 2}
   defeatMusic: {fileID: 11400000, guid: 0f014e71c17eae64bba859824d37f7be, type: 2}
   defaultUISound: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
-  acceptUISound: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
-  backUISound: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
+  acceptUISound: {fileID: 11400000, guid: 0df86437d5b6e79459ba2bdab24e3826, type: 2}
+  backUISound: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
 --- !u!4 &2012589694
 Transform:
   m_ObjectHideFlags: 0

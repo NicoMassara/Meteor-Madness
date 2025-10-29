@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
-  m_Name: ButtonSound_SoundClass
+  m_Name: SO_SoundClass_Ability_Add
   m_EditorClassIdentifier: 
-  className: Button
-  channel: 4
+  className: Ability-Add
+  channel: 0
   is3dSound: 0
   clips:
-  - {fileID: 8300000, guid: a64b7a73b3cc4404eb6a77a39ddbccaf, type: 3}
+  - {fileID: 8300000, guid: 4a7346c531e4ec140b54e29bd1cbe800, type: 3}
   sourceData:
-    mixerGroup: {fileID: 6739041549257455507, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    mixerGroup: {fileID: 2098195027529867182, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0
     loop: 0
     priority: 128
     volume: 1
-    pitch: 1.25
+    pitch: 1
     stereoPan: 0
     spatialBlend: 0
     reverbZoneMix: 1
