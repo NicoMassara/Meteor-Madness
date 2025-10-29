@@ -145,14 +145,21 @@ namespace _Main.Scripts.FyingObject
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            TriggerLoopFinished();
             OnCollisionDetected?.Invoke(other);
         }
 
         public void Recycle()
         {
-            OnLoopFinished?.Invoke();
+            TriggerLoopFinished();
             OnRecycle?.Invoke((TS)this);
         }
-        
+
+        private void TriggerLoopFinished()
+        {
+            OnLoopFinished?.Invoke();
+            OnLoopFinished = null;
+        }
+
     }
 }

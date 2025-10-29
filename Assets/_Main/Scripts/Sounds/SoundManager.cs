@@ -25,6 +25,7 @@ namespace _Main.Scripts.Sounds
             { SoundChannel.Sfx, 5},
             { SoundChannel.Collision, 3},
             { SoundChannel.Deflection, 3},
+            { SoundChannel.UI, 3},
         };
         
         private readonly Dictionary<SoundChannel, List<SoundBehavior>> _activeByChannel = new()
@@ -32,6 +33,7 @@ namespace _Main.Scripts.Sounds
             { SoundChannel.Sfx, new List<SoundBehavior>() },
             { SoundChannel.Collision, new List<SoundBehavior>()},
             { SoundChannel.Deflection, new List<SoundBehavior>()},
+            { SoundChannel.UI, new List<SoundBehavior>()},
         };
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
@@ -75,6 +77,7 @@ namespace _Main.Scripts.Sounds
 
             if (GetIsChannelFull(soundData.Channel))
             {
+                Debug.Log($"{soundData.Channel} channel is full");
                 return;
             }
             
@@ -92,12 +95,11 @@ namespace _Main.Scripts.Sounds
             }
             else
             {
+                tempSound.PlayAudio();
                 loopableSound.OnLoopFinished += tempSound.TriggerFinish;
             }
             
             _activeByChannel[soundData.Channel].Add(tempSound);
-            
-            tempSound.PlaySound();
             
             tempSound.OnFinished += Sound_OnFinishedHandler;
         }

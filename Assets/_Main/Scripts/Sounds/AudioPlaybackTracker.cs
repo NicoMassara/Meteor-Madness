@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
+using UnityEngine;
 
 namespace _Main.Scripts.Sounds
 {
@@ -17,7 +18,6 @@ namespace _Main.Scripts.Sounds
             {
                 if (item.GetIsPlaying()) continue;
                 
-                item.TriggerFinish();
                 _toRemove.Add(item);
             }
             
@@ -35,7 +35,9 @@ namespace _Main.Scripts.Sounds
             {
                 foreach (var item in _toAdd)
                 {
+                    Debug.Log($"Adding: {item.AudioName}");
                     _trackedAudios.Add(item);
+                    item.PlayAudio();
                 }
                 
                 _toAdd.Clear();
@@ -45,6 +47,8 @@ namespace _Main.Scripts.Sounds
             {
                 foreach (var item in _toRemove)
                 {
+                    Debug.Log($"Removing: {item.AudioName}");
+                    item.TriggerFinish();
                     _trackedAudios.Remove(item);
                 }
                 

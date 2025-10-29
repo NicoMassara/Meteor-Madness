@@ -445,8 +445,8 @@ MonoBehaviour:
   spriteContainer: {fileID: 1499242836}
   normalShieldSprite: {fileID: 610377037}
   shieldCollider: {fileID: 610377043}
-  hitSound: {fileID: 0}
-  moveSound: {fileID: 0}
+  hitSound: {fileID: 11400000, guid: 4a8c99e88d1f9f845baf4cc0d97ec4c4, type: 2}
+  moveSound: {fileID: 11400000, guid: 30834b7f58717fe4da7245e37bb3f894, type: 2}
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
   cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 11400000, guid: 5ce58a01a5bf45a4389c9d0c8a108114, type: 2}
@@ -3483,7 +3483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36b98cb3ff5a44ca98c4150c8d1b43f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityToAdd: 5
+  abilityToAdd: 1
 --- !u!1 &1487105792
 GameObject:
   m_ObjectHideFlags: 0
