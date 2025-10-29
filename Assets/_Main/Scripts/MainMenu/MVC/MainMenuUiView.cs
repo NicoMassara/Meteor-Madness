@@ -16,7 +16,7 @@ namespace _Main.Scripts.MainMenu.MVC
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private GameObject lorePanel;
         [Header("Sounds")] 
-        [SerializeField] private SoundBehavior buttonSound;
+        [SerializeField] private SoundClassSo buttonSound;
         [Header("Buttons")]
         [SerializeField] private Button playButton;
         [SerializeField] private Button tutorialButton;
@@ -37,27 +37,27 @@ namespace _Main.Scripts.MainMenu.MVC
             playButton.onClick.AddListener(() =>
             {
                 OnGameModeStarted?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
             tutorialButton.onClick.AddListener(() =>
             {
                 OnTutorialStarted?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
             loreButton.onClick.AddListener(() =>
             {
                 OnLoreOpen?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
             backButton.onClick.AddListener(() =>
             {
                 OnLoreClosed?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
             exitButton.onClick.AddListener(() =>
             {
                 OnExit?.Invoke();
-                buttonSound.PlaySound();
+                PlayButtonSound();
             });
         }
         
@@ -79,7 +79,12 @@ namespace _Main.Scripts.MainMenu.MVC
                     break;
             }
         }
-        
+
+        private void PlayButtonSound()
+        {
+            SoundEventCaller.PlaySound(buttonSound, null, null);
+        }
+
         private void HandleEnable()
         {
             mainPanel.SetActive(true);

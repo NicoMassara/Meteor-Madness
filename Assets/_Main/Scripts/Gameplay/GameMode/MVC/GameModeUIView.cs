@@ -35,7 +35,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button[] mainMenuButtons;
         [Header("Sounds")] 
-        [SerializeField] private SoundBehavior buttonSound;
+        [SerializeField] private SoundClassSo buttonSound;
         
         private GameObject _currentPanel;
         private NumberIncrementer _numberIncrementer;
@@ -221,14 +221,14 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void RestartButton_OnClickHandler()
         {
-            buttonSound?.PlaySound();
+            SoundEventCaller.PlaySound(buttonSound, null, null);
             OnRestartButtonPressed?.Invoke();
 
         }
         
         private void MainMenuButton_OnClickHandler()
         {
-            buttonSound?.PlaySound();
+            SoundEventCaller.PlaySound(buttonSound, null, null);
             CameraEventCaller.ZoomIn();
             OnMainMenuButtonPressed?.Invoke();
         }

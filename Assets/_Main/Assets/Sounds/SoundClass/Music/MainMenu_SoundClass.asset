@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: MainMenu_SoundClass
   m_EditorClassIdentifier: 
   className: MainMenu
+  channel: 1
+  is3dSound: 0
   clips:
   - {fileID: 8300000, guid: a64b7a73b3cc4404eb6a77a39ddbccaf, type: 3}
   sourceData:
