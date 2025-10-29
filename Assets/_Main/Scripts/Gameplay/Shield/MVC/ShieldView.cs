@@ -1,62 +1,60 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
-using _Main.Scripts.Gameplay.AutoTarget;
 using _Main.Scripts.ScriptableObjects;
-using _Main.Scripts.Utilities;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
     [RequireComponent(typeof(ShieldMovement))]
-    public class ShieldView : ManagedBehavior, IObserver
+    [RequireComponent(typeof(ShieldAppereance))]
+    public class ShieldView : ManagedBehavior, IObserver, ILoopableSound
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
-        [SerializeField] private GameObject normalSprite;
-        [SerializeField] private GameObject superSprite;
+        [SerializeField] private GameObject normalShieldSprite;
         [SerializeField] private CapsuleCollider2D shieldCollider;
         [Space]
         [Header("Sounds")]
-        [SerializeField] private SoundBehavior hitSound;
-        [SerializeField] private SoundBehavior moveSound;
+        [SerializeField] private SoundClassSo hitSound;
+        [SerializeField] private SoundClassSo moveSound;
+        [SerializeField] private SoundClassSo superSoundStart;
+        [SerializeField] private SoundClassSo superSoundRunning;
+        [SerializeField] private SoundClassSo goldSound;
+        [SerializeField] private SoundClassSo automaticSound;
         [Space] 
         [Header("Scriptable Objects")]
         [SerializeField] private ShakeDataSo hitShakeData;
         [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
         [SerializeField] private ShieldMovementDataSo movementData;
-        [Space]
-        [Header("Values")]
-        [Range(0.1f, 5f)]
-        [SerializeField] private float timeToEnableSuperShield;
-        [Range(0.1f, 5f)]
-        [SerializeField] private float timeToDisableSuperShield;
 
+        private ShieldAppereance _appereance;
         private ShieldMovement _movement;
-        private ShieldSpriteAlphaSetter _spriteAlphaSetter;
         private ShakerController _shakerController;
         private ShieldColliderExtender _colliderExtender;
+        public event Action OnLoopFinished;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
         private void Awake()
         {
             _movement = GetComponent<ShieldMovement>();
-            _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, 
-                timeToEnableSuperShield,timeToDisableSuperShield);
-            _shakerController = new ShakerController(spriteContainer.transform,hitShakeData);
+            _appereance = GetComponent<ShieldAppereance>();
+            
+            _shakerController = new ShakerController(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
         }
 
         private void Start()
         {
-            superSprite.gameObject.SetActive(false);
+            _appereance.SetActiveSuperShieldSprite(false);;
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -93,22 +91,47 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.RestartPosition:
                     HandleRestartPosition();
                     break;
+                case ShieldObserverMessage.SetSlow:
+                    HandleSetSlow((bool)args[0]);
+                    break;
             }
         }
-        
+
+
+
         #region ObserverHandlers
 
         private void HandleSetAutomatic(bool isActive)
         {
+            if (isActive)
+            {
+                SoundEventCaller.PlaySound(automaticSound, null, this);
+            }
+            else
+            {
+                FinishSoundLoop();
+            }
+
             _movement.SetAutomaticEnable(isActive);
-            var color = isActive ? Color.red : Color.white;
-            normalSprite.GetComponent<SpriteRenderer>().color = color;
+            _appereance.SetAutomaticEnable(isActive);
         }
 
         private void HandleSetGold(bool isActive)
         {
-            var color = isActive ? Color.yellow : Color.white;
-            normalSprite.GetComponent<SpriteRenderer>().color = color;
+            if (isActive)
+            {
+                SoundEventCaller.PlaySound(goldSound, null, this);
+            }
+            else
+            {
+                FinishSoundLoop();
+            }
+
+            _appereance.SetGoldEnable(isActive);
+        }
+        private void HandleSetSlow(bool isActive)
+        {
+            _appereance.SetSlowEnable(isActive);
         }
         
         private void HandleSetActiveShield(bool isActive)
@@ -134,7 +157,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandlePlayMoveSound()
         {
-            moveSound?.PlaySound();
+            SoundEventCaller.PlaySound(moveSound, null, null);
         }
         
         private void HandleRestartPosition()
@@ -144,8 +167,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
         {
-            hitSound?.PlaySound();
-            
+            SoundEventCaller.PlaySound(hitSound, null, null);
             StartCoroutine(Coroutine_Shake());
             
             ParticleEventCaller.Spawn(new ParticleSpawnData
@@ -167,10 +189,12 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (isActive)
             {
+                SoundEventCaller.PlaySound(superSoundStart, null, null);
                 RunSuperShieldQueue();
             }
             else
             {
+                FinishSoundLoop();
                 RunNormalShieldQueue();
             }
         }
@@ -182,19 +206,19 @@ namespace _Main.Scripts.Gameplay.Shield
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set to 0");
-                    superSprite.gameObject.SetActive(true);
+                    _appereance.SetActiveSuperShieldSprite(true);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
-                    StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, timeToEnableSuperShield));
+                    StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, _appereance.TimeToEnableSuperShield));
                 }),
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set to 1");
                     _movement.RestartSpeedValues();
-                    _spriteAlphaSetter.RestartValues();
+                    _appereance.RestartValues();
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
-                },timeToEnableSuperShield),
+                    SoundEventCaller.PlaySound(superSoundRunning, null, this);
+                },_appereance.TimeToEnableSuperShield),
             };
-            
             
             ActionManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
         }
@@ -208,16 +232,16 @@ namespace _Main.Scripts.Gameplay.Shield
                     //Debug.Log("Ability Time Scale Set To 0");
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
                     StartCoroutine(
-                        Coroutine_RunActionByTime(HandleNormalShieldEnable, timeToDisableSuperShield));
+                        Coroutine_RunActionByTime(HandleNormalShieldEnable, _appereance.TimeToDisableSuperShield));
                 }),
                 new(() =>
                 {
                     //Debug.Log("Ability Time Scale Set To 1");
-                    superSprite.gameObject.SetActive(false);
-                    _spriteAlphaSetter.RestartValues();
+                    _appereance.SetActiveSuperShieldSprite(false);
+                    _appereance.RestartValues();
                     _movement.RestartSpeedValues();
                     _movement.RotateTowardsNearestProjectileSlot();
-                },timeToDisableSuperShield),
+                },_appereance.TimeToDisableSuperShield),
             };
             
             ActionManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
@@ -225,13 +249,13 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandleSuperShieldEnable(float deltaTime)
         {
-            _spriteAlphaSetter.EnableSuper(deltaTime);
+            _appereance.EnableSuperShield(deltaTime);
             _movement.IncreaseSpeed(deltaTime);
         }
 
         private void HandleNormalShieldEnable(float deltaTime)
         {
-            _spriteAlphaSetter.EnableNormal(deltaTime);
+            _appereance.EnableNormalShield(deltaTime);
             _movement.DecreaseSpeed(deltaTime);
         }
         
@@ -266,6 +290,12 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
+        
+        private void FinishSoundLoop()
+        {
+            OnLoopFinished?.Invoke();
+            OnLoopFinished = null;
+        }
         
     }
 }
