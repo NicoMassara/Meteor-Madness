@@ -1,35 +1,44 @@
-﻿using System;
+﻿
+using System;
+using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds
 {
     [RequireComponent(typeof(AudioSource))]
-    public class SoundBehavior : MonoBehaviour
+    public class SoundBehavior : ManagedBehavior, IPoolable<SoundBehavior>, ITrackedAudio
     {
-        [SerializeField] private SoundClassSo soundDataSo;
         private bool _isPlaying;
         private bool _hasSoundClass;
         private bool _isUniqueClip;
         private bool _hasRandomPitch;
         private AudioSource _audioSource;
         public float VolumeMultiplier { get; private set; }
-        public SoundClassSo SoundClass { get; private set; }
+        public ISoundData SoundClass { get; private set; }
+        
+        public event Action<SoundBehavior> OnFinished;
+        public event Action<SoundBehavior> OnRecycle;
+        public void Recycle()
+        {
+            OnRecycle?.Invoke(this);
+        }
+
+        public void TriggerFinish()
+        {
+            OnFinished?.Invoke(this);
+        }
 
         private void Awake()
         {
             _audioSource = GetComponent<AudioSource>();
             _audioSource.playOnAwake = false;
             VolumeMultiplier = 1;
-            SetSoundClass(soundDataSo);
         }
 
-        private void Start()
+        public void SetData(ISoundData soundClass)
         {
-        }
-
-        private void SetSoundClass(SoundClassSo soundClass)
-        {
-            if (soundClass)
+            if (soundClass != null)
             {
                 _hasSoundClass = true;
                 SoundClass = soundClass;
@@ -43,6 +52,11 @@ namespace _Main.Scripts.Sounds
                 _hasSoundClass = false;
                 Debug.Log("No valid sound class");
             }
+        }
+
+        public void SetParent(Transform parent)
+        {
+            transform.SetParent(parent);
         }
 
         private void SetAudioData(AudioSourceData sourceData)
@@ -62,42 +76,28 @@ namespace _Main.Scripts.Sounds
             _audioSource.spatialBlend = sourceData.spatialBlend;
         }
         
-        private void SetVolumeMultiplier(float multiplier)
+        public void SetVolumeMultiplier(float multiplier)
         {
             VolumeMultiplier = multiplier;
-            
-            if (_audioSource != null)
-            {
-                _audioSource.volume *= VolumeMultiplier;
-            }
+            _audioSource.volume *= VolumeMultiplier;
         }
 
-        public void PlaySound(float volumeMultiplier = 1, float pitch = 1)
+        public void PlaySound(float volumeMultiplier = 1)
         {
             if (!_hasSoundClass)
             {
                 Debug.Log("Sound class is null");
                 return;
             }
-            
-            if (_audioSource == null)
-            {
-                //Debug.Log("Audio Source is null");
-                return;
-            }
 
             SetVolumeMultiplier(volumeMultiplier);
+             
             if (!_isUniqueClip)
             {
                 _audioSource.clip = SoundClass.GetAudioClip();
             }
-
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (pitch != 1)
-            {
-                _audioSource.pitch = pitch;
-            }
-            else if (_hasRandomPitch)
+            
+            if (_hasRandomPitch)
             {
                 _audioSource.pitch = SoundClass.GetRandomPitch();
             }
@@ -133,5 +133,7 @@ namespace _Main.Scripts.Sounds
         {
             return _hasSoundClass && _audioSource.isPlaying && _isPlaying;
         }
+
+
     }
 }
