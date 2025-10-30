@@ -25,7 +25,7 @@ MonoBehaviour:
     loop: 0
     priority: 128
     volume: 1
-    pitch: 2
+    pitch: 1.5
     stereoPan: 0
     spatialBlend: 0
     reverbZoneMix: 1
