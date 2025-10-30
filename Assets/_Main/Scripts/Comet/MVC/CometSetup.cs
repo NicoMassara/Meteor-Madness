@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.FyingObject;
+﻿using _Main.Scripts.FyingObject;
 using UnityEngine;
 
 namespace _Main.Scripts.Comet

@@ -2,16 +2,11 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
-using _Main.Scripts.Sounds;
-using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
     public class MainMenuView : ManagedBehavior, IObserver
     {
-        [Header("Sounds")] 
-        [SerializeField] private SoundBehavior themeSound;
-        
         public event Action OnMainMenuEnable;
         
         public void OnNotify(ulong message, params object[] args)
@@ -41,12 +36,12 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             OnMainMenuEnable?.Invoke();
             CameraEventCaller.ZoomIn();
-            themeSound.PlaySound();
+            SoundEventCaller.PlayMusic(MusicType.MainMenu);
         }
         
         private void HandleDisable()
         {
-            themeSound.StopSound();
+            SoundEventCaller.StopMusic();
         }
         
         private void HandleGameMode()
