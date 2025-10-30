@@ -11,6 +11,7 @@
         public const ulong SetActiveSuperShield = 0xA0007;
         public const ulong RestartPosition = 0xA0008;
         public const ulong SetAutomatic = 0xA0009;
+        public const ulong SetSlow = 0xA0010;
     }
 
     public struct EarthObserverMessage
@@ -95,11 +96,12 @@
         public const ulong Disable = 0xA6003;
         public const ulong Ability = 0xA6004;
         public const ulong Finish = 0xA6005;
-        public const ulong Empty1 = 0xA6006;
-        public const ulong Empty2 = 0xA6007;
+        public const ulong SphereDeflected = 0xA6006;
+        public const ulong AbilityRunning = 0xA6007;
         public const ulong Enable = 0xA6008;
         public const ulong ExtraMeteors = 0xA6009;
         public const ulong AdditionalProjectile = 0xA6010;
+        public const ulong MultiPage = 0xA6011;
     }
 
     public struct MainMenuObserverMessage
