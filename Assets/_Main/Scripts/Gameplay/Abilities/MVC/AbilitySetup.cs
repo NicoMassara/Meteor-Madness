@@ -76,6 +76,12 @@ namespace _Main.Scripts.Gameplay.Abilies
             GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
             GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
             GameEventCaller.Subscribe<AbilitiesEvents.SetEnableUI>(EventBus_Ability_SetEnableUI);
+            GameEventCaller.Subscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
+        }
+
+        private void EventBus_GameMode_SetPaused(GameModeEvents.SetPause input)
+        {
+            _controller.SetEnableUIAbility(!input.IsPaused);
         }
 
         private void EventBus_Ability_SetEnableUI(AbilitiesEvents.SetEnableUI input)
