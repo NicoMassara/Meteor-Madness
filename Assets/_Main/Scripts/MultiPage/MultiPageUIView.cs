@@ -22,8 +22,16 @@ namespace _Main.Scripts.MultiPage
         
         private void Awake()
         {
-            previousButton.onClick.AddListener(()=> OnPreviousButtonPressed?.Invoke());
-            nextButton.onClick.AddListener(()=> OnNextButtonPressed?.Invoke());
+            previousButton.onClick.AddListener(() =>
+            {
+                OnPreviousButtonPressed?.Invoke();
+                SoundEventCaller.PlayUIButton(UISoundType.Back);
+            });
+            nextButton.onClick.AddListener(() =>
+            {
+                OnNextButtonPressed?.Invoke();
+                SoundEventCaller.PlayUIButton(UISoundType.Default);
+            });
         }
 
         public void SetNextButtonText(string text)

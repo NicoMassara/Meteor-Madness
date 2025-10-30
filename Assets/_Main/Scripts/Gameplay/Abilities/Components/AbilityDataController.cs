@@ -15,11 +15,16 @@ namespace _Main.Scripts.Gameplay.Abilies
         public UnityAction<float> OnAbilityStarted;
         public UnityAction<AbilityType> OnAbilityFinished;
         public UnityAction<TimeScaleData> _updateTimeScale;
+        private UnityAction _playSpeedTimeSound;
+        private UnityAction _playSlowTimeSound;
 
-        public AbilityDataController(EventBusManager eventBus, UnityAction<TimeScaleData> updateTimeScale)
+        public AbilityDataController(EventBusManager eventBus, UnityAction<TimeScaleData> updateTimeScale, 
+            UnityAction speedTimeSound, UnityAction slowTimeSound)
         {
             _eventBus = eventBus;
             _updateTimeScale = updateTimeScale;
+            _playSpeedTimeSound = speedTimeSound;
+            _playSlowTimeSound = slowTimeSound;
 
             CreateAbilityData();
         }
@@ -58,6 +63,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = 1.0f,
                         TimeToUpdate = timeData.ZoomIn,
                     });
+                    
+                    _playSlowTimeSound.Invoke();
                 }, 0f),
                 new ActionData(CameraZoomIn,
                     timeData.ZoomIn),
@@ -93,6 +100,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = 1.0f,
                         TimeToUpdate = timeData.StopAction
                     });
+                    _playSpeedTimeSound.Invoke();
                 }, 0f),
                 new ActionData(() =>
                 {
@@ -150,6 +158,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.ZoomIn,
                     });
                     
+                    _playSlowTimeSound.Invoke();
+                    
                 }, 0f),
                 new ActionData(() => { _eventBus.Publish(new CameraEvents.ZoomIn()); },
                     timeData.ZoomIn),
@@ -173,6 +183,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = shieldTimeScale,
                         TimeToUpdate = timeData.SpeedUp,
                     });
+                    
+                    _playSpeedTimeSound.Invoke();
                     
                     _eventBus.Publish(new EarthEvents.SetEnableDamage{DamageEnable = true});
                     RunActiveTimer(selectedAbility);
@@ -248,6 +260,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = 1,
                         TimeToUpdate = timeData.SlowDown,
                     });
+                    
+                    _playSlowTimeSound.Invoke();
                 }, 0f),
                 new ActionData(()=> ShieldEventCaller.SetSlow(true),
                     timeData.SlowDown),
@@ -305,6 +319,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.SpeedUp,
                     });
                     
+                    _playSpeedTimeSound.Invoke();
+                    
                 }, 0f),
                 new ActionData(()=> ShieldEventCaller.SetSlow(false), timeData.SpeedUp),
                 new ActionData(CameraZoomOut,
@@ -352,6 +368,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.StartAction,
                     });
                     CameraZoomIn();
+                    
+                    _playSlowTimeSound.Invoke();
                 },0f),
                 new ActionData(() =>
                 {
@@ -366,6 +384,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = targetTimeScale,
                         TimeToUpdate = timeData.ZoomOut,
                     });
+                    
+                    _playSpeedTimeSound.Invoke();
                     CameraZoomOut();
                     RunActiveTimer(selectedAbility);
                 },timeData.ZoomOut),
@@ -413,6 +433,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.StartAction,
                     });
                     CameraZoomIn();
+                    
+                    _playSlowTimeSound.Invoke();
                 },0f),
                 new ActionData(() =>
                 {
@@ -424,6 +446,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = targetTimeScale,
                         TimeToUpdate = timeData.SpeedUp,
                     });
+                    
+                    _playSpeedTimeSound.Invoke();
                     
                 },timeData.StartAction),
                 new ActionData(() =>
@@ -446,6 +470,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = 1f,
                         TimeToUpdate = timeData.SlowDown,
                     });
+                    _playSlowTimeSound.Invoke();
                 }),
                 new ActionData(() =>
                 {
@@ -457,6 +482,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = targetTimeScale,
                         TimeToUpdate = timeData.SpeedUp,
                     });
+                    
+                    _playSpeedTimeSound.Invoke();
                 },timeData.SlowDown),
                 new ActionData(() =>
                 {

@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.Sounds;
-using _Main.Scripts.Gameplay.AutoTarget;
 using _Main.Scripts.ScriptableObjects;
-using _Main.Scripts.Utilities;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
     [RequireComponent(typeof(ShieldMovement))]
     [RequireComponent(typeof(ShieldAppereance))]
-    public class ShieldView : ManagedBehavior, IObserver
+    public class ShieldView : ManagedBehavior, IObserver, ILoopableSound
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
@@ -23,8 +22,12 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private CapsuleCollider2D shieldCollider;
         [Space]
         [Header("Sounds")]
-        [SerializeField] private SoundBehavior hitSound;
-        [SerializeField] private SoundBehavior moveSound;
+        [SerializeField] private SoundClassSo hitSound;
+        [SerializeField] private SoundClassSo moveSound;
+        [SerializeField] private SoundClassSo superSoundStart;
+        [SerializeField] private SoundClassSo superSoundRunning;
+        [SerializeField] private SoundClassSo goldSound;
+        [SerializeField] private SoundClassSo automaticSound;
         [Space] 
         [Header("Scriptable Objects")]
         [SerializeField] private ShakeDataSo hitShakeData;
@@ -36,6 +39,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldMovement _movement;
         private ShakerController _shakerController;
         private ShieldColliderExtender _colliderExtender;
+        public event Action OnLoopFinished;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
@@ -99,12 +103,30 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void HandleSetAutomatic(bool isActive)
         {
+            if (isActive)
+            {
+                SoundEventCaller.PlaySound(automaticSound, null, this);
+            }
+            else
+            {
+                FinishSoundLoop();
+            }
+
             _movement.SetAutomaticEnable(isActive);
             _appereance.SetAutomaticEnable(isActive);
         }
 
         private void HandleSetGold(bool isActive)
         {
+            if (isActive)
+            {
+                SoundEventCaller.PlaySound(goldSound, null, this);
+            }
+            else
+            {
+                FinishSoundLoop();
+            }
+
             _appereance.SetGoldEnable(isActive);
         }
         private void HandleSetSlow(bool isActive)
@@ -135,7 +157,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandlePlayMoveSound()
         {
-            moveSound?.PlaySound();
+            SoundEventCaller.PlaySound(moveSound, null, null);
         }
         
         private void HandleRestartPosition()
@@ -145,8 +167,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
         {
-            hitSound?.PlaySound();
-            
+            SoundEventCaller.PlaySound(hitSound, null, null);
             StartCoroutine(Coroutine_Shake());
             
             ParticleEventCaller.Spawn(new ParticleSpawnData
@@ -168,10 +189,12 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (isActive)
             {
+                SoundEventCaller.PlaySound(superSoundStart, null, null);
                 RunSuperShieldQueue();
             }
             else
             {
+                FinishSoundLoop();
                 RunNormalShieldQueue();
             }
         }
@@ -193,9 +216,9 @@ namespace _Main.Scripts.Gameplay.Shield
                     _movement.RestartSpeedValues();
                     _appereance.RestartValues();
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
+                    SoundEventCaller.PlaySound(superSoundRunning, null, this);
                 },_appereance.TimeToEnableSuperShield),
             };
-            
             
             ActionManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
         }
@@ -267,6 +290,12 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
+        
+        private void FinishSoundLoop()
+        {
+            OnLoopFinished?.Invoke();
+            OnLoopFinished = null;
+        }
         
     }
 }
