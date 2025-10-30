@@ -39,9 +39,17 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.Enable:
                     HandleEnable();
                     break;   
+                case TutorialObserverMessage.SphereDeflected:
+                    HandleSphereDeflected();
+                    break;   
             }
         }
-        
+
+        private void HandleSphereDeflected()
+        {
+
+        }
+
         private void HandleMultiPage()
         {
             CameraEventCaller.ZoomIn();

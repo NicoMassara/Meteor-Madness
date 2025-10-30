@@ -110,6 +110,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _ui.OnRestartButtonPressed += UIView_OnRestartButtonPressedHandler;
             _ui.OnMainMenuButtonPressed += UIView_OnMainMenuButtonPressedHandler;
+            _ui.OnPauseButtonPressed += UIView_OnPauseButtonPressedHandler;
+        }
+
+        private void UIView_OnPauseButtonPressedHandler()
+        {
+            _controller.SetGamePause(true);
         }
 
         private void UIView_OnMainMenuButtonPressedHandler()

@@ -32,6 +32,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private GameObject deathButtonContainer;
         [SerializeField] private Button restartButton;
         [SerializeField] private Button resumeButton;
+        [SerializeField] private Button pauseButton;
         [SerializeField] private Button[] mainMenuButtons;
         
         private GameObject _currentPanel;
@@ -42,6 +43,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public UnityAction OnMainMenuButtonPressed;
         public UnityAction OnRestartButtonPressed;
+        public UnityAction OnPauseButtonPressed;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
         
@@ -53,13 +55,14 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             restartButton.onClick.AddListener(RestartButton_OnClickHandler);
             resumeButton.onClick.AddListener(ResumeButton_OnClickHandler);
+            pauseButton.onClick.AddListener(PauseButton_OnClickHandler);
             foreach (var button in mainMenuButtons)
             {
                 button.onClick.AddListener(MainMenuButton_OnClickHandler);
             }
             deathText.text = _gameUIConfig.TextData.DeathText;
         }
-        
+
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -220,7 +223,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             SoundEventCaller.PlayUIButton(UISoundType.Back);
             OnRestartButtonPressed?.Invoke();
-
         }
         
         private void MainMenuButton_OnClickHandler()
@@ -234,6 +236,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             SoundEventCaller.PlayUIButton(UISoundType.Accept);
             GameModeEventCaller.SetPause(false);
+        }
+        
+        private void PauseButton_OnClickHandler()
+        {
+            SoundEventCaller.PlayUIButton(UISoundType.Accept);
+            OnPauseButtonPressed?.Invoke();
         }
 
 

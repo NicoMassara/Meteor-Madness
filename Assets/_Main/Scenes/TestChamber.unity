@@ -1083,7 +1083,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7abc3cdfe82044e5a986ca56fb2c9b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundDataSo: {fileID: 11400000, guid: 4a8c99e88d1f9f845baf4cc0d97ec4c4, type: 2}
 --- !u!82 &163182590
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1230,8 +1229,12 @@ MonoBehaviour:
   spriteContainer: {fileID: 1798290943}
   normalShieldSprite: {fileID: 667800033}
   shieldCollider: {fileID: 610377043}
-  hitSound: {fileID: 163182589}
-  moveSound: {fileID: 1982406300}
+  hitSound: {fileID: 11400000, guid: 4a8c99e88d1f9f845baf4cc0d97ec4c4, type: 2}
+  moveSound: {fileID: 11400000, guid: 30834b7f58717fe4da7245e37bb3f894, type: 2}
+  superSoundStart: {fileID: 11400000, guid: 8f898851c32c1a04690d91db3b54a687, type: 2}
+  superSoundRunning: {fileID: 11400000, guid: ca692e5cc1edb654fbede31373d9b037, type: 2}
+  goldSound: {fileID: 11400000, guid: 4bbc6ada151c3e14497c6cadc457f3c2, type: 2}
+  automaticSound: {fileID: 11400000, guid: f4ce311d51b119340a519f3941aedfd9, type: 2}
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
   cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 11400000, guid: 5ce58a01a5bf45a4389c9d0c8a108114, type: 2}
@@ -1676,6 +1679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilityUIData: {fileID: 234428182}
+  abilityPanel: {fileID: 1413808311}
 --- !u!114 &234428179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1688,6 +1692,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f6865758b734b238a7930c936969ff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  abilityAdd: {fileID: 11400000, guid: 3bce302caa370c1419625550e57641c3, type: 2}
+  abilityTrigger: {fileID: 11400000, guid: b68795043512e7c4ea9058d9358b23b5, type: 2}
+  slowTime: {fileID: 11400000, guid: f3b2a5b7e04386140a1a91ca12b80989, type: 2}
+  speedTime: {fileID: 11400000, guid: 2cc5a9a2335cf7d4abe2311b2d9c640b, type: 2}
 --- !u!114 &234428180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3799,7 +3807,6 @@ GameObject:
   m_Component:
   - component: {fileID: 610377038}
   - component: {fileID: 610377043}
-  - component: {fileID: 610377044}
   m_Layer: 8
   m_Name: NormalShield
   m_TagString: Untagged
@@ -3861,130 +3868,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.1, y: 0}
   m_Size: {x: 0.35, y: 2}
   m_Direction: 0
---- !u!96 &610377044
-TrailRenderer:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 610377037}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 0
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 0
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 0
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 5bb8d64ee1521564aa1575949d88443a, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 545170967
-  m_SortingLayer: 3
-  m_SortingOrder: -1
-  m_Time: 0.15
-  m_PreviewTimeScale: 1
-  m_Parameters:
-    serializedVersion: 3
-    widthMultiplier: 1
-    widthCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0.13405797
-        value: 0.0078125
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 0.15362397
-        value: 0.15
-        inSlope: -0.18175295
-        outSlope: -0.18175295
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0.1136733
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: -0.29595587
-        outSlope: -0.29595587
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.108695656
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    colorGradient:
-      serializedVersion: 2
-      key0: {r: 0, g: 0.7900574, b: 1, a: 1}
-      key1: {r: 0, g: 0.3028021, b: 1, a: 1}
-      key2: {r: 0, g: 0, b: 0, a: 0}
-      key3: {r: 0, g: 0, b: 0, a: 0}
-      key4: {r: 0, g: 0, b: 0, a: 0}
-      key5: {r: 0, g: 0, b: 0, a: 0}
-      key6: {r: 0, g: 0, b: 0, a: 0}
-      key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 0
-      ctime1: 65535
-      ctime2: 0
-      ctime3: 0
-      ctime4: 0
-      ctime5: 0
-      ctime6: 0
-      ctime7: 0
-      atime0: 0
-      atime1: 65535
-      atime2: 0
-      atime3: 0
-      atime4: 0
-      atime5: 0
-      atime6: 0
-      atime7: 0
-      m_Mode: 0
-      m_ColorSpace: 0
-      m_NumColorKeys: 2
-      m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
-    alignment: 0
-    textureMode: 0
-    textureScale: {x: 1, y: 1}
-    shadowBias: 0.5
-    generateLightingData: 0
-  m_MinVertexDistance: 0.1
-  m_MaskInteraction: 0
-  m_Autodestruct: 0
-  m_Emitting: 1
-  m_ApplyActiveColorSpace: 1
 --- !u!1 &619992303
 GameObject:
   m_ObjectHideFlags: 0
@@ -4030,7 +3913,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7abc3cdfe82044e5a986ca56fb2c9b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundDataSo: {fileID: 11400000, guid: 94363bb788b608844ba498128deecf5e, type: 2}
 --- !u!82 &619992306
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6906,8 +6788,9 @@ MonoBehaviour:
   modelContainer: {fileID: 217641707}
   planeMeshContainer: {fileID: 645524448}
   earthMeshSlicer: {fileID: 502172933}
-  collisionSound: {fileID: 619992305}
-  deathSound: {fileID: 1858039247}
+  collisionSound: {fileID: 11400000, guid: 94363bb788b608844ba498128deecf5e, type: 2}
+  deathSound: {fileID: 11400000, guid: 051954dee5fdeee4792dd763766ff152, type: 2}
+  healSound: {fileID: 11400000, guid: b7a8e37fc5048ea4a80c908817adfb1d, type: 2}
   shakeMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -7249,7 +7132,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7abc3cdfe82044e5a986ca56fb2c9b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundDataSo: {fileID: 11400000, guid: 215f9e35569750845bb921d724fcde48, type: 2}
 --- !u!82 &1029714881
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8696,6 +8578,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1201748082}
   m_CullTransparentMesh: 1
+--- !u!1 &1210010715
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1210010717}
+  - component: {fileID: 1210010716}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1210010716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1210010715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a86a71c2181f41ab80307432d3d310d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundPrefab: {fileID: 8555990925782600340, guid: aba708838ba8989428a64ced8d224e7c, type: 3}
+  menuMusic: {fileID: 11400000, guid: e1ad69c12b88bcd4d8e10173a029e54f, type: 2}
+  gameplayMusic: {fileID: 11400000, guid: 2e659106af03afc4c9382e8803fa99ec, type: 2}
+  defeatMusic: {fileID: 11400000, guid: 0f014e71c17eae64bba859824d37f7be, type: 2}
+  defaultUISound: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
+  acceptUISound: {fileID: 11400000, guid: 0df86437d5b6e79459ba2bdab24e3826, type: 2}
+  backUISound: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
+--- !u!4 &1210010717
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1210010715}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1212885781
 GameObject:
   m_ObjectHideFlags: 0
@@ -12353,7 +12286,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7abc3cdfe82044e5a986ca56fb2c9b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundDataSo: {fileID: 11400000, guid: 051954dee5fdeee4792dd763766ff152, type: 2}
 --- !u!1 &1886180516
 GameObject:
   m_ObjectHideFlags: 0
@@ -13152,7 +13084,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7abc3cdfe82044e5a986ca56fb2c9b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundDataSo: {fileID: 11400000, guid: 30834b7f58717fe4da7245e37bb3f894, type: 2}
 --- !u!82 &1982406301
 AudioSource:
   m_ObjectHideFlags: 0
@@ -14699,6 +14630,7 @@ SceneRoots:
   - {fileID: 234428181}
   - {fileID: 1004163051}
   - {fileID: 2010873515}
+  - {fileID: 1210010717}
   - {fileID: 1634272169}
   - {fileID: 1763634175}
   - {fileID: 1888334900}
