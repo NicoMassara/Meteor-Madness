@@ -63,9 +63,8 @@ namespace _Main.Scripts.Gameplay
             if(_areInputsEnable == true) return;
             
             _inputs.Enable();
+
             
-
-
 
 #if UNITY_STANDALONE || UNITY_EDITOR
             //Rotate
@@ -93,7 +92,6 @@ namespace _Main.Scripts.Gameplay
             if(_areInputsEnable == false) return;
             
             _inputs.Disable();
-            
             
 #if UNITY_STANDALONE || UNITY_EDITOR
             //Rotate
@@ -243,6 +241,7 @@ namespace _Main.Scripts.Gameplay
             }
             else
             {
+                UpdateDirection(0);
                 DisableInputs();
             }
         }
