@@ -6,22 +6,23 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
-    public class AbilityUIView : ManagedBehavior, IUpdatable, IObserver
+    public class AbilityUIView : ManagedBehavior, IObserver
     {
         [SerializeField] private AbilityUIData abilityUIData;
-        [SerializeField] private GameObject abilityPanel;
+        [SerializeField] private AbilityUiPanelSelector uiSelector;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
 
         private void Start()
         {
-            abilityPanel.SetActive(false);
+            GetAbilityUIComponents().MainPanel.SetActive(false);
         }
-
-        public void ManagedUpdate()
+        
+        private AbilityUIComponents GetAbilityUIComponents()
         {
-
+            return uiSelector.GetPanelData();
         }
+
 
         public void OnNotify(ulong message, params object[] args)
         {
@@ -44,7 +45,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleSetEnableUI(bool isEnable)
         {
-            abilityPanel.SetActive(isEnable);
+            GetAbilityUIComponents().MainPanel.SetActive(isEnable);
         }
 
         private void HandleRestartAbilities()

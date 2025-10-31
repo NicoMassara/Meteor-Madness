@@ -1,13 +1,11 @@
-﻿using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Managers.UpdateManager;
+﻿using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Main.Scripts.Gameplay.Abilities
 {
     public class AbilityUIData : ManagedBehavior
     {
-        [SerializeField] private Image[] abilitySprite;
+        [SerializeField] private AbilityUiPanelSelector uiSelector;
         
         private readonly Color _disabledColor = new Color(1, 1, 1, 0.25f);
         private int _inUseCount = 0;
@@ -17,12 +15,17 @@ namespace _Main.Scripts.Gameplay.Abilities
             RestartValues();
         }
 
+        private AbilityUIComponents GetAbilityUIComponents()
+        {
+            return uiSelector.GetPanelData();
+        }
+
         public void AddAbility(AbilityType ability)
         {
             if(_inUseCount == 3) return;
             
             _inUseCount++;
-            var spriteToUse = abilitySprite[_inUseCount-1];
+            var spriteToUse = GetAbilityUIComponents().AbilitySprites[_inUseCount-1];
             spriteToUse.color = GetAbilityColor(ability);
         }
 
@@ -32,14 +35,14 @@ namespace _Main.Scripts.Gameplay.Abilities
             
             if (_inUseCount == 1)
             {
-                var spriteToUse = abilitySprite[0];
+                var spriteToUse = GetAbilityUIComponents().AbilitySprites[0];
                 spriteToUse.color = GetAbilityColor(AbilityType.None);
             }
             else
             {
-                var sprite1 = abilitySprite[0];
-                var sprite2 = abilitySprite[1];
-                var sprite3 = abilitySprite[2];
+                var sprite1 = GetAbilityUIComponents().AbilitySprites[0];
+                var sprite2 = GetAbilityUIComponents().AbilitySprites[1];
+                var sprite3 = GetAbilityUIComponents().AbilitySprites[2];
 
                 sprite1.color = sprite2.color;
                 sprite2.color = sprite3.color;
@@ -58,11 +61,11 @@ namespace _Main.Scripts.Gameplay.Abilities
         {
             _inUseCount = 0;
             
-            if(abilitySprite == null) return;
+            if(GetAbilityUIComponents().AbilitySprites == null) return;
             
-            for (int i = 0; i < abilitySprite.Length; i++)
+            for (int i = 0; i < GetAbilityUIComponents().AbilitySprites.Length; i++)
             {
-                var spriteToUse = abilitySprite[i];
+                var spriteToUse = GetAbilityUIComponents().AbilitySprites[i];
                 if(spriteToUse == null) continue;
                 spriteToUse.color = GetAbilityColor(AbilityType.None);
             }
