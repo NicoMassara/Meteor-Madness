@@ -1,25 +1,16 @@
 ﻿using System;
 using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Menu;
 using _Main.Scripts.Observer;
-using _Main.Scripts.Sounds;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
     public class MainMenuUiView : ManagedBehavior, IObserver
     {
-        [Header("Main Panel")]
-        [SerializeField] private GameObject mainPanel;
-        [Header("Sub Panels")]
-        [SerializeField] private GameObject menuPanel;
-        [SerializeField] private GameObject lorePanel;
-        [Header("Buttons")]
-        [SerializeField] private Button playButton;
-        [SerializeField] private Button tutorialButton;
-        [SerializeField] private Button loreButton;
-        [SerializeField] private Button exitButton;
-        [SerializeField] private Button backButton;
+        [SerializeField] private MainMenuUiPanelSelector uiPanelSelector;
+        
+        private MainMenuUiComponents _uiComponents;
 
         private GameObject _currentPanel;
 
@@ -31,27 +22,27 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void Awake()
         {
-            playButton.onClick.AddListener(() =>
+            GetUiComponents().PlayButton.onClick.AddListener(() =>
             {
                 OnGameModeStarted?.Invoke();
                 PlayButtonSound();
             });
-            tutorialButton.onClick.AddListener(() =>
+            GetUiComponents().TutorialButton.onClick.AddListener(() =>
             {
                 OnTutorialStarted?.Invoke();
                 PlayButtonSound();
             });
-            loreButton.onClick.AddListener(() =>
+            GetUiComponents().LoreButton.onClick.AddListener(() =>
             {
                 OnLoreOpen?.Invoke();
                 PlayButtonSound();
             });
-            backButton.onClick.AddListener(() =>
+            GetUiComponents().BackButton.onClick.AddListener(() =>
             {
                 OnLoreClosed?.Invoke();
                 PlayButtonSound();
             });
-            exitButton.onClick.AddListener(() =>
+            GetUiComponents().QuitButton.onClick.AddListener(() =>
             {
                 OnExit?.Invoke();
                 PlayButtonSound();
@@ -77,6 +68,11 @@ namespace _Main.Scripts.MainMenu.MVC
             }
         }
 
+        private MainMenuUiComponents GetUiComponents()
+        {
+            return _uiComponents ??= uiPanelSelector.GetPanelData();
+        }
+
         private void PlayButtonSound()
         {
             SoundEventCaller.PlayUIButton(UISoundType.Accept);
@@ -84,23 +80,23 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void HandleEnable()
         {
-            mainPanel.SetActive(true);
+            GetUiComponents().MainPanel.SetActive(true);
         }
         
         private void HandleDisable()
         {
             DisableActivePanel();
-            mainPanel.SetActive(false);
+            GetUiComponents().MainPanel.SetActive(false);
         }
         
         private void HandleMainMenu()
         {
-            SetActivePanel(menuPanel);
+            SetActivePanel(GetUiComponents().MenuPanel);
         }
 
         private void HandleLoreMenu()
         {
-            SetActivePanel(lorePanel);
+            SetActivePanel(GetUiComponents().LorePanel);
         }
         
         private void SetActivePanel(GameObject panelObject)
