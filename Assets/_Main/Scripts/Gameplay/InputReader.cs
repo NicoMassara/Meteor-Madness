@@ -75,7 +75,7 @@ namespace _Main.Scripts.Gameplay
             _inputs.Gameplay.TriggerAbility.performed += OnTriggerAbilityPerformed;
 #endif
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_IOS
             //Touch
             TouchSimulation.Enable();
             EnhancedTouchSupport.Enable();
@@ -102,7 +102,7 @@ namespace _Main.Scripts.Gameplay
             _inputs.Gameplay.TriggerAbility.performed -= OnTriggerAbilityPerformed;
 #endif
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_IOS
             //Touch
             TouchSimulation.Disable();
             if (EnhancedTouchSupport.enabled)
