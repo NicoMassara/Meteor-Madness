@@ -115,7 +115,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void UIView_OnPauseButtonPressedHandler()
         {
-            _controller.SetGamePause(true);
+            GameEventCaller.Publish(new GameModeEvents.SetPause{IsPaused = true});
         }
 
         private void UIView_OnMainMenuButtonPressedHandler()
