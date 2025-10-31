@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.InspectorTools
 {
+#if UNITY_EDITOR
     [ExecuteInEditMode]
     public class ComponentsNameChange : MonoBehaviour
     {
@@ -60,7 +61,9 @@ namespace _Main.Scripts.InspectorTools
             }
         }
     }
+#endif
     
+#if UNITY_EDITOR
     [CustomEditor(typeof(ComponentsNameChange))]
     public class ComponentsNameChangeEditor : Editor
     {
@@ -84,4 +87,5 @@ namespace _Main.Scripts.InspectorTools
             }
         }
     }
+#endif
 }

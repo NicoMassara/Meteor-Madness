@@ -23,6 +23,7 @@ namespace _Main.Scripts.Utilities
             bool isMobile = GetIsMobile();
             string panelType = isMobile ? "Mobile" : "Desktop";
             Debug.Log($"{panelName} Panel Selected for {panelType}");
+            Destroy(isMobile ? desktopData.MainPanel : mobileData.MainPanel);
             return isMobile ? mobileData : desktopData;
         }
     }
