@@ -230,6 +230,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.SetEnableShield(true);
             SoundEventCaller.PlayMusic(MusicType.Gameplay);
+            GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
         }
 
         #endregion

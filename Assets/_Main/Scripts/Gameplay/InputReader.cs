@@ -1,9 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
@@ -64,20 +64,27 @@ namespace _Main.Scripts.Gameplay
             
             _inputs.Enable();
             
+
+
+
+#if UNITY_STANDALONE || UNITY_EDITOR
             //Rotate
             _inputs.Gameplay.RotateDirection.performed += OnRotatePerformed;
             _inputs.Gameplay.RotateDirection.canceled += OnRotateCanceled;
             
             //Ability
             _inputs.Gameplay.TriggerAbility.performed += OnTriggerAbilityPerformed;
-            
-            
+#endif
+
+#if UNITY_ANDROID
             //Touch
             TouchSimulation.Enable();
             EnhancedTouchSupport.Enable();
             Touch.onFingerDown += OnFingerDown;
             Touch.onFingerUp += OnFingerUp;
+#endif
             
+
             _areInputsEnable = true;
         }
 
@@ -87,13 +94,17 @@ namespace _Main.Scripts.Gameplay
             
             _inputs.Disable();
             
+            
+#if UNITY_STANDALONE || UNITY_EDITOR
             //Rotate
             _inputs.Gameplay.RotateDirection.performed -= OnRotatePerformed;
             _inputs.Gameplay.RotateDirection.canceled -= OnRotateCanceled;
             
             //Ability
             _inputs.Gameplay.TriggerAbility.performed -= OnTriggerAbilityPerformed;
-            
+#endif
+
+#if UNITY_ANDROID
             //Touch
             TouchSimulation.Disable();
             if (EnhancedTouchSupport.enabled)
@@ -102,6 +113,7 @@ namespace _Main.Scripts.Gameplay
                 Touch.onFingerUp -= OnFingerUp;
                 EnhancedTouchSupport.Disable();
             }
+#endif
             
             _areInputsEnable = false;
         }
@@ -110,6 +122,8 @@ namespace _Main.Scripts.Gameplay
 
         private void OnFingerDown(Finger input)
         {
+            if(IsTouchOverUI(input)) return;
+            
             var pos = input.screenPosition;
 
             if (pos.x < Screen.width * LeftZoneWidthPercent)
@@ -163,6 +177,20 @@ namespace _Main.Scripts.Gameplay
             {
                 TriggerAbility();
             }
+        }
+
+        private bool IsTouchOverUI(Finger finger)
+        {
+            if (EventSystem.current == null)
+                return false;
+
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = finger.screenPosition;
+
+            var results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+
+            return results.Count > 0;
         }
 
         #endregion
