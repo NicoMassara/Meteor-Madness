@@ -13,6 +13,9 @@ namespace _Main.Scripts.Utilities
         [Space(5)]
         [SerializeField] private T desktopData;
 
+        private bool _hasAlreadySelected;
+        private bool _isMobile;
+
         protected bool GetIsMobile()
         {
             return SystemInfo.deviceType == DeviceType.Handheld;
@@ -20,11 +23,16 @@ namespace _Main.Scripts.Utilities
 
         public T GetPanelData()
         {
-            bool isMobile = GetIsMobile();
-            string panelType = isMobile ? "Mobile" : "Desktop";
-            Debug.Log($"{panelName} Panel Selected for {panelType}");
-            Destroy(isMobile ? desktopData.MainPanel : mobileData.MainPanel);
-            return isMobile ? mobileData : desktopData;
+            if (_hasAlreadySelected == false)
+            {
+                _isMobile = GetIsMobile();
+                string panelType = _isMobile ? "Mobile" : "Desktop";
+                Debug.Log($"{panelName} Panel Selected for {panelType}");
+                Destroy(_isMobile ? desktopData.MainPanel : mobileData.MainPanel);
+                _hasAlreadySelected = true;
+            }
+
+            return _isMobile ? mobileData : desktopData;
         }
     }
 }
