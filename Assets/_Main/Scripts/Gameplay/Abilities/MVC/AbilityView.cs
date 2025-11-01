@@ -108,6 +108,10 @@ namespace _Main.Scripts.Gameplay.Abilies
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(
                 (AbilityType)abilityIndex),SelfUpdateGroup);
             
+#if UNITY_ANDROID || UNITY_IOS
+            Handheld.Vibrate();
+#endif
+            
             SoundEventCaller.PlaySound(abilityTrigger, null,null);
         }
 
