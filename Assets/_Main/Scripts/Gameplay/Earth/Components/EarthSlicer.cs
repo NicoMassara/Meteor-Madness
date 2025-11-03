@@ -72,7 +72,13 @@ namespace _Main.Scripts.Gameplay.Earth
                 {
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
+                    
+#if UNITY_ANDROID || UNITY_IOS
+                    Handheld.Vibrate();
+#endif
+                    
                 }, sliceTimes.ReturnToNormalTime),
+                
             };
             
             ActionManager.Add(new ActionQueue(temp),SelfUpdateGroup);

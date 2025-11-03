@@ -1,33 +1,30 @@
 ﻿using System;
 using _Main.Scripts.Managers.UpdateManager;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Main.Scripts.MultiPage
 {
     public class MultiPageViewUI : ManagedBehavior
     {
-        [Header("Texts")]
-        [SerializeField] private TMP_Text panelText;
-        [SerializeField] private TMP_Text nextButtonText;
-        [Header("Buttons")]
-        [SerializeField] private Button previousButton;
-        [SerializeField] private Button nextButton;
-        [Header("Components")] 
-        [SerializeField] private GameObject mainPanel;
+        [SerializeField] private MultiPageUiSelector uiSelector;
 
+        private MultiPageUIComponents _uiComponents;
         public event Action OnPreviousButtonPressed;
         public event Action OnNextButtonPressed;
-        
+
+        private MultiPageUIComponents GetUiComponents()
+        {
+            return _uiComponents ??= _uiComponents = uiSelector.GetPanelData();
+        }
+
         private void Awake()
         {
-            previousButton.onClick.AddListener(() =>
+            GetUiComponents().PreviousButton.onClick.AddListener(() =>
             {
                 OnPreviousButtonPressed?.Invoke();
                 SoundEventCaller.PlayUIButton(UISoundType.Back);
             });
-            nextButton.onClick.AddListener(() =>
+            GetUiComponents().NextButton.onClick.AddListener(() =>
             {
                 OnNextButtonPressed?.Invoke();
                 SoundEventCaller.PlayUIButton(UISoundType.Default);
@@ -36,27 +33,27 @@ namespace _Main.Scripts.MultiPage
 
         public void SetNextButtonText(string text)
         {
-            nextButtonText.text = text;
+            GetUiComponents().NextButtonText.text = text;
         }
 
         public void SetEnablePreviousButton(bool isEnable)
         {
-            previousButton.gameObject.SetActive(isEnable);
+            GetUiComponents().PreviousButton.gameObject.SetActive(isEnable);
         }
 
         public void SetPanelText(string text)
         {
-            panelText.text = text;
+            GetUiComponents().PanelText.text = text;
         }
 
         public string GetNextButtonText()
         {
-            return nextButtonText.text;
+            return GetUiComponents().NextButtonText.text;
         }
 
         public void SetActiveMainPanel(bool isActive)
         {
-            mainPanel.SetActive(isActive);
+            GetUiComponents().MainPanel.SetActive(isActive);
         }
     }
 }

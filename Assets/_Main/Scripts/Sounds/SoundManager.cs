@@ -75,13 +75,13 @@ namespace _Main.Scripts.Sounds
         {
             if (soundData == null)
             {
-                Debug.Log("Sound Data is NULL");
+                //Debug.Log("Sound Data is NULL");
                 return;
             }
 
             if (GetIsChannelFull(soundData.Channel))
             {
-                Debug.Log($"{soundData.Channel} channel is full");
+                //Debug.Log($"{soundData.Channel} channel is full");
                 return;
             }
             

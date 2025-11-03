@@ -12,20 +12,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9017fd01993b407ea8fa2639a17a80b7, type: 3}
   m_Name: SO_ProjectileData_Default
   m_EditorClassIdentifier: 
-  maxProjectileSpeed: 24
+  maxProjectileSpeed: 18
   speedMultiplier:
     animationCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0
+        value: 0.35
         inSlope: 0
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
+      - serializedVersion: 3
+        time: 0.20105009
+        value: 0.69811296
+        inSlope: -0.04731991
+        outSlope: -0.04731991
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.08163266
+      - serializedVersion: 3
+        time: 0.5097947
+        value: 0.7039207
+        inSlope: 0.33112434
+        outSlope: 0.33112434
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.6231396
+        value: 0.8318911
+        inSlope: 0.81670105
+        outSlope: 0.81670105
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.87291676
+        value: 0.86042696
+        inSlope: 0.67613894
+        outSlope: 0.67613894
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
         value: 1
@@ -96,24 +132,24 @@ MonoBehaviour:
     maxValue: 0.35
   slotDistanceData:
   - minSlotProximity: 1
-    maxSlotProximity: 16
-  - minSlotProximity: -1
-    maxSlotProximity: 16
+    maxSlotProximity: 6
   - minSlotProximity: 1
-    maxSlotProximity: 16
+    maxSlotProximity: 6
   - minSlotProximity: 1
-    maxSlotProximity: 16
+    maxSlotProximity: 8
+  - minSlotProximity: 2
+    maxSlotProximity: 8
+  - minSlotProximity: 2
+    maxSlotProximity: 10
+  - minSlotProximity: 3
+    maxSlotProximity: 10
   - minSlotProximity: 1
-    maxSlotProximity: 16
-  - minSlotProximity: 1
-    maxSlotProximity: 16
-  - minSlotProximity: 1
-    maxSlotProximity: 16
-  - minSlotProximity: 1
-    maxSlotProximity: 16
-  - minSlotProximity: 1
-    maxSlotProximity: 16
+    maxSlotProximity: 2
+  - minSlotProximity: 3
+    maxSlotProximity: 12
+  - minSlotProximity: 3
+    maxSlotProximity: 14
   - minSlotProximity: 4
-    maxSlotProximity: 28
+    maxSlotProximity: 14
   meteorRingData: {fileID: 11400000, guid: 6df1d717a849c814ab27c7edef3a830b, type: 2}
   meteorSpawnDelayAfterRing: 1
