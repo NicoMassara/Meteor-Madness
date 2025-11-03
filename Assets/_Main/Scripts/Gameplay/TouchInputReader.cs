@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -10,8 +11,10 @@ namespace _Main.Scripts.Gameplay
 {
     public class TouchInputReader : ITouchInputReader
     {
-        private const float LeftZoneWidthPercent = 0.5f;
         private const float TressHoldToCountDoubleTap = 0.25f;
+        private const float ScreenWidthOffset = 0.1f; 
+        private const float ScreenTopOffset = 0.25f; 
+        private const float ScreenBottomOffset = 0.15f; 
 
         private float _lastTouchTime = -1f;
         private bool _prevBothTouched;
@@ -23,6 +26,11 @@ namespace _Main.Scripts.Gameplay
         
         public event Action<int> OnUpdateDirection;
         public event Action OnTriggerAbility;
+
+        public TouchInputReader()
+        {
+            TouchInputBounds.SetOffsets(ScreenTopOffset,ScreenBottomOffset,ScreenWidthOffset);
+        }
 
         public void Enable()
         {
@@ -45,10 +53,16 @@ namespace _Main.Scripts.Gameplay
                 EnhancedTouchSupport.Disable();
             }
         }
-        
+
         private void OnFingerDown(Finger input)
         {
             if(IsTouchOverUI(input)) return;
+            var touchPos = input.screenPosition;
+            if (!IsTouchInSafeZone(touchPos.y))
+            {
+                Debug.Log("Touch Input out of reach");
+                return;
+            }
             //
             
             _currentTouchCount++;
@@ -60,13 +74,12 @@ namespace _Main.Scripts.Gameplay
             _lastTouchCount = _currentTouchCount;
             _lastTouchTime = Time.time;
             
-            var pos = input.screenPosition;
             
-            if (IsTouchInLeftZone(pos))
+            if (IsTouchInLeftZone(touchPos.x))
             {
                 _leftTouched = true;
             }
-            else if (IsTouchInRightZone(pos))
+            else if (IsTouchInRightZone(touchPos.x))
             {
                 _rightTouched = true;
             }
@@ -78,16 +91,24 @@ namespace _Main.Scripts.Gameplay
         private void OnFingerUp(Finger input)
         {
             if(IsTouchOverUI(input)) return;
+            
+            var touchPos = input.screenPosition;
+            if (!IsTouchInSafeZone(touchPos.y))
+            {
+                Debug.Log("Touch Input out of reach");
+                return;
+            }
             //
             _currentTouchCount--;
             
-            var pos = input.screenPosition;
             
-            if (IsTouchInLeftZone(pos))
+            if(!IsTouchInSafeZone(touchPos.y)) return;
+            
+            if (IsTouchInLeftZone(touchPos.x))
             {
                 _leftTouched = false;
             }
-            else if (IsTouchInRightZone(pos))
+            else if (IsTouchInRightZone(touchPos.x))
             {
                 _rightTouched = false;
             }
@@ -123,11 +144,13 @@ namespace _Main.Scripts.Gameplay
                 {
                     var pos = t.screenPosition;
                 
-                    if (IsTouchInLeftZone(pos))
+                    if(!IsTouchInSafeZone(pos.y)) continue;
+                    
+                    if (IsTouchInLeftZone(pos.x))
                     {
                         isLeftTouch = true;
                     }
-                    else if(IsTouchInRightZone(pos))
+                    else if(IsTouchInRightZone(pos.x))
                     {
                         isRightTouch = true;
                     }
@@ -149,16 +172,32 @@ namespace _Main.Scripts.Gameplay
             
             return false;
         }
-        
-        
-        private bool IsTouchInLeftZone(Vector2 touchPosition)
+
+        private bool IsTouchInSafeZone(float posY)
         {
-            return touchPosition.x < (Screen.width * LeftZoneWidthPercent);
+            return
+                posY >= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetBottomBound()
+                &&
+                posY <= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetTopBound();
         }
 
-        private bool IsTouchInRightZone(Vector2 touchPosition)
+
+        private bool IsTouchInLeftZone(float posX)
         {
-            return touchPosition.x > (Screen.width * LeftZoneWidthPercent);
+            // ReSharper disable once PossibleLossOfFraction
+            return
+                posX >= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetLeftZoneBounds().x
+                &&
+                posX <= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetLeftZoneBounds().y;
+        }
+
+        private bool IsTouchInRightZone(float posX)
+        {
+                // ReSharper disable once PossibleLossOfFraction
+            return
+                posX >= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetRightZoneBounds().x
+                &&
+                posX <= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetRightZoneBounds().y;
         }
         
         private bool IsTouchOverUI(Finger finger)

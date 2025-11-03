@@ -1,19 +1,14 @@
-﻿using System.Collections.Generic;
-using _Main.Scripts.Interfaces;
+﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.EnhancedTouch;
-using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
-using Finger = UnityEngine.InputSystem.EnhancedTouch.Finger;
 
 namespace _Main.Scripts.Gameplay
 {
     public class InputReader : ManagedBehavior, ILateUpdatable, IUpdatable
     {
+
         private DefaultInputs _inputs;
         private int _rotateDirection;
         private bool _areInputsEnable;
