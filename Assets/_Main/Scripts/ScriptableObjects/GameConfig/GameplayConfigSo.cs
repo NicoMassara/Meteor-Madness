@@ -1,5 +1,4 @@
 ﻿using _Main.Scripts.Interfaces;
-using _Main.Scripts.ScriptableObjects.AbilityTime;
 using _Main.Scripts.ScriptableObjects.GameConfig;
 using UnityEngine;
 
@@ -21,6 +20,7 @@ namespace _Main.Scripts.ScriptableObjects
         [SerializeField] private GameTimeDataSo gameTimeData; 
         [SerializeField] private AbilityConfigTimeDataSo abilityTimeData; 
         [SerializeField] private EarthTimeDataSo earthTimeData; 
+        [SerializeField] private TouchInputDataSo touchInputData; 
 
         #region Getters
 
@@ -34,6 +34,7 @@ namespace _Main.Scripts.ScriptableObjects
         public IGameTimeData GameTimeData => gameTimeData;
         public IAbilityTimeConfigData AbilityTimeData => abilityTimeData;
         public IEarthTime EarthTimeData => earthTimeData;
+        public ITouchInputData TouchInputData => touchInputData;
 
         #endregion
         
