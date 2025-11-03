@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.Managers;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay
+namespace _Main.Scripts.Gameplay.MyInputs
 {
     public class TouchInputDebugger : MonoBehaviour
     {

@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
@@ -14,6 +15,7 @@ namespace _Main.Scripts.Managers
         private int _currentPoints;
         
         public EventBusManager EventManager { get; private set; }
+        public IInputReader InputReader { get; private set; }
         
         private static GameManager CreateInstance()
         {
@@ -30,7 +32,15 @@ namespace _Main.Scripts.Managers
             EventManager = new EventBusManager();
             SceneLoader.LoadModules();
         }
-        
+
+
+        public void SetInputReader(IInputReader inputReader)
+        {
+            if(inputReader == null) return;
+            
+            InputReader = inputReader;
+        }
+
         public void LoadTutorial()
         {
             GameScreenEventCaller.SetGameScreen(ScreenType.Tutorial, true);

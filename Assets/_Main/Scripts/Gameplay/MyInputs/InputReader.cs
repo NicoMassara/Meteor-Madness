@@ -1,18 +1,17 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using System;
 
-namespace _Main.Scripts.Gameplay
+namespace _Main.Scripts.Gameplay.MyInputs
 {
-    public class InputReader : ManagedBehavior, ILateUpdatable, IUpdatable
+    public class InputReader : ManagedBehavior, IInputReader, ILateUpdatable, IUpdatable
     {
-
         private DefaultInputs _inputs;
+        private ITouchInputReader _touchInput;
         private int _rotateDirection;
         private bool _areInputsEnable;
-        private ITouchInputReader _touchInput;
         
         public bool HasUsedAbility { get; private set; }
 
@@ -21,18 +20,20 @@ namespace _Main.Scripts.Gameplay
 
         public UpdateGroup SelfLateUpdateGroup { get; } = UpdateGroup.Inputs;
         
-        public UnityAction<int> OnMovementDirectionChanged;
-        public UnityAction OnStopMovement;
+        public event Action<int> OnMovementDirectionChanged;
+        public event Action OnStopMovement;
+        public event Action<bool> OnAbilityTriggered;
         
         private void Awake()
         {
-            GameManager.Instance.EventManager.Subscribe<InputsEvents.SetEnable>(EventBus_Inputs_SetEnable);
+            GameEventCaller.Subscribe<InputsEvents.SetEnable>(EventBus_Inputs_SetEnable);
+            GameManager.Instance.SetInputReader(this);
             
 #if UNITY_STANDALONE || UNITY_EDITOR
             _inputs = new DefaultInputs();
             
             //Pause
-            _inputs.Gameplay.Pause.performed += OnPausePerformed;
+            _inputs.Gameplay.Pause.performed += OnPause_Performed;
 #endif
 #if UNITY_ANDROID || UNITY_IOS
             _touchInput = new TouchInputReader();
@@ -63,11 +64,12 @@ namespace _Main.Scripts.Gameplay
 #if UNITY_STANDALONE || UNITY_EDITOR
             _inputs.Enable();
             //Rotate
-            _inputs.Gameplay.RotateDirection.performed += OnRotatePerformed;
-            _inputs.Gameplay.RotateDirection.canceled += OnRotateCanceled;
+            _inputs.Gameplay.RotateDirection.performed += OnRotate_Performed;
+            _inputs.Gameplay.RotateDirection.canceled += OnRotate_Canceled;
             
             //Ability
-            _inputs.Gameplay.TriggerAbility.performed += OnTriggerAbilityPerformed;
+            _inputs.Gameplay.TriggerAbility.performed += OnTriggerAbility_Performed;
+            _inputs.Gameplay.TriggerAbility.canceled += OnTriggerAbility_Canceled;
 #endif
 
 #if UNITY_ANDROID || UNITY_IOS
@@ -89,11 +91,11 @@ namespace _Main.Scripts.Gameplay
             _inputs.Disable();
             
             //Rotate
-            _inputs.Gameplay.RotateDirection.performed -= OnRotatePerformed;
-            _inputs.Gameplay.RotateDirection.canceled -= OnRotateCanceled;
+            _inputs.Gameplay.RotateDirection.performed -= OnRotate_Performed;
+            _inputs.Gameplay.RotateDirection.canceled -= OnRotate_Canceled;
             
             //Ability
-            _inputs.Gameplay.TriggerAbility.performed -= OnTriggerAbilityPerformed;
+            _inputs.Gameplay.TriggerAbility.performed -= OnTriggerAbility_Performed;
 #endif
 
 #if UNITY_ANDROID || UNITY_IOS
@@ -105,25 +107,30 @@ namespace _Main.Scripts.Gameplay
             
             _areInputsEnable = false;
         }
-
+        
         #region Keyboard Inputs
 
-        private void OnRotatePerformed(InputAction.CallbackContext input)
+        private void OnRotate_Performed(InputAction.CallbackContext input)
         {
             UpdateDirection((int)input.ReadValue<float>());
         }
         
-        private void OnRotateCanceled(InputAction.CallbackContext input)
+        private void OnRotate_Canceled(InputAction.CallbackContext input)
         {
             UpdateDirection(0);
         }
         
-        private void OnTriggerAbilityPerformed(InputAction.CallbackContext input)
+        private void OnTriggerAbility_Performed(InputAction.CallbackContext input)
         {
-            TriggerAbility();
+            TriggerAbility(true);
         }
         
-        private void OnPausePerformed(InputAction.CallbackContext input)
+        private void OnTriggerAbility_Canceled(InputAction.CallbackContext input)
+        {
+            TriggerAbility(false);
+        }
+        
+        private void OnPause_Performed(InputAction.CallbackContext input)
         {
             GameManager.Instance.EventManager.Publish(
                 new GameModeEvents.SetPause{IsPaused = !GameManager.Instance.IsPaused});
@@ -131,9 +138,10 @@ namespace _Main.Scripts.Gameplay
 
         #endregion
         
-        private void TriggerAbility()
+        private void TriggerAbility(bool isActive)
         {
-            HasUsedAbility = true;
+            HasUsedAbility = isActive;
+            OnAbilityTriggered?.Invoke(isActive);
         }
 
         private void UpdateDirection(int direction)

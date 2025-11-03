@@ -9,7 +9,6 @@ namespace _Main.Scripts.Gameplay.Shield
     [RequireComponent(typeof(ShieldView))]
     public class ShieldSetup : ManagedBehavior, IUpdatable
     {
-        [SerializeField] private InputReader inputReader;
         private ShieldMotor _motor;
         private ShieldController _controller;
         private ShieldView _view;
@@ -31,8 +30,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private void Start()
         {
             _controller.Initialize();
-            inputReader.OnMovementDirectionChanged += Input_OnMovementDirectionChangedHandler;
-            inputReader.OnStopMovement += Input_OnStopMovementHandler;
+            GameManager.Instance.InputReader.OnMovementDirectionChanged += Input_OnMovementDirectionChangedHandler;
+            GameManager.Instance.InputReader.OnStopMovement += Input_OnStopMovementHandler;
         }
 
         private void Input_OnStopMovementHandler()

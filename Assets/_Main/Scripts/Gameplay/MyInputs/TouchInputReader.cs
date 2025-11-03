@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
-namespace _Main.Scripts.Gameplay
+namespace _Main.Scripts.Gameplay.MyInputs
 {
     public class TouchInputReader : ITouchInputReader
     {
@@ -25,12 +25,7 @@ namespace _Main.Scripts.Gameplay
         private int _lastTouchCount;
         
         public event Action<int> OnUpdateDirection;
-        public event Action OnTriggerAbility;
-
-        public TouchInputReader()
-        {
-            TouchInputBounds.SetOffsets(ScreenTopOffset,ScreenBottomOffset,ScreenWidthOffset);
-        }
+        public event Action<bool> OnTriggerAbility;
 
         public void Enable()
         {
@@ -100,7 +95,12 @@ namespace _Main.Scripts.Gameplay
             }
             //
             _currentTouchCount--;
-            
+
+            if (_prevBothTouched)
+            {
+                OnTriggerAbility?.Invoke(false);
+                _prevBothTouched = false;
+            }
             
             if(!IsTouchInSafeZone(touchPos.y)) return;
             
@@ -161,7 +161,8 @@ namespace _Main.Scripts.Gameplay
                 if (isRightTouch && isLeftTouch)
                 {
                     Debug.Log("Ability Triggered by touch");
-                    OnTriggerAbility?.Invoke();
+                    _prevBothTouched = true;
+                    OnTriggerAbility?.Invoke(true);
                     return true;
                 }
             }
