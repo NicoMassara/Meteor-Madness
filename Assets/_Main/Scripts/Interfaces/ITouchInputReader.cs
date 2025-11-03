@@ -8,6 +8,6 @@ namespace _Main.Scripts.Interfaces
         public void Disable();
         
         public event Action<int> OnUpdateDirection;
-        public event Action OnTriggerAbility;
+        public event Action<bool> OnTriggerAbility;
     }
 }

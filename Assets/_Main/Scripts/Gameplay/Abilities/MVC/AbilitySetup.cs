@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
@@ -8,9 +9,9 @@ namespace _Main.Scripts.Gameplay.Abilies
     [RequireComponent(typeof(AbilityUIView))]
     public class AbilitySetup : ManagedBehavior, IUpdatable
     {
-        [SerializeField] private InputReader inputReader;
         private AbilityMotor _motor;
         private AbilityController _controller;
+        private IInputReader _inputReader;
         
         private AbilityView _view;
         private AbilityUIView _ui;
@@ -35,11 +36,12 @@ namespace _Main.Scripts.Gameplay.Abilies
         private void Start()
         {
             _controller.Initialize();
+            _inputReader = GameManager.Instance.InputReader;
         }
 
         public void ManagedUpdate()
         {
-            if (inputReader.HasUsedAbility)
+            if (_inputReader != null && _inputReader.HasUsedAbility)
             {
                 _controller.SelectAbility();
             }
