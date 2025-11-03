@@ -1,25 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.EnhancedTouch;
-using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
-using Finger = UnityEngine.InputSystem.EnhancedTouch.Finger;
 
 namespace _Main.Scripts.Gameplay
 {
     public class InputReader : ManagedBehavior, ILateUpdatable, IUpdatable
     {
-        private const float LeftZoneWidthPercent = 0.5f;
+
         private DefaultInputs _inputs;
-        private bool _prevBothTouched;
-        private bool _rightTouched;
-        private bool _leftTouched;
         private int _rotateDirection;
         private bool _areInputsEnable;
+        private ITouchInputReader _touchInput;
         
         public bool HasUsedAbility { get; private set; }
 
@@ -35,10 +28,15 @@ namespace _Main.Scripts.Gameplay
         {
             GameManager.Instance.EventManager.Subscribe<InputsEvents.SetEnable>(EventBus_Inputs_SetEnable);
             
+#if UNITY_STANDALONE || UNITY_EDITOR
             _inputs = new DefaultInputs();
             
             //Pause
             _inputs.Gameplay.Pause.performed += OnPausePerformed;
+#endif
+#if UNITY_ANDROID || UNITY_IOS
+            _touchInput = new TouchInputReader();
+#endif
         }
         
         public void ManagedUpdate()
@@ -61,12 +59,9 @@ namespace _Main.Scripts.Gameplay
         private void EnableInputs()
         {
             if(_areInputsEnable == true) return;
-            
-            _inputs.Enable();
-
-            
 
 #if UNITY_STANDALONE || UNITY_EDITOR
+            _inputs.Enable();
             //Rotate
             _inputs.Gameplay.RotateDirection.performed += OnRotatePerformed;
             _inputs.Gameplay.RotateDirection.canceled += OnRotateCanceled;
@@ -76,11 +71,10 @@ namespace _Main.Scripts.Gameplay
 #endif
 
 #if UNITY_ANDROID || UNITY_IOS
-            //Touch
-            TouchSimulation.Enable();
-            EnhancedTouchSupport.Enable();
-            Touch.onFingerDown += OnFingerDown;
-            Touch.onFingerUp += OnFingerUp;
+            _touchInput.Enable();
+            
+            _touchInput.OnTriggerAbility += TriggerAbility;
+            _touchInput.OnUpdateDirection += UpdateDirection;
 #endif
             
 
@@ -91,9 +85,9 @@ namespace _Main.Scripts.Gameplay
         {
             if(_areInputsEnable == false) return;
             
+#if UNITY_STANDALONE || UNITY_EDITOR
             _inputs.Disable();
             
-#if UNITY_STANDALONE || UNITY_EDITOR
             //Rotate
             _inputs.Gameplay.RotateDirection.performed -= OnRotatePerformed;
             _inputs.Gameplay.RotateDirection.canceled -= OnRotateCanceled;
@@ -103,95 +97,14 @@ namespace _Main.Scripts.Gameplay
 #endif
 
 #if UNITY_ANDROID || UNITY_IOS
-            //Touch
-            TouchSimulation.Disable();
-            if (EnhancedTouchSupport.enabled)
-            {
-                Touch.onFingerDown -= OnFingerDown;
-                Touch.onFingerUp -= OnFingerUp;
-                EnhancedTouchSupport.Disable();
-            }
+            _touchInput.OnTriggerAbility -= TriggerAbility;
+            _touchInput.OnUpdateDirection -= UpdateDirection;
+            
+            _touchInput.Disable();
 #endif
             
             _areInputsEnable = false;
         }
-
-        #region Touch Inputs
-
-        private void OnFingerDown(Finger input)
-        {
-            if(IsTouchOverUI(input)) return;
-            
-            var pos = input.screenPosition;
-
-            if (pos.x < Screen.width * LeftZoneWidthPercent)
-            {
-                _leftTouched = true;
-            }
-            else
-            {
-                _rightTouched = true;
-            }
-
-            CheckBothTouches();
-            UpdateRotateDirectionFromTouch();
-        }
-        
-        private void OnFingerUp(Finger input)
-        {
-            var pos = input.screenPosition;
-
-            if (pos.x < Screen.width * LeftZoneWidthPercent)
-            {
-                _leftTouched = false;
-            }
-            else
-            {
-                _rightTouched = false;
-            }
-            
-            UpdateRotateDirectionFromTouch();
-        }
-
-        private void UpdateRotateDirectionFromTouch()
-        {
-            if (_leftTouched && !_rightTouched)
-            {
-                UpdateDirection(1);
-            }
-            else if (!_leftTouched && _rightTouched)
-            {
-                UpdateDirection(-1);
-            }
-            else
-            {
-                UpdateDirection(0);
-            }
-        }
-
-        private void CheckBothTouches()
-        {
-            if (_leftTouched && _rightTouched)
-            {
-                TriggerAbility();
-            }
-        }
-
-        private bool IsTouchOverUI(Finger finger)
-        {
-            if (EventSystem.current == null)
-                return false;
-
-            PointerEventData eventData = new PointerEventData(EventSystem.current);
-            eventData.position = finger.screenPosition;
-
-            var results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, results);
-
-            return results.Count > 0;
-        }
-
-        #endregion
 
         #region Keyboard Inputs
 
