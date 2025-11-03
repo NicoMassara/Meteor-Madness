@@ -166,5 +166,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             NotifyAll(GameModeObserverMessage.Enable);
         }
+        
+        public void HandleCameraZoomOut()
+        {
+            NotifyAll(GameModeObserverMessage.CameraZoomOut);
+        }
+
+        public void HandleCameraZoomIn()
+        {
+            NotifyAll(GameModeObserverMessage.CameraZoomIn);
+        }
     }
 }

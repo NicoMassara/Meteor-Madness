@@ -69,24 +69,24 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBusSetup()
         {
+            GameEventCaller.Subscribe<AbilitiesEvents.SetEnableUI>(EventBus_Ability_SetEnableUI);
             GameEventCaller.Subscribe<AbilitiesEvents.SetCanUse>(EventBus_Ability_SetEnable);
             GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
             GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
             GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
             GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetEnableUI>(EventBus_Ability_SetEnableUI);
             GameEventCaller.Subscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
+            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
         }
 
         private void EventBus_GameMode_SetPaused(GameModeEvents.SetPause input)
         {
-            _controller.SetEnableUIAbility(!input.IsPaused);
+            _controller.SetEnableUI(!input.IsPaused);
         }
 
         private void EventBus_Ability_SetEnableUI(AbilitiesEvents.SetEnableUI input)
         {
-            _controller.SetEnableUIAbility(input.IsEnable);
+            _controller.SetEnableUI(input.IsEnable);
         }
 
         private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)

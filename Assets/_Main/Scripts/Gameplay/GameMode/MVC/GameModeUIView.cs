@@ -29,7 +29,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
         
-        public void ManagedUpdate() { }
+        public void ManagedUpdate() { }   
 
         private void Awake()
         {
@@ -92,12 +92,31 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Enable:
                     HandleEnable();
                     break;
+                case GameModeObserverMessage.CameraZoomOut:
+                    HandleCameraZoomOut();
+                    break;
+                case GameModeObserverMessage.CameraZoomIn:
+                    HandleCameraZoomIn();
+                    break;
             }
         }
+
 
         private GameModeUIComponents GetUiComponents()
         {
             return _uiComponents ??= _uiComponents = uiSelector.GetPanelData();
+        }
+        
+        private void HandleCameraZoomOut()
+        {
+            GetUiComponents().GameplayPanel.SetActive(true);
+            GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = true});
+        }
+        
+        private void HandleCameraZoomIn()
+        {
+            GetUiComponents().GameplayPanel.SetActive(false);
+            GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = false});
         }
 
         private void HandleEnable()

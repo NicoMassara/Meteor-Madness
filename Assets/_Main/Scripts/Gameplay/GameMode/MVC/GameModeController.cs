@@ -267,6 +267,18 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
+
+        public void HandleCameraZoomOut()
+        {
+            if(_actionGate.IsInGameplay == false) return;
+            _motor.HandleCameraZoomOut();
+        }
+
+        public void HandleCameraZoomIn()
+        {
+            if(_actionGate.IsInGameplay == false) return;
+            _motor.HandleCameraZoomIn();
+        }
     }
 
     #region States

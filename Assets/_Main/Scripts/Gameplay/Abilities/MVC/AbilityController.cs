@@ -18,6 +18,20 @@ namespace _Main.Scripts.Gameplay.Abilies
             Disabled,
             Restart
         }
+        
+        private class ActionGate
+        {
+            public bool CanEnableUI { get; private set; }
+            public ActionGate(FSM<States> fsm)
+            {
+                fsm.OnEnterState += state =>
+                {
+                    CanEnableUI = state is States.Enable or States.Running;
+                };
+            }
+        }
+        
+        private ActionGate _actionGate;
 
         public AbilityController(AbilityMotor motor)
         {
@@ -35,6 +49,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var temp = new List<AbilityBaseState<States>>();
             _fsm = new FSM<States>();
+            _actionGate = new ActionGate(_fsm);
 
             #region Variables
 
@@ -126,7 +141,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             _motor.SetCanUseAbility(canUse);
         }
 
-        public void SetEnableUIAbility(bool isEnable)
+        public void SetEnableUI(bool isEnable)
         {
             _motor.SetEnableUI(isEnable);
         }
@@ -176,7 +191,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         public override void Awake()
         {
             Controller.SetCanUseAbility(true);
-            Controller.SetEnableUIAbility(true);
+            Controller.SetEnableUI(true);
         }
 
         public override void Sleep()
@@ -190,7 +205,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         public override void Awake()
         {
             Controller.SetCanUseAbility(false);
-            Controller.SetEnableUIAbility(false);
+            Controller.SetEnableUI(false);
         }
     }
 

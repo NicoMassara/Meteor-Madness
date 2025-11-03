@@ -47,6 +47,8 @@
         public const ulong InitializeValues = 0xA2017;
         public const ulong GrantProjectileSpawn = 0xA2018;
         public const ulong Enable = 0xA2019;
+        public const ulong CameraZoomIn = 0xA2020;
+        public const ulong CameraZoomOut = 0xA2021;
     }
 
     public struct FlyingObjectObserverMessage
