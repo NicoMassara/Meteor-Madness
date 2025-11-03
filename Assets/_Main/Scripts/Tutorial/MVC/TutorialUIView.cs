@@ -2,34 +2,23 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
     public class TutorialUIView : ManagedBehavior, IObserver
     {
-        [Header("Main Panel")]
-        [SerializeField] private GameObject mainPanel;
-        [Space]
-        [Header("Sub Panels")]
-        [SerializeField] private GameObject startPanel;
-        [SerializeField] private GameObject hintPanel;
-        [Space] 
-        [Header("Buttons")] 
-        [SerializeField] private Button startButton;
-        [SerializeField] private Button mainMenuButtons;
-        [Header("Text Components")]
-        [SerializeField] private TMP_Text hintText;
+        [SerializeField] private TutorialUiSelector uiSelector;
+        
+        private TutorialUiComponents _uiComponents;
 
         private GameObject _currentActivePanel;
         public event Action OnStartTutorialButtonPressed;
         
         private void Awake()
         {
-            startButton.onClick.AddListener(NextButtonOnClickHandler);
-            mainMenuButtons.onClick.AddListener(FinishButtonOnClickHandler);
+            GetUiComponents().StartButton.onClick.AddListener(NextButtonOnClickHandler);
+            GetUiComponents().MainMenuButton.onClick.AddListener(FinishButtonOnClickHandler);
         }
         
         public void OnNotify(ulong message, params object[] args)
@@ -62,6 +51,11 @@ namespace _Main.Scripts.Tutorial.MVC
                     break;
             }
         }
+        
+        private TutorialUiComponents GetUiComponents()
+        {
+            return _uiComponents ??= uiSelector.GetPanelData();
+        }
 
         private void HandleAbilityRunning()
         {
@@ -75,7 +69,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleStart()
         {
-            SetActivePanel(startPanel);
+            SetActivePanel(GetUiComponents().StartPanel);
         }
 
         private void HandleMultiPage()
@@ -85,7 +79,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleEnable()
         {
-            mainPanel.SetActive(true);
+            GetUiComponents().MainPanel.SetActive(true);
         }
         
         private void HandleMovement()
@@ -101,13 +95,13 @@ namespace _Main.Scripts.Tutorial.MVC
         private void HandleDisable()
         {
             DisableActivePanel();
-            mainPanel.SetActive(false);
+            GetUiComponents().MainPanel.SetActive(false);
         }
 
         private void SetHintText(string text)
         {
-            hintText.text = text;
-            SetActivePanel(hintPanel);
+            GetUiComponents().HintText.text = text;
+            SetActivePanel(GetUiComponents().HintPanel);
         }
 
         private void SetActivePanel(GameObject input)
