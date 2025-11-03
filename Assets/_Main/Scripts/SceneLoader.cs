@@ -1,4 +1,5 @@
-﻿using UnityEngine.SceneManagement;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts
 {
@@ -7,9 +8,16 @@ namespace _Main.Scripts
 
         public static void LoadModules()
         {
-            LoadScene("GameplayModule");
-            LoadScene("MainMenuModule");
-            LoadScene("TutorialModule");
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                LoadScene("GameplayModule");
+                LoadScene("MainMenuModule");
+                LoadScene("TutorialModule");
+            }
+            else
+            {
+                Debug.Log("Not In Core Scene Module, Modules will not load");
+            }
         }
 
         private static void LoadScene(string sceneName)

@@ -16,6 +16,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private GameModeUiPanelSelector uiSelector;
         
         private GameModeUIComponents _uiComponents;
+        private RotateUiButtons _rotateUiButtons;
         private GameObject _currentPanel;
         private NumberIncrementer _numberIncrementer;
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
@@ -29,8 +30,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
         
         public void ManagedUpdate() { }
-        
 
+        private void Awake()
+        {
+#if UNITY_ANDROID || UNITY_IOS
+            _rotateUiButtons = GetComponentInChildren<RotateUiButtons>();
+#endif
+        }
+        
         private void Start()
         {
             _gameUIConfig = GameConfigManager.Instance.GetUIData();
@@ -85,7 +92,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Enable:
                     HandleEnable();
                     break;
-
             }
         }
 
