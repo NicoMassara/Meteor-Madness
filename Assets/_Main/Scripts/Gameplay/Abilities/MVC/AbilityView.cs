@@ -4,6 +4,7 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
+using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,6 +12,12 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     public class AbilityView : ManagedBehavior, IUpdatable, IObserver
     {
+        [Header("Sound Data")]
+        [SerializeField] private SoundClassSo abilityAdd;
+        [SerializeField] private SoundClassSo abilityTrigger;
+        [SerializeField] private SoundClassSo slowTime;
+        [SerializeField] private SoundClassSo speedTime;
+        
         private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
         
@@ -21,7 +28,8 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Start()
         {
-            abilityDataController = new AbilityDataController(GameManager.Instance.EventManager, AbilitiesData_UpdateTimeScale);
+            abilityDataController = new AbilityDataController(GameManager.Instance.EventManager, 
+                AbilitiesData_UpdateTimeScale, PlaySpeedUpSound, PlaySlowDownSound);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
         }
 
@@ -68,6 +76,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                 DoesFade = true,
                 DoesMove = true
             });
+            
+            SoundEventCaller.PlaySound(abilityAdd, null,null);
         }
 
         private void HandleSetStorageFull(bool isFull)
@@ -97,6 +107,12 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(
                 (AbilityType)abilityIndex),SelfUpdateGroup);
+            
+#if UNITY_ANDROID || UNITY_IOS
+            Handheld.Vibrate();
+#endif
+            
+            SoundEventCaller.PlaySound(abilityTrigger, null,null);
         }
 
         private void HandleFinishAbility(int abilityIndex)
@@ -105,6 +121,16 @@ namespace _Main.Scripts.Gameplay.Abilies
             
             ActionManager.Add(abilityDataController.GetAbilityEndQueue(
                 (AbilityType)abilityIndex),SelfUpdateGroup);
+        }
+
+        public void PlaySpeedUpSound()
+        {
+            SoundEventCaller.PlaySound(speedTime, null,null);
+        }
+        
+        public void PlaySlowDownSound()
+        {
+            SoundEventCaller.PlaySound(slowTime, null,null);
         }
 
         #endregion

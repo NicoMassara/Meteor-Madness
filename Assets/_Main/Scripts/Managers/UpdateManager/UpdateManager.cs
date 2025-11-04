@@ -22,7 +22,8 @@ namespace _Main.Scripts.Managers.UpdateManager
         private readonly List<ILateUpdatable> _lateToRemove = new List<ILateUpdatable>();
         
         public bool IsGlobalPaused { get; set; }
-        
+        public int TargetFrameRate { get; private set; }
+
 #pragma warning disable CS0414 // Field is assigned but its value is never used
         private bool _isUpdating = false;
         private bool _isFixedUpdating = false;
@@ -38,7 +39,20 @@ namespace _Main.Scripts.Managers.UpdateManager
             DontDestroyOnLoad(gameObject);
             return gameObject.AddComponent<UpdateManager>();
         }
-        
+
+        private void Awake()
+        {
+#if UNITY_STANDALONE || UNITY_EDITOR
+            TargetFrameRate = 165;
+#endif
+#if UNITY_ANDROID
+            TargetFrameRate = 120;
+#endif
+            
+            Application.targetFrameRate = TargetFrameRate;
+
+        }
+
         #region Update
 
         private void Update()

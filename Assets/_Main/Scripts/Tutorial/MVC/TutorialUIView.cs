@@ -3,37 +3,22 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
     public class TutorialUIView : ManagedBehavior, IObserver
     {
-        [Header("Main Panel")]
-        [SerializeField] private GameObject mainPanel;
-        [Space]
-        [Header("Sub Panels")]
-        [SerializeField] private GameObject startPanel;
-        [SerializeField] private GameObject movementPanel;
-        [SerializeField] private GameObject abilityPanel;
-        [SerializeField] private GameObject finishPanel;
-        [Space] 
-        [Header("Buttons")] 
-        [SerializeField] private Button nextButton;
-        [SerializeField] private Button[] mainMenuButtons;
+        [SerializeField] private TutorialUiSelector uiSelector;
+        
+        private TutorialUiComponents _uiComponents;
 
         private GameObject _currentActivePanel;
-
-        public event Action OnNext;
+        public event Action OnStartTutorialButtonPressed;
         
         private void Awake()
         {
-            nextButton.onClick.AddListener(NextButtonOnClickHandler);
-
-            foreach (var button in mainMenuButtons)
-            {
-                button.onClick.AddListener(FinishButtonOnClickHandler);
-            }
+            GetUiComponents().StartButton.onClick.AddListener(NextButtonOnClickHandler);
+            GetUiComponents().MainMenuButton.onClick.AddListener(FinishButtonOnClickHandler);
         }
         
         public void OnNotify(ulong message, params object[] args)
@@ -49,8 +34,14 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.Ability:
                     HandleAbility();
                     break;
-                case TutorialObserverMessage.Finish:
-                    HandleFinish();
+                case TutorialObserverMessage.MultiPage:
+                    HandleMultiPage();
+                    break;
+                case TutorialObserverMessage.SphereDeflected:
+                    HandleSphereDeflected();
+                    break;
+                case TutorialObserverMessage.AbilityRunning:
+                    HandleAbilityRunning();
                     break;
                 case TutorialObserverMessage.Disable:
                     HandleDisable();
@@ -60,36 +51,57 @@ namespace _Main.Scripts.Tutorial.MVC
                     break;
             }
         }
-
-        private void HandleEnable()
+        
+        private TutorialUiComponents GetUiComponents()
         {
-            mainPanel.SetActive(true);
+            return _uiComponents ??= uiSelector.GetPanelData();
+        }
+
+        private void HandleAbilityRunning()
+        {
+            DisableActivePanel();
+        }
+
+        private void HandleSphereDeflected()
+        {
+            SetHintText("Trigger the Super Shield!");
         }
 
         private void HandleStart()
         {
-            SetActivePanel(startPanel);
+            SetActivePanel(GetUiComponents().StartPanel);
+        }
+
+        private void HandleMultiPage()
+        {
+            DisableActivePanel();
+        }
+
+        private void HandleEnable()
+        {
+            GetUiComponents().MainPanel.SetActive(true);
         }
         
         private void HandleMovement()
         {
-            SetActivePanel(movementPanel);
+            SetHintText("Try Moving and Deflect a Meteor!");
         }
         
         private void HandleAbility()
         {
-            SetActivePanel(abilityPanel);
-        }
-
-        private void HandleFinish()
-        {
-            SetActivePanel(finishPanel);
+            SetHintText("Try To Deflect the mysterious Sphere!");
         }
         
         private void HandleDisable()
         {
             DisableActivePanel();
-            mainPanel.SetActive(false);
+            GetUiComponents().MainPanel.SetActive(false);
+        }
+
+        private void SetHintText(string text)
+        {
+            GetUiComponents().HintText.text = text;
+            SetActivePanel(GetUiComponents().HintPanel);
         }
 
         private void SetActivePanel(GameObject input)
@@ -109,11 +121,13 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void NextButtonOnClickHandler()
         {
-            OnNext?.Invoke();
+            SoundEventCaller.PlayUIButton(UISoundType.Accept);
+            OnStartTutorialButtonPressed?.Invoke();
         }
         
         private void FinishButtonOnClickHandler()
         {
+            SoundEventCaller.PlayUIButton(UISoundType.Back);
             GameManager.Instance.LoadMainMenu();
         }
 

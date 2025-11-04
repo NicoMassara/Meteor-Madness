@@ -7,8 +7,7 @@ namespace _Main.Scripts.Gameplay.Shield
 {
     public class ShieldController
     {
-        private ShieldMotor _motor;
-        private ShieldView _view;
+        private readonly ShieldMotor _motor;
         
         private class ActionGate
         {
@@ -17,7 +16,7 @@ namespace _Main.Scripts.Gameplay.Shield
             {
                 fsm.OnEnterState += state =>
                 {
-                    RotationEnable = state is States.Active or States.Gold;
+                    RotationEnable = state is States.Active or States.Gold or States.Slow;
                 };
             }
         }
@@ -28,7 +27,8 @@ namespace _Main.Scripts.Gameplay.Shield
             Active,
             Super,
             Gold,
-            Automatic
+            Automatic,
+            Slow
         }
 
         private FSM<States> _fsm;
@@ -76,12 +76,14 @@ namespace _Main.Scripts.Gameplay.Shield
             var super = new ShieldSuperState<States>();
             var gold = new ShieldGoldState<States>();
             var automatic = new ShieldAutomaticState<States>();
+            var slow = new ShieldSlowState<States>();
             
             temp.Add(unactive);
             temp.Add(active);
             temp.Add(super);
             temp.Add(gold);
             temp.Add(automatic);
+            temp.Add(slow);
 
             #endregion
 
@@ -93,11 +95,15 @@ namespace _Main.Scripts.Gameplay.Shield
             active.AddTransition(States.Super, super);
             active.AddTransition(States.Gold, gold);
             active.AddTransition(States.Automatic, automatic);
+            active.AddTransition(States.Slow, slow);
             
             super.AddTransition(States.Active, active);
             
             gold.AddTransition(States.Active, active);
             gold.AddTransition(States.Unactive, unactive);
+            
+            slow.AddTransition(States.Active, active);
+            slow.AddTransition(States.Unactive, unactive);
             
             automatic.AddTransition(States.Active, active);
 
@@ -140,6 +146,11 @@ namespace _Main.Scripts.Gameplay.Shield
         public void TransitionToAutomatic()
         {
             SetTransitions(States.Automatic);
+        }
+        
+        public void TransitionToSlow()
+        {
+            SetTransitions(States.Slow);
         }
 
         #endregion
@@ -204,6 +215,11 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _motor.SetActiveAutomatic(isActive);
         }
+        
+        public void SetActiveSlow(bool isActive)
+        {
+            _motor.SetActiveSlow(isActive);
+        }
 
         #endregion
 
@@ -211,6 +227,8 @@ namespace _Main.Scripts.Gameplay.Shield
         
 
         #endregion
+
+
     }
 
     #region States
@@ -275,6 +293,19 @@ namespace _Main.Scripts.Gameplay.Shield
         public override void Awake()
         {
             Controller.SetActiveShield(false);
+        }
+    }
+    
+    public class ShieldSlowState<T> : ShieldBaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetActiveSlow(true);
+        }
+
+        public override void Sleep()
+        {
+            Controller.SetActiveSlow(false);
         }
     }
 

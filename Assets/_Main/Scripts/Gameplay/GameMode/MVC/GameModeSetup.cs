@@ -110,6 +110,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _ui.OnRestartButtonPressed += UIView_OnRestartButtonPressedHandler;
             _ui.OnMainMenuButtonPressed += UIView_OnMainMenuButtonPressedHandler;
+            _ui.OnPauseButtonPressed += UIView_OnPauseButtonPressedHandler;
+        }
+
+        private void UIView_OnPauseButtonPressedHandler()
+        {
+            GameEventCaller.Publish(new GameModeEvents.SetPause{IsPaused = true});
         }
 
         private void UIView_OnMainMenuButtonPressedHandler()
@@ -137,8 +143,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameEventCaller.Subscribe<EarthEvents.RestartFinished>(EventBus_Earth_RestartFinish);
             GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_SetActive);
             GameEventCaller.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
+            GameEventCaller.Subscribe<CameraEvents.ZoomIn>(EventBus_Camera_ZoomIn);
+            GameEventCaller.Subscribe<CameraEvents.ZoomOut>(EventBus_Camera_ZoomOut);
         }
-        
+
         private void UnsubscribeToEventBus()
         {
             GameEventCaller.Unsubscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
@@ -151,6 +159,16 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameEventCaller.Unsubscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
         }
 
+        private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)
+        {
+            _controller.HandleCameraZoomOut();
+        }
+
+        private void EventBus_Camera_ZoomIn(CameraEvents.ZoomIn input)
+        {
+            _controller.HandleCameraZoomIn();
+        }
+        
         private void EventBus_GameScreen_SetScreen(GameScreenEvents.SetScreen input)
         {
             if (input.ScreenType == ScreenType.GameMode &&

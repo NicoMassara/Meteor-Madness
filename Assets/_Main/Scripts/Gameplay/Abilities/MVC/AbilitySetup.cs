@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
@@ -8,9 +9,9 @@ namespace _Main.Scripts.Gameplay.Abilies
     [RequireComponent(typeof(AbilityUIView))]
     public class AbilitySetup : ManagedBehavior, IUpdatable
     {
-        [SerializeField] private InputReader inputReader;
         private AbilityMotor _motor;
         private AbilityController _controller;
+        private IInputReader _inputReader;
         
         private AbilityView _view;
         private AbilityUIView _ui;
@@ -35,11 +36,12 @@ namespace _Main.Scripts.Gameplay.Abilies
         private void Start()
         {
             _controller.Initialize();
+            _inputReader = GameManager.Instance.InputReader;
         }
 
         public void ManagedUpdate()
         {
-            if (inputReader.HasUsedAbility)
+            if (_inputReader != null && _inputReader.HasUsedAbility)
             {
                 _controller.SelectAbility();
             }
@@ -69,12 +71,24 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBusSetup()
         {
+            GameEventCaller.Subscribe<AbilitiesEvents.SetEnableUI>(EventBus_Ability_SetEnableUI);
             GameEventCaller.Subscribe<AbilitiesEvents.SetCanUse>(EventBus_Ability_SetEnable);
             GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
             GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
             GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
             GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            GameEventCaller.Subscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
             GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+        }
+
+        private void EventBus_GameMode_SetPaused(GameModeEvents.SetPause input)
+        {
+            _controller.SetEnableUI(!input.IsPaused);
+        }
+
+        private void EventBus_Ability_SetEnableUI(AbilitiesEvents.SetEnableUI input)
+        {
+            _controller.SetEnableUI(input.IsEnable);
         }
 
         private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)

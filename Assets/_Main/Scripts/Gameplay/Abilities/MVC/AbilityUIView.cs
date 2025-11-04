@@ -1,18 +1,28 @@
-﻿using _Main.Scripts.Gameplay.Abilities;
+﻿using System;
+using _Main.Scripts.Gameplay.Abilities;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
-    public class AbilityUIView : ManagedBehavior, IUpdatable, IObserver
+    public class AbilityUIView : ManagedBehavior, IObserver
     {
         [SerializeField] private AbilityUIData abilityUIData;
+        [SerializeField] private AbilityUiPanelSelector uiSelector;
+        
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
-        public void ManagedUpdate()
-        {
 
+        private void Start()
+        {
+            GetAbilityUIComponents().MainPanel.SetActive(false);
         }
+        
+        private AbilityUIComponents GetAbilityUIComponents()
+        {
+            return uiSelector.GetPanelData();
+        }
+
 
         public void OnNotify(ulong message, params object[] args)
         {
@@ -27,7 +37,15 @@ namespace _Main.Scripts.Gameplay.Abilies
                 case AbilityObserverMessage.RestartAbilities:
                     HandleRestartAbilities();
                     break;
+                case AbilityObserverMessage.SetEnableUI:
+                    HandleSetEnableUI((bool)args[0]);
+                    break;
             }
+        }
+
+        private void HandleSetEnableUI(bool isEnable)
+        {
+            GetAbilityUIComponents().MainPanel.SetActive(isEnable);
         }
 
         private void HandleRestartAbilities()
