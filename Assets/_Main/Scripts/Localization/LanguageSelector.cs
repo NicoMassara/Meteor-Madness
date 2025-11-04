@@ -4,7 +4,7 @@ namespace _Main.Scripts.Localization
 {
     public class LanguageSelector : MonoBehaviour
     {
-        public void ChangeLanguage(string languageCode)
+        public static void ChangeLanguage(string languageCode)
         {
             if (!System.Enum.TryParse(languageCode, true, out SystemLanguage lang))
             {
