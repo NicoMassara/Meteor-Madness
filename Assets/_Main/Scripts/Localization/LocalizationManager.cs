@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+using UnityEngine.Networking;
 
 namespace _Main.Scripts.Localization
 {
@@ -22,6 +24,9 @@ namespace _Main.Scripts.Localization
             { SystemLanguage.English, "en" },
             { SystemLanguage.Spanish, "es" },
             { SystemLanguage.French, "fr" },
+            { SystemLanguage.Portuguese, "pt" },
+            { SystemLanguage.Italian, "it" },
+            { SystemLanguage.German, "de" },
         };
         
         private void Awake()
@@ -41,40 +46,92 @@ namespace _Main.Scripts.Localization
 
         private void Initialize()
         {
-            string savedLang = PlayerPrefs.GetString("language", "");
-            SystemLanguage lang = string.IsNullOrEmpty(savedLang)
-                ? Application.systemLanguage
-                : (SystemLanguage)Enum.Parse(typeof(SystemLanguage), savedLang);
-            
-            LoadLanguage(_defaultLanguage);
+            LoadLanguage(Application.systemLanguage);
         }
+
+#if UNITY_ANDROID
+        private IEnumerator LoadMobileJson(string path, SystemLanguage language)
+        {
+            using (UnityWebRequest www = UnityWebRequest.Get(path))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning($"Language file for {language} not found. Falling back to default: {_defaultLanguage}");
+                    string fallbackPath = Path.Combine(Application.streamingAssetsPath, "Localization", $"{_defaultLanguage.ToString().ToLower()}.json");
+                    using (UnityWebRequest fallback = UnityWebRequest.Get(fallbackPath))
+                    {
+                        yield return fallback.SendWebRequest();
+                        if (fallback.result == UnityWebRequest.Result.Success)
+                            ParseJsonToDictionary(fallback.downloadHandler.text);
+                        else
+                            Debug.LogError("Failed to load fallback language file.");
+                    }
+                }
+                else
+                {
+                    ParseJsonToDictionary(www.downloadHandler.text);
+                }
+
+                PlayerPrefs.SetString("language", language.ToString());
+                PlayerPrefs.Save();
+
+                LocalizationEvents.TriggerOnLanguageChanged();
+            }
+        }
+#endif
+        
 
         public void LoadLanguage(SystemLanguage language)
         {
             _currentLanguage = language;
-            string path = Path.Combine(Application.streamingAssetsPath, "Localization", $"{GetLanguageCode(_currentLanguage).ToLower()}.json");
+            string langCode = GetLanguageCode(_currentLanguage).ToLower();
+            string path = Path.Combine(Application.streamingAssetsPath, "Localization", $"{langCode}.json");
 
+#if UNITY_ANDROID
+            StartCoroutine(LoadMobileJson(path, language));
+#else
             if (!File.Exists(path))
             {
-                Debug.LogWarning($"Language file for {language} not found. Falling back to default: {_defaultLanguage}");
-                path = Path.Combine(Application.streamingAssetsPath, "Localization", $"{_defaultLanguage.ToString().ToLower()}.json");
+                Debug.LogWarning(
+                    $"Language file for {language} not found. Falling back to default: {_defaultLanguage}");
+                path = Path.Combine(Application.streamingAssetsPath, "Localization",
+                    $"{_defaultLanguage.ToString().ToLower()}.json");
             }
-            
+
             string json = File.ReadAllText(path);
             ParseJsonToDictionary(json);
-            
+
             PlayerPrefs.SetString("language", language.ToString());
             PlayerPrefs.Save();
-            
+
             LocalizationEvents.TriggerOnLanguageChanged();
+#endif
         }
-        
+
         private void ParseJsonToDictionary(string json)
         {
-            _localizedTexts.Clear();
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogError("ParseJsonToDictionary recibió un JSON vacío o nulo.");
+                return;
+            }
 
-            JObject root = JObject.Parse(json);
-            FlattenJson(root, "");
+            json = json.Trim('\uFEFF', '\u200B'); // limpia BOM o caracteres invisibles
+
+            try
+            {
+                _localizedTexts.Clear();
+                JObject root = JObject.Parse(json);
+                FlattenJson(root, "");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Error parseando JSON: {e.Message}\nContenido:\n{json}");
+            }
+            
+            LocalizationEvents.TriggerOnLocalizationLoaded();
         }
         
         private void FlattenJson(JToken token, string prefix)
