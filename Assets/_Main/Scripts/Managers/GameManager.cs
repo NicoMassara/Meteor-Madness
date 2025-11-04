@@ -55,6 +55,12 @@ namespace _Main.Scripts.Managers
         {
             GameScreenEventCaller.SetGameScreen(ScreenType.MainMenu, true);
         }
+        
+        public void LoadCosmeticMenu()
+        {
+            GameScreenEventCaller.SetGameScreen(ScreenType.Cosmetic, true);
+        }
+
 
         public void QuitGame()
         {

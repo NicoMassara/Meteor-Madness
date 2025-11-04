@@ -13,6 +13,7 @@ namespace _Main.Scripts
                 LoadScene("GameplayModule");
                 LoadScene("MainMenuModule");
                 LoadScene("TutorialModule");
+                LoadScene("CosmeticsModule");
             }
             else
             {

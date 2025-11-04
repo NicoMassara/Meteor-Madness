@@ -28,10 +28,13 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.TriggerTutorial:
                     HandleTutorial();
                     break;
+                case MainMenuObserverMessage.TriggerCosmetic:
+                    HandleCosmetic();
+                    break;
                 
             }
         }
-        
+
         private void HandleEnable()
         {
             OnMainMenuEnable?.Invoke();
@@ -52,6 +55,11 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleTutorial()
         {
             GameManager.Instance.LoadTutorial();
+        }
+        
+        private void HandleCosmetic()
+        {
+            GameManager.Instance.LoadCosmeticMenu();
         }
 
         private void HandleQuit()

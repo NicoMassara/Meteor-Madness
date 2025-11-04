@@ -23,6 +23,9 @@ namespace _Main.Scripts.GameScreens
                 case GameScreenObserverMessage.SetTutorial:
                     HandleSetTutorial();
                     break;
+                case GameScreenObserverMessage.SetCosmeticMenu:
+                    HandleSetCosmeticMenu();
+                    break;
             }
         }
 
@@ -39,6 +42,11 @@ namespace _Main.Scripts.GameScreens
         private void HandleSetGameplay()
         {
             GameScreenEventCaller.SetGameScreen(ScreenType.GameMode, true);
+        }
+
+        private void HandleSetCosmeticMenu()
+        {
+            GameScreenEventCaller.SetGameScreen(ScreenType.Cosmetic, true);
         }
     }
 }

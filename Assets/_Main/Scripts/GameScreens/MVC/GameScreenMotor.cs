@@ -23,5 +23,10 @@ namespace _Main.Scripts.GameScreens
         {
             NotifyAll(GameScreenObserverMessage.SetStartLoading);
         }
+
+        public void SetActiveCosmetic()
+        {
+            NotifyAll(GameScreenObserverMessage.SetCosmeticMenu);
+        }
     }
 }

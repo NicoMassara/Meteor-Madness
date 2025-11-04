@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.Gameplay.Abilities;
+﻿using _Main.Scripts.Gameplay.Abilities;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
 using UnityEngine;
