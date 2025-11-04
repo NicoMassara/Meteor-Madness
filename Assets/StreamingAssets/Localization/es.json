@@ -1,0 +1,62 @@
+﻿{
+  "UIButton" : {
+    "MainMenu" : "Menu",
+    "Resume" : "Reanudar",
+    "Retry" : "Reintentar",
+    "Next" : "Siguiente",
+    "Previous": "Anterior",
+    "Back": "Atras",
+    "Pause": "Pausar",
+    "Quit": "Salir"
+  },
+
+  "Menu": {
+    "Play": "Jugar",
+    "Lore": {
+      "Button": "Que Paso?",
+      "Title" : "Que Paso?",
+      "Text" : "@Texts/es/lore.txt"
+    },
+    "Tutorial" : {
+      "Button":  "Como Jugar?",
+      "Title" : "Bienvenido al Tutorial!"
+    },
+    "Cosmetic": "Tienda",
+    "Settings": "Opciomes"
+  },
+
+  "Tutorial": {
+    "Hint" : {
+      "Hint1" : "Hint 1",
+      "Hint2" : "Hint 2",
+      "Hint3" : "Hint 3",
+      "Hint4" : "Hint 4"
+    },
+    "MultiPage" : {
+      "MultiPage1" : "MultiPage1",
+      "MultiPage2" : "MultiPage2",
+      "MultiPage3" : "MultiPage3",
+      "MultiPage4" : "MultiPage4"
+    }
+  },
+
+  "Abilities": {
+
+  },
+
+  "Cosmetic": {
+    "Title" : "Muy Pronto!"
+  },
+
+  "Pause": {
+    "Title" : "Pausa"
+  },
+
+  "Gameplay": {
+    "CountdownFinish" : "Defiende!",
+    "Score" : "Puntos",
+    "Death": {
+      "Title" : "La Humanidad se acabo!"
+    }
+  }
+}

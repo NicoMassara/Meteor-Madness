@@ -1,0 +1,62 @@
+﻿{
+  "UIButton" : {
+    "MainMenu" : "Main Menu",
+    "Resume" : "Resume",
+    "Retry" : "Retry",
+    "Next" : "Next",
+    "Back": "Back",
+    "Previous": "Previous",
+    "Pause": "Pause",
+    "Quit": "Quit"
+  },
+  
+  "Menu": {
+    "Play": "Play",
+    "Lore": {
+      "Button": "What Happened?",
+      "Title" : "What Happened?",
+      "Text" : "@Texts/en/lore.txt"
+    },
+    "Tutorial" : {
+      "Button":  "How To Play",
+      "Title" : "Welcome To The Tutorial!"
+    },
+    "Cosmetic": "Item Shop",
+    "Settings": "Settings"
+  },
+  
+  "Tutorial": {
+    "Hint" : {
+      "Hint1" : "Hint 1",
+      "Hint2" : "Hint 2",
+      "Hint3" : "Hint 3",
+      "Hint4" : "Hint 4"
+    },
+    "MultiPage" : {
+      "MultiPage1" : "MultiPage1",
+      "MultiPage2" : "MultiPage2",
+      "MultiPage3" : "MultiPage3",
+      "MultiPage4" : "MultiPage4"
+    }
+  },
+  
+  "Abilities": {
+
+  },
+  
+  "Cosmetic": {
+    "Title" : "Coming Soon!"
+  },
+  
+  "Pause": {
+    "Title" : "Pause"
+  },
+  
+  "Gameplay": {
+    "CountdownFinish" : "Defend!",
+    "Score" : "Score",
+    "Death": {
+      "Title" : "Humanity Is Over!"
+    }
+  }
+}
