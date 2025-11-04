@@ -12,9 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968181250e72491f9a1a8e8c4000d0dc, type: 3}
   m_Name: SO_MultiPageTextData_Tutorial_Finish
   m_EditorClassIdentifier: 
-  textsArray:
-  - You have finished the Meteor Madness Tutorial!
-  - "That's everything you need to know to play the game!\n\\n \nFeel free to revesit
-    it any time you need and protect the Earth! You are the only one who can save
-    it!"
-  lastPageNextButtonText: Back to Menu
+  textCode: MultiPage.Tutorial.Finish
+  textCount: 2

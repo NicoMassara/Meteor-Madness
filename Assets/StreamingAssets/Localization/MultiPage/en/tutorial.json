@@ -1,0 +1,26 @@
+﻿{
+  "Ability" : {
+    "Texts" : [
+      "During your Play sometimes you'll found a mysterious sphere...",
+      "This sphere has a meteor-like form but it is not a Meteor.\n\n\nSome People say that after deflecting one of them, if you press both sides of your phone at the same time..\n\n \nA Super Effect Will Happen...",
+      "Try to Deflect one of them and see what has inside!"
+    ],
+    "LastButton" : "Try"
+  },
+  
+  "Movement": {
+    "Texts" :[
+      "Hello!\n\\n\nWelcome to the Tutorial!\n",
+      "Here You'll learn How to Play Meteor Madness!\n\n\nTry pressing each side of your phone to move the Earth's Shield!"
+    ],
+    "LastButton" : "Try to Move!"
+  },
+  
+  "Finish" : {
+    "Texts": [
+      "You have finished the Meteor Madness Tutorial!",
+      "That's everything you need to know to play the game!\n\n \nFeel free to revisit it any time you need and protect the Earth! You are the only one who can save it!"
+    ],
+    "LastButton" : "Back to Menu"
+  }
+}

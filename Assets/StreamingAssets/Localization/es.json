@@ -1,0 +1,66 @@
+﻿{
+  "UIButton" : {
+    "MainMenu" : "Menu Principal",
+    "Resume" : "Reanudar",
+    "Restart" : "Reintentar",
+    "Next" : "Siguiente",
+    "Back": "Atras",
+    "Previous": "Anterior",
+    "Pause": "Pausar",
+    "Quit": "Cerrar"
+  },
+
+  "Menu": {
+    "Play": "Play",
+    "Lore": {
+      "Button": "¿Que paso aqui?",
+      "Title" : "¿Que paso aqui?",
+      "Text" : "@Texts/es/lore.txt"
+    },
+    "Tutorial" : {
+      "Button":  "Como jugar",
+      "Title" : "Bienvenido al tutorial",
+      "StartButton" : "Iniciar Tutorial"
+    },
+    "Cosmetic": "Tienda",
+    "Settings": "Opciones"
+  },
+
+  "Tutorial": {
+    "Hint" : {
+      "Movement" : "Prueba Moverte y destruye el meteorito",
+      "Ability" : "Prueba destruyendo la misteriosa esfera",
+      "Shield" : "Activa el Super Escudo!"
+    }
+  },
+
+  "MultiPage" : {
+    "Tutorial" : "@MultiPage/es/tutorial.json"
+  },
+
+  "Abilities": {
+    "SuperShield" : "Super Escudo",
+    "SlowMotion" : "Camara Lenta",
+    "Health" : "Reconstruccion",
+    "DoublePoints" : "Doble Puntos",
+    "Automatic" : "Auto-Piloto"
+  },
+
+  "Cosmetic": {
+    "Title" : "Muy Pronto!"
+  },
+
+  "Pause": {
+    "Title" : "Pausa"
+  },
+
+  "Gameplay": {
+    "CountDownStart" : "Preparado en",
+    "CountdownFinish" : "Defender!",
+    "Score" : "Puntos",
+    "Death": {
+      "Title" : "La Humanidad se acabo!",
+      "Score" : "Tus Puntos"
+    }
+  }
+}

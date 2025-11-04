@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Tutorial.States;
-using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
 {

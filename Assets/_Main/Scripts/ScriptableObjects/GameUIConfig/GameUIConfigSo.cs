@@ -13,12 +13,9 @@ namespace _Main.Scripts.ScriptableObjects
         [SerializeField] private float closePauseMenu = 0.25f;
         
         [SerializeField] private DeathUITimeDataSo deathUITimeData;
-        [SerializeField] private UITextValuesDataSo textData;
 
         public float GameplayPointsTimeToIncrease => gameplayPointsTimeToIncrease;
         public float ClosePauseMenu => closePauseMenu;
         public IDeathUITime DeathUITimeData => deathUITimeData;
-
-        public IUITextData TextData => textData;
     }
 }
