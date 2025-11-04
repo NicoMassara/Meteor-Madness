@@ -49,11 +49,13 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             _view.OnMainMenuEnable += EnableMainMenu;
             //
-            _ui.OnGameModeStarted += () => _controller.TriggerGameMode();
-            _ui.OnTutorialStarted += () => _controller.TriggerTutorial();
+            _ui.OnGameModeTriggered += () => _controller.TriggerGameMode();
+            _ui.OnTutorialTriggered += () => _controller.TriggerTutorial();
             _ui.OnLoreOpen += () => _controller.TransitionToLore();
-            _ui.OnLoreClosed += () => _controller.TransitionToInitial();
+            _ui.OnBackToMenu += () => _controller.TransitionToInitial();
             _ui.OnExit += () => _controller.TriggerQuit();
+            _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
+            _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
         }
 
         #endregion

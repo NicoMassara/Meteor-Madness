@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Tutorial.States;
+using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
@@ -29,7 +30,6 @@ namespace _Main.Scripts.Tutorial.MVC
                 fsm.OnEnterState += state =>
                 {
                     ProjectileReStockEnable = state is States.Ability or States.Movement;
-                    CanMultiPage = state is not States.Disable;
                 };
             }
         }
@@ -219,10 +219,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         public void SetMultiPage()
         {
-            if (_actionGate.CanMultiPage)
-            {
-                _motor.SetMultiPage();
-            }
+            _motor.SetMultiPage();
         }
 
         public void TriggerSphereDeflected()

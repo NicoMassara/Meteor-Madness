@@ -112,8 +112,10 @@
         public const ulong Disable = 0xA7002;
         public const ulong MainMenu = 0xA7003;
         public const ulong LoreMenu = 0xA7004;
-        public const ulong GameMode = 0xA7005;
-        public const ulong Tutorial = 0xA7006;
+        public const ulong TriggerGameMode = 0xA7005;
+        public const ulong TriggerTutorial = 0xA7006;
         public const ulong Quit = 0xA7007;
+        public const ulong TutorialMenu = 0xA7008;
+        public const ulong TriggerCosmetic = 0xA7009;
     }
 }

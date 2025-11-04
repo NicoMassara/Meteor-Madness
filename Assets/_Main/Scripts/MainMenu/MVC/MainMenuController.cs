@@ -13,6 +13,7 @@ namespace _Main.Scripts.MainMenu.MVC
             Enable,
             Initial,
             Lore,
+            Tutorial,
             Disable
         }
 
@@ -40,11 +41,13 @@ namespace _Main.Scripts.MainMenu.MVC
             var disable = new MainMenuDisableState<States>();
             var initial = new MainMenuInitialState<States>();
             var lore = new MainMenuLoreState<States>();
+            var tutorial = new MainMenuTutorialState<States>();
             
             temp.Add(enable);
             temp.Add(disable);
             temp.Add(initial);
             temp.Add(lore);
+            temp.Add(tutorial);
 
 
             #endregion
@@ -54,9 +57,13 @@ namespace _Main.Scripts.MainMenu.MVC
             enable.AddTransition(States.Initial, initial);
             
             initial.AddTransition(States.Lore, lore);
+            initial.AddTransition(States.Tutorial, tutorial);
             initial.AddTransition(States.Disable, disable);
             
             lore.AddTransition(States.Initial, initial);
+            
+            tutorial.AddTransition(States.Initial, initial);
+            tutorial.AddTransition(States.Disable, disable);
             
             disable.AddTransition(States.Enable, enable);
 
@@ -98,9 +105,16 @@ namespace _Main.Scripts.MainMenu.MVC
             SetTransition(States.Disable);
         }
         
+        public void TransitionToTutorial()
+        {
+            SetTransition(States.Tutorial);
+        }
+        
         #endregion
 
         #endregion
+
+        #region Motor Caller
 
         public void Enable()
         {
@@ -121,6 +135,11 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             _motor.Menu();
         }
+        
+        public void Tutorial()
+        {
+            _motor.Tutorial();
+        }
 
         public void TriggerGameMode()
         {
@@ -136,6 +155,13 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             _motor.TriggerQuit();
         }
+        
+        public void TriggerCosmetic()
+        {
+            _motor.TriggerCosmetic();
+        }
+
+        #endregion
     }
 
     #region States
@@ -167,6 +193,14 @@ namespace _Main.Scripts.MainMenu.MVC
         public override void Awake()
         {
             Controller.Menu();
+        }
+    }
+    
+    public class MainMenuTutorialState<T> : MainMenuStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.Tutorial();
         }
     }
 

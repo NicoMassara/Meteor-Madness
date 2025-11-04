@@ -19,13 +19,13 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.Disable:
                     HandleDisable();
                     break;
-                case MainMenuObserverMessage.GameMode:
+                case MainMenuObserverMessage.TriggerGameMode:
                     HandleGameMode();
                     break;
                 case MainMenuObserverMessage.Quit:
                     HandleQuit();
                     break;
-                case MainMenuObserverMessage.Tutorial:
+                case MainMenuObserverMessage.TriggerTutorial:
                     HandleTutorial();
                     break;
                 
