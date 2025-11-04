@@ -1,0 +1,66 @@
+﻿{
+  "UIButton": {
+    "MainMenu": "Menu Principal",
+    "Resume": "Reprendre",
+    "Restart": "Réessayer",
+    "Next": "Suivant",
+    "Back": "Retour",
+    "Previous": "Précédent",
+    "Pause": "Pause",
+    "Quit": "Quitter"
+  },
+
+  "Menu": {
+    "Play": "Jouer",
+    "Lore": {
+      "Button": "Que s’est-il passé ?",
+      "Title": "Que s’est-il passé ?",
+      "Text": "@Texts/fr/lore.txt"
+    },
+    "Tutorial": {
+      "Button": "Comment Jouer",
+      "Title": "Bienvenue dans le Tutoriel !",
+      "StartButton": "Commencer le Tutoriel"
+    },
+    "Cosmetic": "Boutique d’Objets",
+    "Settings": "Paramètres"
+  },
+
+  "Tutorial": {
+    "Hint": {
+      "Movement": "Essayez de bouger et de dévier une météorite !",
+      "Ability": "Essayez de dévier la sphère mystérieuse !",
+      "Shield": "Activez le Super Bouclier !"
+    }
+  },
+
+  "MultiPage": {
+    "Tutorial": "@MultiPage/fr/tutorial.json"
+  },
+
+  "Abilities": {
+    "SuperShield": "Super Bouclier",
+    "SlowMotion": "Ralenti",
+    "Health": "Reconstruction",
+    "DoublePoints": "Double Points",
+    "Automatic": "Pilote Automatique"
+  },
+
+  "Cosmetic": {
+    "Title": "Bientôt Disponible !"
+  },
+
+  "Pause": {
+    "Title": "Pause"
+  },
+
+  "Gameplay": {
+    "CountDownStart": "Préparez-vous dans",
+    "CountdownFinish": "Défendez !",
+    "Score": "Score",
+    "Death": {
+      "Title": "L’humanité est perdue !",
+      "Score": "Votre Score"
+    }
+  }
+}
