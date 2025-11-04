@@ -23,8 +23,7 @@ namespace _Main.Scripts.MultiPage
             _view.OnFinished += View_OnFinishedHandler;
             _view.OnNextButtonTextChanged += (newText) => {_ui.SetNextButtonText(newText);};
             _view.OnPreviousButtonSetEnable += (isEnable) => {_ui.SetEnablePreviousButton(isEnable);};
-            _view.OnPageChanged += (panelText) => {_ui.SetPanelText(panelText);};
-            _view.NextButtonDefaultText = _ui.GetNextButtonText();
+            _view.OnPageChanged += (panelText, index) => {_ui.SetPanelText(panelText, index);};
             //UI
             _ui.OnNextButtonPressed += ()=> _view.TryIncreasePageIndex();
             _ui.OnPreviousButtonPressed += ()=> _view.TryDecreasePageIndex();
@@ -43,7 +42,6 @@ namespace _Main.Scripts.MultiPage
         private void View_OnFinishedHandler(ulong createId)
         {
             _ui.SetActiveMainPanel(false);
-            Debug.Log($"Multi Page Finished, ID: {createId}");
             GameEventCaller.Publish(new MultiPageUIEvents.Finished{CreateId = createId});
         }
 

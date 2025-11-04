@@ -12,18 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968181250e72491f9a1a8e8c4000d0dc, type: 3}
   m_Name: SO_MultiPageTextData_Tutorial_Movement
   m_EditorClassIdentifier: 
-  textsArray:
-  - 'Hello!
-
-    \n
-
-    Welcome to the Tutorial!
-
-'
-  - 'Here You''ll learn How to Play Meteor Madness!
-
-    \n
-
-    Try pressing each
-    side of your phone to move the Earth''s Shield!'
-  lastPageNextButtonText: Try To Move
+  textCode: MultiPage.Tutorial.Movement
+  textCount: 2

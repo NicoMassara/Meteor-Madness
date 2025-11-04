@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 74526660}
   - component: {fileID: 74526662}
   - component: {fileID: 74526661}
+  - component: {fileID: 74526663}
   m_Layer: 5
   m_Name: M_Main_Text_BackButton
   m_TagString: Untagged
@@ -255,6 +256,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 74526659}
   m_CullTransparentMesh: 1
+--- !u!114 &74526663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74526659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Back
 --- !u!1 &114616943
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,6 +492,7 @@ GameObject:
   - component: {fileID: 524990995}
   - component: {fileID: 524990997}
   - component: {fileID: 524990996}
+  - component: {fileID: 524990998}
   m_Layer: 5
   m_Name: D_Main_Text
   m_TagString: Untagged
@@ -603,6 +618,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 524990994}
   m_CullTransparentMesh: 1
+--- !u!114 &524990998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524990994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: Cosmetic.Title
 --- !u!1 &604189446
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,6 +693,7 @@ GameObject:
   - component: {fileID: 731389807}
   - component: {fileID: 731389809}
   - component: {fileID: 731389808}
+  - component: {fileID: 731389810}
   m_Layer: 5
   m_Name: D_Main_Text_BackButton
   m_TagString: Untagged
@@ -790,6 +819,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 731389806}
   m_CullTransparentMesh: 1
+--- !u!114 &731389810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731389806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Back
 --- !u!1 &924032785
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,6 +843,7 @@ GameObject:
   - component: {fileID: 924032786}
   - component: {fileID: 924032788}
   - component: {fileID: 924032787}
+  - component: {fileID: 924032789}
   m_Layer: 5
   m_Name: M_Main_Text
   m_TagString: Untagged
@@ -926,6 +969,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 924032785}
   m_CullTransparentMesh: 1
+--- !u!114 &924032789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 924032785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: 
 --- !u!1 &1292568515
 GameObject:
   m_ObjectHideFlags: 0

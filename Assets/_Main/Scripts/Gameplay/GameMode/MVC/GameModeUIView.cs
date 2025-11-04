@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -41,7 +42,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 button.onClick.AddListener(MainMenuButton_OnClickHandler);
             }
-            GetUiComponents().DeathText.text = _gameUIConfig.TextData.DeathText;
+
+            GetUiComponents().DeathText.text = GetLocalizedString("Gameplay.Death.Title");
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -153,8 +155,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdown(float countdownTime)
         {
-            var text = countdownTime >= 1 ? $"{_gameUIConfig.TextData.GameCountdownText} {(int)countdownTime}..." 
-                : _gameUIConfig.TextData.GameCountdownFinish;
+            var text = countdownTime >= 1 ? $"{GetLocalizedString("Gameplay.CountDownStart")} {(int)countdownTime}..." 
+                : GetLocalizedString("Gameplay.CountdownFinish");
             GetUiComponents().CountdownText.text = text;
         }
         
@@ -253,13 +255,13 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void UpdateGameplayScoreText(int points)
         {
-            var text = $"{_gameUIConfig.TextData.Points}: {points:D6}";
+            var text = $"{GetLocalizedString("Gameplay.Score")}: {points:D6}";
             GetUiComponents().ScoreText.text = text;
         }
 
         private void UpdateDeathScoreText(int points)
         {
-            var text = $"{_gameUIConfig.TextData.DeathPoints}: {points:D6}";
+            var text = $"{GetLocalizedString("Gameplay.Death.Score")}: {points:D6}";
             GetUiComponents().DeathScoreText.text = text;
         }
 
@@ -364,5 +366,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             return GameConfigManager.Instance.GetGameplayData().PointsMultiplier;
         }
+        private string GetLocalizedString(string key)
+        {
+            return LocalizationManager.Instance.GetText(key);
+        }
+        
     }
 }
