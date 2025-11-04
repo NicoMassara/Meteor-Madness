@@ -42,7 +42,7 @@
         GameMode,
         Tutorial,
         Cosmetic,
-        Empty1,
+        OptionsMenu,
         Empty2
     }
     
