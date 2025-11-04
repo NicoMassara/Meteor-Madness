@@ -1,47 +1,49 @@
 ﻿{
   "UIButton" : {
-    "MainMenu" : "Menu",
+    "MainMenu" : "Menu Principal",
     "Resume" : "Reanudar",
-    "Retry" : "Reintentar",
+    "Restart" : "Reintentar",
     "Next" : "Siguiente",
-    "Previous": "Anterior",
     "Back": "Atras",
+    "Previous": "Anterior",
     "Pause": "Pausar",
-    "Quit": "Salir"
+    "Quit": "Cerrar"
   },
 
   "Menu": {
-    "Play": "Jugar",
+    "Play": "Play",
     "Lore": {
-      "Button": "Que Paso?",
-      "Title" : "Que Paso?",
+      "Button": "¿Que paso aqui?",
+      "Title" : "¿Que paso aqui?",
       "Text" : "@Texts/es/lore.txt"
     },
     "Tutorial" : {
-      "Button":  "Como Jugar?",
-      "Title" : "Bienvenido al Tutorial!"
+      "Button":  "Como jugar",
+      "Title" : "Bienvenido al tutorial",
+      "StartButton" : "Iniciar Tutorial"
     },
     "Cosmetic": "Tienda",
-    "Settings": "Opciomes"
+    "Settings": "Opciones"
   },
 
   "Tutorial": {
     "Hint" : {
-      "Hint1" : "Hint 1",
-      "Hint2" : "Hint 2",
-      "Hint3" : "Hint 3",
-      "Hint4" : "Hint 4"
-    },
-    "MultiPage" : {
-      "MultiPage1" : "MultiPage1",
-      "MultiPage2" : "MultiPage2",
-      "MultiPage3" : "MultiPage3",
-      "MultiPage4" : "MultiPage4"
+      "Movement" : "Prueba Moverte y destruye el meteorito",
+      "Ability" : "Prueba destruyendo la misteriosa esfera",
+      "Shield" : "Activa el Super Escudo!"
     }
   },
 
-  "Abilities": {
+  "MultiPage" : {
+    "Tutorial" : "@MultiPage/es/tutorial.json"
+  },
 
+  "Abilities": {
+    "SuperShield" : "Super Escudo",
+    "SlowMotion" : "Camara Lenta",
+    "Health" : "Reconstruccion",
+    "DoublePoints" : "Doble Puntos",
+    "Automatic" : "Auto-Piloto"
   },
 
   "Cosmetic": {
@@ -53,10 +55,12 @@
   },
 
   "Gameplay": {
-    "CountdownFinish" : "Defiende!",
+    "CountDownStart" : "Preparado en",
+    "CountdownFinish" : "Defender!",
     "Score" : "Puntos",
     "Death": {
-      "Title" : "La Humanidad se acabo!"
+      "Title" : "La Humanidad se acabo!",
+      "Score" : "Tus Puntos"
     }
   }
 }

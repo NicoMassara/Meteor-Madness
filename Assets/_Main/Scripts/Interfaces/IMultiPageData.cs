@@ -2,8 +2,9 @@
 {
     public interface IMultiPageData
     {
-        public string[] TextsArray { get; }
-        public string LastPageNextButtonText { get; }
+        public string TextsCode { get; }
+        public int TextCount { get; }
+        public string LastButtonCode { get; }
         public int MaxTextIndex { get; }
     }
 }

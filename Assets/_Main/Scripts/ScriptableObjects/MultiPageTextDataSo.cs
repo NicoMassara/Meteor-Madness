@@ -6,13 +6,12 @@ namespace _Main.Scripts.ScriptableObjects
     [CreateAssetMenu(fileName = "SO_MultiPageTextData_Name", menuName = "Scriptable Objects/UI/Multi Page", order = 0)]
     public class MultiPageTextDataSo : ScriptableObject, IMultiPageData
     {
-        [Header("Texts")]
-        [TextArea]
-        [SerializeField] private string[] textsArray;
-        [SerializeField] private string lastPageNextButtonText = "Finish";
+        [SerializeField] private string textCode;
+        [SerializeField] private int textCount;
 
-        public string[] TextsArray => textsArray;
-        public string LastPageNextButtonText => lastPageNextButtonText;
-        public int MaxTextIndex => textsArray.Length - 1;
+        public string TextsCode => $"{textCode}.Texts";
+        public int TextCount => textCount;
+        public string LastButtonCode => $"{textCode}.LastButton";
+        public int MaxTextIndex => textCount-1;
     }
 }

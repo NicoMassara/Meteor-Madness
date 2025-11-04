@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 5211912}
   - component: {fileID: 5211914}
   - component: {fileID: 5211913}
+  - component: {fileID: 5211915}
   m_Layer: 5
   m_Name: M_ResumeButtonText (TMP)
   m_TagString: Untagged
@@ -255,6 +256,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5211911}
   m_CullTransparentMesh: 1
+--- !u!114 &5211915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5211911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Resume
 --- !u!1 &43530330
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +370,7 @@ GameObject:
   - component: {fileID: 74976025}
   - component: {fileID: 74976027}
   - component: {fileID: 74976028}
+  - component: {fileID: 74976029}
   m_Layer: 5
   m_Name: D_PauseMainMenuButtonText (TMP)
   m_TagString: Untagged
@@ -481,6 +496,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &74976029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74976024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.MainMenu
 --- !u!1 &81793091
 GameObject:
   m_ObjectHideFlags: 0
@@ -676,6 +704,7 @@ GameObject:
   - component: {fileID: 246314172}
   - component: {fileID: 246314174}
   - component: {fileID: 246314173}
+  - component: {fileID: 246314175}
   m_Layer: 5
   m_Name: M_Text_PauseMenu
   m_TagString: Untagged
@@ -801,6 +830,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 246314171}
   m_CullTransparentMesh: 1
+--- !u!114 &246314175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246314171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: Pause.Title
 --- !u!1 &251773628
 GameObject:
   m_ObjectHideFlags: 0
@@ -987,6 +1029,7 @@ GameObject:
   - component: {fileID: 309914514}
   - component: {fileID: 309914516}
   - component: {fileID: 309914515}
+  - component: {fileID: 309914517}
   m_Layer: 5
   m_Name: M_Gameplay_Text_PauseButton
   m_TagString: Untagged
@@ -1112,6 +1155,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309914513}
   m_CullTransparentMesh: 1
+--- !u!114 &309914517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309914513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Pause
 --- !u!1 &410984987
 GameObject:
   m_ObjectHideFlags: 0
@@ -1394,6 +1450,7 @@ GameObject:
   - component: {fileID: 478835875}
   - component: {fileID: 478835877}
   - component: {fileID: 478835876}
+  - component: {fileID: 478835878}
   m_Layer: 5
   m_Name: M_Death_Text_Title
   m_TagString: Untagged
@@ -1519,6 +1576,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 478835874}
   m_CullTransparentMesh: 1
+--- !u!114 &478835878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478835874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: Gameplay.Death.Title
 --- !u!1 &483817948
 GameObject:
   m_ObjectHideFlags: 0
@@ -1966,6 +2036,7 @@ GameObject:
   - component: {fileID: 780262262}
   - component: {fileID: 780262264}
   - component: {fileID: 780262265}
+  - component: {fileID: 780262266}
   m_Layer: 5
   m_Name: D_Death_RestartButtonText (TMP)
   m_TagString: Untagged
@@ -2091,6 +2162,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &780262266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780262261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Restart
 --- !u!1 &826016048
 GameObject:
   m_ObjectHideFlags: 0
@@ -2267,6 +2351,7 @@ GameObject:
   - component: {fileID: 935437267}
   - component: {fileID: 935437269}
   - component: {fileID: 935437270}
+  - component: {fileID: 935437271}
   m_Layer: 5
   m_Name: D_Death_DeathMainMenuButtonText (TMP)
   m_TagString: Untagged
@@ -2392,6 +2477,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &935437271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935437266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.MainMenu
 --- !u!1 &1016699659
 GameObject:
   m_ObjectHideFlags: 0
@@ -2710,6 +2808,7 @@ GameObject:
   - component: {fileID: 1142360724}
   - component: {fileID: 1142360726}
   - component: {fileID: 1142360725}
+  - component: {fileID: 1142360727}
   m_Layer: 5
   m_Name: D_Gameplay_Text_PauseButton
   m_TagString: Untagged
@@ -2835,6 +2934,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1142360723}
   m_CullTransparentMesh: 1
+--- !u!114 &1142360727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142360723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Pause
 --- !u!1 &1205703516
 GameObject:
   m_ObjectHideFlags: 0
@@ -2846,6 +2958,7 @@ GameObject:
   - component: {fileID: 1205703517}
   - component: {fileID: 1205703519}
   - component: {fileID: 1205703520}
+  - component: {fileID: 1205703521}
   m_Layer: 5
   m_Name: D_Text_PauseMenu
   m_TagString: Untagged
@@ -2971,6 +3084,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1205703521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205703516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: Pause.Title
 --- !u!1 &1237854094
 GameObject:
   m_ObjectHideFlags: 0
@@ -3100,6 +3226,7 @@ GameObject:
   - component: {fileID: 1254674027}
   - component: {fileID: 1254674029}
   - component: {fileID: 1254674030}
+  - component: {fileID: 1254674031}
   m_Layer: 5
   m_Name: D_ResumeButtonText (TMP)
   m_TagString: Untagged
@@ -3225,6 +3352,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1254674031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254674026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Resume
 --- !u!1 &1273311251
 GameObject:
   m_ObjectHideFlags: 0
@@ -3629,6 +3769,7 @@ GameObject:
   - component: {fileID: 1344285537}
   - component: {fileID: 1344285539}
   - component: {fileID: 1344285538}
+  - component: {fileID: 1344285540}
   m_Layer: 5
   m_Name: M_PauseMainMenuButtonText (TMP)
   m_TagString: Untagged
@@ -3754,6 +3895,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1344285536}
   m_CullTransparentMesh: 1
+--- !u!114 &1344285540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1344285536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.MainMenu
 --- !u!1 &1368569595
 GameObject:
   m_ObjectHideFlags: 0
@@ -4290,6 +4444,7 @@ GameObject:
   - component: {fileID: 1584270276}
   - component: {fileID: 1584270278}
   - component: {fileID: 1584270279}
+  - component: {fileID: 1584270280}
   m_Layer: 5
   m_Name: D_Death_Text_Title
   m_TagString: Untagged
@@ -4415,6 +4570,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1584270280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1584270275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: Gameplay.Death.Title
 --- !u!1 &1623106867
 GameObject:
   m_ObjectHideFlags: 0
@@ -4986,6 +5154,7 @@ GameObject:
   - component: {fileID: 1909757875}
   - component: {fileID: 1909757877}
   - component: {fileID: 1909757876}
+  - component: {fileID: 1909757878}
   m_Layer: 5
   m_Name: M_Death_DeathMainMenuButtonText (TMP)
   m_TagString: Untagged
@@ -5111,6 +5280,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1909757874}
   m_CullTransparentMesh: 1
+--- !u!114 &1909757878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909757874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.MainMenu
 --- !u!1 &1919243665
 GameObject:
   m_ObjectHideFlags: 0
@@ -5347,6 +5529,7 @@ GameObject:
   - component: {fileID: 2023791876}
   - component: {fileID: 2023791878}
   - component: {fileID: 2023791877}
+  - component: {fileID: 2023791879}
   m_Layer: 5
   m_Name: M_Death_RestartButtonText (TMP)
   m_TagString: Untagged
@@ -5472,6 +5655,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023791875}
   m_CullTransparentMesh: 1
+--- !u!114 &2023791879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023791875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Restart
 --- !u!1 &2067162180
 GameObject:
   m_ObjectHideFlags: 0

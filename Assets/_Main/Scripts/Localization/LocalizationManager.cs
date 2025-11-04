@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 
@@ -11,7 +13,7 @@ namespace _Main.Scripts.Localization
         public static LocalizationManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         private static LocalizationManager _instance;
         
-        private SystemLanguage _defaultLanguage = SystemLanguage.English;
+        private readonly SystemLanguage _defaultLanguage = GameParameters.GameplayValues.DefaultLanguage;
         private Dictionary<string, string> _localizedTexts = new();
         private SystemLanguage _currentLanguage;
         
@@ -44,7 +46,7 @@ namespace _Main.Scripts.Localization
                 ? Application.systemLanguage
                 : (SystemLanguage)Enum.Parse(typeof(SystemLanguage), savedLang);
             
-            LoadLanguage(lang);
+            LoadLanguage(_defaultLanguage);
         }
 
         public void LoadLanguage(SystemLanguage language)
@@ -75,20 +77,73 @@ namespace _Main.Scripts.Localization
             FlattenJson(root, "");
         }
         
-        private void FlattenJson(JObject obj, string prefix)
+        private void FlattenJson(JToken token, string prefix)
         {
-            foreach (var property in obj.Properties())
+            if (token is JObject obj)
             {
-                string key = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
+                foreach (var property in obj.Properties())
+                {
+                    string key = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
+                    FlattenJson(property.Value, key);
+                }
+            }
+            else if (token is JArray array)
+            {
+                for (int i = 0; i < array.Count; i++)
+                {
+                    FlattenJson(array[i], $"{prefix}[{i}]");
+                }
+            }
+            else
+            {
+                string value = token.ToString();
 
-                if (property.Value is JObject nested)
+                // Soporte de @archivo
+                if (value.StartsWith("@"))
                 {
-                    FlattenJson(nested, key);
+                    string relativePath = value.Substring(1);
+                    string fullPath = Path.Combine(Application.streamingAssetsPath, "Localization", relativePath);
+
+                    if (File.Exists(fullPath))
+                    {
+                        string fileContent = File.ReadAllText(fullPath, Encoding.UTF8);
+
+                        // Si es JSON, parsear y aplanar recursivamente
+                        if (fullPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                        {
+                            try
+                            {
+                                JToken externalJson = JToken.Parse(fileContent);
+
+                                // Evitar duplicar prefijos si el JSON externo tiene el mismo key raíz
+                                if (externalJson is JObject extObj && extObj.Properties().Count() == 1)
+                                {
+                                    FlattenJson(externalJson.First, prefix);
+                                }
+                                else
+                                {
+                                    FlattenJson(externalJson, prefix);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogError($"Error parsing JSON file {fullPath}: {ex}");
+                            }
+                            return;
+                        }
+                        else // txt
+                        {
+                            value = fileContent;
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"File not found: {fullPath}");
+                    }
                 }
-                else
-                {
-                    _localizedTexts[key] = property.Value.ToString();
-                }
+
+                // Guardar el valor final
+                _localizedTexts[prefix] = value;
             }
         }
 

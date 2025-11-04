@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Localization;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
@@ -31,9 +32,9 @@ namespace _Main.Scripts.MultiPage
             });
         }
 
-        public void SetNextButtonText(string text)
+        public void SetNextButtonText(string textCode)
         {
-            GetUiComponents().NextButtonText.text = text;
+            GetUiComponents().NextButtonText.text = GetLocalizedString($"{textCode}");;
         }
 
         public void SetEnablePreviousButton(bool isEnable)
@@ -41,19 +42,19 @@ namespace _Main.Scripts.MultiPage
             GetUiComponents().PreviousButton.gameObject.SetActive(isEnable);
         }
 
-        public void SetPanelText(string text)
+        public void SetPanelText(string textCode, int index)
         {
-            GetUiComponents().PanelText.text = text;
-        }
-
-        public string GetNextButtonText()
-        {
-            return GetUiComponents().NextButtonText.text;
+            GetUiComponents().PanelText.text = GetLocalizedString($"{textCode}[{index}]");
         }
 
         public void SetActiveMainPanel(bool isActive)
         {
             GetUiComponents().MainPanel.SetActive(isActive);
+        }
+        
+        private string GetLocalizedString(string key)
+        {
+            return LocalizationManager.Instance.GetText(key);
         }
     }
 }

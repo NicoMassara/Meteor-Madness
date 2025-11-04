@@ -18,6 +18,8 @@ namespace _Main.Scripts.Localization
         
         private void UpdateText()
         {
+            if(string.IsNullOrEmpty(textKey)) return;
+            
             _text.text = LocalizationManager.Instance.GetText(textKey);
         }
 

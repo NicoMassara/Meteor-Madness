@@ -7,15 +7,15 @@ namespace _Main.Scripts.MultiPage
 {
     public class MultiPageView : ManagedBehavior
     {
+        private const string NextButtonCode = "UIButton.Next";
         private IMultiPageData _data;
         private int _currentPageIndex;
         private ulong _createId;
-        public string NextButtonDefaultText { get; set; }
 
         public event Action<ulong> OnFinished;
         public event Action<string> OnNextButtonTextChanged;
         public event Action<bool> OnPreviousButtonSetEnable;
-        public event Action<string> OnPageChanged;
+        public event Action<string, int> OnPageChanged;
         public void SetTextData(IMultiPageData data)
         {
             _data = data;
@@ -46,14 +46,14 @@ namespace _Main.Scripts.MultiPage
         {
             _currentPageIndex = 0;
             OnPreviousButtonSetEnable?.Invoke(false);
-            if (_data.TextsArray.Length > 1)
+            if (_data.TextCount > 1)
             {
                 UpdateText();
-                OnNextButtonTextChanged?.Invoke(NextButtonDefaultText);
+                OnNextButtonTextChanged?.Invoke(NextButtonCode);
             }
             else
             {
-                OnNextButtonTextChanged?.Invoke(_data.LastPageNextButtonText);
+                OnNextButtonTextChanged?.Invoke(_data.LastButtonCode);
             }
         }
 
@@ -70,7 +70,7 @@ namespace _Main.Scripts.MultiPage
 
             if (_currentPageIndex == _data.MaxTextIndex)
             {
-                OnNextButtonTextChanged?.Invoke(_data.LastPageNextButtonText);
+                OnNextButtonTextChanged?.Invoke(_data.LastButtonCode);
             }
 
             UpdateText();
@@ -89,7 +89,7 @@ namespace _Main.Scripts.MultiPage
             
             if (_currentPageIndex == _data.MaxTextIndex-1)
             {
-                OnNextButtonTextChanged?.Invoke(NextButtonDefaultText);
+                OnNextButtonTextChanged?.Invoke(NextButtonCode);
             }
             
             UpdateText();
@@ -97,7 +97,7 @@ namespace _Main.Scripts.MultiPage
 
         private void UpdateText()
         {
-            OnPageChanged?.Invoke(_data.TextsArray[_currentPageIndex]);
+            OnPageChanged?.Invoke(_data.TextsCode, _currentPageIndex);
         }
 
         public void SetCreateId(ulong createId)

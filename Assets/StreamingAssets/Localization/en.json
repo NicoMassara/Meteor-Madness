@@ -2,7 +2,7 @@
   "UIButton" : {
     "MainMenu" : "Main Menu",
     "Resume" : "Resume",
-    "Retry" : "Retry",
+    "Restart" : "Retry",
     "Next" : "Next",
     "Back": "Back",
     "Previous": "Previous",
@@ -19,7 +19,8 @@
     },
     "Tutorial" : {
       "Button":  "How To Play",
-      "Title" : "Welcome To The Tutorial!"
+      "Title" : "Welcome To The Tutorial!",
+      "StartButton" : "Start Tutorial"
     },
     "Cosmetic": "Item Shop",
     "Settings": "Settings"
@@ -27,21 +28,22 @@
   
   "Tutorial": {
     "Hint" : {
-      "Hint1" : "Hint 1",
-      "Hint2" : "Hint 2",
-      "Hint3" : "Hint 3",
-      "Hint4" : "Hint 4"
-    },
-    "MultiPage" : {
-      "MultiPage1" : "MultiPage1",
-      "MultiPage2" : "MultiPage2",
-      "MultiPage3" : "MultiPage3",
-      "MultiPage4" : "MultiPage4"
+      "Movement" : "Try Moving and Deflect a Meteor!",
+      "Ability" : "Try To Deflect the mysterious Sphere!",
+      "Shield" : "Trigger the Super Shield!"
     }
+  },
+
+  "MultiPage" : {
+    "Tutorial" : "@MultiPage/en/tutorial.json"
   },
   
   "Abilities": {
-
+    "SuperShield" : "Super Shield",
+    "SlowMotion" : "Slow Motion",
+    "Health" : "Reconstruction",
+    "DoublePoints" : "Double Points",
+    "Automatic" : "Auto-Pilot"
   },
   
   "Cosmetic": {
@@ -53,10 +55,12 @@
   },
   
   "Gameplay": {
+    "CountDownStart" : "Prepare In",
     "CountdownFinish" : "Defend!",
     "Score" : "Score",
     "Death": {
-      "Title" : "Humanity Is Over!"
+      "Title" : "Humanity Is Over!",
+      "Score" : "Your Score"
     }
   }
 }
