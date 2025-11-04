@@ -15,6 +15,7 @@ namespace _Main.Scripts.GameScreens
             MainMenu,
             Gameplay,
             Tutorial,
+            Cosmetic,
         }
 
         public GameScreenController(GameScreenMotor motor)
@@ -45,11 +46,13 @@ namespace _Main.Scripts.GameScreens
             var gameplay = new GameScreenGameplayState<States>();
             var tutorial = new GameScreenTutorialState<States>();
             var disable = new GameScreenStartLoadingState<States>();
+            var cosmetic = new GameScreenStartLoadingState<States>();
             
             temp.Add(mainMenu);
             temp.Add(gameplay);
             temp.Add(tutorial);
             temp.Add(disable);
+            temp.Add(cosmetic);
 
 
             #endregion
@@ -60,8 +63,11 @@ namespace _Main.Scripts.GameScreens
 
             mainMenu.AddTransition(States.Gameplay, gameplay);
             mainMenu.AddTransition(States.Tutorial, tutorial);
+            mainMenu.AddTransition(States.Cosmetic, cosmetic);
             
             gameplay.AddTransition(States.MainMenu, mainMenu);
+            
+            cosmetic.AddTransition(States.MainMenu, mainMenu);
             
             tutorial.AddTransition(States.MainMenu, mainMenu);
 
@@ -98,6 +104,11 @@ namespace _Main.Scripts.GameScreens
             SetTransition(States.Tutorial);
         }
         
+        public void TransitionToCosmetic()
+        {
+            SetTransition(States.Cosmetic);
+        }
+        
         #endregion
 
         #endregion
@@ -123,10 +134,13 @@ namespace _Main.Scripts.GameScreens
         {
             _motor.SetActiveStartLoading();
         }
+        
+        public void SetActiveCosmetic()
+        {
+            _motor.SetActiveCosmetic();
+        }
 
         #endregion
-
-
     }
 
     #region States
@@ -160,6 +174,14 @@ namespace _Main.Scripts.GameScreens
         public override void Awake()
         {
             Controller.SetActiveStartLoading();
+        }
+    }
+    
+    public class GameScreenCosmeticState<T> : GameScreenStateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetActiveCosmetic();
         }
     }
 

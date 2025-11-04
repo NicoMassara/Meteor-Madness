@@ -40,14 +40,18 @@
         None,
         MainMenu,
         GameMode,
-        Tutorial
+        Tutorial,
+        Cosmetic,
+        Empty1,
+        Empty2
     }
     
     public enum MusicType
     {
         MainMenu,
         Gameplay,
-        EndGame
+        EndGame,
+        Cosmetic
     }
 
     public enum UISoundType

@@ -53,6 +53,9 @@ namespace _Main.Scripts.GameScreens
                 case ScreenType.Tutorial:
                     _controller.TransitionToTutorial();
                     break;
+                case ScreenType.Cosmetic:
+                    _controller.TransitionToCosmetic();
+                    break;
                 default:
                     Debug.LogWarning("GameScene Index is out of range.");
                     break;
