@@ -15,12 +15,6 @@ namespace _Main.Scripts.Tutorial.MVC
         private GameObject _currentActivePanel;
         public event Action OnStartTutorialButtonPressed;
         
-        private void Awake()
-        {
-            GetUiComponents().StartButton.onClick.AddListener(NextButtonOnClickHandler);
-            GetUiComponents().MainMenuButton.onClick.AddListener(FinishButtonOnClickHandler);
-        }
-        
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -69,7 +63,8 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleStart()
         {
-            SetActivePanel(GetUiComponents().StartPanel);
+            // Structure has changed, easiest and fastest way to do it
+            OnStartTutorialButtonPressed?.Invoke();
         }
 
         private void HandleMultiPage()

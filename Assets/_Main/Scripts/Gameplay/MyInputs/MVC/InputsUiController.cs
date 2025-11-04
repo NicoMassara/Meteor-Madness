@@ -14,6 +14,12 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
 
         private void Awake()
         {
+            if (SystemInfo.deviceType != DeviceType.Handheld)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             _view = GetComponent<InputsUiView>();
             
             SetEventBus();

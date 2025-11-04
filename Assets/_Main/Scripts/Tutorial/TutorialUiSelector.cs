@@ -14,12 +14,7 @@ namespace _Main.Scripts.Tutorial
     {
         [Space(2)] 
         [Header("Sub Panels")] 
-        public GameObject StartPanel;
         public GameObject HintPanel;
-        [Space]
-        [Header("Buttons Components")]
-        public Button StartButton;
-        public Button MainMenuButton;
         [Space]
         [Header("Text Components")]
         public TMP_Text HintText;

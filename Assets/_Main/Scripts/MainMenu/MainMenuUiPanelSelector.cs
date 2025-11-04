@@ -15,12 +15,15 @@ namespace _Main.Scripts.Menu
         [Header("Sub Panels")] 
         public GameObject MenuPanel;
         public GameObject LorePanel;
+        public GameObject TutorialPanel;
         [Space]
         [Header("Buttons Components")]
         public Button PlayButton;
         public Button TutorialButton;
+        public Button OpenTutorialButton;
         public Button LoreButton;
+        public Button CosmeticButton;
         public Button QuitButton;
-        public Button BackButton;
+        public Button[] BackButtons;
     }
 }
