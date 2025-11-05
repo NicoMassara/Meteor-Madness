@@ -121,11 +121,11 @@ namespace _Main.Scripts.Tutorial.MVC
 
             if (tempType == ProjectileType.Meteor)
             {
-                AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
                 MeteorEventCaller.GrantSpawnSingle();
             }
             else if (tempType == ProjectileType.AbilitySphere)
             {
+                AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
                 AbilitiesEventCaller.GrantSpawn();
             }
         }
