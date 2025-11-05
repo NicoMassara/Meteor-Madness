@@ -16,12 +16,12 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         {
             _view = GetComponent<InputsUiView>();
             
-            if (SystemInfo.deviceType == DeviceType.Desktop)
+            /*if (SystemInfo.deviceType == DeviceType.Desktop)
             {
                 _view.DestroyContainer();
                 Destroy(gameObject);
                 return;
-            }
+            }*/
             
             SetEventBus();
         }

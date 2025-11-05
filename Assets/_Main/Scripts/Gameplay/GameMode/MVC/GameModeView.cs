@@ -141,7 +141,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
 #if UNITY_ANDROID || UNITY_IOS
             SetEnableInputs(!isPaused);
-            InputsEventCaller.SetUIEnable(!isPaused);
+            SetEnableUIInputs(!isPaused);
 #else
 
             if (isPaused == true)
@@ -185,7 +185,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             _isFirstDisable = false;
             SetEnableInputs(false);
-            SetEnableInputs(false);
+            SetEnableUIInputs(false);
             
             GameModeEventCaller.Disable();
         }
@@ -198,7 +198,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             MeteorEventCaller.RecycleAll();
             SoundEventCaller.PlaySound(countdownFinish,null,null);
             SetEnableInputs(false);
-            SetEnableInputs(false);
+            SetEnableUIInputs(false);
         }
         
         private void HandleGameRestart()
@@ -230,7 +230,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             GameModeEventCaller.Start();
             SetEnableInputs(true);
-            SetEnableInputs(true);
+            SetEnableUIInputs(true);
             AbilitiesEventCaller.SetCanUse(true);
             OnCountdownFinished?.Invoke();
         }
