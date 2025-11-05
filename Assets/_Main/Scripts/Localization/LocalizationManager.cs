@@ -275,7 +275,13 @@ namespace _Main.Scripts.Localization
         }
 
 #endif
-        
+
+        public int GetArrayLength(string prefix)
+        {
+            return _localizedTexts.Keys.Count(
+                key => key.StartsWith($"{prefix}[") && key.Contains("]"));
+        }
+
         public string GetText(string key)
         {
             if (_localizedTexts.TryGetValue(key, out string value))
@@ -295,6 +301,8 @@ namespace _Main.Scripts.Localization
             Debug.LogWarning("Language Could not Be Found in CodeMap, returning default.");
             return _languageCodeMap[SystemLanguage.English];
         }
+        
+        
 
     }
 }
