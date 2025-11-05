@@ -59,63 +59,17 @@ namespace _Main.Scripts.Localization
             string path = Path.Combine(Application.streamingAssetsPath, "Localization", $"{langCode}.json");
 
 #if UNITY_ANDROID
-            StartCoroutine(LoadMobileJson(path, language));
+            StartCoroutine(LoadJson(path, language));
             
 #else
-            LoadDesktopJson(path, language);
+            LoadJson(path, language);
 #endif
         }
         
 #if UNITY_ANDROID
-        private IEnumerator LoadMobileJson(string path, SystemLanguage language)
-        {
-            using (UnityWebRequest www = UnityWebRequest.Get(path))
-            {
-                yield return www.SendWebRequest();
 
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogWarning($"Language file for {language} not found. Falling back to default: {_defaultLanguage}");
-                    string fallbackPath = Path.Combine(Application.streamingAssetsPath, "Localization", $"{_defaultLanguage.ToString().ToLower()}.json");
-                    using (UnityWebRequest fallback = UnityWebRequest.Get(fallbackPath))
-                    {
-                        yield return fallback.SendWebRequest();
-                        if (fallback.result == UnityWebRequest.Result.Success)
-                            ParseJsonToDictionary(fallback.downloadHandler.text);
-                        else
-                            Debug.LogError("Failed to load fallback language file.");
-                    }
-                }
-                else
-                {
-                    ParseJsonToDictionary(www.downloadHandler.text);
-                }
-
-                PlayerPrefs.SetString("language", language.ToString());
-                PlayerPrefs.Save();
-
-                LocalizationEvents.TriggerOnLanguageChanged();
-            }
-        }
 #else
-        private void LoadDesktopJson(string path, SystemLanguage language)
-        {
-            if (!File.Exists(path))
-            {
-                Debug.LogWarning(
-                    $"Language file for {language} not found. Falling back to default: {_defaultLanguage}");
-                path = Path.Combine(Application.streamingAssetsPath, "Localization",
-                    $"{_defaultLanguage.ToString().ToLower()}.json");
-            }
 
-            string json = File.ReadAllText(path);
-            ParseJsonToDictionary(json);
-
-            PlayerPrefs.SetString("language", language.ToString());
-            PlayerPrefs.Save();
-
-            LocalizationEvents.TriggerOnLanguageChanged();
-        }
 #endif
 
         private void ParseJsonToDictionary(string json)
@@ -170,12 +124,12 @@ namespace _Main.Scripts.Localization
                     string fullPath = Path.Combine(Application.streamingAssetsPath, "Localization", relativePath);
                     
 #if UNITY_ANDROID
-                    StartCoroutine(LoadMobileValue(value, prefix, fullPath ,stringValue =>
+                    StartCoroutine(LoadValue(value, prefix, fullPath ,stringValue =>
                     {
                         _localizedTexts[prefix] = stringValue;
                     }));
 #else
-                    LoadDesktopValue(value, prefix, fullPath, stringValue =>
+                    LoadValue(value, prefix, fullPath, stringValue =>
                     {
                         _localizedTexts[prefix] = stringValue;
                     });
@@ -188,7 +142,80 @@ namespace _Main.Scripts.Localization
             }
         }
 
-        private void LoadDesktopValue(string value, string prefix, string fullPath, Action<string> onValueLoaded)
+#if UNITY_ANDROID
+        
+        private IEnumerator LoadJson(string path, SystemLanguage language)
+        {
+            using (UnityWebRequest www = UnityWebRequest.Get(path))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning($"Language file for {language} not found. Falling back to default: {_defaultLanguage}");
+                    string fallbackPath = Path.Combine(Application.streamingAssetsPath, "Localization", $"{_defaultLanguage.ToString().ToLower()}.json");
+                    using (UnityWebRequest fallback = UnityWebRequest.Get(fallbackPath))
+                    {
+                        yield return fallback.SendWebRequest();
+                        if (fallback.result == UnityWebRequest.Result.Success)
+                            ParseJsonToDictionary(fallback.downloadHandler.text);
+                        else
+                            Debug.LogError("Failed to load fallback language file.");
+                    }
+                }
+                else
+                {
+                    ParseJsonToDictionary(www.downloadHandler.text);
+                }
+
+                PlayerPrefs.SetString("language", language.ToString());
+                PlayerPrefs.Save();
+
+                LocalizationEvents.TriggerOnLanguageChanged();
+            }
+        }
+
+        private IEnumerator LoadValue(string value, string prefix ,string fullPath, Action<string> onValueLoaded)
+        {
+            using (UnityWebRequest www = UnityWebRequest.Get(fullPath))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning($"File not found or error loading: {fullPath}\n{www.error}");
+                    onValueLoaded?.Invoke(value); // Devuelve el value original si falla
+                    yield break;
+                }
+
+                string fileContent = www.downloadHandler.text;
+                fileContent = fileContent.TrimStart('\uFEFF');
+
+                // Si es JSON, parsear y aplanar recursivamente
+                if (fullPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        JToken externalJson = JToken.Parse(fileContent);
+                        
+                        FlattenJson(externalJson, prefix);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"Error parsing JSON file {fullPath}: {ex}");
+                    }
+                }
+                else
+                {
+                    value = fileContent;
+                    onValueLoaded?.Invoke(value);
+                }
+            }
+        }
+        
+#else
+
+        private void LoadValue(string value, string prefix, string fullPath, Action<string> onValueLoaded)
         {
             if (File.Exists(fullPath))
             {
@@ -228,55 +255,27 @@ namespace _Main.Scripts.Localization
             }
         }
 
-
-        private IEnumerator LoadMobileValue(string value, string prefix ,string fullPath, Action<string> onValueLoaded)
+        private void LoadJson(string path, SystemLanguage language)
         {
-            using (UnityWebRequest www = UnityWebRequest.Get(fullPath))
+            if (!File.Exists(path))
             {
-                yield return www.SendWebRequest();
-
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogWarning($"File not found or error loading: {fullPath}\n{www.error}");
-                    onValueLoaded?.Invoke(value); // Devuelve el value original si falla
-                    yield break;
-                }
-
-                string fileContent = www.downloadHandler.text;
-
-                // Si es JSON, parsear y aplanar recursivamente
-                if (fullPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                {
-                    try
-                    {
-                        JToken externalJson = JToken.Parse(fileContent);
-
-                        // Evitar duplicar prefijos si el JSON externo tiene el mismo key raíz
-                        if (externalJson is JObject extObj && extObj.Properties().Count() == 1)
-                        {
-                            FlattenJson(extObj.Properties().First().Value, prefix);
-                        }
-                        else
-                        {
-                            FlattenJson(externalJson, prefix);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError($"Error parsing JSON file {fullPath}: {ex}");
-                    }
-                }
-                else
-                {
-                    // txt simple
-                    value = fileContent;
-                    onValueLoaded?.Invoke(value);
-                }
+                Debug.LogWarning(
+                    $"Language file for {language} not found. Falling back to default: {_defaultLanguage}");
+                path = Path.Combine(Application.streamingAssetsPath, "Localization",
+                    $"{_defaultLanguage.ToString().ToLower()}.json");
             }
-        }
-        
-        
 
+            string json = File.ReadAllText(path);
+            ParseJsonToDictionary(json);
+
+            PlayerPrefs.SetString("language", language.ToString());
+            PlayerPrefs.Save();
+
+            LocalizationEvents.TriggerOnLanguageChanged();
+        }
+
+#endif
+        
         public string GetText(string key)
         {
             if (_localizedTexts.TryGetValue(key, out string value))
