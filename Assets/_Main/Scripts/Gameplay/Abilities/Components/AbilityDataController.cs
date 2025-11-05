@@ -93,7 +93,6 @@ namespace _Main.Scripts.Gameplay.Abilies
                 new ActionData(() =>
                 {
                     OnStartQueueFinished?.Invoke(selectedAbility);
-                    SetInputsEnable(true);
                     SetEnableAbilityUI(true);
                 }, timeData.SpeedUp),
             };
@@ -129,6 +128,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, timeData.SpeedUp),
                 new ActionData(() =>
                 {
+                    SetInputsEnable(true);
                     PublishAbilityActive(selectedAbility, false);
                     OnEndQueueFinished?.Invoke(selectedAbility);
                 }, 0f),
