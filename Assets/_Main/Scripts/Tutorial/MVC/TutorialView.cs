@@ -52,6 +52,11 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleMultiPage()
         {
+#if UNITY_ANDROID || UNITY_IOS
+            
+            InputsEventCaller.SetUIEnable(false);
+                    
+#endif
             CameraEventCaller.ZoomIn();
             var item = multiPageData[_currentMultiPageIndex];
             MultiPageUIEventCaller.Create(item, (ulong)_currentMultiPageIndex);
@@ -74,8 +79,9 @@ namespace _Main.Scripts.Tutorial.MVC
             ShieldEventCaller.SetEnableShield(true);
             InputsEventCaller.SetEnable(true);
 #if UNITY_ANDROID || UNITY_IOS
+            
             InputsEventCaller.SetUIEnable(true);
-                    
+            
 #endif
             GameConfigManager.Instance.SetDamage(DamageTypes.None);
             
@@ -92,6 +98,7 @@ namespace _Main.Scripts.Tutorial.MVC
             AbilitiesEventCaller.SetCanUse(true);
             InputsEventCaller.SetEnable(true);
 #if UNITY_ANDROID || UNITY_IOS
+            
             InputsEventCaller.SetUIEnable(true);
                     
 #endif
