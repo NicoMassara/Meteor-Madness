@@ -266,6 +266,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.Enable();
         }
 
+        public void SetCanPause(bool canPause)
+        {
+            _motor.SetCanPause(canPause);
+        }
+
         #endregion
 
         public void HandleCameraZoomOut()

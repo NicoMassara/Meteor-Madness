@@ -73,6 +73,10 @@ namespace _Main.Scripts.Tutorial.MVC
             CameraEventCaller.ZoomOut();
             ShieldEventCaller.SetEnableShield(true);
             InputsEventCaller.SetEnable(true);
+#if UNITY_ANDROID || UNITY_IOS
+            InputsEventCaller.SetUIEnable(true);
+                    
+#endif
             GameConfigManager.Instance.SetDamage(DamageTypes.None);
             
             for (int i = 0; i < 1; i++)
@@ -87,6 +91,10 @@ namespace _Main.Scripts.Tutorial.MVC
             AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
             AbilitiesEventCaller.SetCanUse(true);
             InputsEventCaller.SetEnable(true);
+#if UNITY_ANDROID || UNITY_IOS
+            InputsEventCaller.SetUIEnable(true);
+                    
+#endif
             AbilitiesEventCaller.GrantSpawn();
         }
         

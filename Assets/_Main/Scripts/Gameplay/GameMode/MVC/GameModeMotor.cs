@@ -18,6 +18,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private bool _isPaused;
         private bool _doesRestartGameMode;
         private bool _hasDoublePoints;
+        private bool _canPause;
         
 
         public GameModeMotor(int[] levelStreakAmount, int startTimer)
@@ -31,7 +32,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             NotifyAll(GameModeObserverMessage.InitializeValues);
         }
-        
+
+        public void SetCanPause(bool canPause)
+        {
+            _canPause = canPause;
+            NotifyAll(GameModeObserverMessage.SetCanPause, _canPause);
+        }
+
         public void SetDoesRestartGameMode(bool doesRestart)
         {
             _doesRestartGameMode = doesRestart;
@@ -143,6 +150,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void SetGamePaused(bool isPaused)
         {
+            if(_canPause == false) return;
+            
             _isPaused = isPaused;
             NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
         }

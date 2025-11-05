@@ -106,13 +106,11 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
         {
-            _controller.TransitionToRestart();
             _controller.TransitionToDisable();
         }
         
         private void EventBus_GameMode_Finish(GameModeEvents.Finish input)
         {
-            _controller.TransitionToRestart();
             _controller.TransitionToDisable();
         }
 
@@ -134,6 +132,5 @@ namespace _Main.Scripts.Gameplay.Abilies
         }
 
         #endregion
-        
     }
 }

@@ -115,7 +115,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void UIView_OnPauseButtonPressedHandler()
         {
-            GameEventCaller.Publish(new GameModeEvents.SetPause{IsPaused = true});
+            GameModeEventCaller.SetPause(true);
         }
 
         private void UIView_OnMainMenuButtonPressedHandler()
@@ -145,6 +145,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameEventCaller.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
             GameEventCaller.Subscribe<CameraEvents.ZoomIn>(EventBus_Camera_ZoomIn);
             GameEventCaller.Subscribe<CameraEvents.ZoomOut>(EventBus_Camera_ZoomOut);
+            GameEventCaller.Subscribe<GameModeEvents.SetEnablePause>(EventBus_GameMode_SetEnablePause);
         }
 
         private void UnsubscribeToEventBus()
@@ -157,6 +158,13 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameEventCaller.Unsubscribe<EarthEvents.RestartFinished>(EventBus_Earth_RestartFinish);
             GameEventCaller.Unsubscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_SetActive);
             GameEventCaller.Unsubscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
+            GameEventCaller.Unsubscribe<GameModeEvents.SetEnablePause>(EventBus_GameMode_SetEnablePause);
+        }
+        
+        
+        private void EventBus_GameMode_SetEnablePause(GameModeEvents.SetEnablePause input)
+        {
+            _controller.SetCanPause(input.CanPause);
         }
 
         private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)

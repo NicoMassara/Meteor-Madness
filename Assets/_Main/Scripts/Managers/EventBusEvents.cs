@@ -72,6 +72,11 @@ namespace _Main.Scripts.Managers
         {
             public bool IsPaused;
         }
+        
+        public struct SetEnablePause
+        {
+            public bool CanPause;
+        }
     }
 
     public struct ProjectileEvents
@@ -156,6 +161,11 @@ namespace _Main.Scripts.Managers
     public struct InputsEvents
     {
         public struct SetEnable
+        {
+            public bool IsEnable;
+        }
+        
+        public struct SetUIEnable
         {
             public bool IsEnable;
         }

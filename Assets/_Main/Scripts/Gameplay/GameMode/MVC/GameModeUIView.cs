@@ -23,9 +23,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         private Coroutine _gameplayPointsCoroutine;
         private IGameUIConfig _gameUIConfig;
         
-        public UnityAction OnMainMenuButtonPressed;
-        public UnityAction OnRestartButtonPressed;
-        public UnityAction OnPauseButtonPressed;
+        public event Action OnMainMenuButtonPressed;
+        public event Action OnRestartButtonPressed;
+        public event Action OnPauseButtonPressed;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
         
@@ -92,10 +92,17 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.CameraZoomIn:
                     HandleCameraZoomIn();
                     break;
+                case GameModeObserverMessage.SetCanPause:
+                    HandleSetCanPause((bool)args[0]);
+                    break;
             }
         }
 
-
+        private void HandleSetCanPause(bool canPause)
+        {
+            GetUiComponents().PauseButton.interactable = canPause;
+        }
+        
         private GameModeUIComponents GetUiComponents()
         {
             return _uiComponents ??= _uiComponents = uiSelector.GetPanelData();

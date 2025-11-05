@@ -42,6 +42,11 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
             imageContainer.SetActive(inputIsEnable);
         }
 
+        public void DestroyContainer()
+        {
+            Destroy(imageContainer);
+        }
+
         public void SetCurrentImage(int input)
         {
             if (input == -1)
