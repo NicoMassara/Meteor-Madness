@@ -156,7 +156,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      PineappleSlice_0: -181311081620743908
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
