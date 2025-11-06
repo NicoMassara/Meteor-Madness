@@ -9,37 +9,36 @@ namespace _Main.Scripts.InspectorTools
     [ExecuteInEditMode]
     public class SaveFileTester : MonoBehaviour
     {
-        [SerializeField] private string saveFileName;
         [SerializeField] private TestSaveData saveData;
-
+        [SerializeField] private TestSaveData loadedSaveData;
+        
         public void Save()
         {
-            SaveSystem.Save(saveData,saveFileName);
+            DataManager.Instance.SaveGameData(new TestSaveData
+            {
+                Score = saveData.Score,
+                HighScore = saveData.HighScore,
+                PlayerName = saveData.PlayerName,
+                
+            }, saveData.Type);
         }
         
         public void Load()
         {
-            var temp = SaveSystem.LoadSaveFile<TestSaveData>(saveFileName);
-            if(temp == null) return;
-            Debug.Log($"Score: {temp.Score}\n" +
-                      $"HighScore: {temp.HighScore}\n" +
-                      $"PlayerName: {temp.PlayerName}");
+            loadedSaveData = DataManager.Instance.GetData<TestSaveData>(SaveDataType.Test);
         }
 
-        public void Delete()
+        public void Clear()
         {
-            SaveSystem.DeleteSaveFile(saveFileName);
-        }
-
-        public void DeleteAll()
-        {
-            SaveSystem.DeleteAllSaves();
+            loadedSaveData = null;
+            DataManager.Instance.ClearSaveData<TestSaveData>(SaveDataType.Test);
         }
     }
 
     [System.Serializable]
     public class TestSaveData : SaveDataBase
     {
+        public override SaveDataType Type => SaveDataType.Test;
         public int Score;
         public int HighScore;
         public string PlayerName;
@@ -67,13 +66,9 @@ namespace _Main.Scripts.InspectorTools
             {
                 script.Load();
             }
-            if (GUILayout.Button("Delete"))
+            if (GUILayout.Button("Clear"))
             {
-                script.Delete();
-            }
-            if (GUILayout.Button("Delete All"))
-            {
-                script.DeleteAll();
+                script.Clear();
             }
         }
     }
