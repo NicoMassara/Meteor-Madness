@@ -52,6 +52,11 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleMultiPage()
         {
+#if UNITY_ANDROID || UNITY_IOS
+            
+            InputsEventCaller.SetUIEnable(false);
+                    
+#endif
             CameraEventCaller.ZoomIn();
             var item = multiPageData[_currentMultiPageIndex];
             MultiPageUIEventCaller.Create(item, (ulong)_currentMultiPageIndex);
@@ -73,6 +78,11 @@ namespace _Main.Scripts.Tutorial.MVC
             CameraEventCaller.ZoomOut();
             ShieldEventCaller.SetEnableShield(true);
             InputsEventCaller.SetEnable(true);
+#if UNITY_ANDROID || UNITY_IOS
+            
+            InputsEventCaller.SetUIEnable(true);
+            
+#endif
             GameConfigManager.Instance.SetDamage(DamageTypes.None);
             
             for (int i = 0; i < 1; i++)
@@ -87,6 +97,11 @@ namespace _Main.Scripts.Tutorial.MVC
             AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
             AbilitiesEventCaller.SetCanUse(true);
             InputsEventCaller.SetEnable(true);
+#if UNITY_ANDROID || UNITY_IOS
+            
+            InputsEventCaller.SetUIEnable(true);
+                    
+#endif
             AbilitiesEventCaller.GrantSpawn();
         }
         
@@ -106,11 +121,11 @@ namespace _Main.Scripts.Tutorial.MVC
 
             if (tempType == ProjectileType.Meteor)
             {
-                AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
                 MeteorEventCaller.GrantSpawnSingle();
             }
             else if (tempType == ProjectileType.AbilitySphere)
             {
+                AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
                 AbilitiesEventCaller.GrantSpawn();
             }
         }

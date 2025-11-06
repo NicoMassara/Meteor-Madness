@@ -63,7 +63,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private IEnumerator CreateRingMeteor(float meteorSpeed)
         {
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = true});
+            MeteorEventCaller.RingActive(true);
             var projectileData = GameConfigManager.Instance.GetGameplayData().ProjectileData;
             var ringValues = projectileData.MeteorRingData;
 
@@ -107,9 +107,11 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             yield return new WaitForSeconds(projectileData.MeteorSpawnDelayAfterRing);
             
-            GameManager.Instance.EventManager.Publish(new MeteorEvents.RingActive{IsActive = false});
+            MeteorEventCaller.RingActive(false);
             _isSpawningRing = false;
         }
+        
+        
         
         private float GetRingMeteorValue(float amountToSpawn, float ringsToUse)
         {
@@ -118,7 +120,6 @@ namespace _Main.Scripts.Gameplay.Meteor
             
             return temp2 * 1.5f;
         }
-
 
         #endregion
 

@@ -49,6 +49,7 @@
         public const ulong Enable = 0xA2019;
         public const ulong CameraZoomIn = 0xA2020;
         public const ulong CameraZoomOut = 0xA2021;
+        public const ulong SetCanPause = 0xA2022;
     }
 
     public struct FlyingObjectObserverMessage
@@ -77,7 +78,7 @@
         public const ulong SetCanUse = 0xA4004;
         public const ulong SetEnableUI = 0xA4005;
         public const ulong SelectAbility = 0xA4006;
-        public const ulong Empty = 0xA4007;
+        public const ulong ForceFinish = 0xA4007;
         public const ulong RestartAbilities = 0xA4008;
         public const ulong RunActiveTimer = 0xA4009;
         public const ulong SetStorageFull = 0xA4010;

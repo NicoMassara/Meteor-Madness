@@ -10,13 +10,15 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
-    public class AbilityView : ManagedBehavior, IUpdatable, IObserver
+    public class AbilityView : ManagedBehavior, IObserver
     {
         [Header("Sound Data")]
         [SerializeField] private SoundClassSo abilityAdd;
         [SerializeField] private SoundClassSo abilityTrigger;
         [SerializeField] private SoundClassSo slowTime;
         [SerializeField] private SoundClassSo speedTime;
+
+        private ulong _finishAbilityTimerId;
         
         private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
@@ -28,14 +30,9 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Start()
         {
-            abilityDataController = new AbilityDataController(GameManager.Instance.EventManager, 
-                AbilitiesData_UpdateTimeScale, PlaySpeedUpSound, PlaySlowDownSound);
+            abilityDataController = new AbilityDataController(AbilitiesData_UpdateTimeScale, PlaySpeedUpSound, PlaySlowDownSound);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
-        }
-
-        public void ManagedUpdate()
-        {
-
+            abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -60,8 +57,12 @@ namespace _Main.Scripts.Gameplay.Abilies
                 case AbilityObserverMessage.SetStorageFull:
                     HandleSetStorageFull((bool)args[0]);
                     break;
+                case AbilityObserverMessage.ForceFinish:
+                    HandleForceFinish();
+                    break;
             }
         }
+        
 
         private void HandleAddAbility(int index, Vector2 position)
         {
@@ -108,19 +109,28 @@ namespace _Main.Scripts.Gameplay.Abilies
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(
                 (AbilityType)abilityIndex),SelfUpdateGroup);
             
-#if UNITY_ANDROID || UNITY_IOS
-            Handheld.Vibrate();
-#endif
+            GameModeEventCaller.SetEnablePause(false);
             
             SoundEventCaller.PlaySound(abilityTrigger, null,null);
         }
 
         private void HandleFinishAbility(int abilityIndex)
         {
-            if (abilityDataController.GetHasInstantEffect((AbilityType)abilityIndex)) return;
-            
+            if (abilityDataController.GetHasInstantEffect((AbilityType)abilityIndex))
+            {
+                GameModeEventCaller.SetEnablePause(true);
+                return;
+            }
+
             ActionManager.Add(abilityDataController.GetAbilityEndQueue(
                 (AbilityType)abilityIndex),SelfUpdateGroup);
+        }
+        
+        private void HandleForceFinish()
+        {
+            TimerManager.Remove(_finishAbilityTimerId);
+            
+            OnAbilityFinished?.Invoke();
         }
 
         public void PlaySpeedUpSound()
@@ -165,7 +175,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void AbilitiesData_OnAbilityStartedHandler(float activeTime)
         {
-            TimerManager.Add(new TimerData
+            _finishAbilityTimerId = TimerManager.Add(new TimerData
             {
                 Time = activeTime,
                 OnEndAction = ()=> OnAbilityFinished?.Invoke()
@@ -175,6 +185,11 @@ namespace _Main.Scripts.Gameplay.Abilies
         private void AbilitiesData_UpdateTimeScale(TimeScaleData timeScaleData)
         {
             StartCoroutine(Coroutine_UpdateTimeScale(timeScaleData));
+        }
+        
+        private void AbilitiesData_OnEndQueueFinished(AbilityType abilityType)
+        {
+            GameModeEventCaller.SetEnablePause(true);
         }
 
         #endregion

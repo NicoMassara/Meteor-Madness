@@ -62,6 +62,10 @@ namespace _Main.Scripts.DebugTools
                     GameManager.Instance.CanPlay = true;
                     GameModeEventCaller.Start();
                     InputsEventCaller.SetEnable(true);
+#if UNITY_ANDROID || UNITY_IOS
+                    InputsEventCaller.SetUIEnable(true);
+                    
+#endif
                     ShieldEventCaller.SetEnableShield(true);
                 }
             });

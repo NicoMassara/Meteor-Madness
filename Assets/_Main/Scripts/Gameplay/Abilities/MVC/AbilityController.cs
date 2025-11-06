@@ -16,7 +16,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             Enable,
             Running,
             Disabled,
-            Restart
         }
         
         private class ActionGate
@@ -56,12 +55,10 @@ namespace _Main.Scripts.Gameplay.Abilies
             var enable = new AbilityEnableState<States>();
             var disable = new AbilityDisableState<States>();
             var running = new AbilityRunningState<States>();
-            var restart = new AbilityRestartState<States>();
             
             temp.Add(enable);
             temp.Add(running);
             temp.Add(disable);
-            temp.Add(restart);
 
             #endregion
 
@@ -69,15 +66,12 @@ namespace _Main.Scripts.Gameplay.Abilies
             
             enable.AddTransition(States.Disabled, disable);
             enable.AddTransition(States.Running, running);
-            enable.AddTransition(States.Restart, restart);
             
             disable.AddTransition(States.Enable, enable);
-            disable.AddTransition(States.Restart, restart);
             
             running.AddTransition(States.Enable, enable);
+            running.AddTransition(States.Disabled, disable);
             
-            restart.AddTransition(States.Enable, enable);
-            restart.AddTransition(States.Disabled, disable);
 
             #endregion
 
@@ -110,11 +104,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         public void TransitionToRunning()
         {
             SetTransition(States.Running);
-        }
-
-        public void TransitionToRestart()
-        {
-            SetTransition(States.Restart);
         }
 
         #endregion
@@ -160,6 +149,11 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             _motor.RunActiveTimer();
         }
+
+        public void ForceFinishAbility()
+        {
+            _motor.ForceFinishAbility();
+        }
     }
     
     #region States
@@ -174,15 +168,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         public override void Sleep()
         {
             Controller.FinishAbility();
-        }
-    }
-    
-    public class AbilityRestartState<T> : AbilityBaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.RestartAbilities();
-            Controller.TransitionToEnable();
         }
     }
     
@@ -204,6 +189,8 @@ namespace _Main.Scripts.Gameplay.Abilies
     {
         public override void Awake()
         {
+            Controller.RestartAbilities();
+            Controller.ForceFinishAbility();
             Controller.SetCanUseAbility(false);
             Controller.SetEnableUI(false);
         }
