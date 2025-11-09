@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
+using _Main.Scripts.DebugGUI;
+using _Main.Scripts.MyComponents;
 using _Main.Scripts.MyCustoms;
+using _Main.Scripts.MyTools;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers.UpdateManager
 {
-    public class UpdateManager : MonoBehaviour
+    public class UpdateManager : SingletonBehaviour<UpdateManager>
     {
-        public static UpdateManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
-        protected static UpdateManager _instance;
-
         private readonly List<IUpdatable> _updatableObjects = new List<IUpdatable>();
         private readonly List<IFixedUpdatable> _fixedUpdatableObjects = new List<IFixedUpdatable>();
         private readonly List<ILateUpdatable> _lateUpdatableObjects = new List<ILateUpdatable>();
@@ -19,7 +19,9 @@ namespace _Main.Scripts.Managers.UpdateManager
         private readonly List<IFixedUpdatable> _fixedToRemove = new List<IFixedUpdatable>();
         private readonly List<ILateUpdatable> _lateToAdd = new List<ILateUpdatable>();
         private readonly List<ILateUpdatable> _lateToRemove = new List<ILateUpdatable>();
-        
+
+        public FPSCounter UpdateFps { get; private set; }
+
         public bool IsGlobalPaused { get; set; }
         public int TargetFrameRate { get; private set; }
 
@@ -28,28 +30,21 @@ namespace _Main.Scripts.Managers.UpdateManager
         private bool _isFixedUpdating = false;
         private bool _isLateUpdating = false;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
-        
-        private static UpdateManager CreateInstance()
-        {
-            var gameObject = new GameObject(nameof(UpdateManager))
-            {
-                hideFlags = HideFlags.DontSave,
-            };
-            DontDestroyOnLoad(gameObject);
-            return gameObject.AddComponent<UpdateManager>();
-        }
 
         private void Awake()
         {
-#if UNITY_STANDALONE || UNITY_EDITOR
-            TargetFrameRate = 165;
-#endif
-#if UNITY_ANDROID
-            TargetFrameRate = 120;
-#endif
-            
-            Application.targetFrameRate = TargetFrameRate;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            UpdateFps = new FPSCounter(0.5f);
 
+            DebugGUIManager.Instance.CreateGroup("FPS")?.AddEntry(
+                () => $"FPS: {UpdateFps.Current:F1}",
+                () => $"AVG: {UpdateFps.AVG:F1}"
+            );
+
+#endif
+
+            Application.targetFrameRate = 120;
+            
         }
 
         #region Update
@@ -68,6 +63,9 @@ namespace _Main.Scripts.Managers.UpdateManager
 
             if (!IsGlobalPaused)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                UpdateFps.Update(Time.deltaTime);
+#endif
                 for (int i = 0; i < _updatableObjects.Count; i++)
                 {
                     var u = _updatableObjects[i];
@@ -378,6 +376,7 @@ namespace _Main.Scripts.Managers.UpdateManager
         FullTick,
         HalfTick,
         QuarterTick,
-        SecondTick,
+        EightTick,
+        BySecondTick,
     }
 }

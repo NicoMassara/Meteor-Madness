@@ -17,7 +17,8 @@ namespace _Main.Scripts.Managers.UpdateManager
                 TickGroup.FullTick => adaptiveFrameTime,
                 TickGroup.HalfTick => adaptiveFrameTime/2,
                 TickGroup.QuarterTick => adaptiveFrameTime/4,
-                TickGroup.SecondTick => 1f,
+                TickGroup.EightTick => adaptiveFrameTime/8,
+                TickGroup.BySecondTick => 1f,
                 _ => throw new ArgumentOutOfRangeException(nameof(group), group, null)
             };
 
