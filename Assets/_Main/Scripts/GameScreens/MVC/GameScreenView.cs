@@ -4,12 +4,8 @@ using _Main.Scripts.Observer;
 
 namespace _Main.Scripts.GameScreens
 {
-    public class GameScreenView : ManagedBehavior, IUpdatable, IObserver
+    public class GameScreenView : ManagedBehavior, IObserver
     {
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
-        
-        public void ManagedUpdate() { }
-
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)

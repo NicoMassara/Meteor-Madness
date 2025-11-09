@@ -16,7 +16,8 @@ namespace _Main.Scripts.Gameplay.MyInputs
         public bool HasUsedAbility { get; private set; }
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
-
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
 
         public UpdateGroup SelfLateUpdateGroup { get; } = UpdateGroup.Inputs;
         

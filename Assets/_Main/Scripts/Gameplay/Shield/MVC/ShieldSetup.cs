@@ -1,5 +1,4 @@
-﻿using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Managers;
+﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
@@ -14,7 +13,9 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldView _view;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
+
         private void Awake()
         {
             _view = GetComponent<ShieldView>();

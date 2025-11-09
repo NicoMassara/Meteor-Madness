@@ -7,16 +7,12 @@ namespace _Main.Scripts.Tutorial.MVC
 {
     [RequireComponent(typeof(TutorialView))]
     [RequireComponent(typeof(TutorialUIView))]
-    public class TutorialSetup : ManagedBehavior, IUpdatable
+    public class TutorialSetup : ManagedBehavior
     {
         private TutorialMotor _motor;
         private TutorialController _controller;
         private TutorialView _view;
         private TutorialUIView _ui;
-
-        private bool _isEnable;
-
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         
         private void Awake()
         {
@@ -38,25 +34,15 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             _controller.Initialize();
         }
-        
-        public void ManagedUpdate()
-        {
-            if (_isEnable)
-            {
-                _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-            }
-        }
 
         private void TutorialEnable()
         {
-            _isEnable = true;
             SubscribeEventBus();
             _controller.TransitionToStart();
         }
 
         private void TutorialDisable()
         {
-            _isEnable = false;
             UnsubscribeEventBus();
             _controller.TransitionToDisable();
         }

@@ -12,6 +12,8 @@ namespace _Main.Scripts
         
         private Rotator _rotator; 
         public UpdateGroup SelfUpdateGroup { get; private set; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
 
         private void Start()
         {

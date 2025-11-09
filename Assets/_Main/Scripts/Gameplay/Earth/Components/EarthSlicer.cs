@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using _Main.Scripts.Interfaces;
+﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -26,6 +24,8 @@ namespace _Main.Scripts.Gameplay.Earth
 
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
 
         private void Start()
         {

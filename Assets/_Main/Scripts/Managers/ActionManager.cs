@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
-    public class ActionManager : MonoBehaviour
+    public class ActionManager : ManagedBehavior, IUpdatable
     {
         public static ActionManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         private static ActionManager _instance;
@@ -18,6 +18,10 @@ namespace _Main.Scripts.Managers
         private readonly List<ActionQueueData> _toAdd = new List<ActionQueueData>();
         private readonly List<ActionQueueData> _toRemove = new List<ActionQueueData>();
         private readonly Dictionary<ulong, ActionQueueData> _idsDic = new Dictionary<ulong, ActionQueueData>();
+        
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
+        public float LastUpdateTime { get; set; }
         
         private class ActionQueueData
         {
@@ -39,7 +43,7 @@ namespace _Main.Scripts.Managers
             return gameObject.AddComponent<ActionManager>();
         }
         
-        private void Update()
+        public void ManagedUpdate()
         {
             ApplyPending();
             

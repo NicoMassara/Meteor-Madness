@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
-    public class TimerManager : MonoBehaviour
+    public class TimerManager : ManagedBehavior, IUpdatable
     {
         public static TimerManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         protected static TimerManager _instance;
@@ -18,6 +18,11 @@ namespace _Main.Scripts.Managers
         private readonly List<TimerManagerData> _toAdd = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toRemove = new List<TimerManagerData>();
         private readonly Dictionary<ulong, TimerManagerData> _idsDic = new Dictionary<ulong, TimerManagerData>();
+
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
+        public float LastUpdateTime { get; set; }
+
 
         private class TimerManagerData
         {
@@ -39,7 +44,7 @@ namespace _Main.Scripts.Managers
             return gameObject.AddComponent<TimerManager>();
         }
 
-        private void Update()
+        public void ManagedUpdate()
         {
             ApplyPending();
             
@@ -125,6 +130,7 @@ namespace _Main.Scripts.Managers
                 _toRemove.Add(value);
             }
         }
+
 
     }
 }

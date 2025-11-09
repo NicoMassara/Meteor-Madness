@@ -48,6 +48,8 @@ namespace _Main.Scripts.Gameplay.Earth
         public UnityAction OnHealed;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
 
         private void Awake()
         {

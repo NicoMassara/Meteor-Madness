@@ -10,8 +10,10 @@ namespace _Main.Scripts.Menu
         [SerializeField] private float rotationSpeed;
         [SerializeField] private Transform itemTransform;
         private Rotator _rotator;
-
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
+
         private void Start()
         {
             _rotator = new Rotator(itemTransform,Vector3.forward, rotationSpeed);

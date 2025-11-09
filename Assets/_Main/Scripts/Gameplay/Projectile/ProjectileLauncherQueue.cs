@@ -17,6 +17,8 @@ namespace _Main.Scripts.Gameplay.Projectile
         [SerializeField] [ReadOnly] private int projectileCount;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.HalfTick;
+        public float LastUpdateTime { get; set; }
 
         private void Awake()
         {

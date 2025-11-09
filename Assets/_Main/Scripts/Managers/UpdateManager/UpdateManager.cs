@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
@@ -61,6 +60,9 @@ namespace _Main.Scripts.Managers.UpdateManager
             
             ApplyPending();
             
+            float now = Time.realtimeSinceStartup;
+            float frameTime = Time.unscaledDeltaTime;
+            
             
             _isUpdating = true;
 
@@ -72,8 +74,15 @@ namespace _Main.Scripts.Managers.UpdateManager
                 
                     if(CustomTime.GetChannel(u.SelfUpdateGroup).IsPaused)
                         continue;
-                
-                    u.ManagedUpdate();
+                    
+                    float interval = UpdateManagerTools.GetTickByGroup(u.SelfTickGroup, frameTime);
+                    float last = u.LastUpdateTime;
+
+                    if (now - last >= interval)
+                    {
+                        u.ManagedUpdate();
+                        u.LastUpdateTime = now;
+                    }
                 }
             }
             
@@ -362,5 +371,13 @@ namespace _Main.Scripts.Managers.UpdateManager
         Effects,
         Shield,
         Camera
+    }
+
+    public enum TickGroup
+    {
+        FullTick,
+        HalfTick,
+        QuarterTick,
+        SecondTick,
     }
 }

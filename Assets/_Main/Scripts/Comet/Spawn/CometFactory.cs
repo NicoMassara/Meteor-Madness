@@ -21,6 +21,8 @@ namespace _Main.Scripts.Comet
         private ulong _spawnTimerId;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
+        public float LastUpdateTime { get; set; }
 
         private void Start()
         {

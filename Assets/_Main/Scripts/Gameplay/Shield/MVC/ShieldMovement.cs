@@ -31,6 +31,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private bool _automaticEnable;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
         public UpdateGroup SelfFixedUpdateGroup { get; }= UpdateGroup.Shield;
 
         private void Awake()
