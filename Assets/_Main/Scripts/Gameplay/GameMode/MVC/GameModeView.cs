@@ -139,6 +139,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                 
             }, isPaused);
 
+#if UNITY_ANDROID || UNITY_IOS
+            SetEnableInputs(!isPaused);
+            SetEnableUIInputs(!isPaused);
+#else
+
             if (isPaused == true)
             {
                 TimerManager.Add(new TimerData
@@ -155,6 +160,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                     
                 }, UpdateGroup.Always);
             }
+#endif
             
             GameManager.Instance.IsPaused = isPaused;
         }
@@ -179,6 +185,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             _isFirstDisable = false;
             SetEnableInputs(false);
+            SetEnableUIInputs(false);
+            
             GameModeEventCaller.Disable();
         }
 
@@ -190,6 +198,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             MeteorEventCaller.RecycleAll();
             SoundEventCaller.PlaySound(countdownFinish,null,null);
             SetEnableInputs(false);
+            SetEnableUIInputs(false);
         }
         
         private void HandleGameRestart()
@@ -221,12 +230,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             GameModeEventCaller.Start();
             SetEnableInputs(true);
+            SetEnableUIInputs(true);
             AbilitiesEventCaller.SetCanUse(true);
             OnCountdownFinished?.Invoke();
         }
 
         private void HandleStartGameplay()
         {
+            GameModeEventCaller.SetEnablePause(true);
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.SetEnableShield(true);
             SoundEventCaller.PlayMusic(MusicType.Gameplay);
@@ -271,6 +282,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void SetEnableInputs(bool isEnable)
         {
             InputsEventCaller.SetEnable(isEnable);
+        }
+
+        private void SetEnableUIInputs(bool isEnable)
+        {
+            InputsEventCaller.SetUIEnable(isEnable);
         }
     }
 }

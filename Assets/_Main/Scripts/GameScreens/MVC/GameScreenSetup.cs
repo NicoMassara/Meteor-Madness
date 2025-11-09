@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -24,12 +25,17 @@ namespace _Main.Scripts.GameScreens
             SetEventBus();
             
             _controller.Initialize();
+
+            LocalizationEvents.OnLocalizationLoaded += () =>
+            {
+                _controller.TransitionToMainMenu();
+            };
         }
 
-        private void Start()
+        /*private void Start()
         {
             _controller.TransitionToMainMenu();
-        }
+        }*/
 
         #region EventBus
 
@@ -52,6 +58,9 @@ namespace _Main.Scripts.GameScreens
                     break;
                 case ScreenType.Tutorial:
                     _controller.TransitionToTutorial();
+                    break;
+                case ScreenType.Cosmetic:
+                    _controller.TransitionToCosmetic();
                     break;
                 default:
                     Debug.LogWarning("GameScene Index is out of range.");

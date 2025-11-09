@@ -14,34 +14,54 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private GameObject _currentPanel;
 
-        public event Action OnGameModeStarted;
-        public event Action OnTutorialStarted;
+        public event Action OnGameModeTriggered;
+        public event Action OnTutorialTriggered;
+        public event Action OnCosmeticTriggered;
+        public event Action OnTutorialOpen;
         public event Action OnLoreOpen;
-        public event Action OnLoreClosed;
+        public event Action OnBackToMenu;
         public event Action OnExit;
 
         private void Awake()
         {
             GetUiComponents().PlayButton.onClick.AddListener(() =>
             {
-                OnGameModeStarted?.Invoke();
+                OnGameModeTriggered?.Invoke();
                 PlayButtonSound();
             });
+            GetUiComponents().OpenTutorialButton.onClick.AddListener(() =>
+            {
+                OnTutorialTriggered?.Invoke();
+                PlayButtonSound();
+            });
+            
             GetUiComponents().TutorialButton.onClick.AddListener(() =>
             {
-                OnTutorialStarted?.Invoke();
+                OnTutorialOpen?.Invoke();
                 PlayButtonSound();
             });
+            
             GetUiComponents().LoreButton.onClick.AddListener(() =>
             {
                 OnLoreOpen?.Invoke();
                 PlayButtonSound();
             });
-            GetUiComponents().BackButton.onClick.AddListener(() =>
+            
+            GetUiComponents().CosmeticButton.onClick.AddListener(() =>
             {
-                OnLoreClosed?.Invoke();
+                OnCosmeticTriggered?.Invoke();
                 PlayButtonSound();
             });
+
+            foreach (var backButton in GetUiComponents().BackButtons)
+            {
+                backButton.onClick.AddListener(() =>
+                {
+                    OnBackToMenu?.Invoke();
+                    PlayButtonSound();
+                });
+            }
+
             GetUiComponents().QuitButton.onClick.AddListener(() =>
             {
                 OnExit?.Invoke();
@@ -65,7 +85,15 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.LoreMenu:
                     HandleLoreMenu();
                     break;
+                case MainMenuObserverMessage.TutorialMenu:
+                    HandleTutorialMenu();
+                    break;
             }
+        }
+
+        private void HandleTutorialMenu()
+        {
+            SetActivePanel(GetUiComponents().TutorialPanel);
         }
 
         private MainMenuUiComponents GetUiComponents()

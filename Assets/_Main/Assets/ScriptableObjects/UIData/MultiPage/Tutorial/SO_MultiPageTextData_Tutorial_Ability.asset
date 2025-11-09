@@ -12,10 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968181250e72491f9a1a8e8c4000d0dc, type: 3}
   m_Name: SO_MultiPageTextData_Tutorial_Ability
   m_EditorClassIdentifier: 
-  textsArray:
-  - During your Play sometimes you'll found a mysterious sphere...
-  - "This sphere has a meteor-like form but it is not a Meteor.\n\\n\nSome Peopole
-    say that after deflecting one of them, if you press both sides of your phone
-    at the same time..\n\\n \nA Super Effect Will Happen..."
-  - Try to Deflect one of them and see what has inside!
-  lastPageNextButtonText: Try!
+  textCode: MultiPage.Tutorial.Ability
+  textCount: 3

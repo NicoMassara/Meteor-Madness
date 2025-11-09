@@ -1,0 +1,26 @@
+﻿{
+  "Movement": {
+    "Texts": [
+      "Salut!\n\\n\nBienvenue dans le Tutoriel!\n",
+      "Ici, tu apprendras à jouer à Meteor Madness!\n\\n\nEssaie d’appuyer sur chaque côté de ton appareil pour déplacer le bouclier de la Terre!"
+    ],
+    "LastButton": "Essayer!"
+  },
+
+  "Ability": {
+    "Texts": [
+      "Pendant la partie, d’étranges sphères apparaîtront parfois...",
+      "Ces sphères ressemblent à des météores, mais n’en sont pas.\n\\n\nCertains disent qu’en les détruisant, en appuyant sur les deux côtés de ton appareil en même temps...\n\\n\nUn super effet se produira...",
+      "Essaie d’en détruire une et voyons ce qui se passe!"
+    ],
+    "LastButton": "Essayer"
+  },
+
+  "Finish": {
+    "Texts": [
+      "Tu as terminé le tutoriel de Meteor Madness!",
+      "C’est tout ce que tu dois savoir pour profiter du jeu!\n\n\nN’hésite pas à refaire le tutoriel autant de fois que tu veux!\n\n\nTu es notre héros et tu as besoin de tous les outils pour défendre la Terre!"
+    ],
+    "LastButton": "Retour au Menu"
+  }
+}

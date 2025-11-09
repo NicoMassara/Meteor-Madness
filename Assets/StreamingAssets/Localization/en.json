@@ -1,0 +1,66 @@
+﻿{
+  "UIButton" : {
+    "MainMenu" : "Main Menu",
+    "Resume" : "Resume",
+    "Restart" : "Retry",
+    "Next" : "Next",
+    "Back": "Back",
+    "Previous": "Previous",
+    "Pause": "Pause",
+    "Quit": "Quit"
+  },
+  
+  "Menu": {
+    "Play": "Play",
+    "Lore": {
+      "Button": "What Happened?",
+      "Title" : "What Happened?",
+      "Text" : "@Texts/en/lore.txt"
+    },
+    "Tutorial" : {
+      "Button":  "How To Play",
+      "Title" : "Welcome To The Tutorial!",
+      "StartButton" : "Start Tutorial"
+    },
+    "Cosmetic": "Item Shop",
+    "Settings": "Settings"
+  },
+  
+  "Tutorial": {
+    "Hint" : {
+      "Movement" : "Try Moving and Deflect a Meteor!",
+      "Ability" : "Try To Deflect the mysterious Sphere!",
+      "Shield" : "Trigger the Super Shield!"
+    }
+  },
+
+  "MultiPage" : {
+    "Tutorial" : "@MultiPage/en/tutorial.json"
+  },
+  
+  "Abilities": {
+    "SuperShield" : "Super Shield",
+    "SlowMotion" : "Slow Motion",
+    "Health" : "Reconstruction",
+    "DoublePoints" : "Double Points",
+    "Automatic" : "Auto-Pilot"
+  },
+  
+  "Cosmetic": {
+    "Title" : "Coming Soon!"
+  },
+  
+  "Pause": {
+    "Title" : "Pause"
+  },
+  
+  "Gameplay": {
+    "CountDownStart" : "Prepare In",
+    "CountdownFinish" : "Defend!",
+    "Score" : "Score",
+    "Death": {
+      "Title" : "Humanity Is Over!",
+      "Score" : "Your Score"
+    }
+  }
+}

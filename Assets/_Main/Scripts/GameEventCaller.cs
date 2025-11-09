@@ -139,7 +139,12 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new GameModeEvents.SetPause{IsPaused = isPaused});
         }
-        
+
+        public static void SetEnablePause(bool isEnable)
+        {
+            GameEventCaller.Publish(new GameModeEvents.SetEnablePause{CanPause = isEnable});
+        }
+
     }
     public static class ProjectileEventCaller
     {
@@ -272,6 +277,11 @@ namespace _Main.Scripts
         public static void SetEnable(bool enable)
         {
             GameEventCaller.Publish(new InputsEvents.SetEnable{IsEnable = enable});
+        }
+
+        public static void SetUIEnable(bool enable)
+        {
+            GameEventCaller.Publish(new InputsEvents.SetUIEnable{IsEnable = enable});
         }
     }
     public static class AbilitiesEventCaller

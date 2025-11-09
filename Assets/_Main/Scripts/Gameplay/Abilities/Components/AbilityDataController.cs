@@ -10,18 +10,19 @@ namespace _Main.Scripts.Gameplay.Abilies
     public class AbilityDataController
     {
         private readonly Dictionary<AbilityType, AbilityStoredData> _abilities = new Dictionary<AbilityType, AbilityStoredData>();
-        private readonly EventBusManager _eventBus;
         
         public UnityAction<float> OnAbilityStarted;
-        public UnityAction<AbilityType> OnAbilityFinished;
+        public UnityAction<AbilityType> OnStartQueueStarted;
+        public UnityAction<AbilityType> OnStartQueueFinished;
+        public UnityAction<AbilityType> OnEndQueueStart;
+        public UnityAction<AbilityType> OnEndQueueFinished;
         public UnityAction<TimeScaleData> _updateTimeScale;
         private UnityAction _playSpeedTimeSound;
         private UnityAction _playSlowTimeSound;
 
-        public AbilityDataController(EventBusManager eventBus, UnityAction<TimeScaleData> updateTimeScale, 
+        public AbilityDataController(UnityAction<TimeScaleData> updateTimeScale, 
             UnityAction speedTimeSound, UnityAction slowTimeSound)
         {
-            _eventBus = eventBus;
             _updateTimeScale = updateTimeScale;
             _playSpeedTimeSound = speedTimeSound;
             _playSlowTimeSound = slowTimeSound;
@@ -29,7 +30,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             CreateAbilityData();
         }
 
-
+        
         private void CreateAbilityData()
         {
             var configData = GameConfigManager.Instance.GetGameplayData().AbilityTimeData;
@@ -54,8 +55,10 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    OnStartQueueStarted?.Invoke(selectedAbility);
                     PublishAbilityActive(selectedAbility, true);
-                    _eventBus.Publish(new InputsEvents.SetEnable { IsEnable = false });
+                    SetInputsEnable(false);
+                    SetEnableAbilityUI(false);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -69,9 +72,11 @@ namespace _Main.Scripts.Gameplay.Abilies
                 new ActionData(() =>
                 {
                     CameraZoomIn();
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = false});
                 }, timeData.ZoomIn),
-                new ActionData(() => { _eventBus.Publish(new ShieldEvents.EnableSuperShield());},
+                new ActionData(() =>
+                    {
+                        ShieldEventCaller.EnableSuperShield();
+                    },
                     timeData.StartAction),
                 new ActionData(() =>
                 {
@@ -83,12 +88,12 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = minTimeScale,
                         TimeToUpdate = timeData.SpeedUp,
                     });
-                    _eventBus.Publish(new MeteorEvents.SpawnRing());
+                    MeteorEventCaller.SpawnRing();
                 }, timeData.ZoomOut),
                 new ActionData(() =>
                 {
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = true});
-                    _eventBus.Publish(new MeteorEvents.SpawnRing());
+                    OnStartQueueFinished?.Invoke(selectedAbility);
+                    SetEnableAbilityUI(true);
                 }, timeData.SpeedUp),
             };
 
@@ -97,6 +102,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    OnEndQueueStart?.Invoke(selectedAbility);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new UpdateGroup[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -108,7 +114,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, 0f),
                 new ActionData(() =>
                 {
-                    _eventBus.Publish(new ShieldEvents.EnableNormalShield());
+                    ShieldEventCaller.EnableNormalShield();
                 }, timeData.StopAction),
                 new ActionData(() =>
                 {
@@ -122,9 +128,9 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }, timeData.SpeedUp),
                 new ActionData(() =>
                 {
-                    _eventBus.Publish(new InputsEvents.SetEnable { IsEnable = true });
+                    SetInputsEnable(true);
                     PublishAbilityActive(selectedAbility, false);
-                    OnAbilityFinished?.Invoke(selectedAbility);
+                    OnEndQueueFinished?.Invoke(selectedAbility);
                 }, 0f),
             };
 
@@ -151,8 +157,9 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    OnStartQueueFinished?.Invoke(selectedAbility);
                     PublishAbilityActive(selectedAbility, true);
-                    _eventBus.Publish(new EarthEvents.SetEnableDamage{DamageEnable = false});
+                    EarthEventCaller.SetEnableDamage(false);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Shield, shieldTimeScale);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
@@ -162,16 +169,20 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.ZoomIn,
                     });
                     
+                    SetInputsEnable(false);
+                    SetEnableAbilityUI(false);
                     _playSlowTimeSound.Invoke();
                     
                 }, 0f),
                 new ActionData(() =>
                     {
                        CameraZoomIn();
-                       GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = false});
                     },
                     timeData.ZoomIn),
-                new ActionData(() => { _eventBus.Publish(new EarthEvents.Heal()); },
+                new ActionData(() =>
+                    {
+                        EarthEventCaller.Heal();
+                    },
                     timeData.StartAction),
                 new ActionData(() =>
                     {
@@ -180,8 +191,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                     timeData.ZoomOut),
                 new ActionData(() =>
                 {
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = true});
-                    
+                    SetInputsEnable(true);
+                    SetEnableAbilityUI(true);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
@@ -199,13 +210,13 @@ namespace _Main.Scripts.Gameplay.Abilies
                     
                     _playSpeedTimeSound.Invoke();
                     
-                    _eventBus.Publish(new EarthEvents.SetEnableDamage{DamageEnable = true});
                     RunActiveTimer(selectedAbility);
                 }, timeData.SpeedUp),
                 new ActionData(() =>
                 {
-                    _eventBus.Publish(new EarthEvents.SetEnableDamage{DamageEnable = true});
+                    EarthEventCaller.SetEnableDamage(true);
                     RunActiveTimer(selectedAbility);
+                    OnStartQueueFinished?.Invoke(selectedAbility);
                 }, timeData.SpeedUp),
             };
 
@@ -213,7 +224,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
-                    OnAbilityFinished?.Invoke(selectedAbility);
+                    OnStartQueueStarted?.Invoke(selectedAbility);
+                    OnEndQueueFinished?.Invoke(selectedAbility);
                     PublishAbilityActive(selectedAbility, false);
                 })
             };
@@ -240,12 +252,13 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    OnStartQueueStarted?.Invoke(selectedAbility);
                     PublishAbilityActive(selectedAbility, true);
                     
                     CustomTime.SetChannelTimeScale(UpdateGroup.Gameplay, 0.15f);
-                    
+                    SetEnableAbilityUI(false);
+                    SetInputsEnable(false);
                     CameraZoomIn();
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = false});
                     
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
@@ -285,7 +298,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                 },timeData.ZoomOut),
                 new ActionData(() =>
                 {
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = true});
+                    SetEnableAbilityUI(true);
+                    SetInputsEnable(true);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Gameplay, minTimeScale);
                     CustomTime.SetChannelPaused(new [] 
                     { 
@@ -293,6 +307,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                             
                     }, false);
                     RunActiveTimer(selectedAbility);
+                    OnStartQueueFinished?.Invoke(selectedAbility);
                 }),
             };
 
@@ -301,8 +316,9 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
-                    // ReSharper disable once ConvertClosureToMethodGroup
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = false});
+                    OnEndQueueFinished?.Invoke(selectedAbility);
+                    SetEnableAbilityUI(false);
+                    SetInputsEnable(false);
                     CameraZoomIn();
                     CustomTime.SetChannelPaused(new [] 
                     { 
@@ -348,14 +364,15 @@ namespace _Main.Scripts.Gameplay.Abilies
                     timeData.ZoomOut),
                 new ActionData(() =>
                 {
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = true});
+                    SetEnableAbilityUI(true);
+                    SetInputsEnable(true);
                     CustomTime.SetChannelPaused(new [] 
                     { 
                         UpdateGroup.Gameplay, 
                             
                     }, false);
                     PublishAbilityActive(selectedAbility, false);
-                    OnAbilityFinished?.Invoke(selectedAbility);
+                    OnEndQueueFinished?.Invoke(selectedAbility);
                 }),
             };
 
@@ -381,7 +398,9 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = false});
+                    OnStartQueueStarted?.Invoke(selectedAbility);
+                    SetEnableAbilityUI(false);
+                    SetInputsEnable(false);
                     PublishAbilityActive(selectedAbility, true);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
@@ -414,7 +433,9 @@ namespace _Main.Scripts.Gameplay.Abilies
                 },timeData.ZoomOut),
                 new ActionData(() =>
                 {
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = true});
+                    SetEnableAbilityUI(true);
+                    SetInputsEnable(true);
+                    OnStartQueueFinished?.Invoke(selectedAbility);
                 })
             };
 
@@ -423,9 +444,10 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    OnEndQueueStart?.Invoke(selectedAbility);
                     ShieldEventCaller.SetGold(false);
                     PublishAbilityActive(selectedAbility, false);
-                    OnAbilityFinished?.Invoke(selectedAbility);
+                    OnEndQueueFinished?.Invoke(selectedAbility);
                 }),
             };
 
@@ -451,6 +473,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    OnStartQueueStarted?.Invoke(selectedAbility);
                     PublishAbilityActive(selectedAbility, true);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
@@ -460,7 +483,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.StartAction,
                     });
                     CameraZoomIn();
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = false});
+                    SetEnableAbilityUI(false);
+                    SetInputsEnable(false);
                     
                     _playSlowTimeSound.Invoke();
                 },0f),
@@ -485,7 +509,9 @@ namespace _Main.Scripts.Gameplay.Abilies
                 },timeData.SpeedUp),
                 new ActionData(() =>
                 {
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = true});
+                    SetEnableAbilityUI(true);
+                    SetInputsEnable(true);
+                    OnStartQueueFinished?.Invoke(selectedAbility);
                 })
             };
 
@@ -494,8 +520,10 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 new ActionData(() =>
                 {
+                    OnEndQueueStart?.Invoke(selectedAbility);
                     CameraZoomIn();
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = false});
+                    SetEnableAbilityUI(false);
+                    SetInputsEnable(false);
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
@@ -522,11 +550,13 @@ namespace _Main.Scripts.Gameplay.Abilies
                 {
                     CameraZoomOut();
                     PublishAbilityActive(selectedAbility, false);
-                    OnAbilityFinished?.Invoke(selectedAbility);
+
                 },timeData.SpeedUp),
                 new ActionData(() =>
                 {
-                    GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = true});
+                    SetEnableAbilityUI(true);
+                    SetInputsEnable(true);
+                    OnEndQueueFinished?.Invoke(selectedAbility);
                 })
             };
 
@@ -542,6 +572,20 @@ namespace _Main.Scripts.Gameplay.Abilies
         }
 
         #endregion
+        
+        
+        private void SetInputsEnable(bool isEnable)
+        {
+            InputsEventCaller.SetEnable(isEnable);
+#if UNITY_ANDROID || UNITY_IOS
+            InputsEventCaller.SetUIEnable(isEnable);
+#endif
+        }
+
+        private void SetEnableAbilityUI(bool isEnable)
+        {
+            AbilitiesEventCaller.SetEnableUI(isEnable);
+        }
 
         private void CameraZoomIn()
         {

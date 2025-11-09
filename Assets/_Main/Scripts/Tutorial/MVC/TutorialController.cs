@@ -29,7 +29,6 @@ namespace _Main.Scripts.Tutorial.MVC
                 fsm.OnEnterState += state =>
                 {
                     ProjectileReStockEnable = state is States.Ability or States.Movement;
-                    CanMultiPage = state is not States.Disable;
                 };
             }
         }
@@ -219,10 +218,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         public void SetMultiPage()
         {
-            if (_actionGate.CanMultiPage)
-            {
-                _motor.SetMultiPage();
-            }
+            _motor.SetMultiPage();
         }
 
         public void TriggerSphereDeflected()

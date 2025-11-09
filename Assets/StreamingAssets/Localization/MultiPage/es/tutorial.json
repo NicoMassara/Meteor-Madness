@@ -1,0 +1,26 @@
+﻿{
+  "Movement": {
+    "Texts" :[
+      "Hola!\n\\n\nBienvenido al Tutorial!\n",
+      "Aca aprenderas a jugar Meteor Madness!\n\\n\nPrueba apretando cada lado de tu dispositivo para mover el escudo de la tierra!"
+    ],
+    "LastButton" : "Intentar!"
+  },
+
+  "Ability" : {
+    "Texts" : [
+      "Mientras estes jugando aveces unas misteriosas esferas apareceran...",
+      "Estas esferas tienen forma de meteoro pero no lo son.\n\\n\nAlgunas personas dicen que al destruirlas, al apretar ambos lados de tu dispositivo al mismo tiempo...\n\\n \nUn Super efecto ocurrira....",
+      "Intenta destruir una y veamos que tiene!"
+    ],
+    "LastButton" : "Intentar"
+  },
+  
+  "Finish" : {
+    "Texts": [
+      "Has finalizado el tutorial de Meteor Madness!",
+      "Eso es todo lo que necesitas saber para disfrutar del juego! \n\n \n Sientete libre de visitar el tutorial cuantas veces quieras! \n\n\n Eres nuestro heroe y necesitas todas las herramientas para defender la tierra!",
+    ],
+    "LastButton" : "Back to Menu"
+  }
+}

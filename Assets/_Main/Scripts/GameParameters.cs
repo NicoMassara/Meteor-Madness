@@ -1,4 +1,6 @@
-﻿namespace _Main.Scripts
+﻿using UnityEngine;
+
+namespace _Main.Scripts
 {
     public struct GameParameters
     {
@@ -6,6 +8,7 @@
         {
             public const int AngleSlots = 32;
             public const int MaxAbilityCount = 3;
+            public const SystemLanguage DefaultLanguage = SystemLanguage.English;
         }
     }
 
