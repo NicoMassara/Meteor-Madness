@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.DebugGUI;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -20,6 +21,22 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         //Hack
         private bool _isFirstDisable = true;
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        
+        private GameModeDebugData _debugData;
+        
+#endif
+
+        private void Awake()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData = new GameModeDebugData();
+        
+#endif
+        }
+
 
         // ReSharper disable Unity.PerformanceAnalysis
         public void OnNotify(ulong message, params object[] args)
@@ -81,8 +98,29 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleEnable();
                     break;
                 
+                
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        
+                case GameModeObserverMessage.MeteorDeflect:
+                    HandleMeteorDeflect((float)args[0]);
+                    break;
+#endif
+                
             }
         }
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+        private void HandleMeteorDeflect(float deflectedAmount)
+        {
+            _debugData.DeflectedMeteor = deflectedAmount;
+        }
+            
+#endif
+        
+
+
+
 
         private void HandleCountdown(float amount)
         {
@@ -114,6 +152,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.PointsGained += pointsAmount;
+            
+#endif
             var finalScore = (int)(pointsAmount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
             FloatingTextEventCaller.Spawn(new FloatingTextValues
             {
@@ -128,6 +171,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleGamePaused(bool isPaused)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.IsPaused = isPaused;
+            
+#endif
+
             CustomTime.SetChannelPaused(new []
             {
                 UpdateGroup.Gameplay,
@@ -276,11 +325,18 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleUpdateGameLevel(int currentLevel)
         {
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.CurrentLevel = currentLevel;
+#endif
             GameModeEventCaller.UpdateLevel(currentLevel);
         }
 
         private void SetEnableInputs(bool isEnable)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.InputsEnable = isEnable;
+#endif
             InputsEventCaller.SetEnable(isEnable);
         }
 

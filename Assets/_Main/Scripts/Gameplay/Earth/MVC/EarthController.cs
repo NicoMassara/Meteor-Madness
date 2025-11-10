@@ -43,7 +43,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private void InitializeFsm()
         {
             var temp = new List<EarthBaseState<States>>();
-            _fsm = new FSM<States>();
+            _fsm = new FSM<States>("Earth");
 
             #region Variables
 
@@ -83,7 +83,6 @@ namespace _Main.Scripts.Gameplay.Earth
             }
             
             _fsm.SetInit(defaultEarth);
-            _fsm.FSMName = "Earth";
         }
 
         #region Transitions

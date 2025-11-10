@@ -19,8 +19,9 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private bool _doesChangeSize = false;
         private float _targetSize;
 
-        public UpdateGroup SelfLateUpdateGroup { get; } = UpdateGroup.Camera;
-        
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Camera;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
 
         private void Awake()
         {
@@ -32,10 +33,12 @@ namespace _Main.Scripts.Gameplay.MyCamera
             _shakerController = new ShakerController(mainCamera.transform);
             _defaultSize = mainCamera.orthographicSize;
         }
-        
-        public void ManagedLateUpdate()
+
+
+
+        public void ExecuteUpdate()
         {
-            var dt = CustomTime.GetDeltaTimeByChannel(SelfLateUpdateGroup);
+            var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
             
             if (_shakerController.IsShaking)
             {

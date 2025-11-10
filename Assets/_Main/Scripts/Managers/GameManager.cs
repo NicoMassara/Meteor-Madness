@@ -9,7 +9,6 @@ namespace _Main.Scripts.Managers
         public static GameManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         private static GameManager _instance;
         
-        
         public bool CanPlay { get; set; }
         public bool IsPaused { get; set; }
         private int _currentPoints;

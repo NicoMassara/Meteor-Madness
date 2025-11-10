@@ -30,7 +30,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         private void InitializeFsm()
         {
             var temp = new List<CosmeticStateBase<States>>();
-            _fsm = new FSM<States>();
+            _fsm = new FSM<States>("Cosmetic");
 
             #region Variables
 
@@ -61,7 +61,6 @@ namespace _Main.Scripts.Cosmetics.MVC
             }
             
             _fsm.SetInit(disable);
-            _fsm.FSMName = "Cosmetic";
         }
         
         #region Transitions

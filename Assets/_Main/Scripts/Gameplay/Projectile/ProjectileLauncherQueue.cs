@@ -17,13 +17,15 @@ namespace _Main.Scripts.Gameplay.Projectile
         [SerializeField] [ReadOnly] private int projectileCount;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.HalfTick;
+        public float LastUpdateTime { get; set; }
 
         private void Awake()
         {
             SetEventBus();
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             if (_distanceTracker.HasProjectile == false)
             {
@@ -72,14 +74,14 @@ namespace _Main.Scripts.Gameplay.Projectile
         private void LaunchProjectile()
         {
             var temp = _projectileQueue.Dequeue();
-            temp.EnableMovement = true;
+            temp.SetEnableMovement(true);
             _distanceTracker.SetProjectile(temp, spawnSettings.GetCenterOfGravity());
             projectileCount = _projectileQueue.Count;
         }
 
         private void AddProjectile(IProjectile projectile)
         {
-            projectile.EnableMovement = false;
+            projectile.SetEnableMovement(false);
             _projectileQueue.Enqueue(projectile);
             projectileCount = _projectileQueue.Count;
         }

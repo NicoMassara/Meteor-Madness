@@ -41,7 +41,9 @@ namespace _Main.Scripts.Sounds
         };
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
-        
+        public TickGroup SelfTickGroup { get; } = TickGroup.HalfTick;
+        public float LastUpdateTime { get; set; }
+
         private void Awake()
         {
             _factory = new SoundBehaviourFactory(soundPrefab);
@@ -53,7 +55,7 @@ namespace _Main.Scripts.Sounds
             SetEventBus();
         }
         
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             _playbackTracker.Execute();
         }

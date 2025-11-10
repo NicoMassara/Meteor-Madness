@@ -38,7 +38,7 @@ namespace _Main.Scripts.GameScreens
         private void InitializeFsm()
         {
             var temp = new List<GameScreenStateBase<States>>();
-            _fsm = new FSM<States>();
+            _fsm = new FSM<States>("GameScreen");
 
             #region Variables
 
@@ -79,7 +79,6 @@ namespace _Main.Scripts.GameScreens
             }
             
             _fsm.SetInit(disable);
-            _fsm.FSMName = "GameScreen";
         }
 
         #region Transitions

@@ -7,7 +7,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     [RequireComponent(typeof(AbilityView))]
     [RequireComponent(typeof(AbilityUIView))]
-    public class AbilitySetup : ManagedBehavior, IUpdatable
+    public class AbilitySetup : ManagedBehavior
     {
         private AbilityMotor _motor;
         private AbilityController _controller;
@@ -16,7 +16,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         private AbilityView _view;
         private AbilityUIView _ui;
         
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Ability;
 
         private void Awake()
         {
@@ -37,13 +36,16 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             _controller.Initialize();
             _inputReader = GameManager.Instance.InputReader;
-        }
 
-        public void ManagedUpdate()
-        {
-            if (_inputReader != null && _inputReader.HasUsedAbility)
+            if (_inputReader != null)
             {
-                _controller.SelectAbility();
+                _inputReader.OnAbilityTriggered += hasUsed =>
+                {
+                    if (hasUsed)
+                    {
+                        _controller.SelectAbility();
+                    }
+                };
             }
         }
 

@@ -13,6 +13,8 @@ namespace _Main.Scripts.Gameplay.Earth
         private EarthView _view;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.HalfTick;
+        public float LastUpdateTime { get; set; }
         
         private void Awake()
         {
@@ -31,7 +33,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _controller.Initialize();
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
