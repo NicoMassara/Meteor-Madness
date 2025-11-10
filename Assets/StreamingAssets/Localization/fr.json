@@ -23,7 +23,12 @@
       "StartButton": "Commencer le Tutoriel"
     },
     "Cosmetic": "Boutique d’Objets",
-    "Settings": "Paramètres"
+    "Settings": "Paramètres",
+    "Credits": {
+      "Button" : "Crédits",
+      "Title" : "Crédits",
+      "Text" : "Développé par"
+    }
   },
 
   "Tutorial": {

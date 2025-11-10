@@ -23,7 +23,12 @@
       "StartButton": "Tutorial Starten"
     },
     "Cosmetic": "Item-Shop",
-    "Settings": "Einstellungen"
+    "Settings": "Einstellungen",
+    "Credits": {
+      "Button" : "Credits",
+      "Title" : "Credits",
+      "Text" : "Entwickelt von"
+    }
   },
 
   "Tutorial": {
