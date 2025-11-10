@@ -34,7 +34,7 @@ namespace _Main.Scripts.DebugTools
             {
                 GameConfigManager.Instance.SetDamage(damageType);
             };
-            _viewUI.GameValues.OnLevelChange = GameModeEventCaller.UpdateLevel;
+            _viewUI.GameValues.OnLevelChange = ProjectileEventCaller.UpdateLevel;
             
             //Camera
             _viewUI.Camera.OnZoomIn = CameraEventCaller.ZoomIn;
@@ -60,13 +60,12 @@ namespace _Main.Scripts.DebugTools
                 OnEndAction = () =>
                 {
                     GameManager.Instance.CanPlay = true;
-                    GameModeEventCaller.Start();
                     InputsEventCaller.SetEnable(true);
 #if UNITY_ANDROID || UNITY_IOS
                     InputsEventCaller.SetUIEnable(true);
                     
 #endif
-                    ShieldEventCaller.SetEnableShield(true);
+                    ShieldEventCaller.Enable();
                 }
             });
         }

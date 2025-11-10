@@ -1,11 +1,12 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.AutoTarget
 {
-    public class ProjectileDetector
+    public class ProjectileDetector : ManagedComponent, IFixedUpdatable
     {
         private readonly ProjectileDetectorData _data;
         private readonly Collider2D[] _colliders = new Collider2D[10];
@@ -18,11 +19,25 @@ namespace _Main.Scripts.Gameplay.AutoTarget
 
         public UnityAction OnTargetFound;
         public UnityAction OnTargetLost;
-
-        public ProjectileDetector(ProjectileDetectorData data, IMovement movement)
+        
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
+        public float LastUpdateTime { get; set; }
+        public bool AutomaticEnable { get; set; }
+        
+        public ProjectileDetector(ProjectileDetectorData data, IMovement movement) 
+            : base()
         {
             _data = data;
             _movement = movement;
+        }
+
+        public void ExecuteUpdate()
+        {
+            if (AutomaticEnable)
+            {
+                CheckForProjectile();
+            }
         }
         
         public void CheckForProjectile()

@@ -9,8 +9,10 @@ namespace _Main.Scripts.Save
         public const string FolderName = "saves";
         public const string FileExtension = "sav";
         //
-        public const string SettingsFile = "settings";
-        public const string SaveFile = "data";
+        public const string SettingsFileName = "settings";
+        public const string ScoreFileName = "score";
+        public const string StatsFileName = "stats";
+        public const string TestFileName = "test";
     }
 
     public static class SaveSystem
@@ -35,9 +37,23 @@ namespace _Main.Scripts.Save
             return folderPath;
         }
 
-        public static void Save<T>(T data, string fileName = "savefile") where T : SaveDataBase
+        private static string GetFileName(SaveDataType saveType)
         {
-            string path = GetSavePath(fileName);
+            string fileName = saveType switch
+            {
+                SaveDataType.Settings => SaveParameters.SettingsFileName,
+                SaveDataType.Stats => SaveParameters.StatsFileName,
+                SaveDataType.Score => SaveParameters.ScoreFileName,
+                SaveDataType.Test => SaveParameters.TestFileName,
+                _ => throw new ArgumentOutOfRangeException(nameof(saveType), saveType, null)
+            };
+            
+            return fileName;
+        }
+
+        public static void Save<T>(T data, SaveDataType saveType) where T : SaveDataBase
+        {
+            string path = GetSavePath(GetFileName(saveType));
             string json = JsonUtility.ToJson(data, true);
             try
             {
@@ -66,14 +82,16 @@ namespace _Main.Scripts.Save
         }
         
 
-        public static T LoadSaveFile<T>(string fileName) where T : SaveDataBase
+        public static bool LoadSaveFile<T>(SaveDataType saveType, out T saveData) where T : SaveDataBase
         {
-            string path = GetSavePath(fileName);
+            saveData = null;
+            
+            string path = GetSavePath(GetFileName(saveType));
             
             if (!File.Exists(path))
             {
                 Debug.LogWarning($"No save file found at: {path}");
-                return null;
+                return false;
             }
 
             try
@@ -81,60 +99,68 @@ namespace _Main.Scripts.Save
                 using (StreamReader reader = new StreamReader(path))
                 {
                     string json = reader.ReadToEnd();
-                    T data = JsonUtility.FromJson<T>(json);
-                    return data;
+                    saveData = JsonUtility.FromJson<T>(json);
+                    return true;
                 }
             }
             catch (Exception e)
             {
                 Debug.LogError("Failed to load game: " + e.Message);
-                return null;
+                return false;
             }
         }
 
-        public static void DeleteSaveFile(string fileName)
+        public static void ClearSaveFile<T>(SaveDataType saveType) where T : SaveDataBase, new()
         {
-            string path = GetSavePath(fileName);
+            string path = GetSavePath(GetFileName(saveType));
             if (File.Exists(path))
             {
-                File.Delete(path);
-                Debug.Log($"Save File Deleted at: {path}");
+                Save<T>(new T(),saveType);
+                Debug.Log($"Save File Cleared at: {path}");
             }
             else
             {
                 Debug.LogWarning($"No save file found at: {path}");
             }
         }
-
-        public static void DeleteAllSaves()
-        {
-            string folder = GetSaveFolder();
-
-            if (Directory.Exists(folder))
-            {
-                try
-                {
-                    string[] files = Directory.GetFiles(folder);
-                    foreach (var file in files)
-                    {
-                        File.Delete(file);
-                        Debug.Log($"Delete save at: {file}");
-                    }
-                    Debug.Log($"All saves deleted");
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"Failed to delete all saves: {e.Message}");
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"Save Folder Not Found at: {folder}");
-            }
-        }
-
     }
 
     [System.Serializable]
-    public abstract class SaveDataBase {}
+    public abstract class SaveDataBase
+    {
+        public abstract SaveDataType Type { get;}
+        
+    }
+
+    [System.Serializable]
+    public class ScoreSaveData : SaveDataBase
+    {
+        public override SaveDataType Type => SaveDataType.Score;
+        public float HighScore;
+    }
+    
+    [System.Serializable]
+    public class StatsSaveData : SaveDataBase
+    {
+        public override SaveDataType Type => SaveDataType.Stats;
+        public int DeflectAmount;
+        public int CollisionAmount;
+    }
+    
+    [System.Serializable]
+    public class SettingsSaveData : SaveDataBase
+    {
+        public override SaveDataType Type => SaveDataType.Settings;
+        public int LanguageIndex;
+    }
+    
+    
+
+    public enum SaveDataType
+    {
+        Settings,
+        Stats,
+        Score,
+        Test
+    }
 }

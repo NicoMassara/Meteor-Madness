@@ -20,6 +20,22 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         //Hack
         private bool _isFirstDisable = true;
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        
+        private GameModeDebugData _debugData;
+        
+#endif
+
+        private void Awake()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData = new GameModeDebugData();
+        
+#endif
+        }
+
 
         // ReSharper disable Unity.PerformanceAnalysis
         public void OnNotify(ulong message, params object[] args)
@@ -81,8 +97,51 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleEnable();
                     break;
                 
+                case GameModeObserverMessage.TriggerMainMenu:
+                    HandleTriggerMainMenu();
+                    break;
+                
+                
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        
+                case GameModeObserverMessage.MeteorDeflect:
+                    HandleMeteorDeflect((float)args[0]);
+                    break;
+#endif
+                
             }
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+        private void HandleMeteorDeflect(float deflectedAmount)
+        {
+            _debugData.DeflectedMeteor = deflectedAmount;
+        }
+            
+#endif
+        
+        private void HandleTriggerMainMenu()
+        {
+            CustomTime.SetChannelPaused(new []
+            {
+                UpdateGroup.Gameplay,
+                UpdateGroup.Ability, 
+                UpdateGroup.Shield,
+                UpdateGroup.Earth,
+                UpdateGroup.Effects,
+                UpdateGroup.Camera
+                
+            }, false);
+
+            AbilitiesEventCaller.Disable();
+            ShieldEventCaller.Disable();
+            EarthEventCaller.Restart();
+            
+            SetEnableInputs(false);
+            SetEnableUIInputs(false);
+        }
+        
 
         private void HandleCountdown(float amount)
         {
@@ -114,6 +173,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.PointsGained += pointsAmount;
+            
+#endif
             var finalScore = (int)(pointsAmount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
             FloatingTextEventCaller.Spawn(new FloatingTextValues
             {
@@ -128,6 +192,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleGamePaused(bool isPaused)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.IsPaused = isPaused;
+            
+#endif
+            
+            AbilitiesEventCaller.SetEnableUI(!isPaused);
+
             CustomTime.SetChannelPaused(new []
             {
                 UpdateGroup.Gameplay,
@@ -167,35 +239,17 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleDisable()
         {
-            CustomTime.SetChannelPaused(new []
-            {
-                UpdateGroup.Gameplay,
-                UpdateGroup.Ability, 
-                UpdateGroup.Shield,
-                UpdateGroup.Earth,
-                UpdateGroup.Effects,
-                UpdateGroup.Camera
-                
-            }, false);
-
-            if (_isFirstDisable == false)
-            {
-                EarthEventCaller.Restart();
-            }
-            
-            _isFirstDisable = false;
-            SetEnableInputs(false);
-            SetEnableUIInputs(false);
-            
-            GameModeEventCaller.Disable();
+            EarthEventCaller.SetToDefault();
+            SoundEventCaller.StopMusic();
+            GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
 
         private void HandleGameFinish()
         {
-            SoundEventCaller.StopMusic();
             GameManager.Instance.CanPlay = false;
-            ShieldEventCaller.SetEnableShield(false);
-            MeteorEventCaller.RecycleAll();
+            AbilitiesEventCaller.Disable();
+            ShieldEventCaller.Disable();
+            SoundEventCaller.StopMusic();
             SoundEventCaller.PlaySound(countdownFinish,null,null);
             SetEnableInputs(false);
             SetEnableUIInputs(false);
@@ -207,8 +261,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             var tempActions = new ActionData[]
             {
-                new (GameModeEventCaller.Restart, temp.TriggerRestart),
-                new (EarthEventCaller.Restart, temp.RestartEarth),
+                new (() =>
+                {
+                    EarthEventCaller.Restart();
+                    
+                }, temp.RestartEarth),
             };
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
@@ -228,10 +285,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdownFinish()
         {
-            GameModeEventCaller.Start();
+            AbilitiesEventCaller.Enable();
             SetEnableInputs(true);
             SetEnableUIInputs(true);
-            AbilitiesEventCaller.SetCanUse(true);
             OnCountdownFinished?.Invoke();
         }
 
@@ -239,7 +295,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             GameModeEventCaller.SetEnablePause(true);
             GameManager.Instance.CanPlay = true;
-            ShieldEventCaller.SetEnableShield(true);
+            ShieldEventCaller.Enable();
             SoundEventCaller.PlayMusic(MusicType.Gameplay);
             GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
         }
@@ -269,18 +325,32 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
-            MeteorEventCaller.EnableSpawn(canSpawn);
+            if (canSpawn)
+            {
+                ProjectileEventCaller.EnableSpawn();
+            }
+            else
+            {
+                ProjectileEventCaller.DisableSpawn();
+            }
         }
 
         #endregion
         
         private void HandleUpdateGameLevel(int currentLevel)
         {
-            GameModeEventCaller.UpdateLevel(currentLevel);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.CurrentLevel = currentLevel;
+#endif
+            ProjectileEventCaller.UpdateLevel(currentLevel);
         }
 
         private void SetEnableInputs(bool isEnable)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.InputsEnable = isEnable;
+#endif
             InputsEventCaller.SetEnable(isEnable);
         }
 

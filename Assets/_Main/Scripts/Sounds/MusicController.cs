@@ -6,7 +6,9 @@ namespace _Main.Scripts.Sounds
     {
         private Dictionary<MusicType, SoundBehavior> _musicDictionary = new Dictionary<MusicType, SoundBehavior>();
         private MusicType _currentMusic;
-        
+
+        public MusicType CurrentMusic => _currentMusic;
+
         public void AddMusic(MusicType type, SoundBehavior soundBehavior)
         {
             _musicDictionary.TryAdd(type, soundBehavior);

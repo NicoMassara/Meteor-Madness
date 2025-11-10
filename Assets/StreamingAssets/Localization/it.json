@@ -23,7 +23,12 @@
       "StartButton": "Inizia il Tutorial"
     },
     "Cosmetic": "Negozio Oggetti",
-    "Settings": "Impostazioni"
+    "Settings": "Impostazioni",
+    "Credits": {
+      "Button" : "Crediti",
+      "Title" : "Crediti",
+      "Text" : "Sviluppato da"
+    }
   },
 
   "Tutorial": {
@@ -34,8 +39,9 @@
     }
   },
 
-  "MultiPage": {
-    "Tutorial": "@MultiPage/it/tutorial.json"
+  "MultiPage" : {
+    "TutorialMobile" : "@MultiPage/Mobile/it/tutorial.json",
+    "TutorialDesktop" : "@MultiPage/Desktop/it/tutorial.json"
   },
 
   "Abilities": {
