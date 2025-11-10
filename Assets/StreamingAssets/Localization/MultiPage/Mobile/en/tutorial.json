@@ -1,4 +1,12 @@
 ﻿{
+  "Movement": {
+    "Texts" :[
+      "Hello!\n\\n\nWelcome to the Tutorial!\n",
+      "Here You'll learn How to Play Meteor Madness!\n\n\nTry pressing each side of your phone to move the Earth's Shield!"
+    ],
+    "LastButton" : "Try to Move!"
+  },
+  
   "Ability" : {
     "Texts" : [
       "During your Play sometimes you'll found a mysterious sphere...",
@@ -6,14 +14,6 @@
       "Try to Deflect one of them and see what has inside!"
     ],
     "LastButton" : "Try"
-  },
-  
-  "Movement": {
-    "Texts" :[
-      "Hello!\n\\n\nWelcome to the Tutorial!\n",
-      "Here You'll learn How to Play Meteor Madness!\n\n\nTry pressing each side of your phone to move the Earth's Shield!"
-    ],
-    "LastButton" : "Try to Move!"
   },
   
   "Finish" : {

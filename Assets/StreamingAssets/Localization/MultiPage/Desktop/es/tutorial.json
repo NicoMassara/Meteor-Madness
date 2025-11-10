@@ -1,0 +1,26 @@
+﻿{
+  "Movement": {
+    "Texts": [
+      "¡Hola!\n\\n\n¡Bienvenido al Tutorial!\n",
+      "¡Aquí aprenderás cómo jugar Meteor Madness!\n\n\nIntenta presionar %%RightKey%% para moverte en el sentido de las agujas del reloj y %%LeftKey%% para moverte en sentido contrario."
+    ],
+    "LastButton": "¡Intenta moverte!"
+  },
+
+  "Ability": {
+    "Texts": [
+      "Durante tu partida, a veces encontrarás una esfera misteriosa...",
+      "Esta esfera tiene forma de meteorito, pero no es un meteorito.\n\n\nAlgunas personas dicen que después de desviar una de ellas, si presionas %%AbilityKey%%...\n\n\nOcurrirá un súper efecto...",
+      "¡Intenta desviar una de ellas y descubre lo que tiene dentro!"
+    ],
+    "LastButton": "Intentar"
+  },
+
+  "Finish": {
+    "Texts": [
+      "¡Has completado el tutorial de Meteor Madness!",
+      "¡Eso es todo lo que necesitas saber para jugar!\n\n\nSiéntete libre de repetirlo cuando quieras y protege la Tierra. ¡Eres el único que puede salvarla!"
+    ],
+    "LastButton": "Volver al Menú"
+  }
+}
