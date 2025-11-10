@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.Ability.States;
-using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilies
@@ -13,6 +11,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         private enum States
         {
+            None,
             Enable,
             Running,
             Disabled,
@@ -20,12 +19,12 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         private class ActionGate
         {
-            public bool CanEnableUI { get; private set; }
+            public bool IsAbilityEnable { get; private set; }
             public ActionGate(FSM<States> fsm)
             {
                 fsm.OnEnterState += state =>
                 {
-                    CanEnableUI = state is States.Enable or States.Running;
+                    IsAbilityEnable = state is not States.Disabled;
                 };
             }
         }
@@ -46,16 +45,22 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void InitializeFsm()
         {
-            var temp = new List<AbilityBaseState<States>>();
-            _fsm = new FSM<States>();
+            var temp = new List<BaseState<States>>();
+            _fsm = new FSM<States>("Ability");
             _actionGate = new ActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(2);
+#endif
 
             #region Variables
 
-            var enable = new AbilityEnableState<States>();
-            var disable = new AbilityDisableState<States>();
-            var running = new AbilityRunningState<States>();
+            var none = new BaseState<States>();
+            var enable = new EnableState<States>();
+            var disable = new DisableState<States>();
+            var running = new RunningState<States>();
             
+            temp.Add(none);
             temp.Add(enable);
             temp.Add(running);
             temp.Add(disable);
@@ -63,6 +68,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             #endregion
 
             #region Transitions
+            
+            none.AddTransition(States.Enable, enable);
             
             enable.AddTransition(States.Disabled, disable);
             enable.AddTransition(States.Running, running);
@@ -80,8 +87,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 state.Initialize(this);
             }
             
-            _fsm.SetInit(enable);
-            _fsm.FSMName = "Ability";
+            _fsm.SetInit(none);
         }
 
         #region Transitions
@@ -154,11 +160,26 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             _motor.ForceFinishAbility();
         }
+
+        public void SetCanUse(bool inputCanUse)
+        {
+            _motor.SetCanUseAbility(inputCanUse);
+        }
     }
     
     #region States
 
-    public class AbilityRunningState<T> : AbilityBaseState<T>
+    public class BaseState<T> : State<T>
+    {
+        protected AbilityController Controller { get; private set; }
+
+        public void Initialize(AbilityController controller)
+        {
+            Controller = controller;
+        }
+    }
+    
+    public class RunningState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -171,7 +192,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         }
     }
     
-    public class AbilityEnableState<T> : AbilityBaseState<T>
+    public class EnableState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -185,7 +206,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         }
     }
     
-    public class AbilityDisableState<T> : AbilityBaseState<T>
+    public class DisableState<T> : BaseState<T>
     {
         public override void Awake()
         {

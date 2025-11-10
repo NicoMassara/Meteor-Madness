@@ -32,12 +32,9 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
             CanBeTargeted = true;
         }
 
-        public override void ManagedFixedUpdate()
+        public void SetEnableMovement(bool enable)
         {
-            if (EnableMovement)
-            {
-                base.ManagedFixedUpdate();
-            }
+            Movement.CanMove = enable;
         }
 
         public override void OnNotify(ulong message, params object[] args)

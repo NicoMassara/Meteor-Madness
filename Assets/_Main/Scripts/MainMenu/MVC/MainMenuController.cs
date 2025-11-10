@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using _Main.Scripts.DebugGUI;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.MainMenu.States;
+using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
@@ -10,8 +11,9 @@ namespace _Main.Scripts.MainMenu.MVC
         private FSM<States> _fsm;
         private enum States
         {
+            None,
             Enable,
-            Initial,
+            Menu,
             Lore,
             Tutorial,
             Disable
@@ -27,25 +29,32 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             InitializeFsm();
         }
+        
 
         #region FSM
 
         private void InitializeFsm()
         {
-            var temp = new List<MainMenuStateBase<States>>();
-            _fsm = new FSM<States>();
-
+            var temp = new List<StateBase<States>>();
+            _fsm = new FSM<States>("MainMenu");
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(DebugGUISortingOrder.SubGroup.MainMenu);
+#endif
+            
             #region Variables
 
-            var enable = new MainMenuEnableState<States>();
-            var disable = new MainMenuDisableState<States>();
-            var initial = new MainMenuInitialState<States>();
-            var lore = new MainMenuLoreState<States>();
-            var tutorial = new MainMenuTutorialState<States>();
+            var none = new StateBase<States>();
+            var enable = new EnableState<States>();
+            var disable = new DisableState<States>();
+            var menu = new MenuState<States>();
+            var lore = new LoreState<States>();
+            var tutorial = new TutorialState<States>();
             
+            temp.Add(none);
             temp.Add(enable);
             temp.Add(disable);
-            temp.Add(initial);
+            temp.Add(menu);
             temp.Add(lore);
             temp.Add(tutorial);
 
@@ -54,15 +63,17 @@ namespace _Main.Scripts.MainMenu.MVC
 
             #region Transitions
 
-            enable.AddTransition(States.Initial, initial);
+            none.AddTransition(States.Enable, enable);
             
-            initial.AddTransition(States.Lore, lore);
-            initial.AddTransition(States.Tutorial, tutorial);
-            initial.AddTransition(States.Disable, disable);
+            enable.AddTransition(States.Menu, menu);
             
-            lore.AddTransition(States.Initial, initial);
+            menu.AddTransition(States.Lore, lore);
+            menu.AddTransition(States.Tutorial, tutorial);
+            menu.AddTransition(States.Disable, disable);
             
-            tutorial.AddTransition(States.Initial, initial);
+            lore.AddTransition(States.Menu, menu);
+            
+            tutorial.AddTransition(States.Menu, menu);
             tutorial.AddTransition(States.Disable, disable);
             
             disable.AddTransition(States.Enable, enable);
@@ -74,8 +85,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 state.Initialize(this);
             }
             
-            _fsm.SetInit(disable);
-            _fsm.FSMName = "MainMenu";
+            _fsm.SetInit(none);
         }
 
         #region Transitions
@@ -85,16 +95,6 @@ namespace _Main.Scripts.MainMenu.MVC
             _fsm?.Transitions(state);
         }
         
-        public void TransitionToInitial()
-        {
-            SetTransition(States.Initial);
-        }
-
-        public void TransitionToLore()
-        {
-            SetTransition(States.Lore);
-        }
-
         public void TransitionToEnable()
         {
             SetTransition(States.Enable);
@@ -103,6 +103,17 @@ namespace _Main.Scripts.MainMenu.MVC
         public void TransitionToDisable()
         {
             SetTransition(States.Disable);
+        }
+        
+        public void TransitionToMenu()
+        {
+            SetTransition(States.Menu);
+
+        }
+
+        public void TransitionToLore()
+        {
+            SetTransition(States.Lore);
         }
         
         public void TransitionToTutorial()
@@ -165,8 +176,18 @@ namespace _Main.Scripts.MainMenu.MVC
     }
 
     #region States
+    
+    public class StateBase<T> : State<T>
+    {
+        protected MainMenuController Controller { get; private set; }
 
-    public class MainMenuEnableState<T> : MainMenuStateBase<T>
+        public void Initialize(MainMenuController controller)
+        {
+            Controller = controller;
+        }
+    }
+    
+    public class EnableState<T> : StateBase<T>
     {
         public override void Awake()
         {
@@ -174,21 +195,21 @@ namespace _Main.Scripts.MainMenu.MVC
         }
     }
     
-    public class MainMenuDisableState<T> : MainMenuStateBase<T>
+    public class DisableState<T> : StateBase<T>
     {
         public override void Awake()
         {
             Controller.Disable();
         }
     }
-    public class MainMenuLoreState<T> : MainMenuStateBase<T>
+    public class LoreState<T> : StateBase<T>
     {
         public override void Awake()
         {
             Controller.Lore();
         }
     }
-    public class MainMenuInitialState<T> : MainMenuStateBase<T>
+    public class MenuState<T> : StateBase<T>
     {
         public override void Awake()
         {
@@ -196,7 +217,7 @@ namespace _Main.Scripts.MainMenu.MVC
         }
     }
     
-    public class MainMenuTutorialState<T> : MainMenuStateBase<T>
+    public class TutorialState<T> : StateBase<T>
     {
         public override void Awake()
         {
