@@ -9,7 +9,7 @@
     
     public enum EventRequestType
     {
-        Request,
+        Requested,
         Granted,
         Denied
     }
@@ -42,7 +42,7 @@
         GameMode,
         Tutorial,
         Cosmetic,
-        Empty1,
+        StartScreen,
         Empty2
     }
     

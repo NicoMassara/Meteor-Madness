@@ -8,6 +8,7 @@
             public const string Gameplay = "Gameplay";
             public const string Input = "Input";
             public const string Managers = "Managers";
+            public const string GameScreen = "GameScreen";
             public const string Fps = "FPS";
             public const string Sounds = "Sounds";
         }
@@ -27,7 +28,8 @@
     {
         public struct Group
         {
-            public const int Fps = 0;
+            public const int Fps = -1;
+            public const int GameScreen = 0;
             public const int Managers = 1;
             public const int Gameplay = 2;
             public const int Fsm = 3;
@@ -37,7 +39,10 @@
     
         public struct SubGroup
         {
-            public const int GameMode = 0;
+            public const int MainMenu = -5;
+            public const int GameMode = -4;
+            public const int Tutorial = -3;
+            public const int Cosmetics = -2;
             public const int Earth = 1;
             public const int Shield = 2;
             public const int Ability = 3;

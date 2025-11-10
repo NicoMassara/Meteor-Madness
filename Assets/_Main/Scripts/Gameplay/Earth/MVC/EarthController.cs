@@ -14,6 +14,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private enum States
         {
+            None,
             Default,
             Dead,
             Shaking,

@@ -51,6 +51,18 @@ namespace _Main.Scripts.Managers
             public ScreenType ScreenType;
             public bool IsEnable;
         }
+        
+        public struct EnableScreen
+        {
+            public ScreenType ScreenType;
+            public EventRequestType RequestType;
+        }
+        
+        public struct DisableScreen
+        {
+            public ScreenType ScreenType;
+            public EventRequestType RequestType;
+        }
     }
 
     public struct GameModeEvents

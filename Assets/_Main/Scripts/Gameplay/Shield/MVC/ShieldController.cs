@@ -23,6 +23,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private enum States
         {
+            None,
             Unactive,
             Active,
             Super,
@@ -93,6 +94,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
             #region Transitions
 
+            
             unactive.AddTransition(States.Active, active);
             
             active.AddTransition(States.Unactive, unactive);

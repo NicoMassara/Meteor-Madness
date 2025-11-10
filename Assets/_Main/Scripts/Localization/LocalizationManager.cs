@@ -4,19 +4,17 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using _Main.Scripts.MyComponents;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using UnityEngine.Networking;
 
 namespace _Main.Scripts.Localization
 {
-    public class LocalizationManager : MonoBehaviour
+    public class LocalizationManager : SingletonBehaviour<LocalizationManager>
     {
-        public static LocalizationManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
-        private static LocalizationManager _instance;
-        
         private readonly SystemLanguage _defaultLanguage = GameParameters.GameplayValues.DefaultLanguage;
-        private Dictionary<string, string> _localizedTexts = new();
+        private readonly Dictionary<string, string> _localizedTexts = new();
         private SystemLanguage _currentLanguage;
         
         private Dictionary<SystemLanguage, string> _languageCodeMap = new Dictionary<SystemLanguage, string>
@@ -29,29 +27,16 @@ namespace _Main.Scripts.Localization
             { SystemLanguage.German, "de" },
         };
         
-        private void Awake()
+        private void Start()
         {
             Initialize();
-        }
-        
-        private static LocalizationManager CreateInstance()
-        {
-            var gameObject = new GameObject(nameof(LocalizationManager))
-            {
-                hideFlags = HideFlags.DontSave,
-            };
-            DontDestroyOnLoad(gameObject);
-            return gameObject.AddComponent<LocalizationManager>();
         }
 
         private void Initialize()
         {
             LoadLanguage(Application.systemLanguage);
         }
-
-
         
-
         public void LoadLanguage(SystemLanguage language)
         {
             _currentLanguage = language;
@@ -66,11 +51,6 @@ namespace _Main.Scripts.Localization
 #endif
         }
         
-#if UNITY_ANDROID
-
-#else
-
-#endif
 
         private void ParseJsonToDictionary(string json)
         {
@@ -270,7 +250,7 @@ namespace _Main.Scripts.Localization
 
             PlayerPrefs.SetString("language", language.ToString());
             PlayerPrefs.Save();
-
+            
             LocalizationEvents.TriggerOnLanguageChanged();
         }
 
