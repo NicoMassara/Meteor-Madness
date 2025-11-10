@@ -29,9 +29,9 @@ namespace _Main.Scripts.Localization
 
         private readonly Dictionary<string, string> _textReplacement = new()
         {
-            {"LeftKey", "A"},
-            {"RightKey", "D"},
-            {"AbilityKey", "S"}
+            {"LeftKey", "<color=blue>A</color>"},
+            {"RightKey", "<color=blue>D</color>"},
+            {"AbilityKey", "<color=blue>S</color>"}
         };
         
         private void Awake()
