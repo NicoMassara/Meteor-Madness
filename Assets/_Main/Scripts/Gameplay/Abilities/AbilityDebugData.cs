@@ -18,8 +18,8 @@ namespace _Main.Scripts.Gameplay.Abilities
         
         public AbilityDebugData()
         {
-            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Gameplay)
-                ?.CreateSubGroup(DebugGUIKeys.SubGroup.Ability)
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Gameplay, DebugGUISortingOrder.Group.Gameplay)
+                ?.CreateSubGroup(DebugGUIKeys.SubGroup.Ability, DebugGUISortingOrder.SubGroup.Ability)
                 ?.AddEntry(
                     () => $"Slot 1: {GetStoredAbilityName(0)}",
                     () => $"Slot 2: {GetStoredAbilityName(1)}",

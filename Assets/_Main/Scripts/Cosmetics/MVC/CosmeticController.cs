@@ -31,6 +31,12 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             var temp = new List<CosmeticStateBase<States>>();
             _fsm = new FSM<States>("Cosmetic");
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+            _fsm.CreateDebugGUI(1);
+#endif
+            
 
             #region Variables
 

@@ -44,6 +44,14 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             var temp = new List<EarthBaseState<States>>();
             _fsm = new FSM<States>("Earth");
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(2);
+#endif
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(2);
+#endif
 
             #region Variables
 

@@ -9,6 +9,7 @@
             public const string Input = "Input";
             public const string Managers = "Managers";
             public const string Fps = "FPS";
+            public const string Sounds = "Sounds";
         }
     
         public struct SubGroup
@@ -18,6 +19,30 @@
             public const string GameMode = "GameMode";
             public const string Shield = "Shield";
             public const string UpdateManager = "Update";
+            public const string SoundChannel = "Channel";
+        }
+    }
+
+    public struct DebugGUISortingOrder
+    {
+        public struct Group
+        {
+            public const int Fps = 0;
+            public const int Managers = 1;
+            public const int Gameplay = 2;
+            public const int Fsm = 3;
+            public const int Input = 4;
+            public const int Sounds = 5;
+        }
+    
+        public struct SubGroup
+        {
+            public const int GameMode = 0;
+            public const int Earth = 1;
+            public const int Shield = 2;
+            public const int Ability = 3;
+            public const int UpdateManager = 0;
+            public const int SoundChannel = 0;
         }
     }
 }

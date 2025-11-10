@@ -14,8 +14,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public GameModeDebugData()
         {
-            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Gameplay)
-                ?.CreateSubGroup(DebugGUIKeys.SubGroup.GameMode)
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Gameplay, DebugGUISortingOrder.Group.Gameplay)
+                ?.CreateSubGroup(DebugGUIKeys.SubGroup.GameMode, DebugGUISortingOrder.SubGroup.GameMode)
                 ?.AddEntry(
                     () => $"Level:{CurrentLevel}",
                     () => $"Points:{PointsGained:F2}",

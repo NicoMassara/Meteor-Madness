@@ -39,6 +39,10 @@ namespace _Main.Scripts.GameScreens
         {
             var temp = new List<GameScreenStateBase<States>>();
             _fsm = new FSM<States>("GameScreen");
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(0);
+#endif
 
             #region Variables
 

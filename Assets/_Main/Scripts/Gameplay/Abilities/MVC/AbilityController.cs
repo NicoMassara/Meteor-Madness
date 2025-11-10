@@ -49,6 +49,10 @@ namespace _Main.Scripts.Gameplay.Abilies
             var temp = new List<AbilityBaseState<States>>();
             _fsm = new FSM<States>("Ability");
             _actionGate = new ActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(2);
+#endif
 
             #region Variables
 

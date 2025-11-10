@@ -43,6 +43,12 @@ namespace _Main.Scripts.Sounds
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         public TickGroup SelfTickGroup { get; } = TickGroup.HalfTick;
         public float LastUpdateTime { get; set; }
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+        private SoundDebugData _debugData;
+        
+#endif
 
         private void Awake()
         {
@@ -53,6 +59,12 @@ namespace _Main.Scripts.Sounds
             AddMusic(MusicType.EndGame, defeatMusic);
             
             SetEventBus();
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData = new SoundDebugData();
+
+#endif
         }
         
         public void ExecuteUpdate()
@@ -107,6 +119,12 @@ namespace _Main.Scripts.Sounds
             
             _activeByChannel[soundData.Channel].Add(tempSound);
             
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.ChannelCount[soundData.Channel] = _activeByChannel[soundData.Channel].Count;
+            
+#endif
+            
             tempSound.OnFinished += Sound_OnFinishedHandler;
         }
         private int GetChannelLimit(SoundChannel channel)
@@ -151,6 +169,11 @@ namespace _Main.Scripts.Sounds
 
         private void EventBus_Sounds_PlayMusic(SoundEvents.PlayMusic input)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.LastMusic = _musicController.CurrentMusic;
+            _debugData.CurrentMusic = input.Type;
+#endif
+            
             _musicController.PlayMusic(input.Type);
         }
 
@@ -173,6 +196,12 @@ namespace _Main.Scripts.Sounds
             if (_activeByChannel[soundBehavior.SoundClass.Channel].Contains(soundBehavior))
             {
                 _activeByChannel[soundBehavior.SoundClass.Channel].Remove(soundBehavior);
+                
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+                _debugData.ChannelCount[soundBehavior.SoundClass.Channel] = _activeByChannel[soundBehavior.SoundClass.Channel].Count;
+            
+#endif
             }
         }
 

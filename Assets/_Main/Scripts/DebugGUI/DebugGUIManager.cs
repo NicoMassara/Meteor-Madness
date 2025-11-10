@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using _Main.Scripts.MyComponents;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace _Main.Scripts.DebugGUI
     public class DebugGroup
     {
         public string Name;
+        public int SortingOrder = 10;
         public bool IsCollapsed = true;
         public List<Func<string>> Entries = new List<Func<string>>();
         public List<DebugGroup> SubGroup = new List<DebugGroup>();
@@ -30,16 +32,23 @@ namespace _Main.Scripts.DebugGUI
             Entries.Remove(entry);
         }
 
-        public DebugGroup CreateSubGroup(string groupName)
+        public DebugGroup CreateSubGroup(string groupName, int sortingOrder = 10)
         {
             var group = SubGroup.Find(g=>g.Name == groupName);
             if (group == null)
             {
                 group = new DebugGroup
                 {
-                    Name = groupName
+                    Name = groupName,
+                    SortingOrder = sortingOrder
                 };
+                
                 SubGroup.Add(group);
+                
+                SubGroup = SubGroup
+                    .OrderBy(g => g.SortingOrder)
+                    .ThenBy(g => g.Name)
+                    .ToList();
             }
             
             return group;
@@ -57,7 +66,7 @@ namespace _Main.Scripts.DebugGUI
         //Padding
         public float buttonPadding = 15f;
         
-        private readonly List<DebugGroup> _groups = new List<DebugGroup>();
+        private List<DebugGroup> _groups = new List<DebugGroup>();
 
         private bool _doesShowGUI = true;
 
@@ -70,16 +79,23 @@ namespace _Main.Scripts.DebugGUI
             }
         }
 
-        public DebugGroup CreateGroup(string groupName)
+        public DebugGroup CreateGroup(string groupName, int sortingOrder = 10)
         {
             var group = _groups.Find(g=>g.Name == groupName);
             if (group == null)
             {
                 group = new DebugGroup
                 {
-                    Name = groupName
+                    Name = groupName,
+                    SortingOrder = sortingOrder
                 };
+                
                 _groups.Add(group);
+                
+                _groups = _groups
+                    .OrderBy(g => g.SortingOrder)
+                    .ThenBy(g => g.Name)
+                    .ToList();
             }
             
             return group;

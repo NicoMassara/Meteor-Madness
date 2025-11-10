@@ -17,13 +17,13 @@ namespace _Main.Scripts.Managers.UpdateManager
         {
             _fpsCounter = new FPSCounter(0.5f);
             
-            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Fps)?.AddEntry(
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Fps, DebugGUISortingOrder.Group.Fps)?.AddEntry(
                 () => $"FPS: {_fpsCounter.Current:F1}",
                 () => $"AVG: {_fpsCounter.AVG:F1}"
             );
             
-            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Managers)
-                ?.CreateSubGroup(DebugGUIKeys.SubGroup.UpdateManager)
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Managers, DebugGUISortingOrder.Group.Managers)
+                ?.CreateSubGroup(DebugGUIKeys.SubGroup.UpdateManager, DebugGUISortingOrder.SubGroup.UpdateManager)
                 ?.AddEntry(
                 () => $"Update Count: {ManagedUpdateCount}",
                 () => $"Fixed Count: {ManagedFixedUpdateCount}",

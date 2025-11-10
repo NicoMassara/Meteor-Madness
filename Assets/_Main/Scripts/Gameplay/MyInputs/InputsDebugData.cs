@@ -11,7 +11,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
         
         public InputsDebugData()
         {
-            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Input)
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Input, DebugGUISortingOrder.Group.Input)
                 ?.AddEntry(
                     () => $"Axis: {HorizontalAxis}",
                     () => $"Ability: {TriggerAbility}"

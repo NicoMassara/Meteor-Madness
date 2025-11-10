@@ -13,8 +13,8 @@ namespace _Main.Scripts.Gameplay.Earth
         
         public EarthDebugData()
         {
-            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Gameplay)
-                ?.CreateSubGroup(DebugGUIKeys.SubGroup.Earth)
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Gameplay, DebugGUISortingOrder.Group.Gameplay)
+                ?.CreateSubGroup(DebugGUIKeys.SubGroup.Earth, DebugGUISortingOrder.SubGroup.Earth)
                 ?.AddEntry(
                     ()=> $"Health: {EarthHealth}",
                     ()=> $"Rotation: {RotationSpeed}",

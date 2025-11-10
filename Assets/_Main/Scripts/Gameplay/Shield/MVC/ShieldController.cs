@@ -68,6 +68,10 @@ namespace _Main.Scripts.Gameplay.Shield
             var temp = new List<ShieldBaseState<States>>();
             _fsm = new FSM<States>("Shield");
             _actionGate = new ActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(2);
+#endif
 
             #region Variables
 

@@ -14,13 +14,7 @@ namespace _Main.Scripts.FiniteStateMachine
 
         public FSM(string fsmName)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             FSMName = fsmName; 
-            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Fsm)?.CreateSubGroup($"{FSMName}")?.AddEntry(
-                () => $"Current State: {(CurrentState == null ? "None" : CurrentState)}",
-                () => $"Last State: {(LastState == null ? "None" : LastState)}"
-            );
-#endif
         }
         public FSM(IState<T> init)
         {
@@ -32,6 +26,21 @@ namespace _Main.Scripts.FiniteStateMachine
             );
 #endif
         }
+
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public void CreateDebugGUI(int sortingOrder = 10)
+        {
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Fsm, DebugGUISortingOrder.Group.Fsm)
+                ?.CreateSubGroup($"{FSMName}",sortingOrder)
+                ?.AddEntry(
+                () => $"Current State: {(CurrentState == null ? "None" : CurrentState)}",
+                () => $"Last State: {(LastState == null ? "None" : LastState)}"
+            );
+        }
+#endif
+
+
         public void SetInit(IState<T> init)
         {
             _current = init;

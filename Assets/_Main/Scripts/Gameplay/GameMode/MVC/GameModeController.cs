@@ -58,6 +58,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             var temp = new List<GameModeStateBase<States>>();
             _fsm = new FSM<States>("GameMode");
             _actionGate = new ActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(1);
+#endif
 
             #region Variables
 

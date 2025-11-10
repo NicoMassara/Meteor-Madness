@@ -49,7 +49,7 @@ namespace _Main.Scripts.Managers
         private void Awake()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Managers)
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Managers, DebugGUISortingOrder.Group.Managers)
                 ?.AddEntry(
                     () => $"Action Count: {RunningCount}"
                 );
