@@ -1,32 +1,42 @@
 ﻿using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.GameScreens
 {
     public class GameScreenMotor : ObservableComponent
     {
-        public void SetActiveMainMenu()
+        private int _currentScreenIndex = -1;
+        private int _newScreenIndex = -1;
+
+        private void DisableCurrentScreen()
         {
-            NotifyAll(GameScreenObserverMessage.SetMainMenu);
+            NotifyAll(GameScreenObserverMessage.DisableScreen, _currentScreenIndex);
         }
 
-        public void SetActiveGameplay()
+        public void LoadCurrentScreen()
         {
-            NotifyAll(GameScreenObserverMessage.SetGameplay);
+            NotifyAll(GameScreenObserverMessage.LoadScreen, _newScreenIndex);
+            _currentScreenIndex = _newScreenIndex;
         }
 
-        public void SetActiveTutorial()
+        public void LoadScreenByIndex(int screenIndex)
         {
-            NotifyAll(GameScreenObserverMessage.SetTutorial);
+            _currentScreenIndex = screenIndex;
+            NotifyAll(GameScreenObserverMessage.LoadScreen, _currentScreenIndex);
         }
 
-        public void SetActiveStartLoading()
+        public void SelectNewScreen(int screenIndex)
         {
-            NotifyAll(GameScreenObserverMessage.SetStartLoading);
-        }
-
-        public void SetActiveCosmetic()
-        {
-            NotifyAll(GameScreenObserverMessage.SetCosmeticMenu);
+            if (_currentScreenIndex == screenIndex)
+            {
+                return;
+            }
+            
+            if (_currentScreenIndex > -1)
+            {
+                _newScreenIndex = screenIndex;
+                DisableCurrentScreen();
+            }
         }
     }
 }

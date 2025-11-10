@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.MVC
 {
@@ -36,6 +37,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         private void HandleDisable()
         {
             SoundEventCaller.StopMusic();
+            GameScreenEventCaller.DisableScreen(ScreenType.Cosmetic, EventRequestType.Granted);
         }
         
         private void HandleTriggerMainMenu()

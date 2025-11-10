@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Comet
 {
-    public class CometFactory : ManagedBehavior, IUpdatable
+    public class CometFactory : ManagedBehavior
     {
         [SerializeField] private CometView cometPrefab;
         [Header("Values")]
@@ -20,8 +20,6 @@ namespace _Main.Scripts.Comet
         private bool _isBottomSpawn;
         private ulong _spawnTimerId;
 
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-
         private void Start()
         {
             _pool = new GenericPool<CometView>(cometPrefab, 1, 5);
@@ -29,15 +27,13 @@ namespace _Main.Scripts.Comet
             SetTimer(GameConfigManager.Instance.GetGameplayData().GameTimeData.FirstCometSpawnDelay);
         }
 
-        public void ManagedUpdate() { }
-
         private void SetTimer(float spawnDelay)
         {
             _spawnTimerId = TimerManager.Add(new TimerData
             {
                 Time = spawnDelay,
                 OnEndAction = Timer_OnEndHandler
-            }, SelfUpdateGroup);
+            }, UpdateGroup.Effects);
         }
 
         private void Timer_OnEndHandler()

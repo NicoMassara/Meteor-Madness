@@ -626,7 +626,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         private void PublishAbilityActive(AbilityType abilityType, bool isActive)
         {
             GameManager.Instance.EventManager.Publish(
-                new AbilitiesEvents.SetActive{ AbilityType = abilityType, IsActive = isActive });
+                new AbilitiesEvents.NotifyIsActive{ AbilityType = abilityType, IsActive = isActive });
         }
 
     }
