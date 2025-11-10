@@ -24,6 +24,13 @@ namespace _Main.Scripts.Localization
             { SystemLanguage.Italian, "it" },
             { SystemLanguage.German, "de" },
         };
+
+        private readonly Dictionary<string, string> _textReplacement = new()
+        {
+            {"LeftKey", "A"},
+            {"RightKey", "D"},
+            {"AbilityKey", "S"}
+        };
         
         private void Start()
         {
@@ -72,6 +79,9 @@ namespace _Main.Scripts.Localization
             }
             
             LocalizationEvents.TriggerOnLocalizationLoaded();
+#if !UNITY_ANDROID && !UNITY_IOS
+            ReplacePlaceholderText();
+#endif
         }
         
         private void FlattenJson(JToken token, string prefix)
@@ -265,6 +275,11 @@ namespace _Main.Scripts.Localization
             if (_localizedTexts.TryGetValue(key, out string value))
                 return value;
             return $"[MISSING:{key}]";
+        }
+
+        public void ReplacePlaceholderText()
+        {
+            LocalizationTools.ReplacePlaceHolders(_localizedTexts, _textReplacement);
         }
 
         public SystemLanguage GetCurrentLanguage() => _currentLanguage;
