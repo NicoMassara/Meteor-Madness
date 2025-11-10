@@ -92,7 +92,15 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SetCanPause:
                     HandleSetCanPause((bool)args[0]);
                     break;
+                case GameModeObserverMessage.TriggerMainMenu:
+                    HandleTriggerMainMenu();
+                    break;
             }
+        }
+
+        private void HandleTriggerMainMenu()
+        {
+            DisableActivePanel();
         }
 
         private void HandleSetCanPause(bool canPause)

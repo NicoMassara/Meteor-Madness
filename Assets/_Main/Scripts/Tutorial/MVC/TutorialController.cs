@@ -92,32 +92,26 @@ namespace _Main.Scripts.Tutorial.MVC
             none.AddTransition(States.Enable, enable);
             
             enable.AddTransition(States.Start, start);
-            enable.AddTransition(States.MultiPage, multiPage);
-            enable.AddTransition(States.Disable, disable);
             
-            start.AddTransition(States.Movement, movement);
-            start.AddTransition(States.Disable, disable);
             start.AddTransition(States.MultiPage, multiPage);
             
-            movement.AddTransition(States.Ability, ability);
+            multiPage.AddTransition(States.Movement, movement);
+            
             movement.AddTransition(States.MultiPage, multiPage);
             
+            multiPage.AddTransition(States.Ability, ability);
+            
             ability.AddTransition(States.AbilityRunning, abilityRunning);
-            ability.AddTransition(States.MultiPage, multiPage);
             
             abilityRunning.AddTransition(States.Finish, finish);
             
-            finish.AddTransition(States.Disable, disable);
             finish.AddTransition(States.MultiPage, multiPage);
             
-            disable.AddTransition(States.Enable, enable);
+            multiPage.AddTransition(States.Finish, finish);
             
-            multiPage.AddTransition(States.Enable, enable);
-            multiPage.AddTransition(States.Start, start);
-            multiPage.AddTransition(States.Movement, movement);
-            multiPage.AddTransition(States.Ability, ability);
             multiPage.AddTransition(States.Disable, disable);
             
+            disable.AddTransition(States.Enable, enable);
             #endregion
             
             foreach (var state in temp)
@@ -278,7 +272,6 @@ namespace _Main.Scripts.Tutorial.MVC
         public override void Awake()
         {
             Controller.SetFinish();
-            Controller.TransitionToMultiPage();
         }
     }
     

@@ -102,38 +102,22 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
-            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            GameEventCaller.Subscribe<GameModeEvents.Restart>(EventBus_GameMode_Restart);
+            GameEventCaller.Subscribe<AbilitiesEvents.NotifyIsActive>(EventBus_Ability_SetActive);
+            //
             GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
-            GameEventCaller.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
+            //
             GameEventCaller.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
             GameEventCaller.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_SpawnRequest);
             GameEventCaller.Subscribe<ProjectileEvents.ClearQueue>(EnventBus_Projectile_ClearQueue);
+            GameEventCaller.Subscribe<ProjectileEvents.DisableSpawn>(EventBus_Projectile_DisableSpawn);
+            GameEventCaller.Subscribe<ProjectileEvents.EnableSpawn>(EventBus_Projectile_EnableSpawn);
+            //
         }
 
-        private void EventBus_GameMode_Start(GameModeEvents.Start input)
-        {
-            _gameplayActive = true;
-            ClearProjectiles();
-        }
+        
+        #region Ability
 
-
-        private void EnventBus_Projectile_ClearQueue(ProjectileEvents.ClearQueue input)
-        {
-            ClearProjectiles();
-        }
-
-        private void EventBus_Projectile_SpawnRequest(ProjectileEvents.RequestSpawn input)
-        {
-            if (input.RequestType == EventRequestType.Granted)
-            {
-                SpawnProjectile(input.ProjectileType);  
-            }
-        }
-
-        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        private void EventBus_Ability_SetActive(AbilitiesEvents.NotifyIsActive input)
         {
             if (input.AbilityType == AbilityType.SlowMotion)
             {
@@ -148,47 +132,60 @@ namespace _Main.Scripts.Gameplay.Projectile
             }
         }
 
+        #endregion
+        
+        #region Meteor
+
         private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
         {
             _canLaunch = !input.IsActive;
         }
-
-        private void EventBus_Projectile_Add(ProjectileEvents.Add input)
+        #endregion
+        
+        #region Projectile
+        
+        private void EventBus_Projectile_EnableSpawn(ProjectileEvents.EnableSpawn input)
         {
-            AddProjectile(input.Projectile);
-        }
-
-        private void EventBus_GameMode_Restart(GameModeEvents.Restart input)
-        {
+            _gameplayActive = true;
             ClearProjectiles();
-        }
-        
-        private void EnventBus_Meteor_EnableSpawn(MeteorEvents.EnableSpawn input)
-        {
-            if (input.CanSpawn)
+            
+            _firstSpawnTimerId = TimerManager.Add(new TimerData
             {
-                _firstSpawnTimerId = TimerManager.Add(new TimerData
+                Time = 1f,
+                OnEndAction = () =>
                 {
-                    Time = 1f,
-                    OnEndAction = () =>
-                    {
-                        _canLaunch = true;
-                    }
-                }, SelfUpdateGroup);
-            }
-            else
-            {
-                _canLaunch = false;
-            }
+                    _canLaunch = true;
+                }
+            }, SelfUpdateGroup);
         }
         
-        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
+        private void EventBus_Projectile_DisableSpawn(ProjectileEvents.DisableSpawn input)
         {
             _gameplayActive = false;
             _canLaunch = false;
             _distanceTracker.ClearValues();
             TimerManager.Remove(_firstSpawnTimerId);
         }
+
+        private void EnventBus_Projectile_ClearQueue(ProjectileEvents.ClearQueue input)
+        {
+            ClearProjectiles();
+        }
+        
+        private void EventBus_Projectile_SpawnRequest(ProjectileEvents.RequestSpawn input)
+        {
+            if (input.RequestType == EventRequestType.Granted)
+            {
+                SpawnProjectile(input.ProjectileType);  
+            }
+        }
+        
+        private void EventBus_Projectile_Add(ProjectileEvents.Add input)
+        {
+            AddProjectile(input.Projectile);
+        }
+
+        #endregion
 
         #endregion
     }

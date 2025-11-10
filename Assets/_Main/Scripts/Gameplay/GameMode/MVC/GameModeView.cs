@@ -1,5 +1,4 @@
 ﻿using System;
-using _Main.Scripts.DebugGUI;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -98,6 +97,10 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleEnable();
                     break;
                 
+                case GameModeObserverMessage.TriggerMainMenu:
+                    HandleTriggerMainMenu();
+                    break;
+                
                 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         
@@ -108,7 +111,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 
             }
         }
-        
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
         private void HandleMeteorDeflect(float deflectedAmount)
@@ -118,9 +121,27 @@ namespace _Main.Scripts.Gameplay.GameMode
             
 #endif
         
+        private void HandleTriggerMainMenu()
+        {
+            CustomTime.SetChannelPaused(new []
+            {
+                UpdateGroup.Gameplay,
+                UpdateGroup.Ability, 
+                UpdateGroup.Shield,
+                UpdateGroup.Earth,
+                UpdateGroup.Effects,
+                UpdateGroup.Camera
+                
+            }, false);
 
-
-
+            AbilitiesEventCaller.Disable();
+            ShieldEventCaller.Disable();
+            EarthEventCaller.Restart();
+            
+            SetEnableInputs(false);
+            SetEnableUIInputs(false);
+        }
+        
 
         private void HandleCountdown(float amount)
         {
@@ -176,6 +197,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData.IsPaused = isPaused;
             
 #endif
+            
+            AbilitiesEventCaller.SetEnableUI(!isPaused);
 
             CustomTime.SetChannelPaused(new []
             {
@@ -216,36 +239,17 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleDisable()
         {
-            CustomTime.SetChannelPaused(new []
-            {
-                UpdateGroup.Gameplay,
-                UpdateGroup.Ability, 
-                UpdateGroup.Shield,
-                UpdateGroup.Earth,
-                UpdateGroup.Effects,
-                UpdateGroup.Camera
-                
-            }, false);
-
-            if (_isFirstDisable == false)
-            {
-                EarthEventCaller.Restart();
-            }
-            
-            _isFirstDisable = false;
-            SetEnableInputs(false);
-            SetEnableUIInputs(false);
-            
-            GameModeEventCaller.Disable();
+            EarthEventCaller.SetToDefault();
+            SoundEventCaller.StopMusic();
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
 
         private void HandleGameFinish()
         {
-            SoundEventCaller.StopMusic();
             GameManager.Instance.CanPlay = false;
-            ShieldEventCaller.SetEnableShield(false);
-            MeteorEventCaller.RecycleAll();
+            AbilitiesEventCaller.Disable();
+            ShieldEventCaller.Disable();
+            SoundEventCaller.StopMusic();
             SoundEventCaller.PlaySound(countdownFinish,null,null);
             SetEnableInputs(false);
             SetEnableUIInputs(false);
@@ -257,8 +261,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             var tempActions = new ActionData[]
             {
-                new (GameModeEventCaller.Restart, temp.TriggerRestart),
-                new (EarthEventCaller.Restart, temp.RestartEarth),
+                new (() =>
+                {
+                    EarthEventCaller.Restart();
+                    
+                }, temp.RestartEarth),
             };
             
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
@@ -278,10 +285,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdownFinish()
         {
-            GameModeEventCaller.Start();
+            AbilitiesEventCaller.Enable();
             SetEnableInputs(true);
             SetEnableUIInputs(true);
-            AbilitiesEventCaller.SetCanUse(true);
             OnCountdownFinished?.Invoke();
         }
 
@@ -289,7 +295,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             GameModeEventCaller.SetEnablePause(true);
             GameManager.Instance.CanPlay = true;
-            ShieldEventCaller.SetEnableShield(true);
+            ShieldEventCaller.Enable();
             SoundEventCaller.PlayMusic(MusicType.Gameplay);
             GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
         }
@@ -319,7 +325,14 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
-            MeteorEventCaller.EnableSpawn(canSpawn);
+            if (canSpawn)
+            {
+                ProjectileEventCaller.EnableSpawn();
+            }
+            else
+            {
+                ProjectileEventCaller.DisableSpawn();
+            }
         }
 
         #endregion
@@ -330,7 +343,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData.CurrentLevel = currentLevel;
 #endif
-            GameModeEventCaller.UpdateLevel(currentLevel);
+            ProjectileEventCaller.UpdateLevel(currentLevel);
         }
 
         private void SetEnableInputs(bool isEnable)

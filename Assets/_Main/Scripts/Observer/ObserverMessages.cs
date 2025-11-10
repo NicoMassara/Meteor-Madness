@@ -50,6 +50,7 @@
         public const ulong CameraZoomIn = 0xA2020;
         public const ulong CameraZoomOut = 0xA2021;
         public const ulong SetCanPause = 0xA2022;
+        public const ulong TriggerMainMenu = 0xA2023;
     }
 
     public struct FlyingObjectObserverMessage

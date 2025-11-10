@@ -32,7 +32,7 @@ namespace _Main.Scripts.GameScreens
                 return;
             }
             
-            if (_currentScreenIndex > 0)
+            if (_currentScreenIndex > -1)
             {
                 _newScreenIndex = screenIndex;
                 DisableCurrentScreen();

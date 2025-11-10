@@ -362,7 +362,7 @@ namespace _Main.Scripts.Gameplay.Earth
             UpdateColorByHealth(0);
             _shakerController.SetMultiplier(0);
             _shakerController.SetShakeData(deathShakeData);
-            GameModeEventCaller.Finish();
+            EarthEventCaller.Death();
         }
         
         private void TriggerEndDestruction()

@@ -13,6 +13,7 @@ namespace _Main.Scripts.Tutorial.MVC
         private int _currentMultiPageIndex;
         
         public event Action OnTutorialEnable;
+        public event Action OnTutorialFinished;
         
         public void OnNotify(ulong message, params object[] args)
         {
@@ -42,24 +43,12 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.Disable:
                     HandleDisable();
                     break;  
+                case TutorialObserverMessage.SphereDeflected:
+                    HandleSphereDeflected();
+                    break;
             }
         }
         
-
-        private void HandleMultiPage()
-        {
-#if UNITY_ANDROID || UNITY_IOS
-            
-            InputsEventCaller.SetUIEnable(false);
-                    
-#endif
-            CameraEventCaller.ZoomIn();
-            var item = multiPageData[_currentMultiPageIndex];
-            MultiPageUIEventCaller.Create(item, (ulong)_currentMultiPageIndex);
-            _currentMultiPageIndex++;
-            InputsEventCaller.SetEnable(false);
-        }
-
         private void HandleEnable()
         {
             _currentMultiPageIndex = 0;
@@ -71,13 +60,33 @@ namespace _Main.Scripts.Tutorial.MVC
             GameScreenEventCaller.DisableScreen(ScreenType.Tutorial, EventRequestType.Granted);
         }
 
+        private void HandleSphereDeflected()
+        {
+            AbilitiesEventCaller.SetEnableUI(true);
+        }
+        
+        private void HandleMultiPage()
+        {
+#if UNITY_ANDROID || UNITY_IOS
+            
+            InputsEventCaller.SetUIEnable(false);
+                    
+#endif
+            ShieldEventCaller.Disable();
+            CameraEventCaller.ZoomIn();
+            var item = multiPageData[_currentMultiPageIndex];
+            MultiPageUIEventCaller.Create(item, (ulong)_currentMultiPageIndex);
+            _currentMultiPageIndex++;
+            InputsEventCaller.SetEnable(false);
+        }
+
         private void HandleMovement()
         {
             CameraEventCaller.ZoomOut();
-            GameModeEventCaller.UpdateLevel(0);
+            ProjectileEventCaller.UpdateLevel(0);
             GameManager.Instance.CanPlay = true;
             CameraEventCaller.ZoomOut();
-            ShieldEventCaller.SetEnableShield(true);
+            ShieldEventCaller.Enable();
             InputsEventCaller.SetEnable(true);
 #if UNITY_ANDROID || UNITY_IOS
             
@@ -94,9 +103,11 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleAbility()
         {
+            ShieldEventCaller.Enable();
             CameraEventCaller.ZoomOut();
             AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
-            AbilitiesEventCaller.SetCanUse(true);
+            AbilitiesEventCaller.Enable();
+            AbilitiesEventCaller.SetEnableUI(false);
             InputsEventCaller.SetEnable(true);
 #if UNITY_ANDROID || UNITY_IOS
             
@@ -133,13 +144,13 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleFinish()
         {
-            MeteorEventCaller.RecycleAll();
-            GameModeEventCaller.UpdateLevel(0);
-            AbilitiesEventCaller.SetCanUse(false);
             GameManager.Instance.CanPlay = false;
-            GameModeEventCaller.Finish();
-            ShieldEventCaller.SetEnableShield(false);
+            ProjectileEventCaller.DisableSpawn();
+            ProjectileEventCaller.UpdateLevel(0);
+            AbilitiesEventCaller.Disable();
+            ShieldEventCaller.Disable();
             CameraEventCaller.ZoomIn();
+            OnTutorialFinished?.Invoke();
         }
     }
 }

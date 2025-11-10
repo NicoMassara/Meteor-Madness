@@ -60,25 +60,23 @@ namespace _Main.Scripts.Gameplay.Earth
             GameEventCaller.Subscribe<EarthEvents.DestructionStart>(EventBus_Earth_DestructionStart);
             GameEventCaller.Subscribe<EarthEvents.Heal>(EventBus_Earth_Heal);
             GameEventCaller.Subscribe<EarthEvents.SetEnableDamage>(EventBus_Earth_SetEnableDamage);
-            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
+            GameEventCaller.Subscribe<EarthEvents.SetToDefault>(EventBus_Earth_Default);
+            //
             GameEventCaller.Subscribe<ProjectileEvents.Collision>(EventBus_Meteor_Collision);
         }
+
+        #region Earth
 
         private void EventBus_Earth_SetEnableDamage(EarthEvents.SetEnableDamage input)
         {
             _controller.SetEnableDamage(input.DamageEnable);
         }
-
-        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
-        {
-            _controller.TransitionToDefault();
-        }
-
+        
         private void EventBus_Earth_Heal(EarthEvents.Heal input)
         {
             _controller.Heal(1f);
         }
-
+        
         private void EventBus_Earth_Restart(EarthEvents.Restart input)
         {
             _controller.TransitionToHeal();
@@ -89,11 +87,24 @@ namespace _Main.Scripts.Gameplay.Earth
             _controller.TransitionToShaking();
         }
         
+        private void EventBus_Earth_Default(EarthEvents.SetToDefault input)
+        {
+            _controller.TransitionToDefault();
+        }
+
+        #endregion
+
+        #region Meteor
+
         private void EventBus_Meteor_Collision(ProjectileEvents.Collision input)
         {
             _controller.HandleCollision(GameConfigManager.Instance.GetDamageValue(), 
                 input.Position, input.Rotation, input.Direction);
         }
+
+        #endregion
+        
+
         
         #endregion
     }

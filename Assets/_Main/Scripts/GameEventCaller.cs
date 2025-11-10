@@ -55,17 +55,23 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new EarthEvents.DestructionStart());
         }
         
+        public static void SetToDefault()
+        {
+            GameEventCaller.Publish(new EarthEvents.SetToDefault());
+        }
+        
         public static void DestructionFinished()
         {
             GameEventCaller.Publish(new EarthEvents.DestructionFinished());
         }
+        
+        public static void Death()
+        {
+            GameEventCaller.Publish(new EarthEvents.Death());
+        }
     }
     public static class ShieldEventCaller
     {
-        public static void SetEnableShield(bool isEnabled)
-        {
-            GameEventCaller.Publish(new ShieldEvents.SetEnable{IsEnabled = isEnabled});
-        }
         public static void SetGold(bool isActive)
         {
             GameEventCaller.Publish(new ShieldEvents.SetGold{IsActive = isActive});
@@ -89,6 +95,21 @@ namespace _Main.Scripts
         public static void EnableNormalShield()
         {
             GameEventCaller.Publish(new ShieldEvents.EnableNormalShield());
+        }
+        
+        public static void RestartPosition()
+        {
+            GameEventCaller.Publish(new ShieldEvents.RestartPosition());
+        }
+        
+        public static void Enable()
+        {
+            GameEventCaller.Publish(new ShieldEvents.Enable());
+        }
+        
+        public static void Disable()
+        {
+            GameEventCaller.Publish(new ShieldEvents.Disable());
         }
 
     }
@@ -126,31 +147,6 @@ namespace _Main.Scripts
         public static void InitializeValues()
         {
             GameEventCaller.Publish(new GameModeEvents.InitializeValues());
-        }
-        
-        public static void Disable()
-        {
-            GameEventCaller.Publish(new GameModeEvents.Disable());
-        }
-        
-        public static void Start()
-        {
-            GameEventCaller.Publish(new GameModeEvents.Start());
-        }
-        
-        public static void Finish()
-        {
-            GameEventCaller.Publish(new GameModeEvents.Finish());
-        }
-        
-        public static void Restart()
-        {
-            GameEventCaller.Publish(new GameModeEvents.Restart());
-        }
-
-        public static void UpdateLevel(int currentLevel)
-        {
-            GameEventCaller.Publish(new GameModeEvents.UpdateLevel{CurrentLevel = currentLevel});
         }
         
         public static void SetPause(bool isPaused)
@@ -227,6 +223,21 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new ProjectileEvents.ClearQueue());
         }
+        
+        public static void DisableSpawn()
+        {
+            GameEventCaller.Publish(new ProjectileEvents.DisableSpawn());
+        }
+        
+        public static void EnableSpawn()
+        {
+            GameEventCaller.Publish(new ProjectileEvents.EnableSpawn());
+        }
+        
+        public static void UpdateLevel(int level)
+        {
+            GameEventCaller.Publish(new ProjectileEvents.UpdateLevel{Level = level});
+        }
     }
     public static class MeteorEventCaller
     {
@@ -248,16 +259,6 @@ namespace _Main.Scripts
         public static void RingActive(bool isActive)
         {
             GameEventCaller.Publish(new MeteorEvents.RingActive{IsActive = isActive});
-        }
-
-        public static void RecycleAll()
-        {
-            GameEventCaller.Publish(new MeteorEvents.RecycleAll());
-        }
-
-        public static void EnableSpawn(bool canSpawn)
-        {
-            GameEventCaller.Publish(new MeteorEvents.EnableSpawn{CanSpawn = canSpawn});
         }
     }
     public static class ParticleEventCaller
@@ -328,15 +329,30 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
         }
         
-        public static void SetActive(SetActiveAbilityData data)
+        public static void NotifyIsActive(SetActiveAbilityData data)
         {
-            GameEventCaller.Publish(new AbilitiesEvents.SetActive
+            GameEventCaller.Publish(new AbilitiesEvents.NotifyIsActive
             {
                 AbilityType = data.AbilityType,
                 IsActive = data.IsActive,
             });
         }
+
+        public static void Enable()
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.Enable());
+        }
         
+        public static void Disable()
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.Disable());
+        }
+        
+        public static void RunTimer()
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.RunTimer());
+        }
+
         public static void GrantSpawn()
         {
             GameEventCaller.Publish(new ProjectileEvents.RequestSpawn

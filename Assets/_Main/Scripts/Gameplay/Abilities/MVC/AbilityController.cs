@@ -19,12 +19,12 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         private class ActionGate
         {
-            public bool CanEnableUI { get; private set; }
+            public bool IsAbilityEnable { get; private set; }
             public ActionGate(FSM<States> fsm)
             {
                 fsm.OnEnterState += state =>
                 {
-                    CanEnableUI = state is States.Enable or States.Running;
+                    IsAbilityEnable = state is not States.Disabled;
                 };
             }
         }
@@ -159,6 +159,11 @@ namespace _Main.Scripts.Gameplay.Abilies
         public void ForceFinishAbility()
         {
             _motor.ForceFinishAbility();
+        }
+
+        public void SetCanUse(bool inputCanUse)
+        {
+            _motor.SetCanUseAbility(inputCanUse);
         }
     }
     
