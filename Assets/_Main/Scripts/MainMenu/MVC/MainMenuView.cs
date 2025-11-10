@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
@@ -31,6 +32,8 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.TriggerCosmetic:
                     HandleCosmetic();
                     break;
+                case MainMenuObserverMessage.MainMenu:
+                    break;
                 
             }
         }
@@ -45,6 +48,7 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleDisable()
         {
             SoundEventCaller.StopMusic();
+            GameScreenEventCaller.DisableScreen(ScreenType.MainMenu, EventRequestType.Granted);
         }
         
         private void HandleGameMode()

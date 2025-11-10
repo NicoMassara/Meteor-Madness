@@ -237,6 +237,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetEnableUIInputs(false);
             
             GameModeEventCaller.Disable();
+            GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
 
         private void HandleGameFinish()

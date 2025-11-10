@@ -39,16 +39,12 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.Enable:
                     HandleEnable();
                     break;   
-                case TutorialObserverMessage.SphereDeflected:
-                    HandleSphereDeflected();
-                    break;   
+                case TutorialObserverMessage.Disable:
+                    HandleDisable();
+                    break;  
             }
         }
-
-        private void HandleSphereDeflected()
-        {
-
-        }
+        
 
         private void HandleMultiPage()
         {
@@ -68,6 +64,11 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             _currentMultiPageIndex = 0;
             OnTutorialEnable?.Invoke();
+        }
+        
+        private void HandleDisable()
+        {
+            GameScreenEventCaller.DisableScreen(ScreenType.Tutorial, EventRequestType.Granted);
         }
 
         private void HandleMovement()
