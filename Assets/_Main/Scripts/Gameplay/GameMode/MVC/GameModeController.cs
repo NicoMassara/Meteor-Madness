@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Gameplay.GameMode.States;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -12,6 +11,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private enum States
         {
+            None,
             Enable,
             Start,
             Gameplay,
@@ -55,20 +55,26 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void InitializeFsm()
         {
-            var temp = new List<GameModeStateBase<States>>();
-            _fsm = new FSM<States>();
+            var temp = new List<BaseState<States>>();
+            _fsm = new FSM<States>("GameMode");
             _actionGate = new ActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(1);
+#endif
 
             #region Variables
 
-            var start = new GameModeStartState<States>();
-            var gameplay = new GameModeGameplayState<States>();
-            var finish = new GameModeFinishState<States>();
-            var death = new GameModeDeathState<States>();
-            var restart = new GameModeRestartState<States>();
-            var disable = new GameModeDisableState<States>();
-            var enable = new GameModeEnableState<States>();
+            var none = new BaseState<States>();
+            var enable = new EnableState<States>();
+            var start = new StartState<States>();
+            var gameplay = new GameplayState<States>();
+            var finish = new FinishState<States>();
+            var death = new DeathState<States>();
+            var restart = new RestartState<States>();
+            var disable = new DisableState<States>();
             
+            temp.Add(none);
             temp.Add(enable);
             temp.Add(start);
             temp.Add(gameplay);
@@ -81,6 +87,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             #region Transitions
             
+            none.AddTransition(States.Enable, enable);
+            //
             enable.AddTransition(States.Start, start);
             
             start.AddTransition(States.Gameplay, gameplay);
@@ -104,8 +112,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 state.Initialize(this);
             }
             
-            _fsm.SetInit(disable);
-            _fsm.FSMName = "GameMode";
+            _fsm.SetInit(none);
         }
 
         #region Transitions
@@ -266,6 +273,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.Enable();
         }
 
+        public void SetCanPause(bool canPause)
+        {
+            _motor.SetCanPause(canPause);
+        }
+
         #endregion
 
         public void HandleCameraZoomOut()
@@ -279,11 +291,26 @@ namespace _Main.Scripts.Gameplay.GameMode
             if(_actionGate.IsInGameplay == false) return;
             _motor.HandleCameraZoomIn();
         }
+
+        public void TriggerMainMenu()
+        {
+            _motor.TriggerMainMenu();
+        }
     }
 
     #region States
 
-    public class GameModeEnableState<T> : GameModeStateBase<T>
+    public class BaseState<T> : State<T>
+    {
+        protected GameModeController Controller { get; private set; }
+
+        public void Initialize(GameModeController controller)
+        {
+            this.Controller = controller;
+        }
+    }
+    
+    public class EnableState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -291,7 +318,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
     }
     
-    public class GameModeDisableState<T> : GameModeStateBase<T>
+    public class DisableState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -299,7 +326,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
     }
     
-    public class GameModeDeathState<T> : GameModeStateBase<T>
+    public class DeathState<T> : BaseState<T>
     {
         private ActionQueue _actionQueue = new ActionQueue();
         
@@ -314,7 +341,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
     }
     
-    public class GameModeFinishState<T> : GameModeStateBase<T>
+    public class FinishState<T> : BaseState<T>
     {
         private ActionQueue _actionQueue = new ActionQueue();
         
@@ -330,7 +357,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
     }
     
-    public class GameModeGameplayState<T> : GameModeStateBase<T>
+    public class GameplayState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -343,7 +370,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
     }
     
-    public class GameModeRestartState<T> : GameModeStateBase<T>
+    public class RestartState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -351,7 +378,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
     }
     
-    public class GameModeStartState<T> : GameModeStateBase<T>
+    public class StartState<T> : BaseState<T>
     {
         public override void Awake()
         {

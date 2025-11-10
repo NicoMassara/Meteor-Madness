@@ -1,0 +1,67 @@
+﻿{
+  "UIButton": {
+    "MainMenu": "Menu Principal",
+    "Resume": "Continuar",
+    "Restart": "Tentar Novamente",
+    "Next": "Próximo",
+    "Back": "Voltar",
+    "Previous": "Anterior",
+    "Pause": "Pausar",
+    "Quit": "Sair"
+  },
+
+  "Menu": {
+    "Play": "Jogar",
+    "Lore": {
+      "Button": "O que aconteceu?",
+      "Title": "O que aconteceu?",
+      "Text": "@Texts/pt/lore.txt"
+    },
+    "Tutorial": {
+      "Button": "Como Jogar",
+      "Title": "Bem-vindo ao Tutorial!",
+      "StartButton": "Iniciar Tutorial"
+    },
+    "Cosmetic": "Loja de Itens",
+    "Settings": "Configurações"
+  },
+
+  "Tutorial": {
+    "Hint": {
+      "Movement": "Tente se mover e desviar um meteoro!",
+      "Ability": "Tente desviar a esfera misteriosa!",
+      "Shield": "Ative o Super Escudo!"
+    }
+  },
+
+  "MultiPage" : {
+    "TutorialMobile" : "@MultiPage/Mobile/pt/tutorial.json",
+    "TutorialDesktop" : "@MultiPage/Desktop/pt/tutorial.json"
+  },
+
+  "Abilities": {
+    "SuperShield": "Super Escudo",
+    "SlowMotion": "Câmera Lenta",
+    "Health": "Reconstrução",
+    "DoublePoints": "Pontos em Dobro",
+    "Automatic": "Piloto Automático"
+  },
+
+  "Cosmetic": {
+    "Title": "Em Breve!"
+  },
+
+  "Pause": {
+    "Title": "Pausa"
+  },
+
+  "Gameplay": {
+    "CountDownStart": "Prepare-se em",
+    "CountdownFinish": "Defenda!",
+    "Score": "Pontuação",
+    "Death": {
+      "Title": "A Humanidade Acabou!",
+      "Score": "Sua Pontuação"
+    }
+  }
+}

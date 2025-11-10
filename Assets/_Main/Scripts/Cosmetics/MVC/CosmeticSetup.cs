@@ -31,26 +31,14 @@ namespace _Main.Scripts.Cosmetics.MVC
             SetViewHandlers();
             SetUIViewHandlers();
             
-            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetScreen);
-        }
-
-        private void EventBus_GameScreen_SetScreen(GameScreenEvents.SetScreen input)
-        {
-            if (input.ScreenType == ScreenType.Cosmetic &&
-                input.IsEnable)
-            {
-                _controller.TransitionToEnable();
-            }
-            else
-            {
-                DisableCosmetic();
-            }
+            GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
+            GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
         }
         
         private void EnableCosmetic()
         {
+            _controller.TransitionToEnable();
             SubscribeEventBus();
-            _controller.TransitionToInitial();
         }
 
         private void DisableCosmetic()
@@ -68,7 +56,7 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void SetViewHandlers()
         {
-            _view.OnCosmeticEnable += EnableCosmetic;
+            _view.OnCosmeticEnable += ()=> _controller.TransitionToInitial();
         }
 
         #endregion
@@ -84,6 +72,30 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             
         }
+        
+        #region GameScreen
+
+        private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
+        {
+            if(input.ScreenType != ScreenType.Cosmetic) return;
+            
+            if (input.RequestType == EventRequestType.Requested)
+            {
+                DisableCosmetic();
+            }
+        }
+
+        private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
+        {
+            if(input.ScreenType != ScreenType.Cosmetic) return;
+            
+            if (input.RequestType == EventRequestType.Granted)
+            {
+                EnableCosmetic();
+            }
+        }
+
+        #endregion
 
         #endregion
     }

@@ -35,7 +35,8 @@
   },
 
   "MultiPage" : {
-    "Tutorial" : "@MultiPage/en/tutorial.json"
+    "TutorialMobile" : "@MultiPage/Mobile/en/tutorial.json",
+    "TutorialDesktop" : "@MultiPage/Desktop/en/tutorial.json"
   },
   
   "Abilities": {

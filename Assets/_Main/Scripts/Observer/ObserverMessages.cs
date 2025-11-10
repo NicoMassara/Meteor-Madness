@@ -49,6 +49,8 @@
         public const ulong Enable = 0xA2019;
         public const ulong CameraZoomIn = 0xA2020;
         public const ulong CameraZoomOut = 0xA2021;
+        public const ulong SetCanPause = 0xA2022;
+        public const ulong TriggerMainMenu = 0xA2023;
     }
 
     public struct FlyingObjectObserverMessage
@@ -77,7 +79,7 @@
         public const ulong SetCanUse = 0xA4004;
         public const ulong SetEnableUI = 0xA4005;
         public const ulong SelectAbility = 0xA4006;
-        public const ulong Empty = 0xA4007;
+        public const ulong ForceFinish = 0xA4007;
         public const ulong RestartAbilities = 0xA4008;
         public const ulong RunActiveTimer = 0xA4009;
         public const ulong SetStorageFull = 0xA4010;
@@ -85,11 +87,11 @@
     
     public struct GameScreenObserverMessage
     {
-        public const ulong SetMainMenu = 0xA5001;
-        public const ulong SetGameplay = 0xA5002;
-        public const ulong SetTutorial = 0xA5003;
-        public const ulong SetStartLoading = 0xA5004;
-        public const ulong SetCosmeticMenu = 0xA5005;
+        public const ulong DisableScreen = 0xA5001;
+        public const ulong LoadScreen = 0xA5002;
+        public const ulong Empty1 = 0xA5003;
+        public const ulong Empty2 = 0xA5004;
+        public const ulong Empty3 = 0xA5005;
     }
     
     public struct TutorialObserverMessage

@@ -1,0 +1,26 @@
+﻿{
+  "Movement": {
+    "Texts" :[
+      "Hello!\n\\n\nWelcome to the Tutorial!\n",
+      "Here You'll learn How to Play Meteor Madness!\n\n\n Try Pressing %%RightKey%% to move Clockwise and %%LeftKey%% to move counter clock wise!"
+    ],
+    "LastButton" : "Try to Move!"
+  },
+  
+  "Ability" : {
+    "Texts" : [
+      "During your Play sometimes you'll found a mysterious sphere...",
+      "This sphere has a meteor-like form but it is not a Meteor.\n\n\nSome People say that after deflecting one of them, if you press %%AbilityKey%%...\n\n \nA Super Effect Will Happen...",
+      "Try to Deflect one of them and see what has inside!"
+    ],
+    "LastButton" : "Try"
+  },
+  
+  "Finish" : {
+    "Texts": [
+      "You have finished the Meteor Madness Tutorial!",
+      "That's everything you need to know to play the game!\n\n \nFeel free to revisit it any time you need and protect the Earth! You are the only one who can save it!"
+    ],
+    "LastButton" : "Back to Menu"
+  }
+}

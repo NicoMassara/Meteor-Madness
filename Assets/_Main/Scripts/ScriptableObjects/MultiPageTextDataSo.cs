@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.Localization;
 using UnityEngine;
 
 namespace _Main.Scripts.ScriptableObjects
@@ -7,11 +8,15 @@ namespace _Main.Scripts.ScriptableObjects
     public class MultiPageTextDataSo : ScriptableObject, IMultiPageData
     {
         [SerializeField] private string textCode;
-        [SerializeField] private int textCount;
 
         public string TextsCode => $"{textCode}.Texts";
-        public int TextCount => textCount;
+        public int TextCount => GetTextCount();
         public string LastButtonCode => $"{textCode}.LastButton";
-        public int MaxTextIndex => textCount-1;
+        public int MaxTextIndex => GetTextCount()-1;
+
+        private int GetTextCount()
+        {
+            return LocalizationManager.Instance.GetArrayLength(TextsCode);
+        }
     }
 }

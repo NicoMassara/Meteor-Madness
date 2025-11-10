@@ -38,7 +38,6 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         private void HandleEnable()
         {
-            Debug.Log("Enabled");
             SetActivePanel(GetUiComponents().MainPanel);
         }
 

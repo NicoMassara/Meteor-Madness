@@ -12,7 +12,7 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeUIView : ManagedBehavior, IObserver, IUpdatable
+    public class GameModeUIView : ManagedBehavior, IObserver
     {
         [SerializeField] private GameModeUiPanelSelector uiSelector;
         
@@ -23,13 +23,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         private Coroutine _gameplayPointsCoroutine;
         private IGameUIConfig _gameUIConfig;
         
-        public UnityAction OnMainMenuButtonPressed;
-        public UnityAction OnRestartButtonPressed;
-        public UnityAction OnPauseButtonPressed;
+        public event Action OnMainMenuButtonPressed;
+        public event Action OnRestartButtonPressed;
+        public event Action OnPauseButtonPressed;
         
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
-        
-        public void ManagedUpdate() { }   
         
         private void Start()
         {
@@ -92,10 +89,25 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.CameraZoomIn:
                     HandleCameraZoomIn();
                     break;
+                case GameModeObserverMessage.SetCanPause:
+                    HandleSetCanPause((bool)args[0]);
+                    break;
+                case GameModeObserverMessage.TriggerMainMenu:
+                    HandleTriggerMainMenu();
+                    break;
             }
         }
 
+        private void HandleTriggerMainMenu()
+        {
+            DisableActivePanel();
+        }
 
+        private void HandleSetCanPause(bool canPause)
+        {
+            GetUiComponents().PauseButton.interactable = canPause;
+        }
+        
         private GameModeUIComponents GetUiComponents()
         {
             return _uiComponents ??= _uiComponents = uiSelector.GetPanelData();
@@ -269,9 +281,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             while (!_numberIncrementer.IsFinished)
             {
-                if (!CustomTime.GetChannel(SelfUpdateGroup).IsPaused)
+                if (!CustomTime.GetChannel(UpdateGroup.UI).IsPaused)
                 {
-                    _numberIncrementer.Run(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                    _numberIncrementer.Run(CustomTime.GetDeltaTimeByChannel(UpdateGroup.UI));
                     increaseAction?.Invoke(GetCurrentPoints());
                 }
                 
@@ -336,7 +348,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             _deathPanelActionQueue.AddAction(tempList);
             
-            ActionManager.Add(_deathPanelActionQueue,SelfUpdateGroup);
+            ActionManager.Add(_deathPanelActionQueue,UpdateGroup.UI);
         }
 
         private void SetActiveDeathText(bool isActive)
