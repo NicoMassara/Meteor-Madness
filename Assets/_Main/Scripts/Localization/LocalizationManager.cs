@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,6 @@ using System.Text;
 using _Main.Scripts.MyComponents;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
-using UnityEngine.Networking;
 
 namespace _Main.Scripts.Localization
 {
@@ -25,6 +23,13 @@ namespace _Main.Scripts.Localization
             { SystemLanguage.Portuguese, "pt" },
             { SystemLanguage.Italian, "it" },
             { SystemLanguage.German, "de" },
+        };
+
+        private readonly Dictionary<string, string> _textReplacement = new()
+        {
+            {"LeftKey", "A"},
+            {"RightKey", "D"},
+            {"AbilityKey", "S"}
         };
         
         private void Start()
@@ -74,6 +79,9 @@ namespace _Main.Scripts.Localization
             }
             
             LocalizationEvents.TriggerOnLocalizationLoaded();
+#if !UNITY_ANDROID && !UNITY_IOS
+            ReplacePlaceholderText();
+#endif
         }
         
         private void FlattenJson(JToken token, string prefix)
@@ -267,6 +275,11 @@ namespace _Main.Scripts.Localization
             if (_localizedTexts.TryGetValue(key, out string value))
                 return value;
             return $"[MISSING:{key}]";
+        }
+
+        public void ReplacePlaceholderText()
+        {
+            LocalizationTools.ReplacePlaceHolders(_localizedTexts, _textReplacement);
         }
 
         public SystemLanguage GetCurrentLanguage() => _currentLanguage;
