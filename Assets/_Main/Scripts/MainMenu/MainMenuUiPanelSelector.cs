@@ -27,6 +27,7 @@ namespace _Main.Scripts.Menu
         public Button TutorialButton;
         public Button OpenTutorialButton;
         public Button LoreButton;
+        public Button CreditsButton;
         public Button CosmeticButton;
         public Button QuitButton;
         public Button[] BackButtons;

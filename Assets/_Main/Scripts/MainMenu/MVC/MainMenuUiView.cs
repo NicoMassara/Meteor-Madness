@@ -18,6 +18,7 @@ namespace _Main.Scripts.MainMenu.MVC
         public event Action OnTutorialTriggered;
         public event Action OnCosmeticTriggered;
         public event Action OnTutorialOpen;
+        public event Action OnCreditsOpen;
         public event Action OnLoreOpen;
         public event Action OnBackToMenu;
         public event Action OnExit;
@@ -50,6 +51,12 @@ namespace _Main.Scripts.MainMenu.MVC
             GetUiComponents().CosmeticButton.onClick.AddListener(() =>
             {
                 OnCosmeticTriggered?.Invoke();
+                PlayButtonSound();
+            });
+            
+            GetUiComponents().CreditsButton.onClick.AddListener(() =>
+            {
+                OnCreditsOpen?.Invoke();
                 PlayButtonSound();
             });
 
@@ -88,9 +95,13 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.TutorialMenu:
                     HandleTutorialMenu();
                     break;
+                case MainMenuObserverMessage.CreditsMenu:
+                    HandleCreditsMenu();
+                    break;
             }
         }
 
+        
         private void HandleTutorialMenu()
         {
             SetActivePanel(GetUiComponents().TutorialPanel);
@@ -120,6 +131,11 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleMainMenu()
         {
             SetActivePanel(GetUiComponents().MenuPanel);
+        }
+        
+        private void HandleCreditsMenu()
+        {
+            SetActivePanel(GetUiComponents().CreditsPanel);
         }
 
         private void HandleLoreMenu()

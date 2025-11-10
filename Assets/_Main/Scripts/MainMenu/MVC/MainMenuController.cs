@@ -13,10 +13,11 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             None,
             Enable,
+            Disable,
             Menu,
             Lore,
             Tutorial,
-            Disable
+            Credits
         }
 
         
@@ -29,7 +30,6 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             InitializeFsm();
         }
-        
 
         #region FSM
 
@@ -50,6 +50,7 @@ namespace _Main.Scripts.MainMenu.MVC
             var menu = new MenuState<States>();
             var lore = new LoreState<States>();
             var tutorial = new TutorialState<States>();
+            var credits = new CreditsState<States>();
             
             temp.Add(none);
             temp.Add(enable);
@@ -57,6 +58,7 @@ namespace _Main.Scripts.MainMenu.MVC
             temp.Add(menu);
             temp.Add(lore);
             temp.Add(tutorial);
+            temp.Add(credits);
 
 
             #endregion
@@ -70,8 +72,11 @@ namespace _Main.Scripts.MainMenu.MVC
             menu.AddTransition(States.Lore, lore);
             menu.AddTransition(States.Tutorial, tutorial);
             menu.AddTransition(States.Disable, disable);
+            menu.AddTransition(States.Credits, credits);
             
             lore.AddTransition(States.Menu, menu);
+            
+            credits.AddTransition(States.Menu, menu);
             
             tutorial.AddTransition(States.Menu, menu);
             tutorial.AddTransition(States.Disable, disable);
@@ -108,7 +113,6 @@ namespace _Main.Scripts.MainMenu.MVC
         public void TransitionToMenu()
         {
             SetTransition(States.Menu);
-
         }
 
         public void TransitionToLore()
@@ -119,6 +123,11 @@ namespace _Main.Scripts.MainMenu.MVC
         public void TransitionToTutorial()
         {
             SetTransition(States.Tutorial);
+        }
+        
+        public void TransitionToCredits()
+        {
+            SetTransition(States.Credits);
         }
         
         #endregion
@@ -171,8 +180,15 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             _motor.TriggerCosmetic();
         }
+        
+        public void Credits()
+        {
+            _motor.Credits();
+        }
 
         #endregion
+
+
     }
 
     #region States
@@ -222,6 +238,15 @@ namespace _Main.Scripts.MainMenu.MVC
         public override void Awake()
         {
             Controller.Tutorial();
+        }
+    }
+    
+    
+    public class CreditsState<T> : StateBase<T>
+    {
+        public override void Awake()
+        {
+            Controller.Credits();
         }
     }
 

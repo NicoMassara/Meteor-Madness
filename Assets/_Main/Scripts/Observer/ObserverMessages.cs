@@ -120,6 +120,7 @@
         public const ulong Quit = 0xA7007;
         public const ulong TutorialMenu = 0xA7008;
         public const ulong TriggerCosmetic = 0xA7009;
+        public const ulong CreditsMenu = 0xA7010;
     }
 
     public struct CosmeticObserverMessage
