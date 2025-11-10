@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using _Main.Scripts.DebugGUI;
 using _Main.Scripts.FiniteStateMachine;
-using _Main.Scripts.Tutorial.States;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
@@ -10,6 +10,7 @@ namespace _Main.Scripts.Tutorial.MVC
         private FSM<States> _fsm;
         private enum States
         {
+            None,
             Enable,
             Start,
             Movement,
@@ -54,25 +55,27 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void InitializeFsm()
         {
-            var temp = new List<TutorialStateBase<States>>();
+            var temp = new List<BaseState<States>>();
             _fsm = new FSM<States>("Tutorial");
             _actionGate = new ActionGate(_fsm);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _fsm.CreateDebugGUI(1);
+            _fsm.CreateDebugGUI(DebugGUISortingOrder.SubGroup.Tutorial);
 #endif
 
             #region Variables
 
-            var disable = new TutorialDisableState<States>();
-            var enable = new TutorialEnableState<States>();
-            var start = new TutorialStartState<States>();
-            var movement = new TutorialMovementState<States>();
-            var ability = new TutorialAbilityState<States>();
-            var finish = new TutorialFinishState<States>();
-            var abilityRunning = new TutorialAbilityRunningState<States>();
-            var multiPage = new TutorialMultiPageState<States>();
+            var none = new BaseState<States>();
+            var disable = new DisableState<States>();
+            var enable = new EnableState<States>();
+            var start = new StartState<States>();
+            var movement = new MovementState<States>();
+            var ability = new AbilityState<States>();
+            var finish = new FinishState<States>();
+            var abilityRunning = new AbilityRunningState<States>();
+            var multiPage = new MultiPageState<States>();
             
+            temp.Add(none);
             temp.Add(disable);
             temp.Add(enable);
             temp.Add(start);
@@ -85,6 +88,8 @@ namespace _Main.Scripts.Tutorial.MVC
             #endregion
 
             #region Transitions
+            
+            none.AddTransition(States.Enable, enable);
             
             enable.AddTransition(States.Start, start);
             enable.AddTransition(States.MultiPage, multiPage);
@@ -111,6 +116,7 @@ namespace _Main.Scripts.Tutorial.MVC
             multiPage.AddTransition(States.Start, start);
             multiPage.AddTransition(States.Movement, movement);
             multiPage.AddTransition(States.Ability, ability);
+            multiPage.AddTransition(States.Disable, disable);
             
             #endregion
             
@@ -119,7 +125,7 @@ namespace _Main.Scripts.Tutorial.MVC
                 state.Initialize(this);
             }
             
-            _fsm.SetInit(disable);
+            _fsm.SetInit(none);
         }
 
         #region Transitions
@@ -232,7 +238,18 @@ namespace _Main.Scripts.Tutorial.MVC
     }
 
     #region States
-    public class TutorialAbilityState<T> : TutorialStateBase<T>
+    
+    public class BaseState<T> : State<T>
+    {
+        protected TutorialController Controller { get; private set; }
+
+        public void Initialize(TutorialController controller)
+        {
+            Controller = controller;
+        }
+    }
+    
+    public class AbilityState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -240,7 +257,7 @@ namespace _Main.Scripts.Tutorial.MVC
         }
     }
     
-    public class TutorialDisableState<T> : TutorialStateBase<T>
+    public class DisableState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -248,7 +265,7 @@ namespace _Main.Scripts.Tutorial.MVC
         }
     }
     
-    public class TutorialEnableState<T> : TutorialStateBase<T>
+    public class EnableState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -256,7 +273,7 @@ namespace _Main.Scripts.Tutorial.MVC
         }
     }
     
-    public class TutorialFinishState<T> : TutorialStateBase<T>
+    public class FinishState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -265,7 +282,7 @@ namespace _Main.Scripts.Tutorial.MVC
         }
     }
     
-    public class TutorialMovementState<T> : TutorialStateBase<T>
+    public class MovementState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -273,7 +290,7 @@ namespace _Main.Scripts.Tutorial.MVC
         }
     }
     
-    public class TutorialStartState<T> : TutorialStateBase<T>
+    public class StartState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -281,7 +298,7 @@ namespace _Main.Scripts.Tutorial.MVC
         }
     }
 
-    public class TutorialAbilityRunningState<T> : TutorialStateBase<T>
+    public class AbilityRunningState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -289,7 +306,7 @@ namespace _Main.Scripts.Tutorial.MVC
         }
     }
 
-    public class TutorialMultiPageState<T> : TutorialStateBase<T>
+    public class MultiPageState<T> : BaseState<T>
     {
         public override void Awake()
         {

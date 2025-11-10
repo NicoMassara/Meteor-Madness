@@ -9,7 +9,7 @@
     
     public enum EventRequestType
     {
-        Request,
+        Requested,
         Granted,
         Denied
     }

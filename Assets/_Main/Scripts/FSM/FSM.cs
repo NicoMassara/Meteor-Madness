@@ -1,5 +1,6 @@
 using System;
 using _Main.Scripts.DebugGUI;
+using UnityEngine;
 
 namespace _Main.Scripts.FiniteStateMachine
 {
@@ -19,12 +20,6 @@ namespace _Main.Scripts.FiniteStateMachine
         public FSM(IState<T> init)
         {
             SetInit(init);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            DebugGUIManager.Instance.CreateGroup($"{FSMName}")?.AddEntry(
-                () => $"Current State: {CurrentState}",
-                () => $"Last State: {(LastState == null ? "None" : LastState)}"
-            );
-#endif
         }
 
 
@@ -39,13 +34,13 @@ namespace _Main.Scripts.FiniteStateMachine
             );
         }
 #endif
-
-
+        
         public void SetInit(IState<T> init)
         {
             _current = init;
             _current.Awake();
         }
+        
         public void Execute(float deltaTime)
         {
             if (_current != null)
@@ -70,7 +65,7 @@ namespace _Main.Scripts.FiniteStateMachine
             
             if (newState == null)
             {
-                //Debug.Log($"Transition From {CurrentState.ToString()} to {input.ToString()} Not Found in {FSMName}");
+                //Debug.Log($"Transition From {CurrentState.ToString()} to {input.ToString()} Not Found in {FSMName} FSM");
                 return;
             }
 
@@ -84,6 +79,9 @@ namespace _Main.Scripts.FiniteStateMachine
             _current = newState;
             _current.Awake();
             CurrentState = input;
+            /*Debug.Log($"{FSMName} Curren State->{CurrentState} : " +
+                      $"Last State->{LastState} : " +
+                      $"At->{Time.realtimeSinceStartup}");*/
             OnEnterState?.Invoke(CurrentState);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using _Main.Scripts.DebugGUI;
 using _Main.Scripts.FiniteStateMachine;
 
 namespace _Main.Scripts.Cosmetics.MVC
@@ -10,6 +11,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         private enum States
         {
+            None,
             Enable,
             Initial,
             Disable
@@ -29,21 +31,22 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void InitializeFsm()
         {
-            var temp = new List<CosmeticStateBase<States>>();
+            var temp = new List<BaseState<States>>();
             _fsm = new FSM<States>("Cosmetic");
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-
-            _fsm.CreateDebugGUI(1);
+            _fsm.CreateDebugGUI(DebugGUISortingOrder.SubGroup.Cosmetics);
 #endif
             
 
             #region Variables
 
-            var enable = new CosmeticEnableState<States>();
-            var disable = new CosmeticDisableState<States>();
-            var initial = new CosmeticInitialState<States>();
+            var none = new BaseState<States>();
+            var enable = new EnableState<States>();
+            var disable = new DisableState<States>();
+            var initial = new InitialState<States>();
             
+            temp.Add(none);
             temp.Add(enable);
             temp.Add(disable);
             temp.Add(initial);
@@ -53,6 +56,8 @@ namespace _Main.Scripts.Cosmetics.MVC
 
             #region Transitions
 
+            none.AddTransition(States.Enable, enable);
+            //
             enable.AddTransition(States.Initial, initial);
             
             initial.AddTransition(States.Disable, disable);
@@ -66,7 +71,7 @@ namespace _Main.Scripts.Cosmetics.MVC
                 state.Initialize(this);
             }
             
-            _fsm.SetInit(disable);
+            _fsm.SetInit(none);
         }
         
         #region Transitions
@@ -120,10 +125,19 @@ namespace _Main.Scripts.Cosmetics.MVC
         #endregion
 
     }
-
     #region States
+    
+    public class BaseState<T> : State<T>
+    {
+        protected CosmeticController Controller { get; private set; }
 
-    public class CosmeticEnableState<T> : CosmeticStateBase<T>
+        public void Initialize(CosmeticController controller)
+        {
+            Controller = controller;
+        }
+    }
+
+    public class EnableState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -131,7 +145,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         }
     }
     
-    public class CosmeticDisableState<T> : CosmeticStateBase<T>
+    public class DisableState<T> : BaseState<T>
     {
         public override void Awake()
         {
@@ -139,7 +153,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         }
     }
     
-    public class CosmeticInitialState<T> : CosmeticStateBase<T>
+    public class InitialState<T> : BaseState<T>
     {
         public override void Awake()
         {

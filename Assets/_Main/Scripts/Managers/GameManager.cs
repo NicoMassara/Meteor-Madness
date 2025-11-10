@@ -40,6 +40,8 @@ namespace _Main.Scripts.Managers
             InputReader = inputReader;
         }
 
+        #region Screen Loading
+
         public void LoadTutorial()
         {
             LoadGameScreen(ScreenType.Tutorial);
@@ -62,8 +64,10 @@ namespace _Main.Scripts.Managers
 
         private void LoadGameScreen(ScreenType type)
         {
-            GameScreenEventCaller.SetGameScreen(type, true);
+            GameScreenEventCaller.EnableScreen(type, EventRequestType.Requested);
         }
+
+        #endregion
 
         public void QuitGame()
         {

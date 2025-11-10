@@ -38,7 +38,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetViewHandlers();
             SetUIViewHandlers();
             
-            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetScreen);
+            GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
+            GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
         }
 
         private void Start()
@@ -57,10 +58,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void EnableGameMode()
         {
             if (_isEnable == true) return;
-            SubscribeToEventBus();
             _controller.SetDoesRestartGameMode(true);
-            _controller.TransitionToStart();
+            _controller.TransitionToEnable();
             _isEnable = true;
+            SubscribeToEventBus();
         }
 
         private void DisableGameMode()
@@ -83,7 +84,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void ViewOnGameModeEnableHandler()
         {
-            EnableGameMode();
+            _controller.TransitionToStart();
         }
 
         private void View_OnCountdownFinishedHandler()
@@ -137,8 +138,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void SubscribeToEventBus()
         {
-            GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
-            GameEventCaller.Subscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
+
             GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             GameEventCaller.Subscribe<EarthEvents.ShakeStart>(EventBus_Earth_ShakeStart);
             GameEventCaller.Subscribe<EarthEvents.DestructionFinished>(EventBus_Earth_DestructionFinished);
@@ -147,27 +147,27 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameEventCaller.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
             GameEventCaller.Subscribe<CameraEvents.ZoomIn>(EventBus_Camera_ZoomIn);
             GameEventCaller.Subscribe<CameraEvents.ZoomOut>(EventBus_Camera_ZoomOut);
+            GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
+            GameEventCaller.Subscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
             GameEventCaller.Subscribe<GameModeEvents.SetEnablePause>(EventBus_GameMode_SetEnablePause);
         }
 
         private void UnsubscribeToEventBus()
         {
-            GameEventCaller.Unsubscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
-            GameEventCaller.Unsubscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
+
             GameEventCaller.Unsubscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             GameEventCaller.Unsubscribe<EarthEvents.ShakeStart>(EventBus_Earth_ShakeStart);
             GameEventCaller.Unsubscribe<EarthEvents.DestructionFinished>(EventBus_Earth_DestructionFinished);
             GameEventCaller.Unsubscribe<EarthEvents.RestartFinished>(EventBus_Earth_RestartFinish);
             GameEventCaller.Unsubscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_SetActive);
             GameEventCaller.Unsubscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
+            GameEventCaller.Unsubscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
+            GameEventCaller.Unsubscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
             GameEventCaller.Unsubscribe<GameModeEvents.SetEnablePause>(EventBus_GameMode_SetEnablePause);
         }
         
-        
-        private void EventBus_GameMode_SetEnablePause(GameModeEvents.SetEnablePause input)
-        {
-            _controller.SetCanPause(input.CanPause);
-        }
+
+        #region Camera
 
         private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)
         {
@@ -178,27 +178,22 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _controller.HandleCameraZoomIn();
         }
-        
-        private void EventBus_GameScreen_SetScreen(GameScreenEvents.SetScreen input)
-        {
-            if (input.ScreenType == ScreenType.GameMode &&
-                input.IsEnable == true)
-            {
-                _controller.TransitionToEnable();
-            }
-            else
-            {
-                DisableGameMode();
-            }
-        }
+
+        #endregion
+
+        #region Projectile
 
         private void EventBus_Projectile_RequestSpawn(ProjectileEvents.RequestSpawn input)
         {
-            if(input.RequestType == EventRequestType.Request)
+            if(input.RequestType == EventRequestType.Requested)
             {
                 _controller.GrantProjectileSpawn((int)input.ProjectileType);
             }
         }
+
+        #endregion
+
+        #region Abilities
 
         private void EventBus_Abilities_SetActive(AbilitiesEvents.SetActive inputs)
         {
@@ -208,26 +203,42 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
         }
 
+        #endregion
+        
+        #region GameMode
+        
+        private void EventBus_GameMode_SetEnablePause(GameModeEvents.SetEnablePause input)
+        {
+            _controller.SetCanPause(input.CanPause);
+        }
+
         private void EventBus_GameMode_SetPaused(GameModeEvents.SetPause input)
         {
             _controller.SetGamePause(input.IsPaused);
         }
-
-        private void EventBus_Earth_RestartFinish(EarthEvents.RestartFinished input)
-        {
-            _controller.EarthRestartFinish();
-        }
-
+        
         private void EventBus_GameMode_Finished(GameModeEvents.Finish input)
         {
             _controller.TransitionToFinish();
         }
+        #endregion
+
+        #region Meteor
 
         private void EventBus_Meteor_Deflected(ProjectileEvents.Deflected input)
         {
             _controller.HandleProjectileDeflect(input.Position,input.Value);
         }
 
+        #endregion
+        
+        #region Earth
+
+        private void EventBus_Earth_RestartFinish(EarthEvents.RestartFinished input)
+        {
+            _controller.EarthRestartFinish();
+        }
+        
         private void EventBus_Earth_DestructionFinished(EarthEvents.DestructionFinished destructionFinished)
         {
             _controller.TransitionToDeath();
@@ -237,6 +248,32 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _controller.HandleEarthShake();
         }
+
+        #endregion
+
+        #region GameScreen
+
+        private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
+        {
+            if(input.ScreenType != ScreenType.GameMode) return;
+            
+            if (input.RequestType == EventRequestType.Requested)
+            {
+                DisableGameMode();
+            }
+        }
+
+        private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
+        {
+            if(input.ScreenType != ScreenType.GameMode) return;
+            
+            if (input.RequestType == EventRequestType.Granted)
+            {
+                EnableGameMode();
+            }
+        }
+
+        #endregion
 
         #endregion
 

@@ -30,12 +30,14 @@ namespace _Main.Scripts.MainMenu.MVC
             
             _controller.Initialize();
             
-            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetScreen);
+            GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
+            GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
         }
+        
 
         private void EnableMainMenu()
         {
-            _controller.TransitionToInitial();
+            _controller.TransitionToEnable();
         }
 
         private void DisableMainMenu()
@@ -47,12 +49,15 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void SetViewHandlers()
         {
-            _view.OnMainMenuEnable += EnableMainMenu;
+            _view.OnMainMenuEnable += () =>
+            {
+                _controller.TransitionToMenu();
+            };
             //
             _ui.OnGameModeTriggered += () => _controller.TriggerGameMode();
             _ui.OnTutorialTriggered += () => _controller.TriggerTutorial();
             _ui.OnLoreOpen += () => _controller.TransitionToLore();
-            _ui.OnBackToMenu += () => _controller.TransitionToInitial();
+            _ui.OnBackToMenu += () => _controller.TransitionToMenu();
             _ui.OnExit += () => _controller.TriggerQuit();
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
@@ -61,20 +66,27 @@ namespace _Main.Scripts.MainMenu.MVC
         #endregion
         
         #region EventBus
-
-        private void EventBus_GameScreen_SetScreen(GameScreenEvents.SetScreen input)
+        
+        private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
         {
-            if (input.ScreenType == ScreenType.MainMenu &&
-                input.IsEnable)
-            {
-                _controller.TransitionToEnable();
-            }
-            else
+            if(input.ScreenType != ScreenType.MainMenu) return;
+            
+            if (input.RequestType == EventRequestType.Requested)
             {
                 DisableMainMenu();
             }
         }
 
+        private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
+        {
+            if(input.ScreenType != ScreenType.MainMenu) return;
+            
+            if (input.RequestType == EventRequestType.Granted)
+            {
+                EnableMainMenu();
+            }
+        }
+        
         #endregion
     }
 }

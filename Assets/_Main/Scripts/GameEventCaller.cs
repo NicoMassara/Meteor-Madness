@@ -199,7 +199,7 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new ProjectileEvents.RequestSpawn
             {
                 ProjectileType = projectileType, 
-                RequestType = EventRequestType.Request
+                RequestType = EventRequestType.Requested
             });
         }
         
@@ -351,7 +351,7 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new ProjectileEvents.RequestSpawn
             {
                 ProjectileType = ProjectileType.AbilitySphere, 
-                RequestType = EventRequestType.Request
+                RequestType = EventRequestType.Requested
             });
         }
 

@@ -1,11 +1,27 @@
-﻿using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
+﻿using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.GameScreens
 {
     public class GameScreenView : ManagedBehavior, IObserver
     {
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        
+        private GameScreenDebugData _debugData;
+        
+#endif
+
+        private void Awake()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData = new GameScreenDebugData();
+            
+#endif
+        }
+
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -21,12 +37,23 @@ namespace _Main.Scripts.GameScreens
         
         private void HandleDisableScreen(int currentScreenIndex)
         {
-            GameScreenEventCaller.DisableScreen((ScreenType)currentScreenIndex, EventRequestType.Request);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.LastScreen = (ScreenType)currentScreenIndex;
+            
+#endif
+            
+            GameScreenEventCaller.DisableScreen((ScreenType)currentScreenIndex, EventRequestType.Requested);
         }
 
         private void HandleLoadGameScreen(int currentScreenIndex)
         {
-            GameScreenEventCaller.EnableScreen((ScreenType)currentScreenIndex, EventRequestType.Request);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.CurrentScreen = (ScreenType)currentScreenIndex;
+            
+#endif
+            GameScreenEventCaller.EnableScreen((ScreenType)currentScreenIndex, EventRequestType.Granted);
         }
         
     }

@@ -86,13 +86,11 @@
     
     public struct GameScreenObserverMessage
     {
-        public const ulong SetMainMenu = 0xA5001;
-        public const ulong SetGameplay = 0xA5002;
-        public const ulong SetTutorial = 0xA5003;
-        public const ulong SetStartLoading = 0xA5004;
-        public const ulong SetCosmeticMenu = 0xA5005;
-        public const ulong DisableScreen = 0xA5006;
-        public const ulong LoadScreen = 0xA5007;
+        public const ulong DisableScreen = 0xA5001;
+        public const ulong LoadScreen = 0xA5002;
+        public const ulong Empty1 = 0xA5003;
+        public const ulong Empty2 = 0xA5004;
+        public const ulong Empty3 = 0xA5005;
     }
     
     public struct TutorialObserverMessage

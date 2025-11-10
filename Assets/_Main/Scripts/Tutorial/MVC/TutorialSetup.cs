@@ -26,7 +26,8 @@ namespace _Main.Scripts.Tutorial.MVC
             
             SetViewHandlers();
             
-            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetGameScreen);
+            GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
+            GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
         }
 
         private void Start()
@@ -34,13 +35,13 @@ namespace _Main.Scripts.Tutorial.MVC
             _controller.Initialize();
         }
 
-        private void TutorialEnable()
+        private void EnableTutorial()
         {
             SubscribeEventBus();
-            _controller.TransitionToStart();
+            _controller.TransitionToEnable();
         }
 
-        private void TutorialDisable()
+        private void DisableTutorial()
         {
             UnsubscribeEventBus();
             _controller.TransitionToDisable();
@@ -57,7 +58,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void ViewOnTutorialEnable()
         {
-            TutorialEnable();
+            _controller.TransitionToStart();
         }
 
         private void UIOnStartTutorialButtonPressedHandler()
@@ -97,25 +98,11 @@ namespace _Main.Scripts.Tutorial.MVC
                     _controller.TransitionToAbility();
                     break;
                 case 2:
-                    TutorialDisable();
                     GameManager.Instance.LoadMainMenu();
                     break;
                 default:
                     Debug.Log("MultiPage_Finished - Finish Action Not Found");
                     break;
-            }
-        }
-        
-        private void EventBus_GameScreen_SetGameScreen(GameScreenEvents.SetScreen input)
-        {
-            if (input.ScreenType == ScreenType.Tutorial && 
-                input.IsEnable)
-            {
-                _controller.TransitionToEnable();
-            }
-            else
-            {
-                TutorialDisable();
             }
         }
         
@@ -161,6 +148,30 @@ namespace _Main.Scripts.Tutorial.MVC
                 _controller.TransitionToAbilityRunning();
             }
         }
+        
+        #region GameScreen
+
+        private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
+        {
+            if(input.ScreenType != ScreenType.Tutorial) return;
+            
+            if (input.RequestType == EventRequestType.Requested)
+            {
+                DisableTutorial();
+            }
+        }
+
+        private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
+        {
+            if(input.ScreenType != ScreenType.Tutorial) return;
+            
+            if (input.RequestType == EventRequestType.Granted)
+            {
+                EnableTutorial();
+            }
+        }
+
+        #endregion
         
         #endregion
     }

@@ -9,57 +9,58 @@ namespace _Main.Scripts.GameScreens
     public class GameScreenSetup : ManagedBehavior
     {
         private GameScreenMotor _motor;
-        private GameScreenController _controller;
         private GameScreenView _view;
 
         private void Awake()
         {
             _motor = new GameScreenMotor();
-            _controller = new GameScreenController(_motor);
             _view = GetComponent<GameScreenView>();
             
             _motor.Subscribe(_view);
             
             SetEventBus();
             
-            _controller.Initialize();
+            LocalizationEvents.OnLocalizationLoaded += Localization_OnLocalizationLoadedHandler;
+        }
 
-            LocalizationEvents.OnLocalizationLoaded += () =>
-            {
-                _controller.TransitionToMainMenu();
-            };
+        private void SelectNewScreen(ScreenType screenType)
+        {
+            _motor.SelectNewScreen((int)screenType);
+        }
+
+        private void TransitionToNewScreen()
+        {
+            _motor.LoadCurrentScreen();
+        }
+
+        private void Localization_OnLocalizationLoadedHandler()
+        {
+            LocalizationEvents.OnLocalizationLoaded -= Localization_OnLocalizationLoadedHandler;
+            _motor.LoadScreenByIndex((int)ScreenType.MainMenu);
         }
         
         #region EventBus
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_OnSetGameScreen);
+            GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
+            GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
         }
 
-        private void EventBus_OnSetGameScreen(GameScreenEvents.SetScreen input)
+        private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
         {
-            if(input.IsEnable == true) return;
-            
-            switch (input.ScreenType)
+            if (input.RequestType == EventRequestType.Granted)
             {
-                case ScreenType.MainMenu:
-                    _controller.TransitionToMainMenu();
-                    break;
-                case ScreenType.GameMode:
-                    _controller.TransitionToGameplay();
-                    break;
-                case ScreenType.Tutorial:
-                    _controller.TransitionToTutorial();
-                    break;
-                case ScreenType.Cosmetic:
-                    _controller.TransitionToCosmetic();
-                    break;
-                default:
-                    Debug.LogWarning("GameScene Index is out of range.");
-                    break;
+                TransitionToNewScreen();
             }
-            
+        }
+
+        private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
+        {
+            if (input.RequestType == EventRequestType.Requested)
+            {
+                SelectNewScreen(input.ScreenType);
+            }
         }
         #endregion
     }
