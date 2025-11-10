@@ -66,8 +66,12 @@ namespace _Main.Scripts.Gameplay.Shield
         private void InitializeFsm()
         {
             var temp = new List<ShieldBaseState<States>>();
-            _fsm = new FSM<States>();
+            _fsm = new FSM<States>("Shield");
             _actionGate = new ActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(2);
+#endif
 
             #region Variables
 
@@ -115,7 +119,6 @@ namespace _Main.Scripts.Gameplay.Shield
             }
             
             _fsm.SetInit(unactive);
-            _fsm.FSMName = "Shield";
         }
 
         private void SetTransitions(States state)

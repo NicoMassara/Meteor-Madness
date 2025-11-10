@@ -55,8 +55,12 @@ namespace _Main.Scripts.Tutorial.MVC
         private void InitializeFsm()
         {
             var temp = new List<TutorialStateBase<States>>();
-            _fsm = new FSM<States>();
+            _fsm = new FSM<States>("Tutorial");
             _actionGate = new ActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(1);
+#endif
 
             #region Variables
 
@@ -115,7 +119,6 @@ namespace _Main.Scripts.Tutorial.MVC
             }
             
             _fsm.SetInit(disable);
-            _fsm.FSMName = "Tutorial";
         }
 
         #region Transitions

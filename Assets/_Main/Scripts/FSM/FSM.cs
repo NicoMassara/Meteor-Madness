@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using _Main.Scripts.DebugGUI;
 
 namespace _Main.Scripts.FiniteStateMachine
 {
@@ -9,15 +7,40 @@ namespace _Main.Scripts.FiniteStateMachine
     {
         IState<T> _current;
         public T CurrentState { get; set; }
-        public string FSMName { get; set; }
+        public T LastState { get; set; }
+        public string FSMName { get; private set; }
         public event Action<T> OnEnterState;
         public event Action<T> OnExitState;
 
-        public FSM() {}
+        public FSM(string fsmName)
+        {
+            FSMName = fsmName; 
+        }
         public FSM(IState<T> init)
         {
             SetInit(init);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DebugGUIManager.Instance.CreateGroup($"{FSMName}")?.AddEntry(
+                () => $"Current State: {CurrentState}",
+                () => $"Last State: {(LastState == null ? "None" : LastState)}"
+            );
+#endif
         }
+
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public void CreateDebugGUI(int sortingOrder = 10)
+        {
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Fsm, DebugGUISortingOrder.Group.Fsm)
+                ?.CreateSubGroup($"{FSMName}",sortingOrder)
+                ?.AddEntry(
+                () => $"Current State: {(CurrentState == null ? "None" : CurrentState)}",
+                () => $"Last State: {(LastState == null ? "None" : LastState)}"
+            );
+        }
+#endif
+
+
         public void SetInit(IState<T> init)
         {
             _current = init;
@@ -53,6 +76,7 @@ namespace _Main.Scripts.FiniteStateMachine
 
             if (CurrentState != null)
             {
+                LastState = CurrentState;
                 OnExitState?.Invoke(CurrentState);
             }
             

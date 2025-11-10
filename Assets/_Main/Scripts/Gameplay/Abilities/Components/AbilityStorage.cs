@@ -8,6 +8,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         private readonly Queue<int> _abilityQueue = new Queue<int>();
         private readonly int _maxAbilityCount;
 
+        public int AbilityCount => _abilityQueue.Count;
         public UnityAction OnStorageFilled;
         public UnityAction<int> OnAbilityTaken;
         public UnityAction<int> OnAbilityAdded;

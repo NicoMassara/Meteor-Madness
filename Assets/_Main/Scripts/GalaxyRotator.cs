@@ -12,13 +12,15 @@ namespace _Main.Scripts
         
         private Rotator _rotator; 
         public UpdateGroup SelfUpdateGroup { get; private set; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
 
         private void Start()
         {
             _rotator = new Rotator(galaxies,Vector3.forward,rotationSpeed);
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             _rotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }

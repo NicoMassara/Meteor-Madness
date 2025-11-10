@@ -56,8 +56,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void InitializeFsm()
         {
             var temp = new List<GameModeStateBase<States>>();
-            _fsm = new FSM<States>();
+            _fsm = new FSM<States>("GameMode");
             _actionGate = new ActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(1);
+#endif
 
             #region Variables
 
@@ -105,7 +109,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
             
             _fsm.SetInit(disable);
-            _fsm.FSMName = "GameMode";
         }
 
         #region Transitions
