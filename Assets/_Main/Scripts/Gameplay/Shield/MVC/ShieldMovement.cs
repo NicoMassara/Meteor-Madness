@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    public class ShieldMovement : ManagedBehavior, IUpdatable, IFixedUpdatable
+    public class ShieldMovement : ManagedBehavior, IUpdatable
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
@@ -28,10 +28,11 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldSpeeder _shieldSpeeder;
         private IUpdatable updatableImplementation;
         private bool _isPlayerInputDisable;
-        private bool _automaticEnable;
-        
+        private IUpdatable updatableImplementation1;
+
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
-        public UpdateGroup SelfFixedUpdateGroup { get; }= UpdateGroup.Shield;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
 
         private void Awake()
         {
@@ -45,23 +46,16 @@ namespace _Main.Scripts.Gameplay.Shield
             _projectileDetector.OnTargetFound += Detector_OnTargetFoundHandler;
             _projectileDetector.OnTargetLost += Detector_OnTargetLostHandler;
         }
-        
-        public void ManagedUpdate()
+
+        public void ExecuteUpdate()
         {
             _movement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
-
-        public void ManagedFixedUpdate()
-        {
-            if (_automaticEnable)
-            {
-                _projectileDetector.CheckForProjectile();
-            }
-        }
+        
         
         public void SetAutomaticEnable(bool automaticEnable)
         {
-            _automaticEnable = automaticEnable;
+            _projectileDetector.AutomaticEnable = automaticEnable;
         }
         
         #region Movement
@@ -180,7 +174,7 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
-
+        
         #region Gizmos
 
         private void OnDrawGizmosSelected()
@@ -190,6 +184,5 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
-
     }
 }

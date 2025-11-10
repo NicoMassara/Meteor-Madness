@@ -2,7 +2,6 @@
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
-using _Main.Scripts.MyTools;
 using UnityEngine;
 
 namespace _Main.Scripts.Particles
@@ -17,6 +16,8 @@ namespace _Main.Scripts.Particles
         private Vector3 _moveDirection = Vector3.up;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
         public event Action<ParticleBehaviour> OnRecycle;
 
         public void SetValues(IParticleData particleData, Vector3 position, float rotation, Vector3 moveDirection)
@@ -34,7 +35,7 @@ namespace _Main.Scripts.Particles
         }
 
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
             

@@ -9,6 +9,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         private int _currentAbilityIndex;
         private bool _canUseAbility;
         private bool _isUIEnable;
+        private bool _hasAbilityRunning;
         private Vector2 _abilityAddedPosition;
 
         public AbilityMotor(int maxAbilityStorage)
@@ -52,12 +53,15 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         public void TriggerAbility()
         {
+            _hasAbilityRunning = true;
             NotifyAll(AbilityObserverMessage.TriggerAbility, _currentAbilityIndex);
         }
 
         public void FinishAbility()
         {
+            _hasAbilityRunning = false;
             NotifyAll(AbilityObserverMessage.FinishAbility, _currentAbilityIndex);
+            //
             _currentAbilityIndex = 0;
         }
 
@@ -107,6 +111,13 @@ namespace _Main.Scripts.Gameplay.Abilies
         public void RunActiveTimer()
         {
             NotifyAll(AbilityObserverMessage.RunActiveTimer,_currentAbilityIndex);
+        }
+
+        public void ForceFinishAbility()
+        {
+            if(_hasAbilityRunning == false) return;
+            
+            NotifyAll(AbilityObserverMessage.ForceFinish);
         }
     }
 }

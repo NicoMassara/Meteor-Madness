@@ -15,16 +15,15 @@ namespace _Main.Scripts.Managers
             public bool DamageEnable;
         }
         
+        public struct SetToDefault { }
+        
         public struct DestructionStart {}
         public struct DestructionFinished {}
+        public struct Death {}
     }
 
     public struct ShieldEvents
     {
-        public struct SetEnable
-        {
-            public bool IsEnabled;
-        }
         
         public struct SetGold
         {
@@ -42,6 +41,10 @@ namespace _Main.Scripts.Managers
         }
         public struct EnableSuperShield { }
         public struct EnableNormalShield { }
+        
+        public struct RestartPosition { }
+        public struct Enable { }
+        public struct Disable { }
     }
 
     public struct GameScreenEvents
@@ -51,26 +54,32 @@ namespace _Main.Scripts.Managers
             public ScreenType ScreenType;
             public bool IsEnable;
         }
+        
+        public struct EnableScreen
+        {
+            public ScreenType ScreenType;
+            public EventRequestType RequestType;
+        }
+        
+        public struct DisableScreen
+        {
+            public ScreenType ScreenType;
+            public EventRequestType RequestType;
+        }
     }
 
     public struct GameModeEvents
     {
-        public struct InitializeValues { };
-
-        public struct Disable { };
-
-        public struct Start { };
-        public struct Finish { };
-        public struct Restart { };
-
-        public struct UpdateLevel
-        {
-            public int CurrentLevel;
-        };
+        public struct InitializeValues { }
     
         public struct SetPause
         {
             public bool IsPaused;
+        }
+        
+        public struct SetEnablePause
+        {
+            public bool CanPause;
         }
     }
 
@@ -112,23 +121,24 @@ namespace _Main.Scripts.Managers
             public float MovementMultiplier;
         }
         
+        public struct UpdateLevel
+        {
+            public int Level;
+        }
+        
         public struct ClearQueue {}
+        public struct DisableSpawn {}
+        public struct EnableSpawn {}
+        
     }
     
     public struct MeteorEvents
     {
-        public struct EnableSpawn
-        {
-            public bool CanSpawn;
-        }
-
         public struct SpawnRing {}
         public struct RingActive
         {
             public bool IsActive;
         }
-    
-        public struct RecycleAll{}
     }
 
     public struct ParticleEvents
@@ -159,6 +169,11 @@ namespace _Main.Scripts.Managers
         {
             public bool IsEnable;
         }
+        
+        public struct SetUIEnable
+        {
+            public bool IsEnable;
+        }
     }
 
     public struct AbilitiesEvents
@@ -179,7 +194,7 @@ namespace _Main.Scripts.Managers
             public bool IsFull;
         }
         
-        public struct SetActive
+        public struct NotifyIsActive
         {
             public AbilityType AbilityType;
             public bool IsActive;
@@ -194,6 +209,10 @@ namespace _Main.Scripts.Managers
         {
             public bool IsEnable;
         }
+        
+        public struct Enable { }
+        public struct Disable { }
+        public struct RunTimer { }
     }
 
     public struct FloatingTextEvents

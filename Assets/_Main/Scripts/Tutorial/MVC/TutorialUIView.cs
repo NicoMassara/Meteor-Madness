@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
@@ -9,7 +10,10 @@ namespace _Main.Scripts.Tutorial.MVC
     public class TutorialUIView : ManagedBehavior, IObserver
     {
         [SerializeField] private TutorialUiSelector uiSelector;
-        
+
+        private const string MovementHintCode = "Tutorial.Hint.Movement";
+        private const string AbilityHintCode = "Tutorial.Hint.Ability";
+        private const string ShieldHintCode = "Tutorial.Hint.Shield";
         private TutorialUiComponents _uiComponents;
 
         private GameObject _currentActivePanel;
@@ -58,7 +62,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleSphereDeflected()
         {
-            SetHintText("Trigger the Super Shield!");
+            SetHintText(GetLocalizedText(ShieldHintCode));
         }
 
         private void HandleStart()
@@ -79,12 +83,12 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleMovement()
         {
-            SetHintText("Try Moving and Deflect a Meteor!");
+            SetHintText(GetLocalizedText(MovementHintCode));
         }
         
         private void HandleAbility()
         {
-            SetHintText("Try To Deflect the mysterious Sphere!");
+            SetHintText(GetLocalizedText(AbilityHintCode));
         }
         
         private void HandleDisable()
@@ -110,6 +114,11 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             _currentActivePanel?.SetActive(false);
             _currentActivePanel = null;
+        }
+
+        private string GetLocalizedText(string key)
+        {
+            return LocalizationManager.Instance.GetText(key);
         }
 
         #region Handlers

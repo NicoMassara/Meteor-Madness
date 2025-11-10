@@ -1,0 +1,74 @@
+﻿{
+  "UIButton": {
+    "MainMenu": "Hauptmenü",
+    "Resume": "Fortsetzen",
+    "Restart": "Erneut Versuchen",
+    "Next": "Weiter",
+    "Back": "Zurück",
+    "Previous": "Vorherig",
+    "Pause": "Pause",
+    "Quit": "Beenden"
+  },
+
+  "Menu": {
+    "Play": "Spielen",
+    "Lore": {
+      "Button": "Was ist passiert?",
+      "Title": "Was ist passiert?",
+      "Text": "@Texts/de/lore.txt"
+    },
+    "Tutorial": {
+      "Button": "Wie man spielt",
+      "Title": "Willkommen im Tutorial!",
+      "StartButton": "Tutorial Starten"
+    },
+    "Cosmetic": "Item-Shop",
+    "Settings": "Einstellungen",
+    "Credits": {
+      "Button" : "Credits",
+      "Title" : "Credits",
+      "Text" : "Entwickelt von"
+    }
+  },
+
+  "Tutorial": {
+    "Hint": {
+      "Movement": "Versuche dich zu bewegen und einen Meteor abzulenken!",
+      "Ability": "Versuche, die mysteriöse Kugel abzuwehren!",
+      "Shield": "Aktiviere den Super-Schild!"
+    }
+  },
+
+  "MultiPage": {
+    "MultiPage" : {
+      "TutorialMobile" : "@MultiPage/Mobile/de/tutorial.json",
+      "TutorialDesktop" : "@MultiPage/Desktop/de/tutorial.json"
+    }
+  },
+
+  "Abilities": {
+    "SuperShield": "Super-Schild",
+    "SlowMotion": "Zeitlupe",
+    "Health": "Rekonstruktion",
+    "DoublePoints": "Doppelte Punkte",
+    "Automatic": "Autopilot"
+  },
+
+  "Cosmetic": {
+    "Title": "Demnächst Verfügbar!"
+  },
+
+  "Pause": {
+    "Title": "Pause"
+  },
+
+  "Gameplay": {
+    "CountDownStart": "Bereit in",
+    "CountdownFinish": "Verteidige!",
+    "Score": "Punkte",
+    "Death": {
+      "Title": "Die Menschheit ist verloren!",
+      "Score": "Dein Punktestand"
+    }
+  }
+}

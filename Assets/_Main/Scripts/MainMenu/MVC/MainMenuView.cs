@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
@@ -28,10 +29,15 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.TriggerTutorial:
                     HandleTutorial();
                     break;
+                case MainMenuObserverMessage.TriggerCosmetic:
+                    HandleCosmetic();
+                    break;
+                case MainMenuObserverMessage.MainMenu:
+                    break;
                 
             }
         }
-        
+
         private void HandleEnable()
         {
             OnMainMenuEnable?.Invoke();
@@ -42,6 +48,7 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleDisable()
         {
             SoundEventCaller.StopMusic();
+            GameScreenEventCaller.DisableScreen(ScreenType.MainMenu, EventRequestType.Granted);
         }
         
         private void HandleGameMode()
@@ -52,6 +59,11 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleTutorial()
         {
             GameManager.Instance.LoadTutorial();
+        }
+        
+        private void HandleCosmetic()
+        {
+            GameManager.Instance.LoadCosmeticMenu();
         }
 
         private void HandleQuit()

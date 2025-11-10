@@ -9,7 +9,7 @@
     
     public enum EventRequestType
     {
-        Request,
+        Requested,
         Granted,
         Denied
     }
@@ -40,14 +40,18 @@
         None,
         MainMenu,
         GameMode,
-        Tutorial
+        Tutorial,
+        Cosmetic,
+        StartScreen,
+        Empty2
     }
     
     public enum MusicType
     {
         MainMenu,
         Gameplay,
-        EndGame
+        EndGame,
+        Cosmetic
     }
 
     public enum UISoundType

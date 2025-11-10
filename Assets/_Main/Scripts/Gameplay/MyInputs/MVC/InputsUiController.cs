@@ -14,13 +14,14 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
 
         private void Awake()
         {
-            if (SystemInfo.deviceType != DeviceType.Handheld)
+            _view = GetComponent<InputsUiView>();
+            
+            if (SystemInfo.deviceType == DeviceType.Desktop)
             {
+                _view.DestroyContainer();
                 Destroy(gameObject);
                 return;
             }
-
-            _view = GetComponent<InputsUiView>();
             
             SetEventBus();
         }
@@ -64,10 +65,10 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<InputsEvents.SetEnable>(EventBus_Inputs_SetEnable);
+            GameEventCaller.Subscribe<InputsEvents.SetUIEnable>(EventBus_Inputs_SetUIEnable);
         }
 
-        private void EventBus_Inputs_SetEnable(InputsEvents.SetEnable input)
+        private void EventBus_Inputs_SetUIEnable(InputsEvents.SetUIEnable input)
         {
             _view.SetEnablePanel(input.IsEnable);
         }
