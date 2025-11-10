@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
-using UnityEngine.Networking;
 
 namespace _Main.Scripts.Localization
 {
@@ -27,6 +25,13 @@ namespace _Main.Scripts.Localization
             { SystemLanguage.Portuguese, "pt" },
             { SystemLanguage.Italian, "it" },
             { SystemLanguage.German, "de" },
+        };
+
+        private readonly Dictionary<string, string> _textReplacement = new()
+        {
+            {"LeftKey", "A"},
+            {"RightKey", "D"},
+            {"AbilityKey", "S"}
         };
         
         private void Awake()
@@ -132,6 +137,9 @@ namespace _Main.Scripts.Localization
             }
             
             LocalizationEvents.TriggerOnLocalizationLoaded();
+#if !UNITY_ANDROID && !UNITY_IOS
+            ReplacePlaceholderText();
+#endif
         }
         
         private void FlattenJson(JToken token, string prefix)
@@ -211,6 +219,11 @@ namespace _Main.Scripts.Localization
             return $"[MISSING:{key}]";
         }
 
+        public void ReplacePlaceholderText()
+        {
+            LocalizationTools.ReplacePlaceHolders(_localizedTexts, _textReplacement);
+        }
+
         public SystemLanguage GetCurrentLanguage() => _currentLanguage;
 
         private string GetLanguageCode(SystemLanguage language)
@@ -223,6 +236,8 @@ namespace _Main.Scripts.Localization
             Debug.LogWarning("Language Could not Be Found in CodeMap, returning default.");
             return _languageCodeMap[SystemLanguage.English];
         }
+        
+        
 
     }
 }
