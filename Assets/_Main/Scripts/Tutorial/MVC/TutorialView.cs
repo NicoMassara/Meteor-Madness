@@ -9,7 +9,8 @@ namespace _Main.Scripts.Tutorial.MVC
 {
     public class TutorialView : ManagedBehavior, IObserver
     {
-        [SerializeField] private MultiPageTextDataSo[] multiPageData;
+        [SerializeField] private MultiPageTextDataSo[] mobileMultiPageData;
+        [SerializeField] private MultiPageTextDataSo[] desktopMultiPageData;
         private int _currentMultiPageIndex;
         
         public event Action OnTutorialEnable;
@@ -67,15 +68,19 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleMultiPage()
         {
+            ShieldEventCaller.Disable();
+            CameraEventCaller.ZoomIn();
+            
 #if UNITY_ANDROID || UNITY_IOS
             
             InputsEventCaller.SetUIEnable(false);
-                    
-#endif
-            ShieldEventCaller.Disable();
-            CameraEventCaller.ZoomIn();
-            var item = multiPageData[_currentMultiPageIndex];
+                        var item = mobileMultiPageData[_currentMultiPageIndex];
             MultiPageUIEventCaller.Create(item, (ulong)_currentMultiPageIndex);
+#else
+            var item = desktopMultiPageData[_currentMultiPageIndex];
+            MultiPageUIEventCaller.Create(item, (ulong)_currentMultiPageIndex);
+#endif
+            
             _currentMultiPageIndex++;
             InputsEventCaller.SetEnable(false);
         }

@@ -695,10 +695,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b53ad387eee45cbb54b3cfba868225b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  multiPageData:
+  mobileMultiPageData:
   - {fileID: 11400000, guid: 73a438166a2e1614abe3dd5aeff332c8, type: 2}
   - {fileID: 11400000, guid: ff23311737689ed45b4271a7428d43ea, type: 2}
   - {fileID: 11400000, guid: 9152477445a03f941a9824a717aecd48, type: 2}
+  desktopMultiPageData:
+  - {fileID: 11400000, guid: 88fcfd3e755a8574fb1a206d2d397d1d, type: 2}
+  - {fileID: 11400000, guid: 2fba5efa57b15064e94ef0da6ae4c2a8, type: 2}
+  - {fileID: 11400000, guid: 404dd558b8f6e464daedbc72427d0c7a, type: 2}
 --- !u!1 &2023637908
 GameObject:
   m_ObjectHideFlags: 0

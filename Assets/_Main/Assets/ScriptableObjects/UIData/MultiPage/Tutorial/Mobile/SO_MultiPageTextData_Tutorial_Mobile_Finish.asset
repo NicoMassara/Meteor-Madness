@@ -10,7 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 968181250e72491f9a1a8e8c4000d0dc, type: 3}
-  m_Name: SO_MultiPageTextData_Tutorial_Desktop_Movement
+  m_Name: SO_MultiPageTextData_Tutorial_Mobile_Finish
   m_EditorClassIdentifier: 
-  textCode: MultiPage.Tutorial.Movement
-  textCount: 2
+  textCode: MultiPage.Mobile.Tutorial.Finish
