@@ -125,7 +125,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _controller.SetDoesRestartGameMode(false);
             _controller.TriggerMainMenu();
-            _controller.TransitionToDisable();
         }
 
         private void UIView_OnRestartButtonPressedHandler()
@@ -285,6 +284,5 @@ namespace _Main.Scripts.Gameplay.GameMode
         #endregion
 
         #endregion
-
     }
 }
