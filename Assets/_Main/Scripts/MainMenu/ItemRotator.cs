@@ -19,7 +19,7 @@ namespace _Main.Scripts.Menu
             _rotator = new Rotator(itemTransform,Vector3.forward, rotationSpeed);
         }
         
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             _rotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }

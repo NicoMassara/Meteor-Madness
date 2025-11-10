@@ -35,7 +35,7 @@ namespace _Main.Scripts.Particles
         }
 
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
             

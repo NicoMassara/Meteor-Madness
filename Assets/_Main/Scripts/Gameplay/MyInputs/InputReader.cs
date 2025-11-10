@@ -25,11 +25,20 @@ namespace _Main.Scripts.Gameplay.MyInputs
         public event Action OnStopMovement;
         public event Action<bool> OnAbilityTriggered;
         
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+        private InputsDebugData _debugData;
+#endif
+        
         private void Awake()
         {
             GameEventCaller.Subscribe<InputsEvents.SetEnable>(EventBus_Inputs_SetEnable);
             GameManager.Instance.SetInputReader(this);
             
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData = new InputsDebugData();
+#endif
+                
 #if UNITY_STANDALONE || UNITY_EDITOR
             _inputs = new DefaultInputs();
             
@@ -41,7 +50,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
 #endif
         }
         
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             if(_areInputsEnable == false) return;
             
@@ -79,7 +88,11 @@ namespace _Main.Scripts.Gameplay.MyInputs
             _touchInput.OnTriggerAbility += TriggerAbility;
             _touchInput.OnUpdateDirection += UpdateDirection;
 #endif
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             
+            _debugData.HorizontalAxis = 0;
+            
+#endif
 
             _areInputsEnable = true;
         }
@@ -104,6 +117,11 @@ namespace _Main.Scripts.Gameplay.MyInputs
             _touchInput.OnUpdateDirection -= UpdateDirection;
             
             _touchInput.Disable();
+#endif
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.HorizontalAxis = 0;
+            
 #endif
             
             _areInputsEnable = false;
@@ -143,6 +161,11 @@ namespace _Main.Scripts.Gameplay.MyInputs
         {
             HasUsedAbility = isActive;
             OnAbilityTriggered?.Invoke(isActive);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.TriggerAbility = HasUsedAbility;
+            
+#endif
         }
 
         private void UpdateDirection(int direction)
@@ -153,6 +176,12 @@ namespace _Main.Scripts.Gameplay.MyInputs
             {
                 OnStopMovement?.Invoke();
             }
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.HorizontalAxis = _rotateDirection;
+            
+#endif
         }
 
         private void EventBus_Inputs_SetEnable(InputsEvents.SetEnable input)

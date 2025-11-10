@@ -32,7 +32,7 @@ namespace _Main.Scripts.Gameplay.Earth
             Slice();
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             if (_canMove)
             {

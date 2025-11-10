@@ -12,9 +12,37 @@ using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.FyingObject
 {
+    public class FlyingObjectMovement : ManagedComponent, IFixedUpdatable
+    {
+        private readonly Rigidbody2D _rigidbody;
+        private UnityAction<Vector2> _onPositionChanged;
+        public float MovementSpeed { get; set; }
+        public bool CanMove { get; set; }
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
+        public float LastUpdateTime { get; set; }
+
+        public FlyingObjectMovement(Rigidbody2D rigidbody, UnityAction<Vector2> onPositionChanged)
+        {
+            _rigidbody = rigidbody;
+            _onPositionChanged = onPositionChanged;
+        }
+
+
+        public void ExecuteUpdate()
+        {
+            if (CanMove)
+            {
+                var dt = CustomTime.GetFixedDeltaTimeByChannel(SelfUpdateGroup);
+                _rigidbody.transform.Translate(Vector2.right * (MovementSpeed * dt));
+                _onPositionChanged?.Invoke(_rigidbody.position);
+            }
+        }
+    }
+
     [RequireComponent(typeof(Rigidbody2D))]
     public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, 
-        IObserver, IUpdatable, IFixedUpdatable, IPoolable<TS>, ILoopableSound
+        IObserver, IUpdatable, IPoolable<TS>, ILoopableSound
     where T : FlyingObjectMotor<TVS>
     where TS : FlyingObjectView<T, TS, TVS>
     where TVS : FlyingObjectValues
@@ -29,14 +57,13 @@ namespace _Main.Scripts.FyingObject
         [SerializeField] private GameObject fireObject;
         [Header("Particles")]
         [SerializeField] private ParticleDataSo collisionParticle;
-        
+
         private Rigidbody2D _rigidbody2D;
         private Oscillator _fireScaleOscillator;
         private Oscillator _fireRotationOscillator;
         private Rotator _sphereRotator;
         private bool _hasFire;
-        private bool _canMove;
-        private float _movementSpeed;
+        protected FlyingObjectMovement Movement { get; private set; }
         
         public UnityAction<Vector2> OnPositionChanged;
         public UnityAction<TVS> OnValuesChanged;
@@ -44,7 +71,6 @@ namespace _Main.Scripts.FyingObject
         public event Action OnLoopFinished;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public UpdateGroup SelfFixedUpdateGroup { get; } = UpdateGroup.Gameplay;
         public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
         public float LastUpdateTime { get; set; }
         public event Action<TS> OnRecycle;
@@ -59,6 +85,8 @@ namespace _Main.Scripts.FyingObject
             _rigidbody2D.drag = 0f;
             _rigidbody2D.angularDrag = 0.05f;
             _rigidbody2D.gravityScale = 0f;
+            
+            Movement = new FlyingObjectMovement(_rigidbody2D,OnPositionChanged);
         }
 
         private void Start()
@@ -75,7 +103,7 @@ namespace _Main.Scripts.FyingObject
             _sphereRotator.SetSpeed(GetRotationSpeed());
         }
         
-        public virtual void ManagedUpdate()
+        public virtual void ExecuteUpdate()
         {
             _sphereRotator?.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             
@@ -85,17 +113,7 @@ namespace _Main.Scripts.FyingObject
                 fireObject.transform.localRotation = Quaternion.Euler(0,0, _fireRotationOscillator.OscillateCos());
             }
         }
-
-        public virtual void ManagedFixedUpdate()
-        {
-            if (_canMove)
-            {
-                var dt = CustomTime.GetFixedDeltaTimeByChannel(SelfFixedUpdateGroup);
-                _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * dt));
-                OnPositionChanged?.Invoke(_rigidbody2D.position);
-            }
-        }
-
+        
         public virtual void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -116,7 +134,7 @@ namespace _Main.Scripts.FyingObject
 
         protected virtual void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)
         {
-            _canMove = canMove;
+            Movement.CanMove = canMove;
             if (doesShowParticles)
             {
                 GameManager.Instance.EventManager.Publish
@@ -133,10 +151,10 @@ namespace _Main.Scripts.FyingObject
 
         private void HandleSetValues(float movementSpeed, Quaternion rotation, Vector2 position, bool canMove)
         {
-            _movementSpeed = movementSpeed;
+            Movement.MovementSpeed = movementSpeed;
             _rigidbody2D.transform.rotation = rotation;
             _rigidbody2D.transform.position = position;
-            _canMove = canMove;
+            Movement.CanMove = canMove;
             SoundEventCaller.PlaySound(moveSound, transform, this);
         }
         

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using _Main.Scripts.DebugGUI;
 using _Main.Scripts.InspectorTools;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -18,6 +20,7 @@ namespace _Main.Scripts.Managers
         private readonly List<TimerManagerData> _toAdd = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toRemove = new List<TimerManagerData>();
         private readonly Dictionary<ulong, TimerManagerData> _idsDic = new Dictionary<ulong, TimerManagerData>();
+        private int RunningCount => _running.Count;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
@@ -44,7 +47,17 @@ namespace _Main.Scripts.Managers
             return gameObject.AddComponent<TimerManager>();
         }
 
-        public void ManagedUpdate()
+        private void Awake()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Managers)
+                ?.AddEntry(
+                    () => $"Timer Count: {RunningCount}"
+                );
+#endif
+        }
+
+        public void ExecuteUpdate()
         {
             ApplyPending();
             

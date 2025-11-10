@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.DebugGUI;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -50,12 +51,22 @@ namespace _Main.Scripts.Gameplay.Earth
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
         public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
         public float LastUpdateTime { get; set; }
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 
+        private EarthDebugData _debugData;
+        
+#endif
+        
         private void Awake()
         {
             _earthMaterialController = GetComponent<EarthMaterialController>();
             _earthRotator = new EarthRotator(modelContainer.transform, planeMeshContainer.transform, rotationSpeed);
             _shakerController = new ShakerController(modelContainer.transform);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData = new EarthDebugData();
+#endif
         }
 
         private void Start()
@@ -65,7 +76,7 @@ namespace _Main.Scripts.Gameplay.Earth
             SetShakeMultiplier(1f);
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
             
@@ -115,6 +126,9 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void HandleCollision(float healthAmount, Vector3 position, Quaternion rotation, Vector2 direction)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.EarthHealth = healthAmount;
+#endif
             SoundEventCaller.PlaySound(collisionSound, null, null);
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
@@ -133,6 +147,9 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleHeal(float currentHealth, float lastHealth)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.EarthHealth = currentHealth;
+#endif
             var restartHealthTime = _restartTimeValues.RestartHealth;
             
             var tempActions = new ActionData[]
@@ -187,6 +204,9 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleRestartHealth(float currentHealth)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.EarthHealth = currentHealth;
+#endif
             ActionData[] tempActions;
             
             if (currentHealth >= 1)
@@ -355,6 +375,9 @@ namespace _Main.Scripts.Gameplay.Earth
         private void SetRotationSpeed(float healAmount)
         {
             var rotationMultiplier = rotationSpeedCurve.Evaluate(healAmount);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.RotationSpeed = rotationMultiplier;
+#endif
             _earthRotator.SetRotationSpeed(rotationSpeed * rotationMultiplier);
         }
         
@@ -365,7 +388,11 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void SetShakeMultiplier(float currentHealth)
         {
-            _shakerController.SetMultiplier(shakeMultiplier.Evaluate(currentHealth));
+            var multiplier = shakeMultiplier.Evaluate(currentHealth);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.ShakeIntensity = multiplier;
+#endif
+            _shakerController.SetMultiplier(multiplier);
         }
 
         private void UpdateColorByHealth(float currentHealth)

@@ -33,7 +33,7 @@ namespace _Main.Scripts.MainMenu.MVC
         private void InitializeFsm()
         {
             var temp = new List<MainMenuStateBase<States>>();
-            _fsm = new FSM<States>();
+            _fsm = new FSM<States>("MainMenu");
 
             #region Variables
 
@@ -75,7 +75,6 @@ namespace _Main.Scripts.MainMenu.MVC
             }
             
             _fsm.SetInit(disable);
-            _fsm.FSMName = "MainMenu";
         }
 
         #region Transitions

@@ -47,7 +47,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         private void InitializeFsm()
         {
             var temp = new List<AbilityBaseState<States>>();
-            _fsm = new FSM<States>();
+            _fsm = new FSM<States>("Ability");
             _actionGate = new ActionGate(_fsm);
 
             #region Variables
@@ -81,7 +81,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
             
             _fsm.SetInit(enable);
-            _fsm.FSMName = "Ability";
         }
 
         #region Transitions

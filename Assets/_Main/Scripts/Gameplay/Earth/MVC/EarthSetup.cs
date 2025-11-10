@@ -33,7 +33,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _controller.Initialize();
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }

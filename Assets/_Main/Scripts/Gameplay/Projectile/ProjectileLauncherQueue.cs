@@ -25,7 +25,7 @@ namespace _Main.Scripts.Gameplay.Projectile
             SetEventBus();
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             if (_distanceTracker.HasProjectile == false)
             {
@@ -74,14 +74,14 @@ namespace _Main.Scripts.Gameplay.Projectile
         private void LaunchProjectile()
         {
             var temp = _projectileQueue.Dequeue();
-            temp.EnableMovement = true;
+            temp.SetEnableMovement(true);
             _distanceTracker.SetProjectile(temp, spawnSettings.GetCenterOfGravity());
             projectileCount = _projectileQueue.Count;
         }
 
         private void AddProjectile(IProjectile projectile)
         {
-            projectile.EnableMovement = false;
+            projectile.SetEnableMovement(false);
             _projectileQueue.Enqueue(projectile);
             projectileCount = _projectileQueue.Count;
         }

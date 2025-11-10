@@ -564,8 +564,8 @@ MonoBehaviour:
   detectorData:
     ProjectileLayer:
       serializedVersion: 2
-      m_Bits: 64
-    CheckRadius: 15
+      m_Bits: 0
+    CheckRadius: 10
 --- !u!114 &168416679
 MonoBehaviour:
   m_ObjectHideFlags: 0

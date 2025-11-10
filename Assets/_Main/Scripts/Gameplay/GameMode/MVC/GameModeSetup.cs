@@ -46,7 +46,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller.Initialize();
         }
         
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             if (_isEnable)
             {

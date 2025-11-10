@@ -20,7 +20,7 @@ namespace _Main.Scripts
             _rotator = new Rotator(galaxies,Vector3.forward,rotationSpeed);
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             _rotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }

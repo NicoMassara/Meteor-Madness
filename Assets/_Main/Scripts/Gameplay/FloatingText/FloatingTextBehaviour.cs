@@ -26,7 +26,7 @@ namespace _Main.Scripts.Gameplay.FloatingScore
         private float _startFadeTimer;
         private float _currentAlpha;
         
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
             

@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using _Main.Scripts.DebugGUI;
 using _Main.Scripts.Gameplay.Abilities;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -25,14 +28,25 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         public UnityAction OnAbilitySelected;
         public UnityAction OnAbilityFinished;
-        
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Ability;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private AbilityDebugData _debugData;
+#endif
+
+        private void Awake()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData = new AbilityDebugData();
+#endif
+        }
 
         private void Start()
         {
             abilityDataController = new AbilityDataController(AbilitiesData_UpdateTimeScale, PlaySpeedUpSound, PlaySlowDownSound);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
+            
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -68,6 +82,9 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var ability = (AbilityType)index;
             
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.AddAbility(index);
+#endif
             FloatingTextEventCaller.Spawn(new FloatingTextValues
             {
                 Position = position,
@@ -100,6 +117,10 @@ namespace _Main.Scripts.Gameplay.Abilies
                 Debug.LogWarning("AbilityData Does not exist");
                 return;
             }
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.RemoveAbility();
+#endif
             
             OnAbilitySelected?.Invoke();
         }

@@ -49,7 +49,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _controller.TryRotate(direction);
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }

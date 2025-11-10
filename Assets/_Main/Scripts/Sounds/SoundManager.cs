@@ -55,7 +55,7 @@ namespace _Main.Scripts.Sounds
             SetEventBus();
         }
         
-        public void ManagedUpdate()
+        public void ExecuteUpdate()
         {
             _playbackTracker.Execute();
         }
