@@ -291,6 +291,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             if(_actionGate.IsInGameplay == false) return;
             _motor.HandleCameraZoomIn();
         }
+
+        public void TriggerMainMenu()
+        {
+            _motor.TriggerMainMenu();
+        }
     }
 
     #region States

@@ -184,15 +184,17 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void SetEventBus()
         {
             GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
+            GameEventCaller.Subscribe<ProjectileEvents.DisableSpawn>(EventBus_Projectile_DisableSpawn);
+            GameEventCaller.Subscribe<ProjectileEvents.EnableSpawn>(EventBus_Projectile_EnableSpawn);
+            GameEventCaller.Subscribe<ProjectileEvents.UpdateLevel>(EventBus_Projectile_UpdateLevel);
+            //
             GameEventCaller.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
+            GameEventCaller.Subscribe<AbilitiesEvents.NotifyIsActive>(EventBus_Ability_SetActive);
             GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
             GameEventCaller.Subscribe<AbilitiesEvents.SetNextSpawn>(EventBus_Ability_NextSpawn);
-            GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
-            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            GameEventCaller.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
         }
+        
+        #region Ability
 
         private void EventBus_Ability_NextSpawn(AbilitiesEvents.SetNextSpawn input)
         {
@@ -212,7 +214,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
         
-        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        private void EventBus_Ability_SetActive(AbilitiesEvents.NotifyIsActive input)
         {
             if (_isGameplayActive == false) return;
             
@@ -227,10 +229,9 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
 
-        private void EventBus_GameMode_Start(GameModeEvents.Start input)
-        {
-            _isGameplayActive = true;
-        }
+        #endregion
+
+        #region Projectile
 
         private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
         {
@@ -240,9 +241,22 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
         
-        private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
+        private void EventBus_Projectile_DisableSpawn(ProjectileEvents.DisableSpawn input)
         {
-            _currentLevel = input.CurrentLevel;
+            _isGameplayActive = false;
+            RemoveTimer();
+            _selector.Reset();
+            _factory.RecycleAll();
+        }
+        
+        private void EventBus_Projectile_EnableSpawn(ProjectileEvents.EnableSpawn input)
+        {
+            _isGameplayActive = true;
+        }
+        
+        private void EventBus_Projectile_UpdateLevel(ProjectileEvents.UpdateLevel input)
+        {
+            _currentLevel = input.Level;
             _selector.UpdateLevel(_currentLevel);
             if (GetCanRunTimer())
             {
@@ -250,19 +264,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
 
-        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
-        {
-            _isGameplayActive = false;
-            TimerManager.Remove(_spawnTimerId);
-            _factory.RecycleAll();
-        }
-
-        private void EventBus_GameMode_Finished(GameModeEvents.Finish input)
-        {
-            RemoveTimer();
-            _selector.Reset();
-            _factory.RecycleAll();
-        }
+        #endregion
 
         #endregion
     }

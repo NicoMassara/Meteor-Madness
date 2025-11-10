@@ -54,6 +54,7 @@ namespace _Main.Scripts.Tutorial.MVC
             _ui.OnStartTutorialButtonPressed += UIOnStartTutorialButtonPressedHandler;
 
             _view.OnTutorialEnable += ViewOnTutorialEnable;
+            _view.OnTutorialFinished += _controller.TransitionToMultiPage;
         }
 
         private void ViewOnTutorialEnable()
@@ -74,16 +75,23 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             GameEventCaller.Subscribe<ProjectileEvents.Collision>(EventBus_Projectile_Collision);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
+            //
+            GameEventCaller.Subscribe<AbilitiesEvents.NotifyIsActive>(EventBus_Abilities_Active);
+            //
             GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            //
             GameEventCaller.Subscribe<MultiPageUIEvents.Finished>(EventBus_MultiPage_Finished);
         }
 
         private void UnsubscribeEventBus()
         {
+            GameEventCaller.Unsubscribe<ProjectileEvents.Collision>(EventBus_Projectile_Collision);
             GameEventCaller.Unsubscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
-            GameEventCaller.Unsubscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
+            //
+            GameEventCaller.Unsubscribe<AbilitiesEvents.NotifyIsActive>(EventBus_Abilities_Active);
+            //
             GameEventCaller.Unsubscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            //
             GameEventCaller.Unsubscribe<MultiPageUIEvents.Finished>(EventBus_MultiPage_Finished);
         }
         
@@ -97,7 +105,7 @@ namespace _Main.Scripts.Tutorial.MVC
                 case 1:
                     _controller.TransitionToAbility();
                     break;
-                case 2:
+                case 2: 
                     GameManager.Instance.LoadMainMenu();
                     break;
                 default:
@@ -137,7 +145,7 @@ namespace _Main.Scripts.Tutorial.MVC
         }
 
         
-        private void EventBus_Abilities_Active(AbilitiesEvents.SetActive input)
+        private void EventBus_Abilities_Active(AbilitiesEvents.NotifyIsActive input)
         {
             if (input.IsActive == false)
             {

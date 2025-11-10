@@ -185,5 +185,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             NotifyAll(GameModeObserverMessage.CameraZoomIn);
         }
+
+        public void TriggerMainMenu()
+        {
+            NotifyAll(GameModeObserverMessage.TriggerMainMenu);
+        }
     }
 }
