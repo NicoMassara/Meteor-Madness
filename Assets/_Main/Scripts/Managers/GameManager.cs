@@ -42,24 +42,28 @@ namespace _Main.Scripts.Managers
 
         public void LoadTutorial()
         {
-            GameScreenEventCaller.SetGameScreen(ScreenType.Tutorial, true);
+            LoadGameScreen(ScreenType.Tutorial);
         }
 
         public void LoadGameMode()
         {
-            GameScreenEventCaller.SetGameScreen(ScreenType.GameMode, true);
+            LoadGameScreen(ScreenType.GameMode);
         }
 
         public void LoadMainMenu()
         {
-            GameScreenEventCaller.SetGameScreen(ScreenType.MainMenu, true);
+            LoadGameScreen(ScreenType.MainMenu);
         }
         
         public void LoadCosmeticMenu()
         {
-            GameScreenEventCaller.SetGameScreen(ScreenType.Cosmetic, true);
+            LoadGameScreen(ScreenType.Cosmetic);
         }
 
+        private void LoadGameScreen(ScreenType type)
+        {
+            GameScreenEventCaller.SetGameScreen(type, true);
+        }
 
         public void QuitGame()
         {

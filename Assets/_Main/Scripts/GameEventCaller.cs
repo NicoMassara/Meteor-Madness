@@ -102,6 +102,24 @@ namespace _Main.Scripts
                 IsEnable = isEnable
             });
         }
+
+        public static void EnableScreen(ScreenType type, EventRequestType requestType)
+        {
+            GameEventCaller.Publish(new GameScreenEvents.EnableScreen
+            {
+                ScreenType = type,
+                RequestType = requestType
+            });
+        }
+        
+        public static void DisableScreen(ScreenType type, EventRequestType requestType)
+        {
+            GameEventCaller.Publish(new GameScreenEvents.DisableScreen
+            {
+                ScreenType = type,
+                RequestType = requestType
+            });
+        }
     }
     public static class GameModeEventCaller
     {

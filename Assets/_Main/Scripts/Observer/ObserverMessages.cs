@@ -91,6 +91,8 @@
         public const ulong SetTutorial = 0xA5003;
         public const ulong SetStartLoading = 0xA5004;
         public const ulong SetCosmeticMenu = 0xA5005;
+        public const ulong DisableScreen = 0xA5006;
+        public const ulong LoadScreen = 0xA5007;
     }
     
     public struct TutorialObserverMessage

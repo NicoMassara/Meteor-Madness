@@ -4,29 +4,52 @@ namespace _Main.Scripts.GameScreens
 {
     public class GameScreenMotor : ObservableComponent
     {
+        private int _currentScreenIndex = -1;
+
+
+        public void DisableCurrentScreen()
+        {
+            NotifyAll(GameScreenObserverMessage.DisableScreen, _currentScreenIndex);
+        }
+
+        public void LoadCurrentScreen()
+        {
+            NotifyAll(GameScreenObserverMessage.LoadScreen, _currentScreenIndex);
+        }
+
+        public void SelectNewScreen(int screenIndex)
+        {
+            DisableCurrentScreen();
+            _currentScreenIndex = screenIndex;
+        }
+
         public void SetActiveMainMenu()
         {
-            NotifyAll(GameScreenObserverMessage.SetMainMenu);
+            _currentScreenIndex = 1;
         }
 
         public void SetActiveGameplay()
         {
-            NotifyAll(GameScreenObserverMessage.SetGameplay);
+            DisableCurrentScreen();
+            _currentScreenIndex = 2;
         }
 
         public void SetActiveTutorial()
         {
-            NotifyAll(GameScreenObserverMessage.SetTutorial);
-        }
-
-        public void SetActiveStartLoading()
-        {
-            NotifyAll(GameScreenObserverMessage.SetStartLoading);
+            DisableCurrentScreen();
+            _currentScreenIndex = 3;
         }
 
         public void SetActiveCosmetic()
         {
-            NotifyAll(GameScreenObserverMessage.SetCosmeticMenu);
+            DisableCurrentScreen();
+            _currentScreenIndex = 4;
+        }
+        
+        public void SetActiveStartLoading()
+        {
+            DisableCurrentScreen();
+            _currentScreenIndex = 5;
         }
     }
 }

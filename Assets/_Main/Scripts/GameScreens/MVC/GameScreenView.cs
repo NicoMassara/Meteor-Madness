@@ -10,39 +10,24 @@ namespace _Main.Scripts.GameScreens
         {
             switch (message)
             {
-                case GameScreenObserverMessage.SetMainMenu:
-                    HandleSetMainMenu();
+                case GameScreenObserverMessage.DisableScreen:
+                    HandleDisableScreen((int)args[0]);
                     break;
-                case GameScreenObserverMessage.SetGameplay:
-                    HandleSetGameplay();
-                    break;
-                case GameScreenObserverMessage.SetTutorial:
-                    HandleSetTutorial();
-                    break;
-                case GameScreenObserverMessage.SetCosmeticMenu:
-                    HandleSetCosmeticMenu();
+                case GameScreenObserverMessage.LoadScreen:
+                    HandleLoadGameScreen((int)args[0]);
                     break;
             }
         }
-
-        private void HandleSetTutorial()
+        
+        private void HandleDisableScreen(int currentScreenIndex)
         {
-            GameScreenEventCaller.SetGameScreen(ScreenType.Tutorial, true);
+            GameScreenEventCaller.DisableScreen((ScreenType)currentScreenIndex, EventRequestType.Request);
         }
 
-        private void HandleSetMainMenu()
+        private void HandleLoadGameScreen(int currentScreenIndex)
         {
-            GameScreenEventCaller.SetGameScreen(ScreenType.MainMenu, true);
+            GameScreenEventCaller.EnableScreen((ScreenType)currentScreenIndex, EventRequestType.Request);
         }
         
-        private void HandleSetGameplay()
-        {
-            GameScreenEventCaller.SetGameScreen(ScreenType.GameMode, true);
-        }
-
-        private void HandleSetCosmeticMenu()
-        {
-            GameScreenEventCaller.SetGameScreen(ScreenType.Cosmetic, true);
-        }
     }
 }

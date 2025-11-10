@@ -88,6 +88,7 @@ namespace _Main.Scripts.Tutorial.MVC
             
             enable.AddTransition(States.Start, start);
             enable.AddTransition(States.MultiPage, multiPage);
+            enable.AddTransition(States.Disable, disable);
             
             start.AddTransition(States.Movement, movement);
             start.AddTransition(States.Disable, disable);

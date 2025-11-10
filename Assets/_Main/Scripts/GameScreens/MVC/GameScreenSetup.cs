@@ -29,12 +29,7 @@ namespace _Main.Scripts.GameScreens
                 _controller.TransitionToMainMenu();
             };
         }
-
-        /*private void Start()
-        {
-            _controller.TransitionToMainMenu();
-        }*/
-
+        
         #region EventBus
 
         private void SetEventBus()
