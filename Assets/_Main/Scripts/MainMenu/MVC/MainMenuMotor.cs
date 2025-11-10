@@ -49,5 +49,10 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             NotifyAll(MainMenuObserverMessage.TriggerCosmetic);
         }
+
+        public void Credits()
+        {
+            NotifyAll(MainMenuObserverMessage.CreditsMenu);
+        }
     }
 }
