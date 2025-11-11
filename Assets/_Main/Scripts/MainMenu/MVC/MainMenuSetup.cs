@@ -59,6 +59,7 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnLoreOpen += () => _controller.TransitionToLore();
             _ui.OnBackToMenu += () => _controller.TransitionToMenu();
             _ui.OnExit += () => _controller.TriggerQuit();
+            _ui.OnCreditsOpen += () => _controller.TransitionToCredits();
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
         }

@@ -3,6 +3,7 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
+using _Main.Scripts.Save;
 using _Main.Scripts.Sounds;
 using UnityEngine;
 
@@ -96,10 +97,13 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Enable:
                     HandleEnable();
                     break;
-                
                 case GameModeObserverMessage.TriggerMainMenu:
                     HandleTriggerMainMenu();
                     break;
+                case GameModeObserverMessage.SaveHighScore:
+                    HandleSaveHighScore((float)args[0]);
+                    break;
+
                 
                 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -107,10 +111,15 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.MeteorDeflect:
                     HandleMeteorDeflect((float)args[0]);
                     break;
+                case GameModeObserverMessage.UpdateHighScore:
+                    HandleUpdateHighScore((float)args[0]);
+                    break;
 #endif
                 
             }
         }
+
+
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -118,8 +127,25 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _debugData.DeflectedMeteor = deflectedAmount;
         }
+        
+        private void HandleUpdateHighScore(float highScore)
+        {
+            _debugData.HighScore = highScore;
+        }
             
 #endif
+        
+        private void HandleSaveHighScore(float highScore)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.HighScore = highScore;
+#endif
+            
+            DataManager.Instance.SaveGameData(new ScoreSaveData
+            {
+                HighScore = highScore,
+            }, SaveDataType.Score);
+        }
         
         private void HandleTriggerMainMenu()
         {
@@ -289,6 +315,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetEnableInputs(true);
             SetEnableUIInputs(true);
             OnCountdownFinished?.Invoke();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+            _debugData.PointsGained = 0;
+#endif
         }
 
         private void HandleStartGameplay()
