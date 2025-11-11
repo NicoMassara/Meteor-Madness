@@ -64,6 +64,7 @@
     "CountDownStart" : "Preparado en",
     "CountdownFinish" : "Defender!",
     "Score" : "Puntos",
+    "HighScore" : "Record",
     "Death": {
       "Title" : "La Humanidad se acabo!",
       "Score" : "Tus Puntos"
