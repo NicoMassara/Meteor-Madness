@@ -43,12 +43,15 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void HandleEarthEndDestruction()
         {
-            if (GetHasBeatenHighScore())
+            var hasBeaten = GetHasBeatenHighScore();
+            
+            if (hasBeaten)
             {
                 _highScore = _meteorDeflectCount;
                 NotifyAll(GameModeObserverMessage.SaveHighScore, _highScore);
             }
-
+            
+            NotifyAll(GameModeObserverMessage.SetHasHighScore, hasBeaten, _highScore);
             NotifyAll(GameModeObserverMessage.EarthEndDestruction, _meteorDeflectCount);
         }
         

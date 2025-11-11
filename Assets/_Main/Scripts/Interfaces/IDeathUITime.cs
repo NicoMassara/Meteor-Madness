@@ -7,6 +7,8 @@
         public float SetEnableDeathScore { get; }
         public float DeathPointsTimeToIncrease { get; }
         public float CountDeathScore { get; }
+        public float CountHighScore { get; }
+        public float EnableHighScore { get; }
         public float EnableRestartButton { get; }
     }
 }

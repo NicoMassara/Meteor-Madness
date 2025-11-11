@@ -9,7 +9,7 @@ namespace _Main.Scripts
         [SerializeField] private AbilityType abilityToAdd;
 
         private bool _timeScaleHalved;
-        
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.K))
@@ -23,6 +23,10 @@ namespace _Main.Scripts
             else if (Input.GetKeyDown(KeyCode.M))
             {
                 ChangeTimeScale();
+            }
+            else if (Input.GetKeyDown(KeyCode.N))
+            {
+                Kill();
             }
         }
 
