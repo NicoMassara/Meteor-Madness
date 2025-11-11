@@ -1,5 +1,6 @@
 ﻿namespace _Main.Scripts.DebugGUI
 {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     public struct DebugGUIKeys
     {
         public struct Group
@@ -50,4 +51,5 @@
             public const int SoundChannel = 0;
         }
     }
+#endif
 }
