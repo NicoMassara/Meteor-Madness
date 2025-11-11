@@ -291,8 +291,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void UpdateHighScoreText(int points)
         {
-            //var text = $"{GetLocalizedString("Gameplay.Death.Score")}: {points:D6}";
-            var text = $"HighScore:{points:D6}";
+            var text = $"{GetLocalizedString("Gameplay.HighScore")}: {points:D6}";
             GetUiComponents().HighScoreText.text = text;
         }
 
