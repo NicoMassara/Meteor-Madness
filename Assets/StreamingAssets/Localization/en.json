@@ -64,6 +64,7 @@
     "CountDownStart" : "Prepare In",
     "CountdownFinish" : "Defend!",
     "Score" : "Score",
+    "HighScore" : "High Score",
     "Death": {
       "Title" : "Humanity Is Over!",
       "Score" : "Your Score"

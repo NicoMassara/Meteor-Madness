@@ -8,7 +8,6 @@ using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
@@ -22,6 +21,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         private ActionQueue _deathPanelActionQueue = new ActionQueue();
         private Coroutine _gameplayPointsCoroutine;
         private IGameUIConfig _gameUIConfig;
+        
+        private bool _hasHighScore;
+        private float _highScore;
         
         public event Action OnMainMenuButtonPressed;
         public event Action OnRestartButtonPressed;
@@ -95,7 +97,16 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.TriggerMainMenu:
                     HandleTriggerMainMenu();
                     break;
+                case GameModeObserverMessage.SetHasHighScore:
+                    HandleSetHighScore((bool)args[0],(float)args[1]);
+                    break;
             }
+        }
+
+        private void HandleSetHighScore(bool hasNewHighScore, float highScore)
+        {
+            _highScore = highScore;
+            _hasHighScore = hasNewHighScore;
         }
 
         private void HandleTriggerMainMenu()
@@ -161,6 +172,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             DisableActivePanel();
+            _hasHighScore = false;
             _numberIncrementer = new NumberIncrementer();
             SetActivePanel(GetUiComponents().CountdownPanel);
         }
@@ -277,6 +289,12 @@ namespace _Main.Scripts.Gameplay.GameMode
             GetUiComponents().DeathScoreText.text = text;
         }
 
+        private void UpdateHighScoreText(int points)
+        {
+            var text = $"{GetLocalizedString("Gameplay.HighScore")}: {points:D6}";
+            GetUiComponents().HighScoreText.text = text;
+        }
+
         private IEnumerator IncreasePointsText(Action<int> increaseAction = null)
         {
             while (!_numberIncrementer.IsFinished)
@@ -295,12 +313,51 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #region Death Panel Queue Actions
 
+        private void AddHighScoreToActionQueue(IDeathUITime deathPanelData)
+        {
+            List<ActionData> tempList = new List<ActionData>
+            {
+                new (() =>
+                {
+                    UpdateHighScoreText(0);
+                    SetActiveHighScoreText(true);
+                })
+            };
+            
+            _numberIncrementer.SetData(new NumberIncrementerData
+            {
+                Target = GetHighScore(),
+                TargetTime = deathPanelData.DeathPointsTimeToIncrease,
+                ActionOnFinish = () =>
+                {
+                    TimerManager.Add(new TimerData
+                    {
+                        Time = deathPanelData.EnableRestartButton,
+                        OnEndAction = () =>
+                        {
+                            SetActiveRestartButtonPanel(true);
+                        }
+                    });
+                }
+            });
+            
+            tempList.Add(
+                new ActionData(
+                    ()=> StartCoroutine(IncreasePointsText(UpdateHighScoreText)),
+                    deathPanelData.CountDeathScore));
+            
+            ActionManager.Add(new ActionQueue(tempList),UpdateGroup.UI);
+            
+        }
+
         private void StartDeathPanelActionQueue(float deflectCount)
         {
             SetActiveDeathText(false);
             SetActiveDeathScoreText(false);
             SetActiveRestartButtonPanel(false);
+            SetActiveHighScoreText(false);
             UpdateDeathScoreText(0);
+            UpdateHighScoreText(0);
             SetActivePanel(GetUiComponents().DeathPanel);
 
             var deathPanelData = _gameUIConfig.DeathUITimeData;
@@ -326,8 +383,33 @@ namespace _Main.Scripts.Gameplay.GameMode
                     {
                         _deathPanelActionQueue.AddAction(
                             new ActionData(
-                                () => SetActiveRestartButtonPanel(true),
-                                deathPanelData.EnableRestartButton));
+                                () =>
+                                {
+                                    if (_hasHighScore)
+                                    {
+                                        AddHighScoreToActionQueue(deathPanelData);
+                                    }
+                                    else
+                                    {
+                                        List<ActionData> highScoreList = new List<ActionData>
+                                        {
+                                            new(() =>
+                                            {
+                                                UpdateHighScoreText(GetHighScore());
+                                                SetActiveHighScoreText(true);
+                                            },deathPanelData.CountHighScore),
+                                            new(() =>
+                                            {
+                                                SetActiveRestartButtonPanel(true);
+                                            },deathPanelData.EnableRestartButton)
+                                        };
+                                        
+                                        ActionManager.Add(new ActionQueue(highScoreList),UpdateGroup.UI);
+                                    }
+
+
+                                },
+                                deathPanelData.EnableHighScore));
                     }
                 });
                 
@@ -335,22 +417,25 @@ namespace _Main.Scripts.Gameplay.GameMode
                     new ActionData(
                         ()=> StartCoroutine(IncreasePointsText(UpdateDeathScoreText)),
                         deathPanelData.CountDeathScore));
-                ;
             }
             else
             {
                 tempList.Add(
                     new ActionData(
+                        ()=> SetActiveHighScoreText(true),
+                        deathPanelData.EnableHighScore));
+                tempList.Add(
+                    new ActionData(
                         ()=> SetActiveRestartButtonPanel(true),
                         deathPanelData.EnableRestartButton));
             }
-
+            
             
             _deathPanelActionQueue.AddAction(tempList);
             
             ActionManager.Add(_deathPanelActionQueue,UpdateGroup.UI);
         }
-
+        
         private void SetActiveDeathText(bool isActive)
         {
             GetUiComponents().DeathText.gameObject.SetActive(isActive);
@@ -360,6 +445,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             GetUiComponents().DeathScoreText.gameObject.SetActive(isActive);
         }
+        
+        private void SetActiveHighScoreText(bool isActive)
+        {
+            GetUiComponents().HighScoreText.gameObject.SetActive(isActive);
+        }
 
         private void SetActiveRestartButtonPanel(bool isActive)
         {
@@ -368,7 +458,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         
 
         #endregion
-        
+
+        private int GetHighScore()
+        {
+            return (int)_highScore * GetPointsMultiplier();
+        }
+
         private int GetCurrentPoints()
         {
             return (int)_numberIncrementer.CurrentValue;

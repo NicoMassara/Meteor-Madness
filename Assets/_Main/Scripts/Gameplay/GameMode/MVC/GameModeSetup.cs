@@ -1,6 +1,7 @@
 ﻿using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
+using _Main.Scripts.Save;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -45,6 +46,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void Start()
         {
             _controller.Initialize();
+            
+            var saveData = DataManager.Instance.GetData<ScoreSaveData>(SaveDataType.Score);
+            _controller.SetHighScore(saveData.HighScore);
         }
         
         public void ExecuteUpdate()
