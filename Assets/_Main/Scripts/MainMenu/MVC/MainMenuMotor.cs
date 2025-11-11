@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
@@ -26,17 +27,32 @@ namespace _Main.Scripts.MainMenu.MVC
 
         public void TriggerTutorial()
         {
-            NotifyAll(MainMenuObserverMessage.Tutorial);
+            NotifyAll(MainMenuObserverMessage.TriggerTutorial);
         }
 
         public void TriggerGameMode()
         {
-            NotifyAll(MainMenuObserverMessage.GameMode);
+            NotifyAll(MainMenuObserverMessage.TriggerGameMode);
         }
 
         public void TriggerQuit()
         {
             NotifyAll(MainMenuObserverMessage.Quit);
+        }
+
+        public void Tutorial()
+        {
+            NotifyAll(MainMenuObserverMessage.TutorialMenu);
+        }
+
+        public void TriggerCosmetic()
+        {
+            NotifyAll(MainMenuObserverMessage.TriggerCosmetic);
+        }
+
+        public void Credits()
+        {
+            NotifyAll(MainMenuObserverMessage.CreditsMenu);
         }
     }
 }

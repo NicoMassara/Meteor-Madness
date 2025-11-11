@@ -1,0 +1,73 @@
+﻿{
+  "UIButton": {
+    "MainMenu": "Menu Principale",
+    "Resume": "Riprendi",
+    "Restart": "Riprova",
+    "Next": "Avanti",
+    "Back": "Indietro",
+    "Previous": "Precedente",
+    "Pause": "Pausa",
+    "Quit": "Esci"
+  },
+
+  "Menu": {
+    "Play": "Gioca",
+    "Lore": {
+      "Button": "Cosa è successo?",
+      "Title": "Cosa è successo?",
+      "Text": "@Texts/it/lore.txt"
+    },
+    "Tutorial": {
+      "Button": "Come Giocare",
+      "Title": "Benvenuto nel Tutorial!",
+      "StartButton": "Inizia il Tutorial"
+    },
+    "Cosmetic": "Negozio Oggetti",
+    "Settings": "Impostazioni",
+    "Credits": {
+      "Button" : "Crediti",
+      "Title" : "Crediti",
+      "Text" : "Sviluppato da"
+    }
+  },
+
+  "Tutorial": {
+    "Hint": {
+      "Movement": "Prova a muoverti e a deviare una meteora!",
+      "Ability": "Prova a deviare la sfera misteriosa!",
+      "Shield": "Attiva il Super Scudo!"
+    }
+  },
+
+  "MultiPage" : {
+    "TutorialMobile" : "@MultiPage/Mobile/it/tutorial.json",
+    "TutorialDesktop" : "@MultiPage/Desktop/it/tutorial.json"
+  },
+
+  "Abilities": {
+    "SuperShield": "Super Scudo",
+    "SlowMotion": "Movimento Rallentato",
+    "Health": "Ricostruzione",
+    "DoublePoints": "Punti Doppi",
+    "Automatic": "Pilota Automatico"
+  },
+
+  "Cosmetic": {
+    "Title": "Prossimamente!"
+  },
+
+  "Pause": {
+    "Title": "Pausa"
+  },
+
+  "Gameplay": {
+    "CountDownStart": "Preparati tra",
+    "CountdownFinish": "Difendi!",
+    "Score": "Punteggio",
+    "HighScore" : "Max Punteggio",
+    "Death": {
+      "Title": "L’Umanità è Perduta!",
+      "Score": "Il Tuo Punteggio"
+    }
+  }
+}

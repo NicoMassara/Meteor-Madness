@@ -7,7 +7,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     [RequireComponent(typeof(AbilityView))]
     [RequireComponent(typeof(AbilityUIView))]
-    public class AbilitySetup : ManagedBehavior, IUpdatable
+    public class AbilitySetup : ManagedBehavior
     {
         private AbilityMotor _motor;
         private AbilityController _controller;
@@ -16,7 +16,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         private AbilityView _view;
         private AbilityUIView _ui;
         
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Ability;
 
         private void Awake()
         {
@@ -37,13 +36,16 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             _controller.Initialize();
             _inputReader = GameManager.Instance.InputReader;
-        }
 
-        public void ManagedUpdate()
-        {
-            if (_inputReader != null && _inputReader.HasUsedAbility)
+            if (_inputReader != null)
             {
-                _controller.SelectAbility();
+                _inputReader.OnAbilityTriggered += hasUsed =>
+                {
+                    if (hasUsed)
+                    {
+                        _controller.SelectAbility();
+                    }
+                };
             }
         }
 
@@ -71,69 +73,48 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBusSetup()
         {
+            GameEventCaller.Subscribe<AbilitiesEvents.Disable>(EventBus_Ability_Disable);
+            GameEventCaller.Subscribe<AbilitiesEvents.Enable>(EventBus_Ability_Enable);
             GameEventCaller.Subscribe<AbilitiesEvents.SetEnableUI>(EventBus_Ability_SetEnableUI);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetCanUse>(EventBus_Ability_SetEnable);
+            GameEventCaller.Subscribe<AbilitiesEvents.SetCanUse>(EventBus_Ability_CanUse);
             GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
-            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finish);
-            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            GameEventCaller.Subscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
-            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            GameEventCaller.Subscribe<AbilitiesEvents.RunTimer>(EventBus_Ability_RunTimer);
         }
 
-        private void EventBus_GameMode_SetPaused(GameModeEvents.SetPause input)
-        {
-            _controller.SetEnableUI(!input.IsPaused);
-        }
+        #region Ability
 
-        private void EventBus_Ability_SetEnableUI(AbilitiesEvents.SetEnableUI input)
-        {
-            _controller.SetEnableUI(input.IsEnable);
-        }
-
-        private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
-        {
-            if (input.IsActive == false)
-            {
-                _controller.RunActiveTimer();
-            }
-        }
-
-        private void EventBus_GameMode_Start(GameModeEvents.Start input)
+        private void EventBus_Ability_Enable(AbilitiesEvents.Enable input)
         {
             _controller.TransitionToEnable();
         }
 
-        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
+        private void EventBus_Ability_Disable(AbilitiesEvents.Disable input)
         {
-            _controller.TransitionToRestart();
             _controller.TransitionToDisable();
         }
         
-        private void EventBus_GameMode_Finish(GameModeEvents.Finish input)
+        private void EventBus_Ability_SetEnableUI(AbilitiesEvents.SetEnableUI input)
         {
-            _controller.TransitionToRestart();
-            _controller.TransitionToDisable();
+            _controller.SetEnableUI(input.IsEnable);
         }
-
+        
         private void EventBus_Ability_Add(AbilitiesEvents.Add input)
         {
             _controller.TryAddAbility((int)input.AbilityType, input.Position);
         }
-
-        private void EventBus_Ability_SetEnable(AbilitiesEvents.SetCanUse input)
+        
+        private void EventBus_Ability_CanUse(AbilitiesEvents.SetCanUse input)
         {
-            if (input.CanUse)
-            {
-                _controller.TransitionToEnable();
-            }
-            else
-            {
-                _controller.TransitionToDisable();
-            }
+            _controller.SetCanUse(input.CanUse);
+        }
+        
+        private void EventBus_Ability_RunTimer(AbilitiesEvents.RunTimer input)
+        {
+            _controller.RunActiveTimer();
         }
 
         #endregion
-        
+
+        #endregion
     }
 }

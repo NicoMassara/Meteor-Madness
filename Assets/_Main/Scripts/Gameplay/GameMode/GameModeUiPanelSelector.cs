@@ -25,6 +25,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         public TMP_Text ScoreText;
         public TMP_Text DeathScoreText;
         public TMP_Text DeathText;
+        public TMP_Text HighScoreText;
         [Space]
         [Header("Buttons Components")]
         public Button RestartButton;

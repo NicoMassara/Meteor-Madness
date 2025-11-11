@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using _Main.Scripts.DebugGUI;
 using UnityEngine;
 
 namespace _Main.Scripts.FiniteStateMachine
@@ -9,20 +8,39 @@ namespace _Main.Scripts.FiniteStateMachine
     {
         IState<T> _current;
         public T CurrentState { get; set; }
-        public string FSMName { get; set; }
+        public T LastState { get; set; }
+        public string FSMName { get; private set; }
         public event Action<T> OnEnterState;
         public event Action<T> OnExitState;
 
-        public FSM() {}
+        public FSM(string fsmName)
+        {
+            FSMName = fsmName; 
+        }
         public FSM(IState<T> init)
         {
             SetInit(init);
         }
+
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public void CreateDebugGUI(int sortingOrder = 10)
+        {
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Fsm, DebugGUISortingOrder.Group.Fsm)
+                ?.CreateSubGroup($"{FSMName}",sortingOrder)
+                ?.AddEntry(
+                () => $"Current State: {(CurrentState == null ? "None" : CurrentState)}",
+                () => $"Last State: {(LastState == null ? "None" : LastState)}"
+            );
+        }
+#endif
+        
         public void SetInit(IState<T> init)
         {
             _current = init;
             _current.Awake();
         }
+        
         public void Execute(float deltaTime)
         {
             if (_current != null)
@@ -47,12 +65,13 @@ namespace _Main.Scripts.FiniteStateMachine
             
             if (newState == null)
             {
-                //Debug.Log($"Transition From {CurrentState.ToString()} to {input.ToString()} Not Found in {FSMName}");
+                //Debug.Log($"Transition From {CurrentState.ToString()} to {input.ToString()} Not Found in {FSMName} FSM");
                 return;
             }
 
             if (CurrentState != null)
             {
+                LastState = CurrentState;
                 OnExitState?.Invoke(CurrentState);
             }
             
@@ -60,6 +79,9 @@ namespace _Main.Scripts.FiniteStateMachine
             _current = newState;
             _current.Awake();
             CurrentState = input;
+            /*Debug.Log($"{FSMName} Curren State->{CurrentState} : " +
+                      $"Last State->{LastState} : " +
+                      $"At->{Time.realtimeSinceStartup}");*/
             OnEnterState?.Invoke(CurrentState);
         }
     }

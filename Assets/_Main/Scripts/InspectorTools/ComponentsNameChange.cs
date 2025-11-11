@@ -1,5 +1,4 @@
-﻿using _Main.Scripts.MyTools;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace _Main.Scripts.InspectorTools

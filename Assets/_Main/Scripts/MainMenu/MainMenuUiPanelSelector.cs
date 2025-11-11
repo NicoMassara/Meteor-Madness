@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Utilities;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,12 +16,20 @@ namespace _Main.Scripts.Menu
         [Header("Sub Panels")] 
         public GameObject MenuPanel;
         public GameObject LorePanel;
+        public GameObject TutorialPanel;
+        public GameObject CreditsPanel;
+        [Space]
+        [Header("Text Components")]
+        public TMP_Text CreditsText;
         [Space]
         [Header("Buttons Components")]
         public Button PlayButton;
         public Button TutorialButton;
+        public Button OpenTutorialButton;
         public Button LoreButton;
+        public Button CreditsButton;
+        public Button CosmeticButton;
         public Button QuitButton;
-        public Button BackButton;
+        public Button[] BackButtons;
     }
 }
