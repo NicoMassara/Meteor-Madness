@@ -19,6 +19,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private bool _doesRestartGameMode;
         private bool _hasDoublePoints;
         private bool _canPause;
+        private float _highScore;
         
 
         public GameModeMotor(int[] levelStreakAmount, int startTimer)
@@ -26,6 +27,99 @@ namespace _Main.Scripts.Gameplay.GameMode
             _levelController = new(levelStreakAmount);
             _levelController.OnLevelChange += OnLevelChangeHandler;
             _startDelay = startTimer + 1;
+        }
+        
+        #region Earth
+
+        public void HandleEarthShake()
+        {
+            NotifyAll(GameModeObserverMessage.EarthShaking);
+        }
+
+        public void HandleEarthStartDestruction()
+        {
+            NotifyAll(GameModeObserverMessage.EarthStartDestruction);
+        }
+
+        public void HandleEarthEndDestruction()
+        {
+            if (GetHasBeatenHighScore())
+            {
+                _highScore = _meteorDeflectCount;
+                NotifyAll(GameModeObserverMessage.SaveHighScore, _highScore);
+            }
+
+            NotifyAll(GameModeObserverMessage.EarthEndDestruction, _meteorDeflectCount);
+        }
+        
+        public void EarthRestartFinish()
+        {
+            NotifyAll(GameModeObserverMessage.EarthRestartFinish, _doesRestartGameMode);
+        }
+
+        #endregion
+        
+        #region Ability
+
+        public void SetDoublePoints(bool isEnable)
+        {
+            _hasDoublePoints = isEnable;
+        }
+
+        #endregion
+
+        #region Spawn
+
+        public void GrantSpawnMeteor(int projectileTypeIndex)
+        {
+            NotifyAll(GameModeObserverMessage.GrantProjectileSpawn,projectileTypeIndex);
+        }
+        
+        public void SetEnableMeteorSpawn(bool canSpawn)
+        {
+            NotifyAll(GameModeObserverMessage.SetEnableSpawnMeteor, canSpawn);
+        }
+
+        #endregion
+
+        #region GameMode
+        
+        public void StartGameplay()
+        {
+            NotifyAll(GameModeObserverMessage.StartGameplay);
+        }
+
+        public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
+        {
+            var finalValue = _hasDoublePoints ? meteorDeflectValue*2 : meteorDeflectValue;
+            _meteorDeflectCount += finalValue;
+            
+            if (meteorDeflectValue >= 1)
+            {
+                _levelController.IncreaseStreak();
+                _levelController.CheckForNextLevel();
+            }
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+            if (GetHasBeatenHighScore())
+            {
+                NotifyAll(GameModeObserverMessage.UpdateHighScore, _meteorDeflectCount);
+            }
+#endif
+            
+            if (meteorDeflectValue > 0)
+            {
+                NotifyAll(GameModeObserverMessage.PointsGained,position,finalValue,_hasDoublePoints);
+            }
+
+            NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);
+        }
+        
+        public void SetHighScore(float highScore)
+        {
+            _highScore = highScore;
+            NotifyAll(GameModeObserverMessage.UpdateHighScore, _highScore);
         }
 
         public void InitializeValues()
@@ -55,6 +149,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _startTimer -= deltaTime;
 
             int seconds = Mathf.CeilToInt(_startTimer);
+            
 
             if (seconds != _lastDisplayedTimer)
             {
@@ -67,29 +162,18 @@ namespace _Main.Scripts.Gameplay.GameMode
                 }
             }
         }
-
-        public void StartGameplay()
+        
+        public void SetGamePaused(bool isPaused)
         {
-            NotifyAll(GameModeObserverMessage.StartGameplay);
+            if(_canPause == false) return;
+            
+            _isPaused = isPaused;
+            NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
         }
 
-        public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
+        public bool GetHasBeatenHighScore()
         {
-            var finalValue = _hasDoublePoints ? meteorDeflectValue*2 : meteorDeflectValue;
-            _meteorDeflectCount += finalValue;
-            
-            if (meteorDeflectValue >= 1)
-            {
-                _levelController.IncreaseStreak();
-                _levelController.CheckForNextLevel();
-            }
-
-            if (meteorDeflectValue > 0)
-            {
-                NotifyAll(GameModeObserverMessage.PointsGained,position,finalValue,_hasDoublePoints);
-            }
-
-            NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);
+            return _meteorDeflectCount > _highScore;
         }
 
         public void RestartValues()
@@ -99,35 +183,21 @@ namespace _Main.Scripts.Gameplay.GameMode
             _levelController.ResetLevel();
         }
 
-        #region Earth
-
-        public void HandleEarthShake()
+        public void DisableGameMode()
         {
-            NotifyAll(GameModeObserverMessage.EarthShaking);
-        }
-
-        public void HandleEarthStartDestruction()
-        {
-            NotifyAll(GameModeObserverMessage.EarthStartDestruction);
-        }
-
-        public void HandleEarthEndDestruction()
-        {
-            NotifyAll(GameModeObserverMessage.EarthEndDestruction, _meteorDeflectCount);
+            NotifyAll(GameModeObserverMessage.Disable);
         }
         
-        public void EarthRestartFinish()
+        public void Enable()
         {
-            NotifyAll(GameModeObserverMessage.EarthRestartFinish, _doesRestartGameMode);
+            NotifyAll(GameModeObserverMessage.Enable);
         }
-
-        #endregion
         
-        public void SetEnableMeteorSpawn(bool canSpawn)
+        public void TriggerMainMenu()
         {
-            NotifyAll(GameModeObserverMessage.SetEnableSpawnMeteor, canSpawn);
+            NotifyAll(GameModeObserverMessage.TriggerMainMenu);
         }
-
+        
         public void UpdateCurrentLevel()
         {
             NotifyAll(GameModeObserverMessage.UpdateGameLevel, _levelController.GetCurrentLevel());
@@ -148,34 +218,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.GameRestart);
         }
 
-        public void SetGamePaused(bool isPaused)
-        {
-            if(_canPause == false) return;
-            
-            _isPaused = isPaused;
-            NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
-        }
-        
-        public void DisableGameMode()
-        {
-            NotifyAll(GameModeObserverMessage.Disable);
-        }
+        #endregion
 
-        public void SetDoublePoints(bool isEnable)
-        {
-            _hasDoublePoints = isEnable;
-        }
-        
-        public void GrantSpawnMeteor(int projectileTypeIndex)
-        {
-            NotifyAll(GameModeObserverMessage.GrantProjectileSpawn,projectileTypeIndex);
-        }
+        #region Camera
 
-        public void Enable()
-        {
-            NotifyAll(GameModeObserverMessage.Enable);
-        }
-        
         public void HandleCameraZoomOut()
         {
             NotifyAll(GameModeObserverMessage.CameraZoomOut);
@@ -186,9 +232,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.CameraZoomIn);
         }
 
-        public void TriggerMainMenu()
-        {
-            NotifyAll(GameModeObserverMessage.TriggerMainMenu);
-        }
+        #endregion
     }
 }

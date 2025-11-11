@@ -11,6 +11,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         public bool IsPaused;
         public bool InputsEnable;
         public float DeflectedMeteor;
+        public float HighScore;
 
         public GameModeDebugData()
         {
@@ -19,11 +20,19 @@ namespace _Main.Scripts.Gameplay.GameMode
                 ?.AddEntry(
                     () => $"Level:{CurrentLevel}",
                     () => $"Points:{PointsGained:F2}",
-                    () => $"Deflected:{IsPaused}",
+                    () => $"High Score:{HighScore:F2}",
+                    () => $"Has High Score:{GetHasSurpasedHighScore()}",
+                    () => $"Deflected:{DeflectedMeteor:F2}",
                     () => $"Inputs Enable:{InputsEnable}",
-                    () => $"Paused:{DeflectedMeteor}"
+                    () => $"Paused:{IsPaused}"
                 );
         }
+
+        private bool GetHasSurpasedHighScore()
+        {
+            return PointsGained >= HighScore;
+        }
+
     }    
 
 #endif
