@@ -19,8 +19,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnGameModeEnable;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
-        //Hack
-        private bool _isFirstDisable = true;
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         
