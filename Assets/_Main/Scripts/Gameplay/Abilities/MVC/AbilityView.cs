@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _Main.Scripts.Gameplay.Abilities;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -26,6 +27,9 @@ namespace _Main.Scripts.Gameplay.Abilies
         public UnityAction OnAbilitySelected;
         public UnityAction OnAbilityFinished;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Ability;
+        
+        public event Action OnAbilityTriggered;
+        public event Action OnAbilityAdded;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private AbilityDebugData _debugData;
@@ -93,6 +97,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             });
             
             SoundEventCaller.PlaySound(abilityAdd, null,null);
+            OnAbilityAdded?.Invoke();
         }
 
         private void HandleSetStorageFull(bool isFull)
@@ -130,6 +135,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             GameModeEventCaller.SetEnablePause(false);
             
             SoundEventCaller.PlaySound(abilityTrigger, null,null);
+            OnAbilityTriggered?.Invoke();
         }
 
         private void HandleFinishAbility(int abilityIndex)

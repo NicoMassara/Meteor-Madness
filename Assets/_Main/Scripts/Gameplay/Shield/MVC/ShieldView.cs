@@ -40,6 +40,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShakerController _shakerController;
         private ShieldColliderExtender _colliderExtender;
         public event Action OnLoopFinished;
+        public event Action OnRotate;
+        public event Action OnDeflect;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -178,6 +180,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandlePlayMoveSound()
         {
+            OnRotate?.Invoke();
             SoundEventCaller.PlaySound(moveSound, null, null);
         }
         
@@ -200,6 +203,7 @@ namespace _Main.Scripts.Gameplay.Shield
             });
             
             CameraEventCaller.Shake(cameraShakeData);
+            OnDeflect?.Invoke();
         }
 
         #endregion

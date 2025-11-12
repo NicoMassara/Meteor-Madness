@@ -11,6 +11,8 @@ namespace _Main.Scripts.Vibration
         public event Action OnVibrate;
         public event Action OnStopVibration;
 
+        public bool IsVibrating => _vibrationController.IsVibrating;
+
         private void Awake()
         {
             _vibrationController = new VibrationController();
@@ -46,6 +48,7 @@ namespace _Main.Scripts.Vibration
     [Serializable]
     public class VibrationData
     {
+        [Tooltip("In ms")]
         [Range(10,3000)]
         public long Duration;
         [Range(1,255)]

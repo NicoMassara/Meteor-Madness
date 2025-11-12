@@ -3158,6 +3158,7 @@ GameObject:
   - component: {fileID: 1253651367}
   - component: {fileID: 1253651366}
   - component: {fileID: 1253651365}
+  - component: {fileID: 1253651368}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -3219,6 +3220,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   countdownSound: {fileID: 11400000, guid: 72349cb5a1b79094090034040d420787, type: 2}
   countdownFinish: {fileID: 11400000, guid: 53106164b81249c4bbf7a598ffde2cb3, type: 2}
+--- !u!114 &1253651368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253651362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e45b12914585419fbc55f9dbfdefd76b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1254674026
 GameObject:
   m_ObjectHideFlags: 0
