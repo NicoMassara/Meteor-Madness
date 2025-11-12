@@ -485,6 +485,7 @@ GameObject:
   - component: {fileID: 168416678}
   - component: {fileID: 168416679}
   - component: {fileID: 168416680}
+  - component: {fileID: 168416681}
   m_Layer: 0
   m_Name: ShieldController
   m_TagString: Untagged
@@ -596,6 +597,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trailMaterial: {fileID: 2100000, guid: 5bb8d64ee1521564aa1575949d88443a, type: 2}
   defaultColor: {r: 0, g: 0.913288, b: 0.9811321, a: 1}
+--- !u!114 &168416681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168416674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c23df50d13ef44a1918ac581ae274b58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateData: {fileID: 11400000, guid: b3744b85e9a766c4a9a34fe797647366, type: 2}
+  deflectData: {fileID: 11400000, guid: ae79670803633ad4d9f64ba9e8361eef, type: 2}
 --- !u!1 &200166475
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,6 +740,7 @@ GameObject:
   - component: {fileID: 234428179}
   - component: {fileID: 234428178}
   - component: {fileID: 234428182}
+  - component: {fileID: 234428183}
   m_Layer: 0
   m_Name: AbilityController
   m_TagString: Untagged
@@ -802,6 +818,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiSelector: {fileID: 1294975346}
+--- !u!114 &234428183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234428177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3917780fb8e642179c0e88966d96a8c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggeredData: {fileID: 11400000, guid: d6035c170909d2d438bfcd7e37aa27a4, type: 2}
+  finishedData: {fileID: 11400000, guid: 39b5a31266529be409a3ce33e42474dc, type: 2}
+  addedData: {fileID: 11400000, guid: 0c0bd153906d55247a1e46196c1c8009, type: 2}
 --- !u!1 &244942275
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,6 +1120,7 @@ GameObject:
   - component: {fileID: 409919227}
   - component: {fileID: 409919226}
   - component: {fileID: 409919225}
+  - component: {fileID: 409919230}
   m_Layer: 0
   m_Name: MultiPageController
   m_TagString: Untagged
@@ -1158,6 +1190,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &409919230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409919224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ec339b7de2446b88bdec8fb66f5f670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &433852380
 GameObject:
   m_ObjectHideFlags: 0
@@ -2991,6 +3035,7 @@ GameObject:
   - component: {fileID: 1002815156}
   - component: {fileID: 1002815157}
   - component: {fileID: 1002815158}
+  - component: {fileID: 1002815159}
   m_Layer: 0
   m_Name: Earth
   m_TagString: Untagged
@@ -3159,6 +3204,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   surfaceMaterial: {fileID: 2100000, guid: c4685a36662561a4fa44e2098e33150d, type: 2}
   atmosphereMaterial: {fileID: 2100000, guid: 6e56a3d498770204e9baa68e009fc172, type: 2}
+--- !u!114 &1002815159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002815153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65107d1653634bd08614a35e7790b571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionData: {fileID: 11400000, guid: 9db3fd3fc0c071346a3c4ebf978de66f, type: 2}
 --- !u!1 &1004163049
 GameObject:
   m_ObjectHideFlags: 0

@@ -68,6 +68,8 @@ namespace _Main.Scripts.Tutorial.MVC
         private void HandleStart()
         {
             // Structure has changed, easiest and fastest way to do it
+            // This works to auto start tutorial without changing to much code
+            // and breaking anything
             OnStartTutorialButtonPressed?.Invoke();
         }
 

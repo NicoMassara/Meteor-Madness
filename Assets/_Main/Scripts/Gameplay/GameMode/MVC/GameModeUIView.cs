@@ -28,7 +28,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnMainMenuButtonPressed;
         public event Action OnRestartButtonPressed;
         public event Action OnPauseButtonPressed;
-        
+
+        public event Action OnPointsAdded;
         
         private void Start()
         {
@@ -303,6 +304,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 {
                     _numberIncrementer.Run(CustomTime.GetDeltaTimeByChannel(UpdateGroup.UI));
                     increaseAction?.Invoke(GetCurrentPoints());
+                    OnPointsAdded?.Invoke();
                 }
                 
                 yield return null;

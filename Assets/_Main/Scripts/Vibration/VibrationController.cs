@@ -18,6 +18,8 @@ namespace _Main.Scripts.Vibration
             Initialize();
         }
 
+        public bool IsVibrating { get; private set; }
+
         private void Initialize()
         {
             try
@@ -64,15 +66,20 @@ namespace _Main.Scripts.Vibration
                     _vibrator.Call("vibrate", milliseconds);
                 }
                 
-                OnVibrate?.Invoke();
                 
                 _timerId = TimerManager.Add(new TimerData
                 {
                     Time = milliseconds / 1000f,
+                    OnStartAction = () =>
+                    {
+                        IsVibrating = true;
+                        OnVibrate?.Invoke();
+                    },
                     OnEndAction = () =>
                     {
-                        OnStopVibration?.Invoke();
                         _timerId = 0;
+                        IsVibrating = false;
+                        OnStopVibration?.Invoke();
                     }
                 }, UpdateGroup.Always);
             }
@@ -87,8 +94,9 @@ namespace _Main.Scripts.Vibration
             if (_vibrator != null)
             {
                 _vibrator.Call("cancel");
-                OnStopVibration?.Invoke();
                 TimerManager.Remove(_timerId);
+                IsVibrating = false;
+                OnStopVibration?.Invoke();
             }
         }
     }

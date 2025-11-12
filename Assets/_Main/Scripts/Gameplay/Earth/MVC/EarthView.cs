@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using _Main.Scripts.DebugGUI;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -51,6 +50,8 @@ namespace _Main.Scripts.Gameplay.Earth
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
         public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
         public float LastUpdateTime { get; set; }
+
+        public event Action OnCollision;
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -143,6 +144,7 @@ namespace _Main.Scripts.Gameplay.Earth
             });
             
             CameraEventCaller.Shake(cameraShakeData);
+            OnCollision?.Invoke();
         }
 
         private void HandleHeal(float currentHealth, float lastHealth)
