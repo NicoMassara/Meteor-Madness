@@ -5,8 +5,9 @@ namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeUIVibration : VibrationBehavior<GameModeUIView>
     {
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             ComponentToVibrate.OnMainMenuButtonPressed += () =>
             {
                 Vibrate(VibrationType.UIButtonCancel);

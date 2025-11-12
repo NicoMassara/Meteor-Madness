@@ -5,8 +5,9 @@ namespace _Main.Scripts.Tutorial
 {
     public class TutorialVibration : VibrationBehavior<TutorialUIView>
     {
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             ComponentToVibrate.OnStartTutorialButtonPressed += () =>
             {
                 Vibrate(VibrationType.UIButtonAccept);

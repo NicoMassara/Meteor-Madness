@@ -10,8 +10,9 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private VibrationDataSo rotateData;
         [SerializeField] private VibrationDataSo deflectData;
         
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             ComponentToVibrate.OnRotate += () =>
             {
                 Vibrate(rotateData);

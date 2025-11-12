@@ -18,11 +18,15 @@ namespace _Main.Scripts.Vibration
                 enabled = false;
             }
             
-            _vibration = VibrationManager.Instance;
             ComponentToVibrate = GetComponent<T>();
         }
 
-        public void Vibrate(VibrationDataSo soData)
+        protected virtual void Start()
+        {
+            _vibration = VibrationManager.Instance;
+        }
+
+        protected virtual void Vibrate(VibrationDataSo soData)
         {
             Vibrate(soData.Data);
         }

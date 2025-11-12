@@ -9,8 +9,9 @@ namespace _Main.Scripts.Gameplay.Earth
     {
         [SerializeField] private VibrationDataSo collisionData;
         
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             ComponentToVibrate.OnCollision += () =>
             {
                 Vibrate(collisionData);

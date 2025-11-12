@@ -13,6 +13,10 @@ namespace _Main.Scripts.Gameplay.FloatingScore
         private void Awake()
         {
             _factory = new FloatingScoreFactory(prefab);
+        }
+
+        private void Start()
+        {
             SetEventBus();
         }
 

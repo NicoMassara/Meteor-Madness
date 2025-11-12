@@ -5,8 +5,9 @@ namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeVibration : VibrationBehavior<GameModeView>
     {
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             ComponentToVibrate.OnCountdownUpdatedFinished += () =>
             {
                 Vibrate(VibrationDurationType.MediumLong,VibrationIntensityType.MediumHeavy);

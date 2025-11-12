@@ -11,7 +11,7 @@ namespace _Main.Scripts.Menu
         [SerializeField] private string github;
         [SerializeField] private MainMenuUiPanelSelector uiSelector;
         
-        private void Start()
+        private void Awake()
         {
             LocalizationEvents.OnLanguageChanged += UpdateText;
         }

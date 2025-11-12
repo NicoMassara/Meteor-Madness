@@ -5,8 +5,9 @@ namespace _Main.Scripts.MultiPage
 {
     public class MultiPageVibration : VibrationBehavior<MultiPageViewUI>
     {
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             ComponentToVibrate.OnNextButtonPressed += () =>
             {
                 Vibrate(VibrationType.UIButtonAccept);

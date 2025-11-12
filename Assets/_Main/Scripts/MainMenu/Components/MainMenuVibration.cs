@@ -6,8 +6,9 @@ namespace _Main.Scripts.Menu
 {
     public class MainMenuVibration : VibrationBehavior<MainMenuUiView>
     {
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             ComponentToVibrate.OnConfirmButtonClicked += () =>
             {
                 Vibrate(VibrationType.UIButtonAccept);

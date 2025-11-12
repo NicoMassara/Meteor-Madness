@@ -6,8 +6,9 @@ namespace _Main.Scripts.Cosmetics.Components
 {
     public class CosmeticVibration : VibrationBehavior<CosmeticUIView>
     {
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             ComponentToVibrate.OnMainMenuButtonPressed += () =>
             {
                 Vibrate(VibrationType.UIButtonCancel);

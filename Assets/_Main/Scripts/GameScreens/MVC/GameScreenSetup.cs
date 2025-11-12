@@ -36,7 +36,15 @@ namespace _Main.Scripts.GameScreens
         private void Localization_OnLocalizationLoadedHandler()
         {
             LocalizationEvents.OnLocalizationLoaded -= Localization_OnLocalizationLoadedHandler;
-            _motor.LoadScreenByIndex((int)ScreenType.MainMenu);
+
+            TimerManager.Add(new TimerData
+            {
+                Time = Time.unscaledDeltaTime,
+                OnEndAction = () =>
+                {
+                    _motor.LoadScreenByIndex((int)ScreenType.MainMenu);
+                }
+            });
         }
         
         #region EventBus

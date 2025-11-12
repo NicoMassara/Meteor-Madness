@@ -10,7 +10,6 @@ namespace _Main.Scripts.Gameplay.Meteor
     public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorValuesData>, 
         IMeteor, ITargetable, IProjectile
     {
-        private IProjectile projectileImplementation;
         public UnityAction<MeteorCollisionData> OnEarthCollision { get; set; }
         public UnityAction<MeteorCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
@@ -83,6 +82,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                 Direction = direction,
                 Value = value
             });
+            
             HandleCollision(false, position, direction,true);
         }
     }

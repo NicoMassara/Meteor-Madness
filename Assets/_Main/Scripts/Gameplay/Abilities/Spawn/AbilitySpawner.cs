@@ -63,6 +63,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             });
             tempSphere.OnDeflection += DeflectionHandler;
             tempSphere.OnEarthCollision += OnEarthCollisionHandler;
+            tempSphere.EnableMovement = true;
             
             ProjectileEventCaller.Add(tempSphere);
         }

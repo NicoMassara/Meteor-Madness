@@ -11,9 +11,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Components
         [SerializeField] private VibrationDataSo triggeredData;
         [SerializeField] private VibrationDataSo finishedData;
         [SerializeField] private VibrationDataSo addedData;
-
-        private void Start()
+        
+        protected override void Start()
         {
+            base.Start();
             ComponentToVibrate.OnAbilityTriggered += () =>
             {
                 Vibrate(triggeredData);
