@@ -55,23 +55,34 @@ namespace _Main.Scripts.Vibration
     public enum VibrationDurationType
     {
         None,
+        ExtraShort,
         Short,
+        MediumShort,
         Medium,
-        Long
+        MediumLong,
+        Long,
+        ExtraLong,
+        SuperLong
     }
 
     public enum VibrationIntensityType
     {
         None,
+        ExtraLight,
         Light,
+        MediumLight,
         Medium,
-        Heavy
+        MediumHeavy,
+        Heavy,
+        ExtraHeavy,
+        FullHard
     }
     
     public enum VibrationType
     {
         None,
-        Button
+        UIButtonAccept,
+        UIButtonCancel
     }
 
 }
