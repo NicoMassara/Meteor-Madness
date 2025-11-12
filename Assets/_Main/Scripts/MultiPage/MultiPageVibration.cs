@@ -12,9 +12,9 @@ namespace _Main.Scripts.MultiPage
                 Vibrate(VibrationType.UIButtonAccept);
             };
             
-            ComponentToVibrate.OnNextButtonPressed += () =>
+            ComponentToVibrate.OnPreviousButtonPressed += () =>
             {
-                Vibrate(VibrationType.UIButtonAccept);
+                Vibrate(VibrationType.UIButtonCancel);
             };
         }
     }

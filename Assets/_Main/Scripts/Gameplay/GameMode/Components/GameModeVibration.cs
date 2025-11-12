@@ -7,7 +7,7 @@ namespace _Main.Scripts.Gameplay.GameMode
     {
         private void Start()
         {
-            ComponentToVibrate.OnCountdownFinished += () =>
+            ComponentToVibrate.OnCountdownUpdatedFinished += () =>
             {
                 Vibrate(VibrationDurationType.MediumLong,VibrationIntensityType.MediumHeavy);
             };

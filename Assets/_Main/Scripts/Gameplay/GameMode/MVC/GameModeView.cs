@@ -17,6 +17,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
         public event Action OnCountdownUpdated;
+        public event Action OnCountdownUpdatedFinished;
         public event Action OnGameModeEnable;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -178,6 +179,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             else if (amount <= 1 && amount > 0)
             {
                 SoundEventCaller.PlaySound(countdownFinish,null,null);
+                OnCountdownUpdatedFinished?.Invoke();
             }
         }
 
