@@ -16,6 +16,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private SoundClassSo countdownFinish;
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
+        public event Action OnCountdownUpdated;
         public event Action OnGameModeEnable;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
@@ -172,6 +173,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             if (amount > 1)
             {
                 SoundEventCaller.PlaySound(countdownSound,null,null);
+                OnCountdownUpdated?.Invoke();
             }
             else if (amount <= 1 && amount > 0)
             {

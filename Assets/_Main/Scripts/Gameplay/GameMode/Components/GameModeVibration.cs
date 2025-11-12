@@ -3,30 +3,18 @@ using _Main.Scripts.Vibration;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeVibration : VibrationBehavior<GameModeUIView>
+    public class GameModeVibration : VibrationBehavior<GameModeView>
     {
         private void Start()
         {
-            ComponentToVibrate.OnMainMenuButtonPressed += () =>
+            ComponentToVibrate.OnCountdownFinished += () =>
             {
-                Vibrate(VibrationType.UIButtonCancel);
-            };
-            ComponentToVibrate.OnRestartButtonPressed += () =>
-            {
-                Vibrate(VibrationType.UIButtonAccept);
-            };
-            ComponentToVibrate.OnPauseButtonPressed += () =>
-            {
-                Vibrate(VibrationType.UIButtonAccept);
+                Vibrate(VibrationDurationType.MediumLong,VibrationIntensityType.MediumHeavy);
             };
             
-            ComponentToVibrate.OnPointsAdded += () =>
+            ComponentToVibrate.OnCountdownUpdated += () =>
             {
-                Vibrate(new VibrationData
-                {
-                    Duration = 10,
-                    Intensity = VibrationTools.GetIntensity(VibrationIntensityType.Light)
-                });
+                Vibrate(VibrationDurationType.Short,VibrationIntensityType.MediumLight);
             };
         }
     }
