@@ -68,7 +68,7 @@ namespace _Main.Scripts.DebugGUI
         
         private List<DebugGroup> _groups = new List<DebugGroup>();
 
-        private bool _doesShowGUI = true;
+        private bool _doesShowGUI = false;
 
 
         private void Update()

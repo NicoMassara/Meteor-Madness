@@ -15,6 +15,21 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 Vibrate(collisionData);
             };
+            
+            ComponentToVibrate.OnPreDestruction += () =>
+            {
+                Vibrate(new VibrationData
+                {
+                    Duration = 5000,
+                    Intensity = VibrationTools.GetIntensity(VibrationIntensityType.ExtraHeavy)
+                });
+            };
+            
+            ComponentToVibrate.OnDestruction += () =>
+            {
+                StopVibration();
+                Vibrate(VibrationDurationType.ExtraShort, VibrationIntensityType.MediumHeavy);
+            };
         }
     }
 }

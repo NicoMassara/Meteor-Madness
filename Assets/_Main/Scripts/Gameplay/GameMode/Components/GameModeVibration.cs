@@ -25,7 +25,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 Vibrate(new VibrationData
                 {
                     Duration = 10,
-                    Intensity = VibrationTools.GetIntensity(VibrationIntensityType.Medium)
+                    Intensity = VibrationTools.GetIntensity(VibrationIntensityType.Light)
                 });
             };
         }

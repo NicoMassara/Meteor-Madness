@@ -52,6 +52,8 @@ namespace _Main.Scripts.Gameplay.Earth
         public float LastUpdateTime { get; set; }
 
         public event Action OnCollision;
+        public event Action OnDestruction;
+        public event Action OnPreDestruction;
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -353,6 +355,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleDestruction()
         {
+            OnDestruction?.Invoke();
             earthMeshSlicer.StartSlicing();
             _isDead = true;
             SoundEventCaller.PlaySound(deathSound, null, null);
@@ -364,6 +367,7 @@ namespace _Main.Scripts.Gameplay.Earth
             UpdateColorByHealth(0);
             _shakerController.SetMultiplier(0);
             _shakerController.SetShakeData(deathShakeData);
+            OnPreDestruction?.Invoke();
             EarthEventCaller.Death();
         }
         
