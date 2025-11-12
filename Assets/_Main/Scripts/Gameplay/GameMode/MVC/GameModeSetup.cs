@@ -41,7 +41,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
             GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
-            
         }
 
         private void Start()

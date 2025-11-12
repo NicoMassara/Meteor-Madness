@@ -53,6 +53,7 @@
         public const ulong TriggerMainMenu = 0xA2023;
         public const ulong SaveHighScore = 0xA2024;
         public const ulong UpdateHighScore = 0xA2025;
+        public const ulong SetHasHighScore = 0xA2026;
     }
 
     public struct FlyingObjectObserverMessage
