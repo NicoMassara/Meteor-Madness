@@ -58,13 +58,13 @@ namespace _Main.Scripts.DebugGUI
 
     public class DebugGUIManager : SingletonBehaviour<DebugGUIManager>
     {
-        public Vector2 startPos = new Vector2(10, 10);
-        public float lineHeight = 20f;
-        public float buttonHeight = 25f;
+        public Vector2 startPos = new Vector2(10, 50);
+        public float lineHeight = 25f;
+        public float buttonHeight = 45f;
         public float groupScaling = 10f;
         public float indentPerLevel = 15f;
         //Padding
-        public float buttonPadding = 15f;
+        public float buttonPadding = 20f;
         
         private List<DebugGroup> _groups = new List<DebugGroup>();
 
@@ -114,7 +114,6 @@ namespace _Main.Scripts.DebugGUI
                 group.IsCollapsed = !group.IsCollapsed;
             }
             
-
             pos.y += buttonHeight + 2;
 
             if (!group.IsCollapsed)
@@ -140,7 +139,7 @@ namespace _Main.Scripts.DebugGUI
                     GUI.Label(new Rect(guiPosX,pos.y,boxWidth,lineHeight), entry?.Invoke());
                     pos.y += lineHeight;
                 }
-
+                
                 foreach (var subGroup in group.SubGroup)
                 {
                     DrawGroups(subGroup, ref pos, indentLevel + 1, buttonStyle, subMaxWidht);
@@ -181,7 +180,7 @@ namespace _Main.Scripts.DebugGUI
             GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
             {
                 alignment = TextAnchor.MiddleLeft,
-                fontSize = 14,
+                fontSize = 16,
                 normal =
                 {
                     textColor = Color.white
