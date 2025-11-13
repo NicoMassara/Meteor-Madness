@@ -2,10 +2,11 @@
 {
     public class SoundBehaviourFactory
     {
-        private readonly SoundBehavior _prefab;
-        private GenericPool<SoundBehavior> _pool;
+        private readonly SoundComponent _prefab;
+        private readonly RandomIdGenerator _idGenerator = new RandomIdGenerator();
+        private GenericPool<SoundComponent> _pool;
 
-        public SoundBehaviourFactory(SoundBehavior prefab)
+        public SoundBehaviourFactory(SoundComponent prefab)
         {
             _prefab = prefab;
             
@@ -14,10 +15,18 @@
 
         private void Initialize()
         {
-            _pool = new GenericPool<SoundBehavior>(_prefab, 10, 50);
+            _pool = new GenericPool<SoundComponent>(_prefab, 10, 50);
         }
 
-        public SoundBehavior GetSound()
+        public SoundComponent GetSound(out ulong soundId)
+        {
+            var tempSound = _pool.Get();
+            tempSound.OnRecycle += OnRecycleHandler;
+            soundId = _idGenerator.Generate();
+            return tempSound;
+        }
+        
+        public SoundComponent GetSound()
         {
             var tempSound = _pool.Get();
             tempSound.OnRecycle += OnRecycleHandler;
@@ -29,7 +38,7 @@
             _pool.RecycleAll();
         }
 
-        private void OnRecycleHandler(SoundBehavior soundBehavior)
+        private void OnRecycleHandler(SoundComponent soundBehavior)
         {
             soundBehavior.OnRecycle -= OnRecycleHandler;
             _pool.Release(soundBehavior);

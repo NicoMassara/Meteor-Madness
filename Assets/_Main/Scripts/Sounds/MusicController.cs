@@ -4,53 +4,38 @@ namespace _Main.Scripts.Sounds
 {
     public class MusicController
     {
-        private Dictionary<MusicType, SoundBehavior> _musicDictionary = new Dictionary<MusicType, SoundBehavior>();
-        private MusicType _currentMusic;
-
-        public MusicType CurrentMusic => _currentMusic;
-
-        public void AddMusic(MusicType type, SoundBehavior soundBehavior)
-        {
-            _musicDictionary.TryAdd(type, soundBehavior);
-        }
-
-        public void PlayMusic(MusicType type)
-        {
-            if (HasMusicType(type))
-            {
-                if (type != _currentMusic)
-                {
-                    GetMusicBehavior(_currentMusic).StopSound();
-                }
-
-                _currentMusic = type;
-                GetMusicBehavior(type).PlayAudio();
-            }
-        }
-
-        public void StopCurrentMusic()
-        {
-            GetMusicBehavior(_currentMusic).StopSound();
-        }
+        private SoundComponent _currentMusic;
         
-        public void PauseCurrentMusic()
+        public void Execute()
         {
-            GetMusicBehavior(_currentMusic).PauseSound();
+            
         }
 
-        public void SetMusicVolume(float volume = 1)
+        public void PlayMusic(SoundComponent music)
         {
-            GetMusicBehavior(_currentMusic).SetVolumeMultiplier(volume);
+            if(music == null) return;
+            
+            if (_currentMusic == null)
+            {
+                _currentMusic = music;
+            }
+            else
+            {
+                _currentMusic.StopSound();
+                _currentMusic = music;
+            }
+            
+            _currentMusic.PlayAudio();
         }
 
-        private SoundBehavior GetMusicBehavior(MusicType type)
+        public void StopMusic()
         {
-            return _musicDictionary[type];
+            _currentMusic?.StopSound();
         }
 
-        private bool HasMusicType(MusicType type)
+        private void SetCurrentMusic(SoundComponent music)
         {
-            return _musicDictionary.ContainsKey(type);
+
         }
     }
 }

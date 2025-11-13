@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
-  m_Name: SO_SoundClass_UI_Back
+  m_Script: {fileID: 11500000, guid: 884c0f6daf4d4ab094061ffb0879b417, type: 3}
+  m_Name: SO_UISoundData_Button_Back
   m_EditorClassIdentifier: 
-  className: UI Back
+  className: UI_Button_Accept
   channel: 4
   is3dSound: 0
   clips:
@@ -31,3 +31,4 @@ MonoBehaviour:
     reverbZoneMix: 1
     dopplerLevel: 0
   randomPitchRange: 0
+  uiSoundType: 2

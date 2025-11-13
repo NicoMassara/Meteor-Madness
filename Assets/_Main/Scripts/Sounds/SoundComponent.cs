@@ -7,7 +7,7 @@ using UnityEngine;
 namespace _Main.Scripts.Sounds
 {
     [RequireComponent(typeof(AudioSource))]
-    public class SoundBehavior : ManagedBehavior, IPoolable<SoundBehavior>, ITrackedAudio
+    public class SoundComponent : ManagedBehavior, IPoolable<SoundComponent>, ITrackedAudio
     {
         private bool _isPlaying;
         private bool _hasSoundClass;
@@ -18,16 +18,18 @@ namespace _Main.Scripts.Sounds
         public ISoundData SoundClass { get; private set; }
         public string AudioName => SoundClass.ClassName;
         
-        public event Action<SoundBehavior> OnFinished;
-        public event Action<SoundBehavior> OnRecycle;
+        public event Action<SoundComponent> OnFinished;
+        public event Action<SoundComponent> OnRecycle;
         public void Recycle()
         {
+            transform.parent = null;
             OnRecycle?.Invoke(this);
         }
 
         public void TriggerFinish()
         {
             Recycle();
+            
             if (SoundClass.Is3DSound)
             {
                 transform.parent = null;

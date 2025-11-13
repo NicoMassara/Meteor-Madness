@@ -11,14 +11,15 @@ namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeView : ManagedBehavior, IObserver
     {
-        [Header("Sounds")] 
-        [SerializeField] private SoundClassSo countdownSound;
-        [SerializeField] private SoundClassSo countdownFinish;
+
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
         public event Action OnCountdownUpdated;
         public event Action OnCountdownUpdatedFinished;
         public event Action OnGameModeEnable;
+
+        public event Action OnGameModeFinished;
+        public event Action OnGameModeStarted;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
         
@@ -173,12 +174,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             if (amount > 1)
             {
-                SoundEventCaller.PlaySound(countdownSound,null,null);
                 OnCountdownUpdated?.Invoke();
             }
             else if (amount <= 1 && amount > 0)
             {
-                SoundEventCaller.PlaySound(countdownFinish,null,null);
                 OnCountdownUpdatedFinished?.Invoke();
             }
         }
@@ -268,7 +267,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleDisable()
         {
             EarthEventCaller.SetToDefault();
-            SoundEventCaller.StopMusic();
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
 
@@ -277,8 +275,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameManager.Instance.CanPlay = false;
             AbilitiesEventCaller.Disable();
             ShieldEventCaller.Disable();
-            SoundEventCaller.StopMusic();
-            SoundEventCaller.PlaySound(countdownFinish,null,null);
             SetEnableInputs(false);
             SetEnableUIInputs(false);
         }
@@ -328,8 +324,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameModeEventCaller.SetEnablePause(true);
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.Enable();
-            SoundEventCaller.PlayMusic(MusicType.Gameplay);
             GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
+            OnGameModeStarted?.Invoke();
         }
 
         #endregion
@@ -348,7 +344,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleEarthEndDestruction()
         {
-            SoundEventCaller.PlayMusic(MusicType.EndGame);
+            OnGameModeFinished?.Invoke();
         }
 
         #endregion

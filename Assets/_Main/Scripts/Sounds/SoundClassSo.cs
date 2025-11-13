@@ -17,7 +17,7 @@ namespace _Main.Scripts.Sounds
         [Range(0,1)]
         [SerializeField] private float randomPitchRange;
         private int _lastIndex;
-        
+
         public AudioSourceData SourceData => sourceData;
 
         public SoundChannel Channel => channel;
@@ -61,6 +61,16 @@ namespace _Main.Scripts.Sounds
         public float GetRandomPitch()
         {
             return 1 + Random.Range(-randomPitchRange, randomPitchRange);
+        }
+        
+        protected void ForceChannel(SoundChannel forcedChannel)
+        {
+            this.channel = forcedChannel;
+        }
+        
+        protected virtual void OnValidate()
+        {
+            
         }
     }
 
