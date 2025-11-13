@@ -396,37 +396,4 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new MultiPageUIEvents.Finished{CreateId = createId});
         }
     }
-
-    public static class SoundEventCaller
-    {
-        public static void PlaySound(ISoundData data, Transform soundParent, ILoopableSound loopableSound)
-        {
-            GameEventCaller.Publish(new SoundEvents.PlaySound
-            {
-                Data = data,
-                SoundParent = soundParent,
-                LoopableSound = loopableSound
-            });
-        }
-        
-        public static void PlayMusic(MusicType musicType)
-        {
-            GameEventCaller.Publish(new SoundEvents.PlayMusic{Type = musicType});
-        }
-        
-        public static void StopMusic()
-        {
-            GameEventCaller.Publish(new SoundEvents.StopMusic());
-        }
-        
-        public static void SetMusicLevel(float volume)
-        {
-            GameEventCaller.Publish(new SoundEvents.SetMusicLevel{Volume = volume});
-        }
-
-        public static void PlayUIButton(UISoundType uiButtonType)
-        {
-            GameEventCaller.Publish(new SoundEvents.PlayUIButton{Type = uiButtonType});
-        }
-    }
 }

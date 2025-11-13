@@ -57,7 +57,7 @@
     public enum UISoundType
     {
         Default,
-        Accept,
+        Confirm,
         Back
     }
 }

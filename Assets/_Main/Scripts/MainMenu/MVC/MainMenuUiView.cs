@@ -13,6 +13,10 @@ namespace _Main.Scripts.MainMenu.MVC
         private MainMenuUiComponents _uiComponents;
 
         private GameObject _currentPanel;
+        
+        public event Action OnConfirmButtonClicked;
+        public event Action OnCancelButtonClicked;
+        public event Action OnBackButtonClicked;
 
         public event Action OnGameModeTriggered;
         public event Action OnTutorialTriggered;
@@ -23,41 +27,41 @@ namespace _Main.Scripts.MainMenu.MVC
         public event Action OnBackToMenu;
         public event Action OnExit;
 
-        private void Awake()
+        private void Start()
         {
             GetUiComponents().PlayButton.onClick.AddListener(() =>
             {
                 OnGameModeTriggered?.Invoke();
-                PlayButtonSound();
+                OnConfirmButtonClicked?.Invoke();
             });
             GetUiComponents().OpenTutorialButton.onClick.AddListener(() =>
             {
                 OnTutorialTriggered?.Invoke();
-                PlayButtonSound();
+                OnConfirmButtonClicked?.Invoke();
             });
             
             GetUiComponents().TutorialButton.onClick.AddListener(() =>
             {
                 OnTutorialOpen?.Invoke();
-                PlayButtonSound();
+                OnConfirmButtonClicked?.Invoke();
             });
             
             GetUiComponents().LoreButton.onClick.AddListener(() =>
             {
                 OnLoreOpen?.Invoke();
-                PlayButtonSound();
+                OnConfirmButtonClicked?.Invoke();
             });
             
             GetUiComponents().CosmeticButton.onClick.AddListener(() =>
             {
                 OnCosmeticTriggered?.Invoke();
-                PlayButtonSound();
+                OnConfirmButtonClicked?.Invoke();
             });
             
             GetUiComponents().CreditsButton.onClick.AddListener(() =>
             {
                 OnCreditsOpen?.Invoke();
-                PlayButtonSound();
+                OnConfirmButtonClicked?.Invoke();
             });
 
             foreach (var backButton in GetUiComponents().BackButtons)
@@ -65,14 +69,14 @@ namespace _Main.Scripts.MainMenu.MVC
                 backButton.onClick.AddListener(() =>
                 {
                     OnBackToMenu?.Invoke();
-                    PlayButtonSound();
+                    OnBackButtonClicked?.Invoke();
                 });
             }
 
             GetUiComponents().QuitButton.onClick.AddListener(() =>
             {
+                OnCancelButtonClicked?.Invoke();
                 OnExit?.Invoke();
-                PlayButtonSound();
             });
         }
         
@@ -110,11 +114,6 @@ namespace _Main.Scripts.MainMenu.MVC
         private MainMenuUiComponents GetUiComponents()
         {
             return _uiComponents ??= uiPanelSelector.GetPanelData();
-        }
-
-        private void PlayButtonSound()
-        {
-            SoundEventCaller.PlayUIButton(UISoundType.Accept);
         }
 
         private void HandleEnable()

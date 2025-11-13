@@ -13,6 +13,9 @@ namespace _Main.Scripts.ScriptableObjects
         [SerializeField] private VibrationIntensityType intensity;
         [SerializeField] private VibrationType type;
 
+        private int _lastIntensity;
+        private long _lastDuration;
+
         public VibrationData Data => data;
 
         private void OnValidate()
@@ -22,6 +25,18 @@ namespace _Main.Scripts.ScriptableObjects
 
         private void UpdateData()
         {
+            if (data.Duration != _lastDuration)
+            {
+                duration = VibrationDurationType.None;
+                type = VibrationType.None;
+            }
+            
+            if (data.Intensity != _lastIntensity)
+            {
+                intensity = VibrationIntensityType.None;
+                type = VibrationType.None;
+            }
+
             if (duration != VibrationDurationType.None)
             {
                 data.Duration = VibrationTools.GetDuration(duration);
@@ -35,7 +50,12 @@ namespace _Main.Scripts.ScriptableObjects
             if (type != VibrationType.None)
             {
                 data = VibrationTools.GetType(type);
+                duration = VibrationDurationType.None;
+                intensity = VibrationIntensityType.None;
             }
+            
+            _lastIntensity = data.Intensity;
+            _lastDuration = data.Duration;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Interfaces;
+﻿using System;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
@@ -31,8 +32,7 @@ namespace _Main.Scripts.Managers
             EventManager = new EventBusManager();
             SceneLoader.LoadModules();
         }
-
-
+        
         public void SetInputReader(IInputReader inputReader)
         {
             if(inputReader == null) return;

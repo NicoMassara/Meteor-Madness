@@ -20,8 +20,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
             _motor = new AbilitySphereMotor();
             _controller = new AbilitySphereController(_motor,shieldLayerMask,earthLayerMask);
             
-            _motor.Subscribe(_view);
             SetViewHandlers();
+            _motor.Subscribe(_view);
         }
         
         #region ViewHandlers

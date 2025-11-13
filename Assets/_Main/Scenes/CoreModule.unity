@@ -485,6 +485,8 @@ GameObject:
   - component: {fileID: 168416678}
   - component: {fileID: 168416679}
   - component: {fileID: 168416680}
+  - component: {fileID: 168416681}
+  - component: {fileID: 168416682}
   m_Layer: 0
   m_Name: ShieldController
   m_TagString: Untagged
@@ -519,12 +521,6 @@ MonoBehaviour:
   spriteContainer: {fileID: 1661175756}
   normalShieldSprite: {fileID: 1398730520}
   shieldCollider: {fileID: 1250290977}
-  hitSound: {fileID: 11400000, guid: 4a8c99e88d1f9f845baf4cc0d97ec4c4, type: 2}
-  moveSound: {fileID: 11400000, guid: 30834b7f58717fe4da7245e37bb3f894, type: 2}
-  superSoundStart: {fileID: 11400000, guid: 8f898851c32c1a04690d91db3b54a687, type: 2}
-  superSoundRunning: {fileID: 11400000, guid: ca692e5cc1edb654fbede31373d9b037, type: 2}
-  goldSound: {fileID: 11400000, guid: 4bbc6ada151c3e14497c6cadc457f3c2, type: 2}
-  automaticSound: {fileID: 11400000, guid: f4ce311d51b119340a519f3941aedfd9, type: 2}
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
   cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 11400000, guid: 5ce58a01a5bf45a4389c9d0c8a108114, type: 2}
@@ -596,6 +592,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trailMaterial: {fileID: 2100000, guid: 5bb8d64ee1521564aa1575949d88443a, type: 2}
   defaultColor: {r: 0, g: 0.913288, b: 0.9811321, a: 1}
+--- !u!114 &168416681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168416674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c23df50d13ef44a1918ac581ae274b58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateData: {fileID: 11400000, guid: b3744b85e9a766c4a9a34fe797647366, type: 2}
+  deflectData: {fileID: 11400000, guid: ae79670803633ad4d9f64ba9e8361eef, type: 2}
+--- !u!114 &168416682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168416674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e8d33c4be1348c39a256b5c1a4e7ebb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deflect: {fileID: 11400000, guid: 4a8c99e88d1f9f845baf4cc0d97ec4c4, type: 2}
+  rotate: {fileID: 11400000, guid: 30834b7f58717fe4da7245e37bb3f894, type: 2}
+  shieldActivated: {fileID: 0}
+  superShieldStart: {fileID: 11400000, guid: 8f898851c32c1a04690d91db3b54a687, type: 2}
+  doublePointsRunning: {fileID: 11400000, guid: 4bbc6ada151c3e14497c6cadc457f3c2, type: 2}
+  automaticRunning: {fileID: 11400000, guid: f4ce311d51b119340a519f3941aedfd9, type: 2}
+  superShieldRunning: {fileID: 11400000, guid: ca692e5cc1edb654fbede31373d9b037, type: 2}
 --- !u!1 &200166475
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,6 +754,8 @@ GameObject:
   - component: {fileID: 234428179}
   - component: {fileID: 234428178}
   - component: {fileID: 234428182}
+  - component: {fileID: 234428183}
+  - component: {fileID: 234428184}
   m_Layer: 0
   m_Name: AbilityController
   m_TagString: Untagged
@@ -802,6 +833,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiSelector: {fileID: 1294975346}
+--- !u!114 &234428183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234428177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3917780fb8e642179c0e88966d96a8c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggeredData: {fileID: 11400000, guid: d6035c170909d2d438bfcd7e37aa27a4, type: 2}
+  finishedData: {fileID: 11400000, guid: 39b5a31266529be409a3ce33e42474dc, type: 2}
+  addedData: {fileID: 11400000, guid: 0c0bd153906d55247a1e46196c1c8009, type: 2}
+--- !u!114 &234428184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234428177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c0e43d424dc4df7a0fcfd9b839522f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  added: {fileID: 11400000, guid: 3bce302caa370c1419625550e57641c3, type: 2}
+  triggered: {fileID: 11400000, guid: b68795043512e7c4ea9058d9358b23b5, type: 2}
+  speedUp: {fileID: 11400000, guid: 2cc5a9a2335cf7d4abe2311b2d9c640b, type: 2}
+  slowDown: {fileID: 11400000, guid: f3b2a5b7e04386140a1a91ca12b80989, type: 2}
 --- !u!1 &244942275
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,6 +1151,8 @@ GameObject:
   - component: {fileID: 409919227}
   - component: {fileID: 409919226}
   - component: {fileID: 409919225}
+  - component: {fileID: 409919230}
+  - component: {fileID: 409919231}
   m_Layer: 0
   m_Name: MultiPageController
   m_TagString: Untagged
@@ -1158,6 +1222,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &409919230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409919224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ec339b7de2446b88bdec8fb66f5f670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &409919231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409919224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d1e14e93cf4ab188287bb6c8022978, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextButton: {fileID: 11400000, guid: 0df86437d5b6e79459ba2bdab24e3826, type: 2}
+  previousButton: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
 --- !u!1 &433852380
 GameObject:
   m_ObjectHideFlags: 0
@@ -2991,6 +3081,8 @@ GameObject:
   - component: {fileID: 1002815156}
   - component: {fileID: 1002815157}
   - component: {fileID: 1002815158}
+  - component: {fileID: 1002815159}
+  - component: {fileID: 1002815160}
   m_Layer: 0
   m_Name: Earth
   m_TagString: Untagged
@@ -3032,9 +3124,6 @@ MonoBehaviour:
   modelContainer: {fileID: 217641707}
   planeMeshContainer: {fileID: 645524448}
   earthMeshSlicer: {fileID: 502172933}
-  collisionSound: {fileID: 11400000, guid: 94363bb788b608844ba498128deecf5e, type: 2}
-  deathSound: {fileID: 11400000, guid: 051954dee5fdeee4792dd763766ff152, type: 2}
-  healSound: {fileID: 11400000, guid: b7a8e37fc5048ea4a80c908817adfb1d, type: 2}
   shakeMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -3159,6 +3248,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   surfaceMaterial: {fileID: 2100000, guid: c4685a36662561a4fa44e2098e33150d, type: 2}
   atmosphereMaterial: {fileID: 2100000, guid: 6e56a3d498770204e9baa68e009fc172, type: 2}
+--- !u!114 &1002815159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002815153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65107d1653634bd08614a35e7790b571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionData: {fileID: 11400000, guid: 9db3fd3fc0c071346a3c4ebf978de66f, type: 2}
+--- !u!114 &1002815160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002815153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc13abc159b141cbbe20d17b8b59dbbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collision: {fileID: 11400000, guid: 94363bb788b608844ba498128deecf5e, type: 2}
+  death: {fileID: 11400000, guid: 051954dee5fdeee4792dd763766ff152, type: 2}
+  heal: {fileID: 11400000, guid: b7a8e37fc5048ea4a80c908817adfb1d, type: 2}
 --- !u!1 &1004163049
 GameObject:
   m_ObjectHideFlags: 0
@@ -3836,7 +3953,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 8335861176009586927, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
-  spawnDelay: 7
+  spawnDelay: 5
 --- !u!1 &1238111394
 GameObject:
   m_ObjectHideFlags: 0
@@ -6311,12 +6428,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundPrefab: {fileID: 8555990925782600340, guid: aba708838ba8989428a64ced8d224e7c, type: 3}
-  menuMusic: {fileID: 11400000, guid: e1ad69c12b88bcd4d8e10173a029e54f, type: 2}
-  gameplayMusic: {fileID: 11400000, guid: 2e659106af03afc4c9382e8803fa99ec, type: 2}
-  defeatMusic: {fileID: 11400000, guid: 0f014e71c17eae64bba859824d37f7be, type: 2}
-  defaultUISound: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
-  acceptUISound: {fileID: 11400000, guid: 0df86437d5b6e79459ba2bdab24e3826, type: 2}
-  backUISound: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
 --- !u!4 &2012589694
 Transform:
   m_ObjectHideFlags: 0

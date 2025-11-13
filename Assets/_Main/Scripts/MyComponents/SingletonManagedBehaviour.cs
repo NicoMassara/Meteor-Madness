@@ -18,5 +18,10 @@ namespace _Main.Scripts.MyComponents
             DontDestroyOnLoad(gameObject);
             return gameObject.AddComponent<T>();
         }
+
+        protected virtual void Awake()
+        {
+            _instance = this as T;
+        }
     }
 }
