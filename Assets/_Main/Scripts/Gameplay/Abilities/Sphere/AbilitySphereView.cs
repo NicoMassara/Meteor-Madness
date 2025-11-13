@@ -23,7 +23,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
         {
             CanBeTargeted = false;
         }
-        
+
         public override void SetValues(AbilitySphereValues data)
         {
             base.SetValues(data);
