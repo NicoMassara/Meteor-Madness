@@ -6,23 +6,20 @@ namespace _Main.Scripts.Menu
 {
     public class MainMenuUISounds : SoundBehaviour<MainMenuUiView>
     {
-        [SerializeField] private SoundClassSo cancelButton;
-        [SerializeField] private SoundClassSo confirmButton;
-        [SerializeField] private SoundClassSo backButton;
         
         private void Start()
         {
-            ComponentToSound.OnConfirmButtonClicked += () =>
+            GetComponentToSound.OnConfirmButtonClicked += () =>
             {
-                PlaySound(confirmButton);
+                PlayUISound(UISoundType.Confirm);
             };
-            ComponentToSound.OnCancelButtonClicked += () =>
+            GetComponentToSound.OnCancelButtonClicked += () =>
             {
-                PlaySound(cancelButton);
+                PlayUISound(UISoundType.Default);
             };
-            ComponentToSound.OnBackButtonClicked += () =>
+            GetComponentToSound.OnBackButtonClicked += () =>
             {
-                PlaySound(backButton);
+                PlayUISound(UISoundType.Back);
             };
         }
     }

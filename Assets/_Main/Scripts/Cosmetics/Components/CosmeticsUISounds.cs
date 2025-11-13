@@ -6,14 +6,11 @@ namespace _Main.Scripts.Cosmetics.Components
 {
     public class CosmeticsUISounds : SoundBehaviour<CosmeticUIView>
     {
-        [SerializeField] private SoundClassSo buttonConfirm;
-        [SerializeField] private SoundClassSo buttonBack;
-        
         private void Start()
         {
-            ComponentToSound.OnMainMenuButtonPressed += () =>
+            GetComponentToSound.OnMainMenuButtonPressed += () =>
             {
-                PlaySound(buttonBack);
+                PlayUISound(UISoundType.Back);
             };
         }
     }

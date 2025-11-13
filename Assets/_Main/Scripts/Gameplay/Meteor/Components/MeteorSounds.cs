@@ -11,12 +11,12 @@ namespace _Main.Scripts.Gameplay.Meteor.Components
 
         private void Start()
         {
-            ComponentToSound.OnValuesChanged += (value) =>
+            GetComponentToSound.OnValuesChanged += (value) =>
             {
                 _movementSoundId = PlaySound(movement);
             };
 
-            ComponentToSound.OnRecycle += (value) =>
+            GetComponentToSound.OnRecycle += (value) =>
             {
                 StopSound(_movementSoundId);
             };

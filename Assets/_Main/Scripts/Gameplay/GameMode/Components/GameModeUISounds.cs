@@ -7,30 +7,26 @@ namespace _Main.Scripts.Gameplay.GameMode
     public class GameModeUISounds : SoundBehaviour<GameModeUIView>
     {
         [SerializeField] private SoundClassSo pointsAdded;
-        [Header("Buttons")]
-        [SerializeField] private SoundClassSo confirmButton;
-        [SerializeField] private SoundClassSo cancelButton;
-        [SerializeField] private SoundClassSo pauseButton;
         
         private void Start()
         {
-            ComponentToSound.OnMainMenuButtonPressed += () =>
+            GetComponentToSound.OnMainMenuButtonPressed += () =>
             {
-                PlaySound(cancelButton);
+                PlayUISound(UISoundType.Back);
             };
-            ComponentToSound.OnRestartButtonPressed += () =>
+            GetComponentToSound.OnRestartButtonPressed += () =>
             {
-                PlaySound(confirmButton);
+                PlayUISound(UISoundType.Default);
             };
-            ComponentToSound.OnResumeButtonPressed += () =>
+            GetComponentToSound.OnResumeButtonPressed += () =>
             {
-                PlaySound(confirmButton);
+                PlayUISound(UISoundType.Confirm);
             };
-            ComponentToSound.OnPauseButtonPressed += () =>
+            GetComponentToSound.OnPauseButtonPressed += () =>
             {
-                PlaySound(pauseButton);
+                PlayUISound(UISoundType.Confirm);
             };
-            ComponentToSound.OnPointsAdded += () =>
+            GetComponentToSound.OnPointsAdded += () =>
             {
                 PlaySound(pointsAdded);
             };

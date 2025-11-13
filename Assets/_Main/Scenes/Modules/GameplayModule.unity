@@ -3161,7 +3161,7 @@ GameObject:
   - component: {fileID: 1253651368}
   - component: {fileID: 1253651369}
   - component: {fileID: 1253651371}
-  - component: {fileID: 1253651370}
+  - component: {fileID: 1253651372}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -3245,21 +3245,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bebe952bb1394f5e8eca7a63a50544b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1253651370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f450b675132543d6afb092db1d153c04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cancelButton: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
-  confirmButton: {fileID: 11400000, guid: 0df86437d5b6e79459ba2bdab24e3826, type: 2}
-  backButton: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
 --- !u!114 &1253651371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3276,6 +3261,22 @@ MonoBehaviour:
   deathMusic: {fileID: 11400000, guid: 0f014e71c17eae64bba859824d37f7be, type: 2}
   countdownSound: {fileID: 11400000, guid: 72349cb5a1b79094090034040d420787, type: 2}
   countdownFinish: {fileID: 11400000, guid: 53106164b81249c4bbf7a598ffde2cb3, type: 2}
+--- !u!114 &1253651372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253651362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed71a619a87340b3a9bdcf0b49eb39c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointsAdded: {fileID: 0}
+  confirmButton: {fileID: 11400000, guid: 0df86437d5b6e79459ba2bdab24e3826, type: 2}
+  cancelButton: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
+  pauseButton: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
 --- !u!1 &1254674026
 GameObject:
   m_ObjectHideFlags: 0

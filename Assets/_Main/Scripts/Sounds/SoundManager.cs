@@ -15,6 +15,7 @@ namespace _Main.Scripts.Sounds
         private readonly AudioPlaybackTracker _playbackTracker = new AudioPlaybackTracker();
         private readonly MusicController _musicController = new MusicController();
         private Dictionary<ulong, SoundComponent> _soundIdDic = new Dictionary<ulong, SoundComponent>();
+        private UIDefaultSounds _uiDefaultSounds;
         
         private readonly Dictionary<SoundChannel, List<SoundComponent>> _activeByChannel = new()
         {
@@ -37,6 +38,7 @@ namespace _Main.Scripts.Sounds
         private void Start()
         {
             _factory = new SoundBehaviourFactory(soundPrefab);
+            _uiDefaultSounds = new UIDefaultSounds();
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -51,6 +53,11 @@ namespace _Main.Scripts.Sounds
         }
         
         #region Sounds
+
+        public void PlayUISound(UISoundType uiSoundType)
+        {
+            PlaySound(_uiDefaultSounds.GetSound(uiSoundType), null);
+        }
 
         public void PlayMusic(ISoundData soundData)
         {
@@ -150,5 +157,48 @@ namespace _Main.Scripts.Sounds
 
 
         #endregion
+    }
+
+    public class UIDefaultSounds
+    {
+        private readonly Dictionary<UISoundType, ISoundData> _uiSounds = new Dictionary<UISoundType, ISoundData>();
+        private const string Path = "ScriptableObjects/DefaultUISounds";
+        
+        public UIDefaultSounds()
+        {
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            var loaded = Resources.LoadAll<UiSoundClassSo>(Path);
+
+            for (int i = 0; i < loaded.Length; i++)
+            {
+                var soundType = loaded[i].UISoundType;
+
+                if (_uiSounds.ContainsKey(soundType))
+                {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                
+                    Debug.LogWarning($"{soundType} UI Sound duplicated found in Resources/{Path} was not loaded, check the UISoundType and changed to load it!");
+#endif
+                    continue;
+                }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                
+                Debug.Log($"{soundType} UI Sound loaded from Resources/{Path}");
+#endif
+                
+                _uiSounds.Add(soundType, loaded[i]);
+            }
+        }
+
+        public ISoundData GetSound(UISoundType uiSoundType)
+        {
+            return _uiSounds[uiSoundType];
+        }
+
     }
 }

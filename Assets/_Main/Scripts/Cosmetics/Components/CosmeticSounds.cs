@@ -11,7 +11,7 @@ namespace _Main.Scripts.Cosmetics.Components
 
         private void Start()
         {
-            ComponentToSound.OnCosmeticEnable += () =>
+            GetComponentToSound.OnCosmeticEnable += () =>
             {
                 PlayMusic(backgroundMusic);
             };

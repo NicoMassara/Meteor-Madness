@@ -16,26 +16,26 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void Start()
         {
-            ComponentToSound.OnGameModeEnable += () =>
+            GetComponentToSound.OnGameModeEnable += () =>
             {
                 StopMusic();
             };
 
-            ComponentToSound.OnGameModeStarted += () =>
+            GetComponentToSound.OnGameModeStarted += () =>
             {
                 PlayMusic(gameMusic);
             };
-            ComponentToSound.OnGameModeFinished += () =>
+            GetComponentToSound.OnGameModeFinished += () =>
             {
                 PlayMusic(deathMusic);
             };
             
-            ComponentToSound.OnCountdownUpdated += () =>
+            GetComponentToSound.OnCountdownUpdated += () =>
             {
                 PlaySound(countdownSound);
             };
             
-            ComponentToSound.OnCountdownUpdatedFinished += () =>
+            GetComponentToSound.OnCountdownUpdatedFinished += () =>
             {
                 PlaySound(countdownFinish);
             };

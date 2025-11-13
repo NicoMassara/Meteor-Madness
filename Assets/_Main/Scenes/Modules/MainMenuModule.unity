@@ -4611,7 +4611,7 @@ GameObject:
   - component: {fileID: 1065275438}
   - component: {fileID: 1065275442}
   - component: {fileID: 1065275444}
-  - component: {fileID: 1065275443}
+  - component: {fileID: 1065275445}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -4683,21 +4683,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50656c44c99449acb2729cfceac65645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1065275443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1065275437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f450b675132543d6afb092db1d153c04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cancelButton: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
-  confirmButton: {fileID: 11400000, guid: 4c07d27f7248f3548989b7fba446a56b, type: 2}
-  backButton: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
 --- !u!114 &1065275444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4711,6 +4696,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   music: {fileID: 11400000, guid: e1ad69c12b88bcd4d8e10173a029e54f, type: 2}
+--- !u!114 &1065275445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065275437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f450b675132543d6afb092db1d153c04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cancelButton: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
+  confirmButton: {fileID: 11400000, guid: 0df86437d5b6e79459ba2bdab24e3826, type: 2}
+  backButton: {fileID: 11400000, guid: f81188745d57cd94a83392d3df53f45d, type: 2}
 --- !u!1 &1096558861
 GameObject:
   m_ObjectHideFlags: 0

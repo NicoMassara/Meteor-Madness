@@ -12,15 +12,15 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void Start()
         {
-            ComponentToSound.OnCollision += () =>
+            GetComponentToSound.OnCollision += () =>
             {
                 PlaySound(collision);
             };
-            ComponentToSound.OnHealed += () =>
+            GetComponentToSound.OnHealed += () =>
             {
                 PlaySound(heal);
             };
-            ComponentToSound.OnDestruction += () =>
+            GetComponentToSound.OnDestruction += () =>
             {
                 PlaySound(death);
             };

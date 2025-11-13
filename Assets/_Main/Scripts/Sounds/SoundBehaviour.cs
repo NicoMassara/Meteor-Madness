@@ -4,17 +4,19 @@ using UnityEngine;
 
 namespace _Main.Scripts.Sounds
 {
-    public class SoundBehaviour<T> : MonoBehaviour, ILoopableSound 
+    public abstract class SoundBehaviour<T> : MonoBehaviour 
         where T : MonoBehaviour
     {
-        protected T ComponentToSound { get; private set; }
+        protected T GetComponentToSound => _componentToSound != null ? _componentToSound : SetComponentToSound();
+
+        private T _componentToSound;
+
         private SoundManager _soundManager;
-        public event Action OnLoopFinished;
 
         private void Awake()
         {
             _soundManager = SoundManager.Instance;
-            ComponentToSound = GetComponent<T>();
+            _componentToSound = GetComponent<T>();
         }
 
         protected ulong PlaySound(SoundClassSo soundClass)
@@ -22,19 +24,32 @@ namespace _Main.Scripts.Sounds
             return _soundManager.PlaySound(soundClass, transform);
         }
 
-        public void PlayMusic(ISoundData soundData)
+        protected void PlayMusic(ISoundData soundData)
         {
             _soundManager.PlayMusic(soundData);
         }
 
-        public void StopSound(ulong soundId)
+        protected void StopSound(ulong soundId)
         {
             _soundManager.StopSound(soundId);
+        }
+        
+        protected void PlayUISound(UISoundType soundType)
+        {
+            _soundManager.PlayUISound(soundType);
         }
         
         public void StopMusic()
         {
             _soundManager.StopMusic();
         }
+
+        private T SetComponentToSound()
+        {
+            _componentToSound = GetComponent<T>();
+
+            return _componentToSound;
+        }
+
     }
 }

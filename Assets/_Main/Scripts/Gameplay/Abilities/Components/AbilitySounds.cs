@@ -16,19 +16,19 @@ namespace _Main.Scripts.Gameplay.Abilities.Components
         
         private void Start()
         {
-            ComponentToSound.OnAbilityAdded += () =>
+            GetComponentToSound.OnAbilityAdded += () =>
             {
                 PlaySound(added);
             };
-            ComponentToSound.OnAbilityTriggered += () =>
+            GetComponentToSound.OnAbilityTriggered += () =>
             {
                 PlaySound(triggered);
             };
-            ComponentToSound.OnTimeSpeedUp += () =>
+            GetComponentToSound.OnTimeSpeedUp += () =>
             {
                 PlaySound(speedUp);
             };
-            ComponentToSound.OnTimeSlowDown += () =>
+            GetComponentToSound.OnTimeSlowDown += () =>
             {
                 PlaySound(slowDown);
             };

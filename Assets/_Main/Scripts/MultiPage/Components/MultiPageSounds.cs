@@ -11,12 +11,12 @@ namespace _Main.Scripts.MultiPage.Components
         
         private void Start()
         {
-            ComponentToSound.OnNextButtonPressed += () =>
+            GetComponentToSound.OnNextButtonPressed += () =>
             {
                 PlaySound(nextButton);
             };
             
-            ComponentToSound.OnPreviousButtonPressed += () =>
+            GetComponentToSound.OnPreviousButtonPressed += () =>
             {
                 PlaySound(previousButton);
             };

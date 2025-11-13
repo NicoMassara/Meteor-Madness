@@ -10,7 +10,7 @@ namespace _Main.Scripts.Tutorial.Components
 
         private void Start()
         {
-            ComponentToSound.OnTutorialEnable += () =>
+            GetComponentToSound.OnTutorialEnable += () =>
             {
                 PlayMusic(music);
             };

@@ -24,7 +24,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void Start()
         {
-            ComponentToSound.OnShieldActivated += (isActive) =>
+            GetComponentToSound.OnShieldActivated += (isActive) =>
             {
                 if (isActive)
                 {
@@ -32,27 +32,27 @@ namespace _Main.Scripts.Gameplay.Shield
                 }
             };
             
-            ComponentToSound.OnRotate += () =>
+            GetComponentToSound.OnRotate += () =>
             {
                 PlaySound(rotate);
             };
             
-            ComponentToSound.OnDeflect += () =>
+            GetComponentToSound.OnDeflect += () =>
             {
                 PlaySound(deflect);
             };
             
-            ComponentToSound.OnAbilityStarted += (ability) =>
+            GetComponentToSound.OnAbilityStarted += (ability) =>
             {
                 PlaySound(GetAbilityStartSound(ability));
             };
             
-            ComponentToSound.OnAbilityRunning += (ability) =>
+            GetComponentToSound.OnAbilityRunning += (ability) =>
             {
                 _abilityRunningSoundId = PlaySound(GetAbilityRunningSound(ability));
             };
             
-            ComponentToSound.OnAbilityFinished += () =>
+            GetComponentToSound.OnAbilityFinished += () =>
             {
                 StopSound(_abilityRunningSoundId);
             };
