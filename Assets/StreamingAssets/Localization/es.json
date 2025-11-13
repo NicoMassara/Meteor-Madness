@@ -23,7 +23,12 @@
       "StartButton" : "Iniciar Tutorial"
     },
     "Cosmetic": "Tienda",
-    "Settings": "Opciones"
+    "Settings": "Opciones",
+    "Credits": {
+      "Button" : "Creditos",
+      "Title" : "Creditos",
+      "Text" : "Desarrollado por"
+    }
   },
 
   "Tutorial": {
@@ -59,6 +64,7 @@
     "CountDownStart" : "Preparado en",
     "CountdownFinish" : "Defender!",
     "Score" : "Puntos",
+    "HighScore" : "Record",
     "Death": {
       "Title" : "La Humanidad se acabo!",
       "Score" : "Tus Puntos"

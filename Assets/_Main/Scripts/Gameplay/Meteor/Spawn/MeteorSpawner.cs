@@ -51,7 +51,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
             tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
             
-            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = tempMeteor});
+            ProjectileEventCaller.Add(tempMeteor);
         }
 
         private void SpawnRingMeteor(float meteorSpeed)

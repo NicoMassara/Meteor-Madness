@@ -17,7 +17,8 @@ namespace _Main.Scripts.Tutorial.MVC
         private TutorialUiComponents _uiComponents;
 
         private GameObject _currentActivePanel;
-        public event Action OnStartTutorialButtonPressed;
+        public event Action OnStartButtonPressed;
+        public event Action OnFinishButtonPressed;
         
         public void OnNotify(ulong message, params object[] args)
         {
@@ -68,7 +69,9 @@ namespace _Main.Scripts.Tutorial.MVC
         private void HandleStart()
         {
             // Structure has changed, easiest and fastest way to do it
-            OnStartTutorialButtonPressed?.Invoke();
+            // This works to auto start tutorial without changing to much code
+            // and breaking anything
+            OnStartButtonPressed?.Invoke();
         }
 
         private void HandleMultiPage()
@@ -120,21 +123,6 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             return LocalizationManager.Instance.GetText(key);
         }
-
-        #region Handlers
-
-        private void NextButtonOnClickHandler()
-        {
-            SoundEventCaller.PlayUIButton(UISoundType.Accept);
-            OnStartTutorialButtonPressed?.Invoke();
-        }
         
-        private void FinishButtonOnClickHandler()
-        {
-            SoundEventCaller.PlayUIButton(UISoundType.Back);
-            GameManager.Instance.LoadMainMenu();
-        }
-
-        #endregion
     }
 }

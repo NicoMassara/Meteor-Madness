@@ -23,14 +23,13 @@ namespace _Main.Scripts.MultiPage
             GetUiComponents().PreviousButton.onClick.AddListener(() =>
             {
                 OnPreviousButtonPressed?.Invoke();
-                SoundEventCaller.PlayUIButton(UISoundType.Back);
             });
             GetUiComponents().NextButton.onClick.AddListener(() =>
             {
                 OnNextButtonPressed?.Invoke();
-                SoundEventCaller.PlayUIButton(UISoundType.Default);
             });
         }
+        
 
         public void SetNextButtonText(string textCode)
         {

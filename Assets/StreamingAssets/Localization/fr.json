@@ -23,7 +23,12 @@
       "StartButton": "Commencer le Tutoriel"
     },
     "Cosmetic": "Boutique d’Objets",
-    "Settings": "Paramètres"
+    "Settings": "Paramètres",
+    "Credits": {
+      "Button" : "Crédits",
+      "Title" : "Crédits",
+      "Text" : "Développé par"
+    }
   },
 
   "Tutorial": {
@@ -59,6 +64,7 @@
     "CountDownStart": "Préparez-vous dans",
     "CountdownFinish": "Défendez !",
     "Score": "Score",
+    "HighScore" : "Record",
     "Death": {
       "Title": "L’humanité est perdue !",
       "Score": "Votre Score"

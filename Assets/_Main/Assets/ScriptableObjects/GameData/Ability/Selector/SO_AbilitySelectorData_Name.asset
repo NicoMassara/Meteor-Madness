@@ -12,21 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecbe94bf57844a7cb3294dd4e81be3c3, type: 3}
   m_Name: SO_AbilitySelectorData_Name
   m_EditorClassIdentifier: 
-  minUnlockLevel: 5
+  minUnlockLevel: 1
   rarityValues:
-  - type: 1
-    value: 10
-  - type: 2
-    value: 10
-  - type: 3
-    value: 10
   - type: 4
-    value: 10
+    value: 9
+  - type: 2
+    value: 7
+  - type: 3
+    value: 5
+  - type: 1
+    value: 4
   - type: 5
-    value: 10
+    value: 2
   levelToUnlock:
   - type: 4
-    levelToSet: 5
+    levelToSet: 1
   - type: 2
     levelToSet: 6
   - type: 3

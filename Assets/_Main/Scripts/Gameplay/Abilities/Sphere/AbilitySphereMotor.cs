@@ -1,6 +1,6 @@
 ﻿using _Main.Scripts.FyingObject;
-using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere
 {

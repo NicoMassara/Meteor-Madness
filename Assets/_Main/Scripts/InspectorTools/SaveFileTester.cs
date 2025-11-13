@@ -11,6 +11,7 @@ namespace _Main.Scripts.InspectorTools
     {
         [SerializeField] private TestSaveData saveData;
         [SerializeField] private TestSaveData loadedSaveData;
+        [SerializeField] private SaveDataType saveDataToClear;
         
         public void Save()
         {
@@ -31,7 +32,7 @@ namespace _Main.Scripts.InspectorTools
         public void Clear()
         {
             loadedSaveData = null;
-            DataManager.Instance.ClearSaveData<TestSaveData>(SaveDataType.Test);
+            DataManager.Instance.ClearSaveData<TestSaveData>(saveDataToClear);
         }
     }
 

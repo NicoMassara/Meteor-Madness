@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using _Main.Scripts.DebugGUI;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -20,11 +19,6 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private GameObject modelContainer;
         [SerializeField] private GameObject planeMeshContainer;
         [SerializeField] private EarthSlicer earthMeshSlicer;
-        [Space]
-        [Header("Sounds")]
-        [SerializeField] private SoundClassSo collisionSound;
-        [SerializeField] private SoundClassSo deathSound;
-        [SerializeField] private SoundClassSo healSound;
         [Space]
         [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
@@ -46,11 +40,15 @@ namespace _Main.Scripts.Gameplay.Earth
         private bool _canRotate;
         private bool _isDead;
 
-        public UnityAction OnHealed;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
         public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
         public float LastUpdateTime { get; set; }
+
+        public event Action OnHealed;
+        public event Action OnCollision;
+        public event Action OnDestruction;
+        public event Action OnPreDestruction;
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -129,7 +127,6 @@ namespace _Main.Scripts.Gameplay.Earth
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData.EarthHealth = healthAmount;
 #endif
-            SoundEventCaller.PlaySound(collisionSound, null, null);
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
             SetRotationSpeed(healthAmount);
@@ -143,6 +140,7 @@ namespace _Main.Scripts.Gameplay.Earth
             });
             
             CameraEventCaller.Shake(cameraShakeData);
+            OnCollision?.Invoke();
         }
 
         private void HandleHeal(float currentHealth, float lastHealth)
@@ -176,8 +174,6 @@ namespace _Main.Scripts.Gameplay.Earth
                 },restartHealthTime),
             };
             
-            
-            SoundEventCaller.PlaySound(healSound, null, null);
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
         
@@ -351,9 +347,9 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleDestruction()
         {
+            OnDestruction?.Invoke();
             earthMeshSlicer.StartSlicing();
             _isDead = true;
-            SoundEventCaller.PlaySound(deathSound, null, null);
             _earthRotator.SetRotationSpeed(rotationSpeed/2);
         }
 
@@ -362,6 +358,7 @@ namespace _Main.Scripts.Gameplay.Earth
             UpdateColorByHealth(0);
             _shakerController.SetMultiplier(0);
             _shakerController.SetShakeData(deathShakeData);
+            OnPreDestruction?.Invoke();
             EarthEventCaller.Death();
         }
         

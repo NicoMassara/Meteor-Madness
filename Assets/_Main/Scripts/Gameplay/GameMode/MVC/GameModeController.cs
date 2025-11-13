@@ -180,6 +180,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.RestartValues();
         }
 
+        public void SetHighScore(float highScore)
+        {
+            _motor.SetHighScore(highScore);
+        }
+
         #endregion
 
         #region Earth

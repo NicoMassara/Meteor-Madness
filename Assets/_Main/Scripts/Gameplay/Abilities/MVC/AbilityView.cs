@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _Main.Scripts.Gameplay.Abilities;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -26,6 +27,12 @@ namespace _Main.Scripts.Gameplay.Abilies
         public UnityAction OnAbilitySelected;
         public UnityAction OnAbilityFinished;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Ability;
+        
+        public event Action OnAbilityTriggered;
+        public event Action OnAbilityAdded;
+
+        public event Action OnTimeSlowDown;
+        public event Action OnTimeSpeedUp;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private AbilityDebugData _debugData;
@@ -40,7 +47,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Start()
         {
-            abilityDataController = new AbilityDataController(AbilitiesData_UpdateTimeScale, PlaySpeedUpSound, PlaySlowDownSound);
+            abilityDataController = new AbilityDataController(AbilitiesData_UpdateTimeScale, OnTimeSpeedUp, OnTimeSlowDown);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
             
@@ -91,8 +98,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 DoesFade = true,
                 DoesMove = true
             });
-            
-            SoundEventCaller.PlaySound(abilityAdd, null,null);
+            OnAbilityAdded?.Invoke();
         }
 
         private void HandleSetStorageFull(bool isFull)
@@ -129,7 +135,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             
             GameModeEventCaller.SetEnablePause(false);
             
-            SoundEventCaller.PlaySound(abilityTrigger, null,null);
+            OnAbilityTriggered?.Invoke();
         }
 
         private void HandleFinishAbility(int abilityIndex)
@@ -149,16 +155,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             TimerManager.Remove(_finishAbilityTimerId);
             
             OnAbilityFinished?.Invoke();
-        }
-
-        public void PlaySpeedUpSound()
-        {
-            SoundEventCaller.PlaySound(speedTime, null,null);
-        }
-        
-        public void PlaySlowDownSound()
-        {
-            SoundEventCaller.PlaySound(slowTime, null,null);
         }
 
         #endregion
