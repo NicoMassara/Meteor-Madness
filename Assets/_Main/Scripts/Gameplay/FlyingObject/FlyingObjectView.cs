@@ -14,21 +14,20 @@ namespace _Main.Scripts.FyingObject
 {
     public class FlyingObjectMovement : ManagedComponent, IFixedUpdatable
     {
-        private readonly Rigidbody2D _rigidbody;
-        private UnityAction<Vector2> _onPositionChanged;
+        private Rigidbody2D _rigidbody;
+        private event Action<Vector2> _onPositionChanged;
         public float MovementSpeed { get; set; }
         public bool CanMove { get; set; }
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
         public float LastUpdateTime { get; set; }
 
-        public FlyingObjectMovement(Rigidbody2D rigidbody, UnityAction<Vector2> onPositionChanged)
+        public void Initialize(Rigidbody2D rigidbody, Action<Vector2> onPositionChanged)
         {
             _rigidbody = rigidbody;
-            _onPositionChanged = onPositionChanged;
+            _onPositionChanged += onPositionChanged;
         }
-
-
+        
         public void ExecuteUpdate()
         {
             if (CanMove)
@@ -65,9 +64,9 @@ namespace _Main.Scripts.FyingObject
         private bool _hasFire;
         protected FlyingObjectMovement Movement { get; private set; }
         
-        public UnityAction<Vector2> OnPositionChanged;
-        public UnityAction<TVS> OnValuesChanged;
-        public UnityAction<Collider2D> OnCollisionDetected;
+        public event Action<Vector2> OnPositionChanged;
+        public event Action<TVS> OnValuesChanged;
+        public event Action<Collider2D> OnCollisionDetected;
         public event Action OnLoopFinished;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
@@ -86,11 +85,12 @@ namespace _Main.Scripts.FyingObject
             _rigidbody2D.angularDrag = 0.05f;
             _rigidbody2D.gravityScale = 0f;
             
-            Movement = new FlyingObjectMovement(_rigidbody2D,OnPositionChanged);
+            Movement = new FlyingObjectMovement();
         }
 
         private void Start()
         {
+            Movement.Initialize(_rigidbody2D,OnPositionChanged);
             _hasFire = fireObject != null;
 
             if (_hasFire)
@@ -101,6 +101,7 @@ namespace _Main.Scripts.FyingObject
 
             _sphereRotator = new Rotator(sphereObject.transform,Vector3.forward, maxRotationSpeed);
             _sphereRotator.SetSpeed(GetRotationSpeed());
+            
         }
         
         public virtual void ExecuteUpdate()

@@ -16,7 +16,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
 
         public void HandleShieldDeflection()
         {
-            Debug.Log($"Ability Motor Position: {Position}");
             NotifyAll(AbilitySphereObserverMessage.ShieldDeflection, Position, Rotation, Direction, _abilityStored);
         }
 
