@@ -11,10 +11,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
 {
     public class TouchInputReader : ITouchInputReader
     {
-        private const float TressHoldToCountDoubleTap = 0.25f;
-        private const float ScreenWidthOffset = 0.1f; 
-        private const float ScreenTopOffset = 0.25f; 
-        private const float ScreenBottomOffset = 0.15f; 
+        private const float TressHoldToCountDoubleTap = 0.5f;
 
         private float _lastTouchTime = -1f;
         private bool _prevBothTouched;

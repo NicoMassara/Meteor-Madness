@@ -1,5 +1,4 @@
 ﻿using _Main.Scripts.FyingObject;
-using _Main.Scripts.Gameplay.Abilies;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere

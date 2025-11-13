@@ -8,11 +8,12 @@ namespace _Main.Scripts
 
         public static void LoadModules()
         {
-            if (SceneManager.GetActiveScene().buildIndex == 0)
+            if (SceneManager.GetActiveScene().buildIndex == 1)
             {
                 LoadScene("GameplayModule");
                 LoadScene("MainMenuModule");
                 LoadScene("TutorialModule");
+                LoadScene("CosmeticsModule");
             }
             else
             {

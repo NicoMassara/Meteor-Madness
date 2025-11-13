@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Gameplay.Abilies;
+using _Main.Scripts.Localization;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities
@@ -25,16 +25,21 @@ namespace _Main.Scripts.Gameplay.Abilities
         {
             var newColor = ability switch
             {
-                AbilityType.SuperShield => "Super Shield",
-                AbilityType.SlowMotion => "Slow Motion",
-                AbilityType.Health => "Reconstruction",
-                AbilityType.DoublePoints => "Double Points",
-                AbilityType.Automatic => "Auto-Shield",
-                AbilityType.None => "None",
+                AbilityType.SuperShield => GetLocalizedText("SuperShield"),
+                AbilityType.SlowMotion => GetLocalizedText("SlowMotion"),
+                AbilityType.Health => GetLocalizedText("Health"),
+                AbilityType.DoublePoints => GetLocalizedText("DoublePoints"),
+                AbilityType.Automatic => GetLocalizedText("Automatic"),
+                AbilityType.None => "NULL",
                 _ => throw new ArgumentOutOfRangeException(nameof(ability), ability, null)
             };
 
             return newColor;
+        }
+
+        private static string GetLocalizedText(string key)
+        {
+            return LocalizationManager.Instance.GetText($"Abilities.{key}");
         }
     }
 }

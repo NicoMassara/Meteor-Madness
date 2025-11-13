@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Interfaces;
+﻿using System;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
@@ -8,7 +9,6 @@ namespace _Main.Scripts.Managers
     {
         public static GameManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         private static GameManager _instance;
-        
         
         public bool CanPlay { get; set; }
         public bool IsPaused { get; set; }
@@ -32,8 +32,7 @@ namespace _Main.Scripts.Managers
             EventManager = new EventBusManager();
             SceneLoader.LoadModules();
         }
-
-
+        
         public void SetInputReader(IInputReader inputReader)
         {
             if(inputReader == null) return;
@@ -41,20 +40,34 @@ namespace _Main.Scripts.Managers
             InputReader = inputReader;
         }
 
+        #region Screen Loading
+
         public void LoadTutorial()
         {
-            GameScreenEventCaller.SetGameScreen(ScreenType.Tutorial, true);
+            LoadGameScreen(ScreenType.Tutorial);
         }
 
         public void LoadGameMode()
         {
-            GameScreenEventCaller.SetGameScreen(ScreenType.GameMode, true);
+            LoadGameScreen(ScreenType.GameMode);
         }
 
         public void LoadMainMenu()
         {
-            GameScreenEventCaller.SetGameScreen(ScreenType.MainMenu, true);
+            LoadGameScreen(ScreenType.MainMenu);
         }
+        
+        public void LoadCosmeticMenu()
+        {
+            LoadGameScreen(ScreenType.Cosmetic);
+        }
+
+        private void LoadGameScreen(ScreenType type)
+        {
+            GameScreenEventCaller.EnableScreen(type, EventRequestType.Requested);
+        }
+
+        #endregion
 
         public void QuitGame()
         {

@@ -7,24 +7,18 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Meteor
 {
-    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorValuesData>, IMeteor, ITargetable, IProjectile
+    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorValuesData>, 
+        IMeteor, ITargetable, IProjectile
     {
-        private IProjectile projectileImplementation;
         public UnityAction<MeteorCollisionData> OnEarthCollision { get; set; }
         public UnityAction<MeteorCollisionData> OnDeflection { get; set; }
         public Vector2 Position => (Vector2)transform.position;
 
         public bool CanBeTargeted { get; private set; }
         public bool EnableMovement { get; set; }
-        public event Action OnDeath;
 
-        public override void ManagedFixedUpdate()
-        {
-            if (EnableMovement)
-            {
-                base.ManagedFixedUpdate();
-            }
-        }
+        public event Action OnDeath;
+        
         public void DisableTargetable()
         {
             CanBeTargeted = false;
@@ -34,6 +28,11 @@ namespace _Main.Scripts.Gameplay.Meteor
         {
             base.SetValues(data);
             CanBeTargeted = true;
+        }
+        
+        public void SetEnableMovement(bool enable)
+        {
+            Movement.CanMove = enable;
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -83,6 +82,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                 Direction = direction,
                 Value = value
             });
+            
             HandleCollision(false, position, direction,true);
         }
     }

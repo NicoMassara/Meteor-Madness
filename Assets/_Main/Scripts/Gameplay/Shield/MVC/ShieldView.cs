@@ -40,11 +40,24 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShakerController _shakerController;
         private ShieldColliderExtender _colliderExtender;
         public event Action OnLoopFinished;
+        public event Action OnRotate;
+        public event Action OnDeflect;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+        private ShieldDebugData _debugData;
+        
+#endif
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
 
         private void Awake()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData = new ShieldDebugData();
+        
+#endif
+            
             _movement = GetComponent<ShieldMovement>();
             _appereance = GetComponent<ShieldAppereance>();
             
@@ -141,6 +154,11 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandleRotation(float direction)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.Rotation = direction;
+#endif
+            
             if (_movement.TryRotate((int)direction))
             {
                 _colliderExtender.Extend();
@@ -149,6 +167,11 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandleStopRotate()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.Rotation = 0;
+#endif
+            
             if (_movement.TryForceStop())
             {
                 _colliderExtender.Retract();
@@ -157,6 +180,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void HandlePlayMoveSound()
         {
+            OnRotate?.Invoke();
             SoundEventCaller.PlaySound(moveSound, null, null);
         }
         
@@ -179,6 +203,7 @@ namespace _Main.Scripts.Gameplay.Shield
             });
             
             CameraEventCaller.Shake(cameraShakeData);
+            OnDeflect?.Invoke();
         }
 
         #endregion

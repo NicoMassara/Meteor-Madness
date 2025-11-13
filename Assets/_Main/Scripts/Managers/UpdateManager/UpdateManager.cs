@@ -1,79 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using _Main.Scripts.DebugGUI;
+using _Main.Scripts.MyComponents;
 using _Main.Scripts.MyCustoms;
+using _Main.Scripts.MyTools;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers.UpdateManager
 {
-    public class UpdateManager : MonoBehaviour
+
+    public class UpdatableComponent<T> where T : IBaseUpdatable
     {
-        public static UpdateManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
-        protected static UpdateManager _instance;
-
-        private readonly List<IUpdatable> _updatableObjects = new List<IUpdatable>();
-        private readonly List<IFixedUpdatable> _fixedUpdatableObjects = new List<IFixedUpdatable>();
-        private readonly List<ILateUpdatable> _lateUpdatableObjects = new List<ILateUpdatable>();
+        private bool _isUpdating;
         
-        private readonly List<IUpdatable> _toAdd = new List<IUpdatable>();
-        private readonly List<IUpdatable> _toRemove = new List<IUpdatable>();
-        private readonly List<IFixedUpdatable> _fixedToAdd = new List<IFixedUpdatable>();
-        private readonly List<IFixedUpdatable> _fixedToRemove = new List<IFixedUpdatable>();
-        private readonly List<ILateUpdatable> _lateToAdd = new List<ILateUpdatable>();
-        private readonly List<ILateUpdatable> _lateToRemove = new List<ILateUpdatable>();
-        
-        public bool IsGlobalPaused { get; set; }
-        public int TargetFrameRate { get; private set; }
+        private readonly List<T> _running = new List<T>();
+        private readonly List<T> _toAdd = new List<T>();
+        private readonly List<T> _toRemove = new List<T>();
+        public bool IsPaused;
+        public int RunningCount => _running.Count;
 
-#pragma warning disable CS0414 // Field is assigned but its value is never used
-        private bool _isUpdating = false;
-        private bool _isFixedUpdating = false;
-        private bool _isLateUpdating = false;
-#pragma warning restore CS0414 // Field is assigned but its value is never used
-        
-        private static UpdateManager CreateInstance()
+        public void UpdateComponents()
         {
-            var gameObject = new GameObject(nameof(UpdateManager))
-            {
-                hideFlags = HideFlags.DontSave,
-            };
-            DontDestroyOnLoad(gameObject);
-            return gameObject.AddComponent<UpdateManager>();
-        }
-
-        private void Awake()
-        {
-#if UNITY_STANDALONE || UNITY_EDITOR
-            TargetFrameRate = 165;
-#endif
-#if UNITY_ANDROID
-            TargetFrameRate = 120;
-#endif
-            
-            Application.targetFrameRate = TargetFrameRate;
-
-        }
-
-        #region Update
-
-        private void Update()
-        {
-            CustomTime.UpdateAll(IsGlobalPaused ? 0 : Time.unscaledDeltaTime);
-            
             ApplyPending();
             
+            float now = Time.realtimeSinceStartup;
+            float frameTime = Time.unscaledDeltaTime;
             
             _isUpdating = true;
 
-            if (!IsGlobalPaused)
+            if (!IsPaused)
             {
-                for (int i = 0; i < _updatableObjects.Count; i++)
+                for (int i = 0; i < _running.Count; i++)
                 {
-                    var u = _updatableObjects[i];
+                    var u = _running[i];
                 
                     if(CustomTime.GetChannel(u.SelfUpdateGroup).IsPaused)
                         continue;
-                
-                    u.ManagedUpdate();
+                    
+                    float interval = UpdateManagerTools.GetTickByGroup(u.SelfTickGroup, frameTime);
+                    float last = u.LastUpdateTime;
+
+                    if (now - last >= interval)
+                    {
+                        u.ExecuteUpdate();
+                        u.LastUpdateTime = now;
+                    }
                 }
             }
             
@@ -81,144 +51,8 @@ namespace _Main.Scripts.Managers.UpdateManager
             
             ApplyPending();
         }
-
-        private void FixedUpdate()
-        {
-            CustomTime.FixedUpdateAll(IsGlobalPaused ? 0 : Time.fixedUnscaledDeltaTime);
-            
-            ApplyPendingFixed();
-            
-            _isFixedUpdating = true;
-
-            if (!IsGlobalPaused)
-            {
-                for (int i = 0; i < _fixedUpdatableObjects.Count; i++)
-                {
-                    var u = _fixedUpdatableObjects[i];
-                
-                    if(CustomTime.GetChannel(u.SelfFixedUpdateGroup).IsPaused)
-                        continue;
-
-                    u.ManagedFixedUpdate();
-                }
-            }
-            
-            _isFixedUpdating = false;
-            
-            ApplyPendingFixed();
-        }
         
-        
-        private void LateUpdate()
-        {
-            ApplyPendingLate();
-            
-            _isLateUpdating = true;
-
-            if (!IsGlobalPaused)
-            {
-                for (int i = 0; i < _lateUpdatableObjects.Count; i++)
-                {
-                    var u = _lateUpdatableObjects[i];
-                
-                    if(CustomTime.GetChannel(u.SelfLateUpdateGroup).IsPaused)
-                        continue;
-
-                    u.ManagedLateUpdate();
-                }
-            }
-            
-            _isLateUpdating = false;
-            
-            ApplyPendingLate();
-        }
-
-        #endregion
-        
-        #region ApplyPending
-
-        private void ApplyPending()
-        {
-            if (_toAdd.Count > 0)
-            {
-                foreach (var a in _toAdd)
-                {
-                    if (!_updatableObjects.Contains(a))
-                    {
-                        _updatableObjects.Add(a);
-                    }
-                }
-                _toAdd.Clear();
-            }
-
-            if (_toRemove.Count > 0)
-            {
-                foreach (var r in _toRemove)
-                {
-                    _updatableObjects.Remove(r);
-                }
-                
-                _toRemove.Clear();
-            }
-        }
-
-        private void ApplyPendingFixed()
-        {
-            if (_fixedToAdd.Count > 0)
-            {
-                foreach (var a in _fixedToAdd)
-                {
-                    if (!_fixedUpdatableObjects.Contains(a))
-                    {
-                        _fixedUpdatableObjects.Add(a);
-                    }
-                }
-                
-                _fixedToAdd.Clear();
-            }
-
-            if (_fixedToRemove.Count > 0)
-            {
-                foreach (var r in _fixedToRemove)
-                {
-                    _fixedUpdatableObjects.Remove(r);
-                }
-                
-                _fixedToRemove.Clear();
-            }
-        }
-        
-        private void ApplyPendingLate()
-        {
-            if (_lateToAdd.Count > 0)
-            {
-                foreach (var a in _lateToAdd)
-                {
-                    if (!_lateUpdatableObjects.Contains(a))
-                    {
-                        _lateUpdatableObjects.Add(a);
-                    }
-                }
-                
-                _lateToAdd.Clear();
-            }
-
-            if (_lateToRemove.Count > 0)
-            {
-                foreach (var r in _lateToRemove)
-                {
-                    _lateUpdatableObjects.Remove(r);
-                }
-                
-                _lateToRemove.Clear();
-            }
-        }
-
-        #endregion
-
-        #region Add/Remove
-
-        private void AddUpdatable(IUpdatable updatable)
+        public void Add(T updatable)
         {
             if (_isUpdating)
             {
@@ -227,13 +61,13 @@ namespace _Main.Scripts.Managers.UpdateManager
                     _toAdd.Add(updatable);
                 }
             }
-            else if (!_updatableObjects.Contains(updatable))
+            else if (!_running.Contains(updatable))
             {
-                _updatableObjects.Add(updatable);
+                _running.Add(updatable);
             }
         }
-
-        private void RemoveUpdatable(IUpdatable updatable)
+        
+        public void Remove(T updatable)
         {
             if (_isUpdating)
             {
@@ -244,71 +78,103 @@ namespace _Main.Scripts.Managers.UpdateManager
             }
             else
             { 
-                _updatableObjects.Remove(updatable);
+                _running.Remove(updatable);
             }
         }
         
-        private void AddFixedUpdatable(IFixedUpdatable updatable)
+        private void ApplyPending()
         {
-            if (_isUpdating)
+            if (_toAdd.Count > 0)
             {
-                if (!_fixedToAdd.Contains(updatable))
+                foreach (var a in _toAdd)
                 {
-                    _fixedToAdd.Add(updatable);
+                    if (!_running.Contains(a))
+                    {
+                        _running.Add(a);
+                    }
                 }
+                _toAdd.Clear();
             }
-            else if (!_fixedUpdatableObjects.Contains(updatable))
+
+            if (_toRemove.Count > 0)
             {
-                _fixedUpdatableObjects.Add(updatable);
+                foreach (var r in _toRemove)
+                {
+                    _running.Remove(r);
+                }
+                
+                _toRemove.Clear();
             }
         }
+    }
+    
 
-        private void RemoveFixedUpdatable(IFixedUpdatable updatable)
+    public class UpdateManager : SingletonBehaviour<UpdateManager>
+    {
+        private readonly UpdatableComponent<IUpdatable> _updatableComponent = new UpdatableComponent<IUpdatable>();
+        private readonly UpdatableComponent<IFixedUpdatable> _fixedUpdatableComponent = new UpdatableComponent<IFixedUpdatable>();
+        private readonly UpdatableComponent<ILateUpdatable> _lateUpdatableComponent = new UpdatableComponent<ILateUpdatable>();
+        
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+        private UpdateManagerDebugData _debugData;
+        
+#endif
+        public bool IsGlobalPaused { get; set; }
+        
+        private void Awake()
         {
-            if (_isUpdating)
-            {
-                if (!_fixedToRemove.Contains(updatable))
-                {
-                    _fixedUpdatableObjects.Add(updatable);
-                }
-            }
-            else
-            { 
-                _fixedUpdatableObjects.Remove(updatable);
-            }
+            Application.targetFrameRate = 120;
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData = new UpdateManagerDebugData();
+        
+#endif
+            
+        }
+
+        #region Update
+
+        private void Update()
+        {
+            CustomTime.UpdateAll(IsGlobalPaused ? 0 : Time.unscaledDeltaTime);
+            IsGlobalPaused = _updatableComponent.IsPaused;
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.UpdateFps(Time.deltaTime);
+            _debugData.ManagedUpdateCount = _updatableComponent.RunningCount;
+#endif
+            
+            _updatableComponent.UpdateComponents();
+        }
+
+        private void FixedUpdate()
+        {
+            CustomTime.FixedUpdateAll(IsGlobalPaused ? 0 : Time.fixedUnscaledDeltaTime);
+            IsGlobalPaused = _fixedUpdatableComponent.IsPaused;
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.ManagedFixedUpdateCount = _fixedUpdatableComponent.RunningCount;
+#endif
+            _fixedUpdatableComponent.UpdateComponents();
         }
         
-        private void AddLateUpdatable(ILateUpdatable updatable)
+        
+        private void LateUpdate()
         {
-            if (_isUpdating)
-            {
-                if (!_lateToAdd.Contains(updatable))
-                {
-                    _lateToAdd.Add(updatable);
-                }
-            }
-            else if (!_lateUpdatableObjects.Contains(updatable))
-            {
-                _lateUpdatableObjects.Add(updatable);
-            }
-        }
-
-        private void RemoveLateUpdatable(ILateUpdatable updatable)
-        {
-            if (_isUpdating)
-            {
-                if (!_lateToRemove.Contains(updatable))
-                {
-                    _lateToRemove.Add(updatable);
-                }
-            }
-            else
-            { 
-                _lateUpdatableObjects.Remove(updatable);
-            }
+            IsGlobalPaused = _lateUpdatableComponent.IsPaused;
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.ManagedLateUpdateCount = _lateUpdatableComponent.RunningCount;
+#endif
+            _lateUpdatableComponent.UpdateComponents();
         }
 
         #endregion
+        
 
         #region Register/Unregister
         
@@ -318,15 +184,15 @@ namespace _Main.Scripts.Managers.UpdateManager
             
             if (element is IUpdatable updatable)
             {
-                AddUpdatable(updatable);
+                _updatableComponent.Add(updatable);
             }
             if (element is IFixedUpdatable fixedUpdatable)
             {
-                AddFixedUpdatable(fixedUpdatable);
+                _fixedUpdatableComponent.Add(fixedUpdatable);
             }
             if (element is ILateUpdatable lateUpdatable)
             {
-                AddLateUpdatable(lateUpdatable);
+                _lateUpdatableComponent.Add(lateUpdatable);
             }
         }
 
@@ -336,15 +202,15 @@ namespace _Main.Scripts.Managers.UpdateManager
             
             if (element is IUpdatable updatable)
             {
-                RemoveUpdatable(updatable);
+                _updatableComponent.Remove(updatable);
             }
             if (element is IFixedUpdatable fixedUpdatable)
             {
-                RemoveFixedUpdatable(fixedUpdatable);
+                _fixedUpdatableComponent.Remove(fixedUpdatable);
             }
             if (element is ILateUpdatable lateUpdatable)
             {
-                RemoveLateUpdatable(lateUpdatable);
+                _lateUpdatableComponent.Remove(lateUpdatable);
             }  
         }
         
@@ -362,5 +228,14 @@ namespace _Main.Scripts.Managers.UpdateManager
         Effects,
         Shield,
         Camera
+    }
+
+    public enum TickGroup
+    {
+        FullTick,
+        HalfTick,
+        QuarterTick,
+        EightTick,
+        BySecondTick,
     }
 }

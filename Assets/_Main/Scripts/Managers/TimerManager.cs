@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using _Main.Scripts.DebugGUI;
 using _Main.Scripts.InspectorTools;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
@@ -7,7 +9,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
-    public class TimerManager : MonoBehaviour
+    public class TimerManager : ManagedBehavior, IUpdatable
     {
         public static TimerManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
         protected static TimerManager _instance;
@@ -18,6 +20,12 @@ namespace _Main.Scripts.Managers
         private readonly List<TimerManagerData> _toAdd = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toRemove = new List<TimerManagerData>();
         private readonly Dictionary<ulong, TimerManagerData> _idsDic = new Dictionary<ulong, TimerManagerData>();
+        private int RunningCount => _running.Count;
+
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
+        public float LastUpdateTime { get; set; }
+
 
         private class TimerManagerData
         {
@@ -39,7 +47,17 @@ namespace _Main.Scripts.Managers
             return gameObject.AddComponent<TimerManager>();
         }
 
-        private void Update()
+        private void Awake()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Managers, DebugGUISortingOrder.Group.Managers)
+                ?.AddEntry(
+                    () => $"Timer Count: {RunningCount}"
+                );
+#endif
+        }
+
+        public void ExecuteUpdate()
         {
             ApplyPending();
             
@@ -125,6 +143,7 @@ namespace _Main.Scripts.Managers
                 _toRemove.Add(value);
             }
         }
+
 
     }
 }

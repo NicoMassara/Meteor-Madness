@@ -47,6 +47,12 @@ namespace _Main.Scripts.MyCustoms
 
         public static void SetChannelPaused(UpdateGroup updateGroup, bool isPaused)
         {
+            if (updateGroup == UpdateGroup.Always)
+            {
+                Debug.LogWarning("Update Group: Always cannot be paused");
+                return;
+            }
+
             GetChannel(updateGroup).SetPaused(isPaused);
         }
         
@@ -60,6 +66,12 @@ namespace _Main.Scripts.MyCustoms
         
         public static void SetChannelTimeScale(UpdateGroup updateGroup, float timeScale)
         {
+            if (updateGroup == UpdateGroup.Always)
+            {
+                Debug.LogWarning("Update Group: Always cannot be modified");
+                return;
+            }
+            
             GetChannel(updateGroup).SetTimeScale(timeScale);
         }
 
