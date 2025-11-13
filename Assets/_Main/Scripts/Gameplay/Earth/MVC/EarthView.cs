@@ -20,11 +20,6 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private GameObject planeMeshContainer;
         [SerializeField] private EarthSlicer earthMeshSlicer;
         [Space]
-        [Header("Sounds")]
-        [SerializeField] private SoundClassSo collisionSound;
-        [SerializeField] private SoundClassSo deathSound;
-        [SerializeField] private SoundClassSo healSound;
-        [Space]
         [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
         [SerializeField] private ShakeDataSo healthShakeData;
@@ -45,12 +40,12 @@ namespace _Main.Scripts.Gameplay.Earth
         private bool _canRotate;
         private bool _isDead;
 
-        public UnityAction OnHealed;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
         public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
         public float LastUpdateTime { get; set; }
 
+        public event Action OnHealed;
         public event Action OnCollision;
         public event Action OnDestruction;
         public event Action OnPreDestruction;
@@ -132,7 +127,6 @@ namespace _Main.Scripts.Gameplay.Earth
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData.EarthHealth = healthAmount;
 #endif
-            SoundEventCaller.PlaySound(collisionSound, null, null);
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
             SetRotationSpeed(healthAmount);
@@ -180,8 +174,6 @@ namespace _Main.Scripts.Gameplay.Earth
                 },restartHealthTime),
             };
             
-            
-            SoundEventCaller.PlaySound(healSound, null, null);
             ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
         }
         
@@ -358,7 +350,6 @@ namespace _Main.Scripts.Gameplay.Earth
             OnDestruction?.Invoke();
             earthMeshSlicer.StartSlicing();
             _isDead = true;
-            SoundEventCaller.PlaySound(deathSound, null, null);
             _earthRotator.SetRotationSpeed(rotationSpeed/2);
         }
 

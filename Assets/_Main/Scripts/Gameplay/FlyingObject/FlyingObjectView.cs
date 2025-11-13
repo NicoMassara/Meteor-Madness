@@ -156,7 +156,6 @@ namespace _Main.Scripts.FyingObject
             _rigidbody2D.transform.rotation = rotation;
             _rigidbody2D.transform.position = position;
             Movement.CanMove = canMove;
-            SoundEventCaller.PlaySound(moveSound, transform, this);
         }
         
         protected float GetRotationSpeed()

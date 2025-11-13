@@ -1,7 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Vibration;
 
-namespace _Main.Scripts.MultiPage
+namespace _Main.Scripts.MultiPage.Components
 {
     public class MultiPageVibration : VibrationBehavior<MultiPageViewUI>
     {

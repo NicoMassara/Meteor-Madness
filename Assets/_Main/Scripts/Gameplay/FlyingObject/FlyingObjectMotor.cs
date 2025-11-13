@@ -32,7 +32,6 @@ namespace _Main.Scripts.FyingObject
         
         public void UpdatePosition(Vector2 transformPosition)
         {
-            Debug.Log($"Projectile Motor Position: {transformPosition}");
             Position = transformPosition;
         }
     }

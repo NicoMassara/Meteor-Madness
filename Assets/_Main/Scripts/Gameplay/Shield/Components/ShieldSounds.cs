@@ -1,0 +1,81 @@
+﻿using System;
+using _Main.Scripts.Sounds;
+using UnityEngine;
+
+namespace _Main.Scripts.Gameplay.Shield
+{
+    public class ShieldSounds : SoundBehaviour<ShieldView>
+    {
+        [SerializeField] private SoundClassSo deflect;
+        [SerializeField] private SoundClassSo rotate;
+        [SerializeField] private SoundClassSo shieldActivated;
+        [Space]
+        [Header("Abilities")]
+        [Space]
+        [Header("Start")]
+        [SerializeField] private SoundClassSo superShieldStart;
+        [Space]
+        [Header("Running")]
+        [SerializeField] private SoundClassSo doublePointsRunning;
+        [SerializeField] private SoundClassSo automaticRunning;
+        [SerializeField] private SoundClassSo superShieldRunning;
+
+        private ulong _abilityRunningSoundId;
+
+        private void Start()
+        {
+            ComponentToSound.OnShieldActivated += (isActive) =>
+            {
+                if (isActive)
+                {
+                    PlaySound(shieldActivated);
+                }
+            };
+            
+            ComponentToSound.OnRotate += () =>
+            {
+                PlaySound(rotate);
+            };
+            
+            ComponentToSound.OnDeflect += () =>
+            {
+                PlaySound(deflect);
+            };
+            
+            ComponentToSound.OnAbilityStarted += (ability) =>
+            {
+                PlaySound(GetAbilityStartSound(ability));
+            };
+            
+            ComponentToSound.OnAbilityRunning += (ability) =>
+            {
+                _abilityRunningSoundId = PlaySound(GetAbilityRunningSound(ability));
+            };
+            
+            ComponentToSound.OnAbilityFinished += () =>
+            {
+                StopSound(_abilityRunningSoundId);
+            };
+        }
+        
+        private SoundClassSo GetAbilityStartSound(AbilityType abilityType)
+        {
+            return abilityType switch
+            {
+                AbilityType.SuperShield => superShieldStart,
+                _ => superShieldStart
+            };
+        }
+        
+        private SoundClassSo GetAbilityRunningSound(AbilityType abilityType)
+        {
+            return abilityType switch
+            {
+                AbilityType.SuperShield => superShieldRunning,
+                AbilityType.DoublePoints => doublePointsRunning,
+                AbilityType.Automatic => automaticRunning,
+                _ => null
+            };
+        }
+    }
+}

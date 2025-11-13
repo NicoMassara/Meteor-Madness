@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
@@ -17,20 +18,20 @@ namespace _Main.Scripts.Gameplay.Abilies
         public UnityAction<AbilityType> OnEndQueueStart;
         public UnityAction<AbilityType> OnEndQueueFinished;
         public UnityAction<TimeScaleData> _updateTimeScale;
-        private UnityAction _playSpeedTimeSound;
-        private UnityAction _playSlowTimeSound;
+        private event Action _playSpeedTimeSound;
+        private event Action _playSlowTimeSound;
 
         public AbilityDataController(UnityAction<TimeScaleData> updateTimeScale, 
-            UnityAction speedTimeSound, UnityAction slowTimeSound)
+            Action speedTimeSound, Action slowTimeSound)
         {
             _updateTimeScale = updateTimeScale;
-            _playSpeedTimeSound = speedTimeSound;
-            _playSlowTimeSound = slowTimeSound;
+            _playSpeedTimeSound += speedTimeSound;
+            _playSlowTimeSound += slowTimeSound;
 
             CreateAbilityData();
         }
 
-        
+
         private void CreateAbilityData()
         {
             var configData = GameConfigManager.Instance.GetGameplayData().AbilityTimeData;
@@ -66,8 +67,8 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = 1.0f,
                         TimeToUpdate = timeData.ZoomIn,
                     });
-                    
-                    _playSlowTimeSound.Invoke();
+
+                    PlaySlowTimeSound();
                 }, 0f),
                 new ActionData(() =>
                 {
@@ -110,7 +111,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = 1.0f,
                         TimeToUpdate = timeData.StopAction
                     });
-                    _playSpeedTimeSound.Invoke();
+                    PlaySpeedTimeSound();
                 }, 0f),
                 new ActionData(() =>
                 {
@@ -171,7 +172,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                     
                     SetInputsEnable(false);
                     SetEnableAbilityUI(false);
-                    _playSlowTimeSound.Invoke();
+                    PlaySlowTimeSound();
                     
                 }, 0f),
                 new ActionData(() =>
@@ -208,7 +209,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.SpeedUp,
                     });
                     
-                    _playSpeedTimeSound.Invoke();
+                    PlaySpeedTimeSound();
                     
                     RunActiveTimer(selectedAbility);
                 }, timeData.SpeedUp),
@@ -288,7 +289,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.SlowDown,
                     });
                     
-                    _playSlowTimeSound.Invoke();
+                    PlaySlowTimeSound();
                 }, 0f),
                 new ActionData(()=> ShieldEventCaller.SetSlow(true),
                     timeData.SlowDown),
@@ -353,7 +354,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.SpeedUp,
                     });
                     
-                    _playSpeedTimeSound.Invoke();
+                    PlaySpeedTimeSound();
                     
                 }, 0f),
                 new ActionData(()=> ShieldEventCaller.SetSlow(false), timeData.SpeedUp),
@@ -411,7 +412,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                     });
                     CameraZoomIn();
                     
-                    _playSlowTimeSound.Invoke();
+                    PlaySlowTimeSound();
                 },0f),
                 new ActionData(() =>
                 {
@@ -427,7 +428,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.ZoomOut,
                     });
                     
-                    _playSpeedTimeSound.Invoke();
+                    PlaySpeedTimeSound();
                     CameraZoomOut();
                     RunActiveTimer(selectedAbility);
                 },timeData.ZoomOut),
@@ -486,7 +487,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                     SetEnableAbilityUI(false);
                     SetInputsEnable(false);
                     
-                    _playSlowTimeSound.Invoke();
+                    PlaySlowTimeSound();
                 },0f),
                 new ActionData(() =>
                 {
@@ -499,7 +500,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.SpeedUp,
                     });
                     
-                    _playSpeedTimeSound.Invoke();
+                    PlaySpeedTimeSound();
                     
                 },timeData.StartAction),
                 new ActionData(() =>
@@ -531,7 +532,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         CurrentTimeScale = 1f,
                         TimeToUpdate = timeData.SlowDown,
                     });
-                    _playSlowTimeSound.Invoke();
+                    PlaySlowTimeSound();
                 }),
                 new ActionData(() =>
                 {
@@ -544,7 +545,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                         TimeToUpdate = timeData.SpeedUp,
                     });
                     
-                    _playSpeedTimeSound.Invoke();
+                    PlaySpeedTimeSound();
                 },timeData.SlowDown),
                 new ActionData(() =>
                 {
@@ -627,6 +628,16 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             GameManager.Instance.EventManager.Publish(
                 new AbilitiesEvents.NotifyIsActive{ AbilityType = abilityType, IsActive = isActive });
+        }
+        
+        private void PlaySpeedTimeSound()
+        {
+            _playSpeedTimeSound?.Invoke();
+        }
+
+        private void PlaySlowTimeSound()
+        {
+            _playSlowTimeSound?.Invoke();
         }
 
     }

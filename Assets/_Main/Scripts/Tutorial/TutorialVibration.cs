@@ -8,7 +8,7 @@ namespace _Main.Scripts.Tutorial
         protected override void Start()
         {
             base.Start();
-            ComponentToVibrate.OnStartTutorialButtonPressed += () =>
+            ComponentToVibrate.OnStartButtonPressed += () =>
             {
                 Vibrate(VibrationType.UIButtonAccept);
             };
