@@ -88,7 +88,7 @@ namespace _Main.Scripts.Sounds
         public void SetVolumeMultiplier(float multiplier)
         {
             VolumeMultiplier = multiplier;
-            _audioSource.volume *= VolumeMultiplier;
+            _audioSource.volume = VolumeMultiplier;
         }
 
         public void PlayAudio()

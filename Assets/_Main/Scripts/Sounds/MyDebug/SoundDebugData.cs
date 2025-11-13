@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _Main.Scripts.DebugGUI;
 
 namespace _Main.Scripts.Sounds
@@ -9,8 +10,9 @@ namespace _Main.Scripts.Sounds
     public class SoundDebugData
     {
         public Dictionary<SoundChannel, int> ChannelCount = new Dictionary<SoundChannel, int>();
-        public MusicType CurrentMusic;
-        public MusicType LastMusic;
+        public string CurrentMusic = "None";
+        public string ArrivingMusic = "None";
+        public string LeavingMusic = "None";
         
         public SoundDebugData()
         {
@@ -18,10 +20,12 @@ namespace _Main.Scripts.Sounds
 
             if (soundGroup != null)
             {
-                soundGroup.AddEntry(
-                    ()=> $"Music: {CurrentMusic}",
-                    ()=> $"Last Music: {LastMusic}"
-                );
+                soundGroup.CreateSubGroup(DebugGUIKeys.SubGroup.Music, DebugGUISortingOrder.SubGroup.Music)
+                    ?.AddEntry(
+                        ()=> $"CurrentMusic: {CurrentMusic}",
+                        ()=> $"ArrivingMusic: {ArrivingMusic}",
+                        ()=> $"LeavingMusic: {LeavingMusic}"
+                    );
                 
                 soundGroup.CreateSubGroup(DebugGUIKeys.SubGroup.SoundChannel, DebugGUISortingOrder.SubGroup.SoundChannel)
                     ?.AddEntry(
@@ -32,6 +36,7 @@ namespace _Main.Scripts.Sounds
                     );
             }
         }
+        
     }    
 
 #endif

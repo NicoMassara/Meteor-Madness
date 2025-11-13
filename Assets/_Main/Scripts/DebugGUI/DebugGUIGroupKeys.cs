@@ -22,6 +22,7 @@
             public const string Shield = "Shield";
             public const string UpdateManager = "Update";
             public const string SoundChannel = "Channel";
+            public const string Music = "Music";
         }
     }
 
@@ -49,6 +50,7 @@
             public const int Ability = 3;
             public const int UpdateManager = 0;
             public const int SoundChannel = 0;
+            public const int Music = -1;
         }
     }
 #endif

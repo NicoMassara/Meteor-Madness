@@ -2,6 +2,7 @@
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyComponents;
+using _Main.Scripts.MyCustoms;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds
@@ -43,13 +44,25 @@ namespace _Main.Scripts.Sounds
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
             _debugData = new SoundDebugData();
+            _musicController.OnMusicPlaying += (musicName) =>
+            {
+                _debugData.CurrentMusic = musicName;
+            };
+            _musicController.OnMusicArriving += (musicName) =>
+            {
+                _debugData.ArrivingMusic = musicName;
+            };
+            _musicController.OnMusicLeaving += (musicName) =>
+            {
+                _debugData.LeavingMusic = musicName;
+            };
 #endif
         }
         
         public void ExecuteUpdate()
         {
             _playbackTracker.Execute();
-            _musicController.Execute();
+            _musicController.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
         }
         
         #region Sounds
