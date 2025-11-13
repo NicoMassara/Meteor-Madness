@@ -9,7 +9,7 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace _Main.Scripts.Gameplay.MyInputs
 {
-    public class TuchInput : IInput
+    public class TouchInput : IInput
     {
         private const float TressHoldToCountDoubleTap = 0.5f;
 
@@ -23,6 +23,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
         
         public event Action<int> OnUpdateDirection;
         public event Action<bool> OnTriggerAbility;
+        public event Action OnPaused;
 
         public void Enable()
         {

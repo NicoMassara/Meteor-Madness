@@ -5,7 +5,7 @@
         public const ulong Rotate = 0xA0001;
         public const ulong StopRotate = 0xA0002;
         public const ulong Deflect = 0xA0003;
-        public const ulong PlayMoveSound = 0xA0004;
+        public const ulong ChangedDirection = 0xA0004;
         public const ulong SetGold = 0xA0005;
         public const ulong SetActiveShield = 0xA0006;
         public const ulong SetActiveSuperShield = 0xA0007;
