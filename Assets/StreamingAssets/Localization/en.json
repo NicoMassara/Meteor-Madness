@@ -23,7 +23,12 @@
       "StartButton" : "Start Tutorial"
     },
     "Cosmetic": "Item Shop",
-    "Settings": "Settings"
+    "Settings": "Settings",
+    "Credits": {
+      "Button" : "Credits",
+      "Title" : "Credits",
+      "Text" : "Develop By"
+    }
   },
   
   "Tutorial": {
@@ -59,6 +64,7 @@
     "CountDownStart" : "Prepare In",
     "CountdownFinish" : "Defend!",
     "Score" : "Score",
+    "HighScore" : "High Score",
     "Death": {
       "Title" : "Humanity Is Over!",
       "Score" : "Your Score"

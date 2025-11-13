@@ -31,32 +31,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             SetEventBus();
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                var tempDic = new Dictionary<AbilityType, int>();
-                
-                for (int i = 0; i < 10; i++)
-                {
-                    var ability = GetAbilityToAdd();
-                    if (tempDic.ContainsKey(ability))
-                    {
-                        tempDic[ability]++;
-                    }
-                    else
-                    {
-                        tempDic.Add(ability, 1);
-                    }
-                }
-
-                foreach (var item in tempDic)
-                {
-                    Debug.Log($"Ability: {item.Key}, Times Selected: {item.Value}");
-                }
-            }
-        }
-
         private void Start()
         {
             var selectorData = GameConfigManager.Instance.GetGameplayData().AbilitySelectorData;
@@ -89,6 +63,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             });
             tempSphere.OnDeflection += DeflectionHandler;
             tempSphere.OnEarthCollision += OnEarthCollisionHandler;
+            tempSphere.EnableMovement = true;
             
             ProjectileEventCaller.Add(tempSphere);
         }

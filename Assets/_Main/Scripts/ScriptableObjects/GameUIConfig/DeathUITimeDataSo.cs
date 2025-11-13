@@ -18,12 +18,18 @@ namespace _Main.Scripts.ScriptableObjects.GameUIConfig
         [SerializeField] private float countDeathScore =  0.75f;
         [Range(0f, 2f)]
         [SerializeField] private float enableRestartButton = 1f;
+        [Range(0f, 2f)]
+        [SerializeField] private float countHighScore = 1f;
+        [Range(0f, 2f)]
+        [SerializeField] private float enableHighScore = 0.75f;
 
         public float ShowDeathUI => showDeathUI;
         public float SetEnableDeathText => setEnableDeathText;
         public float SetEnableDeathScore => setEnableDeathScore;
         public float DeathPointsTimeToIncrease => deathPointsTimeToIncrease;
         public float CountDeathScore => countDeathScore;
+        public float CountHighScore => countHighScore;
+        public float EnableHighScore => enableHighScore;
         public float EnableRestartButton => enableRestartButton;
     }
 }
