@@ -9,7 +9,7 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace _Main.Scripts.Gameplay.MyInputs
 {
-    public class TouchInputReader : ITouchInputReader
+    public class TuchInput : IInput
     {
         private const float TressHoldToCountDoubleTap = 0.5f;
 
@@ -58,14 +58,18 @@ namespace _Main.Scripts.Gameplay.MyInputs
             //
             
             _currentTouchCount++;
-            
-            if (_currentTouchCount == 2 &&
-                _lastTouchCount != 2 &&
-                GetHasTriggeredAbility()) return;
-            
+
+            if (_currentTouchCount == 2 && _lastTouchCount < 2 &&
+                GetCanTriggerAbility())
+            {
+                TryToTriggerAbility();
+                return;
+            }
+
             _lastTouchCount = _currentTouchCount;
             _lastTouchTime = Time.time;
             
+            if(_leftTouched || _rightTouched) return;
             
             if (IsTouchInLeftZone(touchPos.x))
             {
@@ -121,54 +125,48 @@ namespace _Main.Scripts.Gameplay.MyInputs
             }
             else if (!_leftTouched && _rightTouched)
             {
-                OnUpdateDirection?.Invoke(-1);
+                OnUpdateDirection?.Invoke(-1); 
             }
             else
             {
                 OnUpdateDirection?.Invoke(0);
             }
         }
-        
-        private bool GetHasTriggeredAbility()
+
+        private bool GetCanTriggerAbility()
         {
             var tempTime = Time.time - _lastTouchTime;
-            if (tempTime <= TressHoldToCountDoubleTap)
-            {
-                var isRightTouch = false;
-                var isLeftTouch = false;
+            return tempTime <= TressHoldToCountDoubleTap;
+        }
 
-                foreach (var t in Touch.activeTouches)
-                {
-                    var pos = t.screenPosition;
+        private void TryToTriggerAbility()
+        {
+            var isRightTouch = false;
+            var isLeftTouch = false;
+
+            foreach (var t in Touch.activeTouches)
+            {
+                var pos = t.screenPosition;
                 
-                    if(!IsTouchInSafeZone(pos.y)) continue;
+                if(!IsTouchInSafeZone(pos.y)) continue;
                     
-                    if (IsTouchInLeftZone(pos.x))
-                    {
-                        isLeftTouch = true;
-                    }
-                    else if(IsTouchInRightZone(pos.x))
-                    {
-                        isRightTouch = true;
-                    }
-                
-                    if (isRightTouch && isLeftTouch) break;
-                }
-
-                if (isRightTouch && isLeftTouch)
+                if (IsTouchInLeftZone(pos.x))
                 {
-                    Debug.Log("Ability Triggered by touch");
-                    _prevBothTouched = true;
-                    OnTriggerAbility?.Invoke(true);
-                    return true;
+                    isLeftTouch = true;
                 }
+                else if(IsTouchInRightZone(pos.x))
+                {
+                    isRightTouch = true;
+                }
+                
+                if (isRightTouch && isLeftTouch) break;
             }
-            else
+
+            if (isRightTouch && isLeftTouch)
             {
-                Debug.Log($"Ability Trigger Failed, time since last touch{tempTime}");
+                _prevBothTouched = true;
+                OnTriggerAbility?.Invoke(true);
             }
-            
-            return false;
         }
 
         private bool IsTouchInSafeZone(float posY)
