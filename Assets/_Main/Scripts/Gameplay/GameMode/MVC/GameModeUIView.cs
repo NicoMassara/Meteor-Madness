@@ -28,6 +28,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnMainMenuButtonPressed;
         public event Action OnRestartButtonPressed;
         public event Action OnPauseButtonPressed;
+        public event Action OnResumeButtonPressed;
 
         public event Action OnPointsAdded;
         
@@ -250,26 +251,23 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void RestartButton_OnClickHandler()
         {
-            SoundEventCaller.PlayUIButton(UISoundType.Back);
             OnRestartButtonPressed?.Invoke();
         }
         
         private void MainMenuButton_OnClickHandler()
         {
-            SoundEventCaller.PlayUIButton(UISoundType.Accept);
             CameraEventCaller.ZoomIn();
             OnMainMenuButtonPressed?.Invoke();
         }
         
         private void ResumeButton_OnClickHandler()
         {
-            SoundEventCaller.PlayUIButton(UISoundType.Accept);
             GameModeEventCaller.SetPause(false);
+            OnResumeButtonPressed?.Invoke();
         }
         
         private void PauseButton_OnClickHandler()
         {
-            SoundEventCaller.PlayUIButton(UISoundType.Accept);
             OnPauseButtonPressed?.Invoke();
         }
 

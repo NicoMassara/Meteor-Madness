@@ -51,7 +51,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void SetViewHandlers()
         {
-            _ui.OnStartTutorialButtonPressed += UIOnStartTutorialButtonPressedHandler;
+            _ui.OnStartButtonPressed += UIOnStartTutorialButtonPressedHandler;
 
             _view.OnTutorialEnable += ViewOnTutorialEnable;
             _view.OnTutorialFinished += _controller.TransitionToMultiPage;

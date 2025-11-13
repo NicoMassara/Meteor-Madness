@@ -1,47 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.MyComponents;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds
 {
-    public class SoundManager : ManagedBehavior, IUpdatable
+    public class SoundManager : SingletonManagedBehaviour<SoundManager>, IUpdatable
     {
         [Header("Prefab References")]
-        [SerializeField] private SoundBehavior soundPrefab;
-        [Header("Music Data")]
-        [SerializeField] private SoundClassSo menuMusic;
-        [SerializeField] private SoundClassSo gameplayMusic;
-        [SerializeField] private SoundClassSo defeatMusic;
-        [Header("UI Button Sound")]
-        [SerializeField] private SoundClassSo defaultUISound;
-        [SerializeField] private SoundClassSo acceptUISound;
-        [SerializeField] private SoundClassSo backUISound;
+        [SerializeField] private SoundComponent soundPrefab;
         
         private SoundBehaviourFactory _factory;
-        private AudioPlaybackTracker _playbackTracker = new AudioPlaybackTracker();
-        private MusicController _musicController = new MusicController();
-
-        private readonly Dictionary<SoundChannel, int> _channelLimits = new()
-        {
-            { SoundChannel.Sfx, 5},
-            { SoundChannel.Collision, 1},
-            { SoundChannel.Deflection, 1},
-            { SoundChannel.UI, 3},
-        };
+        private readonly AudioPlaybackTracker _playbackTracker = new AudioPlaybackTracker();
+        private readonly MusicController _musicController = new MusicController();
+        private Dictionary<ulong, SoundComponent> _soundIdDic = new Dictionary<ulong, SoundComponent>();
+        private UIDefaultSounds _uiDefaultSounds;
         
-        private readonly Dictionary<SoundChannel, List<SoundBehavior>> _activeByChannel = new()
+        private readonly Dictionary<SoundChannel, List<SoundComponent>> _activeByChannel = new()
         {
-            { SoundChannel.Sfx, new List<SoundBehavior>() },
-            { SoundChannel.Collision, new List<SoundBehavior>()},
-            { SoundChannel.Deflection, new List<SoundBehavior>()},
-            { SoundChannel.UI, new List<SoundBehavior>()},
+            { SoundChannel.Sfx, new List<SoundComponent>() },
+            { SoundChannel.Collision, new List<SoundComponent>()},
+            { SoundChannel.Deflection, new List<SoundComponent>()},
+            { SoundChannel.UI, new List<SoundComponent>()},
         };
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
-        public TickGroup SelfTickGroup { get; } = TickGroup.HalfTick;
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
         public float LastUpdateTime { get; set; }
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -50,56 +35,62 @@ namespace _Main.Scripts.Sounds
         
 #endif
 
-        private void Awake()
+        private void Start()
         {
             _factory = new SoundBehaviourFactory(soundPrefab);
-            
-            AddMusic(MusicType.MainMenu, menuMusic);
-            AddMusic(MusicType.Gameplay, gameplayMusic);
-            AddMusic(MusicType.EndGame, defeatMusic);
-            
-            SetEventBus();
+            _uiDefaultSounds = new UIDefaultSounds();
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
             _debugData = new SoundDebugData();
-
 #endif
         }
         
         public void ExecuteUpdate()
         {
             _playbackTracker.Execute();
+            _musicController.Execute();
+        }
+        
+        #region Sounds
+
+        public void PlayUISound(UISoundType uiSoundType)
+        {
+            PlaySound(_uiDefaultSounds.GetSound(uiSoundType), null);
         }
 
-        private void AddMusic(MusicType type, ISoundData soundData)
+        public void PlayMusic(ISoundData soundData)
         {
             if (soundData == null)
             {
-                Debug.LogWarning($"{type} Music SoundData is not assigned");
                 return;
             }
-
+            
             var tempSound = _factory.GetSound();
             tempSound.SetData(soundData);
-            _musicController.AddMusic(type, tempSound);
+            _musicController.PlayMusic(tempSound);
         }
 
-        private void SpawnSound(ISoundData soundData, Transform soundParent, ILoopableSound loopableSound)
+        public void StopMusic()
+        {
+            _musicController.StopMusic();
+        }
+
+        public ulong PlaySound(ISoundData soundData, Transform soundParent)
         {
             if (soundData == null)
             {
                 //Debug.Log("Sound Data is NULL");
-                return;
+                return 0;
             }
 
             if (GetIsChannelFull(soundData.Channel))
             {
                 //Debug.Log($"{soundData.Channel} channel is full");
-                return;
+                return 0;
             }
             
-            var tempSound = _factory.GetSound();
+            var tempSound = _factory.GetSound(out var soundId);
             tempSound.SetData(soundData);
 
             if (soundData.Is3DSound)
@@ -107,15 +98,7 @@ namespace _Main.Scripts.Sounds
                 tempSound.SetParent(soundParent);
             }
             
-            if (soundData.DoesLoop == false)
-            {
-                _playbackTracker.Register(tempSound);
-            }
-            else
-            {
-                tempSound.PlayAudio();
-                loopableSound.OnLoopFinished += tempSound.TriggerFinish;
-            }
+            _playbackTracker.Register(tempSound);
             
             _activeByChannel[soundData.Channel].Add(tempSound);
             
@@ -126,10 +109,27 @@ namespace _Main.Scripts.Sounds
 #endif
             
             tempSound.OnFinished += Sound_OnFinishedHandler;
+            
+            return soundId;
         }
+
+        public void StopSound(ulong soundId)
+        {
+            if (_soundIdDic.ContainsKey(soundId))
+            {
+                var soundComponent = _soundIdDic[soundId];
+                soundComponent.OnFinished -= Sound_OnFinishedHandler;
+                _soundIdDic.Remove(soundId);
+            }
+        }
+
+        #endregion
+
+        #region Channel Getters
+
         private int GetChannelLimit(SoundChannel channel)
         {
-            return _channelLimits[channel];
+            return SoundManagerTools.GetChannelLimit(channel);
         }
 
         private bool GetIsChannelFull(SoundChannel channel)
@@ -137,61 +137,11 @@ namespace _Main.Scripts.Sounds
             return _activeByChannel[channel].Count >= GetChannelLimit(channel);
         }
 
-
-        #region Event Bus
-
-        private void SetEventBus()
-        {
-            GameEventCaller.Subscribe<SoundEvents.PlaySound>(EventBus_Sounds_PlaySound);
-            GameEventCaller.Subscribe<SoundEvents.PlayMusic>(EventBus_Sounds_PlayMusic);
-            GameEventCaller.Subscribe<SoundEvents.StopMusic>(EventBus_Sounds_StopMusic);
-            GameEventCaller.Subscribe<SoundEvents.SetMusicLevel>(EventBus_Sounds_SetMusicLevel);
-            GameEventCaller.Subscribe<SoundEvents.PlayUIButton>(EventBus_Sounds_PlayUIButton);
-        }
-
-        private void EventBus_Sounds_PlayUIButton(SoundEvents.PlayUIButton input)
-        {
-            var soundData = input.Type switch
-            {
-                UISoundType.Default => defaultUISound,
-                UISoundType.Accept => acceptUISound,
-                UISoundType.Back => backUISound,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-            
-            SpawnSound(soundData, null, null);
-        }
-
-        private void EventBus_Sounds_PlaySound(SoundEvents.PlaySound input)
-        {
-            SpawnSound(input.Data, input.SoundParent, input.LoopableSound);
-        }
-
-        private void EventBus_Sounds_PlayMusic(SoundEvents.PlayMusic input)
-        {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.LastMusic = _musicController.CurrentMusic;
-            _debugData.CurrentMusic = input.Type;
-#endif
-            
-            _musicController.PlayMusic(input.Type);
-        }
-
-        private void EventBus_Sounds_StopMusic(SoundEvents.StopMusic input)
-        {
-            _musicController.StopCurrentMusic();
-        }
-
-        private void EventBus_Sounds_SetMusicLevel(SoundEvents.SetMusicLevel input)
-        {
-            _musicController.SetMusicVolume(input.Volume);
-        }
-
         #endregion
-
+        
         #region Handlers
 
-        private void Sound_OnFinishedHandler(SoundBehavior soundBehavior)
+        private void Sound_OnFinishedHandler(SoundComponent soundBehavior)
         {
             if (_activeByChannel[soundBehavior.SoundClass.Channel].Contains(soundBehavior))
             {
@@ -207,5 +157,48 @@ namespace _Main.Scripts.Sounds
 
 
         #endregion
+    }
+
+    public class UIDefaultSounds
+    {
+        private readonly Dictionary<UISoundType, ISoundData> _uiSounds = new Dictionary<UISoundType, ISoundData>();
+        private const string Path = "ScriptableObjects/DefaultUISounds";
+        
+        public UIDefaultSounds()
+        {
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            var loaded = Resources.LoadAll<UiSoundClassSo>(Path);
+
+            for (int i = 0; i < loaded.Length; i++)
+            {
+                var soundType = loaded[i].UISoundType;
+
+                if (_uiSounds.ContainsKey(soundType))
+                {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                
+                    Debug.LogWarning($"{soundType} UI Sound duplicated found in Resources/{Path} was not loaded, check the UISoundType and changed to load it!");
+#endif
+                    continue;
+                }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                
+                Debug.Log($"{soundType} UI Sound loaded from Resources/{Path}");
+#endif
+                
+                _uiSounds.Add(soundType, loaded[i]);
+            }
+        }
+
+        public ISoundData GetSound(UISoundType uiSoundType)
+        {
+            return _uiSounds[uiSoundType];
+        }
+
     }
 }

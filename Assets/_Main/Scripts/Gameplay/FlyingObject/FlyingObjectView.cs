@@ -41,7 +41,7 @@ namespace _Main.Scripts.FyingObject
 
     [RequireComponent(typeof(Rigidbody2D))]
     public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, 
-        IObserver, IUpdatable, IPoolable<TS>, ILoopableSound
+        IObserver, IUpdatable, IPoolable<TS>
     where T : FlyingObjectMotor<TVS>
     where TS : FlyingObjectView<T, TS, TVS>
     where TVS : FlyingObjectValues
@@ -67,7 +67,6 @@ namespace _Main.Scripts.FyingObject
         public event Action<Vector2> OnPositionChanged;
         public event Action<TVS> OnValuesChanged;
         public event Action<Collider2D> OnCollisionDetected;
-        public event Action OnLoopFinished;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
@@ -156,7 +155,6 @@ namespace _Main.Scripts.FyingObject
             _rigidbody2D.transform.rotation = rotation;
             _rigidbody2D.transform.position = position;
             Movement.CanMove = canMove;
-            SoundEventCaller.PlaySound(moveSound, transform, this);
         }
         
         protected float GetRotationSpeed()
@@ -166,21 +164,12 @@ namespace _Main.Scripts.FyingObject
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            TriggerLoopFinished();
             OnCollisionDetected?.Invoke(other);
         }
 
         public void Recycle()
         {
-            TriggerLoopFinished();
             OnRecycle?.Invoke((TS)this);
         }
-
-        private void TriggerLoopFinished()
-        {
-            OnLoopFinished?.Invoke();
-            OnLoopFinished = null;
-        }
-
     }
 }

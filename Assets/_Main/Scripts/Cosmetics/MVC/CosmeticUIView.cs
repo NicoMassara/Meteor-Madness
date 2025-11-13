@@ -19,7 +19,6 @@ namespace _Main.Scripts.Cosmetics.MVC
             GetUiComponents().MainMenuButton.onClick.AddListener(() =>
             {
                 OnMainMenuButtonPressed?.Invoke();
-                PlayButtonSound();
             });
         }
 
@@ -45,11 +44,6 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             DisableActivePanel();
             GetUiComponents().MainPanel.SetActive(false);
-        }
-        
-        private void PlayButtonSound()
-        {
-            SoundEventCaller.PlayUIButton(UISoundType.Back);
         }
         
         private void SetActivePanel(GameObject panelObject)
