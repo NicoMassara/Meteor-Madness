@@ -24,6 +24,7 @@
         public const ulong Heal = 0xA1006;
         public const ulong SetRotation = 0xA1007;
         public const ulong TriggerEndDestruction = 0xA1008;
+        public const ulong SetLowHealth = 0xA1009;
     }
 
     public struct GameModeObserverMessage

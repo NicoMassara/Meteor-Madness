@@ -10,6 +10,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private bool _canRotate;
         private bool _isShaking;
         private bool _canTakeDamage = true;
+        private const float LowHealthThreshold = 0.35f;
         public event Action OnDeath;
         
 
@@ -24,7 +25,8 @@ namespace _Main.Scripts.Gameplay.Earth
             if(_canTakeDamage == false) return;
             
             _currentHealth -= damage;
-            
+
+            NotifyAll(EarthObserverMessage.SetLowHealth, GetIsLowHealth());
             NotifyAll(EarthObserverMessage.EarthCollision, _currentHealth, position, rotation,direction);
             
             if (_currentHealth <= 0)
@@ -71,6 +73,11 @@ namespace _Main.Scripts.Gameplay.Earth
         public void SetEnableDamage(bool canTakeDamage)
         {
             _canTakeDamage = canTakeDamage;
+        }
+
+        private bool GetIsLowHealth()
+        {
+            return _currentHealth <= LowHealthThreshold;
         }
     }
 }

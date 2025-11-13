@@ -49,6 +49,7 @@ namespace _Main.Scripts.Gameplay.Earth
         public event Action OnCollision;
         public event Action OnDestruction;
         public event Action OnPreDestruction;
+        public event Action<bool> OnLowHealth;
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -117,7 +118,15 @@ namespace _Main.Scripts.Gameplay.Earth
                 case EarthObserverMessage.TriggerEndDestruction:
                     TriggerEndDestruction();
                     break;
+                case EarthObserverMessage.SetLowHealth:
+                    HandleSetLowHealth((bool)args[0]);
+                    break;
             }
+        }
+
+        private void HandleSetLowHealth(bool isLowHealth)
+        {
+            OnLowHealth?.Invoke(isLowHealth);
         }
 
         #region Health
