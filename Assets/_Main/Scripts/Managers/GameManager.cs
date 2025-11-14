@@ -11,7 +11,7 @@ namespace _Main.Scripts.Managers
         private static GameManager _instance;
         
         public bool CanPlay { get; set; }
-        public bool CanVibrate { get; set; }
+        public bool CanVibrate { get; set; } = true;
         public bool IsPaused { get; set; }
         private int _currentPoints;
         
