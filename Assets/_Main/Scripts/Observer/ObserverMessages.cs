@@ -5,7 +5,7 @@
         public const ulong Rotate = 0xA0001;
         public const ulong StopRotate = 0xA0002;
         public const ulong Deflect = 0xA0003;
-        public const ulong PlayMoveSound = 0xA0004;
+        public const ulong ChangedDirection = 0xA0004;
         public const ulong SetGold = 0xA0005;
         public const ulong SetActiveShield = 0xA0006;
         public const ulong SetActiveSuperShield = 0xA0007;
@@ -24,6 +24,7 @@
         public const ulong Heal = 0xA1006;
         public const ulong SetRotation = 0xA1007;
         public const ulong TriggerEndDestruction = 0xA1008;
+        public const ulong SetLowHealth = 0xA1009;
     }
 
     public struct GameModeObserverMessage
@@ -142,6 +143,16 @@
         public const ulong Empty10 = 0xA8012;
     }
 
+    public struct InputsUIObserverMessage
+    {
+        public const ulong SetEnableClock = 0xA9001;
+        public const ulong SetEnableCounterClock = 0xA0002;
+        public const ulong Empty1 = 0xA0003;
+        public const ulong SetEnableUI = 0xA0004;
+        public const ulong Initialize = 0xA0005;
+        public const ulong Destroy = 0xA0006;
+    }
+    
     public struct OptionsMenuObserverMessage
     {
         public const ulong Enable = 0xA9001;
@@ -159,15 +170,5 @@
         public const ulong Empty11 = 0xA9013;
         public const ulong Empty12 = 0xA9014;
         public const ulong Empty13 = 0xA9015;
-    }
-    
-    public struct InputsUIObserverMessage
-    {
-        public const ulong SetEnableClock = 0xA9001;
-        public const ulong SetEnableCounterClock = 0xA0002;
-        public const ulong Empty1 = 0xA0003;
-        public const ulong SetEnableUI = 0xA0004;
-        public const ulong Initialize = 0xA0005;
-        public const ulong Destroy = 0xA0006;
     }
 }

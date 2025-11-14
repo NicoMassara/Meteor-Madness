@@ -43,7 +43,6 @@ namespace _Main.Scripts.Gameplay.MyInputs
         public event Action OnStopMovement;
         public event Action<bool> OnAbilityTriggered;
         
-
         
         private void Awake()
         {

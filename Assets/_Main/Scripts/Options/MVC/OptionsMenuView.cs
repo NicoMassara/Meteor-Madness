@@ -8,6 +8,7 @@ namespace _Main.Scripts.Options.MVC
     public class OptionsMenuView : ManagedBehavior, IObserver
     {
         public event Action OnOptionsMenuEnable;
+        public event Action OnOptionsMenuDisable;
         
         public void OnNotify(ulong message, params object[] args)
         {
@@ -28,12 +29,11 @@ namespace _Main.Scripts.Options.MVC
         private void HandleEnable()
         {
             OnOptionsMenuEnable?.Invoke();
-            SoundEventCaller.PlayMusic(MusicType.MainMenu);
         }
         
         private void HandleDisable()
         {
-            SoundEventCaller.StopMusic();
+            OnOptionsMenuDisable?.Invoke();
         }
         
         private void HandleMainMenu()

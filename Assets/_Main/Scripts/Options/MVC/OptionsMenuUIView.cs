@@ -1,11 +1,7 @@
 ﻿using System;
-using _Main.Scripts.Localization;
-using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Main.Scripts.Options.MVC
 {
@@ -16,6 +12,9 @@ namespace _Main.Scripts.Options.MVC
         private OptionsMenuUIComponents _uiComponents;
         private GameObject _currentPanel;
         
+        public event Action OnAcceptButtonPressed;
+        public event Action OnBackButtonPressed;
+        
         public event Action OnBackToMenu;
         public event Action OnLanguageButtonPressed;
 
@@ -24,13 +23,13 @@ namespace _Main.Scripts.Options.MVC
             GetUiComponents().MainMenuButton.onClick.AddListener(() =>
             {
                 OnBackToMenu?.Invoke();
-                PlayButtonSound(UISoundType.Back);
+                OnBackButtonPressed?.Invoke();
             });
             
             GetUiComponents().LanguageButton.onClick.AddListener(() =>
             {
                 OnLanguageButtonPressed?.Invoke();
-                PlayButtonSound(UISoundType.Accept);
+                OnAcceptButtonPressed?.Invoke();
             });
         }
 
@@ -75,11 +74,6 @@ namespace _Main.Scripts.Options.MVC
         private void DisableActivePanel()
         {
             _currentPanel?.SetActive(false);
-        }
-        
-        private void PlayButtonSound(UISoundType buttonType)
-        {
-            SoundEventCaller.PlayUIButton(buttonType);
         }
         
         private OptionsMenuUIComponents GetUiComponents()
