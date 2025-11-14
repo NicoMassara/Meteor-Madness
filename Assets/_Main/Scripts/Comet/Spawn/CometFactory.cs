@@ -18,7 +18,7 @@ namespace _Main.Scripts.Comet
         
         private GenericPool<CometView> _pool;
         private bool _isBottomSpawn;
-        private ulong _spawnTimerId;
+        private TimerManager.TimerId _spawnTimerId;
 
         private void Start()
         {

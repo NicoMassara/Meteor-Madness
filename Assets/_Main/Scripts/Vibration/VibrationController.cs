@@ -8,7 +8,7 @@ namespace _Main.Scripts.Vibration
     public class VibrationController
     {
         private AndroidJavaObject _vibrator;
-        private ulong _timerId;
+        private TimerManager.TimerId _timerId;
 
         public event Action OnVibrate;
         public event Action OnStopVibration;
@@ -77,7 +77,6 @@ namespace _Main.Scripts.Vibration
                     },
                     OnEndAction = () =>
                     {
-                        _timerId = 0;
                         IsVibrating = false;
                         OnStopVibration?.Invoke();
                     }
@@ -94,7 +93,10 @@ namespace _Main.Scripts.Vibration
             if (_vibrator != null)
             {
                 _vibrator.Call("cancel");
-                TimerManager.Remove(ref _timerId);
+                if (_timerId != null)
+                {
+                    TimerManager.Remove(_timerId.Id);
+                }
                 IsVibrating = false;
                 OnStopVibration?.Invoke();
             }
