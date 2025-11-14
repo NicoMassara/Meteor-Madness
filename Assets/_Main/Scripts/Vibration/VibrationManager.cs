@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.MyComponents;
 using UnityEngine;
 
@@ -26,11 +27,15 @@ namespace _Main.Scripts.Vibration
 
         public void Vibrate(VibrationData data)
         {
+            if(GameManager.Instance.CanVibrate == false) return;
+            
             _vibrationController.Vibrate(data.Duration, data.Intensity);
         }
 
         public void Vibrate(VibrationDurationType duration, VibrationIntensityType intensity)
         {
+            if(GameManager.Instance.CanVibrate == false) return;
+            
             _vibrationController.Vibrate(VibrationTools.GetDuration(duration), VibrationTools.GetIntensity(intensity));
         }
 

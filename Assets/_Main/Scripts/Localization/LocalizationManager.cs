@@ -17,7 +17,7 @@ namespace _Main.Scripts.Localization
         private readonly Dictionary<string, string> _localizedTexts = new();
         private SystemLanguage _currentLanguage;
         
-        private Dictionary<SystemLanguage, string> _languageCodeMap = new Dictionary<SystemLanguage, string>
+        private readonly Dictionary<SystemLanguage, string> _languageCodeMap = new Dictionary<SystemLanguage, string>
         {
             { SystemLanguage.English, "en" },
             { SystemLanguage.Spanish, "es" },
@@ -33,6 +33,14 @@ namespace _Main.Scripts.Localization
             {"RightKey", "<color=blue>D</color>"},
             {"AbilityKey", "<color=blue>S</color>"}
         };
+
+
+        private readonly Dictionary<SystemLanguage, string> _displayLanguages = new()
+        {
+            { SystemLanguage.English, "English" },
+            { SystemLanguage.Spanish, "Español" },
+        };
+        
         
         private void Start()
         {
@@ -285,6 +293,7 @@ namespace _Main.Scripts.Localization
         }
 
         public SystemLanguage GetCurrentLanguage() => _currentLanguage;
+        public Dictionary<SystemLanguage, string> GetDisplayLanguages() => _displayLanguages;
 
         private string GetLanguageCode(SystemLanguage language)
         {
