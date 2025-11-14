@@ -1,55 +1,71 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
-using UnityEngine.InputSystem;
 using System;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.MyInputs
 {
-    public class InputReader : ManagedBehavior, IInputReader, ILateUpdatable, IUpdatable
+    public class InputReader : ManagedBehavior, IInputReader, IUpdatable
     {
-        private DefaultInputs _inputs;
-        private ITouchInputReader _touchInput;
+        private IInput input;
+
         private int _rotateDirection;
         private bool _areInputsEnable;
         
-        public bool HasUsedAbility { get; private set; }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 
+        private InputsDebugData _debugData;
+        private LateAbilityUpdater _lateAbilityUpdater;
+        
+        private class LateAbilityUpdater : ManagedComponent, ILateUpdatable
+        {
+            public bool HasUsedAbility { get; private set; }
+            public bool AreInputsEnabled { get; set; }
+            public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
+            public TickGroup SelfTickGroup { get; } = TickGroup.EightTick;
+            public float LastUpdateTime { get; set; }
+            
+            public void ExecuteUpdate()
+            {
+                if (AreInputsEnabled || HasUsedAbility)
+                {
+                    HasUsedAbility = false;
+                }
+            }
+        }
+#endif
+        
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
         public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
         public float LastUpdateTime { get; set; }
-
-        public UpdateGroup SelfLateUpdateGroup { get; } = UpdateGroup.Inputs;
         
         public event Action<int> OnMovementDirectionChanged;
         public event Action OnStopMovement;
         public event Action<bool> OnAbilityTriggered;
         
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
 
-        private InputsDebugData _debugData;
-#endif
         
         private void Awake()
         {
             GameEventCaller.Subscribe<InputsEvents.SetEnable>(EventBus_Inputs_SetEnable);
             GameManager.Instance.SetInputReader(this);
-            
+        }
+
+        private void Start()
+        {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData = new InputsDebugData();
+            _lateAbilityUpdater = new LateAbilityUpdater();
 #endif
-                
-#if UNITY_STANDALONE || UNITY_EDITOR
-            _inputs = new DefaultInputs();
             
-            //Pause
-            _inputs.Gameplay.Pause.performed += OnPause_Performed;
-#endif
 #if UNITY_ANDROID || UNITY_IOS
-            _touchInput = new TouchInputReader();
+            input = new TouchInput();
+#else
+            input = new KeyboardInput();
 #endif
         }
-        
+
         public void ExecuteUpdate()
         {
             if(_areInputsEnable == false) return;
@@ -59,111 +75,62 @@ namespace _Main.Scripts.Gameplay.MyInputs
                 OnMovementDirectionChanged?.Invoke(_rotateDirection);
             }
         }
-        
-        public void ManagedLateUpdate()
-        {
-            if(_areInputsEnable == false && HasUsedAbility == false) return;
-            
-            HasUsedAbility = false;
-        }
 
         private void EnableInputs()
         {
             if(_areInputsEnable == true) return;
 
-#if UNITY_STANDALONE || UNITY_EDITOR
-            _inputs.Enable();
-            //Rotate
-            _inputs.Gameplay.RotateDirection.performed += OnRotate_Performed;
-            _inputs.Gameplay.RotateDirection.canceled += OnRotate_Canceled;
+            input.Enable();
             
-            //Ability
-            _inputs.Gameplay.TriggerAbility.performed += OnTriggerAbility_Performed;
-            _inputs.Gameplay.TriggerAbility.canceled += OnTriggerAbility_Canceled;
-#endif
-
-#if UNITY_ANDROID || UNITY_IOS
-            _touchInput.Enable();
+            input.OnTriggerAbility += TriggerAbility;
+            input.OnUpdateDirection += UpdateDirection;
+            input.OnPaused += TriggerPause;
             
-            _touchInput.OnTriggerAbility += TriggerAbility;
-            _touchInput.OnUpdateDirection += UpdateDirection;
-#endif
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
             _debugData.HorizontalAxis = 0;
-            
+            _lateAbilityUpdater.AreInputsEnabled = _areInputsEnable;
 #endif
 
             _areInputsEnable = true;
+    
         }
 
         private void DisableInputs()
         {
             if(_areInputsEnable == false) return;
             
-#if UNITY_STANDALONE || UNITY_EDITOR
-            _inputs.Disable();
+            input.OnTriggerAbility -= TriggerAbility;
+            input.OnUpdateDirection -= UpdateDirection;
+            input.OnPaused -= TriggerPause;
             
-            //Rotate
-            _inputs.Gameplay.RotateDirection.performed -= OnRotate_Performed;
-            _inputs.Gameplay.RotateDirection.canceled -= OnRotate_Canceled;
+            input.Disable();
             
-            //Ability
-            _inputs.Gameplay.TriggerAbility.performed -= OnTriggerAbility_Performed;
-#endif
-
-#if UNITY_ANDROID || UNITY_IOS
-            _touchInput.OnTriggerAbility -= TriggerAbility;
-            _touchInput.OnUpdateDirection -= UpdateDirection;
-            
-            _touchInput.Disable();
-#endif
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
             _debugData.HorizontalAxis = 0;
-            
+            _lateAbilityUpdater.AreInputsEnabled = _areInputsEnable;
 #endif
             
             _areInputsEnable = false;
-        }
-        
-        #region Keyboard Inputs
 
-        private void OnRotate_Performed(InputAction.CallbackContext input)
-        {
-            UpdateDirection((int)input.ReadValue<float>());
         }
-        
-        private void OnRotate_Canceled(InputAction.CallbackContext input)
-        {
-            UpdateDirection(0);
-        }
-        
-        private void OnTriggerAbility_Performed(InputAction.CallbackContext input)
-        {
-            TriggerAbility(true);
-        }
-        
-        private void OnTriggerAbility_Canceled(InputAction.CallbackContext input)
-        {
-            TriggerAbility(false);
-        }
-        
-        private void OnPause_Performed(InputAction.CallbackContext input)
+
+        #region Actions
+
+        private void TriggerPause()
         {
             GameManager.Instance.EventManager.Publish(
                 new GameModeEvents.SetPause{IsPaused = !GameManager.Instance.IsPaused});
         }
-
-        #endregion
         
-        private void TriggerAbility(bool isActive)
+        private void TriggerAbility(bool isPressed)
         {
-            HasUsedAbility = isActive;
-            OnAbilityTriggered?.Invoke(isActive);
+            OnAbilityTriggered?.Invoke(isPressed);
+            
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
-            _debugData.TriggerAbility = HasUsedAbility;
+            _debugData.TriggerAbility = _lateAbilityUpdater.HasUsedAbility;
             
 #endif
         }
@@ -180,9 +147,12 @@ namespace _Main.Scripts.Gameplay.MyInputs
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
             _debugData.HorizontalAxis = _rotateDirection;
-            
 #endif
         }
+
+        #endregion
+        
+
 
         private void EventBus_Inputs_SetEnable(InputsEvents.SetEnable input)
         {

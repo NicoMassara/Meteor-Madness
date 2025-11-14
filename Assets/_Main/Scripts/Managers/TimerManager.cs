@@ -15,7 +15,8 @@ namespace _Main.Scripts.Managers
         protected static TimerManager _instance;
 
         private readonly RandomIdGenerator _idStorage = new RandomIdGenerator();
-        
+
+        private readonly List<ulong> _cancelAddIds = new List<ulong>();
         private readonly List<TimerManagerData> _running = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toAdd = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toRemove = new List<TimerManagerData>();
@@ -81,13 +82,18 @@ namespace _Main.Scripts.Managers
         {
             if (_toAdd.Count > 0)
             {
-                foreach (var data in _toAdd.ToList())
+                var cancelIds = new HashSet<ulong>(_cancelAddIds);
+
+                foreach (var data in _toAdd)
                 {
+                    if (cancelIds.Contains(data.Id))
+                        continue; 
+
                     activeCount++;
                     _running.Add(data);
                     _idsDic.Add(data.Id, data);
                 }
-            
+
                 _toAdd.Clear();
             }
             
@@ -117,7 +123,7 @@ namespace _Main.Scripts.Managers
                 _toRemove.Add(timer);
             }
         }
-
+        
         public static ulong Add(TimerData timerData, UpdateGroup updateGroup = UpdateGroup.Always)
         {
             return Instance._Add(timerData,updateGroup);
@@ -131,19 +137,25 @@ namespace _Main.Scripts.Managers
             return id;
         }
 
-        public static void Remove(ulong id)
+        public static void Remove(ref ulong id)
         {
-            Instance._Remove(id);
+            Instance._Remove(ref id);
         }
 
-        private void _Remove(ulong id)
+        private void _Remove(ref ulong id)
         {
             if (_idsDic.TryGetValue(id, out var value))
             {
+                Debug.Log($"Timer removed from running, id:{id}");
                 _toRemove.Add(value);
+                id = ulong.MaxValue;
+            }
+            else
+            {
+                Debug.Log($"Timer added to cancel queue, id:{id}");
+                _cancelAddIds.Add(id);
+                id = ulong.MaxValue;
             }
         }
-
-
     }
 }

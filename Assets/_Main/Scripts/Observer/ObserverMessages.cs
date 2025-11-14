@@ -5,7 +5,7 @@
         public const ulong Rotate = 0xA0001;
         public const ulong StopRotate = 0xA0002;
         public const ulong Deflect = 0xA0003;
-        public const ulong PlayMoveSound = 0xA0004;
+        public const ulong ChangedDirection = 0xA0004;
         public const ulong SetGold = 0xA0005;
         public const ulong SetActiveShield = 0xA0006;
         public const ulong SetActiveSuperShield = 0xA0007;
@@ -141,5 +141,15 @@
         public const ulong Empty8 = 0xA8010;
         public const ulong Empty9 = 0xA8011;
         public const ulong Empty10 = 0xA8012;
+    }
+
+    public struct InputsUIObserverMessage
+    {
+        public const ulong SetEnableClock = 0xA9001;
+        public const ulong SetEnableCounterClock = 0xA0002;
+        public const ulong Empty1 = 0xA0003;
+        public const ulong SetEnableUI = 0xA0004;
+        public const ulong Initialize = 0xA0005;
+        public const ulong Destroy = 0xA0006;
     }
 }

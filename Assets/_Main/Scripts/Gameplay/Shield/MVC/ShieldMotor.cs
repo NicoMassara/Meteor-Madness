@@ -18,7 +18,7 @@ namespace _Main.Scripts.Gameplay.Shield
             if (direction != _lastDirection)
             {
                 _lastDirection = direction;
-                NotifyAll(ShieldObserverMessage.PlayMoveSound);
+                NotifyAll(ShieldObserverMessage.ChangedDirection);
             }
             
             NotifyAll(ShieldObserverMessage.Rotate, direction);
