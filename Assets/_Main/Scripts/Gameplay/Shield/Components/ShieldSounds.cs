@@ -20,7 +20,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private SoundClassSo automaticRunning;
         [SerializeField] private SoundClassSo superShieldRunning;
 
-        private ulong _abilityRunningSoundId;
+        private SoundId _abilityRunningSoundId;
 
         private void Start()
         {

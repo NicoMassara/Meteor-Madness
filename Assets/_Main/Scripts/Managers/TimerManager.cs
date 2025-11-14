@@ -41,6 +41,11 @@ namespace _Main.Scripts.Managers
             public ulong Id { get; private set; }
             public bool IsActive => Id > 0;
 
+            public TimerId()
+            {
+                Id = 0;
+            }
+
             public TimerId(ulong id)
             {
                 this.Id = id;

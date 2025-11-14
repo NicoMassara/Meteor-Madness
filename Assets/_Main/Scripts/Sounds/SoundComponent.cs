@@ -17,7 +17,8 @@ namespace _Main.Scripts.Sounds
         public float VolumeMultiplier { get; private set; }
         public ISoundData SoundClass { get; private set; }
         public string AudioName => SoundClass.ClassName;
-        
+        public bool IsLooping => SoundClass.DoesLoop;
+
         public event Action<SoundComponent> OnFinished;
         public event Action<SoundComponent> OnRecycle;
         public void Recycle()
