@@ -19,7 +19,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         [SerializeField] private SoundClassSo slowTime;
         [SerializeField] private SoundClassSo speedTime;
 
-        private ulong _finishAbilityTimerId;
+        private TimerManager.TimerId _finishAbilityTimerId;
         
         private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
@@ -152,7 +152,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         private void HandleForceFinish()
         {
-            TimerManager.Remove(_finishAbilityTimerId);
+            TimerManager.Remove(_finishAbilityTimerId.Id);
             
             OnAbilityFinished?.Invoke();
         }

@@ -84,8 +84,8 @@ namespace _Main.Scripts.Gameplay.Shield
                 case ShieldObserverMessage.StopRotate:
                     HandleStopRotate();
                     break;
-                case ShieldObserverMessage.PlayMoveSound:
-                    HandlePlayMoveSound();
+                case ShieldObserverMessage.ChangedDirection:
+                    HandleChangedDirection();
                     break;
                 case ShieldObserverMessage.SetActiveShield:
                     HandleSetActiveShield((bool)args[0]);
@@ -184,7 +184,7 @@ namespace _Main.Scripts.Gameplay.Shield
             }
         }
         
-        private void HandlePlayMoveSound()
+        private void HandleChangedDirection()
         {
             OnRotate?.Invoke();
         }

@@ -39,9 +39,9 @@ namespace _Main.Scripts.Gameplay.Abilies
 
             if (_inputReader != null)
             {
-                _inputReader.OnAbilityTriggered += hasUsed =>
+                _inputReader.OnAbilityTriggered += (isPressed) =>
                 {
-                    if (hasUsed)
+                    if (isPressed)
                     {
                         _controller.SelectAbility();
                     }
