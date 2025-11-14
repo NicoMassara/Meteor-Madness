@@ -74,8 +74,11 @@ namespace _Main.Scripts.Sounds
         
         public void StopMusic()
         {
-            OnMusicLeaving?.Invoke(_currentMusic.SoundClass.ClassName);
-            _volumeChanger.DecreaseVolume(_currentMusic, OnMusicStop);
+            if (_currentMusic != null)
+            {
+                OnMusicLeaving?.Invoke(_currentMusic.SoundClass.ClassName);
+                _volumeChanger.DecreaseVolume(_currentMusic, OnMusicStop);
+            }
         }
 
         public void PlayMusic(SoundComponent music)

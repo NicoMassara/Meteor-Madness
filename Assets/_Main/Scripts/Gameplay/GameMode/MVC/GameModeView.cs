@@ -13,12 +13,14 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
+        public event Action OnCountDownStarted;
         public event Action OnCountdownUpdated;
         public event Action OnCountdownUpdatedFinished;
         public event Action OnGameModeEnable;
 
         public event Action OnGameModeFinished;
         public event Action OnGameModeStarted;
+        public event Action OnEarthDeath;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
         
@@ -304,6 +306,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             CameraEventCaller.ZoomOut();
+            OnCountDownStarted?.Invoke();
         }
         
         private void HandleCountdownFinish()
@@ -338,6 +341,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleEarthShake()
         {
+            OnEarthDeath?.Invoke();
             GameEventCaller.Publish(new CameraEvents.ZoomIn());
         }
         

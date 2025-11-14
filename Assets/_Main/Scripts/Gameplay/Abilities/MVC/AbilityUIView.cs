@@ -31,7 +31,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                     HandleAddAbility((int)args[0]);
                     break;
                 case AbilityObserverMessage.SelectAbility:
-                    HandleSelectAbility((int)args[0]);
+                    HandleSelectAbility();
                     break;
                 case AbilityObserverMessage.RestartAbilities:
                     HandleRestartAbilities();
@@ -57,7 +57,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             abilityUIData.AddAbility((AbilityType)abilityTypeIndex);
         }
         
-        private void HandleSelectAbility(int abilityTypeIndex)
+        private void HandleSelectAbility()
         {
             abilityUIData.RemoveAbility();
         }
