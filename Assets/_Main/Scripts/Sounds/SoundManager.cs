@@ -12,11 +12,11 @@ namespace _Main.Scripts.Sounds
         [Header("Prefab References")]
         [SerializeField] private SoundComponent soundPrefab;
         
-        private SoundBehaviourFactory _factory;
         private readonly AudioPlaybackTracker _playbackTracker = new AudioPlaybackTracker();
         private readonly MusicController _musicController = new MusicController();
-        private Dictionary<ulong, SoundComponent> _soundIdDic = new Dictionary<ulong, SoundComponent>();
+        private SoundBehaviourFactory _factory;
         private UIDefaultSounds _uiDefaultSounds;
+        private SoundIdStorage _idStorage;
         
         private readonly Dictionary<SoundChannel, List<SoundComponent>> _activeByChannel = new()
         {
@@ -40,6 +40,7 @@ namespace _Main.Scripts.Sounds
         {
             _factory = new SoundBehaviourFactory(soundPrefab);
             _uiDefaultSounds = new UIDefaultSounds();
+            _idStorage = new SoundIdStorage();
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -89,21 +90,22 @@ namespace _Main.Scripts.Sounds
             _musicController.StopMusic();
         }
 
-        public ulong PlaySound(ISoundData soundData, Transform soundParent)
+        public SoundId PlaySound(ISoundData soundData, Transform soundParent)
         {
             if (soundData == null)
             {
                 //Debug.Log("Sound Data is NULL");
-                return 0;
+                return null;
             }
 
             if (GetIsChannelFull(soundData.Channel))
             {
                 //Debug.Log($"{soundData.Channel} channel is full");
-                return 0;
+                return null;
             }
             
-            var tempSound = _factory.GetSound(out var soundId);
+            var tempSound = _factory.GetSound();
+            var soundId = _idStorage.RegisterSound(tempSound);
             tempSound.SetData(soundData);
 
             if (soundData.Is3DSound)
@@ -120,19 +122,17 @@ namespace _Main.Scripts.Sounds
             _debugData.ChannelCount[soundData.Channel] = _activeByChannel[soundData.Channel].Count;
             
 #endif
-            
             tempSound.OnFinished += Sound_OnFinishedHandler;
             
             return soundId;
         }
 
-        public void StopSound(ulong soundId)
+        public void StopSound(SoundId soundId)
         {
-            if (_soundIdDic.ContainsKey(soundId))
+            if (_idStorage.TryGetSound(soundId.Id, out var soundComponent))
             {
-                var soundComponent = _soundIdDic[soundId];
-                soundComponent.OnFinished -= Sound_OnFinishedHandler;
-                _soundIdDic.Remove(soundId);
+                _playbackTracker.Unregister(soundComponent);
+                _idStorage.Unregister(soundId.Id);
             }
         }
 
@@ -163,13 +163,79 @@ namespace _Main.Scripts.Sounds
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
                 _debugData.ChannelCount[soundBehavior.SoundClass.Channel] = _activeByChannel[soundBehavior.SoundClass.Channel].Count;
-            
 #endif
             }
+            
+            soundBehavior.OnFinished -= Sound_OnFinishedHandler;
         }
 
 
         #endregion
+    }
+    
+    public class SoundId
+    {
+        public ulong Id { get; private set; }
+        public bool IsActive => Id > 0;
+
+        public SoundId(ulong id)
+        {
+            this.Id = id;
+        }
+
+        public void Reset()
+        {
+            Id = 0;
+        }
+    }
+
+    public class SoundIdStorage
+    {
+        private readonly Dictionary<ulong, SoundComponent> _soundByIdDic = new Dictionary<ulong, SoundComponent>();
+        private readonly RandomIdGenerator _idGenerator = new RandomIdGenerator();
+
+        public SoundIdStorage()
+        {
+            
+        }
+
+        private class SoundData
+        {
+            public SoundComponent Sound;
+            public ulong Id;
+        }
+
+        public bool TryGetSound(ulong id, out SoundComponent soundComponent)
+        {
+            return _soundByIdDic.TryGetValue(id, out soundComponent);
+        }
+
+        public SoundId RegisterSound(SoundComponent soundComponent)
+        {
+            var id = _idGenerator.Generate();
+
+            soundComponent.OnFinished += (soundComponent) =>
+            {
+                Unregister(id);
+            };
+            
+            _soundByIdDic.Add(id, soundComponent);
+            
+            Debug.Log("Sound Registered");
+            
+            return new SoundId(id);
+        }
+        
+        public void Unregister(ulong id)
+        {
+            if (_soundByIdDic.ContainsKey(id))
+            {
+                _soundByIdDic.Remove(id);
+                _idGenerator.Release(id);
+                
+                Debug.Log("Sound Unregistered");
+            }
+        }
     }
 
     public class UIDefaultSounds

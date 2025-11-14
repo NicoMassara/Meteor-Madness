@@ -7,7 +7,7 @@ namespace _Main.Scripts.Gameplay.Meteor.Components
     {
         [SerializeField] private SoundClassSo movement;
 
-        private ulong _movementSoundId;
+        private SoundId _movementSoundId;
 
         private void Start()
         {
