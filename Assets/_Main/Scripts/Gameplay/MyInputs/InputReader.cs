@@ -60,7 +60,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
 #if UNITY_ANDROID || UNITY_IOS
             input = new TouchInput();
 #else
-            input = new KeyboardInput();
+            input = new KeyInput();
 #endif
         }
 

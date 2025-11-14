@@ -29,6 +29,11 @@ namespace _Main.Scripts.Sounds
             _toAdd.Add(trackedAudio);
         }
 
+        public void Unregister(ITrackedAudio trackedAudio)
+        {
+            _toRemove.Add(trackedAudio);
+        }
+
         private void ApplyPending()
         {
             if (_toAdd.Count > 0)

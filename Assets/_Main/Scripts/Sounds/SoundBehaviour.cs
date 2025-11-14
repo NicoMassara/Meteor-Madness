@@ -19,7 +19,7 @@ namespace _Main.Scripts.Sounds
             _componentToSound = GetComponent<T>();
         }
 
-        protected ulong PlaySound(SoundClassSo soundClass)
+        protected SoundId PlaySound(SoundClassSo soundClass)
         {
             return _soundManager.PlaySound(soundClass, transform);
         }
@@ -29,7 +29,7 @@ namespace _Main.Scripts.Sounds
             _soundManager.PlayMusic(soundData);
         }
 
-        protected void StopSound(ulong soundId)
+        protected void StopSound(SoundId soundId)
         {
             _soundManager.StopSound(soundId);
         }
