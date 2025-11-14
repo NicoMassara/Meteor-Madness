@@ -5,6 +5,8 @@ namespace _Main.Scripts
 {
     public class RandomIdGenerator
     {
+        private const ulong NullId = 0;
+        
         private readonly HashSet<ulong> _inUseId = new HashSet<ulong>();
         private readonly System.Random random = new System.Random();
 
@@ -31,9 +33,17 @@ namespace _Main.Scripts
         
         private ulong NextUlong()
         {
-            byte[] bytes = new byte[8];
-            random.NextBytes(bytes);
-            return BitConverter.ToUInt64(bytes, 0);
+            ulong value;
+
+            do
+            {
+                byte[] bytes = new byte[8];
+                random.NextBytes(bytes);
+                value = BitConverter.ToUInt64(bytes, 0);
+
+            } while (value == NullId);
+
+            return value;
         }
         
         public void Release(ulong value)

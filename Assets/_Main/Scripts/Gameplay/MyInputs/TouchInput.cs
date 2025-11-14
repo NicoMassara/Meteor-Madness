@@ -16,8 +16,8 @@ namespace _Main.Scripts.Gameplay.MyInputs
         private const float TressHoldToCountDoubleTap = 0.05f;
         private readonly Dictionary<int, TouchData> _touchesDic = new Dictionary<int, TouchData>();
         private readonly List<int> _indexList = new List<int>();
-        private int CurrentTouches => _touchesDic.Count; 
-        private ulong _addTouchTimerId = ulong.MaxValue;
+        private int CurrentTouches => _touchesDic.Count;
+        private TimerManager.TimerId _addTouchTimerId;
         private double _lastTouchTime = ulong.MaxValue;
         private bool _hasTriggeredAbility;
         
@@ -243,9 +243,9 @@ namespace _Main.Scripts.Gameplay.MyInputs
         
         private void TryRemoveTimer()
         {
-            if (_addTouchTimerId < ulong.MaxValue)
+            if (_addTouchTimerId.IsActive)
             {
-                TimerManager.Remove(ref _addTouchTimerId);
+                TimerManager.Remove(_addTouchTimerId.Id);
             }
         } 
 
