@@ -85,6 +85,7 @@ namespace _Main.Scripts
     public class TimerData
     {
         public float Time;
+        public double Id;
         public UnityAction OnEndAction;
         public UnityAction OnStartAction;
     }

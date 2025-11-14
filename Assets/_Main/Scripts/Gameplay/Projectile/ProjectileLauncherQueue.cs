@@ -164,7 +164,7 @@ namespace _Main.Scripts.Gameplay.Projectile
             _gameplayActive = false;
             _canLaunch = false;
             _distanceTracker.ClearValues();
-            TimerManager.Remove(_firstSpawnTimerId);
+            TimerManager.Remove(ref _firstSpawnTimerId);
         }
 
         private void EnventBus_Projectile_ClearQueue(ProjectileEvents.ClearQueue input)

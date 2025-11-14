@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using UnityEngine;
@@ -11,32 +12,44 @@ namespace _Main.Scripts.Gameplay.MyInputs
 {
     public class TouchInput : IInput
     {
-        private const float TressHoldToCountDoubleTap = 0.5f;
-
-        private float _lastTouchTime = -1f;
-        private bool _prevBothTouched;
-        private bool _rightTouched;
-        private bool _leftTouched;
-
-        private int _currentTouchCount;
-        private int _lastTouchCount;
+        private const int MaxTouchCount = 2;
+        private const float TressHoldToCountDoubleTap = 0.05f;
+        private readonly Dictionary<int, TouchData> _touchesDic = new Dictionary<int, TouchData>();
+        private readonly List<int> _indexList = new List<int>();
+        private int CurrentTouches => _touchesDic.Count; 
+        private ulong _addTouchTimerId = ulong.MaxValue;
+        private double _lastTouchTime = ulong.MaxValue;
+        private bool _hasTriggeredAbility;
+        
+        private TouchType _currentTouchType;
         
         public event Action<int> OnUpdateDirection;
         public event Action<bool> OnTriggerAbility;
         public event Action OnPaused;
 
+        public TouchInput()
+        {
+            OnTriggerAbility += (isTriggered) =>
+            {
+                _hasTriggeredAbility = isTriggered;
+            };
+        }
+
         public void Enable()
         {
+            //Adds -1 so can be null
+            _indexList.Add(-1);
             TouchSimulation.Enable();
             EnhancedTouchSupport.Enable();
             Touch.onFingerDown += OnFingerDown;
             Touch.onFingerUp += OnFingerUp;
         }
-        
+
         public void Disable()
         {
-            _rightTouched = false;
-            _leftTouched = false;
+            _touchesDic.Clear();
+            _indexList.Clear();
+            TryRemoveTimer();
             
             TouchSimulation.Disable();
             if (EnhancedTouchSupport.enabled)
@@ -46,85 +59,70 @@ namespace _Main.Scripts.Gameplay.MyInputs
                 EnhancedTouchSupport.Disable();
             }
         }
-
+        
         private void OnFingerDown(Finger input)
         {
-            if(IsTouchOverUI(input)) return;
-            var touchPos = input.screenPosition;
-            if (!IsTouchInSafeZone(touchPos.y))
-            {
-                Debug.Log("Touch Input out of reach");
-                return;
-            }
-            //
-            
-            _currentTouchCount++;
+            var touchType = GetTouchType(input.screenPosition);
+            if(touchType == TouchType.OutOfBounds) return;
 
-            if (_currentTouchCount == 2 && _lastTouchCount < 2 &&
-                GetCanTriggerAbility())
-            {
-                TryToTriggerAbility();
-                return;
-            }
-
-            _lastTouchCount = _currentTouchCount;
-            _lastTouchTime = Time.time;
+            TryRemoveTimer();
             
-            if(_leftTouched || _rightTouched) return;
+            var lastCount = CurrentTouches;
             
-            if (IsTouchInLeftZone(touchPos.x))
-            {
-                _leftTouched = true;
-            }
-            else if (IsTouchInRightZone(touchPos.x))
-            {
-                _rightTouched = true;
-            }
+            AddTouchDataToDic(new TouchData(touchType, input.currentTouch, input.index));
             
-            UpdateRotateDirectionFromTouch();
-        }
-
-
-        private void OnFingerUp(Finger input)
-        {
-            if(IsTouchOverUI(input)) return;
-            
-            var touchPos = input.screenPosition;
-            if (!IsTouchInSafeZone(touchPos.y))
+            if (lastCount == 0)
             {
-                Debug.Log("Touch Input out of reach");
-                return;
-            }
-            //
-            _currentTouchCount--;
-
-            if (_prevBothTouched)
-            {
-                OnTriggerAbility?.Invoke(false);
-                _prevBothTouched = false;
-            }
+                _lastTouchTime = Time.realtimeSinceStartup;
             
-            if(!IsTouchInSafeZone(touchPos.y)) return;
-            
-            if (IsTouchInLeftZone(touchPos.x))
-            {
-                _leftTouched = false;
+                _addTouchTimerId = TimerManager.Add(new TimerData
+                {
+                    Time = TressHoldToCountDoubleTap + Time.deltaTime,
+                
+                    OnEndAction = () =>
+                    {
+                        UpdateRotateDirection();
+                    }
+                });
             }
-            else if (IsTouchInRightZone(touchPos.x))
+            else if (lastCount == 1)
             {
-                _rightTouched = false;
+                if (GetCanTriggerAbility())
+                {
+                    TriggerAbility();
+                }
+                else
+                {
+                    UpdateRotateDirection();
+                }
             }
-            
-            UpdateRotateDirectionFromTouch();
         }
         
-        private void UpdateRotateDirectionFromTouch()
+        private void OnFingerUp(Finger input)
         {
-            if (_leftTouched && !_rightTouched)
+            int fingerIndex = input.index;
+            
+            if (GetIsActiveTouch(fingerIndex))
+            {
+                if (_hasTriggeredAbility)
+                {
+                    OnTriggerAbility?.Invoke(false);
+                }
+                
+                RemoveTouchData(fingerIndex);
+                UpdateRotateDirection();
+            }
+        }
+        
+        private void UpdateRotateDirection()
+        {
+            _currentTouchType = GetTouchTypeByIndex(GetLastTouchIndex());
+            
+            if (_currentTouchType == TouchType.Left)
             {
                 OnUpdateDirection?.Invoke(1);
             }
-            else if (!_leftTouched && _rightTouched)
+            else if (_currentTouchType == TouchType.Right)
             {
                 OnUpdateDirection?.Invoke(-1); 
             }
@@ -136,36 +134,33 @@ namespace _Main.Scripts.Gameplay.MyInputs
 
         private bool GetCanTriggerAbility()
         {
-            var tempTime = Time.time - _lastTouchTime;
-            return tempTime <= TressHoldToCountDoubleTap;
+            var tempTime = Time.realtimeSinceStartup - _lastTouchTime;
+            return tempTime < TressHoldToCountDoubleTap;
         }
 
-        private void TryToTriggerAbility()
+        private void TriggerAbility()
         {
             var isRightTouch = false;
             var isLeftTouch = false;
 
-            foreach (var t in Touch.activeTouches)
+            var tempList = _touchesDic.Values.ToList();
+            
+            foreach (var touchData in tempList)
             {
-                var pos = t.screenPosition;
-                
-                if(!IsTouchInSafeZone(pos.y)) continue;
-                    
-                if (IsTouchInLeftZone(pos.x))
+                if (touchData.TouchType == TouchType.Left)
                 {
                     isLeftTouch = true;
                 }
-                else if(IsTouchInRightZone(pos.x))
+                else if(touchData.TouchType == TouchType.Right)
                 {
                     isRightTouch = true;
                 }
                 
                 if (isRightTouch && isLeftTouch) break;
             }
-
+            
             if (isRightTouch && isLeftTouch)
             {
-                _prevBothTouched = true;
                 OnTriggerAbility?.Invoke(true);
             }
         }
@@ -197,13 +192,13 @@ namespace _Main.Scripts.Gameplay.MyInputs
                 posX <= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetRightZoneBounds().y;
         }
         
-        private bool IsTouchOverUI(Finger finger)
+        private bool IsTouchOverUI(Vector2 touchPosition)
         {
             if (EventSystem.current == null)
                 return false;
 
             PointerEventData eventData = new PointerEventData(EventSystem.current);
-            eventData.position = finger.screenPosition;
+            eventData.position = touchPosition;
 
             var results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(eventData, results);
@@ -211,5 +206,90 @@ namespace _Main.Scripts.Gameplay.MyInputs
             return results.Count > 0;
         }
 
+        private TouchType GetTouchType(Vector2 touchPosition)
+        {
+            if (IsTouchOverUI(touchPosition) || !IsTouchInSafeZone(touchPosition.y))
+            {
+                return TouchType.OutOfBounds;
+            }
+
+            if (IsTouchInLeftZone(touchPosition.x))
+            {
+                return TouchType.Left;
+            }
+            
+            if (IsTouchInRightZone(touchPosition.x))
+            {
+                return TouchType.Right;
+            }
+            
+            return TouchType.OutOfBounds;
+        }
+
+        private void AddTouchDataToDic(TouchData dataToAdd)
+        {
+            _touchesDic.Add(dataToAdd.Index, dataToAdd);
+            _indexList.Add(dataToAdd.Index);
+        }
+
+        private void RemoveTouchData(int index)
+        {
+            if (_touchesDic.ContainsKey(index))
+            {
+                _touchesDic.Remove(index);
+                _indexList.Remove(index);
+            }
+        }
+        
+        private void TryRemoveTimer()
+        {
+            if (_addTouchTimerId < ulong.MaxValue)
+            {
+                TimerManager.Remove(ref _addTouchTimerId);
+            }
+        } 
+
+        private TouchType GetTouchTypeByIndex(int index)
+        {
+            if (_touchesDic.TryGetValue(index, out var touch))
+            {
+                return touch.TouchType;
+            }
+
+            return TouchType.None;
+        }
+
+        private bool GetIsActiveTouch(int index)
+        {
+            return _touchesDic.ContainsKey(index);
+        }
+
+        private int GetLastTouchIndex()
+        {
+            return _indexList[^1];
+        }
+
+    }
+
+    public enum TouchType
+    {
+        None,
+        OutOfBounds,
+        Right,
+        Left
+    }
+
+    public class TouchData
+    {
+        public TouchType TouchType;
+        public Touch StartTouch;
+        public readonly int Index;
+        
+        public TouchData(TouchType touchType, Touch startTouch, int index)
+        {
+            TouchType = touchType;
+            StartTouch = startTouch;
+            Index = index;
+        }
     }
 }

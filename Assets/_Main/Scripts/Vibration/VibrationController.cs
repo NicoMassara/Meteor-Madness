@@ -94,7 +94,7 @@ namespace _Main.Scripts.Vibration
             if (_vibrator != null)
             {
                 _vibrator.Call("cancel");
-                TimerManager.Remove(_timerId);
+                TimerManager.Remove(ref _timerId);
                 IsVibrating = false;
                 OnStopVibration?.Invoke();
             }

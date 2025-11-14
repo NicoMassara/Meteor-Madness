@@ -142,4 +142,14 @@
         public const ulong Empty9 = 0xA8011;
         public const ulong Empty10 = 0xA8012;
     }
+
+    public struct InputsUIObserverMessage
+    {
+        public const ulong SetEnableClock = 0xA9001;
+        public const ulong SetEnableCounterClock = 0xA0002;
+        public const ulong Empty1 = 0xA0003;
+        public const ulong SetEnableUI = 0xA0004;
+        public const ulong Initialize = 0xA0005;
+        public const ulong Destroy = 0xA0006;
+    }
 }

@@ -152,7 +152,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         private void HandleForceFinish()
         {
-            TimerManager.Remove(_finishAbilityTimerId);
+            TimerManager.Remove(ref _finishAbilityTimerId);
             
             OnAbilityFinished?.Invoke();
         }

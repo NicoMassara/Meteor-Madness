@@ -132,7 +132,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void RemoveTimer()
         {
-            TimerManager.Remove(_spawnTimerId);
+            TimerManager.Remove(ref _spawnTimerId);
         }
 
         private void TryRunTimer(float time)

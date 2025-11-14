@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using System;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.MyInputs
 {
