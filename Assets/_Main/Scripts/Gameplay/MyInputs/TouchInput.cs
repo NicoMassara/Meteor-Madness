@@ -17,7 +17,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
         private readonly Dictionary<int, TouchData> _touchesDic = new Dictionary<int, TouchData>();
         private readonly List<int> _indexList = new List<int>();
         private int CurrentTouches => _touchesDic.Count;
-        private TimerManager.TimerId _addTouchTimerId;
+        private TimerManager.TimerId _addTouchTimerId = new TimerManager.TimerId(0);
         private double _lastTouchTime = ulong.MaxValue;
         private bool _hasTriggeredAbility;
         

@@ -39,7 +39,7 @@ namespace _Main.Scripts.Managers
         public class TimerId
         {
             public ulong Id { get; private set; }
-            public bool IsActive => Id < ulong.MaxValue;
+            public bool IsActive => Id > 0;
 
             public TimerId(ulong id)
             {
