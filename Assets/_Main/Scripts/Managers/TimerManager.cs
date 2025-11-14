@@ -15,11 +15,12 @@ namespace _Main.Scripts.Managers
         protected static TimerManager _instance;
 
         private readonly RandomIdGenerator _idStorage = new RandomIdGenerator();
-        
+
+        private readonly List<ulong> _cancelAddIds = new List<ulong>();
         private readonly List<TimerManagerData> _running = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toAdd = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toRemove = new List<TimerManagerData>();
-        private readonly Dictionary<ulong, TimerManagerData> _idsDic = new Dictionary<ulong, TimerManagerData>();
+        private readonly Dictionary<ulong, TimerManagerData> _timerDic = new Dictionary<ulong, TimerManagerData>();
         private int RunningCount => _running.Count;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
@@ -32,7 +33,25 @@ namespace _Main.Scripts.Managers
             public Timer Timer;
             public UpdateGroup UpdateGroup;
             public ulong Id;
+            public TimerId ExternalId;
         }
+
+        public class TimerId
+        {
+            public ulong Id { get; private set; }
+            public bool IsActive => Id > 0;
+
+            public TimerId(ulong id)
+            {
+                this.Id = id;
+            }
+
+            public void Reset()
+            {
+                Id = 0;
+            }
+        }
+
 
         [SerializeField, ReadOnly] 
         private int activeCount = 0;
@@ -81,13 +100,22 @@ namespace _Main.Scripts.Managers
         {
             if (_toAdd.Count > 0)
             {
-                foreach (var data in _toAdd.ToList())
+                var cancelIds = new HashSet<ulong>(_cancelAddIds);
+
+                foreach (var data in _toAdd)
                 {
+                    if (cancelIds.Contains(data.Id))
+                    {
+                        data.ExternalId.Reset();
+                        _idStorage.Release(data.Id);
+                        continue; 
+                    }
+
                     activeCount++;
                     _running.Add(data);
-                    _idsDic.Add(data.Id, data);
+                    _timerDic.Add(data.Id, data);
                 }
-            
+
                 _toAdd.Clear();
             }
             
@@ -96,15 +124,16 @@ namespace _Main.Scripts.Managers
                 foreach (var data in _toRemove.ToList())
                 {
                     activeCount--;
+                    data.ExternalId.Reset();
                     _running.Remove(data);
-                    _idsDic.Remove(data.Id);
+                    _timerDic.Remove(data.Id);
                     _idStorage.Release(data.Id);
                 }
             
                 _toRemove.Clear();
             }
         }
-
+        
         public static void Clear()
         {
             Instance._Clear();
@@ -117,18 +146,26 @@ namespace _Main.Scripts.Managers
                 _toRemove.Add(timer);
             }
         }
-
-        public static ulong Add(TimerData timerData, UpdateGroup updateGroup = UpdateGroup.Always)
+        
+        public static TimerId Add(TimerData timerData, UpdateGroup updateGroup = UpdateGroup.Always)
         {
             return Instance._Add(timerData,updateGroup);
         }
 
-        private ulong _Add(TimerData timerData, UpdateGroup updateGroup = UpdateGroup.Always)
+        private TimerId _Add(TimerData timerData,UpdateGroup updateGroup = UpdateGroup.Always)
         {
-            var id = _idStorage.Generate();
-            _toAdd.Add(new TimerManagerData { Timer = new Timer(timerData), UpdateGroup = updateGroup, Id = id});
+            var generatedId = _idStorage.Generate();
+            var externalId = new TimerId(generatedId);
+            
+            _toAdd.Add(new TimerManagerData
+            {
+                Timer = new Timer(timerData),
+                UpdateGroup = updateGroup, 
+                Id = generatedId,
+                ExternalId = externalId
+            });
 
-            return id;
+            return externalId;
         }
 
         public static void Remove(ulong id)
@@ -138,12 +175,16 @@ namespace _Main.Scripts.Managers
 
         private void _Remove(ulong id)
         {
-            if (_idsDic.TryGetValue(id, out var value))
+            if (_timerDic.TryGetValue(id, out var value))
             {
+                Debug.Log($"Timer removed from running, id:{id}");
                 _toRemove.Add(value);
             }
+            else
+            {
+                Debug.Log($"Timer added to cancel queue, id:{id}");
+                _cancelAddIds.Add(id);
+            }
         }
-
-
     }
 }

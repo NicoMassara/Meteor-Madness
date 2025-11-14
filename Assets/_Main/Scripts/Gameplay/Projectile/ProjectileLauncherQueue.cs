@@ -11,7 +11,7 @@ namespace _Main.Scripts.Gameplay.Projectile
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
         private readonly ProjectileDistanceTracker _distanceTracker = new ProjectileDistanceTracker();
         private readonly Queue<IProjectile> _projectileQueue = new Queue<IProjectile>();
-        private ulong _firstSpawnTimerId;
+        private TimerManager.TimerId _firstSpawnTimerId;
         private bool _canLaunch = false;
         private bool _gameplayActive;
         [SerializeField] [ReadOnly] private int projectileCount;
@@ -164,7 +164,7 @@ namespace _Main.Scripts.Gameplay.Projectile
             _gameplayActive = false;
             _canLaunch = false;
             _distanceTracker.ClearValues();
-            TimerManager.Remove(_firstSpawnTimerId);
+            TimerManager.Remove(_firstSpawnTimerId.Id);
         }
 
         private void EnventBus_Projectile_ClearQueue(ProjectileEvents.ClearQueue input)

@@ -19,9 +19,9 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private bool _isGameplayActive;
         private bool _isStorageFull;
         private bool _isTimerRunning;
-        private ulong _spawnTimerId;
         private int _minUnlockLevel;
         private int _currentLevel;
+        private TimerManager.TimerId _spawnTimerId;
         private AbilitySphereFactory _factory;
         private AbilitySelector _selector;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
@@ -132,7 +132,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void RemoveTimer()
         {
-            TimerManager.Remove(_spawnTimerId);
+            TimerManager.Remove(_spawnTimerId.Id);
         }
 
         private void TryRunTimer(float time)
