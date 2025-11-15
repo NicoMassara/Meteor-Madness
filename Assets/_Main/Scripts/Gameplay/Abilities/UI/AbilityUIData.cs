@@ -43,13 +43,27 @@ namespace _Main.Scripts.Gameplay.Abilities
             }
             else
             {
-                var sprite1 = GetAbilityUIComponents().AbilitySprites[0];
-                var sprite2 = GetAbilityUIComponents().AbilitySprites[1];
-                var sprite3 = GetAbilityUIComponents().AbilitySprites[2];
-                
-                SetSpriteColor(sprite1, GetSpriteColor(sprite2));
-                SetSpriteColor(sprite2, GetSpriteColor(sprite3));
-                DisableSpriteColor(sprite3);
+                if (_inUseCount == 1)
+                {
+                    var sprite1 = GetAbilityUIComponents().AbilitySprites[0];
+                    DisableSpriteColor(sprite1);
+                }
+                else if (_inUseCount == 2)
+                {
+                    var sprite1 = GetAbilityUIComponents().AbilitySprites[0];
+                    var sprite2 = GetAbilityUIComponents().AbilitySprites[1];
+                    SetSpriteColor(sprite1, GetSpriteColor(sprite2));
+                    DisableSpriteColor(sprite2);
+                }
+                else if (_inUseCount == 3)
+                {
+                    var sprite1 = GetAbilityUIComponents().AbilitySprites[0];
+                    var sprite2 = GetAbilityUIComponents().AbilitySprites[1];
+                    var sprite3 = GetAbilityUIComponents().AbilitySprites[2];
+                    SetSpriteColor(sprite1, GetSpriteColor(sprite2));
+                    SetSpriteColor(sprite2, GetSpriteColor(sprite3));
+                    DisableSpriteColor(sprite3);
+                }
             }
 
             _inUseCount--;

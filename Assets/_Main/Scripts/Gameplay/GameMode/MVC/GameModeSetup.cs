@@ -128,6 +128,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void UIView_OnMainMenuButtonPressedHandler()
         {
             _controller.SetDoesRestartGameMode(false);
+            _controller.TransitionToLeaving();
             _controller.TriggerMainMenu();
         }
 

@@ -17,7 +17,6 @@ namespace _Main.Scripts.Save
 
     public static class SaveSystem
     {
-        
         private static string GetSavePath(string fileName)
         {
             fileName = fileName.Replace("/", "_").Replace("\\", "_");

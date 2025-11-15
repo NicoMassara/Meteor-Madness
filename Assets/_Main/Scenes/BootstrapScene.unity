@@ -315,8 +315,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6cd7df0ad9e4e67ac67d77b5711ebd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: CoreModule
+  coreScene: CoreModule
+  additiveScenes:
+  - TutorialModule
+  - MainMenuModule
+  - CosmeticsModule
+  - GameplayModule
   delayBeforeLoad: 0.1
+  progressBar: {fileID: 0}
 --- !u!4 &388010119
 Transform:
   m_ObjectHideFlags: 0

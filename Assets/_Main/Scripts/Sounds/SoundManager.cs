@@ -221,8 +221,6 @@ namespace _Main.Scripts.Sounds
             
             _soundByIdDic.Add(id, soundComponent);
             
-            Debug.Log("Sound Registered");
-            
             return new SoundId(id);
         }
         
@@ -232,8 +230,6 @@ namespace _Main.Scripts.Sounds
             {
                 _soundByIdDic.Remove(id);
                 _idGenerator.Release(id);
-                
-                Debug.Log("Sound Unregistered");
             }
         }
     }
@@ -267,7 +263,7 @@ namespace _Main.Scripts.Sounds
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 
-                Debug.Log($"{soundType} UI Sound loaded from Resources/{Path}");
+                //Debug.Log($"{soundType} UI Sound loaded from Resources/{Path}");
 #endif
                 
                 _uiSounds.Add(soundType, loaded[i]);

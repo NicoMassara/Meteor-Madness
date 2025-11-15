@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Localization;
+﻿using System;
+using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace _Main.Scripts.GameScreens
             
             SetEventBus();
             
-            LocalizationEvents.OnLocalizationLoaded += Localization_OnLocalizationLoadedHandler;
+            ModuleLoaderEvents.OnModulesLoaded += ModuleLoader_OnModulesLoaded;
         }
 
         private void SelectNewScreen(ScreenType screenType)
@@ -33,9 +34,9 @@ namespace _Main.Scripts.GameScreens
             _motor.LoadCurrentScreen();
         }
 
-        private void Localization_OnLocalizationLoadedHandler()
+        private void ModuleLoader_OnModulesLoaded()
         {
-            LocalizationEvents.OnLocalizationLoaded -= Localization_OnLocalizationLoadedHandler;
+            ModuleLoaderEvents.OnModulesLoaded -= ModuleLoader_OnModulesLoaded;
 
             TimerManager.Add(new TimerData
             {
