@@ -11,8 +11,8 @@ namespace _Main.Scripts.Menu
         [SerializeField] private Transform itemTransform;
         private Rotator _rotator;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
 
         private void Start()
         {

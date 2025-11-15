@@ -6,6 +6,36 @@ namespace _Main.Scripts
 {
     public class ActionQueue
     {
+        private class Timer
+        {
+            private float _currentTime;
+            public event Action OnEnd;
+
+            public Timer()
+            {
+                _currentTime = -1;
+            }
+
+            public void Set(float time)
+            {
+                _currentTime = time;
+            }
+
+            public void Run(float deltaTime)
+            {
+                if (_currentTime > 0)
+                {
+                    _currentTime -= deltaTime;
+
+                    if (_currentTime <= 0)
+                    {
+                        _currentTime = -1;
+                        OnEnd?.Invoke();
+                    }
+                }
+            }
+        }
+
         private Queue<ActionData> _actionQueue = new Queue<ActionData>();
         private ActionData _currentAction;
         private readonly Timer _executeTimer = new Timer();

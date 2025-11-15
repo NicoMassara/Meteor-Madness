@@ -22,8 +22,8 @@ namespace _Main.Scripts.Gameplay.MyInputs
             public bool HasUsedAbility { get; private set; }
             public bool AreInputsEnabled { get; set; }
             public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
-            public TickGroup SelfTickGroup { get; } = TickGroup.EightTick;
-            public float LastUpdateTime { get; set; }
+            public TickGroup SelfTickGroup { get; } = TickGroup.EightTarget;
+            public float LastTickTime { get; set; }
             
             public void ExecuteUpdate()
             {
@@ -36,8 +36,8 @@ namespace _Main.Scripts.Gameplay.MyInputs
 #endif
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
         
         public event Action<int> OnMovementDirectionChanged;
         public event Action OnStopMovement;

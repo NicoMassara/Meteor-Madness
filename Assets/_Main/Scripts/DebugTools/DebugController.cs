@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.Managers;
 using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
 namespace _Main.Scripts.DebugTools
@@ -54,20 +55,16 @@ namespace _Main.Scripts.DebugTools
         private void Start()
         {
             //Default Values
-            TimerManager.Add(new TimerData
+            TimerManager.Add(new TimerData(1f, () =>
             {
-                Time = 1f,
-                OnEndAction = () =>
-                {
-                    GameManager.Instance.CanPlay = true;
-                    InputsEventCaller.SetEnable(true);
+                GameManager.Instance.CanPlay = true;
+                InputsEventCaller.SetEnable(true);
 #if UNITY_ANDROID || UNITY_IOS
                     InputsEventCaller.SetUIEnable(true);
-                    
+
 #endif
-                    ShieldEventCaller.Enable();
-                }
-            });
+                ShieldEventCaller.Enable();
+            }));
         }
 
         private void Update()

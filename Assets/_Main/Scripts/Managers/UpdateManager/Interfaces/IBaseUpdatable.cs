@@ -4,7 +4,7 @@
     {
         public UpdateGroup SelfUpdateGroup { get; }
         public TickGroup SelfTickGroup { get; }
-        public float LastUpdateTime { get; set; }
+        public float LastTickTime { get; set; }
         void ExecuteUpdate();
     }
     

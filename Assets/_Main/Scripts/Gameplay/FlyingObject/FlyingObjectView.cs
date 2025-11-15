@@ -19,8 +19,8 @@ namespace _Main.Scripts.FyingObject
         public float MovementSpeed { get; set; }
         public bool CanMove { get; set; }
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
 
         public void Initialize(Rigidbody2D rigidbody, Action<Vector2> onPositionChanged)
         {
@@ -69,8 +69,8 @@ namespace _Main.Scripts.FyingObject
         public event Action<Collider2D> OnCollisionDetected;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
         public event Action<TS> OnRecycle;
         
         private void Awake()

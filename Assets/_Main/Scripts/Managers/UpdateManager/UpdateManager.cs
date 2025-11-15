@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using _Main.Scripts.DebugGUI;
 using _Main.Scripts.MyComponents;
 using _Main.Scripts.MyCustoms;
-using _Main.Scripts.MyTools;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers.UpdateManager
@@ -15,15 +13,13 @@ namespace _Main.Scripts.Managers.UpdateManager
         private readonly List<T> _running = new List<T>();
         private readonly List<T> _toAdd = new List<T>();
         private readonly List<T> _toRemove = new List<T>();
+        
         public bool IsPaused;
         public int RunningCount => _running.Count;
-
+        
         public void UpdateComponents()
         {
             ApplyPending();
-            
-            float now = Time.realtimeSinceStartup;
-            float frameTime = Time.unscaledDeltaTime;
             
             _isUpdating = true;
 
@@ -36,14 +32,7 @@ namespace _Main.Scripts.Managers.UpdateManager
                     if(CustomTime.GetChannel(u.SelfUpdateGroup).IsPaused)
                         continue;
                     
-                    float interval = UpdateManagerTools.GetTickByGroup(u.SelfTickGroup, frameTime);
-                    float last = u.LastUpdateTime;
-
-                    if (now - last >= interval)
-                    {
-                        u.ExecuteUpdate();
-                        u.LastUpdateTime = now;
-                    }
+                    u.ExecuteUpdate();
                 }
             }
             
@@ -51,7 +40,9 @@ namespace _Main.Scripts.Managers.UpdateManager
             
             ApplyPending();
         }
-        
+
+        #region Add/Remove
+
         public void Add(T updatable)
         {
             if (_isUpdating)
@@ -106,6 +97,8 @@ namespace _Main.Scripts.Managers.UpdateManager
                 _toRemove.Clear();
             }
         }
+
+        #endregion
     }
     
 
@@ -132,7 +125,6 @@ namespace _Main.Scripts.Managers.UpdateManager
             _debugData = new UpdateManagerDebugData();
         
 #endif
-            
         }
 
         #region Update
@@ -174,7 +166,6 @@ namespace _Main.Scripts.Managers.UpdateManager
         }
 
         #endregion
-        
 
         #region Register/Unregister
         
@@ -232,10 +223,11 @@ namespace _Main.Scripts.Managers.UpdateManager
 
     public enum TickGroup
     {
-        FullTick,
-        HalfTick,
-        QuarterTick,
-        EightTick,
-        BySecondTick,
+        EveryFrame,
+        HalfTarget,
+        QuarterTarget,
+        EightTarget,
+        EverySecond,
+        DEFAULT_MAX
     }
 }

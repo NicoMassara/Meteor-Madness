@@ -4,6 +4,8 @@ using _Main.Scripts.Gameplay.Abilities.Sphere;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyTools;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomTimerManager.Tools;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Spawn
@@ -21,7 +23,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private bool _isTimerRunning;
         private int _minUnlockLevel;
         private int _currentLevel;
-        private TimerManager.TimerId _spawnTimerId = new TimerManager.TimerId(0);
+        private TimerGeneratedId _spawnTimerId;
         private AbilitySphereFactory _factory;
         private AbilitySelector _selector;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
@@ -119,22 +121,18 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             Debug.Log($"Timer Set To: {time}");
 
             _isTimerRunning = true;
-            _spawnTimerId = TimerManager.Add(new TimerData
+            _spawnTimerId = TimerManager.Add(new TimerData(time,() =>
             {
-                Time = time,
-                OnEndAction = () =>
-                {
-                    SendAbility();
-                    _isTimerRunning = false;
-                }
-            }, SelfUpdateGroup);
+                SendAbility();
+                _isTimerRunning = false;
+            }));
         }
 
         private void RemoveTimer()
         {
             if (_spawnTimerId.IsActive)
             {
-                TimerManager.Remove(_spawnTimerId.Id);
+                TimerManager.Remove(_spawnTimerId);
             }
         }
 

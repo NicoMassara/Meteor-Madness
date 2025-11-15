@@ -4,6 +4,7 @@ using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Save;
+using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -246,19 +247,13 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             if (isPaused == true)
             {
-                TimerManager.Add(new TimerData
+                TimerManager.Add(new TimerData(0.5f, () =>
                 {
-                    Time = 0.5f,
-                    OnStartAction = () =>
-                    {
-                        SetEnableInputs(false);
-                    },
-                    OnEndAction = () =>
-                    {
-                        SetEnableInputs(true);
-                    },
-                    
-                }, UpdateGroup.Always);
+                    SetEnableInputs(false);
+                }, () =>
+                {
+                    SetEnableInputs(true);
+                }));
             }
 #endif
             

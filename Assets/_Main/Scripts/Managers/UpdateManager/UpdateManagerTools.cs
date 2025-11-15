@@ -14,11 +14,11 @@ namespace _Main.Scripts.Managers.UpdateManager
             
             var tickValue = group switch
             {
-                TickGroup.FullTick => adaptiveFrameTime,
-                TickGroup.HalfTick => adaptiveFrameTime/2,
-                TickGroup.QuarterTick => adaptiveFrameTime/4,
-                TickGroup.EightTick => adaptiveFrameTime/8,
-                TickGroup.BySecondTick => 1f,
+                TickGroup.EveryFrame => adaptiveFrameTime,
+                TickGroup.HalfTarget => adaptiveFrameTime * 2,
+                TickGroup.QuarterTarget => adaptiveFrameTime *4,
+                TickGroup.EightTarget => adaptiveFrameTime * 8,
+                TickGroup.EverySecond => 1f,
                 _ => throw new ArgumentOutOfRangeException(nameof(group), group, null)
             };
 

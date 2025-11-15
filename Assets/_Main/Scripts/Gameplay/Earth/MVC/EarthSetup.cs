@@ -13,8 +13,8 @@ namespace _Main.Scripts.Gameplay.Earth
         private EarthView _view;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.HalfTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.HalfTarget;
+        public float LastTickTime { get; set; }
         
         private void Awake()
         {

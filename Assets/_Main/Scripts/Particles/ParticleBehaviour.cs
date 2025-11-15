@@ -16,8 +16,8 @@ namespace _Main.Scripts.Particles
         private Vector3 _moveDirection = Vector3.up;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
         public event Action<ParticleBehaviour> OnRecycle;
 
         public void SetValues(IParticleData particleData, Vector3 position, float rotation, Vector3 moveDirection)

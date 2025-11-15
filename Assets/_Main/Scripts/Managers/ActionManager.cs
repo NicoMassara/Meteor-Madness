@@ -23,8 +23,8 @@ namespace _Main.Scripts.Managers
         private int RunningCount => _running.Count;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
-        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTarget;
+        public float LastTickTime { get; set; }
         
         private class ActionQueueData
         {

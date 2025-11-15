@@ -20,8 +20,8 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private float _targetSize;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Camera;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
 
         private void Awake()
         {

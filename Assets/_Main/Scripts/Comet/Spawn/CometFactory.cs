@@ -2,6 +2,8 @@
 using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
+using NicolasMassara.CustomTimerManager.Tools;
+using NicolasMassara.CustomTimerManager;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Comet
@@ -18,7 +20,7 @@ namespace _Main.Scripts.Comet
         
         private GenericPool<CometView> _pool;
         private bool _isBottomSpawn;
-        private TimerManager.TimerId _spawnTimerId;
+        private TimerGeneratedId _spawnTimerId;
 
         private void Start()
         {
@@ -29,11 +31,7 @@ namespace _Main.Scripts.Comet
 
         private void SetTimer(float spawnDelay)
         {
-            _spawnTimerId = TimerManager.Add(new TimerData
-            {
-                Time = spawnDelay,
-                OnEndAction = Timer_OnEndHandler
-            }, UpdateGroup.Effects);
+            _spawnTimerId = TimerManager.Add(new TimerData(spawnDelay, Timer_OnEndHandler, UpdateFrequency.EveryFrame));
         }
 
         private void Timer_OnEndHandler()

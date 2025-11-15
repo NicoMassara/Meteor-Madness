@@ -21,8 +21,8 @@ namespace _Main.Scripts.Gameplay.AutoTarget
         public UnityAction OnTargetLost;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
-        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTarget;
+        public float LastTickTime { get; set; }
         public bool AutomaticEnable { get; set; }
         
         public ProjectileDetector(ProjectileDetectorData data, IMovement movement) 

@@ -42,8 +42,8 @@ namespace _Main.Scripts.Gameplay.Earth
 
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
 
         public event Action OnHealed;
         public event Action OnCollision;

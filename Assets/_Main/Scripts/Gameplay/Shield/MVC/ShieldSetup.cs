@@ -13,8 +13,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldView _view;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
 
         private void Awake()
         {

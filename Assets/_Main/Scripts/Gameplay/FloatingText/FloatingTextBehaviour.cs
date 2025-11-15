@@ -16,8 +16,8 @@ namespace _Main.Scripts.Gameplay.FloatingScore
         [Range(0.1f,3)]
         [SerializeField] private float fadeDelay = 1f;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
         public event Action<IFloatingText> OnRecycle;
         private bool _canMove;
         private bool _canFade;

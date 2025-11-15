@@ -27,8 +27,8 @@ namespace _Main.Scripts.Sounds
         };
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
-        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTarget;
+        public float LastTickTime { get; set; }
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 

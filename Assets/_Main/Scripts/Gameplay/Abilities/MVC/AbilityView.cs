@@ -6,6 +6,8 @@ using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomTimerManager.Tools;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,7 +21,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         [SerializeField] private SoundClassSo slowTime;
         [SerializeField] private SoundClassSo speedTime;
 
-        private TimerManager.TimerId _finishAbilityTimerId;
+        private TimerGeneratedId _finishAbilityTimerId;
         
         private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
@@ -152,7 +154,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         private void HandleForceFinish()
         {
-            TimerManager.Remove(_finishAbilityTimerId.Id);
+            TimerManager.Remove(_finishAbilityTimerId);
             
             OnAbilityFinished?.Invoke();
         }
@@ -189,11 +191,8 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void AbilitiesData_OnAbilityStartedHandler(float activeTime)
         {
-            _finishAbilityTimerId = TimerManager.Add(new TimerData
-            {
-                Time = activeTime,
-                OnEndAction = ()=> OnAbilityFinished?.Invoke()
-            }, SelfUpdateGroup);
+            _finishAbilityTimerId = TimerManager.Add(new TimerData(activeTime, 
+                ()=> OnAbilityFinished?.Invoke()));
         }
 
         private void AbilitiesData_UpdateTimeScale(TimeScaleData timeScaleData)

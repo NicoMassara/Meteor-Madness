@@ -31,8 +31,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private IUpdatable updatableImplementation1;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
 
         private void Awake()
         {

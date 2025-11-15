@@ -7,6 +7,7 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
+using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -330,14 +331,10 @@ namespace _Main.Scripts.Gameplay.GameMode
                 TargetTime = deathPanelData.DeathPointsTimeToIncrease,
                 ActionOnFinish = () =>
                 {
-                    TimerManager.Add(new TimerData
+                    TimerManager.Add(new TimerData(deathPanelData.EnableRestartButton, () =>
                     {
-                        Time = deathPanelData.EnableRestartButton,
-                        OnEndAction = () =>
-                        {
-                            SetActiveRestartButtonPanel(true);
-                        }
-                    });
+                        SetActiveRestartButtonPanel(true);
+                    }));
                 }
             });
             
