@@ -263,7 +263,7 @@ namespace _Main.Scripts.Sounds
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 
-                Debug.Log($"{soundType} UI Sound loaded from Resources/{Path}");
+                //Debug.Log($"{soundType} UI Sound loaded from Resources/{Path}");
 #endif
                 
                 _uiSounds.Add(soundType, loaded[i]);

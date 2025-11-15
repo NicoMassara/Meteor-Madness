@@ -31,7 +31,6 @@ namespace _Main.Scripts.Managers
         private void Awake()
         {
             EventManager = new EventBusManager();
-            SceneLoader.LoadModules();
         }
         
         public void SetInputReader(IInputReader inputReader)
