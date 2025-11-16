@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 
-namespace _Main.Scripts.MyCustoms
+namespace NicolasMassara.CustomUpdateManager
 {
     public static class CustomTime
     {
@@ -28,9 +27,19 @@ namespace _Main.Scripts.MyCustoms
             return GetChannel(key).DeltaTime;
         }
         
+        public static float GetUnscaledDeltaTimeByChannel(UpdateGroup key)
+        {
+            return GetChannel(key).UnscaledDeltaTime;
+        }
+        
         public static float GetFixedDeltaTimeByChannel(UpdateGroup key)
         {
             return GetChannel(key).FixedDeltaTime;
+        }
+        
+        public static float GetUnscaledFixedDeltaTimeByChannel(UpdateGroup key)
+        {
+            return GetChannel(key).UnscaledFixedDeltaTime;
         }
 
         internal static void UpdateAll(float unscaledDeltaTime)
@@ -87,7 +96,9 @@ namespace _Main.Scripts.MyCustoms
     public class TimeChannel
     {
         public float DeltaTime { get; private set; }
+        public float UnscaledDeltaTime { get; private set; }
         public float FixedDeltaTime { get; private set; }
+        public float UnscaledFixedDeltaTime { get; private set; }
         public float TimeScale = 1f;
         public bool IsPaused = false;
         
@@ -96,11 +107,13 @@ namespace _Main.Scripts.MyCustoms
 
         public void Update(float unscaledDeltaTime)
         {
+            UnscaledDeltaTime =  IsPaused ? 0f : unscaledDeltaTime;
             DeltaTime = IsPaused ? 0f : unscaledDeltaTime * TimeScale;
         }
         
         public void UpdateFixed(float fixedUnscaledDeltaTime)
         {
+            UnscaledFixedDeltaTime = IsPaused ? 0f :  fixedUnscaledDeltaTime;
             FixedDeltaTime = IsPaused ? 0f : fixedUnscaledDeltaTime * TimeScale;
         }
     }

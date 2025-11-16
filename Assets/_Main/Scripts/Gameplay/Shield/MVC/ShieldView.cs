@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections;
-using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
-using _Main.Scripts.Sounds;
 using _Main.Scripts.ScriptableObjects;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield

@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using System;
+using NicolasMassara.CustomUpdateManager;
 
 namespace _Main.Scripts.Gameplay.MyInputs
 {
@@ -23,9 +23,8 @@ namespace _Main.Scripts.Gameplay.MyInputs
             public bool AreInputsEnabled { get; set; }
             public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
             public TickGroup SelfTickGroup { get; } = TickGroup.EightTarget;
-            public float LastTickTime { get; set; }
             
-            public void ExecuteUpdate()
+            public void ExecuteLateUpdate(float deltaTime)
             {
                 if (AreInputsEnabled || HasUsedAbility)
                 {
@@ -37,7 +36,6 @@ namespace _Main.Scripts.Gameplay.MyInputs
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
-        public float LastTickTime { get; set; }
         
         public event Action<int> OnMovementDirectionChanged;
         public event Action OnStopMovement;
@@ -64,7 +62,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
 #endif
         }
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
             if(_areInputsEnable == false) return;
             

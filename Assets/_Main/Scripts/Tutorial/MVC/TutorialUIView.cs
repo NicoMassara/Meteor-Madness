@@ -1,8 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Localization;
-using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
@@ -18,7 +17,6 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private GameObject _currentActivePanel;
         public event Action OnStartButtonPressed;
-        public event Action OnFinishButtonPressed;
         
         public void OnNotify(ulong message, params object[] args)
         {

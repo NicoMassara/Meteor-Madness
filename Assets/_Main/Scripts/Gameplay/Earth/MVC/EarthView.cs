@@ -2,14 +2,11 @@
 using System.Collections;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Shaker;
-using _Main.Scripts.Sounds;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
@@ -39,11 +36,11 @@ namespace _Main.Scripts.Gameplay.Earth
         private IEarthRestart _restartTimeValues;
         private bool _canRotate;
         private bool _isDead;
+        private float _deltaTime;
 
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
-        public float LastTickTime { get; set; }
 
         public event Action OnHealed;
         public event Action OnCollision;
@@ -75,15 +72,14 @@ namespace _Main.Scripts.Gameplay.Earth
             SetShakeMultiplier(1f);
         }
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
-            var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-            
-            _shakerController.HandleShake(dt);
+            _deltaTime = deltaTime;
+            _shakerController.HandleShake(deltaTime);
             
             if (_canRotate == true)
             {
-                _earthRotator.Rotate(dt,_isDead);
+                _earthRotator.Rotate(deltaTime,_isDead);
             }
         }
 
@@ -308,7 +304,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
             while (elapsed < timeToRestart)
             {
-                elapsed += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
+                elapsed += _deltaTime;
                 float t = elapsed / timeToRestart;
 
                 objectToRotate.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
@@ -325,7 +321,7 @@ namespace _Main.Scripts.Gameplay.Earth
             
             while (elapsedTime < timeToIncrease)
             {
-                elapsedTime += CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
+                elapsedTime += _deltaTime;
                 var t = elapsedTime/timeToIncrease;
                 var healthValue = Mathf.Lerp(currentHealth, 1f, t);
                 UpdateColorByHealth(healthValue);

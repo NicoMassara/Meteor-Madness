@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyComponents;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds
@@ -28,7 +27,6 @@ namespace _Main.Scripts.Sounds
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTarget;
-        public float LastTickTime { get; set; }
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -60,10 +58,10 @@ namespace _Main.Scripts.Sounds
 #endif
         }
         
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
             _playbackTracker.Execute();
-            _musicController.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _musicController.Execute(deltaTime);
         }
         
         #region Sounds

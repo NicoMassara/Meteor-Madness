@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
+﻿using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MyComponents

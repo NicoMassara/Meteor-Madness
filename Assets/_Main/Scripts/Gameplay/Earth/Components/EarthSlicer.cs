@@ -1,8 +1,7 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using EzySlice;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
@@ -21,19 +20,22 @@ namespace _Main.Scripts.Gameplay.Earth
         private bool _canMove;
         private float _moveTargetDistance;
         private float _moveTargetTime;
+        private float _deltaTime;
 
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
-        public float LastTickTime { get; set; }
+
 
         private void Start()
         {
             Slice();
         }
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
+            _deltaTime = deltaTime;
+            
             if (_canMove)
             {
                 MoveSlicedParts(_moveTargetDistance, _moveTargetTime);
@@ -126,7 +128,7 @@ namespace _Main.Scripts.Gameplay.Earth
             var lastPosition = partTransform.localPosition;
             var targetPosition = new Vector2(targetDistance * direction.x, lastPosition.y);
             var distance = Vector2.Distance(lastPosition, targetPosition);
-            var speed = (distance / targetTime) * CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
+            var speed = (distance / targetTime) * _deltaTime;
             var newX = Mathf.MoveTowards(lastPosition.x, targetPosition.x, speed);
             partTransform.localPosition = new Vector2(newX, lastPosition.y);
         }

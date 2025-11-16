@@ -1,6 +1,6 @@
 ﻿using _Main.Scripts.Managers;
-using _Main.Scripts.MyCustoms;
 using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.DebugTools

@@ -1,7 +1,6 @@
 ﻿using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Save;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -51,11 +50,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller.SetHighScore(saveData.HighScore);
         }
         
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
             if (_isEnable)
             {
-                _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                _controller?.Execute(deltaTime);
             }
         }
         

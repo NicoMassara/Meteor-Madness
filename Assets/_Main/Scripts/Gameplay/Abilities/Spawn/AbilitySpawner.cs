@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using _Main.Scripts.Gameplay.Abilities.Sphere;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyTools;
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomTimerManager.Tools;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Spawn
@@ -26,7 +26,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private TimerGeneratedId _spawnTimerId;
         private AbilitySphereFactory _factory;
         private AbilitySelector _selector;
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
         private void Awake()
         {
@@ -130,6 +129,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void RemoveTimer()
         {
+            if(_spawnTimerId == null) return;   
+            
             if (_spawnTimerId.IsActive)
             {
                 TimerManager.Remove(_spawnTimerId);

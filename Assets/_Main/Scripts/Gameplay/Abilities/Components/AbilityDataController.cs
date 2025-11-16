@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilies
@@ -60,6 +59,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                     PublishAbilityActive(selectedAbility, true);
                     SetInputsEnable(false);
                     SetEnableAbilityUI(false);
+                    
                     _updateTimeScale.Invoke(new TimeScaleData
                     {
                         UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },

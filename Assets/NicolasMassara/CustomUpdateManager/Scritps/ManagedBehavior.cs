@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
-namespace _Main.Scripts.Managers.UpdateManager
+namespace NicolasMassara.CustomUpdateManager
 {
-    public class ManagedBehavior : MonoBehaviour, IManagedObject
+    
+    public abstract class ManagedBehavior : MonoBehaviour, IManagedObject
     {
         protected virtual void OnEnable()
         {

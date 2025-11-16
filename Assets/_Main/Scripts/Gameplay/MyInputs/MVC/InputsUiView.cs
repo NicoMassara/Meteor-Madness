@@ -1,6 +1,6 @@
 ﻿using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using UnityEngine.UI;
 

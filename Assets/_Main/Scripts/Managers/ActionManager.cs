@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _Main.Scripts.DebugGUI;
 using _Main.Scripts.InspectorTools;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
@@ -23,8 +22,7 @@ namespace _Main.Scripts.Managers
         private int RunningCount => _running.Count;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
-        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTarget;
-        public float LastTickTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
         
         private class ActionQueueData
         {
@@ -54,10 +52,9 @@ namespace _Main.Scripts.Managers
                     () => $"Action Count: {RunningCount}"
                 );
 #endif
-
         }
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
             ApplyPending();
             

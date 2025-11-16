@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.FyingObject;
+﻿using _Main.Scripts.FlyingObject;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere

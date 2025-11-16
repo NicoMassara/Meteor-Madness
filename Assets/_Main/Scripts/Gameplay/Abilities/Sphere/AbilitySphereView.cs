@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.FyingObject;
+using _Main.Scripts.FlyingObject;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Observer;
 using UnityEngine;

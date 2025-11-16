@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.Comet;
 using UnityEngine;
 
-namespace _Main.Scripts.FyingObject
+namespace _Main.Scripts.FlyingObject
 {
     public abstract class FlyingObjectController<T, TVS> 
         where T : FlyingObjectMotor<TVS> 

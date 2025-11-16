@@ -2,9 +2,9 @@
 using _Main.Scripts.InspectorTools;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomTimerManager.Tools;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 namespace _Main.Scripts.Gameplay.Projectile
 {
@@ -20,14 +20,13 @@ namespace _Main.Scripts.Gameplay.Projectile
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public TickGroup SelfTickGroup { get; } = TickGroup.HalfTarget;
-        public float LastTickTime { get; set; }
 
         private void Awake()
         {
             SetEventBus();
         }
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
             if (_distanceTracker.HasProjectile == false)
             {

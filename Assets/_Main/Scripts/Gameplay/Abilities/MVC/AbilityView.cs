@@ -2,12 +2,11 @@
 using System.Collections;
 using _Main.Scripts.Gameplay.Abilities;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomTimerManager.Tools;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using UnityEngine.Events;
 

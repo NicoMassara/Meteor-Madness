@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.MyCustoms;
+﻿using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts

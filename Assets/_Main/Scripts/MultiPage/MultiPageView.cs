@@ -1,7 +1,7 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using _Main.Scripts.Interfaces;
+using NicolasMassara.CustomUpdateManager;
 
 namespace _Main.Scripts.MultiPage
 {

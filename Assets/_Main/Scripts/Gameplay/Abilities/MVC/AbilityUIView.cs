@@ -1,6 +1,6 @@
 ﻿using _Main.Scripts.Gameplay.Abilities;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilies

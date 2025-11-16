@@ -1,9 +1,9 @@
-﻿using _Main.Scripts.FyingObject;
+﻿using _Main.Scripts.FlyingObject;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
 using NicolasMassara.CustomTimerManager.Tools;
 using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomUpdateManager;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Comet

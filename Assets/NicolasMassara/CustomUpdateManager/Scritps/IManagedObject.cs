@@ -1,4 +1,4 @@
-﻿namespace _Main.Scripts.Managers.UpdateManager
+﻿namespace NicolasMassara.CustomUpdateManager
 {
     public interface IManagedObject
     {

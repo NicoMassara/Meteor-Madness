@@ -1,6 +1,5 @@
 ﻿using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
@@ -14,7 +13,6 @@ namespace _Main.Scripts.Gameplay.Earth
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public TickGroup SelfTickGroup { get; } = TickGroup.HalfTarget;
-        public float LastTickTime { get; set; }
         
         private void Awake()
         {
@@ -33,9 +31,9 @@ namespace _Main.Scripts.Gameplay.Earth
             _controller.Initialize();
         }
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
-            _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _controller.Execute(deltaTime);
         }
 
         #region ViewHandlers
