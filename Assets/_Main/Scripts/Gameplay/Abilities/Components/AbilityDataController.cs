@@ -9,8 +9,6 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
-
-    
     public class AbilityDataController
     {
         #region Commands
@@ -39,19 +37,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             private readonly TimeScaleData _timeScaleData;
             private event Action<TimeScaleData> UpdateTimeScale;
-            
-            public UpdateTimeScaleCommand(UpdateGroup[] updateGroups, float targetScale, float startScale, float delay,
-                Action<TimeScaleData> updateTimeScale)
-            {
-                _timeScaleData = new TimeScaleData
-                {
-                    UpdateGroups = updateGroups,
-                    TargetTimeScale = targetScale,
-                    CurrentTimeScale = startScale,
-                    TimeToUpdate = delay,
-                };
-                UpdateTimeScale = updateTimeScale;
-            }
             
             public UpdateTimeScaleCommand(TimeScaleData timeScaleData, Action<TimeScaleData> updateTimeScale)
             {
@@ -269,7 +254,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             var start = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnStartQueueStarted);  
             var end = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnStartQueueFinished);  
             
-            
             var slowDownTime = new UpdateTimeScaleCommand(new TimeScaleData
             {
                 UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
@@ -282,8 +266,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             var speedUpTime = new UpdateTimeScaleCommand(new TimeScaleData
             {
                 UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1.0f,
+                TargetTimeScale = 1,
+                CurrentTimeScale = minTimeScale,
                 TimeToUpdate = timeData.SpeedUp
             }, _updateTimeScale);
             
@@ -297,9 +281,9 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_cameraZoomIn)
                 .Then(new WaitSecondsAction(timeData.StartAction))
                 .Then(new InstantAction(ShieldEventCaller.EnableSuperShield))
-                .Then(new InstantAction(MeteorEventCaller.SpawnRing))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_cameraZoomOut)
+                .Then(new InstantAction(MeteorEventCaller.SpawnRing))
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(new SimpleCommandAction(speedUpTime))
                 .Then(new SimpleCommandAction(end))
@@ -322,8 +306,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             var speedUpTime = new UpdateTimeScaleCommand(new TimeScaleData
             {
                 UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1.0f,
+                TargetTimeScale = 1,
+                CurrentTimeScale = minTimeScale,
                 TimeToUpdate = timeData.SpeedUp
             }, _updateTimeScale);
             
@@ -336,6 +320,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new SimpleCommandAction(speedUpTime))
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(_enableInputs)
+                .Then(new PublishAbilityActiveAction(AbilityType.SuperShield, false))
                 .Then(new SimpleCommandAction(end))
                 .Build();
         }
@@ -381,8 +366,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             var speedUpTime = new UpdateTimeScaleCommand(new TimeScaleData
             {
                 UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1.0f,
+                TargetTimeScale = 1,
+                CurrentTimeScale = minTimeScale,
                 TimeToUpdate = timeData.SpeedUp
             }, _updateTimeScale);
             
@@ -520,24 +505,24 @@ namespace _Main.Scripts.Gameplay.Abilies
             var speedUpShield = new UpdateTimeScaleCommand(new TimeScaleData
             {
                 UpdateGroups = new [] { UpdateGroup.Shield},
-                TargetTimeScale = 0.85f,
-                CurrentTimeScale = 1.0f,
+                TargetTimeScale = 1.0f,
+                CurrentTimeScale = 0.85f,
                 TimeToUpdate = timeData.SlowDown
             }, _updateTimeScale);
             
             var speedUpGameplay = new UpdateTimeScaleCommand(new TimeScaleData
             {
                 UpdateGroups = new [] { UpdateGroup.Gameplay},
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1.0f,
+                TargetTimeScale = 1.0f,
+                CurrentTimeScale = minTimeScale,
                 TimeToUpdate = timeData.SlowDown
             }, _updateTimeScale);
             
             var peedUpEarthAndEffects = new UpdateTimeScaleCommand(new TimeScaleData
             {
                 UpdateGroups = new [] { UpdateGroup.Earth, UpdateGroup.Effects },
-                TargetTimeScale = minTimeScale/2,
-                CurrentTimeScale = 1.0f,
+                TargetTimeScale = 1f,
+                CurrentTimeScale = minTimeScale/2,
                 TimeToUpdate = timeData.SlowDown
             }, _updateTimeScale);
             
@@ -662,7 +647,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         #region Automatic
 
-        public IQueueAction GetAutomaticStartSequence(float minTimeScale, IAbilityTimeData timeData)
+        private IQueueAction GetAutomaticStartSequence(float minTimeScale, IAbilityTimeData timeData)
         {
             var startSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnStartQueueStarted);  
             var endSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnStartQueueFinished);
@@ -703,7 +688,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Build();
         }
         
-        public IQueueAction GetAutomaticEndSequence(float minTimeScale, IAbilityTimeData timeData)
+        private IQueueAction GetAutomaticEndSequence(float minTimeScale, IAbilityTimeData timeData)
         {
             var startSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnEndQueueStart);  
             var endSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnEndQueueFinished); 
@@ -733,6 +718,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_disableAbilityUI)
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StopAction))
+                .Then(new SimpleCommandAction(speedUp))
                 .Then(_cameraZoomOut)
                 .Then(_enableInputs)
                 .Then(_enableAbilityUI)
