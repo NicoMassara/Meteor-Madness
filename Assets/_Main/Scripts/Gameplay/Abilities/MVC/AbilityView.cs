@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.Gameplay.Abilities;
-using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
+using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomTimerManager.Tools;
 using NicolasMassara.CustomUpdateManager;
@@ -132,7 +132,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         private void HandleTriggerAbility(int abilityIndex)
         {
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(
-                (AbilityType)abilityIndex),SelfUpdateGroup);
+                (AbilityType)abilityIndex),PriorityTick.High);
             
             GameModeEventCaller.SetEnablePause(false);
             
@@ -148,7 +148,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
 
             ActionManager.Add(abilityDataController.GetAbilityEndQueue(
-                (AbilityType)abilityIndex),SelfUpdateGroup);
+                (AbilityType)abilityIndex),PriorityTick.High);
         }
         
         private void HandleForceFinish()

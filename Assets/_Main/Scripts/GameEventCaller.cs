@@ -329,12 +329,12 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
         }
         
-        public static void NotifyIsActive(SetActiveAbilityData data)
+        public static void NotifyIsActive(AbilityType type, bool isActive)
         {
             GameEventCaller.Publish(new AbilitiesEvents.NotifyIsActive
             {
-                AbilityType = data.AbilityType,
-                IsActive = data.IsActive,
+                AbilityType = type,
+                IsActive = isActive,
             });
         }
 

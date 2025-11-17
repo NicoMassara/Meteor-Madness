@@ -4,6 +4,7 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.ScriptableObjects;
+using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -222,55 +223,63 @@ namespace _Main.Scripts.Gameplay.Shield
                 RunNormalShieldQueue();
             }
         }
-
+        
+        private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)
+        {
+            var elapsedTime = 0f;
+            
+            while (elapsedTime < targetTime)
+            {
+                var deltaTime = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
+                elapsedTime += deltaTime;
+                action?.Invoke(deltaTime);
+                
+                yield return null;
+            }
+        }
+        
         private void RunSuperShieldQueue()
         {
-            var actionData = new ActionData[]
-            {
-                new(() =>
+            var temp = ActionBuilder.Start()
+                .Do(new InstantAction(() =>
                 {
                     OnAbilityStarted?.Invoke(AbilityType.SuperShield);
-                    //Debug.Log("Ability Time Scale Set to 0");
                     _appereance.SetActiveSuperShieldSprite(true);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
-                    StartCoroutine(Coroutine_RunActionByTime(HandleSuperShieldEnable, _appereance.TimeToEnableSuperShield));
-                }),
-                new(() =>
+                }))
+                .Then(new TimedUpdateAction(HandleSuperShieldEnable, _appereance.TimeToEnableSuperShield))
+                .Then(new InstantAction(() =>
                 {
-                    //Debug.Log("Ability Time Scale Set to 1");
                     _movement.RestartSpeedValues();
                     _appereance.RestartValues();
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                     OnAbilityRunning?.Invoke(AbilityType.SuperShield);
-                },_appereance.TimeToEnableSuperShield),
-            };
+                }))
+                .Build();
             
-            ActionManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
+            ActionManager.Add(temp, PriorityTick.High);
         }
         
         private void RunNormalShieldQueue()
         {
-            var actionData = new ActionData[]
-            {
-                new(() =>
+            var temp = ActionBuilder.Start()
+                .Do(new InstantAction(() =>
                 {
-                    //Debug.Log("Ability Time Scale Set To 0");
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
-                    StartCoroutine(
-                        Coroutine_RunActionByTime(HandleNormalShieldEnable, _appereance.TimeToDisableSuperShield));
-                }),
-                new(() =>
+                }))
+                .Then(new TimedUpdateAction(HandleNormalShieldEnable, _appereance.TimeToDisableSuperShield))
+                .Then(new InstantAction(() =>
                 {
-                    //Debug.Log("Ability Time Scale Set To 1");
+                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                     _appereance.SetActiveSuperShieldSprite(false);
                     _appereance.RestartValues();
                     _movement.RestartSpeedValues();
                     _movement.RotateTowardsNearestProjectileSlot();
                     OnAbilityFinished?.Invoke();
-                },_appereance.TimeToDisableSuperShield),
-            };
+                }))
+                .Build();
             
-            ActionManager.Add(new ActionQueue(actionData),SelfUpdateGroup);
+            ActionManager.Add(temp, PriorityTick.High);
         }
         
         private void HandleSuperShieldEnable(float deltaTime)
@@ -289,20 +298,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         #region Coroutine
         
-        private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)
-        {
-            var elapsedTime = 0f;
-            
-            while (elapsedTime < targetTime)
-            {
-                var deltaTime = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-                elapsedTime += deltaTime;
-                action?.Invoke(deltaTime);
-                
-                yield return null;
-            }
-        }
-
+        
         private IEnumerator Coroutine_Shake()
         {
             _shakerController.StartShake();

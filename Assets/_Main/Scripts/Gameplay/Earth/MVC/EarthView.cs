@@ -5,6 +5,7 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Shaker;
+using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -147,6 +148,89 @@ namespace _Main.Scripts.Gameplay.Earth
             CameraEventCaller.Shake(cameraShakeData);
             OnCollision?.Invoke();
         }
+        
+        private class HealAction : IQueueAction
+        {
+            private readonly float _targetHealth;
+            private readonly float _lastHealth;
+            private readonly float _duration;
+            private readonly Action<float> setShakeMultiplier;
+            private readonly Action<float> updateColorByHealth;
+            private readonly Action<float> setRotationSpeed;
+
+            private float _elapsed;
+
+            public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
+
+            // Constructor
+            public HealAction(float lastHealth, float targetHealth, float duration,
+                Action<float> setShakeMultiplier, 
+                Action<float> updateColorByHealth, 
+                Action<float> setRotationSpeed)
+            {
+                _lastHealth = lastHealth;
+                _targetHealth = targetHealth;
+                _duration = duration;
+                this.setShakeMultiplier = setShakeMultiplier;
+                this.updateColorByHealth = updateColorByHealth;
+                this.setRotationSpeed = setRotationSpeed;
+            }
+
+            public void OnStart()
+            {
+                _elapsed = 0f;
+                CurrentStatus = ActionStatus.Running;
+            }
+
+            public ActionStatus OnUpdate(float deltaTime)
+            {
+                if (CurrentStatus != ActionStatus.Running)
+                    return CurrentStatus;
+
+                // Incrementa tiempo usando tu deltaTime personalizado
+                _elapsed += deltaTime;
+
+                var t = Mathf.Clamp01(_elapsed / _duration);
+                var value = Mathf.Lerp(_lastHealth, _targetHealth, t);
+
+                // Aquí ejecutamos exactamente lo que hacía tu coroutine
+                SetShakeMultiplier(value);
+                UpdateColorByHealth(value);
+                SetRotationSpeed(value);
+
+                // Finaliza cuando termina el tiempo
+                if (_elapsed >= _duration)
+                    CurrentStatus = ActionStatus.Success;
+
+                return CurrentStatus;
+            }
+
+            public void OnInterrupt()
+            {
+                CurrentStatus = ActionStatus.Failure;
+            }
+
+            public IQueueAction Copy()
+            {
+                return null;
+            }
+
+            // --- Métodos que ya tenías en tu clase original ---
+            private void SetShakeMultiplier(float value)
+            {
+                setShakeMultiplier?.Invoke(value);
+            }
+
+            private void UpdateColorByHealth(float value)
+            {
+                updateColorByHealth?.Invoke(value);
+            }
+
+            private void SetRotationSpeed(float value)
+            {
+                setRotationSpeed?.Invoke(value);
+            }
+        }
 
         private void HandleHeal(float currentHealth, float lastHealth)
         {
@@ -154,32 +238,30 @@ namespace _Main.Scripts.Gameplay.Earth
             _debugData.EarthHealth = currentHealth;
 #endif
             var restartHealthTime = _restartTimeValues.RestartHealth;
-            
-            var tempActions = new ActionData[]
-            {
-                new (() =>
+
+            var action = ActionBuilder.Start()
+                .Do(new InstantAction(() =>
                 {
                     CustomTime.SetChannelTimeScale(new[]
                     {
                         UpdateGroup.Gameplay, UpdateGroup.Ability, 
                         UpdateGroup.Effects
                     }, 0f);
-                    
-                    StartCoroutine(Coroutine_HandleHeal(currentHealth, lastHealth, 
-                        restartHealthTime));
-                }),
-                new (() =>
+                }))
+                .Then(new HealAction(lastHealth,currentHealth,restartHealthTime,
+                    SetShakeMultiplier,UpdateColorByHealth,SetRotationSpeed))
+                .Then(new WaitSecondsAction(restartHealthTime))
+                .Then(new InstantAction(() =>
                 {
                     CustomTime.SetChannelTimeScale(new[]
                     {
                         UpdateGroup.Gameplay, UpdateGroup.Ability, 
                         UpdateGroup.Effects
                     }, 1f);
-                    
-                },restartHealthTime),
-            };
+                }))
+                .Build();
             
-            ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
+            ActionManager.Add(action);
         }
         
         private IEnumerator Coroutine_HandleHeal(float targetHealth, float lastHealth, float duration)
@@ -203,133 +285,144 @@ namespace _Main.Scripts.Gameplay.Earth
             SetRotationSpeed(targetHealth);
         }
 
+        private class RestartRotationAction : IQueueAction
+        {
+            private readonly float _targetTime;
+            private readonly Transform _targetToRotate;
+            private float _elapsed;
+            private Quaternion _startRotation;
+            private Quaternion _targetRotation;
+
+            public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
+
+            public RestartRotationAction(float targetTime, Transform targetToRotate)
+            {
+                _targetTime = targetTime;
+                _targetToRotate = targetToRotate;
+            }
+
+            public void OnStart()
+            {
+                _startRotation = _targetToRotate.rotation;
+                _targetRotation = Quaternion.identity;
+                _elapsed = 0;
+                CurrentStatus = ActionStatus.Running;
+            }
+
+            public ActionStatus OnUpdate(float deltaTime)
+            {
+                if (_elapsed < _targetTime)
+                {
+                    _elapsed += deltaTime;
+                    float t = _elapsed / _targetTime;
+                    _targetToRotate.rotation = Quaternion.Slerp(_startRotation, _targetRotation, t);
+                }
+
+                if (_elapsed >= _targetTime)
+                {
+                    _targetToRotate.rotation = _targetRotation;
+                    CurrentStatus = ActionStatus.Success;
+                }
+
+                return CurrentStatus;
+            }
+
+            public void OnInterrupt() { }
+            public IQueueAction Copy()
+            {
+                return new RestartRotationAction(_targetTime, _targetToRotate);
+            }
+        }
+
+        private class RestartHearthColor : IQueueAction
+        {
+            private readonly float _timeToIncrease;
+            private readonly float _currentHealth;
+            private readonly Action<float> _updateColorByHealth;
+            private float _elapsed;
+            public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
+
+            public RestartHearthColor(float timeToIncrease, float currentHealth, Action<float> updateColorByHealth)
+            {
+                _timeToIncrease = timeToIncrease;
+                _currentHealth = currentHealth;
+                _updateColorByHealth = updateColorByHealth;
+            }
+
+            public void OnStart()
+            {
+                CurrentStatus = ActionStatus.Running;
+            }
+
+            public ActionStatus OnUpdate(float deltaTime)
+            {
+                if (_elapsed < _timeToIncrease)
+                {
+                    _elapsed += deltaTime;
+                    float t = _elapsed / _timeToIncrease;
+                    var healthValue = Mathf.Lerp(_currentHealth, _currentHealth, t);
+                    _updateColorByHealth?.Invoke(healthValue);
+                }
+
+                if (_elapsed >= _timeToIncrease)
+                {
+                    _updateColorByHealth?.Invoke(1);
+                    CurrentStatus = ActionStatus.Success;
+                }
+
+                return CurrentStatus;
+            }
+
+            public void OnInterrupt()
+            {
+
+            }
+
+            public IQueueAction Copy()
+            {
+                return new RestartHearthColor(_timeToIncrease, _currentHealth, _updateColorByHealth);
+            }
+        }
+
+
         private void HandleRestartHealth(float currentHealth)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData.EarthHealth = currentHealth;
 #endif
-            ActionData[] tempActions;
-            
-            if (currentHealth >= 1)
-            {
-                tempActions = new ActionData[]
+            var action = ActionBuilder.Start()
+                .Do(new WaitSecondsAction(_restartTimeValues.RestartZRotation))
+                //Only Executes if is dead
+                .Then(new InstantAction(() => { earthMeshSlicer?.StartUnite(); }))
+                .WrapLast(inner => new ConditionalWrapperAction(inner, ()=> currentHealth <= 0))
+                .Then(new WaitForEventAction(
+                    subscribe: callback => earthMeshSlicer.OnEndUnite += callback,
+                    unsubscribe: callback => earthMeshSlicer.OnEndUnite -= callback
+                ))
+                .WrapLast(inner => new ConditionalWrapperAction(inner, ()=> currentHealth <= 0))
+                //
+                .Then(new InstantAction(() => HandleSetRotation(false)))
+                .Then(new RestartRotationAction(_restartTimeValues.RestartYRotation, modelContainer.transform))
+                //Only Executes if it has damage
+                .Then(new RestartHearthColor(_restartTimeValues.RestartHealth,currentHealth,UpdateColorByHealth))
+                .WrapLast(inner => new ConditionalWrapperAction(inner, ()=> currentHealth  < 1))
+                //
+                .Then(new SetFloatAction(1, SetShakeMultiplier))
+                .Then(new SetFloatAction(rotationSpeed, _earthRotator.SetRotationSpeed))
+                .Then(new InstantAction(() =>
                 {
-                    new (() =>  HandleSetRotation(false)),
-                    new (() => 
-                            StartCoroutine(
-                            Coroutine_RestartRotation(_restartTimeValues.RestartYRotation, modelContainer.transform)), 
-                        _restartTimeValues.TimeBeforeRotateY),
-                    new (() =>
-                    {
-                        SetShakeMultiplier(1);
-                        _earthRotator.SetRotationSpeed(rotationSpeed);
-                        _shakerController.SetShakeData(healthShakeData);
-                        _isDead = false;
-                        HandleSetRotation(true);
-                        OnHealed?.Invoke();
-                        EarthEventCaller.RestartFinished();
-                    }, _restartTimeValues.FinishRestart),
-                };
-            }
-            else if(currentHealth < 1 && currentHealth > 0)
-            {
-                tempActions = new ActionData[]
+                    _shakerController.SetShakeData(healthShakeData);
+                    _isDead = false;
+                }))
+                .Then(new WaitSecondsAction(_restartTimeValues.FinishRestart))
+                .Then(new InstantAction(() =>
                 {
-                    new (() =>  HandleSetRotation(false)),
-                    new (() => StartCoroutine(
-                            Coroutine_RestartRotation(_restartTimeValues.RestartYRotation, modelContainer.transform)), 
-                        _restartTimeValues.TimeBeforeRotateY),
-                    new (() => StartCoroutine(
-                            Coroutine_RestartHealthColor(_restartTimeValues.RestartHealth, currentHealth)), 
-                        _restartTimeValues.RestartYRotation),
-                    new (() =>
-                    {
-                        SetShakeMultiplier(1);
-                        _earthRotator.SetRotationSpeed(rotationSpeed);
-                        _shakerController.SetShakeData(healthShakeData);
-                        _isDead = false;
-                    
-                    }, _restartTimeValues.RestartHealth),
-                    new ActionData(() =>
-                    {
-                        HandleSetRotation(true);
-                        OnHealed?.Invoke();
-                        EarthEventCaller.RestartFinished();
-                    }, _restartTimeValues.FinishRestart),
-                };
-            }
-            else
-            {
-                tempActions = new ActionData[]
-                {
-                    new (() =>  HandleSetRotation(false)),
-                    new (() => StartCoroutine(
-                            Coroutine_RestartRotation(_restartTimeValues.RestartZRotation, 
-                                planeMeshContainer.transform)), 
-                        _restartTimeValues.TimeBeforeRotateZ),
-                    new (() => earthMeshSlicer?.StartUnite(), 
-                        _restartTimeValues.RestartZRotation),
-                    new (() => StartCoroutine(
-                            Coroutine_RestartRotation(_restartTimeValues.RestartYRotation, modelContainer.transform)), 
-                        _restartTimeValues.TimeBeforeRotateY),
-                    new (() => StartCoroutine(
-                            Coroutine_RestartHealthColor(_restartTimeValues.RestartHealth, currentHealth)), 
-                        _restartTimeValues.RestartYRotation),
-                    new (() =>
-                    {
-                        SetShakeMultiplier(1);
-                        _earthRotator.SetRotationSpeed(rotationSpeed);
-                        _shakerController.SetShakeData(healthShakeData);
-                        _isDead = false;
-                    
-                    }, _restartTimeValues.RestartHealth),
-                    new (() =>
-                    {
-                        HandleSetRotation(true);
-                        OnHealed?.Invoke();
-                        EarthEventCaller.RestartFinished();
-                    }, _restartTimeValues.FinishRestart),
-                };
-            }
+                    HandleSetRotation(true);
+                    OnHealed?.Invoke();
+                    EarthEventCaller.RestartFinished();
+                }));
             
-            ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
-        }
-
-
-        private IEnumerator Coroutine_RestartRotation(float timeToRestart, Transform objectToRotate)
-        {
-            Quaternion startRotation = objectToRotate.rotation;
-            Quaternion targetRotation = Quaternion.identity;
-            float elapsed = 0f;
-
-            while (elapsed < timeToRestart)
-            {
-                elapsed += _deltaTime;
-                float t = elapsed / timeToRestart;
-
-                objectToRotate.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
-                yield return null;
-            }
-
-            objectToRotate.rotation = targetRotation; // ensure exact final rotation
-        }
-
-
-        private IEnumerator Coroutine_RestartHealthColor(float timeToIncrease, float currentHealth)
-        {
-            float elapsedTime = 0;
-            
-            while (elapsedTime < timeToIncrease)
-            {
-                elapsedTime += _deltaTime;
-                var t = elapsedTime/timeToIncrease;
-                var healthValue = Mathf.Lerp(currentHealth, 1f, t);
-                UpdateColorByHealth(healthValue);
-                
-                yield return null;
-            }
-
-            UpdateColorByHealth(1);
+            ActionManager.Add(action.Build());
         }
 
         #endregion
