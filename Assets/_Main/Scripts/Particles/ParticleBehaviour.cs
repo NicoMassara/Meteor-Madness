@@ -1,7 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Particles
@@ -16,8 +15,7 @@ namespace _Main.Scripts.Particles
         private Vector3 _moveDirection = Vector3.up;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
         public event Action<ParticleBehaviour> OnRecycle;
 
         public void SetValues(IParticleData particleData, Vector3 position, float rotation, Vector3 moveDirection)
@@ -35,20 +33,18 @@ namespace _Main.Scripts.Particles
         }
 
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
-            var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-            
-            _scaleTimer += dt;
+            _scaleTimer += deltaTime;
             float t = _scaleTimer/_data.TimeToReachScale;
             transform.localScale = Vector3.Lerp(_data.StartScale, _data.TargetScale, t);
-            transform.position += (dt * _data.MoveSpeed) * _moveDirection;
+            transform.position += (deltaTime * _data.MoveSpeed) * _moveDirection;
             
             var ratio = transform.localScale.x / _data.TargetScale.x;
             
             if (ratio >= _data.RatioTimeToStartFade)
             {
-                _fadeTimer += dt;
+                _fadeTimer += deltaTime;
                 float a = _fadeTimer/_data.TimeToFade;
                 _alpha = Mathf.Lerp(1, 0, a);
                 sprite.color = new Color(1, 1, 1, _alpha);

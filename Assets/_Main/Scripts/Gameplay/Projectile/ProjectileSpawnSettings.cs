@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Utilities;
+﻿using System;
+using _Main.Scripts.Utilities;
 using _Main.Scripts.Managers;
 using UnityEngine;
 
@@ -41,7 +42,6 @@ namespace _Main.Scripts.Gameplay.Projectile
             SetEventBus();
         }
 
-        
         public Vector2 GetPositionByAngle(float currAngle)
         {
            return _location.GetPositionByAngle(currAngle, spawnRadius);

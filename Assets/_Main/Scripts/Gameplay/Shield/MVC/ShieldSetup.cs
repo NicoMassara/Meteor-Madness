@@ -1,6 +1,5 @@
 ﻿using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
@@ -13,8 +12,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldView _view;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
         private void Awake()
         {
@@ -49,9 +47,9 @@ namespace _Main.Scripts.Gameplay.Shield
             _controller.TryRotate(direction);
         }
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
-            _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _controller?.Execute(deltaTime);
         }
 
         #region EventBus

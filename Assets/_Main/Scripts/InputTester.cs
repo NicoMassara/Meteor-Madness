@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.MyCustoms;
+﻿using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts
@@ -55,6 +55,7 @@ namespace _Main.Scripts
             CustomTime.GlobalTimeScale = _timeScaleHalved ? 1f : 0.1f;
             CustomTime.GlobalFixedTimeScale = _timeScaleHalved ? 1f : 0.1f;
         }
+        
     }
 #endif
 }

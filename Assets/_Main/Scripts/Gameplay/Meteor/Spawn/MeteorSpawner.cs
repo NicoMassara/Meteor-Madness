@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using _Main.Scripts.Gameplay.Projectile;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Meteor

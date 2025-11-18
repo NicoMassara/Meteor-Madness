@@ -28,8 +28,13 @@ namespace _Main.Scripts.Gameplay.MyInputs
             //Ability
             _inputsAction.Gameplay.TriggerAbility.started += OnTriggerAbility_Started;
             _inputsAction.Gameplay.TriggerAbility.canceled += OnTriggerAbility_Canceled;
+            
+            //Pause
+            _inputsAction.Gameplay.Pause.performed += OnPause_Peformed;
         }
-        
+
+
+
         public void Disable()
         {
             //Rotate
@@ -40,7 +45,15 @@ namespace _Main.Scripts.Gameplay.MyInputs
             _inputsAction.Gameplay.TriggerAbility.performed -= OnTriggerAbility_Started;
             _inputsAction.Gameplay.TriggerAbility.canceled -= OnTriggerAbility_Canceled;
             
+            //Pause
+            _inputsAction.Gameplay.Pause.performed -= OnPause_Peformed;
+            
             _inputsAction.Disable();
+        }
+        
+        private void OnPause_Peformed(InputAction.CallbackContext input)
+        {
+            
         }
 
         #region Ability

@@ -7,21 +7,7 @@ namespace _Main.Scripts.Save
 {
     public class DataManager : SingletonBehaviour<DataManager>
     {
-        public static DataManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
-        private static DataManager _instance;
         private Dictionary<SaveDataType, SaveDataBase> _saveDataDic;
-
-        public event Action OnSaveInitialized;
-        
-        private static DataManager CreateInstance()
-        {
-            var gameObject = new GameObject(nameof(DataManager))
-            {
-                hideFlags = HideFlags.DontSave,
-            };
-            DontDestroyOnLoad(gameObject);
-            return gameObject.AddComponent<DataManager>();
-        }
         
         private void Start()
         {

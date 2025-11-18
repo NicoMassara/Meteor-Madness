@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
+﻿using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using UnityEngine.UI;
 

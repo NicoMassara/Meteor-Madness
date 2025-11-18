@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
@@ -126,12 +127,8 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             if (input.Type == ProjectileType.Meteor)
             {
-                TimerManager.Add(new TimerData
-                {
-                    Time = 0.5f,
-                    OnEndAction = ()=> _controller.TransitionToMultiPage()
-                }, UpdateGroup.Always);
-                
+                TimerManager.Add(new TimerData(0.5f, 
+                    () => _controller.TransitionToMultiPage()));
             }
             else if (input.Type == ProjectileType.AbilitySphere)
             {

@@ -1,9 +1,9 @@
 ﻿using System;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Save;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -246,19 +246,13 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             if (isPaused == true)
             {
-                TimerManager.Add(new TimerData
+                TimerManager.Add(new TimerData(0.5f, () =>
                 {
-                    Time = 0.5f,
-                    OnStartAction = () =>
-                    {
-                        SetEnableInputs(false);
-                    },
-                    OnEndAction = () =>
-                    {
-                        SetEnableInputs(true);
-                    },
-                    
-                }, UpdateGroup.Always);
+                    SetEnableInputs(false);
+                }, () =>
+                {
+                    SetEnableInputs(true);
+                }));
             }
 #endif
             
@@ -284,16 +278,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var temp = GameConfigManager.Instance.GetGameplayData().GameTimeData;
             
-            var tempActions = new ActionData[]
-            {
-                new (() =>
-                {
-                    EarthEventCaller.Restart();
-                    
-                }, temp.RestartEarth),
-            };
-            
-            ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
+            TimerManager.Add(new TimerData(time: temp.RestartEarth,
+                onEndAction: EarthEventCaller.Restart));
         }
         
         private void HandleEarthRestartFinish(bool doesRestart)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomTimerManager.Tools;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -17,7 +19,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
         private readonly Dictionary<int, TouchData> _touchesDic = new Dictionary<int, TouchData>();
         private readonly List<int> _indexList = new List<int>();
         private int CurrentTouches => _touchesDic.Count;
-        private TimerManager.TimerId _addTouchTimerId = new TimerManager.TimerId(0);
+        private TimerGeneratedId _addTouchTimerId;
         private double _lastTouchTime = ulong.MaxValue;
         private bool _hasTriggeredAbility;
         
@@ -74,16 +76,12 @@ namespace _Main.Scripts.Gameplay.MyInputs
             if (lastCount == 0)
             {
                 _lastTouchTime = Time.realtimeSinceStartup;
-            
+
                 _addTouchTimerId = TimerManager.Add(new TimerData
+                (TressHoldToCountDoubleTap + Time.deltaTime, () =>
                 {
-                    Time = TressHoldToCountDoubleTap + Time.deltaTime,
-                
-                    OnEndAction = () =>
-                    {
-                        UpdateRotateDirection();
-                    }
-                });
+                    UpdateRotateDirection();
+                }));
             }
             else if (lastCount == 1)
             {
@@ -245,7 +243,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
         {
             if (_addTouchTimerId.IsActive)
             {
-                TimerManager.Remove(_addTouchTimerId.Id);
+                TimerManager.Remove(_addTouchTimerId);
             }
         } 
 

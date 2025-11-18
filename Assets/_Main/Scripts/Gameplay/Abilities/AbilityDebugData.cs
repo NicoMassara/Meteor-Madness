@@ -8,7 +8,9 @@ namespace _Main.Scripts.Gameplay.Abilities
     public class AbilityDebugData
     {
         private int _availableIndex;
-        
+
+        public AbilityType CurrentAbility { get; set; }
+
         private readonly List<AbilityType> _storedAbility = new List<AbilityType>
         {
             AbilityType.None,
@@ -21,6 +23,8 @@ namespace _Main.Scripts.Gameplay.Abilities
             DebugGUIManager.Instance.CreateGroup(DebugGUIKeys.Group.Gameplay, DebugGUISortingOrder.Group.Gameplay)
                 ?.CreateSubGroup(DebugGUIKeys.SubGroup.Ability, DebugGUISortingOrder.SubGroup.Ability)
                 ?.AddEntry(
+                    () => $"Current: {CurrentAbility}",
+                    () => "--Slots--",
                     () => $"Slot 1: {GetStoredAbilityName(0)}",
                     () => $"Slot 2: {GetStoredAbilityName(1)}",
                     () => $"Slot 3: {GetStoredAbilityName(2)}"

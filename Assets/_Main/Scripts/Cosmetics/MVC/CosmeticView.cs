@@ -1,7 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
+using NicolasMassara.CustomUpdateManager;
 
 namespace _Main.Scripts.Cosmetics.MVC
 {

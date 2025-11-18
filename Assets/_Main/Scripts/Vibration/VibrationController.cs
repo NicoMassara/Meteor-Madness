@@ -1,6 +1,6 @@
 ﻿using System;
-using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomTimerManager.Tools;
 using UnityEngine;
 
 namespace _Main.Scripts.Vibration
@@ -8,7 +8,7 @@ namespace _Main.Scripts.Vibration
     public class VibrationController
     {
         private AndroidJavaObject _vibrator;
-        private TimerManager.TimerId _timerId;
+        private TimerGeneratedId _timerId;
 
         public event Action OnVibrate;
         public event Action OnStopVibration;
@@ -66,21 +66,20 @@ namespace _Main.Scripts.Vibration
                     _vibrator.Call("vibrate", milliseconds);
                 }
                 
-                
                 _timerId = TimerManager.Add(new TimerData
-                {
-                    Time = milliseconds / 1000f,
-                    OnStartAction = () =>
+                (
+                    milliseconds / 1000f,
+                    onStartAction: () =>
                     {
                         IsVibrating = true;
                         OnVibrate?.Invoke();
                     },
-                    OnEndAction = () =>
+                    onEndAction: () =>
                     {
                         IsVibrating = false;
                         OnStopVibration?.Invoke();
                     }
-                }, UpdateGroup.Always);
+                ));
             }
             catch (System.Exception e)
             {
@@ -95,7 +94,7 @@ namespace _Main.Scripts.Vibration
                 _vibrator.Call("cancel");
                 if (_timerId != null)
                 {
-                    TimerManager.Remove(_timerId.Id);
+                    TimerManager.Remove(_timerId);
                 }
                 IsVibrating = false;
                 OnStopVibration?.Invoke();

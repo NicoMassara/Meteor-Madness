@@ -1,16 +1,14 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Sounds;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
-using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
-namespace _Main.Scripts.FyingObject
+namespace _Main.Scripts.FlyingObject
 {
     public class FlyingObjectMovement : ManagedComponent, IFixedUpdatable
     {
@@ -19,21 +17,20 @@ namespace _Main.Scripts.FyingObject
         public float MovementSpeed { get; set; }
         public bool CanMove { get; set; }
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
-        public void Initialize(Rigidbody2D rigidbody, Action<Vector2> onPositionChanged)
+        public void InitializeValues(Rigidbody2D rigidbody, Action<Vector2> onPositionChanged)
         {
+            Initialize();
             _rigidbody = rigidbody;
             _onPositionChanged += onPositionChanged;
         }
         
-        public void ExecuteUpdate()
+        public void ExecuteFixedUpdate(float fixedDeltaTime)
         {
             if (CanMove)
             {
-                var dt = CustomTime.GetFixedDeltaTimeByChannel(SelfUpdateGroup);
-                _rigidbody.transform.Translate(Vector2.right * (MovementSpeed * dt));
+                _rigidbody.transform.Translate(Vector2.right * (MovementSpeed * fixedDeltaTime));
                 _onPositionChanged?.Invoke(_rigidbody.position);
             }
         }
@@ -46,8 +43,6 @@ namespace _Main.Scripts.FyingObject
     where TS : FlyingObjectView<T, TS, TVS>
     where TVS : FlyingObjectValues
     {
-        [Header("Sounds")]
-        [SerializeField] protected SoundClassSo moveSound;
         [Header("Sphere Sprite")]
         [Range(0, 100f)]
         [SerializeField] private float maxRotationSpeed = 25;
@@ -69,8 +64,7 @@ namespace _Main.Scripts.FyingObject
         public event Action<Collider2D> OnCollisionDetected;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
         public event Action<TS> OnRecycle;
         
         private void Awake()
@@ -89,7 +83,7 @@ namespace _Main.Scripts.FyingObject
 
         private void Start()
         {
-            Movement.Initialize(_rigidbody2D,OnPositionChanged);
+            Movement.InitializeValues(_rigidbody2D,OnPositionChanged);
             _hasFire = fireObject != null;
 
             if (_hasFire)
@@ -103,7 +97,7 @@ namespace _Main.Scripts.FyingObject
             
         }
         
-        public virtual void ExecuteUpdate()
+        public virtual void ExecuteUpdate(float deltaTime)
         {
             _sphereRotator?.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             

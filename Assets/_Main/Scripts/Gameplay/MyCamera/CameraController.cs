@@ -1,8 +1,7 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Shaker;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.MyCamera
@@ -20,8 +19,8 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private float _targetSize;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Camera;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
 
         private void Awake()
         {
@@ -36,18 +35,16 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
 
 
-        public void ExecuteUpdate()
+        public void ExecuteLateUpdate(float deltaTime)
         {
-            var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-            
             if (_shakerController.IsShaking)
             {
-                _shakerController.HandleShake(dt);
+                _shakerController.HandleShake(deltaTime);
             }
 
             if (_doesChangeSize)
             {
-                HandleSizeChange(dt);
+                HandleSizeChange(deltaTime);
             }
         }
 
