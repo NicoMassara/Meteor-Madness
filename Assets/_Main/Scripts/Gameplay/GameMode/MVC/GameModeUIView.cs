@@ -337,16 +337,15 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             public ActionStatus OnUpdate(float deltaTime)
             {
-                if (_incrementer.IsFinished == false)
-                {
-                    if (CustomTime.GetChannel(UpdateGroup.UI).IsPaused) return CurrentStatus;
-                    
-                    _incrementer.Run(CustomTime.GetDeltaTimeByChannel(UpdateGroup.UI));
-                    _increaseAction?.Invoke(_getCurrentPoints.Invoke());
-                    _onPointsAdded?.Invoke();
-                    
-                }
-
+                if (CustomTime.GetChannel(UpdateGroup.UI).IsPaused) return CurrentStatus;
+                
+                
+                _incrementer.Run(CustomTime.GetDeltaTimeByChannel(UpdateGroup.UI));
+                _increaseAction?.Invoke(_getCurrentPoints.Invoke());
+                _onPointsAdded?.Invoke();
+                
+                CurrentStatus = _incrementer.IsFinished ? ActionStatus.Success : ActionStatus.Running; 
+                
                 return CurrentStatus;
             }
 
@@ -360,6 +359,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void StartDeathPanelActionQueue(float deflectCount)
         {
+            // Prepares the UI
+            
             SetActiveDeathText(false);
             SetActiveDeathScoreText(false);
             SetActiveRestartButtonPanel(false);
@@ -370,78 +371,66 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             var deathPanelData = _gameUIConfig.DeathUITimeData;
 
+            // Enables the first UI Elements
+            
             var actions = ActionBuilder.Start()
                 .Do(new WaitSecondsAction(deathPanelData.ShowDeathUI))
                 .Then(new WaitSecondsWithCallBack(deathPanelData.SetEnableDeathText, ()=> SetActiveDeathText(true)))
                 .Then(new WaitSecondsWithCallBack(deathPanelData.SetEnableDeathScore, ()=> SetActiveDeathScoreText(true)))
                 .Then(new WaitSecondsAction(deathPanelData.EnableHighScore));
-
-
+            
+            
+            // Checks if has to increase UI Points
+            
             if (deflectCount > 0)
             {
-                            actions.Then(new InstantAction(() =>
-                {
-                    _numberIncrementer.SetData(new NumberIncrementerData
+                actions.
+                    Then(new InstantAction(() =>
                     {
-                        Target = deflectCount * GetPointsMultiplier(),
-                        TargetTime = deathPanelData.DeathPointsTimeToIncrease,
-                        ActionOnFinish = () =>
+                        _numberIncrementer.SetData(new NumberIncrementerData
                         {
-                            actions.Then(new InstantAction(() =>
-                            {
-                                if (_hasHighScore)
-                                {
-                                    _numberIncrementer.SetData(new NumberIncrementerData
-                                    {
-                                        Target = GetHighScore(),
-                                        TargetTime = deathPanelData.DeathPointsTimeToIncrease,
-                                        ActionOnFinish = () =>
-                                        {
-                                            TimerManager.Add(new TimerData(deathPanelData.EnableRestartButton, () =>
-                                            {
-                                                SetActiveRestartButtonPanel(true);
-                                            }));
-                                        }
-                                    });
-                                    
-                                    actions.Then(new InstantAction(() =>
-                                    {
-                                        UpdateHighScoreText(0);
-                                        SetActiveHighScoreText(true);
-                                    }))
-                                    .Then(new WaitSecondsAction(deathPanelData.CountDeathScore))
-                                    .Then(new IncreasePointsAction(UpdateHighScoreText, _numberIncrementer, GetCurrentPoints, OnPointsAdded));
-                                    
-                                }
-                                else
-                                {
+                            Target = deflectCount * GetPointsMultiplier(),
+                            TargetTime = deathPanelData.DeathPointsTimeToIncrease,
+                        });
+                    }))
+                    .Then(new WaitSecondsAction(deathPanelData.CountDeathScore))
+                    .Then(new IncreasePointsAction(UpdateDeathScoreText, _numberIncrementer, GetCurrentPoints,
+                        OnPointsAdded));
 
-                                    actions.Then(new WaitSecondsAction(deathPanelData.CountHighScore))
-                                        .Then(new InstantAction(() =>
-                                        {
-                                            UpdateHighScoreText(GetHighScore());
-                                            SetActiveHighScoreText(true);
-                                        }))
-                                        .Then(new WaitSecondsAction(deathPanelData.EnableRestartButton))
-                                        .Then(new SetBoolAction(true, SetActiveRestartButtonPanel));
-                                }
-                                
-                                
-                            }));
-                        }
-                    });
-                }))
-                .Then(new WaitSecondsAction(deathPanelData.CountDeathScore))
-                .Then(new IncreasePointsAction(UpdateDeathScoreText, _numberIncrementer, GetCurrentPoints, OnPointsAdded))
-                .Build();
             }
-            else
+            
+            // Enables HighScore text
+            
+            actions
+                .Then(new WaitSecondsAction(deathPanelData.EnableHighScore))
+                .Then(new SetIntAction(_hasHighScore ? 0 : GetHighScore(), UpdateHighScoreText))
+                .Then(new SetBoolAction(true, SetActiveHighScoreText));
+            
+            // Checks if has a new high score 
+            
+            if (_hasHighScore)
             {
-                actions.Then(new WaitSecondsAction(deathPanelData.EnableHighScore))
-                    .Then(new SetBoolAction(true, SetActiveHighScoreText))
-                    .Then(new WaitSecondsAction(deathPanelData.EnableRestartButton))
-                    .Then(new SetBoolAction(true, SetActiveRestartButtonPanel));
+                actions
+                    .Then(new InstantAction(() =>
+                    {
+                        _numberIncrementer.SetData(new NumberIncrementerData
+                        {
+                            Target = GetHighScore(),
+                            TargetTime = deathPanelData.DeathPointsTimeToIncrease,
+                        });
+                    }))
+                    .Then(new WaitSecondsAction(deathPanelData.CountHighScore))
+                    .Then(new IncreasePointsAction(UpdateHighScoreText, _numberIncrementer, GetCurrentPoints,
+                        OnPointsAdded));
             }
+            
+            // Enables Restart Button
+            
+            actions
+                .Then(new WaitSecondsAction(deathPanelData.EnableRestartButton))
+                .Then(new SetBoolAction(true, SetActiveRestartButtonPanel));
+            
+            // Add Sequence to Manager
             
             ActionManager.Add(actions.Build());
         }

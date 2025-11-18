@@ -1451,6 +1451,34 @@ namespace NicolasMassara.CustomActionManager
             return new SetFloatAction(_value, _action);
         }
     }
+    
+    public class SetIntAction : IQueueAction
+    {
+        private int _value;
+        private Action<int> _action;
+        
+        public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
+
+        public SetIntAction(int value, Action<int> action)
+        {
+            _value = value;
+            _action = action;
+        }
+
+        public void OnStart()
+        {
+            _action?.Invoke(_value);
+        }
+
+        public ActionStatus OnUpdate(float deltaTime) => ActionStatus.Success;
+
+        public void OnInterrupt() { }
+
+        public IQueueAction Copy()
+        {
+            return new SetIntAction(_value, _action);
+        }
+    }
 
     public class SetBoolAction : IQueueAction
     {
