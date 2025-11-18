@@ -48,7 +48,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Start()
         {
-            abilityDataController = new AbilityDataController(AbilitiesData_UpdateTimeScale, OnTimeSpeedUp, OnTimeSlowDown);
+            abilityDataController = new AbilityDataController(OnTimeSpeedUp, OnTimeSlowDown);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
             
@@ -159,44 +159,13 @@ namespace _Main.Scripts.Gameplay.Abilies
         }
 
         #endregion
-
-        #region Coroutine
         
-
-        private IEnumerator Coroutine_UpdateTimeScale(TimeScaleData timeScaleData)
-        {
-            var currentTimeScale = timeScaleData.CurrentTimeScale;
-            var duration = timeScaleData.TimeToUpdate;
-            float elapsedTime = 0;
-            
-            while (elapsedTime < duration)
-            {
-                elapsedTime += Time.deltaTime;
-                float timeRatio = Mathf.Clamp01(elapsedTime / duration);
-                currentTimeScale = Mathf.Lerp(currentTimeScale, timeScaleData.TargetTimeScale, timeRatio);
-                
-                foreach (var updateGroup in timeScaleData.UpdateGroups)
-                {
-                    CustomTime.SetChannelTimeScale(updateGroup, currentTimeScale);
-                }
-                
-                yield return null;
-            }
-        }
-
-        #endregion
-
         #region Handler
 
         private void AbilitiesData_OnAbilityStartedHandler(float activeTime)
         {
             _finishAbilityTimerId = TimerManager.Add(new TimerData(activeTime, 
                 ()=> OnAbilityFinished?.Invoke()));
-        }
-
-        private void AbilitiesData_UpdateTimeScale(TimeScaleData timeScaleData)
-        {
-            StartCoroutine(Coroutine_UpdateTimeScale(timeScaleData));
         }
         
         private void AbilitiesData_OnEndQueueFinished(AbilityType abilityType)

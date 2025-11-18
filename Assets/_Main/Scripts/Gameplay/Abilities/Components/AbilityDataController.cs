@@ -33,25 +33,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
         }
 
-        private class UpdateTimeScaleCommand : Command
-        {
-            private readonly TimeScaleData _timeScaleData;
-            private event Action<TimeScaleData> UpdateTimeScale;
-            
-            public UpdateTimeScaleCommand(TimeScaleData timeScaleData, Action<TimeScaleData> updateTimeScale)
-            {
-                _timeScaleData = timeScaleData;
-                UpdateTimeScale = updateTimeScale;
-            }
-
-            public override ActionStatus OnExecute(float deltaTime)
-            {
-                UpdateTimeScale?.Invoke(_timeScaleData);
-                
-                return ActionStatus.Success;
-            }
-        }
-
         private class SetBoolAction : IQueueAction
         {
             private readonly Action<bool> _boolAction;
@@ -122,7 +103,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
             public void OnStart()
             {
-                CustomTime.SetChannelPaused(_updateGroup, true);
+                CustomTime.SetChannelPaused(_updateGroup, _isPaused);
             }
 
             public ActionStatus OnUpdate(float deltaTime) => ActionStatus.Success;
@@ -186,6 +167,60 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
         }
 
+        private class TimedTimeScaleUpdateAction : IQueueAction
+        {
+            private readonly float _startTimeScale;
+            private readonly float _duration;
+            private readonly float _targetTimeScale;
+            private readonly UpdateGroup _updateGroup;
+            private float _elapsed;
+            
+            public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
+
+            public TimedTimeScaleUpdateAction(float targetValue, float startValue, float duration, UpdateGroup updateGroup)
+            {
+                _startTimeScale = startValue;
+                _duration = duration;
+                _targetTimeScale = targetValue;
+                _updateGroup = updateGroup;
+            }
+
+            public void OnStart()
+            {
+                CurrentStatus = ActionStatus.Running;
+            }
+
+            public ActionStatus OnUpdate(float deltaTime)
+            {
+                if (_elapsed < _duration)
+                {
+                    _elapsed += deltaTime;
+                    float timeRatio = Mathf.Clamp01(_elapsed / _duration);
+                    var current = Mathf.Lerp(_startTimeScale, _targetTimeScale, timeRatio);
+
+                    if (timeRatio >= 1)
+                    {
+                        CurrentStatus = ActionStatus.Success;
+                        current = _targetTimeScale;
+                    }
+                    
+                    CustomTime.SetChannelTimeScale(_updateGroup, current);
+                }
+
+                return CurrentStatus;
+            }
+
+            public void OnInterrupt()
+            {
+                CustomTime.SetChannelTimeScale(_updateGroup, _targetTimeScale);
+            }
+
+            public IQueueAction Copy()
+            {
+                return new TimedTimeScaleUpdateAction(_startTimeScale, _duration, _targetTimeScale, _updateGroup);
+            }
+        }
+        
         #endregion
         
         private readonly Dictionary<AbilityType, AbilityStoredData> _abilities = new Dictionary<AbilityType, AbilityStoredData>();
@@ -195,8 +230,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         public event Action<AbilityType> OnStartQueueFinished;
         public event Action<AbilityType> OnEndQueueStart;
         public event Action<AbilityType> OnEndQueueFinished;
-        private event Action<TimeScaleData> _updateTimeScale;
-
 
         #region Commands/Actions
 
@@ -212,13 +245,9 @@ namespace _Main.Scripts.Gameplay.Abilies
         private readonly IQueueAction _cameraZoomOut;
 
         #endregion
-        
 
-        public AbilityDataController(Action<TimeScaleData> updateTimeScale, 
-            Action speedTimeSound, Action slowTimeSound)
+        public AbilityDataController(Action speedTimeSound, Action slowTimeSound)
         {
-            _updateTimeScale = updateTimeScale;
-            
             _playSpeedTimeSound = new InstantAction(speedTimeSound);
             _playSlowTimeSound = new InstantAction(slowTimeSound);
             
@@ -249,81 +278,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         #region Shield
 
-        private IQueueAction GetShieldStartSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var start = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnStartQueueStarted);  
-            var end = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnStartQueueFinished);  
-            
-            var slowDownTime = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1.0f,
-                TimeToUpdate = timeData.SlowDown
-            }, _updateTimeScale);
-            
-            
-            var speedUpTime = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = 1,
-                CurrentTimeScale = minTimeScale,
-                TimeToUpdate = timeData.SpeedUp
-            }, _updateTimeScale);
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(start))
-                .Then(_disableInputs)
-                .Then(_disableAbilityUI)
-                .Then(new SimpleCommandAction(slowDownTime))
-                .Then(_playSlowTimeSound)
-                .Then(new WaitSecondsAction(timeData.ZoomIn))
-                .Then(_cameraZoomIn)
-                .Then(new WaitSecondsAction(timeData.StartAction))
-                .Then(new InstantAction(ShieldEventCaller.EnableSuperShield))
-                .Then(new WaitSecondsAction(timeData.ZoomOut))
-                .Then(_cameraZoomOut)
-                .Then(new InstantAction(MeteorEventCaller.SpawnRing))
-                .Then(new WaitSecondsAction(timeData.SpeedUp))
-                .Then(new SimpleCommandAction(speedUpTime))
-                .Then(new SimpleCommandAction(end))
-                .Then(_enableAbilityUI)
-                .Build();
-        }
-        private IQueueAction GetShieldEndSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var start = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnEndQueueStart);  
-            var end = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnEndQueueFinished); 
-            
-            var slowDownTime = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1.0f,
-                TimeToUpdate = timeData.SlowDown
-            }, _updateTimeScale);
-            
-            var speedUpTime = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = 1,
-                CurrentTimeScale = minTimeScale,
-                TimeToUpdate = timeData.SpeedUp
-            }, _updateTimeScale);
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(start))
-                .Then(new SimpleCommandAction(slowDownTime))
-                .Then(_playSlowTimeSound)
-                .Then(new WaitSecondsAction(timeData.StopAction))
-                .Then(new InstantAction(ShieldEventCaller.EnableNormalShield))
-                .Then(new SimpleCommandAction(speedUpTime))
-                .Then(new WaitSecondsAction(timeData.SpeedUp))
-                .Then(_enableInputs)
-                .Then(new PublishAbilityActiveAction(AbilityType.SuperShield, false))
-                .Then(new SimpleCommandAction(end))
-                .Build();
-        }
         private void CreateShieldData(IAbilityTimeConfigData configData)
         {
             var minTimeScale = 0.025f;
@@ -340,7 +294,77 @@ namespace _Main.Scripts.Gameplay.Abilies
 
             _abilities.Add(selectedAbility, shieldData);
         }
-
+        
+        private IQueueAction GetShieldStartSequence(float minTimeScale, IAbilityTimeData timeData)
+        {
+            var start = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnStartQueueStarted);  
+            var end = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnStartQueueFinished);  
+            
+            var slowDownGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
+            
+            var slowDownEffects = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
+            
+            var speedUpGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
+            
+            var speedUpEffects = new TimedTimeScaleUpdateAction(
+                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
+            
+            
+            return ActionBuilder.Start()
+                .Do(new SimpleCommandAction(start))
+                .Then(new PublishAbilityActiveAction(AbilityType.SuperShield, true))
+                .Then(_disableInputs)
+                .Then(_disableAbilityUI)
+                .Then(_playSlowTimeSound)
+                .Then(new ActionParallel(new []{slowDownGameplay,slowDownEffects}))
+                .Then(new WaitSecondsAction(timeData.ZoomIn))
+                .Then(_cameraZoomIn)
+                .Then(new WaitSecondsAction(timeData.StartAction))
+                .Then(new InstantAction(ShieldEventCaller.EnableSuperShield))
+                .Then(new WaitSecondsAction(timeData.ZoomOut))
+                .Then(new InstantAction(MeteorEventCaller.SpawnRing))
+                .Then(_cameraZoomOut)
+                .Then(new ActionParallel(new []{speedUpGameplay,speedUpEffects}))
+                .Then(new WaitSecondsAction(timeData.SpeedUp))
+                .Then(_enableAbilityUI)
+                .Then(new SimpleCommandAction(end))
+                .Build();
+        }
+        private IQueueAction GetShieldEndSequence(float minTimeScale, IAbilityTimeData timeData)
+        {
+            var start = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnEndQueueStart);  
+            var end = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnEndQueueFinished); 
+            
+            var slowDownGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
+            
+            var slowDownEffects = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
+            
+            var speedUpGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
+            
+            var speedUpEffects = new TimedTimeScaleUpdateAction(
+                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
+            
+            
+            return ActionBuilder.Start()
+                .Do(new SimpleCommandAction(start))
+                .Then(new ActionParallel(new []{slowDownGameplay,slowDownEffects}))
+                .Then(_playSlowTimeSound)
+                .Then(new WaitSecondsAction(timeData.StopAction))
+                .Then(new InstantAction(ShieldEventCaller.EnableNormalShield))
+                .Then(new ActionParallel(new []{speedUpGameplay,speedUpEffects}))
+                .Then(new WaitSecondsAction(timeData.SpeedUp))
+                .Then(_enableInputs)
+                .Then(new PublishAbilityActiveAction(AbilityType.SuperShield, false))
+                .Then(new SimpleCommandAction(end))
+                .Build();
+        }
+        
         #endregion
 
         #region Heal
@@ -350,54 +374,47 @@ namespace _Main.Scripts.Gameplay.Abilies
             var startSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueStarted);  
             var endSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueFinished);
             
-            var setShieldTimeScale = new SetChannelTimeScaleAction(shieldMinTimeScale, new[]{UpdateGroup.Shield});
             
             var disableEarthDamage = new SetBoolAction(false, EarthEventCaller.SetEnableDamage);
             var enableEarthDamage = new SetBoolAction(true, EarthEventCaller.SetEnableDamage);
             
-            var slowDownTime = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1.0f,
-                TimeToUpdate = timeData.SlowDown
-            }, _updateTimeScale);
+            // SlowDown
+            var setShieldTimeScale = new SetChannelTimeScaleAction(shieldMinTimeScale, new[]{UpdateGroup.Shield});
             
-            var speedUpTime = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = 1,
-                CurrentTimeScale = minTimeScale,
-                TimeToUpdate = timeData.SpeedUp
-            }, _updateTimeScale);
+            var slowDownGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
             
-            var speedUpShield = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Shield},
-                TargetTimeScale = 1f,
-                CurrentTimeScale = shieldMinTimeScale,
-                TimeToUpdate = timeData.SpeedUp
-            }, _updateTimeScale);
+            var slowDownEffects = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
+
+            // SpeedUp
+            var speedUpGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
+            
+            var speedUpEffects = new TimedTimeScaleUpdateAction(
+                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
+            
+            var speedUpShield = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue: shieldMinTimeScale, timeData.SpeedUp, UpdateGroup.Shield );
 
             var runAbilityTimer = new RunAbilityTimerAction(AbilityType.Health, RunActiveTimer);
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
                 .Then(new PublishAbilityActiveAction(AbilityType.Health, true))
-                .Then(disableEarthDamage)
+                .Then(new ActionParallel(new [] {slowDownGameplay,slowDownEffects }))
                 .Then(setShieldTimeScale)
+                .Then(new WaitSecondsAction(timeData.ZoomIn))
+                .Then(_cameraZoomIn)
+                .Then(disableEarthDamage)
                 .Then(_disableAbilityUI)
                 .Then(_disableInputs)
                 .Then(_playSlowTimeSound)
-                .Then(new SimpleCommandAction(slowDownTime))
-                .Then(new WaitSecondsAction(timeData.ZoomIn))
-                .Then(_cameraZoomIn)
                 .Then(new WaitSecondsAction(timeData.StartAction))
                 .Then(new InstantAction(EarthEventCaller.Heal))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_cameraZoomOut)
-                .Then(new SimpleCommandAction(speedUpTime))
-                .Then(new SimpleCommandAction(speedUpShield))
+                .Then(new ActionParallel(new [] {speedUpGameplay,speedUpEffects,speedUpShield }))
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(_playSpeedTimeSound)
                 .Then(_enableInputs)
@@ -450,37 +467,29 @@ namespace _Main.Scripts.Gameplay.Abilies
             
             var runAbilityTimer = new RunAbilityTimerAction(AbilityType.SlowMotion, RunActiveTimer);
             
-            var slowDownShield = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Shield},
-                TargetTimeScale = 0.85f,
-                CurrentTimeScale = 1.0f,
-                TimeToUpdate = timeData.SlowDown
-            }, _updateTimeScale);
+            // Slow Down
             
-            var slowDownGameplay = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay},
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1.0f,
-                TimeToUpdate = timeData.SlowDown
-            }, _updateTimeScale);
+            var slowDownShield = new TimedTimeScaleUpdateAction(
+                targetValue: 0.85f,  startValue:1, timeData.SlowDown, UpdateGroup.Shield );
             
-            var slowDownEarthAndEffects = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Earth, UpdateGroup.Effects },
-                TargetTimeScale = minTimeScale/2,
-                CurrentTimeScale = 1.0f,
-                TimeToUpdate = timeData.SlowDown
-            }, _updateTimeScale);
+            var slowDownGameplay = new TimedTimeScaleUpdateAction(
+                minTimeScale, startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
+            
+            var slowDownEarth = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale/2, startValue: 1, timeData.SlowDown, UpdateGroup.Earth );
+            
+            var slowDownEffects = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale/2, startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
+            
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
                 .Then(new PublishAbilityActiveAction(AbilityType.SlowMotion, true))
                 .Then(new SetChannelPausedAction(true, new[]{UpdateGroup.Gameplay}))
-                .Then(new SimpleCommandAction(slowDownShield))
-                .Then(new SimpleCommandAction(slowDownGameplay))
-                .Then(new SimpleCommandAction(slowDownEarthAndEffects))
+                .Then(new ActionParallel(new []
+                {
+                    slowDownShield, slowDownGameplay, slowDownEarth,slowDownEffects
+                }))
                 .Then(_disableAbilityUI)
                 .Then(_disableInputs)
                 .Then(_cameraZoomIn)
@@ -502,29 +511,19 @@ namespace _Main.Scripts.Gameplay.Abilies
             var start = new TriggerAbilitySequenceState(AbilityType.SlowMotion, OnEndQueueStart);  
             var end = new TriggerAbilitySequenceState(AbilityType.SlowMotion, OnEndQueueFinished); 
             
-            var speedUpShield = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Shield},
-                TargetTimeScale = 1.0f,
-                CurrentTimeScale = 0.85f,
-                TimeToUpdate = timeData.SlowDown
-            }, _updateTimeScale);
+            // Speed Up
+            var speedUpShield = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue: 0.85f, timeData.SpeedUp, UpdateGroup.Shield );
             
-            var speedUpGameplay = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay},
-                TargetTimeScale = 1.0f,
-                CurrentTimeScale = minTimeScale,
-                TimeToUpdate = timeData.SlowDown
-            }, _updateTimeScale);
+            var speedUpGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
             
-            var peedUpEarthAndEffects = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Earth, UpdateGroup.Effects },
-                TargetTimeScale = 1f,
-                CurrentTimeScale = minTimeScale/2,
-                TimeToUpdate = timeData.SlowDown
-            }, _updateTimeScale);
+            var speedUpEarth = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue: minTimeScale/2, timeData.SpeedUp, UpdateGroup.Earth );
+            
+            var speedUpEffects= new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue: minTimeScale/2, timeData.SpeedUp, UpdateGroup.Effects );
+            
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(start))
@@ -532,9 +531,10 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_disableInputs)
                 .Then(_cameraZoomIn)
                 .Then(new SetChannelPausedAction(true, new[]{UpdateGroup.Gameplay}))
-                .Then(new SimpleCommandAction(speedUpShield))
-                .Then(new SimpleCommandAction(speedUpGameplay))
-                .Then(new SimpleCommandAction(peedUpEarthAndEffects))
+                .Then(new ActionParallel(new []
+                {
+                    speedUpShield, speedUpGameplay, speedUpEarth,speedUpEffects
+                }))
                 .Then(_playSpeedTimeSound)
                 .Then(new WaitSecondsAction(timeData.SlowDown))
                 .Then(new SetBoolAction(false, ShieldEventCaller.SetSlow))
@@ -573,22 +573,19 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var startSequence = new TriggerAbilitySequenceState(AbilityType.DoublePoints, OnStartQueueStarted);  
             var endSequence = new TriggerAbilitySequenceState(AbilityType.DoublePoints, OnStartQueueFinished);
-
-            var slowDownTime = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1f,
-                TimeToUpdate = timeData.SlowDown,
-            },_updateTimeScale);
             
-            var speedUpTime = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new[] { UpdateGroup.Gameplay, UpdateGroup.Effects },
-                TargetTimeScale = 1f,
-                CurrentTimeScale = minTimeScale,
-                TimeToUpdate = timeData.SpeedUp,
-            },_updateTimeScale);
+            var slowDownGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Gameplay );
+            
+            var slowDownEffects = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Effects );
+            
+            var speedUpTime = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
+            
+            var speedUpEffects = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
+            
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
@@ -596,18 +593,18 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_disableInputs)
                 .Then(_disableAbilityUI)
                 .Then(_cameraZoomIn)
-                .Then(new SimpleCommandAction(slowDownTime))
+                .Then(new ActionParallel(new [] { slowDownGameplay,slowDownEffects }))
                 .Then(new WaitSecondsAction(timeData.SlowDown))
                 .Then(_playSlowTimeSound)
                 .Then(new SetBoolAction(true,ShieldEventCaller.SetGold))
-                .Then(new SimpleCommandAction(speedUpTime))
-                .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
-                .Then(_playSpeedTimeSound)
-                .Then(new RunAbilityTimerAction(AbilityType.DoublePoints,RunActiveTimer))
-                .Then(_cameraZoomOut)
-                .Then(_enableInputs)
                 .Then(_enableAbilityUI)
+                .Then(_enableInputs)
+                .Then(_cameraZoomOut)
+                .Then(new ActionParallel(new [] {speedUpTime,speedUpEffects }))
+                .Then(_playSpeedTimeSound)
+                .Then(new WaitSecondsAction(timeData.SpeedUp))
+                .Then(new RunAbilityTimerAction(AbilityType.DoublePoints,RunActiveTimer))
                 .Then(new SimpleCommandAction(endSequence))
                 .Build();
         }
@@ -652,37 +649,32 @@ namespace _Main.Scripts.Gameplay.Abilies
             var startSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnStartQueueStarted);  
             var endSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnStartQueueFinished);
 
-            var slowDown = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1f,
-                TimeToUpdate = timeData.StartAction,
-            },_updateTimeScale);
+            var slowDownGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Gameplay );
             
-            var speedUp = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
-                TargetTimeScale = 1f,
-                CurrentTimeScale = minTimeScale,
-                TimeToUpdate = timeData.StartAction,
-            },_updateTimeScale);
+            var slowDownEffects = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Effects );
+            
+            var speedUpTime = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue:minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
+            
+            var speedUpEffects = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue:minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
                 .Then(new PublishAbilityActiveAction(AbilityType.Automatic, true))
-                .Then(new SimpleCommandAction(slowDown))
+                .Then(new ActionParallel(new [] {slowDownGameplay,slowDownEffects }))
                 .Then(_cameraZoomIn)
                 .Then(_disableInputs)
                 .Then(_disableAbilityUI)
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StartAction))
                 .Then(new SetBoolAction(true,ShieldEventCaller.SetAutomatic))
-                .Then(new SimpleCommandAction(speedUp))
+                .Then(new ActionParallel(new [] {speedUpTime,speedUpEffects }))
                 .Then(_cameraZoomOut)
                 .Then(_playSpeedTimeSound)
                 .Then(new RunAbilityTimerAction(AbilityType.Automatic, RunActiveTimer))
-                .Then(_enableInputs)
                 .Then(_enableAbilityUI)
                 .Then(new SimpleCommandAction(endSequence))
                 .Build();
@@ -693,32 +685,28 @@ namespace _Main.Scripts.Gameplay.Abilies
             var startSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnEndQueueStart);  
             var endSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnEndQueueFinished); 
             
-            var slowDown = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
-                TargetTimeScale = minTimeScale,
-                CurrentTimeScale = 1f,
-                TimeToUpdate = timeData.SlowDown,
-            },_updateTimeScale);
+            var slowDownGameplay = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Gameplay );
             
-            var speedUp = new UpdateTimeScaleCommand(new TimeScaleData
-            {
-                UpdateGroups = new [] { UpdateGroup.Gameplay, UpdateGroup.Effects},
-                TargetTimeScale = 1f,
-                CurrentTimeScale = minTimeScale,
-                TimeToUpdate = timeData.SpeedUp,
-            },_updateTimeScale);
+            var slowDownEffects = new TimedTimeScaleUpdateAction(
+                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Effects );
+            
+            var speedUpTime = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue:minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
+            
+            var speedUpEffects = new TimedTimeScaleUpdateAction(
+                targetValue: 1f,  startValue:minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
                 .Then(new PublishAbilityActiveAction(AbilityType.Automatic, false))
-                .Then(new SimpleCommandAction(slowDown))
+                .Then(new ActionParallel(new [] {slowDownGameplay,slowDownEffects }))
                 .Then(_cameraZoomIn)
                 .Then(_disableInputs)
                 .Then(_disableAbilityUI)
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StopAction))
-                .Then(new SimpleCommandAction(speedUp))
+                .Then(new ActionParallel(new [] {speedUpTime,speedUpEffects }))
                 .Then(_cameraZoomOut)
                 .Then(_enableInputs)
                 .Then(_enableAbilityUI)
@@ -784,6 +772,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         public void RunActiveTimer(AbilityType abilityType)
         {
+            Debug.Log("Here");
             var activeTime = _abilities[abilityType].ActiveTime;
             OnAbilityStarted?.Invoke(activeTime);
         }

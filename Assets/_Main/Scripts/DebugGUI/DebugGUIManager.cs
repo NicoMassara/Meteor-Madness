@@ -58,7 +58,7 @@ namespace _Main.Scripts.DebugGUI
 
     public class DebugGUIManager : SingletonBehaviour<DebugGUIManager>
     {
-        public Vector2 startPos = new Vector2(10, 50);
+        public Vector2 startPos = new Vector2(2000, 50);
         public float lineHeight = 25f;
         public float buttonHeight = 45f;
         public float groupScaling = 10f;

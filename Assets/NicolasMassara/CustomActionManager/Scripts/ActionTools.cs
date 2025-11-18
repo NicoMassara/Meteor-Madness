@@ -164,10 +164,17 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return this;
-        }
+            var copy = new DynamicActionSequence();
+            
+            if (_current != null)
+                copy._current = (IQueueAction)_current.Copy();
+            
+            foreach (var action in _actions)
+                copy._actions.Enqueue((IQueueAction)action.Copy());
 
-        // Inserta la acción justo después de la acción activa
+            return copy;
+        }
+        
         public void InsertNext(IQueueAction action)
         {
             var temp = new Queue<IQueueAction>();
@@ -177,11 +184,9 @@ namespace NicolasMassara.CustomActionManager
             while (temp.Count > 0)
                 _actions.Enqueue(temp.Dequeue());
         }
-
-        // Inserta la acción al final
+        
         public void InsertLast(IQueueAction action) => _actions.Enqueue(action);
-
-        // Para WrapLast
+        
         public IQueueAction GetLastAction()
         {
             if (_actions.Count == 0)
