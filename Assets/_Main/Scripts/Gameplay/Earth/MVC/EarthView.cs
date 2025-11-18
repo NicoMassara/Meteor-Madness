@@ -71,6 +71,12 @@ namespace _Main.Scripts.Gameplay.Earth
             _restartTimeValues = GameConfigManager.Instance.GetGameplayData().EarthTimeData.Restart;
             _shakerController.SetShakeData(healthShakeData);
             SetShakeMultiplier(1f);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.RotationSpeed = 1;
+            _debugData.EarthHealth = 1;
+            _debugData.ShakeIntensity = 0;
+#endif
         }
 
         public void ExecuteUpdate(float deltaTime)

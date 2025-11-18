@@ -306,10 +306,10 @@ namespace _Main.Scripts.Gameplay.Abilies
                 targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
             
             var speedUpGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, 0.1f, UpdateGroup.Gameplay );
+                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
             
             var speedUpEffects = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, 0.1f, UpdateGroup.Effects );
+                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
             
             
             return ActionBuilder.Start()
@@ -402,7 +402,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new PublishAbilityActiveAction(AbilityType.Health, true))
                 .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
                 .Then(setShieldTimeScale)
-                .Then(new WaitSecondsAction(timeData.ZoomIn))
+                //.Then(new WaitSecondsAction(timeData.ZoomIn))
                 .Then(_cameraZoomIn)
                 .Then(disableEarthDamage)
                 .Then(_disableAbilityUI)

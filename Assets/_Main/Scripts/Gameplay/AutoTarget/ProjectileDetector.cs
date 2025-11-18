@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.AutoTarget
 {
-    public class ProjectileDetector : ManagedComponent, IFixedUpdatable
+    public class ProjectileDetector
     {
         private readonly ProjectileDetectorData _data;
         private readonly Collider2D[] _colliders = new Collider2D[10];
@@ -20,23 +20,11 @@ namespace _Main.Scripts.Gameplay.AutoTarget
         public UnityAction OnTargetFound;
         public UnityAction OnTargetLost;
         
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
-        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTarget;
-        public bool AutomaticEnable { get; set; }
-        
         public ProjectileDetector(ProjectileDetectorData data, IMovement movement) 
             : base()
         {
             _data = data;
             _movement = movement;
-        }
-
-        public void ExecuteFixedUpdate(float fixedDeltaTime)
-        {
-            if (AutomaticEnable)
-            {
-                CheckForProjectile();
-            }
         }
         
         public void CheckForProjectile()

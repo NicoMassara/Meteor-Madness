@@ -2,6 +2,7 @@
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts.DebugTools
 {
@@ -50,6 +51,12 @@ namespace _Main.Scripts.DebugTools
                 Time.fixedDeltaTime = timeScale;*/
             };
             
+            // Reload
+            _viewUI.ReloadScene.OnReload += () =>
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            };
+
         }
 
         private void Start()

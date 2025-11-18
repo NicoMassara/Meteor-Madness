@@ -7,6 +7,7 @@ namespace _Main.Scripts.DebugTools
     [RequireComponent(typeof(DebugUIGameValues))]
     [RequireComponent(typeof(DebugUICamera))]
     [RequireComponent(typeof(DebugUITimeScale))]
+    [RequireComponent(typeof(DebugUIReloadScene))]
     public class DebugUIView : MonoBehaviour
     {
         public DebugUIAbility Ability { get; private set; }
@@ -14,6 +15,7 @@ namespace _Main.Scripts.DebugTools
         public DebugUIGameValues GameValues { get; private set; }
         public DebugUICamera Camera { get; private set; }
         public DebugUITimeScale TimeScale { get; private set; }
+        public DebugUIReloadScene ReloadScene { get; private set; }
 
         public void Initialize()
         {
@@ -22,6 +24,7 @@ namespace _Main.Scripts.DebugTools
             GameValues = GetComponent<DebugUIGameValues>();
             Camera = GetComponent<DebugUICamera>();
             TimeScale = GetComponent<DebugUITimeScale>();
+            ReloadScene = GetComponent<DebugUIReloadScene>();
         }
     }
 }

@@ -131,6 +131,10 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleTriggerAbility(int abilityIndex)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.CurrentAbility = (AbilityType)abilityIndex;
+#endif
+            
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(
                 (AbilityType)abilityIndex),PriorityTick.High);
             
@@ -141,6 +145,10 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleFinishAbility(int abilityIndex)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.CurrentAbility = (AbilityType)0;
+#endif
+            
             if (abilityDataController.GetHasInstantEffect((AbilityType)abilityIndex))
             {
                 GameModeEventCaller.SetEnablePause(true);

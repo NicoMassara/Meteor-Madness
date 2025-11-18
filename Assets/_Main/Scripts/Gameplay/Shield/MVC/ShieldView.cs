@@ -224,20 +224,6 @@ namespace _Main.Scripts.Gameplay.Shield
             }
         }
         
-        private IEnumerator Coroutine_RunActionByTime(Action<float> action, float targetTime)
-        {
-            var elapsedTime = 0f;
-            
-            while (elapsedTime < targetTime)
-            {
-                var deltaTime = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
-                elapsedTime += deltaTime;
-                action?.Invoke(deltaTime);
-                
-                yield return null;
-            }
-        }
-        
         private void RunSuperShieldQueue()
         {
             var temp = ActionBuilder.Start()
@@ -297,7 +283,6 @@ namespace _Main.Scripts.Gameplay.Shield
         #endregion
 
         #region Coroutine
-        
         
         private IEnumerator Coroutine_Shake()
         {
