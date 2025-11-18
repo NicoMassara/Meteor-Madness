@@ -1,10 +1,9 @@
 ﻿using System;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Save;
-using _Main.Scripts.Sounds;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -14,12 +13,14 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
+        public event Action OnCountDownStarted;
         public event Action OnCountdownUpdated;
         public event Action OnCountdownUpdatedFinished;
         public event Action OnGameModeEnable;
 
         public event Action OnGameModeFinished;
         public event Action OnGameModeStarted;
+        public event Action OnEarthDeath;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
         
@@ -245,19 +246,13 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             if (isPaused == true)
             {
-                TimerManager.Add(new TimerData
+                TimerManager.Add(new TimerData(0.5f, () =>
                 {
-                    Time = 0.5f,
-                    OnStartAction = () =>
-                    {
-                        SetEnableInputs(false);
-                    },
-                    OnEndAction = () =>
-                    {
-                        SetEnableInputs(true);
-                    },
-                    
-                }, UpdateGroup.Always);
+                    SetEnableInputs(false);
+                }, () =>
+                {
+                    SetEnableInputs(true);
+                }));
             }
 #endif
             
@@ -283,16 +278,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var temp = GameConfigManager.Instance.GetGameplayData().GameTimeData;
             
-            var tempActions = new ActionData[]
-            {
-                new (() =>
-                {
-                    EarthEventCaller.Restart();
-                    
-                }, temp.RestartEarth),
-            };
-            
-            ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
+            TimerManager.Add(new TimerData(time: temp.RestartEarth,
+                onEndAction: EarthEventCaller.Restart));
         }
         
         private void HandleEarthRestartFinish(bool doesRestart)
@@ -305,6 +292,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             CameraEventCaller.ZoomOut();
+            OnCountDownStarted?.Invoke();
         }
         
         private void HandleCountdownFinish()
@@ -339,6 +327,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleEarthShake()
         {
+            OnEarthDeath?.Invoke();
             GameEventCaller.Publish(new CameraEvents.ZoomIn());
         }
         

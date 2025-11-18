@@ -25,6 +25,7 @@
         public const ulong SetRotation = 0xA1007;
         public const ulong TriggerEndDestruction = 0xA1008;
         public const ulong SetLowHealth = 0xA1009;
+        public const ulong Debug_UpdateHealth = 0xA1010;
     }
 
     public struct GameModeObserverMessage
@@ -151,5 +152,24 @@
         public const ulong SetEnableUI = 0xA0004;
         public const ulong Initialize = 0xA0005;
         public const ulong Destroy = 0xA0006;
+    }
+    
+    public struct OptionsMenuObserverMessage
+    {
+        public const ulong Enable = 0xA9001;
+        public const ulong Disable = 0xA9002;
+        public const ulong TriggerMainMenu = 0xA9003;
+        public const ulong Initialize = 0xA9004;
+        public const ulong Empty3 = 0xA9005;
+        public const ulong Empty4 = 0xA9006;
+        public const ulong Empty5 = 0xA9007;
+        public const ulong Empty6 = 0xA9008;
+        public const ulong Empty7 = 0xA9009;
+        public const ulong Empty8 = 0xA9010;
+        public const ulong Empty9 = 0xA9011;
+        public const ulong Empty10 = 0xA9012;
+        public const ulong Empty11 = 0xA9013;
+        public const ulong Empty12 = 0xA9014;
+        public const ulong Empty13 = 0xA9015;
     }
 }

@@ -30,6 +30,16 @@ namespace _Main.Scripts.Gameplay.GameMode
                 PlayMusic(deathMusic);
             };
             
+            GetComponentToSound.OnEarthDeath += () =>
+            {
+                StopMusic();
+            };         
+            
+            GetComponentToSound.OnCountDownStarted += () =>
+            {
+                StopMusic();
+            };
+            
             GetComponentToSound.OnCountdownUpdated += () =>
             {
                 PlaySound(countdownSound);

@@ -1,6 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomUpdateManager;
 using TMPro;
 using UnityEngine;
 
@@ -16,8 +15,7 @@ namespace _Main.Scripts.Gameplay.FloatingScore
         [Range(0.1f,3)]
         [SerializeField] private float fadeDelay = 1f;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
         public event Action<IFloatingText> OnRecycle;
         private bool _canMove;
         private bool _canFade;
@@ -25,19 +23,18 @@ namespace _Main.Scripts.Gameplay.FloatingScore
         private float _fadeTimer;
         private float _startFadeTimer;
         private float _currentAlpha;
-        
-        public void ExecuteUpdate()
+
+        public void ExecuteUpdate(float deltaTime)
         {
-            var dt = CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
             
             if (_canMove)
             {
-                HandleMovement(dt);
+                HandleMovement(deltaTime);
             }
             
             if (_canFade)
             {
-                HandleFade(dt);
+                HandleFade(deltaTime);
             }
         }
 

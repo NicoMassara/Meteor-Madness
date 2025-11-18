@@ -18,6 +18,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             Finish,
             Death,
             Restart,
+            Leaving,
             Disable
         }
         
@@ -72,6 +73,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             var finish = new FinishState<States>();
             var death = new DeathState<States>();
             var restart = new RestartState<States>();
+            var leaving = new BaseState<States>();
             var disable = new DisableState<States>();
             
             temp.Add(none);
@@ -81,6 +83,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             temp.Add(finish);
             temp.Add(death);
             temp.Add(restart);
+            temp.Add(leaving);
             temp.Add(disable);
 
             #endregion
@@ -94,7 +97,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             start.AddTransition(States.Gameplay, gameplay);
             
             gameplay.AddTransition(States.Finish, finish);
-            gameplay.AddTransition(States.Disable, disable);
+            gameplay.AddTransition(States.Leaving, leaving);
             
             finish.AddTransition(States.Death, death);
             
@@ -102,6 +105,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             death.AddTransition(States.Disable, disable);
             
             restart.AddTransition(States.Start, start);
+            
+            leaving.AddTransition(States.Disable, disable);
             
             disable.AddTransition(States.Enable, enable);
 
@@ -155,6 +160,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void TransitionToDisable()
         {
             SetTransition(States.Disable);
+        }
+        
+        public void TransitionToLeaving()
+        {
+            SetTransition(States.Leaving);
         }
 
         #endregion
@@ -333,33 +343,21 @@ namespace _Main.Scripts.Gameplay.GameMode
     
     public class DeathState<T> : BaseState<T>
     {
-        private ActionQueue _actionQueue = new ActionQueue();
-        
         public override void Awake()
         {
             Controller.HandleEarthEndDestruction();
-        }
-
-        public override void Execute(float deltaTime)
-        {
-            _actionQueue.Run(deltaTime);
         }
     }
     
     public class FinishState<T> : BaseState<T>
     {
-        private ActionQueue _actionQueue = new ActionQueue();
         
         public override void Awake()
         {
             Controller.HandleGameFinish();
             Controller.HandleEarthStartDestruction();
         }
-
-        public override void Execute(float deltaTime)
-        {
-            _actionQueue.Run(deltaTime);
-        }
+        
     }
     
     public class GameplayState<T> : BaseState<T>

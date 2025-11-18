@@ -1,25 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using _Main.Scripts.MyComponents;
 using UnityEngine;
 
 namespace _Main.Scripts.Save
 {
-    public class DataManager : MonoBehaviour
+    public class DataManager : SingletonBehaviour<DataManager>
     {
-        public static DataManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
-        private static DataManager _instance;
         private Dictionary<SaveDataType, SaveDataBase> _saveDataDic;
         
-        private static DataManager CreateInstance()
-        {
-            var gameObject = new GameObject(nameof(DataManager))
-            {
-                hideFlags = HideFlags.DontSave,
-            };
-            DontDestroyOnLoad(gameObject);
-            return gameObject.AddComponent<DataManager>();
-        }
-        
-        private void Awake()
+        private void Start()
         {
             InitializeSaves();
         }
@@ -31,6 +21,8 @@ namespace _Main.Scripts.Save
             TryLoadSaveData<StatsSaveData>(SaveDataType.Stats);
             TryLoadSaveData<SettingsSaveData>(SaveDataType.Settings);
             TryLoadSaveData<SettingsSaveData>(SaveDataType.Test);
+            
+            SaveDataEvents.TriggerOnSaveInitialized();
         }
 
         private void TryLoadSaveData<T>(SaveDataType type) where T : SaveDataBase, new()
@@ -68,6 +60,5 @@ namespace _Main.Scripts.Save
         {
             return _saveDataDic[saveType] as T;
         }
-        
     }
 }

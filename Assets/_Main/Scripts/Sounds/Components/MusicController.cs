@@ -60,7 +60,6 @@ namespace _Main.Scripts.Sounds
 
                 if (timeRatio >= 1)
                 {
-                    Debug.Log($"Volume changed to: {_sound.VolumeMultiplier}");
                     _hasVolumeToChange = false;
                     _elapsedTime = 0;
                     _onEnd?.Invoke(_sound);
@@ -75,8 +74,11 @@ namespace _Main.Scripts.Sounds
         
         public void StopMusic()
         {
-            OnMusicLeaving?.Invoke(_currentMusic.SoundClass.ClassName);
-            _volumeChanger.DecreaseVolume(_currentMusic, OnMusicStop);
+            if (_currentMusic != null)
+            {
+                OnMusicLeaving?.Invoke(_currentMusic.SoundClass.ClassName);
+                _volumeChanger.DecreaseVolume(_currentMusic, OnMusicStop);
+            }
         }
 
         public void PlayMusic(SoundComponent music)

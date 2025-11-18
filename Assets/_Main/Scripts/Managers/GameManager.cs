@@ -1,6 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers.UpdateManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
@@ -11,6 +11,7 @@ namespace _Main.Scripts.Managers
         private static GameManager _instance;
         
         public bool CanPlay { get; set; }
+        public bool CanVibrate { get; set; } = true;
         public bool IsPaused { get; set; }
         private int _currentPoints;
         
@@ -30,7 +31,6 @@ namespace _Main.Scripts.Managers
         private void Awake()
         {
             EventManager = new EventBusManager();
-            SceneLoader.LoadModules();
         }
         
         public void SetInputReader(IInputReader inputReader)

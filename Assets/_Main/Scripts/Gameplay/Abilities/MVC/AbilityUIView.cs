@@ -1,6 +1,6 @@
 ﻿using _Main.Scripts.Gameplay.Abilities;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Observer;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilies
@@ -31,7 +31,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                     HandleAddAbility((int)args[0]);
                     break;
                 case AbilityObserverMessage.SelectAbility:
-                    HandleSelectAbility((int)args[0]);
+                    HandleSelectAbility();
                     break;
                 case AbilityObserverMessage.RestartAbilities:
                     HandleRestartAbilities();
@@ -57,7 +57,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             abilityUIData.AddAbility((AbilityType)abilityTypeIndex);
         }
         
-        private void HandleSelectAbility(int abilityTypeIndex)
+        private void HandleSelectAbility()
         {
             abilityUIData.RemoveAbility();
         }

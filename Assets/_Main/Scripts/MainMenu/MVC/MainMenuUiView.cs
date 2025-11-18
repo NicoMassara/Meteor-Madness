@@ -1,7 +1,7 @@
 ﻿using System;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.Menu;
 using _Main.Scripts.Observer;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC

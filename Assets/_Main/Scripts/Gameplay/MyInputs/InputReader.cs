@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using System;
+using NicolasMassara.CustomUpdateManager;
 
 namespace _Main.Scripts.Gameplay.MyInputs
 {
@@ -22,10 +22,9 @@ namespace _Main.Scripts.Gameplay.MyInputs
             public bool HasUsedAbility { get; private set; }
             public bool AreInputsEnabled { get; set; }
             public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
-            public TickGroup SelfTickGroup { get; } = TickGroup.EightTick;
-            public float LastUpdateTime { get; set; }
+            public TickGroup SelfTickGroup { get; } = TickGroup.EightTarget;
             
-            public void ExecuteUpdate()
+            public void ExecuteLateUpdate(float deltaTime)
             {
                 if (AreInputsEnabled || HasUsedAbility)
                 {
@@ -36,14 +35,12 @@ namespace _Main.Scripts.Gameplay.MyInputs
 #endif
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Inputs;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
         
         public event Action<int> OnMovementDirectionChanged;
         public event Action OnStopMovement;
         public event Action<bool> OnAbilityTriggered;
         
-
         
         private void Awake()
         {
@@ -61,11 +58,11 @@ namespace _Main.Scripts.Gameplay.MyInputs
 #if UNITY_ANDROID || UNITY_IOS
             input = new TouchInput();
 #else
-            input = new KeyboardInput();
+            input = new KeyInput();
 #endif
         }
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
             if(_areInputsEnable == false) return;
             

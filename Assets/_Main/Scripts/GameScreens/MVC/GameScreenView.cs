@@ -1,6 +1,5 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.Observer;
-using UnityEngine;
+﻿using _Main.Scripts.Observer;
+using NicolasMassara.CustomUpdateManager;
 
 namespace _Main.Scripts.GameScreens
 {

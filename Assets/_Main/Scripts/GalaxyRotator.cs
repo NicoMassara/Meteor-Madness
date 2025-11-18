@@ -1,5 +1,4 @@
-﻿using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+﻿using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts
@@ -12,17 +11,16 @@ namespace _Main.Scripts
         
         private Rotator _rotator; 
         public UpdateGroup SelfUpdateGroup { get; private set; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.FullTick;
-        public float LastUpdateTime { get; set; }
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
         private void Start()
         {
             _rotator = new Rotator(galaxies,Vector3.forward,rotationSpeed);
         }
 
-        public void ExecuteUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
-            _rotator.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _rotator.Rotate(deltaTime);
         }
     }
 }
