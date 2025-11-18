@@ -53,18 +53,21 @@ namespace NicolasMassara.CustomActionManager
     {
         public ActionStatus OnExecute(float deltaTime);
         public void OnInterrupt();
+        public ICommand Copy();
     }
     
     public interface ICommand<T>
     {
         public ActionStatus OnExecute(float deltaTime, out T result);
         public void OnInterrupt(out T result);
+        public ICommand<T> Copy();
     }
     
     public abstract class Command : ICommand
     {
         public abstract ActionStatus OnExecute(float deltaTime);
         public virtual void OnInterrupt() {}
+        public abstract ICommand Copy();
     }
     
     public abstract class Command<T> : ICommand<T>
@@ -75,8 +78,10 @@ namespace NicolasMassara.CustomActionManager
         {
             result = default;
         }
+        
+        public abstract ICommand<T> Copy();
     }
-
+    
     #endregion
 
     #region Actions Helper
@@ -161,19 +166,6 @@ namespace NicolasMassara.CustomActionManager
             _actions.Clear();
             CurrentStatus = ActionStatus.Failure;
         }
-
-        public IQueueAction Copy()
-        {
-            var copy = new DynamicActionSequence();
-            
-            if (_current != null)
-                copy._current = (IQueueAction)_current.Copy();
-            
-            foreach (var action in _actions)
-                copy._actions.Enqueue((IQueueAction)action.Copy());
-
-            return copy;
-        }
         
         public void InsertNext(IQueueAction action)
         {
@@ -222,6 +214,21 @@ namespace NicolasMassara.CustomActionManager
             foreach (var a in list)
                 _actions.Enqueue(a);
         }
+        
+        public IQueueAction Copy()
+        {
+            var copy = new DynamicActionSequence();
+            
+            if (_current != null)
+                copy._current = _current.Copy();
+            
+            foreach (var action in _actions)
+                copy._actions.Enqueue(action.Copy());
+            
+            copy.CurrentStatus = this.CurrentStatus;
+
+            return copy;
+        }
     }
     
     // ==================== Interrupt ====================
@@ -250,7 +257,7 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new InterruptibleSequence(_inner, _onInterrupt);
+            return new InterruptibleSequence((DynamicActionSequence)_inner.Copy(), _onInterrupt);
         }
     }
     
@@ -259,7 +266,7 @@ namespace NicolasMassara.CustomActionManager
     
     #region Wrappers
     
-    public class CallbackAction : IQueueAction
+    public class CallbackWrapperAction : IQueueAction
     {
         private readonly IQueueAction _inner;
         private readonly Action _startCallback;
@@ -267,7 +274,7 @@ namespace NicolasMassara.CustomActionManager
         
         public ActionStatus CurrentStatus { get; private set; }
 
-        public CallbackAction(IQueueAction inner,  Action startCallback, Action endCallback)
+        public CallbackWrapperAction(IQueueAction inner,  Action startCallback, Action endCallback)
         {
             _inner = inner;
             _startCallback = startCallback;
@@ -296,10 +303,9 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new CallbackAction(_inner, _startCallback, _endCallback);
+            return new CallbackWrapperAction(_inner.Copy(), _startCallback, _endCallback);
         }
     }
-    
     public class ConditionalWrapperAction : IQueueAction
     {
         private readonly IQueueAction _inner;
@@ -353,8 +359,7 @@ namespace NicolasMassara.CustomActionManager
             return new ConditionalWrapperAction(_inner.Copy(), _condition);
         }
     }
-    
-    public class TimeoutAction : IQueueAction
+    public class TimeoutWrapperAction : IQueueAction
     {
         private readonly IQueueAction _inner;
         private readonly float _maxTime;
@@ -363,7 +368,7 @@ namespace NicolasMassara.CustomActionManager
         private ActionStatus _innerStatus;
         public ActionStatus CurrentStatus { get; private set; }
 
-        public TimeoutAction(IQueueAction inner, float maxTime, Action<ActionStatus> onTimeout = null)
+        public TimeoutWrapperAction(IQueueAction inner, float maxTime, Action<ActionStatus> onTimeout = null)
         {
             _inner = inner;
             _maxTime = maxTime;
@@ -397,10 +402,10 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new TimeoutAction(_inner, _maxTime, _onTimeout);
+            return new TimeoutWrapperAction(_inner.Copy(), _maxTime, _onTimeout);
         }
     }
-    public class RetryAction : IQueueAction
+    public class RetryWrapperAction : IQueueAction
     {
         private readonly IQueueAction _inner;
         private readonly int _maxRetries;
@@ -408,7 +413,7 @@ namespace NicolasMassara.CustomActionManager
         private int _currentRetries;
         public ActionStatus CurrentStatus { get; private set; }
         
-        public RetryAction(IQueueAction inner, int maxRetries = 1)
+        public RetryWrapperAction(IQueueAction inner, int maxRetries = 1)
         {
             this._inner = inner;
             this._maxRetries = maxRetries;
@@ -449,16 +454,16 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new RetryAction(_inner, _maxRetries);
+            return new RetryWrapperAction(_inner.Copy(), _maxRetries);
         }
     }
-    public class PriorityAction : IQueueAction
+    public class PriorityWrapperAction : IQueueAction
     {
         private readonly IQueueAction _inner;
         private readonly Func<bool> _shouldInterruptOthers;
         public ActionStatus CurrentStatus { get; private set; }
 
-        public PriorityAction(IQueueAction inner, Func<bool> shouldInterruptOthers)
+        public PriorityWrapperAction(IQueueAction inner, Func<bool> shouldInterruptOthers)
         {
             _inner = inner;
             _shouldInterruptOthers = shouldInterruptOthers;
@@ -488,17 +493,17 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new PriorityAction(_inner, _shouldInterruptOthers);
+            return new PriorityWrapperAction(_inner.Copy(), _shouldInterruptOthers);
         }
     }
-    public class RepeatAction : IQueueAction
+    public class RepeatWrapperAction : IQueueAction
     {
         private readonly IQueueAction _inner;
         private readonly int _repeatCount;
         private int _currentCount;
         public ActionStatus CurrentStatus { get; private set; }
 
-        public RepeatAction(IQueueAction inner, int repeatCount)
+        public RepeatWrapperAction(IQueueAction inner, int repeatCount)
         {
             _inner = inner;
             _repeatCount = repeatCount;
@@ -534,16 +539,16 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new RepeatAction(_inner, _repeatCount);
+            return new RepeatWrapperAction(_inner.Copy(), _repeatCount);
         }
     }
-    public class DebugAction : IQueueAction
+    public class DebugWrapperAction : IQueueAction
     {
         private readonly IQueueAction _inner;
         private readonly string _name;
         public ActionStatus CurrentStatus { get; private set; }
 
-        public DebugAction(IQueueAction inner, string name)
+        public DebugWrapperAction(IQueueAction inner, string name)
         {
             _inner = inner;
             _name = name;
@@ -551,7 +556,7 @@ namespace NicolasMassara.CustomActionManager
 
         public void OnStart()
         {
-            Debug.Log($"{_name} started");
+            Debug.Log($"{_name} [Start]");
             _inner.OnStart();
         }
 
@@ -559,9 +564,9 @@ namespace NicolasMassara.CustomActionManager
         {
             var status = _inner.OnUpdate(deltaTime);
             if (status == ActionStatus.Success)
-                Debug.Log($"{_name} success");
+                Debug.Log($"{_name} [Success]");
             else if (status == ActionStatus.Failure)
-                Debug.Log($"{_name} failed");
+                Debug.Log($"{_name} [Failed]");
             return status;
         }
         
@@ -569,13 +574,99 @@ namespace NicolasMassara.CustomActionManager
         {
             if (CurrentStatus == ActionStatus.Idle) return;
             
-            Debug.Log($"{_name} interrupted");
+            Debug.Log($"{_name} [Interrupted]");
             _inner.OnInterrupt();
         }
 
         public IQueueAction Copy()
         {
-            return new DebugAction(_inner, _name);
+            return new DebugWrapperAction(_inner.Copy(), _name);
+        }
+    }
+    public class FrameDelayWrapperAction : IQueueAction
+    {
+        private readonly IQueueAction _inner;
+        private readonly WaitFramesAction _waitFrames;
+        private bool _hasStarted;
+        public ActionStatus CurrentStatus { get; private set; }
+        
+        public FrameDelayWrapperAction(IQueueAction inner, int frames)
+        {
+            _inner = inner;
+            _waitFrames = new WaitFramesAction(frames);
+        }
+
+        public void OnStart()
+        {
+            _waitFrames.OnStart();
+        }
+
+        public ActionStatus OnUpdate(float deltaTime)
+        {
+            CurrentStatus = _waitFrames.OnUpdate(deltaTime);
+
+            if (CurrentStatus == ActionStatus.Success)
+            {
+                _inner.OnStart();
+                _hasStarted = true;
+                CurrentStatus = ActionStatus.Running;
+            }
+
+            if (_hasStarted)
+            {
+                CurrentStatus = _inner.OnUpdate(deltaTime);
+            }
+
+
+            return CurrentStatus;
+        }
+
+        public void OnInterrupt()
+        {
+            if (CurrentStatus == ActionStatus.Idle) return;
+            
+            _waitFrames.OnInterrupt();
+            _inner.OnInterrupt();
+        }
+
+
+        public IQueueAction Copy()
+        {
+            return new FrameDelayWrapperAction(_inner.Copy(), _waitFrames.FramesToWait);
+        }
+
+    }
+    public class InterruptAwareWrapperAction : IQueueAction
+    {
+        private readonly IQueueAction _inner;
+        private readonly Action _onInterrupted;
+        public ActionStatus CurrentStatus { get; private set; }
+
+        public InterruptAwareWrapperAction(IQueueAction inner, Action onInterrupted)
+        {
+            _inner = inner;
+            _onInterrupted = onInterrupted;
+        }
+
+        public void OnStart()
+        {
+            _inner.OnStart();
+        }
+
+        public ActionStatus OnUpdate(float deltaTime)
+        {
+            return _inner.OnUpdate(deltaTime);
+        }
+
+        public void OnInterrupt()
+        {
+            _inner.OnInterrupt();
+            _onInterrupted?.Invoke();
+        }
+
+        public IQueueAction Copy()
+        {
+            return new InterruptAwareWrapperAction(_inner.Copy(), _onInterrupted);
         }
     }
 
@@ -652,59 +743,6 @@ namespace NicolasMassara.CustomActionManager
         {
             return new WaitSecondsAction(TimeToWait);
         }
-    }
-    public class FrameDelayAction : IQueueAction
-    {
-        private readonly IQueueAction _inner;
-        private readonly WaitFramesAction _waitFrames;
-        private bool _hasStarted;
-        public ActionStatus CurrentStatus { get; private set; }
-        
-        public FrameDelayAction(IQueueAction inner, int frames)
-        {
-            _inner = inner;
-            _waitFrames = new WaitFramesAction(frames);
-        }
-
-        public void OnStart()
-        {
-            _waitFrames.OnStart();
-        }
-
-        public ActionStatus OnUpdate(float deltaTime)
-        {
-            CurrentStatus = _waitFrames.OnUpdate(deltaTime);
-
-            if (CurrentStatus == ActionStatus.Success)
-            {
-                _inner.OnStart();
-                _hasStarted = true;
-                CurrentStatus = ActionStatus.Running;
-            }
-
-            if (_hasStarted)
-            {
-                CurrentStatus = _inner.OnUpdate(deltaTime);
-            }
-
-
-            return CurrentStatus;
-        }
-
-        public void OnInterrupt()
-        {
-            if (CurrentStatus == ActionStatus.Idle) return;
-            
-            _waitFrames.OnInterrupt();
-            _inner.OnInterrupt();
-        }
-
-
-        public IQueueAction Copy()
-        {
-            return new FrameDelayAction(_inner, _waitFrames.FramesToWait);
-        }
-
     }
     public class WaitForExternalAction : IQueueAction
     {
@@ -903,7 +941,6 @@ namespace NicolasMassara.CustomActionManager
             return new TimedUpdateAction(_updateFunc, _duration);
         }
     }
-    
     public class WaitForEventAction : IQueueAction
     {
         private readonly Action<Action> _subscribe;
@@ -948,39 +985,7 @@ namespace NicolasMassara.CustomActionManager
             return new WaitForEventAction(_subscribe, _unsubscribe);
         }
     }
-    public class InterruptAwareAction : IQueueAction
-    {
-        private readonly IQueueAction _inner;
-        private readonly Action _onInterrupted;
-        public ActionStatus CurrentStatus { get; private set; }
 
-        public InterruptAwareAction(IQueueAction inner, Action onInterrupted)
-        {
-            _inner = inner;
-            _onInterrupted = onInterrupted;
-        }
-
-        public void OnStart()
-        {
-            _inner.OnStart();
-        }
-
-        public ActionStatus OnUpdate(float deltaTime)
-        {
-            return _inner.OnUpdate(deltaTime);
-        }
-
-        public void OnInterrupt()
-        {
-            _inner.OnInterrupt();
-            _onInterrupted?.Invoke();
-        }
-
-        public IQueueAction Copy()
-        {
-            return new InterruptAwareAction(_inner.Copy(), _onInterrupted);
-        }
-    }
 
     #endregion
     
@@ -990,13 +995,16 @@ namespace NicolasMassara.CustomActionManager
     
     public class FirstToFinishAction : IQueueAction
     {
+        
+        private readonly List<IQueueAction> _originalActions;
         private readonly List<IQueueAction> _actions;
         private bool _finished;
         public ActionStatus CurrentStatus { get; private set; }
 
         public FirstToFinishAction(IEnumerable<IQueueAction> actions)
         {
-            _actions = new List<IQueueAction>(actions);
+            _originalActions = new List<IQueueAction>(actions);
+            _actions = new List<IQueueAction>(_originalActions);
         }
 
         public void OnStart()
@@ -1031,19 +1039,26 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new FirstToFinishAction(_actions);
+            var copiedActions = new List<IQueueAction>();
+            foreach (var item in _originalActions)
+            {
+                copiedActions.Add(item.Copy());
+            }
+    
+            return new ParallelAction(copiedActions);
         }
     }
-
-    public class ActionSequence : IQueueAction
+    public class SequenceAction : IQueueAction
     {
+        private readonly Queue<IQueueAction> _originalActions;
         private readonly Queue<IQueueAction> _actions;
         private IQueueAction _current = null;
         public ActionStatus CurrentStatus { get; private set; }
 
-        public ActionSequence(IEnumerable<IQueueAction> actions)
+        public SequenceAction(IEnumerable<IQueueAction> actions)
         {
-            _actions = ActionQueueTools.CreateQueue(actions);
+            _originalActions = ActionQueueTools.CreateQueue(actions);
+            _actions = new Queue<IQueueAction>(_originalActions);
         }
 
         public void OnStart()
@@ -1082,18 +1097,26 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new ActionSequence(_actions);
+            var copiedActions = new Queue<IQueueAction>();
+            foreach (var item in _originalActions)
+            {
+                copiedActions.Enqueue(item.Copy());
+            }
+            
+            return new SequenceAction(copiedActions);
         }
     }
-    public class ActionParallel : IQueueAction
+    public class ParallelAction : IQueueAction
     {
+        private readonly List<IQueueAction> _originalActions;
         private readonly List<IQueueAction> _actions;
         private readonly List<IQueueAction> _finished = new List<IQueueAction>();
         public ActionStatus CurrentStatus { get; private set; }
 
-        public ActionParallel(IEnumerable<IQueueAction> actions)
+        public ParallelAction(IEnumerable<IQueueAction> actions)
         {
-            _actions = ActionQueueTools.CreateList(actions);
+            _originalActions = ActionQueueTools.CreateList(actions);
+            _actions = new List<IQueueAction>(_originalActions);
         }
 
         public void OnStart()
@@ -1142,7 +1165,13 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new ActionParallel(_actions);
+            var copiedActions = new List<IQueueAction>();
+            foreach (var item in _originalActions)
+            {
+                copiedActions.Add(item.Copy());
+            }
+    
+            return new ParallelAction(copiedActions);
         }
     }
 
@@ -1214,7 +1243,7 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new SimpleCommandAction(_command);
+            return new SimpleCommandAction(_command.Copy());
         }
     }
     public class CommandWithResultAction<T> : IQueueAction
@@ -1255,7 +1284,7 @@ namespace NicolasMassara.CustomActionManager
 
         public IQueueAction Copy()
         {
-            return new CommandWithResultAction<T>(_command);
+            return new CommandWithResultAction<T>(_command.Copy());
         }
     }
     public class FuncAction<T> : IQueueAction
@@ -1426,8 +1455,8 @@ namespace NicolasMassara.CustomActionManager
 
     public class SetFloatAction : IQueueAction
     {
-        private float _value;
-        private Action<float> _action;
+        private readonly float _value;
+        private readonly Action<float> _action;
         
         public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
 
@@ -1454,8 +1483,8 @@ namespace NicolasMassara.CustomActionManager
     
     public class SetIntAction : IQueueAction
     {
-        private int _value;
-        private Action<int> _action;
+        private readonly int _value;
+        private readonly Action<int> _action;
         
         public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
 
@@ -1482,8 +1511,8 @@ namespace NicolasMassara.CustomActionManager
 
     public class SetBoolAction : IQueueAction
     {
-        private bool _value;
-        private Action<bool> _action;
+        private readonly bool _value;
+        private readonly Action<bool> _action;
         
         public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
 
@@ -1509,7 +1538,6 @@ namespace NicolasMassara.CustomActionManager
     }
 
     #endregion
-    
     
     // ========================= Debug ==========================
     

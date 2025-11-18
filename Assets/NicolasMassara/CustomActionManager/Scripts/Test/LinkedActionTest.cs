@@ -43,13 +43,13 @@ namespace NicolasMassara.CustomActionManager.Scripts.Test
                 .Then(new LogDebugAction("Allow to Continue"))
                 .Then(new ConditionalAction(() => _canContinue))
                 .Then(new LogDebugAction("Finished"))
-                .WrapAll(a => new TimeoutAction(a, 10,
+                .WrapAll(a => new TimeoutWrapperAction(a, 10,
                     status =>
                     {
                         Debug.Log("Action Timed Out, Removed!");
                         Remove();
                     }))
-                .WrapAll(a => new InterruptAwareAction(a, () =>
+                .WrapAll(a => new InterruptAwareWrapperAction(a, () =>
                 {
                     Debug.Log("Sequence Interrupted!");
                 }));

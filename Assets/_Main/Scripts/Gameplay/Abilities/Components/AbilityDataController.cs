@@ -31,8 +31,12 @@ namespace _Main.Scripts.Gameplay.Abilies
                 
                 return ActionStatus.Success;
             }
-        }
 
+            public override ICommand Copy()
+            {
+                return new TriggerAbilitySequenceState(_ability, _abilityEvent);
+            }
+        }
         private class SetBoolAction : IQueueAction
         {
             private readonly Action<bool> _boolAction;
@@ -61,7 +65,6 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return new SetBoolAction(_boolValue, _boolAction);
             }
         }
-
         private class SetChannelTimeScaleAction : IQueueAction
         {
             private readonly float targetTimeScale;
@@ -87,7 +90,6 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return new SetChannelTimeScaleAction(targetTimeScale, _updateGroup);
             }
         }
-
         private class SetChannelPausedAction : IQueueAction
         {
             private readonly bool _isPaused;
@@ -113,7 +115,6 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return new SetChannelPausedAction(_isPaused, _updateGroup);
             }
         }
-
         private class RunAbilityTimerAction : IQueueAction
         {
             private AbilityType _ability;
@@ -140,7 +141,6 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return new RunAbilityTimerAction(_ability, _runAbilityTimer);
             }
         }
-
         private class PublishAbilityActiveAction : IQueueAction
         {
             private readonly AbilityType _ability;
@@ -166,7 +166,6 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return new PublishAbilityActiveAction(_ability, _isActive);
             }
         }
-
         private class TimedTimeScaleUpdateAction : IQueueAction
         {
             private readonly float _startTimeScale;
@@ -217,7 +216,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
             public IQueueAction Copy()
             {
-                return new TimedTimeScaleUpdateAction(_startTimeScale, _duration, _targetTimeScale, _updateGroup);
+                return new TimedTimeScaleUpdateAction(_targetTimeScale,_startTimeScale, _duration, _updateGroup);
             }
         }
         
@@ -307,10 +306,10 @@ namespace _Main.Scripts.Gameplay.Abilies
                 targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
             
             var speedUpGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
+                targetValue: 1,  startValue: minTimeScale, 0.1f, UpdateGroup.Gameplay );
             
             var speedUpEffects = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
+                targetValue: 1,  startValue: minTimeScale, 0.1f, UpdateGroup.Effects );
             
             
             return ActionBuilder.Start()
@@ -319,7 +318,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_disableInputs)
                 .Then(_disableAbilityUI)
                 .Then(_playSlowTimeSound)
-                .Then(new ActionParallel(new []{slowDownGameplay,slowDownEffects}))
+                .Then(new ParallelAction(new []{slowDownGameplay,slowDownEffects}))
                 .Then(new WaitSecondsAction(timeData.ZoomIn))
                 .Then(_cameraZoomIn)
                 .Then(new WaitSecondsAction(timeData.StartAction))
@@ -327,8 +326,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(new InstantAction(MeteorEventCaller.SpawnRing))
                 .Then(_cameraZoomOut)
-                .Then(new ActionParallel(new []{speedUpGameplay,speedUpEffects}))
-                .Then(new WaitSecondsAction(timeData.SpeedUp))
+                .Then(new ParallelAction(new []{speedUpGameplay,speedUpEffects}))
                 .Then(_enableAbilityUI)
                 .Then(new SimpleCommandAction(end))
                 .Build();
@@ -353,11 +351,11 @@ namespace _Main.Scripts.Gameplay.Abilies
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(start))
-                .Then(new ActionParallel(new []{slowDownGameplay,slowDownEffects}))
+                .Then(new ParallelAction(new []{slowDownGameplay,slowDownEffects}))
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StopAction))
                 .Then(new InstantAction(ShieldEventCaller.EnableNormalShield))
-                .Then(new ActionParallel(new []{speedUpGameplay,speedUpEffects}))
+                .Then(new ParallelAction(new []{speedUpGameplay,speedUpEffects}))
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(_enableInputs)
                 .Then(new PublishAbilityActiveAction(AbilityType.SuperShield, false))
@@ -402,7 +400,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
                 .Then(new PublishAbilityActiveAction(AbilityType.Health, true))
-                .Then(new ActionParallel(new [] {slowDownGameplay,slowDownEffects }))
+                .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
                 .Then(setShieldTimeScale)
                 .Then(new WaitSecondsAction(timeData.ZoomIn))
                 .Then(_cameraZoomIn)
@@ -414,7 +412,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new InstantAction(EarthEventCaller.Heal))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_cameraZoomOut)
-                .Then(new ActionParallel(new [] {speedUpGameplay,speedUpEffects,speedUpShield }))
+                .Then(new ParallelAction(new [] {speedUpGameplay,speedUpEffects,speedUpShield }))
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(_playSpeedTimeSound)
                 .Then(_enableInputs)
@@ -486,7 +484,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Do(new SimpleCommandAction(startSequence))
                 .Then(new PublishAbilityActiveAction(AbilityType.SlowMotion, true))
                 .Then(new SetChannelPausedAction(true, new[]{UpdateGroup.Gameplay}))
-                .Then(new ActionParallel(new []
+                .Then(new ParallelAction(new []
                 {
                     slowDownShield, slowDownGameplay, slowDownEarth,slowDownEffects
                 }))
@@ -531,7 +529,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_disableInputs)
                 .Then(_cameraZoomIn)
                 .Then(new SetChannelPausedAction(true, new[]{UpdateGroup.Gameplay}))
-                .Then(new ActionParallel(new []
+                .Then(new ParallelAction(new []
                 {
                     speedUpShield, speedUpGameplay, speedUpEarth,speedUpEffects
                 }))
@@ -593,7 +591,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_disableInputs)
                 .Then(_disableAbilityUI)
                 .Then(_cameraZoomIn)
-                .Then(new ActionParallel(new [] { slowDownGameplay,slowDownEffects }))
+                .Then(new ParallelAction(new [] { slowDownGameplay,slowDownEffects }))
                 .Then(new WaitSecondsAction(timeData.SlowDown))
                 .Then(_playSlowTimeSound)
                 .Then(new SetBoolAction(true,ShieldEventCaller.SetGold))
@@ -601,7 +599,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_enableAbilityUI)
                 .Then(_enableInputs)
                 .Then(_cameraZoomOut)
-                .Then(new ActionParallel(new [] {speedUpTime,speedUpEffects }))
+                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
                 .Then(_playSpeedTimeSound)
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(new RunAbilityTimerAction(AbilityType.DoublePoints,RunActiveTimer))
@@ -664,14 +662,14 @@ namespace _Main.Scripts.Gameplay.Abilies
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
                 .Then(new PublishAbilityActiveAction(AbilityType.Automatic, true))
-                .Then(new ActionParallel(new [] {slowDownGameplay,slowDownEffects }))
+                .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
                 .Then(_cameraZoomIn)
                 .Then(_disableInputs)
                 .Then(_disableAbilityUI)
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StartAction))
                 .Then(new SetBoolAction(true,ShieldEventCaller.SetAutomatic))
-                .Then(new ActionParallel(new [] {speedUpTime,speedUpEffects }))
+                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
                 .Then(_cameraZoomOut)
                 .Then(_playSpeedTimeSound)
                 .Then(new RunAbilityTimerAction(AbilityType.Automatic, RunActiveTimer))
@@ -700,13 +698,13 @@ namespace _Main.Scripts.Gameplay.Abilies
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
                 .Then(new PublishAbilityActiveAction(AbilityType.Automatic, false))
-                .Then(new ActionParallel(new [] {slowDownGameplay,slowDownEffects }))
+                .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
                 .Then(_cameraZoomIn)
                 .Then(_disableInputs)
                 .Then(_disableAbilityUI)
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StopAction))
-                .Then(new ActionParallel(new [] {speedUpTime,speedUpEffects }))
+                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
                 .Then(_cameraZoomOut)
                 .Then(_enableInputs)
                 .Then(_enableAbilityUI)
@@ -736,6 +734,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         #endregion
         
         #endregion
+        
         
         private void SetInputsEnable(bool isEnable)
         {
@@ -772,7 +771,6 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         public void RunActiveTimer(AbilityType abilityType)
         {
-            Debug.Log("Here");
             var activeTime = _abilities[abilityType].ActiveTime;
             OnAbilityStarted?.Invoke(activeTime);
         }
@@ -797,12 +795,12 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         public IQueueAction GetStartActionQueue()
         {
-            return StartActions.Copy();
+            return (DynamicActionSequence)StartActions.Copy();
         }
 
         public IQueueAction GetEndActionQueue()
         {
-            return EndActions.Copy();
+            return (DynamicActionSequence)EndActions.Copy();
         }
 
         public bool GetHasInstantEffect()
