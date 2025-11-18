@@ -51,10 +51,4 @@ namespace _Main.Scripts
         public AbilityType AbilityType;
         public Vector2 Position;
     }
-
-    public struct SetActiveAbilityData
-    {
-        public AbilityType AbilityType;
-        public bool IsActive;
-    }
 }

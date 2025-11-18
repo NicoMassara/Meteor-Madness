@@ -55,6 +55,7 @@ namespace _Main.Scripts
             CustomTime.GlobalTimeScale = _timeScaleHalved ? 1f : 0.1f;
             CustomTime.GlobalFixedTimeScale = _timeScaleHalved ? 1f : 0.1f;
         }
+        
     }
 #endif
 }

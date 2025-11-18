@@ -2,6 +2,7 @@
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts.DebugTools
 {
@@ -50,6 +51,12 @@ namespace _Main.Scripts.DebugTools
                 Time.fixedDeltaTime = timeScale;*/
             };
             
+            // Reload
+            _viewUI.ReloadScene.OnReload += () =>
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            };
+
         }
 
         private void Start()
@@ -59,6 +66,8 @@ namespace _Main.Scripts.DebugTools
             {
                 GameManager.Instance.CanPlay = true;
                 InputsEventCaller.SetEnable(true);
+                AbilitiesEventCaller.Enable();
+                AbilitiesEventCaller.SetEnableUI(true);
 #if UNITY_ANDROID || UNITY_IOS
                     InputsEventCaller.SetUIEnable(true);
 

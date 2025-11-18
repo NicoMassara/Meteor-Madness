@@ -39,7 +39,7 @@ namespace _Main.Scripts.GameScreens
 
             TimerManager.Add(new TimerData(Time.unscaledDeltaTime, 
                 () => {
-                _motor.LoadScreenByIndex((int)ScreenType.MainMenu);
+                _motor.LoadScreenByIndex((int)ScreenType.GameMode);
                 }));
         }
         

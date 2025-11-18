@@ -343,33 +343,21 @@ namespace _Main.Scripts.Gameplay.GameMode
     
     public class DeathState<T> : BaseState<T>
     {
-        private ActionQueue _actionQueue = new ActionQueue();
-        
         public override void Awake()
         {
             Controller.HandleEarthEndDestruction();
-        }
-
-        public override void Execute(float deltaTime)
-        {
-            _actionQueue.Run(deltaTime);
         }
     }
     
     public class FinishState<T> : BaseState<T>
     {
-        private ActionQueue _actionQueue = new ActionQueue();
         
         public override void Awake()
         {
             Controller.HandleGameFinish();
             Controller.HandleEarthStartDestruction();
         }
-
-        public override void Execute(float deltaTime)
-        {
-            _actionQueue.Run(deltaTime);
-        }
+        
     }
     
     public class GameplayState<T> : BaseState<T>

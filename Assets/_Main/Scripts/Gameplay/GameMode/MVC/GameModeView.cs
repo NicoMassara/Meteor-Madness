@@ -278,16 +278,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var temp = GameConfigManager.Instance.GetGameplayData().GameTimeData;
             
-            var tempActions = new ActionData[]
-            {
-                new (() =>
-                {
-                    EarthEventCaller.Restart();
-                    
-                }, temp.RestartEarth),
-            };
-            
-            ActionManager.Add(new ActionQueue(tempActions),SelfUpdateGroup);
+            TimerManager.Add(new TimerData(time: temp.RestartEarth,
+                onEndAction: EarthEventCaller.Restart));
         }
         
         private void HandleEarthRestartFinish(bool doesRestart)

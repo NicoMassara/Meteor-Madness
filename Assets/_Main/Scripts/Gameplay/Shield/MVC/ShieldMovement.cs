@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
-    public class ShieldMovement : ManagedBehavior, IUpdatable
+    public class ShieldMovement : ManagedBehavior, IUpdatable, IFixedUpdatable
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
@@ -27,10 +27,10 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldSpeeder _shieldSpeeder;
         private bool _isPlayerInputDisable;
         private float _deltaTime;
-
+        private bool _canAutoCheck;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
-        public float LastTickTime { get; set; }
+
 
         private void Awake()
         {
@@ -51,10 +51,17 @@ namespace _Main.Scripts.Gameplay.Shield
             _movement.Update(deltaTime);
         }
         
+        public void ExecuteFixedUpdate(float fixedDeltaTime)
+        {
+            if (_canAutoCheck)
+            {
+                _projectileDetector?.CheckForProjectile();
+            }
+        }
         
         public void SetAutomaticEnable(bool automaticEnable)
         {
-            _projectileDetector.AutomaticEnable = automaticEnable;
+            _canAutoCheck = automaticEnable;
         }
         
         #region Movement
