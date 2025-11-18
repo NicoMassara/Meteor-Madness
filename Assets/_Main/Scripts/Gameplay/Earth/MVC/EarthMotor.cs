@@ -18,6 +18,7 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             NotifyAll(EarthObserverMessage.RestartHealth,_currentHealth);
             _currentHealth = 1;
+            NotifyAll(EarthObserverMessage.Debug_UpdateHealth, _currentHealth);
         }
 
         public void HandleCollision(float damage, Vector3 position, Quaternion rotation, Vector2 direction)
@@ -26,8 +27,14 @@ namespace _Main.Scripts.Gameplay.Earth
             
             _currentHealth -= damage;
 
+            if (_currentHealth < 0)
+            {
+                _currentHealth = 0;
+            }
+
             NotifyAll(EarthObserverMessage.SetLowHealth, GetIsLowHealth());
             NotifyAll(EarthObserverMessage.EarthCollision, _currentHealth, position, rotation,direction);
+            NotifyAll(EarthObserverMessage.Debug_UpdateHealth, _currentHealth);
             
             if (_currentHealth <= 0)
             {
@@ -41,6 +48,7 @@ namespace _Main.Scripts.Gameplay.Earth
             _currentHealth += heal;
             _currentHealth = Mathf.Clamp(_currentHealth, 0f, 1f);
             NotifyAll(EarthObserverMessage.Heal, _currentHealth,lastAmount);
+            NotifyAll(EarthObserverMessage.Debug_UpdateHealth, _currentHealth);
         }
 
         public void TriggerDestruction()

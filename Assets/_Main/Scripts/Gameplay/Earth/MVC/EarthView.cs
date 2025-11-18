@@ -118,6 +118,13 @@ namespace _Main.Scripts.Gameplay.Earth
                 case EarthObserverMessage.SetLowHealth:
                     HandleSetLowHealth((bool)args[0]);
                     break;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                case EarthObserverMessage.Debug_UpdateHealth:
+                    _debugData.EarthHealth = (float)args[0];
+                    break;
+#endif
+                
             }
         }
 
@@ -130,9 +137,6 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void HandleCollision(float healthAmount, Vector3 position, Quaternion rotation, Vector2 direction)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.EarthHealth = healthAmount;
-#endif
             SetShakeMultiplier(healthAmount);
             UpdateColorByHealth(healthAmount);
             SetRotationSpeed(healthAmount);
@@ -230,9 +234,6 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleHeal(float currentHealth, float lastHealth)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.EarthHealth = currentHealth;
-#endif
             var restartHealthTime = _restartTimeValues.RestartHealth;
 
             var action = ActionBuilder.Start()
@@ -364,9 +365,6 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleRestartHealth(float currentHealth)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.EarthHealth = currentHealth;
-#endif
             var action = ActionBuilder.Start().Do(new WaitFramesAction(1));
                 // Only executes when is dead 
 
