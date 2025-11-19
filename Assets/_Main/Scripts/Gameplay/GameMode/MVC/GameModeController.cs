@@ -437,7 +437,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public override void Awake()
         {
-            Controller.DisableMeteorSpawn();
             Controller.HandleGameFinish();
             Controller.HandleEarthStartDestruction();
         }
@@ -455,6 +454,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         public override void Sleep()
         {
             Controller.SetGameplayPanel(false);
+            Controller.DisableMeteorSpawn();
             Controller.Pause();
         }
     }
