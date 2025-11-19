@@ -3,6 +3,7 @@ using _Main.Scripts.Vibration;
 
 namespace _Main.Scripts.MultiPage.Components
 {
+#if UNITY_ANDROID 
     public class MultiPageVibration : VibrationBehavior<MultiPageViewUI>
     {
         protected override void Start()
@@ -19,4 +20,5 @@ namespace _Main.Scripts.MultiPage.Components
             };
         }
     }
+#endif
 }

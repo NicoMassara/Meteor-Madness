@@ -1,33 +1,19 @@
-﻿using System;
-using _Main.Scripts.Interfaces;
-using NicolasMassara.CustomUpdateManager;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.MyComponents;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
-    public class GameManager : ManagedBehavior
+    public class GameManager : SingletonBehaviour<GameManager>
     {
-        public static GameManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
-        private static GameManager _instance;
-        
         public bool CanPlay { get; set; }
-        public bool CanVibrate { get; set; } = true;
         public bool IsPaused { get; set; }
         private int _currentPoints;
         
         public EventBusManager EventManager { get; private set; }
         public IInputReader InputReader { get; private set; }
         
-        private static GameManager CreateInstance()
-        {
-            var gameObject = new GameObject(nameof(GameManager))
-            {
-                hideFlags = HideFlags.DontSave,
-            };
-            DontDestroyOnLoad(gameObject);
-            return gameObject.AddComponent<GameManager>();
-        }
-
+        
         private void Awake()
         {
             EventManager = new EventBusManager();

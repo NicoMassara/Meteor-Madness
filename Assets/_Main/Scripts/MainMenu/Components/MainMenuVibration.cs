@@ -4,6 +4,7 @@ using _Main.Scripts.Vibration;
 
 namespace _Main.Scripts.Menu
 {
+#if UNITY_ANDROID 
     public class MainMenuVibration : VibrationBehavior<MainMenuUiView>
     {
         protected override void Start()
@@ -25,4 +26,5 @@ namespace _Main.Scripts.Menu
             };
         }
     }
+#endif
 }

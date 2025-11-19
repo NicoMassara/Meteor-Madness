@@ -1468,7 +1468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8440597458127278297, guid: 896d0c5c678c56344ba760bc39827fab, type: 3}
       propertyPath: saveDataToClear
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2554,6 +2554,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 603b59b3a0f54685aee977a880a3f2e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultScreen: 1
 --- !u!114 &809164425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6472,6 +6473,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundPrefab: {fileID: 8555990925782600340, guid: aba708838ba8989428a64ced8d224e7c, type: 3}
+  mainMixer: {fileID: 24100000, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+  mainMixerParameter: MasterVolume
 --- !u!4 &2012589694
 Transform:
   m_ObjectHideFlags: 0

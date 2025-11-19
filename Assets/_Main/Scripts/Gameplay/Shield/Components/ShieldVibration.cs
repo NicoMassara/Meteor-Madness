@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
+#if UNITY_ANDROID 
     public class ShieldVibration : VibrationBehavior<ShieldView>
     {
         [SerializeField] private VibrationDataSo rotateData;
@@ -24,4 +25,5 @@ namespace _Main.Scripts.Gameplay.Shield
             };
         }
     }
+#endif
 }

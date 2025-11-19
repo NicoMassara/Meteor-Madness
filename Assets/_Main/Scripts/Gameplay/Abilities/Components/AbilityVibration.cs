@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Components
 {
+#if UNITY_ANDROID 
     public class AbilityVibration : VibrationBehavior<AbilityView>
     {
         [Header("Vibration Data")]
@@ -31,4 +32,5 @@ namespace _Main.Scripts.Gameplay.Abilities.Components
             };
         }
     }
+#endif
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace _Main.Scripts.Sounds
 {
@@ -14,6 +15,11 @@ namespace _Main.Scripts.Sounds
                 SoundChannel.UI => 3,
                 _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
             };
+        }
+
+        public static float GetDbFrom01Value(float value)
+        {
+            return Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
         }
     }
 }

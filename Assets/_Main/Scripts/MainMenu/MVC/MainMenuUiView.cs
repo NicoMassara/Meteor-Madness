@@ -13,22 +13,36 @@ namespace _Main.Scripts.MainMenu.MVC
         private MainMenuUiComponents _uiComponents;
 
         private GameObject _currentPanel;
+
+        // Options Actions
+        public event Action<float> OnVolumeSliderMoved;
+        public event Action<int> OnLanguageChanged;
+#if UNITY_ANDROID
+        public event Action<bool> OnVibrationToggled;
+#endif
         
+        // Buttons Actions
         public event Action OnConfirmButtonClicked;
         public event Action OnCancelButtonClicked;
         public event Action OnBackButtonClicked;
 
+        // Screens Actions
         public event Action OnGameModeTriggered;
         public event Action OnTutorialTriggered;
         public event Action OnCosmeticTriggered;
         public event Action OnTutorialOpen;
         public event Action OnCreditsOpen;
+        public event Action OnOptionsOpen;
         public event Action OnLoreOpen;
         public event Action OnBackToMenu;
         public event Action OnExit;
 
         private void Start()
         {
+            // --- Actions ---
+            
+            #region Screens
+            
             GetUiComponents().PlayButton.onClick.AddListener(() =>
             {
                 OnGameModeTriggered?.Invoke();
@@ -63,7 +77,13 @@ namespace _Main.Scripts.MainMenu.MVC
                 OnCreditsOpen?.Invoke();
                 OnConfirmButtonClicked?.Invoke();
             });
-
+            
+            GetUiComponents().OptionsButton.onClick.AddListener(() =>
+            {
+                OnOptionsOpen?.Invoke();
+                OnConfirmButtonClicked?.Invoke();
+            });
+            
             foreach (var backButton in GetUiComponents().BackButtons)
             {
                 backButton.onClick.AddListener(() =>
@@ -78,6 +98,36 @@ namespace _Main.Scripts.MainMenu.MVC
                 OnCancelButtonClicked?.Invoke();
                 OnExit?.Invoke();
             });
+            #endregion
+            
+            // --- Options ---
+
+            #region Options
+            
+            GetUiComponents().VolumeSlider.OnChanged += (value) =>
+            {
+                OnConfirmButtonClicked?.Invoke();
+                OnVolumeSliderMoved?.Invoke(value);
+            };
+            
+
+            
+            GetUiComponents().LanguageSelector.OnChanged += (value) =>
+            {
+                OnConfirmButtonClicked?.Invoke();
+                OnLanguageChanged?.Invoke(value);
+            };
+
+#if UNITY_ANDROID
+
+            GetUiComponents().VibrationToggle.OnChanged += (value) =>
+            {
+                OnConfirmButtonClicked?.Invoke();
+                OnVibrationToggled?.Invoke(value);
+            };
+#endif
+            
+            #endregion
         }
         
         public void OnNotify(ulong message, params object[] args)
@@ -102,9 +152,11 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.CreditsMenu:
                     HandleCreditsMenu();
                     break;
+                case MainMenuObserverMessage.OptionsMenu:
+                    HandleOptionsMenu();
+                    break;
             }
         }
-
         
         private void HandleTutorialMenu()
         {
@@ -140,6 +192,11 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleLoreMenu()
         {
             SetActivePanel(GetUiComponents().LorePanel);
+        }
+        
+        private void HandleOptionsMenu()
+        {
+            SetActivePanel(GetUiComponents().OptionsPanel);
         }
         
         private void SetActivePanel(GameObject panelObject)

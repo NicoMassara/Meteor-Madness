@@ -12,6 +12,8 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace _Main.Scripts.Gameplay.MyInputs
 {
+#if UNITY_ANDROID
+
     public class TouchInput : IInput
     {
         private const int MaxTouchCount = 2;
@@ -290,4 +292,6 @@ namespace _Main.Scripts.Gameplay.MyInputs
             Index = index;
         }
     }
+
+#endif
 }

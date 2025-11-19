@@ -1,11 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 namespace _Main.Scripts.Localization
 {
     public class LocalizationTools
     {
         private static readonly Regex _placeholderRegex = new Regex(@"%%(.*?)%%");
+        public const int LanguageCount = 6;
+        public const int DefaultLanguageIndex = 0;
+        public const string DefaultLanguageCode = "en";
+        public const SystemLanguage DefaultLanguage = SystemLanguage.English;
 
 
         public static void ReplacePlaceHolders(
@@ -29,5 +35,48 @@ namespace _Main.Scripts.Localization
                 localizatedText[key] = processed;
             }
         }
-    }
+        
+        public static string GetLanguageCode(SystemLanguage language)
+        {
+            return language switch
+            {
+                SystemLanguage.English => "en",
+                SystemLanguage.Spanish => "es",
+                SystemLanguage.French => "fr",
+                SystemLanguage.Portuguese => "pt",
+                SystemLanguage.Italian => "it",
+                SystemLanguage.German => "de",
+                _ => DefaultLanguageCode
+            };
+        }
+        
+        public static int GetIndexFromLanguage(SystemLanguage language)
+        {
+            return language switch
+            {
+                SystemLanguage.English => 0,
+                SystemLanguage.Spanish => 1,
+                SystemLanguage.French => 2,
+                SystemLanguage.Portuguese => 3,
+                SystemLanguage.Italian => 4,
+                SystemLanguage.German => 5,
+                _ => DefaultLanguageIndex
+            };
+        }
+
+        public static SystemLanguage GetLanguageFromIndex(int index)
+        {
+            return index switch
+            {
+                0 => SystemLanguage.English,
+                1 => SystemLanguage.Spanish,
+                2 => SystemLanguage.French,
+                3 => SystemLanguage.Portuguese,
+                4 => SystemLanguage.Italian,
+                5 => SystemLanguage.German,
+                _ => DefaultLanguage
+            };
+        }
+        
+    }   
 }

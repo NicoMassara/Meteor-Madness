@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
+#if UNITY_ANDROID 
     public class EarthVibration : VibrationBehavior<EarthView>
     {
         [SerializeField] private VibrationDataSo collisionData;
@@ -33,4 +34,5 @@ namespace _Main.Scripts.Gameplay.Earth
             };
         }
     }
+#endif
 }

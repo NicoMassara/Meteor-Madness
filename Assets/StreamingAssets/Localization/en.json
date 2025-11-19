@@ -7,7 +7,9 @@
     "Back": "Back",
     "Previous": "Previous",
     "Pause": "Pause",
-    "Quit": "Quit"
+    "Quit": "Quit",
+    "Enable" : "Enable",
+    "Disable" : "Disable"
   },
   
   "Menu": {
@@ -23,7 +25,15 @@
       "StartButton" : "Start Tutorial"
     },
     "Cosmetic": "Item Shop",
-    "Settings": "Settings",
+    "Settings": {
+      "Button": "Settings",
+      "Title" : "Settings",
+      "Items" : {
+        "Volume" : "Volume",
+        "Vibration" : "Vibration",
+        "Language" : "Language"
+      }
+    },
     "Credits": {
       "Button" : "Credits",
       "Title" : "Credits",

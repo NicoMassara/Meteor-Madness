@@ -150,7 +150,9 @@ namespace _Main.Scripts.Save
     public class SettingsSaveData : SaveDataBase
     {
         public override SaveDataType Type => SaveDataType.Settings;
-        public int LanguageIndex;
+        public int LanguageIndex = -1;
+        public float MasterVolume = 1;
+        public bool VibrationEnable = true;
     }
     
     
