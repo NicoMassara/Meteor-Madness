@@ -9,9 +9,6 @@ namespace _Main.Scripts.Localization
     {
         private static readonly Regex _placeholderRegex = new Regex(@"%%(.*?)%%");
         public const int LanguageCount = 6;
-        public const int DefaultLanguageIndex = 0;
-        public const string DefaultLanguageCode = "en";
-        public const SystemLanguage DefaultLanguage = SystemLanguage.English;
 
 
         public static void ReplacePlaceHolders(
@@ -46,7 +43,7 @@ namespace _Main.Scripts.Localization
                 SystemLanguage.Portuguese => "pt",
                 SystemLanguage.Italian => "it",
                 SystemLanguage.German => "de",
-                _ => DefaultLanguageCode
+                _ => "en"
             };
         }
         
@@ -60,7 +57,7 @@ namespace _Main.Scripts.Localization
                 SystemLanguage.Portuguese => 3,
                 SystemLanguage.Italian => 4,
                 SystemLanguage.German => 5,
-                _ => DefaultLanguageIndex
+                _ => 0
             };
         }
 
@@ -74,9 +71,23 @@ namespace _Main.Scripts.Localization
                 3 => SystemLanguage.Portuguese,
                 4 => SystemLanguage.Italian,
                 5 => SystemLanguage.German,
-                _ => DefaultLanguage
+                _ => SystemLanguage.English
             };
         }
-        
+
+        public static string GetLocalizatedLanguage(int index)
+        {
+            return index switch
+            {
+                0 => "English",
+                1 => "Español",
+                2 => "Français",
+                3 => "Português",
+                4 => "Italiano",
+                5 => "Deutsch",
+                _ => "English"
+            };
+        }
+
     }   
 }

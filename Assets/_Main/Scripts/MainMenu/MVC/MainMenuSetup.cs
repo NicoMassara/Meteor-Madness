@@ -64,23 +64,6 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
             _ui.OnOptionsOpen += () => _controller.TransitionToOptions();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
-            _ui.OnVolumeSliderMoved += (value) =>
-            {
-                SettingsManager.Instance.SetMasterVolume(value);
-                SettingsManager.Instance.SaveSettings();
-            };
-#if UNITY_ANDROID
-            _ui.OnVibrationToggled += (value) =>
-            {
-                SettingsManager.Instance.SetVibration(value);
-                SettingsManager.Instance.SaveSettings();
-            };
-#endif
-            _ui.OnLanguageChanged += (value) =>
-            {
-                SettingsManager.Instance.SetLanguageIndex(value);
-                SettingsManager.Instance.SaveSettings();
-            };
         }
 
         #endregion

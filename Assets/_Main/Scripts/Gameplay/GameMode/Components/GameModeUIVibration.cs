@@ -3,9 +3,9 @@ using _Main.Scripts.Vibration;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-#if UNITY_ANDROID 
     public class GameModeUIVibration : VibrationBehavior<GameModeUIView>
     {
+#if UNITY_ANDROID 
         protected override void Start()
         {
             base.Start();
@@ -31,6 +31,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 });
             };
         }
-    }
 #endif
+    }
 }

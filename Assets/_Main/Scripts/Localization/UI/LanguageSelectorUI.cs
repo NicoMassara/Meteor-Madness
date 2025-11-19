@@ -46,7 +46,7 @@ namespace _Main.Scripts.Localization.UI
         
         private void UpdateValues(int currentLanguage)
         {
-            languageText.text = LocalizationTools.GetLanguageFromIndex(currentLanguage).ToString();
+            languageText.text = LocalizationTools.GetLocalizatedLanguage(currentLanguage);
         }
     }
 }

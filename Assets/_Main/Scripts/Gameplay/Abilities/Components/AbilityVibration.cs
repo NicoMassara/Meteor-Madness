@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Components
 {
-#if UNITY_ANDROID 
     public class AbilityVibration : VibrationBehavior<AbilityView>
     {
+#if UNITY_ANDROID 
         [Header("Vibration Data")]
         [SerializeField] private VibrationDataSo triggeredData;
         [SerializeField] private VibrationDataSo finishedData;
@@ -31,6 +31,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Components
                 Vibrate(addedData);
             };
         }
-    }
 #endif
+    }
 }

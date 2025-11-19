@@ -13,13 +13,7 @@ namespace _Main.Scripts.MainMenu.MVC
         private MainMenuUiComponents _uiComponents;
 
         private GameObject _currentPanel;
-
-        // Options Actions
-        public event Action<float> OnVolumeSliderMoved;
-        public event Action<int> OnLanguageChanged;
-#if UNITY_ANDROID
-        public event Action<bool> OnVibrationToggled;
-#endif
+        
         
         // Buttons Actions
         public event Action OnConfirmButtonClicked;
@@ -100,34 +94,6 @@ namespace _Main.Scripts.MainMenu.MVC
             });
             #endregion
             
-            // --- Options ---
-
-            #region Options
-            
-            GetUiComponents().VolumeSlider.OnChanged += (value) =>
-            {
-                OnConfirmButtonClicked?.Invoke();
-                OnVolumeSliderMoved?.Invoke(value);
-            };
-            
-
-            
-            GetUiComponents().LanguageSelector.OnChanged += (value) =>
-            {
-                OnConfirmButtonClicked?.Invoke();
-                OnLanguageChanged?.Invoke(value);
-            };
-
-#if UNITY_ANDROID
-
-            GetUiComponents().VibrationToggle.OnChanged += (value) =>
-            {
-                OnConfirmButtonClicked?.Invoke();
-                OnVibrationToggled?.Invoke(value);
-            };
-#endif
-            
-            #endregion
         }
         
         public void OnNotify(ulong message, params object[] args)

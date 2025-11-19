@@ -56,6 +56,9 @@
         public const ulong SaveHighScore = 0xA2024;
         public const ulong UpdateHighScore = 0xA2025;
         public const ulong SetHasHighScore = 0xA2026;
+        public const ulong PausePanel = 0xA2027;
+        public const ulong OptionsPanel = 0xA2028;
+        public const ulong GameplayPanel = 0xA2029;
     }
 
     public struct FlyingObjectObserverMessage

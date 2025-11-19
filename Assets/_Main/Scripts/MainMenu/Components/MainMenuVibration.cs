@@ -4,9 +4,9 @@ using _Main.Scripts.Vibration;
 
 namespace _Main.Scripts.Menu
 {
-#if UNITY_ANDROID 
     public class MainMenuVibration : VibrationBehavior<MainMenuUiView>
     {
+#if UNITY_ANDROID 
         protected override void Start()
         {
             base.Start();
@@ -25,6 +25,6 @@ namespace _Main.Scripts.Menu
                 Vibrate(VibrationType.UIButtonCancel);
             };
         }
-    }
 #endif
+    }
 }

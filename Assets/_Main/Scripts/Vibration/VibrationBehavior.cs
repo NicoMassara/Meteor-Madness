@@ -5,11 +5,11 @@ using UnityEngine;
 namespace _Main.Scripts.Vibration
 {
     
-#if UNITY_ANDROID 
-
     public abstract class VibrationBehavior<T> : MonoBehaviour where T : MonoBehaviour
     {
+#if UNITY_ANDROID 
         private VibrationManager _vibration;
+
         private bool _canVibrate;
         protected T ComponentToVibrate { get; private set; }
         
@@ -79,6 +79,6 @@ namespace _Main.Scripts.Vibration
         {
             _canVibrate = canVibrate;
         }
-    }
 #endif
+    }
 }

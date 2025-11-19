@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
-#if UNITY_ANDROID 
     public class EarthVibration : VibrationBehavior<EarthView>
     {
+#if UNITY_ANDROID 
         [SerializeField] private VibrationDataSo collisionData;
         
         protected override void Start()
@@ -33,6 +33,6 @@ namespace _Main.Scripts.Gameplay.Earth
                 Vibrate(VibrationDurationType.ExtraShort, VibrationIntensityType.MediumHeavy);
             };
         }
-    }
 #endif
+    }
 }

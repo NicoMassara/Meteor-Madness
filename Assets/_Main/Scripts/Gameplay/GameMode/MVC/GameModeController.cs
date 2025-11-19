@@ -18,6 +18,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             Finish,
             Death,
             Restart,
+            Pause,
+            Options,
             Leaving,
             Disable
         }
@@ -25,11 +27,27 @@ namespace _Main.Scripts.Gameplay.GameMode
         private class ActionGate
         {
             public bool IsInGameplay { get; private set; }
+            public bool CanPause { get; private set; }
+            public bool CanUnpause { get; private set; }
+            public bool CanDisableSpawn { get; private set; }
+
             public ActionGate(FSM<States> fsm)
             {
                 fsm.OnEnterState += state =>
                 {
                     IsInGameplay = state is States.Gameplay or States.Enable or States.Start;
+                };
+                fsm.OnNewState += state =>
+                {
+                    CanPause = state is States.Pause;
+                };
+                fsm.OnNewState += state =>
+                {
+                    CanUnpause = state is States.Gameplay;
+                };
+                fsm.OnNewState += state =>
+                {
+                    CanDisableSpawn = state is States.Disable or States.Finish;
                 };
             }
         }
@@ -73,7 +91,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             var finish = new FinishState<States>();
             var death = new DeathState<States>();
             var restart = new RestartState<States>();
-            var leaving = new BaseState<States>();
+            var leaving = new LeavingState<States>();
+            var options = new OptionsState<States>();
+            var pause = new PauseState<States>();
             var disable = new DisableState<States>();
             
             temp.Add(none);
@@ -85,6 +105,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             temp.Add(restart);
             temp.Add(leaving);
             temp.Add(disable);
+            temp.Add(options);
+            temp.Add(pause);
 
             #endregion
 
@@ -97,7 +119,13 @@ namespace _Main.Scripts.Gameplay.GameMode
             start.AddTransition(States.Gameplay, gameplay);
             
             gameplay.AddTransition(States.Finish, finish);
-            gameplay.AddTransition(States.Leaving, leaving);
+            gameplay.AddTransition(States.Pause, pause);
+            
+            pause.AddTransition(States.Gameplay, gameplay);
+            pause.AddTransition(States.Options, options);
+            pause.AddTransition(States.Leaving, leaving);
+            
+            options.AddTransition(States.Pause, pause);
             
             finish.AddTransition(States.Death, death);
             
@@ -166,6 +194,16 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             SetTransition(States.Leaving);
         }
+        
+        public void TransitionToOptions()
+        {
+            SetTransition(States.Options);
+        }
+        
+        public void TransitionToPause()
+        {
+            SetTransition(States.Pause);
+        }
 
         #endregion
 
@@ -222,12 +260,20 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.HandleMeteorDeflect(position, meteorDeflectValue);
         }
 
-        public void SetEnableMeteorSpawn(bool canSpawn)
+        public void EnableMeteorSpawn()
         {
-            if(_actionGate.IsInGameplay == false) return;
+            if(_actionGate.IsInGameplay == false);
             
-            _motor.SetEnableMeteorSpawn(canSpawn);
+            _motor.SetEnableMeteorSpawn(true);
         }
+
+        public void DisableMeteorSpawn()
+        {
+            if(_actionGate.CanDisableSpawn == false);
+            
+            _motor.SetEnableMeteorSpawn(false);
+        }
+        
 
         public void HandleGameFinish()
         {
@@ -249,9 +295,20 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.EarthRestartFinish();
         }
 
-        public void SetGamePause(bool isPaused)
+        public void Pause()
         {
-            _motor.SetGamePaused(isPaused);
+            if (_actionGate.CanPause == false)
+                return;
+
+            _motor.PauseGame();
+        }
+        
+        public void UnPauseGame()
+        {
+            if(_actionGate.CanUnpause == false)
+                return;
+
+            _motor.UnPauseGame();
         }
         
         public void DisableGameMode()
@@ -311,6 +368,26 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _motor.TriggerMainMenu();
         }
+        
+
+        #region Screens
+
+        public void SetGameplayPanel(bool isActive)
+        {
+            _motor.SetGameplayPanel(isActive);
+        }
+
+        public void SetPausePanel(bool isActive)
+        {
+            _motor.SetPausePanel(isActive);
+        }
+        
+        public void SetOptionsPanel(bool isActive)
+        {
+            _motor.SetOptionsPanel(isActive);
+        }
+
+        #endregion
     }
 
     #region States
@@ -354,6 +431,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public override void Awake()
         {
+            Controller.DisableMeteorSpawn();
             Controller.HandleGameFinish();
             Controller.HandleEarthStartDestruction();
         }
@@ -364,12 +442,14 @@ namespace _Main.Scripts.Gameplay.GameMode
     {
         public override void Awake()
         {
-            Controller.SetEnableMeteorSpawn(true);
+            Controller.EnableMeteorSpawn();
+            Controller.SetGameplayPanel(true);
         }
-        
+
         public override void Sleep()
         {
-            Controller.SetEnableMeteorSpawn(false);
+            Controller.SetGameplayPanel(false);
+            Controller.Pause();
         }
     }
     
@@ -378,6 +458,41 @@ namespace _Main.Scripts.Gameplay.GameMode
         public override void Awake()
         {
             Controller.GameRestart();
+        }
+    }
+    
+    public class PauseState<T> : BaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetPausePanel(true);
+        }
+
+        public override void Sleep()
+        {
+            Controller.SetPausePanel(false);
+            Controller.UnPauseGame();
+        }
+    }
+    
+    public class OptionsState<T> : BaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.SetOptionsPanel(true);
+        }
+
+        public override void Sleep()
+        {
+            Controller.SetOptionsPanel(false);
+        }
+    }
+    
+    public class LeavingState<T> : BaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.DisableMeteorSpawn();
         }
     }
     
