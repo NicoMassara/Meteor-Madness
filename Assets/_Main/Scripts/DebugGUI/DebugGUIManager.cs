@@ -16,7 +16,7 @@ namespace _Main.Scripts.DebugGUI
         private bool _doesShowGUI = false;
         private Vector2 _scrollPos = Vector2.zero;
         private Rect _windowRect = new Rect(50, 50, 450, 350);
-
+        
         private List<DebugGroup> _groups = new List<DebugGroup>();
 
         private void Update()
@@ -126,8 +126,7 @@ namespace _Main.Scripts.DebugGUI
             }
         }
     }
-
-    [Serializable]
+    
     public class DebugGroup
     {
         public string Name;
