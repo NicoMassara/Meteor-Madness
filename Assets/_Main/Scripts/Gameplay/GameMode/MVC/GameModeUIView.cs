@@ -22,6 +22,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private bool _hasHighScore;
         private float _highScore;
+        private string _scoreTextValue;
         
         public event Action OnMainMenuButtonPressed;
         public event Action OnRestartButtonPressed;
@@ -65,8 +66,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
 
             GetUiComponents().DeathText.text = GetLocalizedString("Gameplay.Death.Title");
+
+            _scoreTextValue = GetLocalizedString("Gameplay.Score");
+            LocalizationEvents.OnLanguageChanged += Localization_OnLanguageChangedHandler;
         }
-        
+
 
         public void OnNotify(ulong message, params object[] args)
         {
@@ -312,7 +316,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void UpdateGameplayScoreText(int points)
         {
-            var text = $"{GetLocalizedString("Gameplay.Score")}: {points:D6}";
+            var text = $"{_scoreTextValue}: {points:D6}";
             GetUiComponents().ScoreText.text = text;
         }
 
@@ -509,6 +513,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         private string GetLocalizedString(string key)
         {
             return LocalizationManager.Instance.GetText(key);
+        }
+        
+        private void Localization_OnLanguageChangedHandler()
+        {
+            var lastText = _scoreTextValue;
+            _scoreTextValue = GetLocalizedString("Gameplay.Score");
+            GetUiComponents().ScoreText.text = GetUiComponents().ScoreText.text.Replace(lastText, _scoreTextValue);
         }
         
     }

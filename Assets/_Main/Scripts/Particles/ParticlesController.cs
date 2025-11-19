@@ -60,7 +60,7 @@ namespace _Main.Scripts.Particles
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<ParticleEvents.Spawn>(EventBus_OnSpawnParticle);
+            ParticleEventSubscriber.Spawn(EventBus_OnSpawnParticle);
         }
 
 

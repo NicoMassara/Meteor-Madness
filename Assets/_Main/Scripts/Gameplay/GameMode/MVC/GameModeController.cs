@@ -23,36 +23,36 @@ namespace _Main.Scripts.Gameplay.GameMode
             Leaving,
             Disable
         }
-        
-        private class ActionGate
+
+        private class GameModeActionGate : FsmActionGate<States>
         {
+            public GameModeActionGate(FSM<States> fsm) : base(fsm) { }
+            
             public bool IsInGameplay { get; private set; }
             public bool CanPause { get; private set; }
             public bool CanUnpause { get; private set; }
             public bool CanDisableSpawn { get; private set; }
+            
 
-            public ActionGate(FSM<States> fsm)
+            protected override void OnNewState(States state)
             {
-                fsm.OnEnterState += state =>
-                {
-                    IsInGameplay = state is States.Gameplay or States.Enable or States.Start;
-                };
-                fsm.OnNewState += state =>
-                {
-                    CanPause = state is States.Pause;
-                };
-                fsm.OnNewState += state =>
-                {
-                    CanUnpause = state is States.Gameplay;
-                };
-                fsm.OnNewState += state =>
-                {
-                    CanDisableSpawn = state is States.Disable or States.Finish;
-                };
+                CanUnpause = state is States.Gameplay;
+                CanPause = state is States.Pause;
+                CanDisableSpawn = state is States.Leaving or States.Finish;
+            }
+
+            protected override void OnEnterState(States state)
+            {
+                IsInGameplay = state is States.Gameplay or States.Enable or States.Start;
+            }
+
+            protected override void OnExitState(States state)
+            {
+   
             }
         }
         
-        private ActionGate _actionGate;
+        private GameModeActionGate _actionGate;
 
         public GameModeController(GameModeMotor motor)
         {
@@ -76,7 +76,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var temp = new List<BaseState<States>>();
             _fsm = new FSM<States>("GameMode");
-            _actionGate = new ActionGate(_fsm);
+            _actionGate = new GameModeActionGate(_fsm);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _fsm.CreateDebugGUI(1);
@@ -262,15 +262,21 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void EnableMeteorSpawn()
         {
-            if(_actionGate.IsInGameplay == false);
-            
+            if(_actionGate.IsInGameplay == false)
+            {
+                return;
+            }
+
             _motor.SetEnableMeteorSpawn(true);
         }
 
         public void DisableMeteorSpawn()
         {
-            if(_actionGate.CanDisableSpawn == false);
-            
+            if(_actionGate.CanDisableSpawn == false)
+            {
+                return;
+            }
+
             _motor.SetEnableMeteorSpawn(false);
         }
         

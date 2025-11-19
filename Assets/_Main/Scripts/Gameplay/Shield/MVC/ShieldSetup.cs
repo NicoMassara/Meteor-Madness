@@ -56,16 +56,16 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<ShieldEvents.Disable>(EventBus_Shield_Disable);
-            GameEventCaller.Subscribe<ShieldEvents.Enable>(EventBus_Shield_Enable);
-            GameEventCaller.Subscribe<ShieldEvents.SetGold>(EventBus_Shield_SetGold);
-            GameEventCaller.Subscribe<ShieldEvents.SetAutomatic>(EventBus_Shield_SetAutomatic);
-            GameEventCaller.Subscribe<ShieldEvents.SetSlow>(EventBus_Shield_SetSlow);
-            GameEventCaller.Subscribe<ShieldEvents.RestartPosition>(EventBus_Shield_RestartPosition);
-            GameEventCaller.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
-            GameEventCaller.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_Shield_EnableNormalShield);
+            ShieldEventSubscriber.Disable(EventBus_Shield_Disable);
+            ShieldEventSubscriber.Enable(EventBus_Shield_Enable);
+            ShieldEventSubscriber.SetGold(EventBus_Shield_SetGold);
+            ShieldEventSubscriber.SetAutomatic(EventBus_Shield_SetAutomatic);
+            ShieldEventSubscriber.SetSlow(EventBus_Shield_SetSlow);
+            ShieldEventSubscriber.RestartPosition(EventBus_Shield_RestartPosition);
+            ShieldEventSubscriber.EnableSuperShield(EventBus_Shield_EnableSuperShield);
+            ShieldEventSubscriber.EnableNormalShield(EventBus_Shield_EnableNormalShield);
             //
-            GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
+            ProjectileEventSubscriber.Deflected(EventBus_Meteor_Deflected);
         }
         
         #region Shield
