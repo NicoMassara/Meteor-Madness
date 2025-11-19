@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyComponents;
+using _Main.Scripts.MySettings;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace _Main.Scripts.Sounds
 {
@@ -10,6 +12,9 @@ namespace _Main.Scripts.Sounds
     {
         [Header("Prefab References")]
         [SerializeField] private SoundComponent soundPrefab;
+        [Header("Mixer References")]
+        [SerializeField] private AudioMixer mainMixer;
+        [SerializeField] private string mainMixerParameter;
         
         private readonly AudioPlaybackTracker _playbackTracker = new AudioPlaybackTracker();
         private readonly MusicController _musicController = new MusicController();
@@ -17,6 +22,8 @@ namespace _Main.Scripts.Sounds
         private UIDefaultSounds _uiDefaultSounds;
         private SoundIdStorage _idStorage;
         
+
+
         private readonly Dictionary<SoundChannel, List<SoundComponent>> _activeByChannel = new()
         {
             { SoundChannel.Sfx, new List<SoundComponent>() },
@@ -39,6 +46,9 @@ namespace _Main.Scripts.Sounds
             _factory = new SoundBehaviourFactory(soundPrefab);
             _uiDefaultSounds = new UIDefaultSounds();
             _idStorage = new SoundIdStorage();
+
+            SetMainVolume(SettingsManager.Instance.GetMasterVolume());
+            SettingsManager.Instance.OnMasterVolumeChanged += Settings_OnMasterVolumeChangedHandler;
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -63,6 +73,15 @@ namespace _Main.Scripts.Sounds
             _playbackTracker.Execute();
             _musicController.Execute(deltaTime);
         }
+
+        #region Mixer Actions
+
+        private void SetMainVolume(float volume)
+        {
+            mainMixer.SetFloat(mainMixerParameter, SoundManagerTools.GetDbFrom01Value(volume));
+        }
+
+        #endregion
         
         #region Sounds
 
@@ -166,11 +185,18 @@ namespace _Main.Scripts.Sounds
             
             soundBehavior.OnFinished -= Sound_OnFinishedHandler;
         }
+        
+        private void Settings_OnMasterVolumeChangedHandler(float volume)
+        {
+            SetMainVolume(volume);
+        }
 
 
         #endregion
     }
-    
+
+    #region Extra Clases
+
     public class SoundId
     {
         public ulong Id { get; private set; }
@@ -274,4 +300,6 @@ namespace _Main.Scripts.Sounds
         }
 
     }
+
+    #endregion
 }

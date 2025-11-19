@@ -7,6 +7,7 @@ namespace _Main.Scripts.Gameplay.Earth
 {
     public class EarthVibration : VibrationBehavior<EarthView>
     {
+#if UNITY_ANDROID 
         [SerializeField] private VibrationDataSo collisionData;
         
         protected override void Start()
@@ -32,5 +33,6 @@ namespace _Main.Scripts.Gameplay.Earth
                 Vibrate(VibrationDurationType.ExtraShort, VibrationIntensityType.MediumHeavy);
             };
         }
+#endif
     }
 }

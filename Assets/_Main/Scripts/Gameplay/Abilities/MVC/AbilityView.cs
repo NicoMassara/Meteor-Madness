@@ -51,6 +51,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             abilityDataController = new AbilityDataController(OnTimeSpeedUp, OnTimeSlowDown);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
+            abilityDataController.Initialize();
             
         }
 

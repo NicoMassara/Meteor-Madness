@@ -257,11 +257,13 @@ namespace _Main.Scripts.Gameplay.Abilies
             _disableInputs = new SetBoolAction(false,SetInputsEnable);
             _enableAbilityUI = new SetBoolAction(true,SetEnableAbilityUI);
             _disableAbilityUI = new SetBoolAction(false,SetEnableAbilityUI);
-
+        }
+        
+        public void Initialize()
+        {
             CreateAbilityData();
         }
-
-
+        
         private void CreateAbilityData()
         {
             var configData = GameConfigManager.Instance.GetGameplayData().AbilityTimeData;
@@ -329,6 +331,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new ParallelAction(new []{speedUpGameplay,speedUpEffects}))
                 .Then(_enableAbilityUI)
                 .Then(new SimpleCommandAction(end))
+                .Then(new WaitFramesAction(1))
                 .Build();
         }
         private IQueueAction GetShieldEndSequence(float minTimeScale, IAbilityTimeData timeData)

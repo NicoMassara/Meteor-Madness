@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using _Main.Scripts.MyComponents;
-using UnityEngine;
 
 namespace _Main.Scripts.Save
 {
@@ -20,7 +19,6 @@ namespace _Main.Scripts.Save
             TryLoadSaveData<ScoreSaveData>(SaveDataType.Score);
             TryLoadSaveData<StatsSaveData>(SaveDataType.Stats);
             TryLoadSaveData<SettingsSaveData>(SaveDataType.Settings);
-            TryLoadSaveData<SettingsSaveData>(SaveDataType.Test);
             
             SaveDataEvents.TriggerOnSaveInitialized();
         }

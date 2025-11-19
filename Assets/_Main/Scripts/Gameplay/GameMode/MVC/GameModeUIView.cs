@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomActionManager;
-using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -29,23 +27,46 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnRestartButtonPressed;
         public event Action OnPauseButtonPressed;
         public event Action OnResumeButtonPressed;
-
+        public event Action OnOptionsBackButtonPressed;
+        public event Action OnOptionsButtonPressed;
         public event Action OnPointsAdded;
         
         private void Start()
         {
             _gameUIConfig = GameConfigManager.Instance.GetUIData();
             
-            GetUiComponents().RestartButton.onClick.AddListener(RestartButton_OnClickHandler);
-            GetUiComponents().ResumeButton.onClick.AddListener(ResumeButton_OnClickHandler);
-            GetUiComponents().PauseButton.onClick.AddListener(PauseButton_OnClickHandler);
+            GetUiComponents().ResumeButton.onClick.AddListener(() =>
+            {
+                OnResumeButtonPressed?.Invoke();
+            });
+            GetUiComponents().PauseButton.onClick.AddListener(() =>
+            {
+                OnPauseButtonPressed?.Invoke();
+            });
+            GetUiComponents().OptionsButton.onClick.AddListener(() =>
+            {
+                OnOptionsButtonPressed?.Invoke();
+            });
+            GetUiComponents().SettingsPanel.OnBackButtonPressed += () =>
+            {
+                OnOptionsBackButtonPressed?.Invoke();
+            };
+            GetUiComponents().RestartButton.onClick.AddListener(() =>
+            {
+                OnRestartButtonPressed?.Invoke();
+            });
+
             foreach (var button in GetUiComponents().MainMenuButtons)
             {
-                button.onClick.AddListener(MainMenuButton_OnClickHandler);
+                button.onClick.AddListener(() =>
+                {
+                    OnMainMenuButtonPressed?.Invoke();
+                });
             }
 
             GetUiComponents().DeathText.text = GetLocalizedString("Gameplay.Death.Title");
         }
+        
 
         public void OnNotify(ulong message, params object[] args)
         {
@@ -78,9 +99,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameRestart:
                     HandleGameRestart();
                     break;
-                case GameModeObserverMessage.GamePaused:
-                    HandleGamePaused((bool)args[0]);
-                    break;
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
@@ -102,8 +120,20 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SetHasHighScore:
                     HandleSetHighScore((bool)args[0],(float)args[1]);
                     break;
+                case GameModeObserverMessage.PausePanel:
+                    HandlePausePanel((bool)args[0]);
+                    break;
+                case GameModeObserverMessage.OptionsPanel:
+                    HandleOptionsPanel((bool)args[0]);
+                    break;
+                
+                case GameModeObserverMessage.GameplayPanel:
+                    HandleGameplayPanel((bool)args[0]);
+                    break;
             }
         }
+
+
 
         private void HandleSetHighScore(bool hasNewHighScore, float highScore)
         {
@@ -146,10 +176,41 @@ namespace _Main.Scripts.Gameplay.GameMode
             GetUiComponents().MainPanel.SetActive(false);
         }
         
-        private void HandleGamePaused(bool isPaused)
+        private void HandleGameplayPanel(bool isActive)
         {
-            var panelToActive = isPaused ? GetUiComponents().PausePanel : GetUiComponents().GameplayPanel;
-            SetActivePanel(panelToActive);
+            if (isActive)
+            {
+                SetActivePanel(GetUiComponents().GameplayPanel);
+            }
+            else
+            {
+                DisableActivePanel();
+            }
+        }
+        
+        private void HandlePausePanel(bool isActive)
+        {
+            if (isActive)
+            {
+                SetActivePanel(GetUiComponents().PausePanel);
+            }
+            else
+            {
+                DisableActivePanel();
+            }
+
+        }
+
+        private void HandleOptionsPanel(bool isActive)
+        {
+            if (isActive)
+            {
+                SetActivePanel(GetUiComponents().OptionsPanel);
+            }
+            else
+            {
+                DisableActivePanel();
+            }
         }
 
         #region Panel
@@ -161,7 +222,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _currentPanel?.SetActive(true);
         }
 
-        public void DisableActivePanel()
+        private void DisableActivePanel()
         {
             _currentPanel?.SetActive(false);
             _currentPanel = null;
@@ -244,33 +305,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 _numberIncrementer.SetNewTarget(deflectCount * GetPointsMultiplier());
             }
         }
-
-        #endregion
-
-        #region Handler
-
-        private void RestartButton_OnClickHandler()
-        {
-            OnRestartButtonPressed?.Invoke();
-        }
-        
-        private void MainMenuButton_OnClickHandler()
-        {
-            CameraEventCaller.ZoomIn();
-            OnMainMenuButtonPressed?.Invoke();
-        }
-        
-        private void ResumeButton_OnClickHandler()
-        {
-            GameModeEventCaller.SetPause(false);
-            OnResumeButtonPressed?.Invoke();
-        }
-        
-        private void PauseButton_OnClickHandler()
-        {
-            OnPauseButtonPressed?.Invoke();
-        }
-
 
         #endregion
 

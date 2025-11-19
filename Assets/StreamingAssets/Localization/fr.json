@@ -7,7 +7,9 @@
     "Back": "Retour",
     "Previous": "Précédent",
     "Pause": "Pause",
-    "Quit": "Quitter"
+    "Quit": "Quitter",
+    "Enable": "Activer",
+    "Disable": "Désactiver"
   },
 
   "Menu": {
@@ -23,7 +25,15 @@
       "StartButton": "Commencer le Tutoriel"
     },
     "Cosmetic": "Boutique d’Objets",
-    "Settings": "Paramètres",
+    "Settings": {
+      "Button": "Paramètres",
+      "Title": "Paramètres",
+      "Items": {
+        "Volume": "Volume",
+        "Vibration": "Vibration",
+        "Language": "Langue"
+      }
+    },
     "Credits": {
       "Button" : "Crédits",
       "Title" : "Crédits",

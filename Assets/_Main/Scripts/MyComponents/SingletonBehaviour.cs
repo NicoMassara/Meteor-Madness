@@ -19,6 +19,5 @@ namespace _Main.Scripts.MyComponents
             DontDestroyOnLoad(gameObject);
             return gameObject.AddComponent<T>();
         }
-        
     }
 }

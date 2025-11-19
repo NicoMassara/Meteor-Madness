@@ -114,14 +114,28 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void SetUIViewHandlers()
         {
-            _ui.OnRestartButtonPressed += UIView_OnRestartButtonPressedHandler;
+            _ui.OnRestartButtonPressed += () =>
+            {
+                _controller.TransitionToRestart();
+            };
             _ui.OnMainMenuButtonPressed += UIView_OnMainMenuButtonPressedHandler;
-            _ui.OnPauseButtonPressed += UIView_OnPauseButtonPressedHandler;
-        }
 
-        private void UIView_OnPauseButtonPressedHandler()
-        {
-            GameModeEventCaller.SetPause(true);
+            _ui.OnResumeButtonPressed += () =>
+            {
+                _controller.TransitionToGameplay();
+            };
+            _ui.OnPauseButtonPressed += () =>
+            {
+                _controller.TransitionToPause();
+            };
+            _ui.OnOptionsButtonPressed += () =>
+            {
+                _controller.TransitionToOptions();
+            };
+            _ui.OnOptionsBackButtonPressed += () =>
+            {
+                _controller.TransitionToPause();
+            };
         }
 
         private void UIView_OnMainMenuButtonPressedHandler()
@@ -130,11 +144,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller.TransitionToLeaving();
             _controller.TriggerMainMenu();
         }
-
-        private void UIView_OnRestartButtonPressedHandler()
-        {
-            _controller.TransitionToRestart();
-        }
+        
 
         #endregion
         
@@ -155,8 +165,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             //
             GameEventCaller.Subscribe<CameraEvents.ZoomIn>(EventBus_Camera_ZoomIn);
             GameEventCaller.Subscribe<CameraEvents.ZoomOut>(EventBus_Camera_ZoomOut);
-            //;
-            GameEventCaller.Subscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
+            //
             GameEventCaller.Subscribe<GameModeEvents.SetEnablePause>(EventBus_GameMode_SetEnablePause);
         }
         
@@ -174,7 +183,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             GameEventCaller.Unsubscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_RequestSpawn);
             GameEventCaller.Unsubscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
             //
-            GameEventCaller.Unsubscribe<GameModeEvents.SetPause>(EventBus_GameMode_SetPaused);
             GameEventCaller.Unsubscribe<GameModeEvents.SetEnablePause>(EventBus_GameMode_SetEnablePause);
         }
         
@@ -217,18 +225,10 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #endregion
         
-        #region GameMode
-        
         private void EventBus_GameMode_SetEnablePause(GameModeEvents.SetEnablePause input)
         {
             _controller.SetCanPause(input.CanPause);
         }
-
-        private void EventBus_GameMode_SetPaused(GameModeEvents.SetPause input)
-        {
-            _controller.SetGamePause(input.IsPaused);
-        }
-        #endregion
 
         #region Meteor
 

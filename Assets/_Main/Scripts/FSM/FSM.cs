@@ -12,6 +12,7 @@ namespace _Main.Scripts.FiniteStateMachine
         public string FSMName { get; private set; }
         public event Action<T> OnEnterState;
         public event Action<T> OnExitState;
+        public event Action<T> OnNewState;
 
         public FSM(string fsmName)
         {
@@ -68,6 +69,8 @@ namespace _Main.Scripts.FiniteStateMachine
                 //Debug.Log($"Transition From {CurrentState.ToString()} to {input.ToString()} Not Found in {FSMName} FSM");
                 return;
             }
+            
+            OnNewState?.Invoke(input);
 
             if (CurrentState != null)
             {

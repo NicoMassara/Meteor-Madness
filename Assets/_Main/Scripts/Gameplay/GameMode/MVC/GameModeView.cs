@@ -21,7 +21,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnGameModeFinished;
         public event Action OnGameModeStarted;
         public event Action OnEarthDeath;
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -105,7 +104,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SaveHighScore:
                     HandleSaveHighScore((float)args[0]);
                     break;
-
                 
                 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -117,7 +115,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleUpdateHighScore((float)args[0]);
                     break;
 #endif
-                
             }
         }
 
@@ -165,6 +162,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             AbilitiesEventCaller.Disable();
             ShieldEventCaller.Disable();
             EarthEventCaller.Restart();
+            CameraEventCaller.ZoomIn();
             
             SetEnableInputs(false);
             SetEnableUIInputs(false);
@@ -225,7 +223,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData.IsPaused = isPaused;
             
 #endif
-            
+
+            GameModeEventCaller.SetPause(isPaused);
             AbilitiesEventCaller.SetEnableUI(!isPaused);
 
             CustomTime.SetChannelPaused(new []

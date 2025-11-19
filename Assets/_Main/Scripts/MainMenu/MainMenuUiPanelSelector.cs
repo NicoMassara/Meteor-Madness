@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.MySettings.UI;
 using _Main.Scripts.Utilities;
 using TMPro;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace _Main.Scripts.Menu
         public GameObject LorePanel;
         public GameObject TutorialPanel;
         public GameObject CreditsPanel;
+        public GameObject OptionsPanel;
         [Space]
         [Header("Text Components")]
         public TMP_Text CreditsText;
@@ -29,7 +31,11 @@ namespace _Main.Scripts.Menu
         public Button LoreButton;
         public Button CreditsButton;
         public Button CosmeticButton;
+        public Button OptionsButton;
         public Button QuitButton;
         public Button[] BackButtons;
+        [Header("Misc Components")]
+        public SettingsUIView SettingsPanel;
+
     }
 }
