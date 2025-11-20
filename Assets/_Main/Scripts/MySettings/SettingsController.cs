@@ -20,13 +20,15 @@ namespace _Main.Scripts.MySettings
             {
                 SettingsManager.Instance.SetMasterVolume(value);
             };
-            
-#if UNITY_ANDROID
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+
             _ui.VibrationToggle.OnChanged += (value) =>
             {
                 SettingsManager.Instance.SetVibration(value);
             };
 #endif
+
             
             _ui.LanguageSelector.OnChanged += (value) =>
             {

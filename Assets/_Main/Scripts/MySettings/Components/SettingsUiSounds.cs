@@ -11,16 +11,21 @@ namespace _Main.Scripts.MySettings.Components
             {
                 PlayUISound(UISoundType.Confirm);
             };
+            
             GetComponentToSound.LanguageSelector.OnChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
-#if UNITY_ANDROID
+            
+#if UNITY_ANDROID && !UNITY_EDITOR
+            
             GetComponentToSound.VibrationToggle.OnChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
+
 #endif
+            
             GetComponentToSound.OnBackButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Back);

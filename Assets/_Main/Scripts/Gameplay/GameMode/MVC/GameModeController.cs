@@ -32,23 +32,28 @@ namespace _Main.Scripts.Gameplay.GameMode
             public bool CanPause { get; private set; }
             public bool CanUnpause { get; private set; }
             public bool CanDisableSpawn { get; private set; }
+            public bool CanEnableSpawn { get; private set; }
             
-
             protected override void OnNewState(States state)
             {
-                CanUnpause = state is States.Gameplay;
-                CanPause = state is States.Pause;
+                CanUnpause = state is States.Gameplay 
+                             && CurrentState is States.Pause;
+                //
+                CanPause = state is States.Pause 
+                           && CurrentState is States.Gameplay;
+                //
                 CanDisableSpawn = state is States.Leaving or States.Finish;
             }
 
             protected override void OnEnterState(States state)
             {
-                IsInGameplay = state is States.Gameplay or States.Enable or States.Start;
+                IsInGameplay = state is States.Gameplay;
+                CanEnableSpawn = state is States.Enable;
             }
 
             protected override void OnExitState(States state)
             {
-   
+ 
             }
         }
         
@@ -212,6 +217,28 @@ namespace _Main.Scripts.Gameplay.GameMode
         #region Motor
         
         #region Level 
+        
+        public void SetDoesRestartGameMode(bool doesRestart)
+        {
+            _motor.SetDoesRestartGameMode(doesRestart);
+        }
+
+        public void SetDoublePoints(bool isEnable)
+        {
+            if(_actionGate.IsInGameplay == false) return;
+            
+            _motor.SetDoublePoints(isEnable);
+        }
+        
+        public void SetEnable()
+        {
+            _motor.Enable();
+        }
+
+        public void SetCanPause(bool canPause)
+        {
+            _motor.SetCanPause(canPause);
+        }
 
         public void StartCountdown()
         {
@@ -232,6 +259,54 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _motor.SetHighScore(highScore);
         }
+        
+        public void HandleGameFinish()
+        {
+            _motor.HandleGameFinish();
+        }
+
+        public void HandleCountdownTimer(float deltaTime)
+        {
+            _motor.HandleCountdownTimer(deltaTime);
+        }
+
+        public void GameRestart()
+        {
+            _motor.GameRestart();
+        }
+
+        public void Pause()
+        {
+            if (_actionGate.CanPause == false)
+            {
+                Debug.Log("Cannot pause game");
+                return;
+            }
+
+            _motor.PauseGame();
+        }
+        
+        public void UnPauseGame()
+        {
+            if(_actionGate.CanUnpause == false)
+            {
+                Debug.Log("Cannot unpause game");
+                return;
+            }
+
+            _motor.UnPauseGame();
+        }
+        
+        public void DisableGameMode()
+        {
+            _motor.DisableGameMode();
+        }
+
+        private void InitializeValues()
+        {
+            _motor.InitializeValues();
+        }
+
 
         #endregion
 
@@ -251,19 +326,36 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _motor.HandleEarthShake();
         }
+        
+        public void EarthRestartFinish()
+        {
+            _motor.EarthRestartFinish();
+        }
 
         #endregion
 
-        public void HandleProjectileDeflect(Vector2 position, float meteorDeflectValue)
+        #region Projectile
+        
+        public void GrantProjectileSpawn(int projectileTypeIndex)
         {
             if(_actionGate.IsInGameplay == false) return;
+            
+            _motor.GrantSpawnMeteor(projectileTypeIndex);
+        }
+
+        public void HandleProjectileDeflect(Vector2 position, float meteorDeflectValue)
+        {
+            if(_actionGate.IsInGameplay == false) 
+                return;
+            
             _motor.HandleMeteorDeflect(position, meteorDeflectValue);
         }
 
         public void EnableMeteorSpawn()
         {
-            if(_actionGate.IsInGameplay == false)
+            if(_actionGate.CanEnableSpawn == false)
             {
+                Debug.Log("Cannot enable spawn");
                 return;
             }
 
@@ -279,105 +371,38 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             _motor.SetEnableMeteorSpawn(false);
         }
-        
-
-        public void HandleGameFinish()
-        {
-            _motor.HandleGameFinish();
-        }
-
-        public void HandleCountdownTimer(float deltaTime)
-        {
-            _motor.HandleCountdownTimer(deltaTime);
-        }
-
-        public void GameRestart()
-        {
-            _motor.GameRestart();
-        }
-        
-        public void EarthRestartFinish()
-        {
-            _motor.EarthRestartFinish();
-        }
-
-        public void Pause()
-        {
-            if (_actionGate.CanPause == false)
-                return;
-
-            _motor.PauseGame();
-        }
-        
-        public void UnPauseGame()
-        {
-            if(_actionGate.CanUnpause == false)
-                return;
-
-            _motor.UnPauseGame();
-        }
-        
-        public void DisableGameMode()
-        {
-            _motor.DisableGameMode();
-        }
-
-        private void InitializeValues()
-        {
-            _motor.InitializeValues();
-        }
-
-        public void SetDoesRestartGameMode(bool doesRestart)
-        {
-            _motor.SetDoesRestartGameMode(doesRestart);
-        }
-
-        public void SetDoublePoints(bool isEnable)
-        {
-            if(_actionGate.IsInGameplay == false) return;
-            
-            _motor.SetDoublePoints(isEnable);
-        }
-
-        public void GrantProjectileSpawn(int projectileTypeIndex)
-        {
-            if(_actionGate.IsInGameplay == false) return;
-            
-            _motor.GrantSpawnMeteor(projectileTypeIndex);
-        }
-
-        public void SetEnable()
-        {
-            _motor.Enable();
-        }
-
-        public void SetCanPause(bool canPause)
-        {
-            _motor.SetCanPause(canPause);
-        }
 
         #endregion
+        
+        #region Camera
 
         public void HandleCameraZoomOut()
         {
-            if(_actionGate.IsInGameplay == false) return;
+            if(_actionGate.IsInGameplay == false) 
+                return;
+            
             _motor.HandleCameraZoomOut();
         }
 
         public void HandleCameraZoomIn()
         {
-            if(_actionGate.IsInGameplay == false) return;
+            if(_actionGate.IsInGameplay == false) 
+                return;
+            
             _motor.HandleCameraZoomIn();
         }
+
+        #endregion
+
+        #endregion
+
+        #region Screens
 
         public void TriggerMainMenu()
         {
             _motor.TriggerMainMenu();
         }
         
-
-        #region Screens
-
         public void SetGameplayPanel(bool isActive)
         {
             _motor.SetGameplayPanel(isActive);
@@ -455,7 +480,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             Controller.SetGameplayPanel(false);
             Controller.DisableMeteorSpawn();
-            Controller.Pause();
         }
     }
     
@@ -471,6 +495,7 @@ namespace _Main.Scripts.Gameplay.GameMode
     {
         public override void Awake()
         {
+            Controller.Pause();
             Controller.SetPausePanel(true);
         }
 

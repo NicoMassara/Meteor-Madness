@@ -16,10 +16,7 @@ namespace _Main.Scripts.MySettings.UI
         [SerializeField] private Button backButton;
 
         public IVolumeSlider VolumeSlider => volumeSlider;
-#if UNITY_ANDROID
-        
         public IVibrationToggle VibrationToggle => vibrationToggle;
-#endif
         public ILanguageSelector LanguageSelector => languageSelector;
         
         public event Action OnBackButtonPressed;

@@ -7,7 +7,6 @@ namespace _Main.Scripts.MySettings.Components
     public class SettingsVibration : VibrationBehavior<SettingsUIView>
     {
 #if UNITY_ANDROID 
-#endif
         protected override void Start()
         {
             base.Start();
@@ -40,5 +39,6 @@ namespace _Main.Scripts.MySettings.Components
             };
             
         }
+#endif
     }
 }

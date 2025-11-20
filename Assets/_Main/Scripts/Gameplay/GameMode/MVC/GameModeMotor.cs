@@ -15,7 +15,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         private float _startTimer;
         private float _lastDisplayedTimer;
         private readonly int _startDelay;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
         private bool _isPaused;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
         private bool _doesRestartGameMode;
         private bool _hasDoublePoints;
         private bool _canPause;
@@ -217,17 +219,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public void PauseGame()
         {
-            if(_canPause == false) return;
-
             _isPaused = true;
-            NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
+            NotifyAll(GameModeObserverMessage.GamePaused);
         }
         
         public void UnPauseGame()
         {
-            
             _isPaused = false;
-            NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
+            NotifyAll(GameModeObserverMessage.GameUnPaused);
         }
 
         #endregion
