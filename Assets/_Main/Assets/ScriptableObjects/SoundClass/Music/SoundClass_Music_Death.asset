@@ -30,4 +30,12 @@ MonoBehaviour:
     spatialBlend: 0
     reverbZoneMix: 1
     dopplerLevel: 0
+  fadeInData:
+    FadeTime: 2.5
+    ExpStrength: 5
+    FadeType: 0
+  fadeOutData:
+    FadeTime: 0.5
+    ExpStrength: 2
+    FadeType: 0
   randomPitchRange: 0

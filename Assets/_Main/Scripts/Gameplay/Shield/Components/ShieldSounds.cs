@@ -54,7 +54,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
             GetComponentToSound.OnAbilityFinished += () =>
             {
-                StopSound(_abilityRunningSoundId);
+                StopSound(ref _abilityRunningSoundId);
             };
         }
         

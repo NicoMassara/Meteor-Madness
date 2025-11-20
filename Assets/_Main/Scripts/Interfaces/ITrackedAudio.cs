@@ -9,6 +9,7 @@ namespace _Main.Scripts.Interfaces
 
         public void PlayAudio();
         public bool GetIsPlaying();
+        public bool GetIsPaused();
         public void TriggerFinish();
     }
 }

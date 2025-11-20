@@ -1,134 +1,81 @@
 ﻿using System;
+using _Main.Scripts.Interfaces;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds
 {
     public class MusicController
     {
-        private readonly VolumeChanger _volumeChanger = new VolumeChanger();
-        private SoundComponent _currentMusic;
-        private SoundComponent _nextMusic;
+        private ulong _playingId;
+        private ulong _pausedId;
         
-        public event Action<string> OnMusicLeaving;
-        public event Action<string> OnMusicPlaying;
-        public event Action<string> OnMusicArriving;
+        // Add the possibility to pause and resume music
+        // Mostly need for the GameMode whe is Paused
+        // Add the Possibility to reduce the music volume
         
-        private class VolumeChanger
-        {
-            private const float LerpTime = 1f;
-            private SoundComponent _sound;
-            private float _targetVolume;
-            private float _startVolume;
-            
-            private float _currentVolume;
-            private float _elapsedTime;
-            private bool _hasVolumeToChange;
-            public event Action<SoundComponent> _onEnd;
-            
-            public void IncreaseVolume(SoundComponent sound,Action<SoundComponent> onEnd)
-            {
-                sound.PlayAudio();
-                SetVolumeToChange(sound, 0, 1, onEnd);
-            }
-
-            public void DecreaseVolume(SoundComponent sound, Action<SoundComponent> onEnd)
-            {
-                SetVolumeToChange(sound, 1, 0, onEnd);
-            }
-
-
-            private void SetVolumeToChange(SoundComponent sound, float startVolume, float targetVolume, Action<SoundComponent> onEnd)
-            {
-                _sound = sound;
-                _targetVolume = targetVolume;
-                _startVolume = startVolume;
-                _onEnd = onEnd;
-                _sound.SetVolumeMultiplier(_startVolume);
-                
-                _hasVolumeToChange = true;
-            }
-            
-            public void ChangeVolume(float deltaTime)
-            {
-                if(_hasVolumeToChange == false) return;
-                
-                _elapsedTime += deltaTime;
-                var timeRatio = _elapsedTime / LerpTime;
-                
-                _currentVolume = Mathf.Lerp(_startVolume, _targetVolume, timeRatio);
-                _sound.SetVolumeMultiplier(_currentVolume);
-
-                if (timeRatio >= 1)
-                {
-                    _hasVolumeToChange = false;
-                    _elapsedTime = 0;
-                    _onEnd?.Invoke(_sound);
-                }
-            }
-        }
+        // Use IDs
         
-        public void Execute(float deltaTim)
-        {
-            _volumeChanger?.ChangeVolume(deltaTim);
-        }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#pragma warning disable CS0067 // Event is never used
+        public event Action<ulong> OnMusicPlaying;
+        public event Action<ulong> OnMusicPaused;
+        public event Action<ulong> OnMusicResumed;
+        public event Action OnMusicStopped;
+#pragma warning restore CS0067 // Event is never used
+#endif
         
-        public void StopMusic()
+        public bool IsThisPlaying(SoundId soundId)
         {
-            if (_currentMusic != null)
-            {
-                OnMusicLeaving?.Invoke(_currentMusic.SoundClass.ClassName);
-                _volumeChanger.DecreaseVolume(_currentMusic, OnMusicStop);
-            }
-        }
-
-        public void PlayMusic(SoundComponent music)
-        {
-            if(music == null) return;
-
-            if (_currentMusic == null)
-            {
-                OnMusicArriving?.Invoke(music.SoundClass.ClassName);
-                _volumeChanger.IncreaseVolume(music, MusicAdded);
-            }
-            else if (_currentMusic != null && _nextMusic == null)
-            {
-                _nextMusic = music;
-                OnMusicLeaving?.Invoke(_currentMusic.SoundClass.ClassName);
-                _volumeChanger.DecreaseVolume(_currentMusic, MusicLeaving);
-            }
-            else
-            {
-                Debug.LogWarning("Already has a New Music in Queue");
-            }
-        }
-
-        private void MusicAdded(SoundComponent music)
-        {
-            SetCurrentMusic(music);
-            OnMusicArriving?.Invoke("None");
-        }
-
-        private void MusicLeaving(SoundComponent music)
-        {
-            music.StopSound();
-            _volumeChanger.IncreaseVolume(_nextMusic, MusicAdded);
-            OnMusicLeaving?.Invoke("None");
-        }
-
-        private void OnMusicStop(SoundComponent music)
-        {
-            OnMusicLeaving?.Invoke("None");
-            SetCurrentMusic(null);
-            music.StopSound();
-        }
-
-        private void SetCurrentMusic(SoundComponent music)
-        {
-            _currentMusic = music;
+            if (soundId == null) return false;
             
-            var musicName = _currentMusic != null ? _currentMusic.SoundClass.ClassName : "None";
+            return _playingId == soundId.Id;
+        }
+
+        public bool IsThisPaused(SoundId soundId)
+        {
+            if (soundId == null) return false;
             
-            OnMusicPlaying?.Invoke(musicName);
+            return _pausedId == soundId.Id;
+        }
+
+        public bool HasMusicPlaying()
+        {
+            return _playingId > 0;
+        }
+
+        public bool HasMusicPaused()
+        {
+            return _pausedId > 0;
+        }
+
+        public ulong Play(ulong toPlayId)
+        {
+            _playingId = toPlayId;
+            OnMusicPlaying?.Invoke(_playingId);
+            return _playingId;
+        }
+        public ulong Stop()
+        {
+            var temp = _playingId;
+            _playingId = 0;
+            OnMusicStopped?.Invoke();
+            return temp;
+        }
+
+        public ulong Pause()
+        {
+            _pausedId = _playingId;
+            _playingId = 0;
+            OnMusicPaused?.Invoke(_pausedId);
+            return _pausedId;
+        }
+
+        public ulong Resume()
+        {
+            _playingId = _pausedId;
+            _pausedId = 0;
+            OnMusicResumed?.Invoke(_playingId);
+            return _playingId;
         }
     }
 }

@@ -13,21 +13,46 @@ namespace _Main.Scripts.Gameplay.GameMode
         [Header("Countdown")]
         [SerializeField] private SoundClassSo countdownSound;
         [SerializeField] private SoundClassSo countdownFinish;
+        
+        private SoundId _gameMusicId;
+        private SoundId _deathMusicId;
 
         private void Start()
         {
+            
+            // Music
+            
             GetComponentToSound.OnGameModeEnable += () =>
             {
                 StopMusic();
             };
+            
+            GetComponentToSound.OnGameModeDisable += () =>
+            {
+                StopMusic();
+            };   
+            
+            GetComponentToSound.OnGameModePaused += (isPaused) =>
+            {
+                if (isPaused)
+                {
+                    SoundManager.Instance.PauseMusic();
+                    PlayMusic(deathMusic,_deathMusicId);
+                }
+                else
+                {
+                    //StopMusic();
+                    SoundManager.Instance.ResumeMusic();
+                }
+            };   
 
             GetComponentToSound.OnGameModeStarted += () =>
             {
-                PlayMusic(gameMusic);
+                PlayMusic(gameMusic,_gameMusicId);
             };
             GetComponentToSound.OnGameModeFinished += () =>
             {
-                PlayMusic(deathMusic);
+                PlayMusic(deathMusic,_deathMusicId);
             };
             
             GetComponentToSound.OnEarthDeath += () =>
@@ -40,6 +65,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 StopMusic();
             };
             
+            // Sounds
+            
             GetComponentToSound.OnCountdownUpdated += () =>
             {
                 PlaySound(countdownSound);
@@ -49,7 +76,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 PlaySound(countdownFinish);
             };
-            
         }
     }
 }

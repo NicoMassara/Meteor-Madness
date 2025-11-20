@@ -14,11 +14,16 @@ namespace _Main.Scripts.Sounds
         [SerializeField] private bool is3dSound;
         [SerializeField] private AudioClip[] clips;
         [SerializeField] private AudioSourceData sourceData;
+        [SerializeField] private FadeData fadeInData;
+        [SerializeField] private FadeData fadeOutData;
+        [Space]
         [Range(0,1)]
         [SerializeField] private float randomPitchRange;
         private int _lastIndex;
 
         public AudioSourceData SourceData => sourceData;
+        public FadeData FadeInData => fadeInData;
+        public FadeData FadeOutData => fadeOutData;
 
         public SoundChannel Channel => channel;
         public bool Is3DSound => is3dSound;
@@ -99,6 +104,23 @@ namespace _Main.Scripts.Sounds
         public float dopplerLevel = 0;
     }
     
+    [Serializable]
+    public class FadeData
+    {
+        [Range(0, 5f)] 
+        public float FadeTime = 0.05f;
+        [Range(0, 10)] 
+        public float ExpStrength = 5;
+        public FadeType FadeType;
+    }
+
+    public enum FadeType
+    {
+        Exp,
+        Log
+    }
+
+
     public enum SoundChannel
     {
         Sfx,

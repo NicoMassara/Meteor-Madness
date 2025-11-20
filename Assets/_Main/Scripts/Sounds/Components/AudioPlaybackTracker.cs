@@ -17,7 +17,8 @@ namespace _Main.Scripts.Sounds
             foreach (var item in _trackedAudios)
             {
                 if (item.GetIsPlaying()) continue;
-                
+                if (item.GetIsPaused()) continue;
+
                 _toRemove.Add(item);
             }
             
@@ -52,7 +53,6 @@ namespace _Main.Scripts.Sounds
             {
                 foreach (var item in _toRemove)
                 {
-                    //Debug.Log($"Removing: {item.AudioName}");
                     item.TriggerFinish();
                     _trackedAudios.Remove(item);
                 }

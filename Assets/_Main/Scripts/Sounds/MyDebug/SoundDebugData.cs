@@ -11,8 +11,7 @@ namespace _Main.Scripts.Sounds
     {
         public Dictionary<SoundChannel, int> ChannelCount = new Dictionary<SoundChannel, int>();
         public string CurrentMusic = "None";
-        public string ArrivingMusic = "None";
-        public string LeavingMusic = "None";
+        public string PausedMusic = "None";
         
         public SoundDebugData()
         {
@@ -22,13 +21,13 @@ namespace _Main.Scripts.Sounds
             {
                 soundGroup.CreateSubGroup(DebugGUIKeys.SubGroup.Music, DebugGUISortingOrder.SubGroup.Music)
                     ?.AddEntry(
-                        ()=> $"CurrentMusic: {CurrentMusic}",
-                        ()=> $"ArrivingMusic: {ArrivingMusic}",
-                        ()=> $"LeavingMusic: {LeavingMusic}"
+                        ()=> $"Current: {CurrentMusic}",
+                        ()=> $"Paused: {PausedMusic}"
                     );
                 
                 soundGroup.CreateSubGroup(DebugGUIKeys.SubGroup.SoundChannel, DebugGUISortingOrder.SubGroup.SoundChannel)
                     ?.AddEntry(
+                        () => "-- Sound Channels --",
                         ()=> $"Sfx: {(ChannelCount.GetValueOrDefault(SoundChannel.Sfx, 0))}",
                         ()=> $"Collision: {(ChannelCount.GetValueOrDefault(SoundChannel.Collision, 0))}",
                         ()=> $"Deflection: {(ChannelCount.GetValueOrDefault(SoundChannel.Deflection, 0))}",
