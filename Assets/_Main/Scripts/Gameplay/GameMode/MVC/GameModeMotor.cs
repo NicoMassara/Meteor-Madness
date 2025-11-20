@@ -273,5 +273,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             NotifyAll(GameModeObserverMessage.Asleep);
         }
+
+        public void Leaving()
+        {
+            NotifyAll(GameModeObserverMessage.Leaving);
+        }
     }
 }

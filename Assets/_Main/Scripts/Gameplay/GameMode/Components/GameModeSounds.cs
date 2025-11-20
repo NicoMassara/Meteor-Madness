@@ -16,10 +16,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private SoundId _gameMusicId;
         private SoundId _deathMusicId;
+        private SoundId _pauseMusicId;
 
         private void Start()
         {
-            
             // Music
             
             GetComponentToSound.OnGameModeEnable += () =>
@@ -27,34 +27,27 @@ namespace _Main.Scripts.Gameplay.GameMode
                 StopMusic();
             };
             
-            GetComponentToSound.OnGameModeDisable += () =>
-            {
-                StopMusic();
-            };   
-            
             GetComponentToSound.OnGameModePaused += (isPaused) =>
             {
                 if (isPaused)
                 {
                     SoundManager.Instance.PauseMusic();
-                    PlayMusic(deathMusic,_deathMusicId);
+                    _pauseMusicId = PlayMusic(deathMusic,_pauseMusicId);
                 }
                 else
                 {
-                    //StopMusic();
                     SoundManager.Instance.ResumeMusic();
                 }
             };   
 
             GetComponentToSound.OnGameModeStarted += () =>
             {
-                PlayMusic(gameMusic,_gameMusicId);
+                _gameMusicId = PlayMusic(gameMusic,_gameMusicId);
             };
             GetComponentToSound.OnGameModeFinished += () =>
             {
-                PlayMusic(deathMusic,_deathMusicId);
+                _deathMusicId = PlayMusic(deathMusic,_deathMusicId);
             };
-            
             GetComponentToSound.OnEarthDeath += () =>
             {
                 StopMusic();
@@ -63,6 +56,16 @@ namespace _Main.Scripts.Gameplay.GameMode
             GetComponentToSound.OnCountDownStarted += () =>
             {
                 StopMusic();
+            };
+
+            GetComponentToSound.OnLeaving += () =>
+            {
+                RemoveAllSounds();
+            };
+            
+            GetComponentToSound.OnGameModeRestarted += () =>
+            {
+                RemoveAllSounds();
             };
             
             // Sounds
@@ -76,6 +79,15 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 PlaySound(countdownFinish);
             };
+        }
+
+        private void RemoveAllSounds()
+        {
+            SoundManager.Instance.ClearAllMusic();
+            //
+            SoundManager.Instance.RemoveMusic(ref _gameMusicId);
+            SoundManager.Instance.RemoveMusic(ref _deathMusicId);
+            SoundManager.Instance.RemoveMusic(ref _pauseMusicId);
         }
     }
 }

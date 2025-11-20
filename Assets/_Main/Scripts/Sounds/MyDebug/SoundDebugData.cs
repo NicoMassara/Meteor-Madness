@@ -31,7 +31,8 @@ namespace _Main.Scripts.Sounds
                         ()=> $"Sfx: {(ChannelCount.GetValueOrDefault(SoundChannel.Sfx, 0))}",
                         ()=> $"Collision: {(ChannelCount.GetValueOrDefault(SoundChannel.Collision, 0))}",
                         ()=> $"Deflection: {(ChannelCount.GetValueOrDefault(SoundChannel.Deflection, 0))}",
-                        ()=> $"UI: {(ChannelCount.GetValueOrDefault(SoundChannel.UI, 0))}"
+                        ()=> $"UI: {(ChannelCount.GetValueOrDefault(SoundChannel.UI, 0))}",
+                        ()=> $"Music: {(ChannelCount.GetValueOrDefault(SoundChannel.Music, 0))}"
                     );
             }
         }

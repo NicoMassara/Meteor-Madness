@@ -49,7 +49,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 CanPause = state is States.Pause 
                            && CurrentState is States.Gameplay;
                 //
-                CanDisableSpawn = state is States.Leaving or States.Finish;
+                CanDisableSpawn = state is States.Leaving or States.Finish &&
+                                  (CurrentState is States.Gameplay or States.Pause);
             }
 
             protected override void OnEnterState(States state)
@@ -149,6 +150,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             death.AddTransition(States.Restart, restart);
             death.AddTransition(States.Disable, disable);
+            death.AddTransition(States.Leaving, leaving);
             
             restart.AddTransition(States.Start, start);
             
@@ -455,6 +457,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.Asleep();
         }
 
+        public void Leaving()
+        {
+            _motor.Leaving();
+        }
+
         public void SetToSleep()
         {
             _actionGate.IsGoingToSleep = true;
@@ -574,6 +581,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         public override void Awake()
         {
             Controller.DisableMeteorSpawn();
+            Controller.Leaving();
         }
     }
     

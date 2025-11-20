@@ -27,6 +27,7 @@ namespace _Main.Scripts.Sounds
         public bool IsThisPlaying(SoundId soundId)
         {
             if (soundId == null) return false;
+            if (soundId.Id == 0) return false;
             
             return _playingId == soundId.Id;
         }
@@ -34,6 +35,7 @@ namespace _Main.Scripts.Sounds
         public bool IsThisPaused(SoundId soundId)
         {
             if (soundId == null) return false;
+            if (soundId.Id == 0) return false;
             
             return _pausedId == soundId.Id;
         }
@@ -76,6 +78,12 @@ namespace _Main.Scripts.Sounds
             _pausedId = 0;
             OnMusicResumed?.Invoke(_playingId);
             return _playingId;
+        }
+
+        public void StopPaused()
+        {
+            _pausedId = 0;
+            OnMusicPaused?.Invoke(_pausedId);
         }
     }
 }

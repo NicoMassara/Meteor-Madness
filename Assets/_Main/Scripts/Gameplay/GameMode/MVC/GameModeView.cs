@@ -18,11 +18,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnCountdownUpdatedFinished;
         public event Action OnGameModeEnable;
         public event Action OnGameModeDisable;
+        public event Action OnGameModeRestarted;
         public event Action<bool> OnGameModePaused;
 
         public event Action OnGameModeFinished;
         public event Action OnGameModeStarted;
         public event Action OnEarthDeath;
+        public event Action OnLeaving;
         
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -56,6 +58,10 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
+                case GameModeObserverMessage.Leaving:
+                    HandleLeaving();
+                    break;
+                
                 
                 // Pause / Unpause
                 case GameModeObserverMessage.GamePaused:
@@ -145,7 +151,9 @@ namespace _Main.Scripts.Gameplay.GameMode
 #endif
             }
         }
-        
+
+
+
 
         private void HandleOptions()
         {
@@ -335,6 +343,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             TimerManager.Add(new TimerData(time: temp.RestartEarth,
                 onEndAction: EarthEventCaller.Restart));
+            
+            OnGameModeRestarted?.Invoke();
         }
         
         private void HandleEarthRestartFinish(bool doesRestart)
@@ -349,6 +359,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData.CurrentLevel = currentLevel;
 #endif
             ProjectileEventCaller.UpdateLevel(currentLevel);
+        }
+        
+        private void HandleLeaving()
+        {
+            OnLeaving?.Invoke();
         }
 
         #endregion
