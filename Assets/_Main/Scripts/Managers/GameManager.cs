@@ -48,6 +48,16 @@ namespace _Main.Scripts.Managers
         {
             LoadGameScreen(ScreenType.Cosmetic);
         }
+        
+        public void LoadOptionsMenu()
+        {
+            LoadGameScreen(ScreenType.OptionsMenu);
+        }
+
+        public void LoadLastScreen()
+        {
+            GameScreenEventCaller.LoadLastScreen();
+        }
 
         private void LoadGameScreen(ScreenType type)
         {
@@ -86,5 +96,7 @@ namespace _Main.Scripts.Managers
         {
             Application.Quit();
         }
+
+
     }
 }

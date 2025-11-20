@@ -31,9 +31,9 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.TriggerCosmetic:
                     HandleCosmetic();
                     break;
-                case MainMenuObserverMessage.MainMenu:
+                case MainMenuObserverMessage.TriggerOptions:
+                    HandleTriggerOptions();
                     break;
-                
             }
         }
 
@@ -66,6 +66,11 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleQuit()
         {
             GameManager.Instance.QuitGame();
+        }
+        
+        private void HandleTriggerOptions()
+        {
+            GameManager.Instance.LoadOptionsMenu();
         }
     }
 }

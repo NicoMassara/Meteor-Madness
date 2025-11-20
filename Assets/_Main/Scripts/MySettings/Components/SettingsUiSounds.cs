@@ -1,25 +1,25 @@
-﻿using _Main.Scripts.MySettings.UI;
+﻿using _Main.Scripts.MySettings.MVC;
 using _Main.Scripts.Sounds;
 
 namespace _Main.Scripts.MySettings.Components
 {
-    public class SettingsUiSounds : SoundBehaviour<SettingsUIView>
+    public class SettingsUiSounds : SoundBehaviour<SettingsUiView>
     {
         private void Start()
         {
-            GetComponentToSound.VolumeSlider.OnChanged += (value) =>
+            GetComponentToSound.OnVolumeChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
             
-            GetComponentToSound.LanguageSelector.OnChanged += (value) =>
+            GetComponentToSound.OnLanguageChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
             
 #if UNITY_ANDROID && !UNITY_EDITOR
             
-            GetComponentToSound.VibrationToggle.OnChanged += (value) =>
+            GetComponentToSound.OnVibrationChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };

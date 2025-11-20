@@ -107,7 +107,12 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SaveHighScore:
                     HandleSaveHighScore((float)args[0]);
                     break;
-                
+                case GameModeObserverMessage.Options:
+                    HandleOptions();
+                    break;
+                case GameModeObserverMessage.Asleep:
+                    HandleAsleep();
+                    break;
                 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         
@@ -121,6 +126,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
         }
         
+        private void HandleOptions()
+        {
+            GameManager.Instance.LoadOptionsMenu();
+        }
+
         #region Debug Only
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -161,6 +171,12 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             SetEnableInputs(false);
             SetEnableUIInputs(false);
+        }
+        
+        private void HandleAsleep()
+        {
+            Debug.Log("Here");
+            GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
 
         #endregion

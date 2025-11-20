@@ -62,7 +62,7 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnExit += () => _controller.TriggerQuit();
             _ui.OnCreditsOpen += () => _controller.TransitionToCredits();
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
-            _ui.OnOptionsOpen += () => _controller.TransitionToOptions();
+            _ui.OnOptionsOpen += () => _controller.TriggerOptions();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
         }
 

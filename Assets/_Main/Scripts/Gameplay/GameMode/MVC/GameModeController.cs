@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using UnityEngine;
 
@@ -19,9 +20,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             Death,
             Restart,
             Pause,
-            Options,
             Leaving,
-            Disable
+            Disable,
+            // Asleep -> Is used when is in Pause to change screens and return to Pause
+            // Without going to Disable
+            Asleep 
         }
 
         private class GameModeActionGate : FsmActionGate<States>
@@ -33,7 +36,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             public bool CanUnpause { get; private set; }
             public bool CanDisableSpawn { get; private set; }
             public bool CanEnableSpawn { get; private set; }
-            
+            public bool IsAsleep { get; private set; }
+            public bool IsGoingToSleep { get; set; }
+
             protected override void OnNewState(States state)
             {
                 CanUnpause = state is States.Gameplay 
@@ -49,6 +54,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 IsInGameplay = state is States.Gameplay;
                 CanEnableSpawn = state is States.Enable;
+                IsAsleep = state is States.Asleep;
             }
 
             protected override void OnExitState(States state)
@@ -97,9 +103,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             var death = new DeathState<States>();
             var restart = new RestartState<States>();
             var leaving = new LeavingState<States>();
-            var options = new OptionsState<States>();
             var pause = new PauseState<States>();
             var disable = new DisableState<States>();
+            var asleep = new AsleepState<States>();
             
             temp.Add(none);
             temp.Add(enable);
@@ -110,8 +116,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             temp.Add(restart);
             temp.Add(leaving);
             temp.Add(disable);
-            temp.Add(options);
             temp.Add(pause);
+            temp.Add(asleep);
 
             #endregion
 
@@ -127,10 +133,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             gameplay.AddTransition(States.Pause, pause);
             
             pause.AddTransition(States.Gameplay, gameplay);
-            pause.AddTransition(States.Options, options);
             pause.AddTransition(States.Leaving, leaving);
+            pause.AddTransition(States.Asleep, asleep);
             
-            options.AddTransition(States.Pause, pause);
+            asleep.AddTransition(States.Pause, pause);
             
             finish.AddTransition(States.Death, death);
             
@@ -162,9 +168,28 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public void TransitionToEnable()
         {
-            SetTransition(States.Enable);
+            if (_actionGate.IsAsleep)
+            {
+                SetTransition(States.Pause);
+            }
+            else
+            {
+                SetTransition(States.Enable);
+            }
         }
         
+        public void TransitionToDisable()
+        {
+            if (_actionGate.IsGoingToSleep)
+            {
+                SetTransition(States.Asleep);
+            }
+            else
+            {
+                SetTransition(States.Disable);
+            }
+        }
+
         public void TransitionToStart()
         {
             SetTransition(States.Start);
@@ -189,20 +214,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             SetTransition(States.Restart);
         }
-
-        public void TransitionToDisable()
-        {
-            SetTransition(States.Disable);
-        }
         
         public void TransitionToLeaving()
         {
             SetTransition(States.Leaving);
-        }
-        
-        public void TransitionToOptions()
-        {
-            SetTransition(States.Options);
         }
         
         public void TransitionToPause()
@@ -413,12 +428,27 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.SetPausePanel(isActive);
         }
         
-        public void SetOptionsPanel(bool isActive)
+        public void TriggerOptions()
         {
-            _motor.SetOptionsPanel(isActive);
+            _motor.TriggerOptions();
         }
 
         #endregion
+
+        public void Asleep()
+        {
+            _motor.Asleep();
+        }
+
+        public void SetToSleep()
+        {
+            _actionGate.IsGoingToSleep = true;
+        }
+
+        public void WakeUp()
+        {
+            _actionGate.IsGoingToSleep = false;
+        }
     }
 
     #region States
@@ -495,6 +525,7 @@ namespace _Main.Scripts.Gameplay.GameMode
     {
         public override void Awake()
         {
+            Controller.WakeUp();
             Controller.Pause();
             Controller.SetPausePanel(true);
         }
@@ -503,19 +534,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             Controller.SetPausePanel(false);
             Controller.UnPauseGame();
-        }
-    }
-    
-    public class OptionsState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.SetOptionsPanel(true);
-        }
-
-        public override void Sleep()
-        {
-            Controller.SetOptionsPanel(false);
         }
     }
     
@@ -543,6 +561,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         public override void Sleep()
         {
             Controller.StartGameplay();
+        }
+    }
+    
+    public class AsleepState<T> : BaseState<T>
+    {
+        public override void Awake()
+        {
+            Controller.Asleep();
         }
     }
 

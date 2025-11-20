@@ -22,9 +22,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         private bool _hasDoublePoints;
         private bool _canPause;
         private float _highScore;
-        private bool _hasOpenedOptions;
         private bool _hasGameplayPanelActive;
-        private bool _hasOptionsPanelActive;
+        private bool _hasPausePanelActive;
         
 
         public GameModeMotor(int[] levelStreakAmount, int startTimer)
@@ -255,13 +254,13 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void SetPausePanel(bool isActive)
         {
-            NotifyAll(GameModeObserverMessage.PausePanel, true);
+            _hasPausePanelActive = isActive;
+            NotifyAll(GameModeObserverMessage.PausePanel, _hasPausePanelActive);
         }
         
-        public void SetOptionsPanel(bool isActive)
+        public void TriggerOptions()
         {
-            _hasOptionsPanelActive = isActive;
-            NotifyAll(GameModeObserverMessage.OptionsPanel, _hasOptionsPanelActive);
+            NotifyAll(GameModeObserverMessage.Options);
         }
 
         public void TriggerMainMenu()
@@ -270,5 +269,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
+
+        public void Asleep()
+        {
+            NotifyAll(GameModeObserverMessage.Asleep);
+        }
     }
 }

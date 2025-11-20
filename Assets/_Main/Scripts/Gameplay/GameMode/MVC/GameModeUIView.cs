@@ -28,7 +28,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnRestartButtonPressed;
         public event Action OnPauseButtonPressed;
         public event Action OnResumeButtonPressed;
-        public event Action OnOptionsBackButtonPressed;
         public event Action OnOptionsButtonPressed;
         public event Action OnPointsAdded;
         
@@ -48,10 +47,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 OnOptionsButtonPressed?.Invoke();
             });
-            GetUiComponents().SettingsPanel.OnBackButtonPressed += () =>
-            {
-                OnOptionsBackButtonPressed?.Invoke();
-            };
             GetUiComponents().RestartButton.onClick.AddListener(() =>
             {
                 OnRestartButtonPressed?.Invoke();
@@ -76,6 +71,16 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             switch (message)
             {
+                //
+                // [ ENABLE / DISABLE ]
+                //
+                case GameModeObserverMessage.Disable:
+                    HandleDisable();
+                    break;
+                case GameModeObserverMessage.Enable:
+                    HandleEnable();
+                    break;
+                //
                 case GameModeObserverMessage.StartCountdown:
                     HandleStartCountdown();
                     break;
@@ -103,12 +108,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameRestart:
                     HandleGameRestart();
                     break;
-                case GameModeObserverMessage.Disable:
-                    HandleDisable();
-                    break;
-                case GameModeObserverMessage.Enable:
-                    HandleEnable();
-                    break;
                 case GameModeObserverMessage.CameraZoomOut:
                     HandleCameraZoomOut();
                     break;
@@ -127,10 +126,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.PausePanel:
                     HandlePausePanel((bool)args[0]);
                     break;
-                case GameModeObserverMessage.OptionsPanel:
-                    HandleOptionsPanel((bool)args[0]);
-                    break;
-                
                 case GameModeObserverMessage.GameplayPanel:
                     HandleGameplayPanel((bool)args[0]);
                     break;
@@ -203,18 +198,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 DisableActivePanel();
             }
 
-        }
-
-        private void HandleOptionsPanel(bool isActive)
-        {
-            if (isActive)
-            {
-                SetActivePanel(GetUiComponents().OptionsPanel);
-            }
-            else
-            {
-                DisableActivePanel();
-            }
         }
 
         #region Panel

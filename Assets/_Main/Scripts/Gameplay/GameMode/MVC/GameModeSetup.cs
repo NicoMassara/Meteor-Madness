@@ -110,8 +110,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         #endregion
 
         #region UI View Handlers
-
-
+        
         private void SetUIViewHandlers()
         {
             _ui.OnRestartButtonPressed += () =>
@@ -130,11 +129,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             };
             _ui.OnOptionsButtonPressed += () =>
             {
-                _controller.TransitionToOptions();
-            };
-            _ui.OnOptionsBackButtonPressed += () =>
-            {
-                _controller.TransitionToPause();
+                _controller.SetToSleep();
+                _controller.TriggerOptions();
             };
         }
 
@@ -144,7 +140,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             _controller.TransitionToLeaving();
             _controller.TriggerMainMenu();
         }
-        
 
         #endregion
         

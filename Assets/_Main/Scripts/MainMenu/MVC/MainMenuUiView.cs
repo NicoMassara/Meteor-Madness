@@ -118,9 +118,6 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.CreditsMenu:
                     HandleCreditsMenu();
                     break;
-                case MainMenuObserverMessage.OptionsMenu:
-                    HandleOptionsMenu();
-                    break;
             }
         }
         
@@ -158,11 +155,6 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleLoreMenu()
         {
             SetActivePanel(GetUiComponents().LorePanel);
-        }
-        
-        private void HandleOptionsMenu()
-        {
-            SetActivePanel(GetUiComponents().OptionsPanel);
         }
         
         private void SetActivePanel(GameObject panelObject)

@@ -13,7 +13,7 @@ namespace _Main.Scripts.Cosmetics.Components
         {
             GetComponentToSound.OnCosmeticEnable += () =>
             {
-                PlayMusic(backgroundMusic);
+
             };
         }
     }
