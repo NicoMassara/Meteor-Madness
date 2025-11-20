@@ -8,6 +8,7 @@ namespace _Main.Scripts.GameScreens
     [RequireComponent(typeof(GameScreenView))]
     public class GameScreenSetup : ManagedBehavior
     {
+        [SerializeField] private ScreenType defaultScreen = ScreenType.MainMenu;
         private GameScreenMotor _motor;
         private GameScreenView _view;
 
@@ -39,7 +40,7 @@ namespace _Main.Scripts.GameScreens
 
             TimerManager.Add(new TimerData(Time.unscaledDeltaTime, 
                 () => {
-                _motor.LoadScreenByIndex((int)ScreenType.GameMode);
+                _motor.LoadScreenByIndex((int)defaultScreen);
                 }));
         }
         
@@ -47,8 +48,8 @@ namespace _Main.Scripts.GameScreens
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
-            GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
+            GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
+            GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
 
         private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)

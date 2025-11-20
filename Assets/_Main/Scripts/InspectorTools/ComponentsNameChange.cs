@@ -7,59 +7,121 @@ namespace _Main.Scripts.InspectorTools
     [ExecuteInEditMode]
     public class ComponentsNameChange : MonoBehaviour
     {
-        [Header("Remove Values")]
-        [SerializeField] private int removeCount = 0;
-        [Header("Add Values")]
-        [SerializeField] private string prefixToAdd;
-        [Header("Parent")]
+        [Header("Replace")]
+        [SerializeField] private string textToRemove = "";
+        [SerializeField] private string textToAdd = "";
+
+        [Header("Add Prefix")]
+        [SerializeField] private string prefixToAdd = "";
+
+        [Header("Object")]
         [SerializeField] private GameObject componentParent;
-        
-        public void AddStringToComponents()
+        [SerializeField] private bool renameParent;
+
+        [Header("Prefix Count")]
+        [Range(1, 10)]
+        [SerializeField] private int prefixRemoveCount = 2;
+
+        #region Inspector Actions
+
+        public void AddPrefix()
         {
-            if(componentParent == null ||
-               string.IsNullOrEmpty(prefixToAdd)) return;
-            
+            if (componentParent == null || string.IsNullOrEmpty(prefixToAdd)) return;
+
             int count = 0;
-            RenameRecursive(componentParent.transform, ref count);
+
+            if (renameParent)
+                AddText(componentParent.transform);
+
+            AddPrefixRecursive(componentParent.transform, ref count);
+            Debug.Log($"Se agregó prefijo a {count} objetos.");
         }
 
-        public void RemoveCharactersFromComponents()
+        public void RemovePrefix()
         {
-            if(removeCount == 0) return;
-            
+            if (componentParent == null) return;
+
             int count = 0;
-            TrimRecursive(componentParent.transform, ref count);
+
+            if (renameParent)
+                TrimPrefix(componentParent.transform);
+
+            RemovePrefixRecursive(componentParent.transform, ref count);
+            Debug.Log($"Se removió prefijo de {count} objetos.");
         }
 
-        private void RenameRecursive(Transform parent, ref int count)
+        public void ReplaceText()
+        {
+            if (componentParent == null || 
+                (string.IsNullOrEmpty(textToRemove) && string.IsNullOrEmpty(textToAdd))) return;
+
+            int count = 0;
+
+            if (renameParent)
+                Replace(componentParent.transform);
+
+            ReplaceRecursive(componentParent.transform, ref count);
+            Debug.Log($"Se reemplazó texto en {count} objetos.");
+        }
+
+        #endregion
+
+        #region Recursive
+
+        private void AddPrefixRecursive(Transform parent, ref int count)
         {
             foreach (Transform child in parent)
             {
-                child.name = prefixToAdd+child.name;
+                AddText(child);
                 count++;
-                RenameRecursive(child, ref count);
+                AddPrefixRecursive(child, ref count);
             }
         }
-        
-        private void TrimRecursive(Transform parent, ref int count)
+
+        private void RemovePrefixRecursive(Transform parent, ref int count)
         {
             foreach (Transform child in parent)
             {
-                string oldName = child.name;
-                if (oldName.Length > removeCount)
-                {
-                    child.name = oldName.Substring(removeCount);
-                }
-                else
-                {
-                    child.name = "";
-                }
-
+                TrimPrefix(child);
                 count++;
-                TrimRecursive(child, ref count);
+                RemovePrefixRecursive(child, ref count);
             }
         }
+
+        private void ReplaceRecursive(Transform parent, ref int count)
+        {
+            foreach (Transform child in parent)
+            {
+                Replace(child);
+                count++;
+                ReplaceRecursive(child, ref count);
+            } 
+        }
+    #endregion
+
+    #region Base Actions
+
+    private void Replace(Transform item)
+    {
+        if (!string.IsNullOrEmpty(textToRemove))
+            item.name = item.name.Replace(textToRemove, textToAdd);
     }
+
+    private void AddText(Transform item)
+    {
+        item.name = prefixToAdd + item.name;
+    }
+
+    private void TrimPrefix(Transform item)
+    {
+        if (item.name.Length > prefixRemoveCount)
+            item.name = item.name.Substring(prefixRemoveCount);
+        else
+            item.name = "";
+    }
+
+    #endregion
+}
 #endif
     
 #if UNITY_EDITOR
@@ -76,13 +138,19 @@ namespace _Main.Scripts.InspectorTools
             if (GUILayout.Button("Add Prefix"))
             {
                 // Llama al método normalmente
-                script.AddStringToComponents();
+                script.AddPrefix();
             }
             
-            if (GUILayout.Button("Remove Characters"))
+            if (GUILayout.Button("Remove Prefix"))
             {
                 // Llama al método normalmente
-                script.RemoveCharactersFromComponents();
+                script.RemovePrefix();
+            }
+            
+            if (GUILayout.Button("Replace Text"))
+            {
+                // Llama al método normalmente
+                script.ReplaceText();
             }
         }
     }

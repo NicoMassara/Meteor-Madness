@@ -82,8 +82,8 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<ProjectileEvents.UpdateLevel>(EventBus_Projectile_UpdateLevel);
-            GameEventCaller.Subscribe<ProjectileEvents.EnableSpawn>(EventBus_Projectile_EnableSpawn);
+            ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
+            ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_EnableSpawn);
         }
 
         private void EventBus_Projectile_EnableSpawn(ProjectileEvents.EnableSpawn input)

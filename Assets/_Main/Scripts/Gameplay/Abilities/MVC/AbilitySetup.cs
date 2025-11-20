@@ -73,12 +73,13 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBusSetup()
         {
-            GameEventCaller.Subscribe<AbilitiesEvents.Disable>(EventBus_Ability_Disable);
-            GameEventCaller.Subscribe<AbilitiesEvents.Enable>(EventBus_Ability_Enable);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetEnableUI>(EventBus_Ability_SetEnableUI);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetCanUse>(EventBus_Ability_CanUse);
-            GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
-            GameEventCaller.Subscribe<AbilitiesEvents.RunTimer>(EventBus_Ability_RunTimer);
+            AbilitiesEventSubscriber.Disable(EventBus_Ability_Disable);
+            AbilitiesEventSubscriber.Enable(EventBus_Ability_Enable);
+            AbilitiesEventSubscriber.SetEnableUI(EventBus_Ability_SetEnableUI);
+            AbilitiesEventSubscriber.SetCanUse(EventBus_Ability_CanUse);
+            AbilitiesEventSubscriber.Add(EventBus_Ability_Add);
+            AbilitiesEventSubscriber.RunTimer(EventBus_Ability_RunTimer);
+
         }
 
         #region Ability

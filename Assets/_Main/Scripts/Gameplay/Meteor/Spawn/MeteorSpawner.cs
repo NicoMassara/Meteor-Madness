@@ -198,10 +198,10 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
+            MeteorEventSubscriber.SpawnRing(EnventBus_Meteor_SpawnRing);
             //
-            GameEventCaller.Subscribe<ProjectileEvents.DisableSpawn>(EventBus_Projectile_DisableSpawn);
-            GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
+            ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_DisableSpawn);
+            ProjectileEventSubscriber.Spawn(EventBus_Projectile_Spawn);
         }
 
         #region Meteor

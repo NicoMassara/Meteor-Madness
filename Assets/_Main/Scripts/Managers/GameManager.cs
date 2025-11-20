@@ -1,33 +1,20 @@
-﻿using System;
-using _Main.Scripts.Interfaces;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.MyComponents;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
-    public class GameManager : ManagedBehavior
+    public class GameManager : SingletonBehaviour<GameManager>
     {
-        public static GameManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
-        private static GameManager _instance;
-        
         public bool CanPlay { get; set; }
-        public bool CanVibrate { get; set; } = true;
-        public bool IsPaused { get; set; }
+        public bool IsPaused { get; private set; }
         private int _currentPoints;
         
         public EventBusManager EventManager { get; private set; }
         public IInputReader InputReader { get; private set; }
         
-        private static GameManager CreateInstance()
-        {
-            var gameObject = new GameObject(nameof(GameManager))
-            {
-                hideFlags = HideFlags.DontSave,
-            };
-            DontDestroyOnLoad(gameObject);
-            return gameObject.AddComponent<GameManager>();
-        }
-
+        
         private void Awake()
         {
             EventManager = new EventBusManager();
@@ -68,6 +55,32 @@ namespace _Main.Scripts.Managers
         }
 
         #endregion
+
+        public void PauseGame()
+        {
+            SetPauseInChannels(true);
+            IsPaused = true;
+        }
+
+        public void UnpauseGame()
+        {
+            SetPauseInChannels(false);
+            IsPaused = false;
+        }
+
+        private void SetPauseInChannels(bool isPaused)
+        {
+            CustomTime.SetChannelPaused(new []
+            {
+                UpdateGroup.Gameplay,
+                UpdateGroup.Ability, 
+                UpdateGroup.Shield,
+                UpdateGroup.Earth,
+                UpdateGroup.Effects,
+                UpdateGroup.Camera
+                
+            }, isPaused);
+        }
 
         public void QuitGame()
         {

@@ -30,7 +30,7 @@ namespace _Main.Scripts.Gameplay.FloatingScore
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<FloatingTextEvents.Spawn>(EventBus_FloatingText_Spawn);
+            FloatingTextEventSubscriber.Spawn(EventBus_FloatingText_Spawn);
         }
 
         private void EventBus_FloatingText_Spawn(FloatingTextEvents.Spawn input)

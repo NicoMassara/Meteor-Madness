@@ -5,6 +5,7 @@ namespace _Main.Scripts.MultiPage.Components
 {
     public class MultiPageVibration : VibrationBehavior<MultiPageViewUI>
     {
+#if UNITY_ANDROID 
         protected override void Start()
         {
             base.Start();
@@ -18,5 +19,6 @@ namespace _Main.Scripts.MultiPage.Components
                 Vibrate(VibrationType.UIButtonCancel);
             };
         }
+#endif
     }
 }

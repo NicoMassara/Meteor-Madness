@@ -1,10 +1,10 @@
-﻿using System;
-using _Main.Scripts.Interfaces;
+﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Vibration;
 using UnityEngine;
 
 namespace _Main.Scripts.ScriptableObjects
 {
+#if UNITY_ANDROID 
     [CreateAssetMenu(fileName = "SO_VibrationData_Name", menuName = "Scriptable Objects/Vibration/Data", order = 0)]
     public class VibrationDataSo : ScriptableObject, IVibrationData
     {
@@ -58,4 +58,5 @@ namespace _Main.Scripts.ScriptableObjects
             _lastDuration = data.Duration;
         }
     }
+#endif
 }

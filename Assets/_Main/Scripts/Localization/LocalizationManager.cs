@@ -6,8 +6,9 @@ using System.Linq;
 using _Main.Scripts.MyComponents;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
-using UnityEngine.Networking;
 using System.Text;
+using _Main.Scripts.MySettings;
+using UnityEngine.Networking;
 
 namespace _Main.Scripts.Localization
 {
@@ -16,16 +17,6 @@ namespace _Main.Scripts.Localization
         private readonly SystemLanguage _defaultLanguage = GameParameters.GameplayValues.DefaultLanguage;
         private readonly Dictionary<string, string> _localizedTexts = new();
         private SystemLanguage _currentLanguage;
-        
-        private readonly Dictionary<SystemLanguage, string> _languageCodeMap = new Dictionary<SystemLanguage, string>
-        {
-            { SystemLanguage.English, "en" },
-            { SystemLanguage.Spanish, "es" },
-            { SystemLanguage.French, "fr" },
-            { SystemLanguage.Portuguese, "pt" },
-            { SystemLanguage.Italian, "it" },
-            { SystemLanguage.German, "de" },
-        };
 
         private readonly Dictionary<string, string> _textReplacement = new()
         {
@@ -33,14 +24,12 @@ namespace _Main.Scripts.Localization
             {"RightKey", "<color=blue>D</color>"},
             {"AbilityKey", "<color=blue>S</color>"}
         };
-
-
+        
         private readonly Dictionary<SystemLanguage, string> _displayLanguages = new()
         {
             { SystemLanguage.English, "English" },
             { SystemLanguage.Spanish, "Español" },
         };
-        
         
         private void Start()
         {
@@ -49,13 +38,60 @@ namespace _Main.Scripts.Localization
 
         private void Initialize()
         {
-            LoadLanguage(Application.systemLanguage);
+            StartCoroutine(WaitForSettingsData());
+
+            SettingsManager.Instance.OnLanguageChanged += Settings_OnLanguageChangedHandler;
         }
-        
+
+        private void Settings_OnLanguageChangedHandler(int languageIndex)
+        {
+            LoadLanguage(LocalizationTools.GetLanguageFromIndex(languageIndex));
+        }
+
+        private IEnumerator WaitForSettingsData()
+        {
+            var settings = SettingsManager.Instance;
+            
+            float timeout = 5f;
+            float timer = 0f;
+            
+            yield return new WaitUntil(() =>
+            {
+                timer += Time.deltaTime;
+                return settings.HasLoadedData() || timer >= timeout;
+            });
+            
+            if (!settings.HasLoadedData())
+            {
+                Debug.LogWarning("Data could not be loaded. Please check your settings file.");
+            }
+
+            var languageIndex = settings.GetLanguageIndex();
+
+            // If language is not set, it will get the System Language.
+            if (languageIndex == -1)
+            {
+                Debug.LogWarning("Language not selected, loading system language.");
+                // If system language is not compatible, it'll return English
+                
+                languageIndex = LocalizationTools.GetIndexFromLanguage(Application.systemLanguage);
+                
+                // And then saves it 
+                settings.SetLanguageIndex(languageIndex);
+                settings.SaveSettings();
+            }
+            
+            LoadLanguage(LocalizationTools.GetLanguageFromIndex(languageIndex));
+
+            yield return null;
+        }
+
         public void LoadLanguage(SystemLanguage language)
         {
+            if(_currentLanguage == language) return;
+            
             _currentLanguage = language;
-            string langCode = GetLanguageCode(_currentLanguage).ToLower();
+            string langCode = LocalizationTools.GetLanguageCode(_currentLanguage).ToLower();
             string path = Path.Combine(Application.streamingAssetsPath, "Localization", $"{langCode}.json");
 
 #if UNITY_ANDROID
@@ -294,19 +330,6 @@ namespace _Main.Scripts.Localization
 
         public SystemLanguage GetCurrentLanguage() => _currentLanguage;
         public Dictionary<SystemLanguage, string> GetDisplayLanguages() => _displayLanguages;
-
-        private string GetLanguageCode(SystemLanguage language)
-        {
-            if (_languageCodeMap.TryGetValue(language, out var code))
-            {
-                return code;
-            }
-            
-            Debug.LogWarning("Language Could not Be Found in CodeMap, returning default.");
-            return _languageCodeMap[SystemLanguage.English];
-        }
         
-        
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
@@ -12,6 +13,8 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace _Main.Scripts.Gameplay.MyInputs
 {
+#if UNITY_ANDROID
+
     public class TouchInput : IInput
     {
         private const int MaxTouchCount = 2;
@@ -27,7 +30,13 @@ namespace _Main.Scripts.Gameplay.MyInputs
         
         public event Action<int> OnUpdateDirection;
         public event Action<bool> OnTriggerAbility;
+        
+        
+#pragma warning disable CS0067 
+        // This event is used by KeyInput to use the Keyboard inputs
+        // Mobile only can Pause the game on the UI so this event is useless here
         public event Action OnPaused;
+#pragma warning restore CS0067
 
         public TouchInput()
         {
@@ -241,10 +250,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
         
         private void TryRemoveTimer()
         {
-            if (_addTouchTimerId.IsActive)
-            {
-                TimerManager.Remove(_addTouchTimerId);
-            }
+            TimerManager.Remove(_addTouchTimerId);
         } 
 
         private TouchType GetTouchTypeByIndex(int index)
@@ -290,4 +296,6 @@ namespace _Main.Scripts.Gameplay.MyInputs
             Index = index;
         }
     }
+
+#endif
 }

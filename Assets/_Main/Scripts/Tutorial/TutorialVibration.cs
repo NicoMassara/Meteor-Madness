@@ -3,8 +3,10 @@ using _Main.Scripts.Vibration;
 
 namespace _Main.Scripts.Tutorial
 {
+    
     public class TutorialVibration : VibrationBehavior<TutorialUIView>
     {
+#if UNITY_ANDROID 
         protected override void Start()
         {
             base.Start();
@@ -13,5 +15,6 @@ namespace _Main.Scripts.Tutorial
                 Vibrate(VibrationType.UIButtonAccept);
             };
         }
+#endif
     }
 }

@@ -31,8 +31,8 @@ namespace _Main.Scripts.Cosmetics.MVC
             SetViewHandlers();
             SetUIViewHandlers();
             
-            GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
-            GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
+            GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
+            GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
         
         private void EnableCosmetic()

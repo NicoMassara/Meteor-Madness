@@ -103,16 +103,17 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<AbilitiesEvents.NotifyIsActive>(EventBus_Ability_SetActive);
+            AbilitiesEventSubscriber.NotifyIsActive(EventBus_Ability_SetActive);
             //
-            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            MeteorEventSubscriber.RingActive(EventBus_Meteor_RingActive);
             //
-            GameEventCaller.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
-            GameEventCaller.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_SpawnRequest);
-            GameEventCaller.Subscribe<ProjectileEvents.ClearQueue>(EnventBus_Projectile_ClearQueue);
-            GameEventCaller.Subscribe<ProjectileEvents.DisableSpawn>(EventBus_Projectile_DisableSpawn);
-            GameEventCaller.Subscribe<ProjectileEvents.EnableSpawn>(EventBus_Projectile_EnableSpawn);
+            ProjectileEventSubscriber.Add(EventBus_Projectile_Add);
+            ProjectileEventSubscriber.RequestSpawn(EventBus_Projectile_SpawnRequest);
+            ProjectileEventSubscriber.ClearQueue(EnventBus_Projectile_ClearQueue);
+            ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_DisableSpawn);
+            ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_EnableSpawn);
             //
+            
         }
 
         

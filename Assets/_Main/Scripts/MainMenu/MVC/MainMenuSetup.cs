@@ -1,5 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Managers;
+using _Main.Scripts.MySettings;
+using _Main.Scripts.Sounds;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -25,13 +27,12 @@ namespace _Main.Scripts.MainMenu.MVC
             _motor.Subscribe(_ui);
             _motor.Subscribe(_view);
             
-            
             SetViewHandlers();
             
             _controller.Initialize();
             
-            GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
-            GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
+            GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
+            GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
         
 
@@ -61,6 +62,7 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnExit += () => _controller.TriggerQuit();
             _ui.OnCreditsOpen += () => _controller.TransitionToCredits();
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
+            _ui.OnOptionsOpen += () => _controller.TransitionToOptions();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
         }
 

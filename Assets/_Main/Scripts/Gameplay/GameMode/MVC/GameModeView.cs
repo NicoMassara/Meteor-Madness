@@ -21,7 +21,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnGameModeFinished;
         public event Action OnGameModeStarted;
         public event Action OnEarthDeath;
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -79,7 +78,10 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleGameRestart();
                     break;
                 case GameModeObserverMessage.GamePaused:
-                    HandleGamePaused((bool)args[0]);
+                    HandleGamePaused();
+                    break;
+                case GameModeObserverMessage.GameUnPaused:
+                    HandleGameUnPaused();
                     break;
                 case GameModeObserverMessage.EarthRestartFinish:
                     HandleEarthRestartFinish((bool)args[0]);
@@ -105,7 +107,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SaveHighScore:
                     HandleSaveHighScore((float)args[0]);
                     break;
-
                 
                 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -117,11 +118,10 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleUpdateHighScore((float)args[0]);
                     break;
 #endif
-                
             }
         }
-
-
+        
+        #region Debug Only
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -136,19 +136,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
             
 #endif
-        
-        private void HandleSaveHighScore(float highScore)
-        {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.HighScore = highScore;
-#endif
-            
-            DataManager.Instance.SaveGameData(new ScoreSaveData
-            {
-                HighScore = highScore,
-            }, SaveDataType.Score);
-        }
-        
+
+        #endregion
+
+        #region Screns
+
         private void HandleTriggerMainMenu()
         {
             CustomTime.SetChannelPaused(new []
@@ -165,38 +157,26 @@ namespace _Main.Scripts.Gameplay.GameMode
             AbilitiesEventCaller.Disable();
             ShieldEventCaller.Disable();
             EarthEventCaller.Restart();
+            CameraEventCaller.ZoomIn();
             
             SetEnableInputs(false);
             SetEnableUIInputs(false);
         }
-        
 
-        private void HandleCountdown(float amount)
+        #endregion
+
+        #region Score/Points
+
+        private void HandleSaveHighScore(float highScore)
         {
-            if (amount > 1)
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.HighScore = highScore;
+#endif
+            
+            DataManager.Instance.SaveGameData(new ScoreSaveData
             {
-                OnCountdownUpdated?.Invoke();
-            }
-            else if (amount <= 1 && amount > 0)
-            {
-                OnCountdownUpdatedFinished?.Invoke();
-            }
-        }
-
-        private void HandleEnable()
-        {
-            OnGameModeEnable?.Invoke();
-        }
-
-        private void HandleGrantProjectileSpawn(int projectileTypeIndex)
-        {
-            ProjectileEventCaller.GrantSpawn((ProjectileType)projectileTypeIndex);
-        }
-
-        private void HandleInitialize()
-        {
-            GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
-            GameModeEventCaller.InitializeValues();
+                HighScore = highScore,
+            }, SaveDataType.Score);
         }
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
@@ -217,48 +197,84 @@ namespace _Main.Scripts.Gameplay.GameMode
                 DoesMove = true
             });
         }
-        
-        private void HandleGamePaused(bool isPaused)
+
+        #endregion
+
+        #region Pause
+
+        private void HandleGameUnPaused()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
-            _debugData.IsPaused = isPaused;
-            
+            _debugData.IsPaused = false;
 #endif
             
-            AbilitiesEventCaller.SetEnableUI(!isPaused);
-
-            CustomTime.SetChannelPaused(new []
-            {
-                UpdateGroup.Gameplay,
-                UpdateGroup.Ability, 
-                UpdateGroup.Shield,
-                UpdateGroup.Earth,
-                UpdateGroup.Effects,
-                UpdateGroup.Camera
+            SetEnableInputs(true);
+            AbilitiesEventCaller.SetEnableUI(true);
+            GameModeEventCaller.SetPause(false);
+            GameManager.Instance.UnpauseGame();
                 
-            }, isPaused);
-
 #if UNITY_ANDROID || UNITY_IOS
-            SetEnableInputs(!isPaused);
-            SetEnableUIInputs(!isPaused);
-#else
 
-            if (isPaused == true)
-            {
-                TimerManager.Add(new TimerData(0.5f, () =>
-                {
-                    SetEnableInputs(false);
-                }, () =>
-                {
-                    SetEnableInputs(true);
-                }));
-            }
+            SetEnableUIInputs(true);
+                
 #endif
             
-            GameManager.Instance.IsPaused = isPaused;
+        }
+        
+        private void HandleGamePaused()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.IsPaused = true;
+            
+#endif
+            
+            GameManager.Instance.PauseGame();
+            SetEnableInputs(false);
+            AbilitiesEventCaller.SetEnableUI(false);
+            GameModeEventCaller.SetPause(true);
+                
+#if UNITY_ANDROID || UNITY_IOS
+
+            SetEnableUIInputs(false);
+                
+#endif
         }
 
+        #endregion
+        
+        #region GameMode
+        
+        private void HandleCountdown(float amount)
+        {
+            if (amount > 1)
+            {
+                OnCountdownUpdated?.Invoke();
+            }
+            else if (amount <= 1 && amount > 0)
+            {
+                OnCountdownUpdatedFinished?.Invoke();
+            }
+        }
+
+        private void HandleEnable()
+        {
+            OnGameModeEnable?.Invoke();
+        }
+        
+        private void HandleGrantProjectileSpawn(int projectileTypeIndex)
+        {
+            ProjectileEventCaller.GrantSpawn((ProjectileType)projectileTypeIndex);
+        }
+
+        private void HandleInitialize()
+        {
+            GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
+            GameModeEventCaller.InitializeValues();
+        }
+        
+        
         private void HandleDisable()
         {
             EarthEventCaller.SetToDefault();
@@ -286,7 +302,18 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             OnEarthRestarted?.Invoke(doesRestart);
         }
+        
+        private void HandleUpdateGameLevel(int currentLevel)
+        {
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.CurrentLevel = currentLevel;
+#endif
+            ProjectileEventCaller.UpdateLevel(currentLevel);
+        }
 
+        #endregion
+        
         #region Start
 
         private void HandleStartCountdown()
@@ -353,15 +380,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
-        
-        private void HandleUpdateGameLevel(int currentLevel)
-        {
-            
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.CurrentLevel = currentLevel;
-#endif
-            ProjectileEventCaller.UpdateLevel(currentLevel);
-        }
+
+        #region Inputs
 
         private void SetEnableInputs(bool isEnable)
         {
@@ -375,5 +395,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             InputsEventCaller.SetUIEnable(isEnable);
         }
+
+        #endregion
+
     }
 }

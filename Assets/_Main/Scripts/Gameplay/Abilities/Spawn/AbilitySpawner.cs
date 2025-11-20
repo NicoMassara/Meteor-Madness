@@ -117,8 +117,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void SetTimer(float time)
         {
-            Debug.Log($"Timer Set To: {time}");
-
             _isTimerRunning = true;
             _spawnTimerId = TimerManager.Add(new TimerData(time,() =>
             {
@@ -160,15 +158,15 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
-            GameEventCaller.Subscribe<ProjectileEvents.DisableSpawn>(EventBus_Projectile_DisableSpawn);
-            GameEventCaller.Subscribe<ProjectileEvents.EnableSpawn>(EventBus_Projectile_EnableSpawn);
-            GameEventCaller.Subscribe<ProjectileEvents.UpdateLevel>(EventBus_Projectile_UpdateLevel);
+            ProjectileEventSubscriber.Spawn(EventBus_Projectile_Spawn);
+            ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_DisableSpawn);
+            ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_EnableSpawn);
+            ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
             //
-            GameEventCaller.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
-            GameEventCaller.Subscribe<AbilitiesEvents.NotifyIsActive>(EventBus_Ability_SetActive);
-            GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetNextSpawn>(EventBus_Ability_NextSpawn);
+            AbilitiesEventSubscriber.SetStorageFull(EventBus_Ability_StorageFull);
+            AbilitiesEventSubscriber.NotifyIsActive(EventBus_Ability_SetActive);
+            AbilitiesEventSubscriber.Add(EventBus_Ability_Add);
+            AbilitiesEventSubscriber.SetNextSpawn(EventBus_Ability_NextSpawn);
         }
         
         #region Ability

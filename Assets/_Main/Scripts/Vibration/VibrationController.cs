@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Vibration
 {
+#if UNITY_ANDROID   
     public class VibrationController
     {
         private AndroidJavaObject _vibrator;
@@ -101,4 +102,5 @@ namespace _Main.Scripts.Vibration
             }
         }
     }
+#endif
 }
