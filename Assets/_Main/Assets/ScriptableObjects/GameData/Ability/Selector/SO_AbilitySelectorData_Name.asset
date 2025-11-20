@@ -28,10 +28,10 @@ MonoBehaviour:
   - type: 4
     levelToSet: 1
   - type: 2
-    levelToSet: 5
+    levelToSet: 3
   - type: 3
-    levelToSet: 7
+    levelToSet: 5
   - type: 1
-    levelToSet: 8
+    levelToSet: 7
   - type: 5
     levelToSet: 9

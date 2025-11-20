@@ -17,9 +17,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private bool _isEnable;
         
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public TickGroup SelfTickGroup { get; } = TickGroup.HalfTarget;
-        public float LastTickTime { get; set; }
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Systems;
+        public TickGroup SelfTickGroup { get; } = TickGroup.EightTarget;
         
         private void Awake()
         {
@@ -81,19 +80,16 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void SetViewHandlers()
         {
             _view.OnEarthRestarted += View_OnEarthRestartedHandler;
-            _view.OnCountdownFinished += View_OnCountdownFinishedHandler;
-            _view.OnGameModeEnable += ViewOnGameModeEnableHandler;
+            _view.OnCountdownFinished += () =>
+            {
+                _controller.TransitionToGameplay();
+            };
+            _view.OnGameModeEnable += () =>
+            {
+                _controller.TransitionToStart();
+            };
         }
-
-        private void ViewOnGameModeEnableHandler()
-        {
-            _controller.TransitionToStart();
-        }
-
-        private void View_OnCountdownFinishedHandler()
-        {
-            _controller.TransitionToGameplay();
-        }
+        
 
         private void View_OnEarthRestartedHandler(bool doesRestart)
         {
@@ -121,7 +117,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
             _ui.OnResumeButtonPressed += () =>
             {
-                _controller.TransitionToGameplay();
+                _controller.TransitionToCountDown();
             };
             _ui.OnPauseButtonPressed += () =>
             {

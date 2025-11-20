@@ -10,7 +10,8 @@
         Effects,
         Shield,
         Earth,
-        Ability
+        Ability,
+        Systems
     }
 
     public enum TickGroup

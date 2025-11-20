@@ -22,8 +22,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             Pause,
             Leaving,
             Disable,
-            // Asleep -> Is used when is in Pause to change screens and return to Pause
-            // Without going to Disable
+            Countdown,
+            // Asleep -> Is used when is in Pause to change screens and return to Pause without going to Disable
             Asleep 
         }
 
@@ -33,16 +33,15 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             public bool IsInGameplay { get; private set; }
             public bool CanPause { get; private set; }
-            public bool CanUnpause { get; private set; }
             public bool CanDisableSpawn { get; private set; }
             public bool CanEnableSpawn { get; private set; }
             public bool IsAsleep { get; private set; }
             public bool IsGoingToSleep { get; set; }
 
+            public bool DoesResume { get; private set; }
+
             protected override void OnNewState(States state)
             {
-                CanUnpause = state is States.Gameplay 
-                             && CurrentState is States.Pause;
                 //
                 CanPause = state is States.Pause 
                            && CurrentState is States.Gameplay;
@@ -55,6 +54,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 IsInGameplay = state is States.Gameplay;
                 CanEnableSpawn = state is States.Enable;
                 IsAsleep = state is States.Asleep;
+                DoesResume = state is States.Countdown 
+                             && LastState is States.Pause;
             }
 
             protected override void OnExitState(States state)
@@ -106,6 +107,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             var pause = new PauseState<States>();
             var disable = new DisableState<States>();
             var asleep = new AsleepState<States>();
+            var countDown = new CountdownState<States>();
             
             temp.Add(none);
             temp.Add(enable);
@@ -118,6 +120,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             temp.Add(disable);
             temp.Add(pause);
             temp.Add(asleep);
+            temp.Add(countDown);
 
             #endregion
 
@@ -127,15 +130,16 @@ namespace _Main.Scripts.Gameplay.GameMode
             //
             enable.AddTransition(States.Start, start);
             
-            start.AddTransition(States.Gameplay, gameplay);
+            start.AddTransition(States.Countdown, countDown);
+            
+            countDown.AddTransition(States.Gameplay, gameplay);
             
             gameplay.AddTransition(States.Finish, finish);
             gameplay.AddTransition(States.Pause, pause);
             
-            pause.AddTransition(States.Gameplay, gameplay);
+            pause.AddTransition(States.Countdown, countDown);
             pause.AddTransition(States.Leaving, leaving);
             pause.AddTransition(States.Asleep, asleep);
-            
             asleep.AddTransition(States.Pause, pause);
             
             finish.AddTransition(States.Death, death);
@@ -210,6 +214,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetTransition(States.Death);
         }
         
+        public void TransitionToCountDown()
+        {
+            SetTransition(States.Countdown);
+        }
+        
         public void TransitionToRestart()
         {
             SetTransition(States.Restart);
@@ -262,7 +271,10 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void StartGameplay()
         {
-            _motor.StartGameplay();
+            if (_actionGate.DoesResume == false)
+            {
+                _motor.StartGameplay();
+            }
         }
 
         public void RestartValues()
@@ -294,21 +306,21 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             if (_actionGate.CanPause == false)
             {
-                Debug.Log("Cannot pause game");
+                //Debug.Log("Cannot pause game");
                 return;
             }
-
+            
             _motor.PauseGame();
         }
         
         public void UnPauseGame()
         {
-            if(_actionGate.CanUnpause == false)
+            if(_actionGate.DoesResume == false)
             {
-                Debug.Log("Cannot unpause game");
+                //Debug.Log("Cannot unpause game");
                 return;
             }
-
+            
             _motor.UnPauseGame();
         }
         
@@ -533,7 +545,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public override void Sleep()
         {
             Controller.SetPausePanel(false);
-            Controller.UnPauseGame();
         }
     }
     
@@ -550,17 +561,26 @@ namespace _Main.Scripts.Gameplay.GameMode
         public override void Awake()
         {
             Controller.RestartValues();
+            Controller.TransitionToCountDown();
+        }
+    }
+    
+    public class CountdownState<T> : BaseState<T>
+    {
+        public override void Awake()
+        {
             Controller.StartCountdown();
         }
-
+        
         public override void Execute(float deltaTime)
         {
             Controller.HandleCountdownTimer(deltaTime);
         }
-
+        
         public override void Sleep()
         {
             Controller.StartGameplay();
+            Controller.UnPauseGame();
         }
     }
     

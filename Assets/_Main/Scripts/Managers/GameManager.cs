@@ -85,9 +85,7 @@ namespace _Main.Scripts.Managers
                 UpdateGroup.Gameplay,
                 UpdateGroup.Ability, 
                 UpdateGroup.Shield,
-                UpdateGroup.Earth,
                 UpdateGroup.Effects,
-                UpdateGroup.Camera
                 
             }, isPaused);
         }

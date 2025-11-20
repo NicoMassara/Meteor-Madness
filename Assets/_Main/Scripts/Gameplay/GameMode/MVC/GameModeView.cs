@@ -46,6 +46,26 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             switch (message)
             {
+                // Enable / Disable 
+                case GameModeObserverMessage.Enable:
+                    HandleEnable();
+                    break;
+                case GameModeObserverMessage.Asleep:
+                    HandleAsleep();
+                    break;
+                case GameModeObserverMessage.Disable:
+                    HandleDisable();
+                    break;
+                
+                // Pause / Unpause
+                case GameModeObserverMessage.GamePaused:
+                    HandleGamePaused();
+                    break;
+                case GameModeObserverMessage.GameUnPaused:
+                    HandleGameUnPaused();
+                    break;
+                
+                // CountDown
                 case GameModeObserverMessage.StartCountdown:
                     HandleStartCountdown();
                     break;
@@ -55,9 +75,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.UpdateCountdown:
                     HandleCountdown((float)args[0]);
                     break;
-                case GameModeObserverMessage.StartGameplay:
-                    HandleStartGameplay();
-                    break;
+                
+                // Earth
                 case GameModeObserverMessage.EarthStartDestruction:
                     HandleEarthStartDestruction();
                     break;
@@ -67,8 +86,13 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.EarthEndDestruction:
                     HandleEarthEndDestruction();
                     break;
-                case GameModeObserverMessage.SetEnableSpawnMeteor:
-                    HandleSetEnableMeteorSpawn((bool)args[0]);
+                case GameModeObserverMessage.EarthRestartFinish:
+                    HandleEarthRestartFinish((bool)args[0]);
+                    break;
+                
+                // GameMode
+                case GameModeObserverMessage.StartGameplay:
+                    HandleStartGameplay();
                     break;
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
@@ -79,45 +103,39 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameRestart:
                     HandleGameRestart();
                     break;
-                case GameModeObserverMessage.GamePaused:
-                    HandleGamePaused();
-                    break;
-                case GameModeObserverMessage.GameUnPaused:
-                    HandleGameUnPaused();
-                    break;
-                case GameModeObserverMessage.EarthRestartFinish:
-                    HandleEarthRestartFinish((bool)args[0]);
-                    break;
-                case GameModeObserverMessage.Disable:
-                    HandleDisable();
-                    break;
                 case GameModeObserverMessage.InitializeValues:
                     HandleInitialize();
                     break;
-                case GameModeObserverMessage.PointsGained:
-                    HandlePointsGained((Vector2)args[0],(float)args[1],(bool)args[2]);
+
+                
+                // Meteor
+                case GameModeObserverMessage.SetEnableSpawnMeteor:
+                    HandleSetEnableMeteorSpawn((bool)args[0]);
                     break;
                 case GameModeObserverMessage.GrantProjectileSpawn:
                     HandleGrantProjectileSpawn((int)args[0]);
                     break;
-                case GameModeObserverMessage.Enable:
-                    HandleEnable();
-                    break;
-                case GameModeObserverMessage.TriggerMainMenu:
-                    HandleTriggerMainMenu();
+
+
+                
+                // Score
+                case GameModeObserverMessage.PointsGained:
+                    HandlePointsGained((Vector2)args[0],(float)args[1],(bool)args[2]);
                     break;
                 case GameModeObserverMessage.SaveHighScore:
                     HandleSaveHighScore((float)args[0]);
                     break;
+ 
+                // Screens
                 case GameModeObserverMessage.Options:
                     HandleOptions();
                     break;
-                case GameModeObserverMessage.Asleep:
-                    HandleAsleep();
+                case GameModeObserverMessage.TriggerMainMenu:
+                    HandleTriggerMainMenu();
                     break;
                 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        
+                // Debug
                 case GameModeObserverMessage.MeteorDeflect:
                     HandleMeteorDeflect((float)args[0]);
                     break;
@@ -128,6 +146,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
         }
         
+
         private void HandleOptions()
         {
             GameManager.Instance.LoadOptionsMenu();
@@ -218,7 +237,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         #endregion
 
         #region Pause
-
+        
         private void HandleGameUnPaused()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -231,7 +250,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             AbilitiesEventCaller.SetEnableUI(true);
             GameModeEventCaller.SetPause(false);
             GameManager.Instance.UnpauseGame();
-                
+            
 #if UNITY_ANDROID || UNITY_IOS
 
             SetEnableUIInputs(true);
@@ -247,12 +266,12 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData.IsPaused = true;
             
 #endif
-            
             OnGameModePaused?.Invoke(true);
             GameManager.Instance.PauseGame();
             SetEnableInputs(false);
             AbilitiesEventCaller.SetEnableUI(false);
             GameModeEventCaller.SetPause(true);
+            CameraEventCaller.ZoomIn();
                 
 #if UNITY_ANDROID || UNITY_IOS
 
