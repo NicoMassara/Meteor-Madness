@@ -41,6 +41,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             public bool IsAsleep { get; private set; }
             public bool IsGoingToSleep { get; set; }
 
+            public bool WasAsleep { get; private set; }
             public bool DoesResume { get; private set; }
 
             protected override void OnNewState(States state)
@@ -51,20 +52,26 @@ namespace _Main.Scripts.Gameplay.GameMode
                 //
                 CanDisableSpawn = state is States.Leaving or States.Finish &&
                                   (CurrentState is States.Gameplay or States.Pause);
+                //
+                WasAsleep = LastState is States.Asleep;
             }
 
             protected override void OnEnterState(States state)
             {
                 IsInGameplay = state is States.Gameplay;
+                //
                 CanEnableSpawn = state is States.Enable;
+                //
                 IsAsleep = state is States.Asleep;
+                //
                 DoesResume = state is States.Countdown 
                              && LastState is States.Pause;
+
             }
 
             protected override void OnExitState(States state)
             {
- 
+                WasAsleep = state is States.Asleep;
             }
         }
         
@@ -108,7 +115,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             var death = new DeathState<States>();
             var restart = new RestartState<States>();
             var leaving = new LeavingState<States>();
-            var pause = new PauseState<States>();
+            var pause = new PauseState<States>(()=> _actionGate.WasAsleep);
             var disable = new DisableState<States>();
             var asleep = new AsleepState<States>();
             var countDown = new CountdownState<States>();
@@ -546,7 +553,13 @@ namespace _Main.Scripts.Gameplay.GameMode
     public class PauseState<T> : BaseState<T>
     {
         private IQueueAction _actionQueue;
-        
+        private readonly Func<bool> _getWasAsleep;
+
+        public PauseState(Func<bool> getWasAsleep)
+        {
+            _getWasAsleep = getWasAsleep;
+        }
+
         public override void Awake()
         {
             var actions = ActionBuilder.Start()
@@ -556,6 +569,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                     Controller.WakeUp();
                 }))
                 .Then(new WaitSecondsAction(0.25f))
+                .WrapLast(a=> new ConditionalWrapperAction(a,
+                    () => _getWasAsleep?.Invoke() == false))
                 .Then(new SetBoolAction(true,Controller.SetPausePanel))
                 .Build();
 
