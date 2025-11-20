@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.GameScreens
 {

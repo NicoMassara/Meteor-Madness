@@ -66,6 +66,10 @@ namespace _Main.Scripts.Managers
             public ScreenType ScreenType;
             public EventRequestType RequestType;
         }
+
+        public struct LastScreen
+        {
+        }
     }
 
     public struct GameModeEvents

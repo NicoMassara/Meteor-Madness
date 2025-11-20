@@ -56,7 +56,7 @@ namespace _Main.Scripts.MultiPage
 
         private void SetupEventBus()
         {
-            GameEventCaller.Subscribe<MultiPageUIEvents.Create>(EventBus_MultiPage_Create);
+            MultiPageUIEventSubscriber.Create(EventBus_MultiPage_Create);
         }
 
         private void EventBus_MultiPage_Create(MultiPageUIEvents.Create input)

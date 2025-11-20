@@ -12,7 +12,7 @@ namespace _Main.Scripts.Tutorial.Components
         {
             GetComponentToSound.OnTutorialEnable += () =>
             {
-                PlayMusic(music);
+                //PlayMusic(music);
             };
         }
     }

@@ -7,7 +7,9 @@
     "Back": "Voltar",
     "Previous": "Anterior",
     "Pause": "Pausar",
-    "Quit": "Sair"
+    "Quit": "Sair",
+    "Enable": "Ativar",
+    "Disable": "Desativar"
   },
 
   "Menu": {
@@ -23,7 +25,15 @@
       "StartButton": "Iniciar Tutorial"
     },
     "Cosmetic": "Loja de Itens",
-    "Settings": "Configurações",
+    "Settings": {
+      "Button": "Configurações",
+      "Title": "Configurações",
+      "Items": {
+        "Volume": "Volume",
+        "Vibration": "Vibração",
+        "Language": "Idioma"
+      }
+    },
     "Credits": {
       "Button" : "Créditos",
       "Title" : "Créditos",

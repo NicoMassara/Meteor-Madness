@@ -14,21 +14,29 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private GameObject _currentPanel;
         
+        
+        // Buttons Actions
         public event Action OnConfirmButtonClicked;
         public event Action OnCancelButtonClicked;
         public event Action OnBackButtonClicked;
 
+        // Screens Actions
         public event Action OnGameModeTriggered;
         public event Action OnTutorialTriggered;
         public event Action OnCosmeticTriggered;
         public event Action OnTutorialOpen;
         public event Action OnCreditsOpen;
+        public event Action OnOptionsOpen;
         public event Action OnLoreOpen;
         public event Action OnBackToMenu;
         public event Action OnExit;
 
         private void Start()
         {
+            // --- Actions ---
+            
+            #region Screens
+            
             GetUiComponents().PlayButton.onClick.AddListener(() =>
             {
                 OnGameModeTriggered?.Invoke();
@@ -63,7 +71,13 @@ namespace _Main.Scripts.MainMenu.MVC
                 OnCreditsOpen?.Invoke();
                 OnConfirmButtonClicked?.Invoke();
             });
-
+            
+            GetUiComponents().OptionsButton.onClick.AddListener(() =>
+            {
+                OnOptionsOpen?.Invoke();
+                OnConfirmButtonClicked?.Invoke();
+            });
+            
             foreach (var backButton in GetUiComponents().BackButtons)
             {
                 backButton.onClick.AddListener(() =>
@@ -78,6 +92,8 @@ namespace _Main.Scripts.MainMenu.MVC
                 OnCancelButtonClicked?.Invoke();
                 OnExit?.Invoke();
             });
+            #endregion
+            
         }
         
         public void OnNotify(ulong message, params object[] args)
@@ -104,7 +120,6 @@ namespace _Main.Scripts.MainMenu.MVC
                     break;
             }
         }
-
         
         private void HandleTutorialMenu()
         {

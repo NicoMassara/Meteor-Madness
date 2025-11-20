@@ -7,7 +7,9 @@
     "Back": "Indietro",
     "Previous": "Precedente",
     "Pause": "Pausa",
-    "Quit": "Esci"
+    "Quit": "Esci",
+    "Enable": "Abilita",
+    "Disable": "Disabilita"
   },
 
   "Menu": {
@@ -23,7 +25,15 @@
       "StartButton": "Inizia il Tutorial"
     },
     "Cosmetic": "Negozio Oggetti",
-    "Settings": "Impostazioni",
+    "Settings": {
+      "Button": "Impostazioni",
+      "Title": "Impostazioni",
+      "Items": {
+        "Volume": "Volume",
+        "Vibration": "Vibrazione",
+        "Language": "Lingua"
+      }
+    },
     "Credits": {
       "Button" : "Crediti",
       "Title" : "Crediti",

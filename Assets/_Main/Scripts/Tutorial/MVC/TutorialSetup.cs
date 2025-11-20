@@ -27,8 +27,8 @@ namespace _Main.Scripts.Tutorial.MVC
             
             SetViewHandlers();
             
-            GameEventCaller.Subscribe<GameScreenEvents.EnableScreen>(EventBus_GameScreen_Enable);
-            GameEventCaller.Subscribe<GameScreenEvents.DisableScreen>(EventBus_GameScreen_Disable);
+            GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
+            GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
 
         private void Start()
@@ -74,26 +74,27 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void SubscribeEventBus()
         {
-            GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
-            GameEventCaller.Subscribe<ProjectileEvents.Collision>(EventBus_Projectile_Collision);
+
+            ProjectileEventSubscriber.Deflected(EventBus_Meteor_Deflected);
+            ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
             //
-            GameEventCaller.Subscribe<AbilitiesEvents.NotifyIsActive>(EventBus_Abilities_Active);
+            AbilitiesEventSubscriber.NotifyIsActive(EventBus_Abilities_Active);
             //
-            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            MeteorEventSubscriber.RingActive(EventBus_Meteor_RingActive);
             //
-            GameEventCaller.Subscribe<MultiPageUIEvents.Finished>(EventBus_MultiPage_Finished);
+            MultiPageUIEventSubscriber.Finished(EventBus_MultiPage_Finished);
         }
 
         private void UnsubscribeEventBus()
         {
-            GameEventCaller.Unsubscribe<ProjectileEvents.Collision>(EventBus_Projectile_Collision);
-            GameEventCaller.Unsubscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
+            ProjectileEventUnSubscriber.Deflected(EventBus_Meteor_Deflected);
+            ProjectileEventUnSubscriber.Collision(EventBus_Projectile_Collision);
             //
-            GameEventCaller.Unsubscribe<AbilitiesEvents.NotifyIsActive>(EventBus_Abilities_Active);
+            AbilitiesEventUnSubscriber.NotifyIsActive(EventBus_Abilities_Active);
             //
-            GameEventCaller.Unsubscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
+            MeteorEventUnSubscriber.RingActive(EventBus_Meteor_RingActive);
             //
-            GameEventCaller.Unsubscribe<MultiPageUIEvents.Finished>(EventBus_MultiPage_Finished);
+            MultiPageUIEventUnSubscriber.Finished(EventBus_MultiPage_Finished);
         }
         
         private void EventBus_MultiPage_Finished(MultiPageUIEvents.Finished input)

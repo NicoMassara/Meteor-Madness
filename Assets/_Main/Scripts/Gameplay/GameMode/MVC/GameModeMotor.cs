@@ -15,11 +15,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         private float _startTimer;
         private float _lastDisplayedTimer;
         private readonly int _startDelay;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
         private bool _isPaused;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
         private bool _doesRestartGameMode;
         private bool _hasDoublePoints;
         private bool _canPause;
         private float _highScore;
+        private bool _hasGameplayPanelActive;
+        private bool _hasPausePanelActive;
         
 
         public GameModeMotor(int[] levelStreakAmount, int startTimer)
@@ -91,7 +95,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             NotifyAll(GameModeObserverMessage.StartGameplay);
         }
-
+        
         public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
         {
             var finalValue = _hasDoublePoints ? meteorDeflectValue*2 : meteorDeflectValue;
@@ -165,14 +169,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                 }
             }
         }
-        
-        public void SetGamePaused(bool isPaused)
-        {
-            if(_canPause == false) return;
-            
-            _isPaused = isPaused;
-            NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
-        }
 
         public bool GetHasBeatenHighScore()
         {
@@ -194,11 +190,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void Enable()
         {
             NotifyAll(GameModeObserverMessage.Enable);
-        }
-        
-        public void TriggerMainMenu()
-        {
-            NotifyAll(GameModeObserverMessage.TriggerMainMenu);
         }
         
         public void UpdateCurrentLevel()
@@ -223,6 +214,22 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #endregion
 
+        #region Pause
+        
+        public void PauseGame()
+        {
+            _isPaused = true;
+            NotifyAll(GameModeObserverMessage.GamePaused);
+        }
+        
+        public void UnPauseGame()
+        {
+            _isPaused = false;
+            NotifyAll(GameModeObserverMessage.GameUnPaused);
+        }
+
+        #endregion
+
         #region Camera
 
         public void HandleCameraZoomOut()
@@ -236,5 +243,36 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
+
+        #region Screens
+
+        public void SetGameplayPanel(bool isActive)
+        {
+            _hasGameplayPanelActive = isActive;
+            NotifyAll(GameModeObserverMessage.GameplayPanel, _hasGameplayPanelActive);
+        }
+
+        public void SetPausePanel(bool isActive)
+        {
+            _hasPausePanelActive = isActive;
+            NotifyAll(GameModeObserverMessage.PausePanel, _hasPausePanelActive);
+        }
+        
+        public void TriggerOptions()
+        {
+            NotifyAll(GameModeObserverMessage.Options);
+        }
+
+        public void TriggerMainMenu()
+        {
+            NotifyAll(GameModeObserverMessage.TriggerMainMenu);
+        }
+
+        #endregion
+
+        public void Asleep()
+        {
+            NotifyAll(GameModeObserverMessage.Asleep);
+        }
     }
 }

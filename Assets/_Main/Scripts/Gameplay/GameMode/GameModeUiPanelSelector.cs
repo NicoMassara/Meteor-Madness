@@ -31,6 +31,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         public Button RestartButton;
         public Button ResumeButton;
         public Button PauseButton;
+        public Button OptionsButton;
         public Button[] MainMenuButtons;
     }
 }

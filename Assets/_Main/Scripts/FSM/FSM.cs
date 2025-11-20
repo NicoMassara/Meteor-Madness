@@ -12,6 +12,7 @@ namespace _Main.Scripts.FiniteStateMachine
         public string FSMName { get; private set; }
         public event Action<T> OnEnterState;
         public event Action<T> OnExitState;
+        public event Action<T> OnNewState;
 
         public FSM(string fsmName)
         {
@@ -68,6 +69,8 @@ namespace _Main.Scripts.FiniteStateMachine
                 //Debug.Log($"Transition From {CurrentState.ToString()} to {input.ToString()} Not Found in {FSMName} FSM");
                 return;
             }
+            
+            OnNewState?.Invoke(input);
 
             if (CurrentState != null)
             {
@@ -84,5 +87,35 @@ namespace _Main.Scripts.FiniteStateMachine
                       $"At->{Time.realtimeSinceStartup}");*/
             OnEnterState?.Invoke(CurrentState);
         }
+    }
+    
+    public abstract class FsmActionGate<T>
+    {
+        protected T NewState { get; private set; }
+        protected T LastState { get; private set; }
+        protected T CurrentState { get; private set; }
+        
+        protected FsmActionGate(FSM<T> fsm)
+        {
+            fsm.OnNewState += (value) =>
+            {
+                NewState = value;
+                OnNewState(value);
+            };
+            fsm.OnExitState += (value) =>
+            {
+                LastState = value;
+                OnExitState(value);
+            };
+            fsm.OnEnterState += (value) =>
+            {
+                CurrentState = value;
+                OnEnterState(value);
+            };
+        }
+            
+        protected abstract void OnNewState(T state);
+        protected abstract void OnExitState(T state);
+        protected abstract void OnEnterState(T state);
     }
 }

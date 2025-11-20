@@ -9,15 +9,26 @@ namespace _Main.Scripts.Gameplay.Shield
     {
         private readonly ShieldMotor _motor;
         
-        private class ActionGate
+        private class ShieldActionGate : FsmActionGate<States>
         {
+            public ShieldActionGate(FSM<States> fsm) : base(fsm) { }
+
             public bool RotationEnable { get; private set; }
-            public ActionGate(FSM<States> fsm)
+
+
+            protected override void OnNewState(States state)
             {
-                fsm.OnEnterState += state =>
-                {
-                    RotationEnable = state is States.Enable or States.Gold or States.Slow;
-                };
+
+            }
+
+            protected override void OnEnterState(States state)
+            {
+                RotationEnable = state is States.Enable or States.Gold or States.Slow;
+            }
+
+            protected override void OnExitState(States state)
+            {
+
             }
         }
 
@@ -34,7 +45,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private FSM<States> _fsm;
 
-        private ActionGate _actionGate;
+        private ShieldActionGate _actionGate;
 
         public ShieldController(ShieldMotor motor)
         {
@@ -68,7 +79,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             var temp = new List<ShieldBaseState<States>>();
             _fsm = new FSM<States>("Shield");
-            _actionGate = new ActionGate(_fsm);
+            _actionGate = new ShieldActionGate(_fsm);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _fsm.CreateDebugGUI(2);

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.DebugGUI;
 using _Main.Scripts.FiniteStateMachine;
-using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
@@ -185,10 +184,12 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             _motor.Credits();
         }
-
         #endregion
 
-
+        public void TriggerOptions()
+        {
+            _motor.TriggerOptions();
+        }
     }
 
     #region States
