@@ -68,6 +68,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             GetUiComponents().DeathText.text = GetLocalizedString("Gameplay.Death.Title");
 
             _scoreTextValue = GetLocalizedString("Gameplay.Score");
+            GetUiComponents().CountdownText.text = "";
             LocalizationEvents.OnLanguageChanged += Localization_OnLanguageChangedHandler;
         }
 

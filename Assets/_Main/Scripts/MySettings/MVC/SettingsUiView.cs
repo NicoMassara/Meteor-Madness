@@ -17,14 +17,7 @@ namespace _Main.Scripts.MySettings.MVC
 #pragma warning restore CS0067 // Event is never used
         
         public event Action OnBackButtonPressed;
-
-        private void Start()
-        {
-            GetUiComponents().BackButton.onClick.AddListener(() => OnBackButtonPressed?.Invoke());
-            /*GetUiComponents().VolumeSlider.OnChanged += OnVolumeChanged;
-            GetUiComponents().VibrationToggle.OnChanged += OnVibrationChanged;
-            GetUiComponents().LanguageSelector.OnChanged += OnLanguageChanged;*/
-        }
+        
 
         public void OnNotify(ulong message, params object[] args)
         {
@@ -42,10 +35,25 @@ namespace _Main.Scripts.MySettings.MVC
         private void HandleEnable()
         {
             GetUiComponents().MainPanel.SetActive(true);
+            //
+            GetUiComponents().BackButton.onClick.AddListener(() => OnBackButtonPressed?.Invoke());
+            GetUiComponents().VolumeSlider.OnChanged += OnVolumeChanged;
+#if UNITY_ANDROID
+            
+            GetUiComponents().VibrationToggle.OnChanged += OnVibrationChanged;
+#endif
+            GetUiComponents().LanguageSelector.OnChanged += OnLanguageChanged;
         }
 
         private void HandleDisable()
         {
+            GetUiComponents().BackButton.onClick.RemoveAllListeners();
+            GetUiComponents().VolumeSlider.OnChanged -= OnVolumeChanged;
+#if UNITY_ANDROID
+            GetUiComponents().VibrationToggle.OnChanged -= OnVibrationChanged;
+#endif
+            GetUiComponents().LanguageSelector.OnChanged -= OnLanguageChanged;
+            //
             GetUiComponents().MainPanel.SetActive(false);
         }
         

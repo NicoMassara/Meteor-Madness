@@ -113,6 +113,12 @@ namespace _Main.Scripts.Sounds
 
         public SoundId PlayMusic(ISoundData soundData, SoundId soundId)
         {
+            if (soundData == null)
+            {
+                Debug.Log("Music is null");
+                return soundId;
+            }
+
             if (_musicController.IsThisPlaying(soundId))
             {
                 return soundId;
@@ -125,9 +131,21 @@ namespace _Main.Scripts.Sounds
 
             var gottenId = PlaySound(soundData, null);
             
-            _musicController.Play(gottenId.Id);
+            if (gottenId == null)
+            {
+                gottenId = PlaySound(soundData, null);
+
+                if (gottenId == null)
+                {
+                    Debug.Log("Music playing failed");
+                    return soundId;
+                }
+            }
+
+            _musicController?.Play(gottenId.Id);
             
             return gottenId;
+            
         }
         
         public ulong StopMusic()
@@ -198,6 +216,12 @@ namespace _Main.Scripts.Sounds
             
             var tempSound = _factory.GetSound();
             var soundId = _idStorage.RegisterSound(tempSound);
+
+            if (soundId == null)
+            {
+                Debug.LogWarning($"Sound Id for {soundData.ClassName} could not be registered");
+            }
+
             tempSound.SetData(soundData);
 
             if (soundData.Is3DSound)

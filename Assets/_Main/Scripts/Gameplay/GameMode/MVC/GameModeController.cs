@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Timers;
 using _Main.Scripts.FiniteStateMachine;
+using NicolasMassara.CustomActionManager;
+using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
@@ -535,11 +538,29 @@ namespace _Main.Scripts.Gameplay.GameMode
     
     public class PauseState<T> : BaseState<T>
     {
+        private IQueueAction _actionQueue;
+        
         public override void Awake()
         {
-            Controller.WakeUp();
-            Controller.Pause();
-            Controller.SetPausePanel(true);
+            var actions = ActionBuilder.Start()
+                .Do(new InstantAction(() =>
+                {
+                    Controller.Pause();
+                    Controller.WakeUp();
+                }))
+                .Then(new WaitSecondsAction(0.25f))
+                .Then(new SetBoolAction(true,Controller.SetPausePanel))
+                .Build();
+
+            _actionQueue = actions;
+        }
+
+        public override void Execute(float deltaTime)
+        {
+            if (_actionQueue.CurrentStatus == ActionStatus.Running)
+            {
+                _actionQueue?.OnUpdate(deltaTime);
+            }
         }
 
         public override void Sleep()
@@ -567,13 +588,21 @@ namespace _Main.Scripts.Gameplay.GameMode
     
     public class CountdownState<T> : BaseState<T>
     {
+        private bool _enableCountdown;
+        
         public override void Awake()
         {
+            TimerManager.Add(new TimerData(0.25f, 
+                ()=> _enableCountdown = false,
+                ()=> _enableCountdown = true));
+            
             Controller.StartCountdown();
         }
         
         public override void Execute(float deltaTime)
         {
+            if (_enableCountdown == false) return;
+            
             Controller.HandleCountdownTimer(deltaTime);
         }
         
