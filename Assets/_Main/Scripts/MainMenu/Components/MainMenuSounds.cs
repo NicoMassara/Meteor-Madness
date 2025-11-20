@@ -8,12 +8,13 @@ namespace _Main.Scripts.Menu
     public class MainMenuSounds : SoundBehaviour<MainMenuView>
     {
         [SerializeField] private SoundClassSo music;
+        private SoundId _musicId;
         
         private void Start()
         {
             GetComponentToSound.OnMainMenuEnable += () =>
             {
-                PlayMusic(music);
+                _musicId = PlayMusic(music,_musicId);
             };
         }
     }

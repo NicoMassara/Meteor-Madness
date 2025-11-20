@@ -19,7 +19,7 @@ namespace _Main.Scripts.Comet.Components
 
             GetComponentToSound.OnRecycle += (value) =>
             {
-                StopSound(_movementSoundId);
+                StopSound(ref _movementSoundId);
             };
         }
     }

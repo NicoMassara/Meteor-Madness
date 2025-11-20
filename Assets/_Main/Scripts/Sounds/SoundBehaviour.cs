@@ -24,14 +24,14 @@ namespace _Main.Scripts.Sounds
             return _soundManager.PlaySound(soundClass, transform);
         }
 
-        protected void PlayMusic(ISoundData soundData)
+        protected SoundId PlayMusic(ISoundData soundData, SoundId id)
         {
-            _soundManager.PlayMusic(soundData);
+           return _soundManager.PlayMusic(soundData, id);
         }
 
-        protected void StopSound(SoundId soundId)
+        protected void StopSound(ref SoundId soundId)
         {
-            _soundManager.StopSound(soundId);
+            _soundManager.StopSound(ref soundId);
         }
         
         protected void PlayUISound(UISoundType soundType)
@@ -39,7 +39,7 @@ namespace _Main.Scripts.Sounds
             _soundManager.PlayUISound(soundType);
         }
         
-        public void StopMusic()
+        protected void StopMusic()
         {
             _soundManager.StopMusic();
         }

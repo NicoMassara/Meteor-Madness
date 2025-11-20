@@ -26,6 +26,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 PlayUISound(UISoundType.Confirm);
             };
+            GetComponentToSound.OnOptionsButtonPressed += () =>
+            {
+                PlayUISound(UISoundType.Confirm);
+            };
             GetComponentToSound.OnPointsAdded += () =>
             {
                 PlaySound(pointsAdded);

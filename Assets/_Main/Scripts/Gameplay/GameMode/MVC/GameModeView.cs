@@ -17,6 +17,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnCountdownUpdated;
         public event Action OnCountdownUpdatedFinished;
         public event Action OnGameModeEnable;
+        public event Action OnGameModeDisable;
+        public event Action<bool> OnGameModePaused;
 
         public event Action OnGameModeFinished;
         public event Action OnGameModeStarted;
@@ -175,7 +177,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleAsleep()
         {
-            Debug.Log("Here");
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
 
@@ -225,6 +226,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData.IsPaused = false;
 #endif
             
+            OnGameModePaused?.Invoke(false);
             SetEnableInputs(true);
             AbilitiesEventCaller.SetEnableUI(true);
             GameModeEventCaller.SetPause(false);
@@ -246,6 +248,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
 #endif
             
+            OnGameModePaused?.Invoke(true);
             GameManager.Instance.PauseGame();
             SetEnableInputs(false);
             AbilitiesEventCaller.SetEnableUI(false);
@@ -293,6 +296,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleDisable()
         {
+            OnGameModeDisable?.Invoke();
             EarthEventCaller.SetToDefault();
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }

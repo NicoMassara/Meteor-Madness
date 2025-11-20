@@ -9,9 +9,12 @@ namespace _Main.Scripts.MySettings.MVC
         [SerializeField] private SettingsUiSelector uiSelector;
         private SettingsUiComponents _uiComponents;
         
+#pragma warning disable CS0067 // Event is never used
         public event Action<float> OnVolumeChanged;
         public event Action<int> OnLanguageChanged;
         public event Action<bool> OnVibrationChanged;
+        
+#pragma warning restore CS0067 // Event is never used
         
         public event Action OnBackButtonPressed;
 

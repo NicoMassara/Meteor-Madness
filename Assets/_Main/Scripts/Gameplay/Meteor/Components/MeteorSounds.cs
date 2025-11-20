@@ -18,7 +18,7 @@ namespace _Main.Scripts.Gameplay.Meteor.Components
 
             GetComponentToSound.OnRecycle += (value) =>
             {
-                StopSound(_movementSoundId);
+                StopSound(ref _movementSoundId);
             };
         }
     }
