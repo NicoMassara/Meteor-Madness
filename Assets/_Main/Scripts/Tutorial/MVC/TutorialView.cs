@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ScriptableObjects;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
-    public class TutorialView : ManagedBehavior, IObserver
+    public class TutorialView : ManagedBehavior, IObserver, ITutorialSounds
     {
         [SerializeField] private MultiPageTextDataSo[] mobileMultiPageData;
         [SerializeField] private MultiPageTextDataSo[] desktopMultiPageData;

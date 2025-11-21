@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
@@ -10,7 +11,8 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeUIView : ManagedBehavior, IObserver
+    public class GameModeUIView : ManagedBehavior, IObserver,
+        IGameModeUISounds
     {
         [SerializeField] private GameModeUiPanelSelector uiSelector;
         

@@ -1,10 +1,11 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.MySettings.MVC
 {
-    public class SettingsUiView : MonoBehaviour, IObserver
+    public class SettingsUiView : MonoBehaviour, IObserver, ISettingsUISounds
     {
         [SerializeField] private SettingsUiSelector uiSelector;
         private SettingsUiComponents _uiComponents;

@@ -9,9 +9,9 @@ namespace _Main.Scripts.Sounds
 
     public class SoundDebugData
     {
-        public Dictionary<SoundChannel, int> ChannelCount = new Dictionary<SoundChannel, int>();
-        public string CurrentMusic = "None";
-        public string PausedMusic = "None";
+        private readonly Dictionary<SoundChannel, int> _channelCount = new Dictionary<SoundChannel, int>();
+        public string CurrentMusic { get; set; } = "None";
+        public string PausedMusic { get; set; } = "None";
         
         public SoundDebugData()
         {
@@ -21,22 +21,26 @@ namespace _Main.Scripts.Sounds
             {
                 soundGroup.CreateSubGroup(DebugGUIKeys.SubGroup.Music, DebugGUISortingOrder.SubGroup.Music)
                     ?.AddEntry(
-                        ()=> $"Current: {CurrentMusic}",
-                        ()=> $"Paused: {PausedMusic}"
+                        () => $"Current: {CurrentMusic}",
+                        () => $"Paused: {PausedMusic}"
                     );
                 
                 soundGroup.CreateSubGroup(DebugGUIKeys.SubGroup.SoundChannel, DebugGUISortingOrder.SubGroup.SoundChannel)
                     ?.AddEntry(
-                        () => "-- Sound Channels --",
-                        ()=> $"Sfx: {(ChannelCount.GetValueOrDefault(SoundChannel.Sfx, 0))}",
-                        ()=> $"Collision: {(ChannelCount.GetValueOrDefault(SoundChannel.Collision, 0))}",
-                        ()=> $"Deflection: {(ChannelCount.GetValueOrDefault(SoundChannel.Deflection, 0))}",
-                        ()=> $"UI: {(ChannelCount.GetValueOrDefault(SoundChannel.UI, 0))}",
-                        ()=> $"Music: {(ChannelCount.GetValueOrDefault(SoundChannel.Music, 0))}"
+                        ()=> $"Sfx: {(_channelCount.GetValueOrDefault(SoundChannel.Sfx, 0))}",
+                        ()=> $"Collision: {(_channelCount.GetValueOrDefault(SoundChannel.Collision, 0))}",
+                        ()=> $"Deflection: {(_channelCount.GetValueOrDefault(SoundChannel.Deflection, 0))}",
+                        ()=> $"UI: {(_channelCount.GetValueOrDefault(SoundChannel.UI, 0))}",
+                        ()=> $"Music: {(_channelCount.GetValueOrDefault(SoundChannel.Music, 0))}"
                     );
             }
         }
-        
+
+        public void UpdateChannels(SoundChannel channel, int count)
+        {
+            _channelCount[channel] = count;
+        }
+
     }    
 
 #endif

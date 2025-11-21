@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Localization;
 using TMPro;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Gameplay.GameMode.Pause
 {
-    public class PauseUiPanel : MonoBehaviour, IPausePanel
+    public class PauseUiPanel : MonoBehaviour, IPausePanel, IPausePanelUISounds
     {
         [Space(2)] 
         [Header("Texts Components")]

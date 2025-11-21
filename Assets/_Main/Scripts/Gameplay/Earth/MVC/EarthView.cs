@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ScriptableObjects;
@@ -11,7 +12,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
-    public class EarthView : ManagedBehavior, IObserver, IUpdatable
+    public class EarthView : ManagedBehavior, IObserver, IUpdatable, IEarthSounds
     {
         [Header("Model Components")]
         [SerializeField] private GameObject modelContainer;
@@ -44,6 +45,7 @@ namespace _Main.Scripts.Gameplay.Earth
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
         public event Action OnHealed;
+        public event Action OnHealing;
         public event Action OnCollision;
         public event Action OnDestruction;
         public event Action OnPreDestruction;
@@ -389,16 +391,22 @@ namespace _Main.Scripts.Gameplay.Earth
                 }
                 
                 #endregion
-                
+
                 action
-                .Then(new InstantAction(() => HandleSetRotation(false)))
-                .Then(new RestartRotationAction(_restartTimeValues.RestartYRotation, modelContainer.transform))
+                    .Then(new InstantAction(() => HandleSetRotation(false)))
+                    .Then(new RestartRotationAction(_restartTimeValues.RestartYRotation, modelContainer.transform));
                 
                 //Only Executes if it has damage
-                .Then(new RestartHealthColor(_restartTimeValues.RestartHealth,currentHealth,UpdateColorByHealth))
-                .WrapLast(inner => new ConditionalWrapperAction(inner, ()=> currentHealth  < 1))
-                //
+
+                if (currentHealth  < 1)
+                {
+                    action
+                        .Then(new RestartHealthColor(_restartTimeValues.RestartHealth, currentHealth,
+                            UpdateColorByHealth))
+                        .WrapLast(a => new CallbackWrapperAction(a, OnHealing, null));
+                }
                 
+                action
                 .Then(new SetFloatAction(1, SetShakeMultiplier))
                 .Then(new SetFloatAction(rotationSpeed, _earthRotator.SetRotationSpeed))
                 .Then(new InstantAction(() =>
