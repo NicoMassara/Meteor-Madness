@@ -29,6 +29,7 @@ namespace _Main.Scripts.Menu
         public Button LoreButton;
         public Button CreditsButton;
         public Button CosmeticButton;
+        public Button OptionsButton;
         public Button QuitButton;
         public Button[] BackButtons;
     }

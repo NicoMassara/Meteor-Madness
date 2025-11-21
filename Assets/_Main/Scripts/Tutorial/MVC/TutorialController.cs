@@ -21,16 +21,25 @@ namespace _Main.Scripts.Tutorial.MVC
             MultiPage
         }
         
-        private class ActionGate
+        private class ActionGate : FsmActionGate<States>
         {
+            public ActionGate(FSM<States> fsm) : base(fsm) { }
+
             public bool ProjectileReStockEnable { get; private set; }
-            public bool CanMultiPage { get; private set; }
-            public ActionGate(FSM<States> fsm)
+            
+            protected override void OnNewState(States state)
             {
-                fsm.OnEnterState += state =>
-                {
-                    ProjectileReStockEnable = state is States.Ability or States.Movement;
-                };
+
+            }
+
+            protected override void OnEnterState(States state)
+            {
+                ProjectileReStockEnable = state is States.Ability or States.Movement;
+            }
+
+            protected override void OnExitState(States state)
+            {
+
             }
         }
         

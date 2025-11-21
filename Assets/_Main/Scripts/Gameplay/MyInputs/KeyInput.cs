@@ -30,7 +30,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
             _inputsAction.Gameplay.TriggerAbility.canceled += OnTriggerAbility_Canceled;
             
             //Pause
-            _inputsAction.Gameplay.Pause.performed += OnPause_Peformed;
+            _inputsAction.Gameplay.Pause.performed += OnPause_Performed;
         }
 
 
@@ -46,14 +46,14 @@ namespace _Main.Scripts.Gameplay.MyInputs
             _inputsAction.Gameplay.TriggerAbility.canceled -= OnTriggerAbility_Canceled;
             
             //Pause
-            _inputsAction.Gameplay.Pause.performed -= OnPause_Peformed;
+            _inputsAction.Gameplay.Pause.performed -= OnPause_Performed;
             
             _inputsAction.Disable();
         }
         
-        private void OnPause_Peformed(InputAction.CallbackContext input)
+        private void OnPause_Performed(InputAction.CallbackContext input)
         {
-            
+            OnPaused?.Invoke();
         }
 
         #region Ability

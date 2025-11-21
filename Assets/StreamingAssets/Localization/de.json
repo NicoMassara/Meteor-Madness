@@ -7,7 +7,9 @@
     "Back": "Zurück",
     "Previous": "Vorherig",
     "Pause": "Pause",
-    "Quit": "Beenden"
+    "Quit": "Beenden",
+    "Enable": "Aktivieren",
+    "Disable": "Deaktivieren"
   },
 
   "Menu": {
@@ -23,7 +25,15 @@
       "StartButton": "Tutorial Starten"
     },
     "Cosmetic": "Item-Shop",
-    "Settings": "Einstellungen",
+    "Settings": {
+      "Button": "Einstellungen",
+      "Title": "Einstellungen",
+      "Items": {
+        "Volume": "Lautstärke",
+        "Vibration": "Vibration",
+        "Language": "Sprache"
+      }
+    },
     "Credits": {
       "Button" : "Credits",
       "Title" : "Credits",

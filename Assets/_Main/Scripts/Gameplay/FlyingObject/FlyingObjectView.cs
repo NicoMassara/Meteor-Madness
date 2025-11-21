@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ScriptableObjects;
@@ -37,7 +38,7 @@ namespace _Main.Scripts.FlyingObject
     }
 
     [RequireComponent(typeof(Rigidbody2D))]
-    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, 
+    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IProjectileSounds,
         IObserver, IUpdatable, IPoolable<TS>
     where T : FlyingObjectMotor<TVS>
     where TS : FlyingObjectView<T, TS, TVS>
@@ -66,6 +67,9 @@ namespace _Main.Scripts.FlyingObject
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
         public event Action<TS> OnRecycle;
+        
+        public event Action OnStart;
+        public event Action OnStop;
         
         private void Awake()
         {
@@ -124,6 +128,7 @@ namespace _Main.Scripts.FlyingObject
         public virtual void SetValues(TVS data)
         {
             OnValuesChanged?.Invoke(data);
+            OnStart?.Invoke();
         }
 
         protected virtual void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)
@@ -164,6 +169,9 @@ namespace _Main.Scripts.FlyingObject
         public void Recycle()
         {
             OnRecycle?.Invoke((TS)this);
+            OnStop?.Invoke();
         }
+
+
     }
 }

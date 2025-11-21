@@ -93,9 +93,9 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<CameraEvents.Shake>(EventBus_Camera_StartShake);
-            GameEventCaller.Subscribe<CameraEvents.ZoomIn>(EventBus_Camera_ZoomIn);
-            GameEventCaller.Subscribe<CameraEvents.ZoomOut>(EventBus_Camera_ZoomOut);
+            CameraEventSubscriber.Shake(EventBus_Camera_StartShake);
+            CameraEventSubscriber.ZoomIn(EventBus_Camera_ZoomIn);
+            CameraEventSubscriber.ZoomOut(EventBus_Camera_ZoomOut);
         }
 
         private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)

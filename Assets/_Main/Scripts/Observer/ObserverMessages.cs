@@ -56,6 +56,12 @@
         public const ulong SaveHighScore = 0xA2024;
         public const ulong UpdateHighScore = 0xA2025;
         public const ulong SetHasHighScore = 0xA2026;
+        public const ulong PausePanel = 0xA2027;
+        public const ulong Options = 0xA2028;
+        public const ulong GameplayPanel = 0xA2029;
+        public const ulong GameUnPaused = 0xA2030;
+        public const ulong Asleep = 0xA2031;
+        public const ulong Leaving = 0xA2032;
     }
 
     public struct FlyingObjectObserverMessage
@@ -126,6 +132,7 @@
         public const ulong TutorialMenu = 0xA7008;
         public const ulong TriggerCosmetic = 0xA7009;
         public const ulong CreditsMenu = 0xA7010;
+        public const ulong TriggerOptions = 0xA7011;
     }
 
     public struct CosmeticObserverMessage
@@ -153,23 +160,15 @@
         public const ulong Initialize = 0xA0005;
         public const ulong Destroy = 0xA0006;
     }
-    
-    public struct OptionsMenuObserverMessage
+
+    public struct SettingsObserverMessage
     {
-        public const ulong Enable = 0xA9001;
-        public const ulong Disable = 0xA9002;
-        public const ulong TriggerMainMenu = 0xA9003;
-        public const ulong Initialize = 0xA9004;
-        public const ulong Empty3 = 0xA9005;
-        public const ulong Empty4 = 0xA9006;
-        public const ulong Empty5 = 0xA9007;
-        public const ulong Empty6 = 0xA9008;
-        public const ulong Empty7 = 0xA9009;
-        public const ulong Empty8 = 0xA9010;
-        public const ulong Empty9 = 0xA9011;
-        public const ulong Empty10 = 0xA9012;
-        public const ulong Empty11 = 0xA9013;
-        public const ulong Empty12 = 0xA9014;
-        public const ulong Empty13 = 0xA9015;
+        public const ulong Enable = 0xA1001;
+        public const ulong Disable = 0xA1002;
+        public const ulong Initial = 0xA1003;
+        public const ulong Language = 0xA1004;
+        public const ulong Vibration = 0xA1005;
+        public const ulong Volume = 0xA1006;
+        public const ulong Close = 0xA1007;
     }
 }

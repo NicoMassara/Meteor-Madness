@@ -2,6 +2,7 @@
 
 namespace _Main.Scripts.Vibration
 {
+#if UNITY_ANDROID
     public class VibrationTools
     {
         public static long GetDuration(VibrationDurationType duration)
@@ -55,4 +56,5 @@ namespace _Main.Scripts.Vibration
             };
         }
     }
+#endif
 }

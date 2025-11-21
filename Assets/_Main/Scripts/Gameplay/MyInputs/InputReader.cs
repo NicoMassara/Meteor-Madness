@@ -44,7 +44,7 @@ namespace _Main.Scripts.Gameplay.MyInputs
         
         private void Awake()
         {
-            GameEventCaller.Subscribe<InputsEvents.SetEnable>(EventBus_Inputs_SetEnable);
+            InputsEventSubscriber.SetEnable(EventBus_Inputs_SetEnable);
             GameManager.Instance.SetInputReader(this);
         }
 

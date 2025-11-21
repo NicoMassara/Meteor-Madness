@@ -54,5 +54,10 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             NotifyAll(MainMenuObserverMessage.CreditsMenu);
         }
+
+        public void TriggerOptions()
+        {
+            NotifyAll(MainMenuObserverMessage.TriggerOptions);
+        }
     }
 }
