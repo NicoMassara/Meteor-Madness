@@ -31,7 +31,7 @@ MonoBehaviour:
     reverbZoneMix: 1
     dopplerLevel: 0
   fadeInData:
-    FadeTime: 2.5
+    FadeTime: 1
     ExpStrength: 5
     FadeType: 0
   fadeOutData:
