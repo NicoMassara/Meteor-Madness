@@ -19,7 +19,7 @@ namespace _Main.Scripts.Localization.UI
         
         public event Action<int> OnChanged;
 
-        private void Start()
+        private void Awake()
         {
             _languageCount = LocalizationTools.LanguageCount;
         }
