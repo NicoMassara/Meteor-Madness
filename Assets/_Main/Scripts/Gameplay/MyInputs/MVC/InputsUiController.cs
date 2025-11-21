@@ -9,31 +9,34 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
     [RequireComponent(typeof(InputsUiView))]
     public class InputsUiController : ManagedBehavior
     {
+#if UNITY_ANDROID
         private InputsUiMotor _motor;
         private InputsUiView _view;
         private bool _isGameplayEnable;
         private ulong _timerId;
+#endif
 
         private void Awake()
         {
+#if UNITY_STANDALONE_WIN
+
+            if (Application.platform == RuntimePlatform.WindowsPlayer)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+#else      
             _view = GetComponent<InputsUiView>();
             
             _motor = new InputsUiMotor();
             _motor.Subscribe(_view);
             
             SetEventBus();
-            
-#if UNITY_STANDALONE_WIN
-
-            if (Application.platform == RuntimePlatform.WindowsPlayer)
-            {
-                _motor.Destroy();
-                Destroy(gameObject);
-                return;
-            }
-
 #endif
         }
+        
+#if UNITY_ANDROID
 
         private void Start()
         {
@@ -67,7 +70,7 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<InputsEvents.SetUIEnable>(EventBus_Inputs_SetUIEnable);
+            InputsEventSubscriber.SetUIEnable(EventBus_Inputs_SetUIEnable);
         }
 
         private void EventBus_Inputs_SetUIEnable(InputsEvents.SetUIEnable input)
@@ -76,8 +79,10 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         }
 
         #endregion
+#endif
     }
 
+#if UNITY_ANDROID
     public class InputsUiMotor : ObservableComponent
     {
         private int _currentDirection;
@@ -101,6 +106,8 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         public void SetDirection(int direction)
         {
             _currentDirection = direction;
+            
+
 
             switch (_currentDirection)
             {
@@ -122,6 +129,7 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         public void SetHasTriggeredAbility(bool hasTriggeredAbility)
         {
             _hasTriggeredAbility = hasTriggeredAbility;
+
             if (_hasTriggeredAbility)
             {
                 NotifyAll(InputsUIObserverMessage.SetEnableClock, true);
@@ -129,4 +137,5 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
             }
         }
     }
+#endif
 }

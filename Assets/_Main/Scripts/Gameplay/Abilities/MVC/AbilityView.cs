@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.Gameplay.Abilities;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using NicolasMassara.CustomActionManager;
@@ -12,7 +13,7 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
-    public class AbilityView : ManagedBehavior, IObserver
+    public class AbilityView : ManagedBehavior, IObserver, IAbilitySounds
     {
         [Header("Sound Data")]
         [SerializeField] private SoundClassSo abilityAdd;
@@ -35,6 +36,9 @@ namespace _Main.Scripts.Gameplay.Abilies
         public event Action OnTimeSlowDown;
         public event Action OnTimeSpeedUp;
 
+
+        
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private AbilityDebugData _debugData;
 #endif
@@ -52,7 +56,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
             abilityDataController.Initialize();
-            
         }
 
         public void OnNotify(ulong message, params object[] args)

@@ -88,4 +88,34 @@ namespace _Main.Scripts.FiniteStateMachine
             OnEnterState?.Invoke(CurrentState);
         }
     }
+    
+    public abstract class FsmActionGate<T>
+    {
+        protected T NewState { get; private set; }
+        protected T LastState { get; private set; }
+        protected T CurrentState { get; private set; }
+        
+        protected FsmActionGate(FSM<T> fsm)
+        {
+            fsm.OnNewState += (value) =>
+            {
+                NewState = value;
+                OnNewState(value);
+            };
+            fsm.OnExitState += (value) =>
+            {
+                LastState = value;
+                OnExitState(value);
+            };
+            fsm.OnEnterState += (value) =>
+            {
+                CurrentState = value;
+                OnEnterState(value);
+            };
+        }
+            
+        protected abstract void OnNewState(T state);
+        protected abstract void OnExitState(T state);
+        protected abstract void OnEnterState(T state);
+    }
 }

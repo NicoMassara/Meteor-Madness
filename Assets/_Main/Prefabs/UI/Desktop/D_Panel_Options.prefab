@@ -221,6 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8081927164880408227}
   - component: {fileID: 4994470281100138535}
+  - component: {fileID: 2551045340452833686}
   m_Layer: 5
   m_Name: D_Options_Panel_Volume
   m_TagString: Untagged
@@ -257,6 +258,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1198755455121661136}
   m_CullTransparentMesh: 1
+--- !u!114 &2551045340452833686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198755455121661136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa054a4abf00456b8ca7c4d93f040557, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSlider: {fileID: 9129950508712043034}
 --- !u!1 &1794298518554677405
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,7 +1124,6 @@ GameObject:
   m_Component:
   - component: {fileID: 808191599941242993}
   - component: {fileID: 9129950508712043034}
-  - component: {fileID: 5297394661588074873}
   m_Layer: 5
   m_Name: D_Options_Volume_Slider
   m_TagString: Untagged
@@ -1191,18 +1204,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5297394661588074873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7475462904423410538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa054a4abf00456b8ca7c4d93f040557, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8397430111956062678
 GameObject:
   m_ObjectHideFlags: 0
@@ -1415,7 +1416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c790ea5fbe6944f88f7de6451fbe09d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volumeSlider: {fileID: 5297394661588074873}
+  volumeSlider: {fileID: 2551045340452833686}
   vibrationToggle: {fileID: 0}
   languageSelector: {fileID: 2052536224756687242}
   backButton: {fileID: 3720962690368708478}

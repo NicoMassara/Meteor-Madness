@@ -2,7 +2,6 @@
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay.Earth.States;
 using _Main.Scripts.Interfaces;
-using AmplifyShaderEditor;
 using NicolasMassara.CustomActionManager;
 using UnityEngine;
 

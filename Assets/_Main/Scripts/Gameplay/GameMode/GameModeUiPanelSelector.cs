@@ -1,6 +1,6 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.GameMode.Pause;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.MySettings.UI;
 using _Main.Scripts.Utilities;
 using TMPro;
 using UnityEngine;
@@ -15,12 +15,10 @@ namespace _Main.Scripts.Gameplay.GameMode
     {
         [Space(2)] 
         [Header("Sub Panels")] 
-        public GameObject PausePanel;
         public GameObject CountdownPanel;
         public GameObject GameplayPanel;
         public GameObject DeathPanel;
         public GameObject DeathButtonContainer;
-        public GameObject OptionsPanel;
         [Space]
         [Header("Texts Components")]
         public TMP_Text CountdownText;
@@ -31,11 +29,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         [Space]
         [Header("Buttons Components")]
         public Button RestartButton;
-        public Button ResumeButton;
         public Button PauseButton;
-        public Button OptionsButton;
         public Button[] MainMenuButtons;
-        [Header("Misc Components")]
-        public SettingsUIView SettingsPanel;
+        [Header("Pause Panel")]
+        [SerializeField] private PauseUiPanel pauseUiPanel;
+        
+        public IPausePanel PausePanel => pauseUiPanel;
     }
 }

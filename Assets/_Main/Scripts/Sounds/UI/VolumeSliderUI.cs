@@ -8,35 +8,33 @@ namespace _Main.Scripts.Sounds.UI
 {
     public class VolumeSliderUI : MonoBehaviour, IVolumeSlider
     {
-        private Slider _volumeSlider;
+        [SerializeField] private Slider volumeSlider;
         
         public event Action<float> OnChanged;
 
-        private void Awake()
+        private void Start()
         {
-            _volumeSlider = GetComponent<Slider>();
-            
-            _volumeSlider.wholeNumbers = true;
-            _volumeSlider.maxValue = 10;
-            _volumeSlider.minValue = 0;
+            volumeSlider.wholeNumbers = true;
+            volumeSlider.maxValue = 10;
+            volumeSlider.minValue = 0;
         }
 
         private void OnEnable()
         {
-            _volumeSlider.value = SettingsManager.Instance.GetMasterVolume() * _volumeSlider.maxValue;
+            volumeSlider.value = SettingsManager.Instance.GetMasterVolume() * volumeSlider.maxValue;
             //
-            _volumeSlider.onValueChanged.AddListener(Slider_OnValueChangedHandler);
+            volumeSlider.onValueChanged.AddListener(Slider_OnValueChangedHandler);
         }
 
         private void OnDisable()
         {
-            _volumeSlider.onValueChanged.RemoveListener(Slider_OnValueChangedHandler);
+            volumeSlider.onValueChanged.RemoveListener(Slider_OnValueChangedHandler);
             //
         }
 
         private void Slider_OnValueChangedHandler(float value)
         {
-            OnChanged?.Invoke(value/_volumeSlider.maxValue);
+            OnChanged?.Invoke(value/volumeSlider.maxValue);
         }
     }
 }

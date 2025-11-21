@@ -8,6 +8,7 @@ using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using _Main.Scripts.MySettings;
+using UnityEngine.Networking;
 
 namespace _Main.Scripts.Localization
 {

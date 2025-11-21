@@ -6,6 +6,8 @@ namespace _Main.Scripts.Interfaces
     public interface ISoundData
     {
         public AudioSourceData SourceData { get; }
+        public FadeData FadeInData { get; }
+        public FadeData FadeOutData { get; }
         public SoundChannel Channel { get; }
         public bool Is3DSound { get; }
         public string ClassName { get; }

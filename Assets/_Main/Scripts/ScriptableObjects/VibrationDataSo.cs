@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.Vibration;
 using UnityEngine;
 
 namespace _Main.Scripts.ScriptableObjects

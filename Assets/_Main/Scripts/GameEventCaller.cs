@@ -1,7 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using UnityEngine;
 
 namespace _Main.Scripts
 {
@@ -24,9 +23,7 @@ namespace _Main.Scripts
     }
 
     #region GameMode
-
-    #region Caller
-
+    
     public static class GameModeEventCaller
     {
         public static void InitializeValues()
@@ -46,10 +43,6 @@ namespace _Main.Scripts
 
     }
 
-    #endregion
-
-    #region Subscriber
-
     public static class GameModeEventSubscriber
     {
         public static void InitializeValues(Action<GameModeEvents.InitializeValues> action)
@@ -62,19 +55,34 @@ namespace _Main.Scripts
             GameEventCaller.Subscribe<GameModeEvents.InitializeValues>(action);
         }
         
-        public static void SetEnablePause(Action<GameModeEvents.InitializeValues> action)
+        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action)
         {
             GameEventCaller.Subscribe(action);
         }
     }
-
-    #endregion
+    
+    public static class GameModeEventUnSubscriber
+    {
+        public static void InitializeValues(Action<GameModeEvents.InitializeValues> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void SetPause(Action<GameModeEvents.InitializeValues> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
     
     #endregion
     
     #region Earth
-
-    #region Caller
 
     public static class EarthEventCaller
     {
@@ -123,10 +131,6 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new EarthEvents.Death());
         }
     }
-
-    #endregion
-    
-    #region Subscriber
     
     public static class EarthEventSubscriber
     {
@@ -176,13 +180,58 @@ namespace _Main.Scripts
         }
     }
     
-    #endregion
+    public static class EarthEventUnSubscriber
+    {
+        public static void Restart(Action<EarthEvents.Restart> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void RestartFinished(Action<EarthEvents.RestartFinished> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void ShakeStart(Action<EarthEvents.ShakeStart> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Heal(Action<EarthEvents.Heal> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetEnableDamage(Action<EarthEvents.SetEnableDamage> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DestructionStart(Action<EarthEvents.DestructionStart> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void SetToDefault(Action<EarthEvents.SetToDefault> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DestructionFinished(Action<EarthEvents.DestructionFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void Death(Action<EarthEvents.Death> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
     
     #endregion
     
     #region Shield
-
-    #region Caller
+    
 
     public static class ShieldEventCaller
     {
@@ -226,11 +275,7 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new ShieldEvents.Disable());
         }
     }
-
-    #endregion
     
-    
-    #region Subscriber
     public static class ShieldEventSubscriber
     {
         public static void SetGold(Action<ShieldEvents.SetGold> action)
@@ -274,13 +319,52 @@ namespace _Main.Scripts
         }
     }
     
-    #endregion
+    public static class ShieldEventUnSubscriber
+    {
+        public static void SetGold(Action<ShieldEvents.SetGold> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetSlow(Action<ShieldEvents.SetSlow> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetAutomatic(Action<ShieldEvents.SetAutomatic> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void EnableSuperShield(Action<ShieldEvents.EnableSuperShield> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void EnableNormalShield(Action<ShieldEvents.EnableNormalShield> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void RestartPosition(Action<ShieldEvents.RestartPosition> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Enable(Action<ShieldEvents.Enable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Disable(Action<ShieldEvents.Disable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
     
     #endregion
     
     #region GameScreen
-
-    #region Caller
 
     public static class GameScreenEventCaller
     {
@@ -310,12 +394,13 @@ namespace _Main.Scripts
                 RequestType = requestType
             });
         }
-    }
 
-    #endregion
-    
-    
-    #region Subscriber
+        public static void LoadLastScreen()
+        {
+            GameEventCaller.Publish(new GameScreenEvents.LastScreen());
+        }
+
+    }
     
     public static class GameScreenEventSubscriber
     {
@@ -333,20 +418,40 @@ namespace _Main.Scripts
         {
             GameEventCaller.Subscribe(action);
         }
+        
+        public static void GoToLastScreen(Action<GameScreenEvents.LastScreen> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
     }
     
-    
-    #endregion
-    
-    
+    public static class GameScreenEventUnSubscriber
+    {
+        public static void SetGameScreen(Action<GameScreenEvents.SetScreen> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
 
+        public static void EnableScreen(Action<GameScreenEvents.EnableScreen> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DisableScreen(Action<GameScreenEvents.DisableScreen> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void GoToLastScreen(Action<GameScreenEvents.LastScreen> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
     
     #endregion
     
     #region Projectile
-
-    #region Caller
-
+    
     public static class ProjectileEventCaller
     {
         public static void Collision(CollisionData data)
@@ -426,10 +531,6 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new ProjectileEvents.UpdateLevel{Level = level});
         }
     }
-
-    #endregion
-    
-    #region Subscriber
     
     public static class ProjectileEventSubscriber
     {
@@ -484,16 +585,62 @@ namespace _Main.Scripts
         }
     }
     
-    #endregion
-    
-    
+    public static class ProjectileEventUnSubscriber
+    {
+        public static void Collision(Action<ProjectileEvents.Collision> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Deflected(Action<ProjectileEvents.Deflected> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
 
+        public static void Add(Action<ProjectileEvents.Add> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void Spawn(Action<ProjectileEvents.Spawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
     
     #endregion
     
     #region Meteor
-
-    #region Caller
 
     public static class MeteorEventCaller
     {
@@ -517,11 +664,6 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new MeteorEvents.RingActive{IsActive = isActive});
         }
     }
-
-    #endregion
-    
-    
-    #region Subscriber
     
     public static class MeteorEventSubscriber
     {
@@ -546,16 +688,33 @@ namespace _Main.Scripts
         }
     }
     
-    #endregion
-    
-    
+    public static class MeteorEventUnSubscriber
+    {
+        public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            ProjectileEventSubscriber.GrantSpawn(action);
+        }
+        
+        public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            ProjectileEventSubscriber.RequestSpawn(action);
+        }
+        
+        public static void SpawnRing(Action<MeteorEvents.SpawnRing> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
 
+        public static void RingActive(Action<MeteorEvents.RingActive> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
     
     #endregion
     
     #region Particle
-
-    #region Caller
+    
 
     public static class ParticleEventCaller
     {
@@ -570,11 +729,7 @@ namespace _Main.Scripts
             });
         }
     }
-
-    #endregion
     
-    
-    #region Subscriber
     
     public static class ParticleEventSubscriber
     {
@@ -584,13 +739,20 @@ namespace _Main.Scripts
         }
     }
     
-    #endregion
+    public static class ParticleEventUnSubscribe
+    {
+        public static void Spawn(Action<ParticleEvents.Spawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+
     
     #endregion
     
     #region Camera
-
-    #region Caller
+    
 
     public static class CameraEventCaller
     {
@@ -609,11 +771,6 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new CameraEvents.Shake{ShakeData = shake});
         }
     }
-
-    #endregion
-    
-    
-    #region Subscriber
     
     public static class CameraEventSubscriber
     {
@@ -633,17 +790,28 @@ namespace _Main.Scripts
         }
     }
     
-    
-    #endregion
-    
-    
+    public static class CameraEventUnSubscriber
+    {
+        public static void ZoomIn(Action<CameraEvents.ZoomIn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void ZoomOut(Action<CameraEvents.ZoomOut> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
 
-    
+        public static void Shake(Action<CameraEvents.Shake> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+
     #endregion
     
     #region Inputs
-
-    #region Caller
+    
 
     public static class InputsEventCaller
     {
@@ -657,11 +825,7 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new InputsEvents.SetUIEnable{IsEnable = enable});
         }
     }
-
-    #endregion
     
-    
-    #region Subscriber
     
     public static class InputsEventSubscriber
     {
@@ -676,17 +840,24 @@ namespace _Main.Scripts
         }
     }
     
-    #endregion
-    
+    public static class InputsEventUnSubscriber
+    {
+        public static void SetEnable(Action<InputsEvents.SetEnable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetUIEnable(Action<InputsEvents.SetUIEnable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
     
 
-    
     #endregion
     
     #region Abilities
-
-    #region Caller
-
+    
     public static class AbilitiesEventCaller
     {
         public static void SetCanUse(bool canUse)
@@ -760,12 +931,6 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new AbilitiesEvents.SetNextSpawn{AbilityType = type});
         }
     }
-
-    #endregion
-    
-    
-    #region Subscriber
-    
     public static class AbilitiesEventSubscriber
     {
         public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action)
@@ -823,17 +988,68 @@ namespace _Main.Scripts
             GameEventCaller.Subscribe(action);
         }
     }
-    
-    #endregion
-    
-    
+    public static class AbilitiesEventUnSubscriber
+    {
+        public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
 
-    
+        public static void SetEnableUI(Action<AbilitiesEvents.SetEnableUI> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void Add(Action<AbilitiesEvents.Add> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetStorageFull(Action<AbilitiesEvents.SetStorageFull> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void Enable(Action<AbilitiesEvents.Enable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Disable(Action<AbilitiesEvents.Disable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void RunTimer(Action<AbilitiesEvents.RunTimer> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+
     #endregion
     
     #region Floatin Text
-
-    #region Caller
+    
 
     public static class FloatingTextEventCaller
     {
@@ -842,11 +1058,6 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new FloatingTextEvents.Spawn { Data = data });
         }
     }
-
-    #endregion
-    
-    
-    #region Subscriber
     
     public static class FloatingTextEventSubscriber
     {
@@ -856,16 +1067,18 @@ namespace _Main.Scripts
         }
     }
     
-    #endregion
-    
-    
-
+    public static class FloatingTextEventUnSubscriber
+    {
+        public static void Spawn(Action<FloatingTextEvents.Spawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
     
     #endregion
     
     #region MultiPage
-
-    #region Caller
+    
 
     public static class MultiPageUIEventCaller
     {
@@ -879,11 +1092,6 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new MultiPageUIEvents.Finished{CreateId = createId});
         }
     }
-
-    #endregion
-    
-    
-    #region Subscriber
     
     public static class MultiPageUIEventSubscriber
     {
@@ -898,27 +1106,20 @@ namespace _Main.Scripts
         }
     }
     
-    #endregion
-    
-    #endregion
-    
-    #region Template
+    public static class MultiPageUIEventUnSubscriber
+    {
+        public static void Create(Action<MultiPageUIEvents.Create> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
 
-    #region Caller
-
-    
-
-    #endregion
-    
-    
-    #region Subscriber
-    
+        public static void Finished(Action<MultiPageUIEvents.Finished> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
     
     #endregion
     
-    
-
-    
-    #endregion
     
 }

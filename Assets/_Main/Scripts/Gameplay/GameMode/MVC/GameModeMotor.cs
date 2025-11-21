@@ -15,14 +15,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         private float _startTimer;
         private float _lastDisplayedTimer;
         private readonly int _startDelay;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
         private bool _isPaused;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
         private bool _doesRestartGameMode;
         private bool _hasDoublePoints;
         private bool _canPause;
         private float _highScore;
-        private bool _hasOpenedOptions;
         private bool _hasGameplayPanelActive;
-        private bool _hasOptionsPanelActive;
+        private bool _hasPausePanelActive;
         
 
         public GameModeMotor(int[] levelStreakAmount, int startTimer)
@@ -147,15 +148,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void StartCountdown()
         {
             _startTimer = _startDelay;
+            _lastDisplayedTimer = Mathf.Infinity;
             NotifyAll(GameModeObserverMessage.StartCountdown);
         }
         
         public void HandleCountdownTimer(float deltaTime)
         {
             _startTimer -= deltaTime;
-
             int seconds = Mathf.CeilToInt(_startTimer);
-            
 
             if (seconds != _lastDisplayedTimer)
             {
@@ -217,17 +217,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public void PauseGame()
         {
-            if(_canPause == false) return;
-
             _isPaused = true;
-            NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
+            NotifyAll(GameModeObserverMessage.GamePaused);
         }
         
         public void UnPauseGame()
         {
-            
             _isPaused = false;
-            NotifyAll(GameModeObserverMessage.GamePaused, _isPaused);
+            NotifyAll(GameModeObserverMessage.GameUnPaused);
         }
 
         #endregion
@@ -256,13 +253,13 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void SetPausePanel(bool isActive)
         {
-            NotifyAll(GameModeObserverMessage.PausePanel, true);
+            _hasPausePanelActive = isActive;
+            NotifyAll(GameModeObserverMessage.PausePanel, _hasPausePanelActive);
         }
         
-        public void SetOptionsPanel(bool isActive)
+        public void TriggerOptions()
         {
-            _hasOptionsPanelActive = isActive;
-            NotifyAll(GameModeObserverMessage.OptionsPanel, _hasOptionsPanelActive);
+            NotifyAll(GameModeObserverMessage.Options);
         }
 
         public void TriggerMainMenu()
@@ -271,5 +268,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
+
+        public void Asleep()
+        {
+            NotifyAll(GameModeObserverMessage.Asleep);
+        }
+
+        public void Leaving()
+        {
+            NotifyAll(GameModeObserverMessage.Leaving);
+        }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
-    public class MainMenuView : ManagedBehavior, IObserver
+    public class MainMenuView : ManagedBehavior, IObserver,
+        IMainMenuSounds
     {
         public event Action OnMainMenuEnable;
         
@@ -31,9 +33,9 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.TriggerCosmetic:
                     HandleCosmetic();
                     break;
-                case MainMenuObserverMessage.MainMenu:
+                case MainMenuObserverMessage.TriggerOptions:
+                    HandleTriggerOptions();
                     break;
-                
             }
         }
 
@@ -66,6 +68,11 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleQuit()
         {
             GameManager.Instance.QuitGame();
+        }
+        
+        private void HandleTriggerOptions()
+        {
+            GameManager.Instance.LoadOptionsMenu();
         }
     }
 }

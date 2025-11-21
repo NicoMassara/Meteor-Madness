@@ -54,13 +54,13 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<EarthEvents.Restart>(EventBus_Earth_Restart);
-            GameEventCaller.Subscribe<EarthEvents.DestructionStart>(EventBus_Earth_DestructionStart);
-            GameEventCaller.Subscribe<EarthEvents.Heal>(EventBus_Earth_Heal);
-            GameEventCaller.Subscribe<EarthEvents.SetEnableDamage>(EventBus_Earth_SetEnableDamage);
-            GameEventCaller.Subscribe<EarthEvents.SetToDefault>(EventBus_Earth_Default);
+            EarthEventSubscriber.Restart(EventBus_Earth_Restart);
+            EarthEventSubscriber.DestructionStart(EventBus_Earth_DestructionStart);
+            EarthEventSubscriber.Heal(EventBus_Earth_Heal);
+            EarthEventSubscriber.SetEnableDamage(EventBus_Earth_SetEnableDamage);
+            EarthEventSubscriber.SetToDefault(EventBus_Earth_Default);
             //
-            GameEventCaller.Subscribe<ProjectileEvents.Collision>(EventBus_Meteor_Collision);
+            ProjectileEventSubscriber.Collision(EventBus_Meteor_Collision);
         }
 
         #region Earth

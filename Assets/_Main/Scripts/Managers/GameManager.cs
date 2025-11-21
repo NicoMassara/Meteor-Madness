@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyComponents;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Managers
@@ -7,7 +8,7 @@ namespace _Main.Scripts.Managers
     public class GameManager : SingletonBehaviour<GameManager>
     {
         public bool CanPlay { get; set; }
-        public bool IsPaused { get; set; }
+        public bool IsPaused { get; private set; }
         private int _currentPoints;
         
         public EventBusManager EventManager { get; private set; }
@@ -47,6 +48,16 @@ namespace _Main.Scripts.Managers
         {
             LoadGameScreen(ScreenType.Cosmetic);
         }
+        
+        public void LoadOptionsMenu()
+        {
+            LoadGameScreen(ScreenType.OptionsMenu);
+        }
+
+        public void LoadLastScreen()
+        {
+            GameScreenEventCaller.LoadLastScreen();
+        }
 
         private void LoadGameScreen(ScreenType type)
         {
@@ -55,9 +66,35 @@ namespace _Main.Scripts.Managers
 
         #endregion
 
+        public void PauseGame()
+        {
+            SetPauseInChannels(true);
+            IsPaused = true;
+        }
+
+        public void UnpauseGame()
+        {
+            SetPauseInChannels(false);
+            IsPaused = false;
+        }
+
+        private void SetPauseInChannels(bool isPaused)
+        {
+            CustomTime.SetChannelPaused(new []
+            {
+                UpdateGroup.Gameplay,
+                UpdateGroup.Ability, 
+                UpdateGroup.Shield,
+                UpdateGroup.Effects,
+                
+            }, isPaused);
+        }
+
         public void QuitGame()
         {
             Application.Quit();
         }
+
+
     }
 }

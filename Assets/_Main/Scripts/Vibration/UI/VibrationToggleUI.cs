@@ -30,7 +30,6 @@ namespace _Main.Scripts.Vibration.UI
             //
             toggleButton.onClick.AddListener(Button_OnClickHandler);
         }
-        
 
         private void OnDisable()
         {
@@ -65,6 +64,5 @@ namespace _Main.Scripts.Vibration.UI
         {
             UpdateText(_isEnabled);
         }
-
     }
 }

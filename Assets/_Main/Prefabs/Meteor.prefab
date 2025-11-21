@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 6928463678124089595}
   - component: {fileID: 2516834064939955826}
   - component: {fileID: 2969321756996762836}
+  - component: {fileID: 2572626988876623609}
   - component: {fileID: 3982104306026143777}
   - component: {fileID: 5269513674762319328}
   m_Layer: 6
@@ -100,11 +101,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdb681730db24aa4ad71e0ee68c135b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSound: {fileID: 11400000, guid: 7fc9016a6662e224a89a3a2c9f162f5b, type: 2}
   maxRotationSpeed: 25
   sphereObject: {fileID: 3599986003245062479}
   fireObject: {fileID: 7024479806668994044}
   collisionParticle: {fileID: 11400000, guid: 57aab6ad92becd54f8c87a5e8e9ef067, type: 2}
+--- !u!114 &2572626988876623609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3244478745791155186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5773a78deead47e89c7e74a02c773b05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movement: {fileID: 11400000, guid: 7fc9016a6662e224a89a3a2c9f162f5b, type: 2}
 --- !u!58 &3982104306026143777
 CircleCollider2D:
   m_ObjectHideFlags: 0

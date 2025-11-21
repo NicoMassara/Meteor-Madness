@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Save;
@@ -8,19 +9,27 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeView : ManagedBehavior, IObserver
+    public class GameModeView : ManagedBehavior, IObserver,
+        IGameModeSounds
     {
-
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
         public event Action OnCountDownStarted;
         public event Action OnCountdownUpdated;
         public event Action OnCountdownUpdatedFinished;
         public event Action OnGameModeEnable;
+        public event Action OnGameModeDisable;
+        public event Action OnGameModeRestarted;
+        public event Action<bool> OnGameModePaused;
 
         public event Action OnGameModeFinished;
         public event Action OnGameModeStarted;
         public event Action OnEarthDeath;
+
+        #region IGameModeSounds
+        public event Action OnStopMusic;
+
+        #endregion
         
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -36,6 +45,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData = new GameModeDebugData();
         
 #endif
+            
+            
+            
         }
 
 
@@ -44,6 +56,30 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             switch (message)
             {
+                // Enable / Disable 
+                case GameModeObserverMessage.Enable:
+                    HandleEnable();
+                    break;
+                case GameModeObserverMessage.Asleep:
+                    HandleAsleep();
+                    break;
+                case GameModeObserverMessage.Disable:
+                    HandleDisable();
+                    break;
+                case GameModeObserverMessage.Leaving:
+                    HandleLeaving();
+                    break;
+                
+                
+                // Pause / Unpause
+                case GameModeObserverMessage.GamePaused:
+                    HandleGamePaused();
+                    break;
+                case GameModeObserverMessage.GameUnPaused:
+                    HandleGameUnPaused();
+                    break;
+                
+                // CountDown
                 case GameModeObserverMessage.StartCountdown:
                     HandleStartCountdown();
                     break;
@@ -53,9 +89,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.UpdateCountdown:
                     HandleCountdown((float)args[0]);
                     break;
-                case GameModeObserverMessage.StartGameplay:
-                    HandleStartGameplay();
-                    break;
+                
+                // Earth
                 case GameModeObserverMessage.EarthStartDestruction:
                     HandleEarthStartDestruction();
                     break;
@@ -65,8 +100,13 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.EarthEndDestruction:
                     HandleEarthEndDestruction();
                     break;
-                case GameModeObserverMessage.SetEnableSpawnMeteor:
-                    HandleSetEnableMeteorSpawn((bool)args[0]);
+                case GameModeObserverMessage.EarthRestartFinish:
+                    HandleEarthRestartFinish((bool)args[0]);
+                    break;
+                
+                // GameMode
+                case GameModeObserverMessage.StartGameplay:
+                    HandleStartGameplay();
                     break;
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
@@ -77,37 +117,39 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameRestart:
                     HandleGameRestart();
                     break;
-                case GameModeObserverMessage.GamePaused:
-                    HandleGamePaused((bool)args[0]);
-                    break;
-                case GameModeObserverMessage.EarthRestartFinish:
-                    HandleEarthRestartFinish((bool)args[0]);
-                    break;
-                case GameModeObserverMessage.Disable:
-                    HandleDisable();
-                    break;
                 case GameModeObserverMessage.InitializeValues:
                     HandleInitialize();
                     break;
-                case GameModeObserverMessage.PointsGained:
-                    HandlePointsGained((Vector2)args[0],(float)args[1],(bool)args[2]);
+
+                
+                // Meteor
+                case GameModeObserverMessage.SetEnableSpawnMeteor:
+                    HandleSetEnableMeteorSpawn((bool)args[0]);
                     break;
                 case GameModeObserverMessage.GrantProjectileSpawn:
                     HandleGrantProjectileSpawn((int)args[0]);
                     break;
-                case GameModeObserverMessage.Enable:
-                    HandleEnable();
-                    break;
-                case GameModeObserverMessage.TriggerMainMenu:
-                    HandleTriggerMainMenu();
+
+
+                
+                // Score
+                case GameModeObserverMessage.PointsGained:
+                    HandlePointsGained((Vector2)args[0],(float)args[1],(bool)args[2]);
                     break;
                 case GameModeObserverMessage.SaveHighScore:
                     HandleSaveHighScore((float)args[0]);
                     break;
-                
+ 
+                // Screens
+                case GameModeObserverMessage.Options:
+                    HandleOptions();
+                    break;
+                case GameModeObserverMessage.TriggerMainMenu:
+                    HandleTriggerMainMenu();
+                    break;
                 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        
+                // Debug
                 case GameModeObserverMessage.MeteorDeflect:
                     HandleMeteorDeflect((float)args[0]);
                     break;
@@ -119,6 +161,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
 
+
+
+        private void HandleOptions()
+        {
+            GameManager.Instance.LoadOptionsMenu();
+        }
+
+        #region Debug Only
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -133,19 +183,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
             
 #endif
-        
-        private void HandleSaveHighScore(float highScore)
-        {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.HighScore = highScore;
-#endif
-            
-            DataManager.Instance.SaveGameData(new ScoreSaveData
-            {
-                HighScore = highScore,
-            }, SaveDataType.Score);
-        }
-        
+
+        #endregion
+
+        #region Screns
+
         private void HandleTriggerMainMenu()
         {
             CustomTime.SetChannelPaused(new []
@@ -168,33 +210,25 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetEnableUIInputs(false);
         }
         
-
-        private void HandleCountdown(float amount)
+        private void HandleAsleep()
         {
-            if (amount > 1)
+            GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
+        }
+
+        #endregion
+
+        #region Score/Points
+
+        private void HandleSaveHighScore(float highScore)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.HighScore = highScore;
+#endif
+            
+            DataManager.Instance.SaveGameData(new ScoreSaveData
             {
-                OnCountdownUpdated?.Invoke();
-            }
-            else if (amount <= 1 && amount > 0)
-            {
-                OnCountdownUpdatedFinished?.Invoke();
-            }
-        }
-
-        private void HandleEnable()
-        {
-            OnGameModeEnable?.Invoke();
-        }
-
-        private void HandleGrantProjectileSpawn(int projectileTypeIndex)
-        {
-            ProjectileEventCaller.GrantSpawn((ProjectileType)projectileTypeIndex);
-        }
-
-        private void HandleInitialize()
-        {
-            GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
-            GameModeEventCaller.InitializeValues();
+                HighScore = highScore,
+            }, SaveDataType.Score);
         }
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
@@ -215,51 +249,91 @@ namespace _Main.Scripts.Gameplay.GameMode
                 DoesMove = true
             });
         }
+
+        #endregion
+
+        #region Pause
         
-        private void HandleGamePaused(bool isPaused)
+        private void HandleGameUnPaused()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
-            _debugData.IsPaused = isPaused;
-            
+            _debugData.IsPaused = false;
 #endif
-
-            GameModeEventCaller.SetPause(isPaused);
-            AbilitiesEventCaller.SetEnableUI(!isPaused);
-
-            CustomTime.SetChannelPaused(new []
-            {
-                UpdateGroup.Gameplay,
-                UpdateGroup.Ability, 
-                UpdateGroup.Shield,
-                UpdateGroup.Earth,
-                UpdateGroup.Effects,
-                UpdateGroup.Camera
-                
-            }, isPaused);
-
+            
+            OnGameModePaused?.Invoke(false);
+            SetEnableInputs(true);
+            AbilitiesEventCaller.SetEnableUI(true);
+            GameModeEventCaller.SetPause(false);
+            GameManager.Instance.UnpauseGame();
+            
 #if UNITY_ANDROID || UNITY_IOS
-            SetEnableInputs(!isPaused);
-            SetEnableUIInputs(!isPaused);
-#else
 
-            if (isPaused == true)
-            {
-                TimerManager.Add(new TimerData(0.5f, () =>
-                {
-                    SetEnableInputs(false);
-                }, () =>
-                {
-                    SetEnableInputs(true);
-                }));
-            }
+            SetEnableUIInputs(true);
+                
 #endif
             
-            GameManager.Instance.IsPaused = isPaused;
+        }
+        
+        private void HandleGamePaused()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.IsPaused = true;
+            
+#endif
+            OnGameModePaused?.Invoke(true);
+            GameManager.Instance.PauseGame();
+            SetEnableInputs(false);
+            AbilitiesEventCaller.SetEnableUI(false);
+            GameModeEventCaller.SetPause(true);
+            CameraEventCaller.ZoomIn();
+                
+#if UNITY_ANDROID || UNITY_IOS
+
+            SetEnableUIInputs(false);
+                
+#endif
         }
 
+        #endregion
+        
+        #region GameMode
+        
+        private void HandleCountdown(float amount)
+        {
+            if (amount > 1)
+            {
+                OnCountdownUpdated?.Invoke();
+            }
+            else if (amount <= 1 && amount > 0)
+            {
+                OnCountdownUpdatedFinished?.Invoke();
+            }
+        }
+
+        private void HandleEnable()
+        {
+            OnGameModeEnable?.Invoke();
+            OnStopMusic?.Invoke();
+        }
+        
+        private void HandleGrantProjectileSpawn(int projectileTypeIndex)
+        {
+            ProjectileEventCaller.GrantSpawn((ProjectileType)projectileTypeIndex);
+        }
+
+        private void HandleInitialize()
+        {
+            GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
+            GameModeEventCaller.InitializeValues();
+        }
+        
+        
         private void HandleDisable()
         {
+            OnGameModeDisable?.Invoke();
+            OnStopMusic?.Invoke();
             EarthEventCaller.SetToDefault();
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
@@ -279,13 +353,32 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             TimerManager.Add(new TimerData(time: temp.RestartEarth,
                 onEndAction: EarthEventCaller.Restart));
+            
+            OnGameModeRestarted?.Invoke();
+            OnStopMusic?.Invoke();
         }
         
         private void HandleEarthRestartFinish(bool doesRestart)
         {
             OnEarthRestarted?.Invoke(doesRestart);
         }
+        
+        private void HandleUpdateGameLevel(int currentLevel)
+        {
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.CurrentLevel = currentLevel;
+#endif
+            ProjectileEventCaller.UpdateLevel(currentLevel);
+        }
+        
+        private void HandleLeaving()
+        {
+            OnStopMusic?.Invoke();
+        }
 
+        #endregion
+        
         #region Start
 
         private void HandleStartCountdown()
@@ -327,6 +420,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleEarthShake()
         {
             OnEarthDeath?.Invoke();
+            OnStopMusic?.Invoke();
             GameEventCaller.Publish(new CameraEvents.ZoomIn());
         }
         
@@ -352,15 +446,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
 
         #endregion
-        
-        private void HandleUpdateGameLevel(int currentLevel)
-        {
-            
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.CurrentLevel = currentLevel;
-#endif
-            ProjectileEventCaller.UpdateLevel(currentLevel);
-        }
+
+        #region Inputs
 
         private void SetEnableInputs(bool isEnable)
         {
@@ -374,5 +461,8 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             InputsEventCaller.SetUIEnable(isEnable);
         }
+
+        #endregion
+
     }
 }

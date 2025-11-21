@@ -17,19 +17,28 @@ namespace _Main.Scripts.Gameplay.Abilies
             Disabled,
         }
         
-        private class ActionGate
+        private class AbilityActionGate : FsmActionGate<States>
         {
+            public AbilityActionGate(FSM<States> fsm) : base(fsm) { }
             public bool IsAbilityEnable { get; private set; }
-            public ActionGate(FSM<States> fsm)
+
+            protected override void OnNewState(States state)
             {
-                fsm.OnEnterState += state =>
-                {
-                    IsAbilityEnable = state is not States.Disabled;
-                };
+
+            }
+
+            protected override void OnEnterState(States state)
+            {
+                IsAbilityEnable = state is not States.Disabled;
+            }
+
+            protected override void OnExitState(States state)
+            {
+
             }
         }
         
-        private ActionGate _actionGate;
+        private AbilityActionGate _actionGate;
 
         public AbilityController(AbilityMotor motor)
         {
@@ -47,7 +56,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var temp = new List<BaseState<States>>();
             _fsm = new FSM<States>("Ability");
-            _actionGate = new ActionGate(_fsm);
+            _actionGate = new AbilityActionGate(_fsm);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _fsm.CreateDebugGUI(2);

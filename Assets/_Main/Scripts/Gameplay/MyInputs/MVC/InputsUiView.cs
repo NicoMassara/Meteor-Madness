@@ -1,4 +1,6 @@
-﻿using _Main.Scripts.Interfaces;
+﻿
+using System;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -17,9 +19,20 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         [SerializeField] private Color defaultColor = Color.white;
         [SerializeField] private Color activeColor = Color.gray;
         [SerializeField] private float transparency = 0.5f;
-        
+
+        private void Awake()
+        {
+#if !UNITY_ANDROID || !UNITY_IOS
+            SetActiveImage(clockwiseImage, false);
+            SetActiveImage(counterClockwiseImage, false);
+#endif
+        }
+
         public void OnNotify(ulong message, params object[] args)
         {
+#if UNITY_ANDROID
+            
+
             switch (message)
             {
                 case InputsUIObserverMessage.SetEnableClock:
@@ -38,7 +51,9 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
                     HandleDestroy();
                     break;
             }
+#endif
         }
+#if UNITY_ANDROID
 
         #region Observer Handlers
         
@@ -106,6 +121,7 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         {
             return (pointA + pointB) * 0.5f;
         }
+#endif
 
         private void SetActiveImage(Image image, bool isActive)
         {
