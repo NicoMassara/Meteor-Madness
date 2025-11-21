@@ -69,6 +69,10 @@ namespace _Main.Scripts.Sounds
                 {
                     _debugData.PausedMusic = sound.SoundClass.ClassName;
                 }
+                else if(musicName == 0)
+                {
+                    _debugData.PausedMusic = "None";
+                }
             };
             
             _musicController.OnMusicStopped += () =>
@@ -113,21 +117,43 @@ namespace _Main.Scripts.Sounds
 
         public SoundId PlayMusic(ISoundData soundData, SoundId soundId)
         {
+            if (soundData == null)
+            {
+                //Debug.Log("Music is null");
+                return soundId;
+            }
+
             if (_musicController.IsThisPlaying(soundId))
             {
+                //Debug.Log($"{soundData.ClassName} is already playing");
                 return soundId;
             }
 
             if (_musicController.HasMusicPlaying())
             {
+                //Debug.Log("Has Music playing");
                 StopMusic();
             }
 
             var gottenId = PlaySound(soundData, null);
             
-            _musicController.Play(gottenId.Id);
+            if (gottenId == null)
+            {
+                gottenId = PlaySound(soundData, null);
+
+                if (gottenId == null)
+                {
+                    Debug.Log("Music playing failed");
+                    return soundId;
+                }
+            }
+
+            _musicController?.Play(gottenId.Id);
+            
+            //Debug.Log($"{soundData.ClassName} is playing");
             
             return gottenId;
+            
         }
         
         public ulong StopMusic()
@@ -145,6 +171,33 @@ namespace _Main.Scripts.Sounds
             }
             
             return gottenId;
+        }
+
+        public void RemoveMusic(ref SoundId soundId)
+        {
+            if(soundId == null) return;
+            
+            if (_musicController.IsThisPaused(soundId))
+            {
+                _musicController.StopPaused();
+            }
+
+            if (_musicController.IsThisPlaying(soundId))
+            {
+                StopMusic();
+                return;
+            }
+
+            if (_idStorage.TryGetSound(soundId.Id, out var sound))
+            {
+                _playbackTracker.Unregister(sound);
+                _idStorage.Unregister(soundId.Id);
+                soundId.Reset();
+            }
+            else
+            {
+                //Debug.LogWarning("Could not remove music");
+            }
         }
 
         public void PauseMusic()
@@ -180,6 +233,19 @@ namespace _Main.Scripts.Sounds
             }
         }
 
+        public void ClearAllMusic()
+        {
+            if (_musicController.HasMusicPlaying())
+            {
+                StopMusic();
+            }
+
+            if (_musicController.HasMusicPaused())
+            {
+                ResumeMusic();
+            }
+        }
+
         #endregion
         
         public SoundId PlaySound(ISoundData soundData, Transform soundParent)
@@ -192,12 +258,18 @@ namespace _Main.Scripts.Sounds
 
             if (GetIsChannelFull(soundData.Channel))
             {
-                //Debug.Log($"{soundData.Channel} channel is full");
+                Debug.Log($"{soundData.Channel} channel is full");
                 return null;
             }
             
             var tempSound = _factory.GetSound();
             var soundId = _idStorage.RegisterSound(tempSound);
+
+            if (soundId == null)
+            {
+                Debug.LogWarning($"Sound Id for {soundData.ClassName} could not be registered");
+            }
+
             tempSound.SetData(soundData);
 
             if (soundData.Is3DSound)

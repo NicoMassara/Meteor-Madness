@@ -61,6 +61,7 @@
         public const ulong GameplayPanel = 0xA2029;
         public const ulong GameUnPaused = 0xA2030;
         public const ulong Asleep = 0xA2031;
+        public const ulong Leaving = 0xA2032;
     }
 
     public struct FlyingObjectObserverMessage

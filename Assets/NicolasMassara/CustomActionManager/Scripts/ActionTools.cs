@@ -271,8 +271,8 @@ namespace NicolasMassara.CustomActionManager
         private readonly IQueueAction _inner;
         private readonly Action _startCallback;
         private readonly Action _endCallback;
-        
-        public ActionStatus CurrentStatus { get; private set; }
+
+        public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
 
         public CallbackWrapperAction(IQueueAction inner,  Action startCallback, Action endCallback)
         {
@@ -289,9 +289,14 @@ namespace NicolasMassara.CustomActionManager
 
         public ActionStatus OnUpdate(float deltaTime)
         {
-            var status = _inner.OnUpdate(deltaTime);
-            if (status == ActionStatus.Success) _endCallback?.Invoke();
-            return status;
+            CurrentStatus = _inner.OnUpdate(deltaTime);
+            
+            if (CurrentStatus == ActionStatus.Success)
+            {
+                _endCallback?.Invoke();
+            }
+            
+            return CurrentStatus;
         }
 
         public void OnInterrupt()

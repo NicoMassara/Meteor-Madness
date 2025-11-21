@@ -21,8 +21,8 @@ namespace _Main.Scripts.MySettings
         [SerializeField] private LanguageSelectorUI languageSelector;
         [SerializeField] private VolumeSliderUI volumeSlider;
         [SerializeField] private VibrationToggleUI vibrationToggle;
-        public LanguageSelectorUI LanguageSelector => LanguageSelector;
-        public VolumeSliderUI VolumeSlider => VolumeSlider;
-        public VibrationToggleUI VibrationToggle => VibrationToggle;
+        public ILanguageSelector LanguageSelector => languageSelector;
+        public IVolumeSlider VolumeSlider => volumeSlider;
+        public IVibrationToggle VibrationToggle => vibrationToggle;
     }
 }

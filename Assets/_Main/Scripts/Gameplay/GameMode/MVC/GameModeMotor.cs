@@ -148,15 +148,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void StartCountdown()
         {
             _startTimer = _startDelay;
+            _lastDisplayedTimer = Mathf.Infinity;
             NotifyAll(GameModeObserverMessage.StartCountdown);
         }
         
         public void HandleCountdownTimer(float deltaTime)
         {
             _startTimer -= deltaTime;
-
             int seconds = Mathf.CeilToInt(_startTimer);
-            
 
             if (seconds != _lastDisplayedTimer)
             {
@@ -273,6 +272,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void Asleep()
         {
             NotifyAll(GameModeObserverMessage.Asleep);
+        }
+
+        public void Leaving()
+        {
+            NotifyAll(GameModeObserverMessage.Leaving);
         }
     }
 }

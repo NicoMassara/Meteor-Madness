@@ -16,7 +16,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private GameModeUIComponents _uiComponents;
         private GameObject _currentPanel;
-        private NumberIncrementer _numberIncrementer;
+        private NumberIncrementer _numberIncrementer = new NumberIncrementer();
         private Coroutine _gameplayPointsCoroutine;
         private IGameUIConfig _gameUIConfig;
         
@@ -35,17 +35,22 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _gameUIConfig = GameConfigManager.Instance.GetUIData();
             
-            GetUiComponents().ResumeButton.onClick.AddListener(() =>
+            GetUiComponents().PausePanel.OnResumeButtonPressed += () =>
             {
                 OnResumeButtonPressed?.Invoke();
-            });
+            };
+            GetUiComponents().PausePanel.OnOptionsButtonPressed += () =>
+            {
+                OnOptionsButtonPressed?.Invoke();
+            };
+            GetUiComponents().PausePanel.OnMainMenuButtonPressed += () =>
+            {
+                OnMainMenuButtonPressed?.Invoke();
+            };
+            
             GetUiComponents().PauseButton.onClick.AddListener(() =>
             {
                 OnPauseButtonPressed?.Invoke();
-            });
-            GetUiComponents().OptionsButton.onClick.AddListener(() =>
-            {
-                OnOptionsButtonPressed?.Invoke();
             });
             GetUiComponents().RestartButton.onClick.AddListener(() =>
             {
@@ -63,24 +68,23 @@ namespace _Main.Scripts.Gameplay.GameMode
             GetUiComponents().DeathText.text = GetLocalizedString("Gameplay.Death.Title");
 
             _scoreTextValue = GetLocalizedString("Gameplay.Score");
+            GetUiComponents().CountdownText.text = "";
             LocalizationEvents.OnLanguageChanged += Localization_OnLanguageChangedHandler;
         }
-
 
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
-                //
-                // [ ENABLE / DISABLE ]
-                //
+                // Enable / Disable
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
                     break;
                 case GameModeObserverMessage.Enable:
                     HandleEnable();
                     break;
-                //
+                
+                // Countdouwn
                 case GameModeObserverMessage.StartCountdown:
                     HandleStartCountdown();
                     break;
@@ -90,17 +94,10 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.CountdownFinish:
                     HandleCountdownFinish();
                     break;
+                
+                // GameMode
                 case GameModeObserverMessage.StartGameplay:
                     HandleStartGameplay();
-                    break;
-                case GameModeObserverMessage.MeteorDeflect:
-                    HandleMeteorDeflect((float)args[0]);
-                    break;
-                case GameModeObserverMessage.EarthStartDestruction:
-                    HandleEarthStartDestruction();
-                    break;
-                case GameModeObserverMessage.EarthEndDestruction:
-                    HandleEarthEndDestruction((float)args[0]);
                     break;
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
@@ -108,6 +105,21 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameRestart:
                     HandleGameRestart();
                     break;
+                
+                // Meteor
+                case GameModeObserverMessage.MeteorDeflect:
+                    HandleMeteorDeflect((float)args[0]);
+                    break;
+                
+                //Earth
+                case GameModeObserverMessage.EarthStartDestruction:
+                    HandleEarthStartDestruction();
+                    break;
+                case GameModeObserverMessage.EarthEndDestruction:
+                    HandleEarthEndDestruction((float)args[0]);
+                    break;
+
+                // Camera
                 case GameModeObserverMessage.CameraZoomOut:
                     HandleCameraZoomOut();
                     break;
@@ -117,11 +129,10 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SetCanPause:
                     HandleSetCanPause((bool)args[0]);
                     break;
+                
+                // Screens
                 case GameModeObserverMessage.TriggerMainMenu:
                     HandleTriggerMainMenu();
-                    break;
-                case GameModeObserverMessage.SetHasHighScore:
-                    HandleSetHighScore((bool)args[0],(float)args[1]);
                     break;
                 case GameModeObserverMessage.PausePanel:
                     HandlePausePanel((bool)args[0]);
@@ -129,10 +140,13 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameplayPanel:
                     HandleGameplayPanel((bool)args[0]);
                     break;
+                
+                // Score
+                case GameModeObserverMessage.SetHasHighScore:
+                    HandleSetHighScore((bool)args[0],(float)args[1]);
+                    break;
             }
         }
-
-
 
         private void HandleSetHighScore(bool hasNewHighScore, float highScore)
         {
@@ -191,7 +205,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             if (isActive)
             {
-                SetActivePanel(GetUiComponents().PausePanel);
+                SetActivePanel(GetUiComponents().PausePanel.Panel);
             }
             else
             {
@@ -222,8 +236,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             DisableActivePanel();
-            _hasHighScore = false;
-            _numberIncrementer = new NumberIncrementer();
             SetActivePanel(GetUiComponents().CountdownPanel);
         }
         
@@ -236,13 +248,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdownFinish()
         {
-            _numberIncrementer?.ResetValues();
-            UpdateGameplayScoreText(0);
+            GetUiComponents().CountdownText.text = "";
         }
         
         private void HandleStartGameplay()
         {
-            SetActivePanel(GetUiComponents().GameplayPanel);
+            _hasHighScore = false;
+            _numberIncrementer?.ResetValues();
+            UpdateGameplayScoreText(0);
         }
 
         #endregion
@@ -301,6 +314,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var text = $"{_scoreTextValue}: {points:D6}";
             GetUiComponents().ScoreText.text = text;
+            GetUiComponents().PausePanel.SetScoreText(points);
         }
 
         private void UpdateDeathScoreText(int points)

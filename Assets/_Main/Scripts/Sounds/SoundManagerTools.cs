@@ -13,7 +13,7 @@ namespace _Main.Scripts.Sounds
                 SoundChannel.Collision => 1,
                 SoundChannel.Deflection => 1,
                 SoundChannel.UI => 3,
-                SoundChannel.Music => 3,
+                SoundChannel.Music => 10,
                 _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
             };
         }
