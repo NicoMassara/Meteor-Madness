@@ -32,17 +32,29 @@ namespace _Main.Scripts.Sounds
         }
         protected void StopSound(GeneratedId soundId)
         {
+            if(IsIdValid(soundId)) return;
+            
             SoundManager.StopSound(soundId);
         }
         protected void ResumeSound(GeneratedId soundId)
         {
+            if(IsIdValid(soundId)) return;
+            
             SoundManager.ResumeSound(soundId);
         }
         protected void PauseSound(GeneratedId soundId)
         {
+            if(IsIdValid(soundId)) return;
+            
             SoundManager.PauseSound(soundId);
         }
-        
+
+        // If ID is valid it means that is already in use and playing
+        protected bool IsIdValid(GeneratedId soundId)
+        {
+            return soundId != null && soundId.IsValid;
+        }
+
         private T SetComponentToSound()
         {
             _componentToSound = GetComponent<T>();
