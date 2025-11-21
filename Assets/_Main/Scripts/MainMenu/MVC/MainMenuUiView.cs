@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Menu;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
-    public class MainMenuUiView : ManagedBehavior, IObserver
+    public class MainMenuUiView : ManagedBehavior, IObserver, IMainMenuUISounds
     {
         [SerializeField] private MainMenuUiPanelSelector uiPanelSelector;
         

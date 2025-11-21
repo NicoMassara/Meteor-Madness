@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Timers;
 using _Main.Scripts.FiniteStateMachine;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomTimerManager;

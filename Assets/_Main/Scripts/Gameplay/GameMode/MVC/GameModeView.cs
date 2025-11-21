@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Save;
@@ -8,9 +9,9 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeView : ManagedBehavior, IObserver
+    public class GameModeView : ManagedBehavior, IObserver,
+        IGameModeSounds
     {
-
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
         public event Action OnCountDownStarted;
@@ -24,7 +25,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnGameModeFinished;
         public event Action OnGameModeStarted;
         public event Action OnEarthDeath;
-        public event Action OnLeaving;
+
+        #region IGameModeSounds
+        public event Action OnStopMusic;
+
+        #endregion
         
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -40,6 +45,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData = new GameModeDebugData();
         
 #endif
+            
+            
+            
         }
 
 
@@ -307,6 +315,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleEnable()
         {
             OnGameModeEnable?.Invoke();
+            OnStopMusic?.Invoke();
         }
         
         private void HandleGrantProjectileSpawn(int projectileTypeIndex)
@@ -324,6 +333,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleDisable()
         {
             OnGameModeDisable?.Invoke();
+            OnStopMusic?.Invoke();
             EarthEventCaller.SetToDefault();
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
@@ -345,6 +355,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 onEndAction: EarthEventCaller.Restart));
             
             OnGameModeRestarted?.Invoke();
+            OnStopMusic?.Invoke();
         }
         
         private void HandleEarthRestartFinish(bool doesRestart)
@@ -363,7 +374,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleLeaving()
         {
-            OnLeaving?.Invoke();
+            OnStopMusic?.Invoke();
         }
 
         #endregion
@@ -409,6 +420,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleEarthShake()
         {
             OnEarthDeath?.Invoke();
+            OnStopMusic?.Invoke();
             GameEventCaller.Publish(new CameraEvents.ZoomIn());
         }
         

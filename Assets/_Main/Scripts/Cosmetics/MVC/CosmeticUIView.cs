@@ -1,11 +1,12 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.MVC
 {
-    public class CosmeticUIView : ManagedBehavior, IObserver
+    public class CosmeticUIView : ManagedBehavior, IObserver, ICosmeticUISounds
     {
         [SerializeField] private CosmeticUIPanelSelector uiSelector;
         
@@ -62,5 +63,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             return _uiComponents ??= uiSelector.GetPanelData();
         }
+
+
     }
 }

@@ -1,10 +1,10 @@
 ﻿using _Main.Scripts.CustomId;
-using _Main.Scripts.Sounds;
+using _Main.Scripts.Interfaces.Sounds;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.Abilities.Sphere.Components
+namespace _Main.Scripts.Sounds.Components
 {
-    public class AbilitySphereSounds : SoundBehaviour<AbilitySphereView>
+    public class ProjectileSounds : SoundBehaviour<IProjectileSounds>
     {
         [SerializeField] private SoundClassSo movement;
 
@@ -12,12 +12,12 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere.Components
 
         private void Start()
         {
-            GetComponentToSound.OnValuesChanged += (value) =>
+            GetComponentToSound.OnStart += () =>
             {
                 _movementSoundId = PlaySound(movement);
             };
 
-            GetComponentToSound.OnRecycle += (value) =>
+            GetComponentToSound.OnStop += () =>
             {
                 StopSound(_movementSoundId);
             };
