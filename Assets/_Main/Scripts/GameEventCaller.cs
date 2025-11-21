@@ -394,6 +394,12 @@ namespace _Main.Scripts
                 RequestType = requestType
             });
         }
+
+        public static void LoadLastScreen()
+        {
+            GameEventCaller.Publish(new GameScreenEvents.LastScreen());
+        }
+
     }
     
     public static class GameScreenEventSubscriber
@@ -412,6 +418,11 @@ namespace _Main.Scripts
         {
             GameEventCaller.Subscribe(action);
         }
+        
+        public static void GoToLastScreen(Action<GameScreenEvents.LastScreen> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
     }
     
     public static class GameScreenEventUnSubscriber
@@ -427,6 +438,11 @@ namespace _Main.Scripts
         }
         
         public static void DisableScreen(Action<GameScreenEvents.DisableScreen> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void GoToLastScreen(Action<GameScreenEvents.LastScreen> action)
         {
             GameEventCaller.Unsubscribe(action);
         }

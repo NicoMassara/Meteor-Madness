@@ -16,8 +16,7 @@ namespace _Main.Scripts.MainMenu.MVC
             Menu,
             Lore,
             Tutorial,
-            Credits,
-            Options
+            Credits
         }
 
         
@@ -51,7 +50,6 @@ namespace _Main.Scripts.MainMenu.MVC
             var lore = new LoreState<States>();
             var tutorial = new TutorialState<States>();
             var credits = new CreditsState<States>();
-            var options = new OptionsState<States>();
             
             temp.Add(none);
             temp.Add(enable);
@@ -60,7 +58,6 @@ namespace _Main.Scripts.MainMenu.MVC
             temp.Add(lore);
             temp.Add(tutorial);
             temp.Add(credits);
-            temp.Add(options);
 
 
             #endregion
@@ -75,7 +72,6 @@ namespace _Main.Scripts.MainMenu.MVC
             menu.AddTransition(States.Tutorial, tutorial);
             menu.AddTransition(States.Disable, disable);
             menu.AddTransition(States.Credits, credits);
-            menu.AddTransition(States.Options, options);
             
             lore.AddTransition(States.Menu, menu);
             
@@ -83,8 +79,6 @@ namespace _Main.Scripts.MainMenu.MVC
             
             tutorial.AddTransition(States.Menu, menu);
             tutorial.AddTransition(States.Disable, disable);
-            
-            options.AddTransition(States.Menu, menu);
             
             disable.AddTransition(States.Enable, enable);
 
@@ -133,11 +127,6 @@ namespace _Main.Scripts.MainMenu.MVC
         public void TransitionToCredits()
         {
             SetTransition(States.Credits);
-        }
-        
-        public void TransitionToOptions()
-        {
-            SetTransition(States.Options);
         }
         
         #endregion
@@ -195,14 +184,12 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             _motor.Credits();
         }
-        
-        public void Options()
-        {
-            _motor.Options();
-        }
-
         #endregion
-        
+
+        public void TriggerOptions()
+        {
+            _motor.TriggerOptions();
+        }
     }
 
     #region States
@@ -261,14 +248,6 @@ namespace _Main.Scripts.MainMenu.MVC
         public override void Awake()
         {
             Controller.Credits();
-        }
-    }
-    
-    public class OptionsState<T> : StateBase<T>
-    {
-        public override void Awake()
-        {
-            Controller.Options();
         }
     }
 

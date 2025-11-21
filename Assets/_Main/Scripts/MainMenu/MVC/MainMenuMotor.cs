@@ -54,10 +54,10 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             NotifyAll(MainMenuObserverMessage.CreditsMenu);
         }
-        
-        public void Options()
+
+        public void TriggerOptions()
         {
-            NotifyAll(MainMenuObserverMessage.OptionsMenu);
+            NotifyAll(MainMenuObserverMessage.TriggerOptions);
         }
     }
 }

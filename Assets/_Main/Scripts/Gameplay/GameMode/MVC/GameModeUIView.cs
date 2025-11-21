@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
@@ -10,13 +11,14 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeUIView : ManagedBehavior, IObserver
+    public class GameModeUIView : ManagedBehavior, IObserver,
+        IGameModeUISounds
     {
         [SerializeField] private GameModeUiPanelSelector uiSelector;
         
         private GameModeUIComponents _uiComponents;
         private GameObject _currentPanel;
-        private NumberIncrementer _numberIncrementer;
+        private NumberIncrementer _numberIncrementer = new NumberIncrementer();
         private Coroutine _gameplayPointsCoroutine;
         private IGameUIConfig _gameUIConfig;
         
@@ -28,7 +30,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnRestartButtonPressed;
         public event Action OnPauseButtonPressed;
         public event Action OnResumeButtonPressed;
-        public event Action OnOptionsBackButtonPressed;
         public event Action OnOptionsButtonPressed;
         public event Action OnPointsAdded;
         
@@ -36,22 +37,23 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _gameUIConfig = GameConfigManager.Instance.GetUIData();
             
-            GetUiComponents().ResumeButton.onClick.AddListener(() =>
+            GetUiComponents().PausePanel.OnResumeButtonPressed += () =>
             {
                 OnResumeButtonPressed?.Invoke();
-            });
+            };
+            GetUiComponents().PausePanel.OnOptionsButtonPressed += () =>
+            {
+                OnOptionsButtonPressed?.Invoke();
+            };
+            GetUiComponents().PausePanel.OnMainMenuButtonPressed += () =>
+            {
+                OnMainMenuButtonPressed?.Invoke();
+            };
+            
             GetUiComponents().PauseButton.onClick.AddListener(() =>
             {
                 OnPauseButtonPressed?.Invoke();
             });
-            GetUiComponents().OptionsButton.onClick.AddListener(() =>
-            {
-                OnOptionsButtonPressed?.Invoke();
-            });
-            GetUiComponents().SettingsPanel.OnBackButtonPressed += () =>
-            {
-                OnOptionsBackButtonPressed?.Invoke();
-            };
             GetUiComponents().RestartButton.onClick.AddListener(() =>
             {
                 OnRestartButtonPressed?.Invoke();
@@ -68,14 +70,23 @@ namespace _Main.Scripts.Gameplay.GameMode
             GetUiComponents().DeathText.text = GetLocalizedString("Gameplay.Death.Title");
 
             _scoreTextValue = GetLocalizedString("Gameplay.Score");
+            GetUiComponents().CountdownText.text = "";
             LocalizationEvents.OnLanguageChanged += Localization_OnLanguageChangedHandler;
         }
-
 
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
+                // Enable / Disable
+                case GameModeObserverMessage.Disable:
+                    HandleDisable();
+                    break;
+                case GameModeObserverMessage.Enable:
+                    HandleEnable();
+                    break;
+                
+                // Countdouwn
                 case GameModeObserverMessage.StartCountdown:
                     HandleStartCountdown();
                     break;
@@ -85,17 +96,10 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.CountdownFinish:
                     HandleCountdownFinish();
                     break;
+                
+                // GameMode
                 case GameModeObserverMessage.StartGameplay:
                     HandleStartGameplay();
-                    break;
-                case GameModeObserverMessage.MeteorDeflect:
-                    HandleMeteorDeflect((float)args[0]);
-                    break;
-                case GameModeObserverMessage.EarthStartDestruction:
-                    HandleEarthStartDestruction();
-                    break;
-                case GameModeObserverMessage.EarthEndDestruction:
-                    HandleEarthEndDestruction((float)args[0]);
                     break;
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
@@ -103,12 +107,21 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameRestart:
                     HandleGameRestart();
                     break;
-                case GameModeObserverMessage.Disable:
-                    HandleDisable();
+                
+                // Meteor
+                case GameModeObserverMessage.MeteorDeflect:
+                    HandleMeteorDeflect((float)args[0]);
                     break;
-                case GameModeObserverMessage.Enable:
-                    HandleEnable();
+                
+                //Earth
+                case GameModeObserverMessage.EarthStartDestruction:
+                    HandleEarthStartDestruction();
                     break;
+                case GameModeObserverMessage.EarthEndDestruction:
+                    HandleEarthEndDestruction((float)args[0]);
+                    break;
+
+                // Camera
                 case GameModeObserverMessage.CameraZoomOut:
                     HandleCameraZoomOut();
                     break;
@@ -118,26 +131,24 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.SetCanPause:
                     HandleSetCanPause((bool)args[0]);
                     break;
+                
+                // Screens
                 case GameModeObserverMessage.TriggerMainMenu:
                     HandleTriggerMainMenu();
-                    break;
-                case GameModeObserverMessage.SetHasHighScore:
-                    HandleSetHighScore((bool)args[0],(float)args[1]);
                     break;
                 case GameModeObserverMessage.PausePanel:
                     HandlePausePanel((bool)args[0]);
                     break;
-                case GameModeObserverMessage.OptionsPanel:
-                    HandleOptionsPanel((bool)args[0]);
-                    break;
-                
                 case GameModeObserverMessage.GameplayPanel:
                     HandleGameplayPanel((bool)args[0]);
                     break;
+                
+                // Score
+                case GameModeObserverMessage.SetHasHighScore:
+                    HandleSetHighScore((bool)args[0],(float)args[1]);
+                    break;
             }
         }
-
-
 
         private void HandleSetHighScore(bool hasNewHighScore, float highScore)
         {
@@ -196,25 +207,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             if (isActive)
             {
-                SetActivePanel(GetUiComponents().PausePanel);
+                SetActivePanel(GetUiComponents().PausePanel.Panel);
             }
             else
             {
                 DisableActivePanel();
             }
 
-        }
-
-        private void HandleOptionsPanel(bool isActive)
-        {
-            if (isActive)
-            {
-                SetActivePanel(GetUiComponents().OptionsPanel);
-            }
-            else
-            {
-                DisableActivePanel();
-            }
         }
 
         #region Panel
@@ -239,8 +238,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStartCountdown()
         {
             DisableActivePanel();
-            _hasHighScore = false;
-            _numberIncrementer = new NumberIncrementer();
             SetActivePanel(GetUiComponents().CountdownPanel);
         }
         
@@ -253,13 +250,14 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdownFinish()
         {
-            _numberIncrementer?.ResetValues();
-            UpdateGameplayScoreText(0);
+            GetUiComponents().CountdownText.text = "";
         }
         
         private void HandleStartGameplay()
         {
-            SetActivePanel(GetUiComponents().GameplayPanel);
+            _hasHighScore = false;
+            _numberIncrementer?.ResetValues();
+            UpdateGameplayScoreText(0);
         }
 
         #endregion
@@ -318,6 +316,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var text = $"{_scoreTextValue}: {points:D6}";
             GetUiComponents().ScoreText.text = text;
+            GetUiComponents().PausePanel.SetScoreText(points);
         }
 
         private void UpdateDeathScoreText(int points)

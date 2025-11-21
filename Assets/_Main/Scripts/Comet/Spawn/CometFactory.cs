@@ -37,8 +37,11 @@ namespace _Main.Scripts.Comet
         private void Timer_OnEndHandler()
         {
             if(playerCamera == null) return;
+            if (GameManager.Instance.IsPaused == false)
+            {
+                SpawnComet(GetSpawnPosition(), GetTargetPosition());
+            }
             
-            SpawnComet(GetSpawnPosition(), GetTargetPosition());
             var spawnDelay = GameConfigManager.Instance.GetGameplayData().GameTimeData.CometSpawnDelay;
             var spawnDelayRange = Random.Range(spawnDelay*0.75f, spawnDelay*1.25f);
             

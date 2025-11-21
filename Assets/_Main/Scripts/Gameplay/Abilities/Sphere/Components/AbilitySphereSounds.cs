@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Sounds;
+﻿using _Main.Scripts.CustomId;
+using _Main.Scripts.Sounds;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere.Components
@@ -7,7 +8,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere.Components
     {
         [SerializeField] private SoundClassSo movement;
 
-        private SoundId _movementSoundId;
+        private GeneratedId _movementSoundId;
 
         private void Start()
         {

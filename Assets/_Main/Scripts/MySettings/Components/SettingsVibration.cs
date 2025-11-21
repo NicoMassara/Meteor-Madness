@@ -1,16 +1,16 @@
-﻿using _Main.Scripts.MySettings.UI;
+﻿using _Main.Scripts.MySettings.MVC;
 using _Main.Scripts.Vibration;
 using UnityEngine;
 
 namespace _Main.Scripts.MySettings.Components
 {
-    public class SettingsVibration : VibrationBehavior<SettingsUIView>
+    public class SettingsVibration : VibrationBehavior<SettingsUiView>
     {
 #if UNITY_ANDROID 
         protected override void Start()
         {
             base.Start();
-            ComponentToVibrate.VolumeSlider.OnChanged += (value) =>
+            ComponentToVibrate.OnVolumeChanged += (value) =>
             {
                 
                 var vibrationForce = (int)Mathf.Lerp(
@@ -23,12 +23,12 @@ namespace _Main.Scripts.MySettings.Components
                 });
             };
             
-            ComponentToVibrate.LanguageSelector.OnChanged += (value) =>
+            ComponentToVibrate.OnLanguageChanged += (value) =>
             {
                 Vibrate(VibrationType.UIButtonAccept);
             };
             
-            ComponentToVibrate.VibrationToggle.OnChanged += (value) =>
+            ComponentToVibrate.OnVibrationChanged += (value) =>
             {
                 Vibrate(value ? VibrationType.UIButtonAccept : VibrationType.UIButtonCancel);
             };

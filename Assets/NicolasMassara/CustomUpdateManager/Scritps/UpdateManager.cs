@@ -291,7 +291,7 @@ namespace NicolasMassara.CustomUpdateManager
         
         // -------------------------------------------------------------
         
-        public const int TargetFrameRate = 165;
+        public const int TargetFrameRate = 120;
         
         public bool IsGlobalPaused { get; set; }
         

@@ -2549,7 +2549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 603b59b3a0f54685aee977a880a3f2e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultScreen: 2
+  defaultScreen: 1
 --- !u!114 &809164425
 MonoBehaviour:
   m_ObjectHideFlags: 0

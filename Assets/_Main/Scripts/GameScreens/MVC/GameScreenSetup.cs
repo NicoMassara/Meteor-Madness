@@ -33,6 +33,11 @@ namespace _Main.Scripts.GameScreens
         {
             _motor.LoadCurrentScreen();
         }
+        
+        private void TransitionToLastScreen()
+        {
+            _motor.LoadLastScreen();
+        }
 
         private void ModuleLoader_OnModulesLoaded()
         {
@@ -50,6 +55,12 @@ namespace _Main.Scripts.GameScreens
         {
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
+            GameScreenEventSubscriber.GoToLastScreen(EventBus_GameScreen_GoToLastScreen);
+        }
+
+        private void EventBus_GameScreen_GoToLastScreen(GameScreenEvents.LastScreen input)
+        {
+            TransitionToLastScreen();
         }
 
         private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
