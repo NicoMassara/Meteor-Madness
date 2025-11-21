@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using _Main.Scripts.Gameplay.Abilies;
 using _Main.Scripts.Gameplay.Abilities.Sphere;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.MyTools;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomTimerManager.Tools;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Spawn
@@ -20,42 +21,15 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private bool _isGameplayActive;
         private bool _isStorageFull;
         private bool _isTimerRunning;
-        private ulong _spawnTimerId;
         private int _minUnlockLevel;
         private int _currentLevel;
+        private TimerGeneratedId _spawnTimerId;
         private AbilitySphereFactory _factory;
         private AbilitySelector _selector;
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
 
         private void Awake()
         {
             SetEventBus();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                var tempDic = new Dictionary<AbilityType, int>();
-                
-                for (int i = 0; i < 10; i++)
-                {
-                    var ability = GetAbilityToAdd();
-                    if (tempDic.ContainsKey(ability))
-                    {
-                        tempDic[ability]++;
-                    }
-                    else
-                    {
-                        tempDic.Add(ability, 1);
-                    }
-                }
-
-                foreach (var item in tempDic)
-                {
-                    Debug.Log($"Ability: {item.Key}, Times Selected: {item.Value}");
-                }
-            }
         }
 
         private void Start()
@@ -90,6 +64,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             });
             tempSphere.OnDeflection += DeflectionHandler;
             tempSphere.OnEarthCollision += OnEarthCollisionHandler;
+            tempSphere.EnableMovement = true;
             
             ProjectileEventCaller.Add(tempSphere);
         }
@@ -142,23 +117,22 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void SetTimer(float time)
         {
-            Debug.Log($"Timer Set To: {time}");
-
             _isTimerRunning = true;
-            _spawnTimerId = TimerManager.Add(new TimerData
+            _spawnTimerId = TimerManager.Add(new TimerData(time,() =>
             {
-                Time = time,
-                OnEndAction = () =>
-                {
-                    SendAbility();
-                    _isTimerRunning = false;
-                }
-            }, SelfUpdateGroup);
+                SendAbility();
+                _isTimerRunning = false;
+            }));
         }
 
         private void RemoveTimer()
         {
-            TimerManager.Remove(_spawnTimerId);
+            if(_spawnTimerId == null) return;   
+            
+            if (_spawnTimerId.IsActive)
+            {
+                TimerManager.Remove(_spawnTimerId);
+            }
         }
 
         private void TryRunTimer(float time)
@@ -184,16 +158,18 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetStorageFull>(EventBus_Ability_StorageFull);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
-            GameEventCaller.Subscribe<AbilitiesEvents.Add>(EventBus_Ability_Add);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetNextSpawn>(EventBus_Ability_NextSpawn);
-            GameEventCaller.Subscribe<GameModeEvents.Finish>(EventBus_GameMode_Finished);
-            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            GameEventCaller.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+            ProjectileEventSubscriber.Spawn(EventBus_Projectile_Spawn);
+            ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_DisableSpawn);
+            ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_EnableSpawn);
+            ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
+            //
+            AbilitiesEventSubscriber.SetStorageFull(EventBus_Ability_StorageFull);
+            AbilitiesEventSubscriber.NotifyIsActive(EventBus_Ability_SetActive);
+            AbilitiesEventSubscriber.Add(EventBus_Ability_Add);
+            AbilitiesEventSubscriber.SetNextSpawn(EventBus_Ability_NextSpawn);
         }
+        
+        #region Ability
 
         private void EventBus_Ability_NextSpawn(AbilitiesEvents.SetNextSpawn input)
         {
@@ -213,7 +189,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
         
-        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        private void EventBus_Ability_SetActive(AbilitiesEvents.NotifyIsActive input)
         {
             if (_isGameplayActive == false) return;
             
@@ -228,10 +204,9 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
 
-        private void EventBus_GameMode_Start(GameModeEvents.Start input)
-        {
-            _isGameplayActive = true;
-        }
+        #endregion
+
+        #region Projectile
 
         private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
         {
@@ -241,9 +216,22 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
         
-        private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
+        private void EventBus_Projectile_DisableSpawn(ProjectileEvents.DisableSpawn input)
         {
-            _currentLevel = input.CurrentLevel;
+            _isGameplayActive = false;
+            RemoveTimer();
+            _selector.Reset();
+            _factory.RecycleAll();
+        }
+        
+        private void EventBus_Projectile_EnableSpawn(ProjectileEvents.EnableSpawn input)
+        {
+            _isGameplayActive = true;
+        }
+        
+        private void EventBus_Projectile_UpdateLevel(ProjectileEvents.UpdateLevel input)
+        {
+            _currentLevel = input.Level;
             _selector.UpdateLevel(_currentLevel);
             if (GetCanRunTimer())
             {
@@ -251,19 +239,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             }
         }
 
-        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
-        {
-            _isGameplayActive = false;
-            TimerManager.Remove(_spawnTimerId);
-            _factory.RecycleAll();
-        }
-
-        private void EventBus_GameMode_Finished(GameModeEvents.Finish input)
-        {
-            RemoveTimer();
-            _selector.Reset();
-            _factory.RecycleAll();
-        }
+        #endregion
 
         #endregion
     }

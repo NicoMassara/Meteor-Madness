@@ -7,7 +7,9 @@
     "Back": "Back",
     "Previous": "Previous",
     "Pause": "Pause",
-    "Quit": "Quit"
+    "Quit": "Quit",
+    "Enable" : "Enable",
+    "Disable" : "Disable"
   },
   
   "Menu": {
@@ -23,7 +25,20 @@
       "StartButton" : "Start Tutorial"
     },
     "Cosmetic": "Item Shop",
-    "Settings": "Settings"
+    "Settings": {
+      "Button": "Settings",
+      "Title" : "Settings",
+      "Items" : {
+        "Volume" : "Volume",
+        "Vibration" : "Vibration",
+        "Language" : "Language"
+      }
+    },
+    "Credits": {
+      "Button" : "Credits",
+      "Title" : "Credits",
+      "Text" : "Develop By"
+    }
   },
   
   "Tutorial": {
@@ -35,7 +50,8 @@
   },
 
   "MultiPage" : {
-    "Tutorial" : "@MultiPage/en/tutorial.json"
+    "TutorialMobile" : "@MultiPage/Mobile/en/tutorial.json",
+    "TutorialDesktop" : "@MultiPage/Desktop/en/tutorial.json"
   },
   
   "Abilities": {
@@ -58,6 +74,7 @@
     "CountDownStart" : "Prepare In",
     "CountdownFinish" : "Defend!",
     "Score" : "Score",
+    "HighScore" : "High Score",
     "Death": {
       "Title" : "Humanity Is Over!",
       "Score" : "Your Score"

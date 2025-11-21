@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using _Main.Scripts.ScriptableObjects;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MultiPage
@@ -56,7 +56,7 @@ namespace _Main.Scripts.MultiPage
 
         private void SetupEventBus()
         {
-            GameEventCaller.Subscribe<MultiPageUIEvents.Create>(EventBus_MultiPage_Create);
+            MultiPageUIEventSubscriber.Create(EventBus_MultiPage_Create);
         }
 
         private void EventBus_MultiPage_Create(MultiPageUIEvents.Create input)

@@ -1,7 +1,5 @@
 ﻿using System;
-using _Main.Scripts.FyingObject;
-using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Gameplay.AutoTarget;
+using _Main.Scripts.FlyingObject;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Observer;
 using UnityEngine;
@@ -25,19 +23,16 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
         {
             CanBeTargeted = false;
         }
-        
+
         public override void SetValues(AbilitySphereValues data)
         {
             base.SetValues(data);
             CanBeTargeted = true;
         }
 
-        public override void ManagedFixedUpdate()
+        public void SetEnableMovement(bool enable)
         {
-            if (EnableMovement)
-            {
-                base.ManagedFixedUpdate();
-            }
+            Movement.CanMove = enable;
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -87,6 +82,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
                 Direction = direction,
                 Ability = ability
             });
+            
             HandleCollision(false, position, direction,true);
         }
     }

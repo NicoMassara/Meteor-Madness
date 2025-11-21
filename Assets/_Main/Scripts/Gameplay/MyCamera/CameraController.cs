@@ -1,8 +1,7 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Shaker;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.MyCamera
@@ -19,8 +18,9 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private bool _doesChangeSize = false;
         private float _targetSize;
 
-        public UpdateGroup SelfLateUpdateGroup { get; } = UpdateGroup.Camera;
-        
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Camera;
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        public float LastTickTime { get; set; }
 
         private void Awake()
         {
@@ -32,19 +32,19 @@ namespace _Main.Scripts.Gameplay.MyCamera
             _shakerController = new ShakerController(mainCamera.transform);
             _defaultSize = mainCamera.orthographicSize;
         }
-        
-        public void ManagedLateUpdate()
+
+
+
+        public void ExecuteLateUpdate(float deltaTime)
         {
-            var dt = CustomTime.GetDeltaTimeByChannel(SelfLateUpdateGroup);
-            
             if (_shakerController.IsShaking)
             {
-                _shakerController.HandleShake(dt);
+                _shakerController.HandleShake(deltaTime);
             }
 
             if (_doesChangeSize)
             {
-                HandleSizeChange(dt);
+                HandleSizeChange(deltaTime);
             }
         }
 
@@ -93,9 +93,9 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<CameraEvents.Shake>(EventBus_Camera_StartShake);
-            GameEventCaller.Subscribe<CameraEvents.ZoomIn>(EventBus_Camera_ZoomIn);
-            GameEventCaller.Subscribe<CameraEvents.ZoomOut>(EventBus_Camera_ZoomOut);
+            CameraEventSubscriber.Shake(EventBus_Camera_StartShake);
+            CameraEventSubscriber.ZoomIn(EventBus_Camera_ZoomIn);
+            CameraEventSubscriber.ZoomOut(EventBus_Camera_ZoomOut);
         }
 
         private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)

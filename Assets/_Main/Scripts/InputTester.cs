@@ -1,15 +1,15 @@
-﻿using _Main.Scripts.Managers;
-using _Main.Scripts.MyCustoms;
+﻿using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts
 {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     public class InputTester : MonoBehaviour
     {
         [SerializeField] private AbilityType abilityToAdd;
 
         private bool _timeScaleHalved;
-        
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.K))
@@ -23,6 +23,10 @@ namespace _Main.Scripts
             else if (Input.GetKeyDown(KeyCode.M))
             {
                 ChangeTimeScale();
+            }
+            else if (Input.GetKeyDown(KeyCode.N))
+            {
+                Kill();
             }
         }
 
@@ -51,5 +55,7 @@ namespace _Main.Scripts
             CustomTime.GlobalTimeScale = _timeScaleHalved ? 1f : 0.1f;
             CustomTime.GlobalFixedTimeScale = _timeScaleHalved ? 1f : 0.1f;
         }
+        
     }
+#endif
 }

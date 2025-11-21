@@ -7,7 +7,9 @@
     "Back": "Retour",
     "Previous": "Précédent",
     "Pause": "Pause",
-    "Quit": "Quitter"
+    "Quit": "Quitter",
+    "Enable": "Activer",
+    "Disable": "Désactiver"
   },
 
   "Menu": {
@@ -23,7 +25,20 @@
       "StartButton": "Commencer le Tutoriel"
     },
     "Cosmetic": "Boutique d’Objets",
-    "Settings": "Paramètres"
+    "Settings": {
+      "Button": "Paramètres",
+      "Title": "Paramètres",
+      "Items": {
+        "Volume": "Volume",
+        "Vibration": "Vibration",
+        "Language": "Langue"
+      }
+    },
+    "Credits": {
+      "Button" : "Crédits",
+      "Title" : "Crédits",
+      "Text" : "Développé par"
+    }
   },
 
   "Tutorial": {
@@ -34,8 +49,9 @@
     }
   },
 
-  "MultiPage": {
-    "Tutorial": "@MultiPage/fr/tutorial.json"
+  "MultiPage" : {
+    "TutorialMobile" : "@MultiPage/Mobile/fr/tutorial.json",
+    "TutorialDesktop" : "@MultiPage/Desktop/fr/tutorial.json"
   },
 
   "Abilities": {
@@ -58,6 +74,7 @@
     "CountDownStart": "Préparez-vous dans",
     "CountdownFinish": "Défendez !",
     "Score": "Score",
+    "HighScore" : "Record",
     "Death": {
       "Title": "L’humanité est perdue !",
       "Score": "Votre Score"

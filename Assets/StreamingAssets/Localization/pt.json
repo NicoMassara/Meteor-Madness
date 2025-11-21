@@ -7,7 +7,9 @@
     "Back": "Voltar",
     "Previous": "Anterior",
     "Pause": "Pausar",
-    "Quit": "Sair"
+    "Quit": "Sair",
+    "Enable": "Ativar",
+    "Disable": "Desativar"
   },
 
   "Menu": {
@@ -23,7 +25,20 @@
       "StartButton": "Iniciar Tutorial"
     },
     "Cosmetic": "Loja de Itens",
-    "Settings": "Configurações"
+    "Settings": {
+      "Button": "Configurações",
+      "Title": "Configurações",
+      "Items": {
+        "Volume": "Volume",
+        "Vibration": "Vibração",
+        "Language": "Idioma"
+      }
+    },
+    "Credits": {
+      "Button" : "Créditos",
+      "Title" : "Créditos",
+      "Text" : "Desenvolvido por"
+    }
   },
 
   "Tutorial": {
@@ -34,8 +49,9 @@
     }
   },
 
-  "MultiPage": {
-    "Tutorial": "@MultiPage/pt/tutorial.json"
+  "MultiPage" : {
+    "TutorialMobile" : "@MultiPage/Mobile/pt/tutorial.json",
+    "TutorialDesktop" : "@MultiPage/Desktop/pt/tutorial.json"
   },
 
   "Abilities": {
@@ -58,6 +74,7 @@
     "CountDownStart": "Prepare-se em",
     "CountdownFinish": "Defenda!",
     "Score": "Pontuação",
+    "HighScore": "Recorde",
     "Death": {
       "Title": "A Humanidade Acabou!",
       "Score": "Sua Pontuação"

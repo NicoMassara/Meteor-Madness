@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Managers.UpdateManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilities.Sphere
@@ -20,8 +20,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere
             _motor = new AbilitySphereMotor();
             _controller = new AbilitySphereController(_motor,shieldLayerMask,earthLayerMask);
             
-            _motor.Subscribe(_view);
             SetViewHandlers();
+            _motor.Subscribe(_view);
         }
         
         #region ViewHandlers

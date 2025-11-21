@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using _Main.Scripts.Gameplay.AutoTarget;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using _Main.Scripts.Utilities;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
@@ -26,12 +25,12 @@ namespace _Main.Scripts.Gameplay.Shield
         private ProjectileDetector _projectileDetector;
         private ShieldMovementComponent _movement;
         private ShieldSpeeder _shieldSpeeder;
-        private IUpdatable updatableImplementation;
         private bool _isPlayerInputDisable;
-        private bool _automaticEnable;
-        
+        private float _deltaTime;
+        private bool _canAutoCheck;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
-        public UpdateGroup SelfFixedUpdateGroup { get; }= UpdateGroup.Shield;
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+
 
         private void Awake()
         {
@@ -45,23 +44,24 @@ namespace _Main.Scripts.Gameplay.Shield
             _projectileDetector.OnTargetFound += Detector_OnTargetFoundHandler;
             _projectileDetector.OnTargetLost += Detector_OnTargetLostHandler;
         }
-        
-        public void ManagedUpdate()
-        {
-            _movement.Update(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-        }
 
-        public void ManagedFixedUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
-            if (_automaticEnable)
+            _deltaTime = deltaTime;
+            _movement.Update(deltaTime);
+        }
+        
+        public void ExecuteFixedUpdate(float fixedDeltaTime)
+        {
+            if (_canAutoCheck)
             {
-                _projectileDetector.CheckForProjectile();
+                _projectileDetector?.CheckForProjectile();
             }
         }
         
         public void SetAutomaticEnable(bool automaticEnable)
         {
-            _automaticEnable = automaticEnable;
+            _canAutoCheck = automaticEnable;
         }
         
         #region Movement
@@ -70,7 +70,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (_isPlayerInputDisable) return false;
             
-            _movement.HandleMove(direction, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _movement.HandleMove(direction, _deltaTime);
             return true;
         }
 
@@ -110,7 +110,6 @@ namespace _Main.Scripts.Gameplay.Shield
 
         public void AutoCorrection()
         {
-
             StartCoroutine(Coroutine_AutoCorrection());
         }
 
@@ -132,7 +131,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 var multiplier = MathfCalculations.Remap(distanceRatio, 0, 1f, 1, 1.75f);
                 currentDirection = _projectileDetector.GetSlotDirection() * 10;
                 _movement.HandleMove((int)currentDirection * multiplier,
-                    CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                    _deltaTime);
                 
                 yield return null;
             }
@@ -152,7 +151,7 @@ namespace _Main.Scripts.Gameplay.Shield
             
                 while (meteorSlot != _movement.GetCurrentSlot())
                 {
-                    _movement.HandleMove(1, CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                    _movement.HandleMove(1, _deltaTime);
                 
                     yield return null;
                 }
@@ -180,7 +179,7 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
-
+        
         #region Gizmos
 
         private void OnDrawGizmosSelected()
@@ -190,6 +189,5 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
-
     }
 }

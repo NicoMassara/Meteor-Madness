@@ -1,6 +1,8 @@
 ﻿using System;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.MySettings;
+using _Main.Scripts.Sounds;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
@@ -25,17 +27,18 @@ namespace _Main.Scripts.MainMenu.MVC
             _motor.Subscribe(_ui);
             _motor.Subscribe(_view);
             
-            
             SetViewHandlers();
             
             _controller.Initialize();
             
-            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetScreen);
+            GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
+            GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
+        
 
         private void EnableMainMenu()
         {
-            _controller.TransitionToInitial();
+            _controller.TransitionToEnable();
         }
 
         private void DisableMainMenu()
@@ -47,34 +50,46 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void SetViewHandlers()
         {
-            _view.OnMainMenuEnable += EnableMainMenu;
+            _view.OnMainMenuEnable += () =>
+            {
+                _controller.TransitionToMenu();
+            };
             //
             _ui.OnGameModeTriggered += () => _controller.TriggerGameMode();
             _ui.OnTutorialTriggered += () => _controller.TriggerTutorial();
             _ui.OnLoreOpen += () => _controller.TransitionToLore();
-            _ui.OnBackToMenu += () => _controller.TransitionToInitial();
+            _ui.OnBackToMenu += () => _controller.TransitionToMenu();
             _ui.OnExit += () => _controller.TriggerQuit();
+            _ui.OnCreditsOpen += () => _controller.TransitionToCredits();
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
+            _ui.OnOptionsOpen += () => _controller.TriggerOptions();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
         }
 
         #endregion
         
         #region EventBus
-
-        private void EventBus_GameScreen_SetScreen(GameScreenEvents.SetScreen input)
+        
+        private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
         {
-            if (input.ScreenType == ScreenType.MainMenu &&
-                input.IsEnable)
-            {
-                _controller.TransitionToEnable();
-            }
-            else
+            if(input.ScreenType != ScreenType.MainMenu) return;
+            
+            if (input.RequestType == EventRequestType.Requested)
             {
                 DisableMainMenu();
             }
         }
 
+        private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
+        {
+            if(input.ScreenType != ScreenType.MainMenu) return;
+            
+            if (input.RequestType == EventRequestType.Granted)
+            {
+                EnableMainMenu();
+            }
+        }
+        
         #endregion
     }
 }

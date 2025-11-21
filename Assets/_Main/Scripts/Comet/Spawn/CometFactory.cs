@@ -1,12 +1,14 @@
-﻿using _Main.Scripts.FyingObject;
+﻿using _Main.Scripts.FlyingObject;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
 using UnityEngine;
+using NicolasMassara.CustomTimerManager.Tools;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomUpdateManager;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Comet
 {
-    public class CometFactory : ManagedBehavior, IUpdatable
+    public class CometFactory : ManagedBehavior
     {
         [SerializeField] private CometView cometPrefab;
         [Header("Values")]
@@ -18,9 +20,7 @@ namespace _Main.Scripts.Comet
         
         private GenericPool<CometView> _pool;
         private bool _isBottomSpawn;
-        private ulong _spawnTimerId;
-
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        private TimerGeneratedId _spawnTimerId;
 
         private void Start()
         {
@@ -29,22 +29,19 @@ namespace _Main.Scripts.Comet
             SetTimer(GameConfigManager.Instance.GetGameplayData().GameTimeData.FirstCometSpawnDelay);
         }
 
-        public void ManagedUpdate() { }
-
         private void SetTimer(float spawnDelay)
         {
-            _spawnTimerId = TimerManager.Add(new TimerData
-            {
-                Time = spawnDelay,
-                OnEndAction = Timer_OnEndHandler
-            }, SelfUpdateGroup);
+            _spawnTimerId = TimerManager.Add(new TimerData(spawnDelay, Timer_OnEndHandler, UpdateFrequency.EveryFrame));
         }
 
         private void Timer_OnEndHandler()
         {
             if(playerCamera == null) return;
+            if (GameManager.Instance.IsPaused == false)
+            {
+                SpawnComet(GetSpawnPosition(), GetTargetPosition());
+            }
             
-            SpawnComet(GetSpawnPosition(), GetTargetPosition());
             var spawnDelay = GameConfigManager.Instance.GetGameplayData().GameTimeData.CometSpawnDelay;
             var spawnDelayRange = Random.Range(spawnDelay*0.75f, spawnDelay*1.25f);
             

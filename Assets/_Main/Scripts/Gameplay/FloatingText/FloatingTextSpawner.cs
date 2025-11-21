@@ -1,5 +1,5 @@
 ﻿using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.FloatingScore
@@ -13,6 +13,10 @@ namespace _Main.Scripts.Gameplay.FloatingScore
         private void Awake()
         {
             _factory = new FloatingScoreFactory(prefab);
+        }
+
+        private void Start()
+        {
             SetEventBus();
         }
 
@@ -26,7 +30,7 @@ namespace _Main.Scripts.Gameplay.FloatingScore
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<FloatingTextEvents.Spawn>(EventBus_FloatingText_Spawn);
+            FloatingTextEventSubscriber.Spawn(EventBus_FloatingText_Spawn);
         }
 
         private void EventBus_FloatingText_Spawn(FloatingTextEvents.Spawn input)

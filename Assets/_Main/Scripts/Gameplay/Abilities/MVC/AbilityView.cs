@@ -1,16 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _Main.Scripts.Gameplay.Abilities;
-using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
+using NicolasMassara.CustomActionManager;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomTimerManager.Tools;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
-    public class AbilityView : ManagedBehavior, IObserver
+    public class AbilityView : ManagedBehavior, IObserver, IAbilitySounds
     {
         [Header("Sound Data")]
         [SerializeField] private SoundClassSo abilityAdd;
@@ -18,21 +21,41 @@ namespace _Main.Scripts.Gameplay.Abilies
         [SerializeField] private SoundClassSo slowTime;
         [SerializeField] private SoundClassSo speedTime;
 
-        private ulong _finishAbilityTimerId;
+        private TimerGeneratedId _finishAbilityTimerId;
         
         private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
         
         public UnityAction OnAbilitySelected;
         public UnityAction OnAbilityFinished;
-        
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Ability;
+        
+        public event Action OnAbilityTriggered;
+        public event Action OnAbilityAdded;
+
+        public event Action OnTimeSlowDown;
+        public event Action OnTimeSpeedUp;
+
+
+        
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private AbilityDebugData _debugData;
+#endif
+
+        private void Awake()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData = new AbilityDebugData();
+#endif
+        }
 
         private void Start()
         {
-            abilityDataController = new AbilityDataController(AbilitiesData_UpdateTimeScale, PlaySpeedUpSound, PlaySlowDownSound);
+            abilityDataController = new AbilityDataController(OnTimeSpeedUp, OnTimeSlowDown);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
+            abilityDataController.Initialize();
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -68,6 +91,9 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             var ability = (AbilityType)index;
             
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.AddAbility(index);
+#endif
             FloatingTextEventCaller.Spawn(new FloatingTextValues
             {
                 Position = position,
@@ -77,8 +103,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 DoesFade = true,
                 DoesMove = true
             });
-            
-            SoundEventCaller.PlaySound(abilityAdd, null,null);
+            OnAbilityAdded?.Invoke();
         }
 
         private void HandleSetStorageFull(bool isFull)
@@ -101,21 +126,33 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return;
             }
             
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.RemoveAbility();
+#endif
+            
             OnAbilitySelected?.Invoke();
         }
 
         private void HandleTriggerAbility(int abilityIndex)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.CurrentAbility = (AbilityType)abilityIndex;
+#endif
+            
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(
-                (AbilityType)abilityIndex),SelfUpdateGroup);
+                (AbilityType)abilityIndex),PriorityTick.High);
             
             GameModeEventCaller.SetEnablePause(false);
             
-            SoundEventCaller.PlaySound(abilityTrigger, null,null);
+            OnAbilityTriggered?.Invoke();
         }
 
         private void HandleFinishAbility(int abilityIndex)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.CurrentAbility = (AbilityType)0;
+#endif
+            
             if (abilityDataController.GetHasInstantEffect((AbilityType)abilityIndex))
             {
                 GameModeEventCaller.SetEnablePause(true);
@@ -123,7 +160,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
 
             ActionManager.Add(abilityDataController.GetAbilityEndQueue(
-                (AbilityType)abilityIndex),SelfUpdateGroup);
+                (AbilityType)abilityIndex),PriorityTick.High);
         }
         
         private void HandleForceFinish()
@@ -133,58 +170,14 @@ namespace _Main.Scripts.Gameplay.Abilies
             OnAbilityFinished?.Invoke();
         }
 
-        public void PlaySpeedUpSound()
-        {
-            SoundEventCaller.PlaySound(speedTime, null,null);
-        }
-        
-        public void PlaySlowDownSound()
-        {
-            SoundEventCaller.PlaySound(slowTime, null,null);
-        }
-
         #endregion
-
-        #region Coroutine
         
-
-        private IEnumerator Coroutine_UpdateTimeScale(TimeScaleData timeScaleData)
-        {
-            var currentTimeScale = timeScaleData.CurrentTimeScale;
-            var duration = timeScaleData.TimeToUpdate;
-            float elapsedTime = 0;
-            
-            while (elapsedTime < duration)
-            {
-                elapsedTime += Time.deltaTime;
-                float timeRatio = Mathf.Clamp01(elapsedTime / duration);
-                currentTimeScale = Mathf.Lerp(currentTimeScale, timeScaleData.TargetTimeScale, timeRatio);
-                
-                foreach (var updateGroup in timeScaleData.UpdateGroups)
-                {
-                    CustomTime.SetChannelTimeScale(updateGroup, currentTimeScale);
-                }
-                
-                yield return null;
-            }
-        }
-
-        #endregion
-
         #region Handler
 
         private void AbilitiesData_OnAbilityStartedHandler(float activeTime)
         {
-            _finishAbilityTimerId = TimerManager.Add(new TimerData
-            {
-                Time = activeTime,
-                OnEndAction = ()=> OnAbilityFinished?.Invoke()
-            }, SelfUpdateGroup);
-        }
-
-        private void AbilitiesData_UpdateTimeScale(TimeScaleData timeScaleData)
-        {
-            StartCoroutine(Coroutine_UpdateTimeScale(timeScaleData));
+            _finishAbilityTimerId = TimerManager.Add(new TimerData(activeTime, 
+                ()=> OnAbilityFinished?.Invoke()));
         }
         
         private void AbilitiesData_OnEndQueueFinished(AbilityType abilityType)

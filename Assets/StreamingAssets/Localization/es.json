@@ -7,7 +7,9 @@
     "Back": "Atras",
     "Previous": "Anterior",
     "Pause": "Pausar",
-    "Quit": "Cerrar"
+    "Quit": "Cerrar",
+    "Enable" : "Activado",
+    "Disable" : "Desactivado"
   },
 
   "Menu": {
@@ -23,7 +25,20 @@
       "StartButton" : "Iniciar Tutorial"
     },
     "Cosmetic": "Tienda",
-    "Settings": "Opciones"
+    "Settings": {
+      "Button": "Opciones",
+      "Title": "Opciones",
+      "Items": {
+        "Volume": "Volumen",
+        "Vibration": "Vibración",
+        "Language": "Idioma"
+      }
+    },
+    "Credits": {
+      "Button" : "Creditos",
+      "Title" : "Creditos",
+      "Text" : "Desarrollado por"
+    }
   },
 
   "Tutorial": {
@@ -35,7 +50,8 @@
   },
 
   "MultiPage" : {
-    "Tutorial" : "@MultiPage/es/tutorial.json"
+    "TutorialMobile" : "@MultiPage/Mobile/es/tutorial.json",
+    "TutorialDesktop" : "@MultiPage/Desktop/es/tutorial.json"
   },
 
   "Abilities": {
@@ -58,6 +74,7 @@
     "CountDownStart" : "Preparado en",
     "CountdownFinish" : "Defender!",
     "Score" : "Puntos",
+    "HighScore" : "Record",
     "Death": {
       "Title" : "La Humanidad se acabo!",
       "Score" : "Tus Puntos"

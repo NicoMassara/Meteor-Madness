@@ -1,26 +1,49 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
-using _Main.Scripts.MyTools;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ScriptableObjects;
 using _Main.Scripts.Sounds;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
-using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
-namespace _Main.Scripts.FyingObject
+namespace _Main.Scripts.FlyingObject
 {
+    public class FlyingObjectMovement : ManagedComponent, IFixedUpdatable
+    {
+        private Rigidbody2D _rigidbody;
+        private event Action<Vector2> _onPositionChanged;
+        public float MovementSpeed { get; set; }
+        public bool CanMove { get; set; }
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+
+        public void InitializeValues(Rigidbody2D rigidbody, Action<Vector2> onPositionChanged)
+        {
+            Initialize();
+            _rigidbody = rigidbody;
+            _onPositionChanged += onPositionChanged;
+        }
+        
+        public void ExecuteFixedUpdate(float fixedDeltaTime)
+        {
+            if (CanMove)
+            {
+                _rigidbody.transform.Translate(Vector2.right * (MovementSpeed * fixedDeltaTime));
+                _onPositionChanged?.Invoke(_rigidbody.position);
+            }
+        }
+    }
+
     [RequireComponent(typeof(Rigidbody2D))]
-    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IObserver, IUpdatable, IFixedUpdatable, IPoolable<TS>, ILoopableSound
+    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IProjectileSounds,
+        IObserver, IUpdatable, IPoolable<TS>
     where T : FlyingObjectMotor<TVS>
     where TS : FlyingObjectView<T, TS, TVS>
     where TVS : FlyingObjectValues
     {
-        [Header("Sounds")]
-        [SerializeField] protected SoundClassSo moveSound;
         [Header("Sphere Sprite")]
         [Range(0, 100f)]
         [SerializeField] private float maxRotationSpeed = 25;
@@ -29,23 +52,24 @@ namespace _Main.Scripts.FyingObject
         [SerializeField] private GameObject fireObject;
         [Header("Particles")]
         [SerializeField] private ParticleDataSo collisionParticle;
-        
+
         private Rigidbody2D _rigidbody2D;
         private Oscillator _fireScaleOscillator;
         private Oscillator _fireRotationOscillator;
         private Rotator _sphereRotator;
         private bool _hasFire;
-        private bool _canMove;
-        private float _movementSpeed;
+        protected FlyingObjectMovement Movement { get; private set; }
         
-        public UnityAction<Vector2> OnPositionChanged;
-        public UnityAction<TVS> OnValuesChanged;
-        public UnityAction<Collider2D> OnCollisionDetected;
-        public event Action OnLoopFinished;
+        public event Action<Vector2> OnPositionChanged;
+        public event Action<TVS> OnValuesChanged;
+        public event Action<Collider2D> OnCollisionDetected;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        public UpdateGroup SelfFixedUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
         public event Action<TS> OnRecycle;
+        
+        public event Action OnStart;
+        public event Action OnStop;
         
         private void Awake()
         {
@@ -57,10 +81,13 @@ namespace _Main.Scripts.FyingObject
             _rigidbody2D.drag = 0f;
             _rigidbody2D.angularDrag = 0.05f;
             _rigidbody2D.gravityScale = 0f;
+            
+            Movement = new FlyingObjectMovement();
         }
 
         private void Start()
         {
+            Movement.InitializeValues(_rigidbody2D,OnPositionChanged);
             _hasFire = fireObject != null;
 
             if (_hasFire)
@@ -71,9 +98,10 @@ namespace _Main.Scripts.FyingObject
 
             _sphereRotator = new Rotator(sphereObject.transform,Vector3.forward, maxRotationSpeed);
             _sphereRotator.SetSpeed(GetRotationSpeed());
+            
         }
         
-        public virtual void ManagedUpdate()
+        public virtual void ExecuteUpdate(float deltaTime)
         {
             _sphereRotator?.Rotate(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
             
@@ -83,17 +111,7 @@ namespace _Main.Scripts.FyingObject
                 fireObject.transform.localRotation = Quaternion.Euler(0,0, _fireRotationOscillator.OscillateCos());
             }
         }
-
-        public virtual void ManagedFixedUpdate()
-        {
-            if (_canMove)
-            {
-                var dt = CustomTime.GetFixedDeltaTimeByChannel(SelfFixedUpdateGroup);
-                _rigidbody2D.transform.Translate(Vector2.right * (_movementSpeed * dt));
-                OnPositionChanged?.Invoke(_rigidbody2D.position);
-            }
-        }
-
+        
         public virtual void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -110,11 +128,12 @@ namespace _Main.Scripts.FyingObject
         public virtual void SetValues(TVS data)
         {
             OnValuesChanged?.Invoke(data);
+            OnStart?.Invoke();
         }
 
         protected virtual void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)
         {
-            _canMove = canMove;
+            Movement.CanMove = canMove;
             if (doesShowParticles)
             {
                 GameManager.Instance.EventManager.Publish
@@ -131,11 +150,10 @@ namespace _Main.Scripts.FyingObject
 
         private void HandleSetValues(float movementSpeed, Quaternion rotation, Vector2 position, bool canMove)
         {
-            _movementSpeed = movementSpeed;
+            Movement.MovementSpeed = movementSpeed;
             _rigidbody2D.transform.rotation = rotation;
             _rigidbody2D.transform.position = position;
-            _canMove = canMove;
-            SoundEventCaller.PlaySound(moveSound, transform, this);
+            Movement.CanMove = canMove;
         }
         
         protected float GetRotationSpeed()
@@ -145,21 +163,15 @@ namespace _Main.Scripts.FyingObject
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            TriggerLoopFinished();
             OnCollisionDetected?.Invoke(other);
         }
 
         public void Recycle()
         {
-            TriggerLoopFinished();
             OnRecycle?.Invoke((TS)this);
+            OnStop?.Invoke();
         }
 
-        private void TriggerLoopFinished()
-        {
-            OnLoopFinished?.Invoke();
-            OnLoopFinished = null;
-        }
 
     }
 }

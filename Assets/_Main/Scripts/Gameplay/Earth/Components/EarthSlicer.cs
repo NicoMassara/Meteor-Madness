@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
 using EzySlice;
+using NicolasMassara.CustomActionManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
@@ -23,17 +22,27 @@ namespace _Main.Scripts.Gameplay.Earth
         private bool _canMove;
         private float _moveTargetDistance;
         private float _moveTargetTime;
+        private float _deltaTime;
+        
+        public event Action OnStartSlice;
+        public event Action OnEndSlice;
+        public event Action OnStartUnite;
+        public event Action OnEndUnite;
 
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+
 
         private void Start()
         {
             Slice();
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
+            _deltaTime = deltaTime;
+            
             if (_canMove)
             {
                 MoveSlicedParts(_moveTargetDistance, _moveTargetTime);
@@ -52,36 +61,35 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void SetSliceQueue(IEarthSlice sliceTimes)
         {
-            var temp = new[]
-            {
-                new ActionData(() =>
+            var action = ActionBuilder.Start()
+                .Do(new InstantAction(() =>
                 {
+                    OnStartSlice?.Invoke();
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 0f);
-                }),
-                new ActionData(() =>
+                }))
+                .Then(new WaitSecondsAction(sliceTimes.StartSlice))
+                .Then(new InstantAction(() =>
                 {
                     SetActiveSlices(true);
                     _canMove = true;
-                }, sliceTimes.StartSlice),
-                
-                new ActionData(() => _canMove = false, 
-                    sliceTimes.MoveSlices),
-                
-                new ActionData(() =>
+                }))
+                .Then(new WaitSecondsAction(sliceTimes.MoveSlices))
+                .Then(new InstantAction(() =>
                 {
+                    _canMove = false;
+                }))
+                .Then(new WaitSecondsAction(sliceTimes.ReturnToNormalTime))
+                .Then(new InstantAction(() =>
+                {
+                    OnEndSlice?.Invoke();
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
-                    
-#if UNITY_ANDROID || UNITY_IOS
-                    Handheld.Vibrate();
-#endif
-                    
-                }, sliceTimes.ReturnToNormalTime),
-                
-            };
+                }))
+                .Build();
             
-            ActionManager.Add(new ActionQueue(temp),SelfUpdateGroup);
+            
+            ActionManager.Add(action);
         }
         
         private void Slice() 
@@ -130,7 +138,7 @@ namespace _Main.Scripts.Gameplay.Earth
             var lastPosition = partTransform.localPosition;
             var targetPosition = new Vector2(targetDistance * direction.x, lastPosition.y);
             var distance = Vector2.Distance(lastPosition, targetPosition);
-            var speed = (distance / targetTime) * CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup);
+            var speed = (distance / targetTime) * _deltaTime;
             var newX = Mathf.MoveTowards(lastPosition.x, targetPosition.x, speed);
             partTransform.localPosition = new Vector2(newX, lastPosition.y);
         }
@@ -151,31 +159,31 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void SetUniteQueue(IEarthSlice sliceTimes)
         {
-            var temp = new[]
-            {
-                new ActionData(() =>
+            var action = ActionBuilder.Start()
+                .Do(new InstantAction(() =>
                 {
+                    OnStartUnite?.Invoke();
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 0f);
                     _canMove = true;
-                }),
-                
-                new ActionData(() =>
+                }))
+                .Then(new WaitSecondsAction(sliceTimes.ReturnSlices))
+                .Then(new InstantAction(() =>
                 {
                     UniteMeshes();
                     _canMove = false;
-                    
-                }, sliceTimes.ReturnSlices),
-                
-                new ActionData(() =>
+                }))
+                .Then(new WaitSecondsAction(sliceTimes.ReturnSlices))
+                .Then(new InstantAction(() =>
                 {
                     UniteMeshes();
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
-                }, sliceTimes.ReturnSlices),
-            };
+                    OnEndUnite?.Invoke();
+                }))
+                .Build();
             
-            ActionManager.Add(new ActionQueue(temp),SelfUpdateGroup);
+            ActionManager.Add(action);
         }
 
 

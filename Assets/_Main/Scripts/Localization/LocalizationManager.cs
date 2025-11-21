@@ -3,59 +3,95 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using _Main.Scripts.MyComponents;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+using System.Text;
+using _Main.Scripts.MySettings;
 using UnityEngine.Networking;
 
 namespace _Main.Scripts.Localization
 {
-    public class LocalizationManager : MonoBehaviour
+    public class LocalizationManager : SingletonBehaviour<LocalizationManager>
     {
-        public static LocalizationManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
-        private static LocalizationManager _instance;
-        
         private readonly SystemLanguage _defaultLanguage = GameParameters.GameplayValues.DefaultLanguage;
-        private Dictionary<string, string> _localizedTexts = new();
+        private readonly Dictionary<string, string> _localizedTexts = new();
         private SystemLanguage _currentLanguage;
-        
-        private Dictionary<SystemLanguage, string> _languageCodeMap = new Dictionary<SystemLanguage, string>
+
+        private readonly Dictionary<string, string> _textReplacement = new()
         {
-            { SystemLanguage.English, "en" },
-            { SystemLanguage.Spanish, "es" },
-            { SystemLanguage.French, "fr" },
-            { SystemLanguage.Portuguese, "pt" },
-            { SystemLanguage.Italian, "it" },
-            { SystemLanguage.German, "de" },
+            {"LeftKey", "<color=blue>A</color>"},
+            {"RightKey", "<color=blue>D</color>"},
+            {"AbilityKey", "<color=blue>S</color>"}
         };
         
-        private void Awake()
+        private readonly Dictionary<SystemLanguage, string> _displayLanguages = new()
+        {
+            { SystemLanguage.English, "English" },
+            { SystemLanguage.Spanish, "Español" },
+        };
+        
+        private void Start()
         {
             Initialize();
-        }
-        
-        private static LocalizationManager CreateInstance()
-        {
-            var gameObject = new GameObject(nameof(LocalizationManager))
-            {
-                hideFlags = HideFlags.DontSave,
-            };
-            DontDestroyOnLoad(gameObject);
-            return gameObject.AddComponent<LocalizationManager>();
         }
 
         private void Initialize()
         {
-            LoadLanguage(Application.systemLanguage);
+            StartCoroutine(WaitForSettingsData());
+
+            SettingsManager.Instance.OnLanguageChanged += Settings_OnLanguageChangedHandler;
         }
 
+        private void Settings_OnLanguageChangedHandler(int languageIndex)
+        {
+            LoadLanguage(LocalizationTools.GetLanguageFromIndex(languageIndex));
+        }
 
-        
+        private IEnumerator WaitForSettingsData()
+        {
+            var settings = SettingsManager.Instance;
+            
+            float timeout = 5f;
+            float timer = 0f;
+            
+            yield return new WaitUntil(() =>
+            {
+                timer += Time.deltaTime;
+                return settings.HasLoadedData() || timer >= timeout;
+            });
+            
+            if (!settings.HasLoadedData())
+            {
+                Debug.LogWarning("Data could not be loaded. Please check your settings file.");
+            }
+
+            var languageIndex = settings.GetLanguageIndex();
+
+            // If language is not set, it will get the System Language.
+            if (languageIndex == -1)
+            {
+                Debug.LogWarning("Language not selected, loading system language.");
+                // If system language is not compatible, it'll return English
+                
+                languageIndex = LocalizationTools.GetIndexFromLanguage(Application.systemLanguage);
+                
+                // And then saves it 
+                settings.SetLanguageIndex(languageIndex);
+                settings.SaveSettings();
+            }
+            
+            LoadLanguage(LocalizationTools.GetLanguageFromIndex(languageIndex));
+
+            yield return null;
+        }
 
         public void LoadLanguage(SystemLanguage language)
         {
+            if(_currentLanguage == language) return;
+            
             _currentLanguage = language;
-            string langCode = GetLanguageCode(_currentLanguage).ToLower();
+            string langCode = LocalizationTools.GetLanguageCode(_currentLanguage).ToLower();
             string path = Path.Combine(Application.streamingAssetsPath, "Localization", $"{langCode}.json");
 
 #if UNITY_ANDROID
@@ -66,11 +102,6 @@ namespace _Main.Scripts.Localization
 #endif
         }
         
-#if UNITY_ANDROID
-
-#else
-
-#endif
 
         private void ParseJsonToDictionary(string json)
         {
@@ -94,6 +125,9 @@ namespace _Main.Scripts.Localization
             }
             
             LocalizationEvents.TriggerOnLocalizationLoaded();
+#if !UNITY_ANDROID && !UNITY_IOS
+            ReplacePlaceholderText();
+#endif
         }
         
         private void FlattenJson(JToken token, string prefix)
@@ -270,7 +304,7 @@ namespace _Main.Scripts.Localization
 
             PlayerPrefs.SetString("language", language.ToString());
             PlayerPrefs.Save();
-
+            
             LocalizationEvents.TriggerOnLanguageChanged();
         }
 
@@ -289,20 +323,13 @@ namespace _Main.Scripts.Localization
             return $"[MISSING:{key}]";
         }
 
-        public SystemLanguage GetCurrentLanguage() => _currentLanguage;
-
-        private string GetLanguageCode(SystemLanguage language)
+        public void ReplacePlaceholderText()
         {
-            if (_languageCodeMap.TryGetValue(language, out var code))
-            {
-                return code;
-            }
-            
-            Debug.LogWarning("Language Could not Be Found in CodeMap, returning default.");
-            return _languageCodeMap[SystemLanguage.English];
+            LocalizationTools.ReplacePlaceHolders(_localizedTexts, _textReplacement);
         }
-        
-        
 
+        public SystemLanguage GetCurrentLanguage() => _currentLanguage;
+        public Dictionary<SystemLanguage, string> GetDisplayLanguages() => _displayLanguages;
+        
     }
 }

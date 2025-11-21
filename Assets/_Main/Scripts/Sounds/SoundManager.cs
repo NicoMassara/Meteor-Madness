@@ -1,180 +1,638 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.MyComponents;
+using _Main.Scripts.MySettings;
+using NicolasMassara.CustomActionManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace _Main.Scripts.Sounds
 {
-    public class SoundManager : ManagedBehavior, IUpdatable
+    public enum SoundChannel
     {
-        [Header("Prefab References")]
-        [SerializeField] private SoundBehavior soundPrefab;
-        [Header("Music Data")]
-        [SerializeField] private SoundClassSo menuMusic;
-        [SerializeField] private SoundClassSo gameplayMusic;
-        [SerializeField] private SoundClassSo defeatMusic;
-        [Header("UI Button Sound")]
-        [SerializeField] private SoundClassSo defaultUISound;
-        [SerializeField] private SoundClassSo acceptUISound;
-        [SerializeField] private SoundClassSo backUISound;
-        
-        private SoundBehaviourFactory _factory;
-        private AudioPlaybackTracker _playbackTracker = new AudioPlaybackTracker();
-        private MusicController _musicController = new MusicController();
+        Sfx,
+        Music,
+        Collision,
+        Deflection,
+        UI
+    }
+    
+    public class SoundManager : SingletonManagedBehaviour<SoundManager>, IUpdatable
+    {
+        #region Tools
+        private class MusicController
+        {
+            private GeneratedId _playingId;
+            private GeneratedId _pausedId;
 
-        private readonly Dictionary<SoundChannel, int> _channelLimits = new()
+            public GeneratedId PlayingId => _playingId;
+            public GeneratedId PausedId => _pausedId;
+
+            private bool IsSoundValid(GeneratedId soundId)
+            {
+                return soundId != null && soundId.IsValid;
+            }
+
+            public bool IsSoundInvalid(GeneratedId soundId)
+            {
+                return !IsSoundValid(soundId);
+            }
+
+            public bool IsThisPlaying(GeneratedId soundId)
+            {
+                if (IsSoundValid(soundId) == false) return false;
+                
+                return _playingId == soundId;
+            }
+
+            public bool IsThisPaused(GeneratedId soundId)
+            {
+                if (IsSoundValid(soundId) == false) return false;
+                
+                return _pausedId == soundId;
+            }
+
+            public bool HasMusicPlaying()
+            {
+                return IsSoundValid(_playingId) && _playingId.IsValid;
+            }
+
+            public bool HasMusicPaused()
+            {
+                return IsSoundValid(_pausedId) && _pausedId.IsValid;
+            }
+
+            #region Music Actions
+            
+            public void SetNewMusic(GeneratedId musicId)
+            {
+                if (IsSoundInvalid(musicId))
+                {
+                    Debug.Log("Couldn't set new music");
+                    return;
+                }
+
+                _playingId = musicId;
+            }
+
+            public void PauseCurrenMusic()
+            {
+                if (IsSoundInvalid(_playingId))
+                {
+                    Debug.Log("Couldn't pause music");
+                    return;
+                }
+                
+                _pausedId = _playingId;
+                _playingId = null;
+            }
+
+            public void ResumePausedMusic()
+            {
+                if (IsSoundInvalid(_pausedId))
+                {
+                    Debug.Log("Couldn't resume paused music");
+                    return;
+                }
+                
+                _playingId = _pausedId;
+                _pausedId = null;
+            }
+
+            public void ClearPausedMusic()
+            {
+                _pausedId = null;
+            }
+
+            public void ClearMusicPlaying()
+            {
+                _playingId = null;
+            }
+            
+            #endregion
+        }
+        private class UIDefaultSounds
         {
-            { SoundChannel.Sfx, 5},
-            { SoundChannel.Collision, 1},
-            { SoundChannel.Deflection, 1},
-            { SoundChannel.UI, 3},
-        };
+            private readonly Dictionary<UISoundType, ISoundData> _uiSounds = new Dictionary<UISoundType, ISoundData>();
+            private const string Path = "ScriptableObjects/DefaultUISounds";
         
-        private readonly Dictionary<SoundChannel, List<SoundBehavior>> _activeByChannel = new()
+            public UIDefaultSounds()
+            {
+                Initialize();
+            }
+
+            private void Initialize()
+            {
+                var loaded = Resources.LoadAll<UiSoundClassSo>(Path);
+
+                for (int i = 0; i < loaded.Length; i++)
+                {
+                    var soundType = loaded[i].UISoundType;
+
+                    if (_uiSounds.ContainsKey(soundType))
+                    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                
+                        Debug.LogWarning($"{soundType} UI Sound duplicated found in Resources/{Path} was not loaded, check the UISoundType and changed to load it!");
+#endif
+                        continue;
+                    }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                
+                    //Debug.Log($"{soundType} UI Sound loaded from Resources/{Path}");
+#endif
+                
+                    _uiSounds.Add(soundType, loaded[i]);
+                }
+            }
+
+            public ISoundData GetSound(UISoundType uiSoundType)
+            {
+                return _uiSounds[uiSoundType];
+            }
+
+        }
+        private class SoundGenerator
         {
-            { SoundChannel.Sfx, new List<SoundBehavior>() },
-            { SoundChannel.Collision, new List<SoundBehavior>()},
-            { SoundChannel.Deflection, new List<SoundBehavior>()},
-            { SoundChannel.UI, new List<SoundBehavior>()},
-        };
+            #region Factory
+
+            private class SoundBehaviourFactory
+            {
+                private readonly GenericPool<SoundSource> _pool;
+
+                public SoundBehaviourFactory(SoundSource prefab, int defaultSize = 15, int maxSize = 100)
+                {
+                    _pool = new GenericPool<SoundSource>(prefab, defaultSize, maxSize);
+                }
+        
+                public SoundSource GetSound(ISoundData soundData, Transform parent)
+                {
+                    var tempSound = _pool.Get();
+                    tempSound.SetData(soundData);
+
+                    if (soundData.Is3DSound)
+                    {
+                        tempSound.SetParent(parent);
+                    }
+                    
+                    tempSound.OnRecycle += OnRecycleHandler;
+                    return tempSound;
+                }
+        
+                public void RecycleAll()
+                {
+                    _pool.RecycleAll();
+                }
+
+                private void OnRecycleHandler(SoundSource soundBehavior)
+                {
+                    soundBehavior.OnRecycle -= OnRecycleHandler;
+                    _pool.Release(soundBehavior);
+                }
+            }
+
+            #endregion
+            
+            private readonly SoundBehaviourFactory _factory;
+            private readonly CustomIdGenerator _idGenerator;
+            private readonly Dictionary<GeneratedId, ITrackedAudio> _soundsDic = new Dictionary<GeneratedId, ITrackedAudio>();
+            private readonly Dictionary<ITrackedAudio, GeneratedId> _idsDic = new Dictionary<ITrackedAudio, GeneratedId>();
+        
+            public SoundGenerator(SoundSource prefab)
+            {
+                _factory = new SoundBehaviourFactory(prefab);
+                _idGenerator = new CustomIdGenerator();
+            }
+
+            public Tuple<GeneratedId,ITrackedAudio> Create(ISoundData soundData, Transform transform)
+            {
+                var id = _idGenerator.Generate();
+                var sound = _factory.GetSound(soundData, transform);
+
+                sound.OnFinished += Return;
+
+                _soundsDic.Add(id,sound);
+                _idsDic.Add(sound, id);
+            
+                return new Tuple<GeneratedId, ITrackedAudio>(id, sound);
+            }
+
+            public bool DoesContain(GeneratedId id)
+            {
+                return _soundsDic.ContainsKey(id);
+            }
+
+            public ITrackedAudio Get(GeneratedId id)
+            {
+                return DoesContain(id) ? _soundsDic[id] : null;
+            }
+
+            private void Return(SoundSource sound)
+            {
+                if(_idsDic.TryGetValue(sound, out var id) == false) return;
+            
+                sound.OnFinished -= Return;
+            
+                _idGenerator.Release(id);
+                _soundsDic.Remove(id);
+                _idsDic.Remove(sound);
+            }
+        }
+        private class AudioPlaybackTracker
+        {
+            private readonly List<ITrackedAudio> _trackedAudios = new List<ITrackedAudio>();
+            private readonly List<ITrackedAudio> _toRemove = new List<ITrackedAudio>();
+            private readonly List<ITrackedAudio> _toAdd = new List<ITrackedAudio>();
+            
+            private Dictionary<SoundChannel, int> _activeByChannel = new();
+            public event Action<SoundChannel, int> OnChannelUpdated;
+
+            public void Execute()
+            {
+                ApplyPending();
+
+                foreach (var item in _trackedAudios)
+                {
+                    if (item.GetIsPlaying()) continue;
+                    if (item.GetIsPaused()) continue;
+
+                    _toRemove.Add(item);
+                }
+            
+                ApplyPending();
+            }
+
+            #region Public API
+
+            public void Register(ITrackedAudio trackedAudio, bool isUrgent = false)
+            {
+                if (isUrgent)
+                {
+                    var trackChannel = trackedAudio.SoundClass.Channel;
+                    
+                    // Could check if the Channel is full before Clearing it
+                    
+                    ClearChannel(trackChannel);
+                }
+
+                _toAdd.Add(trackedAudio);
+            }
+
+            public void Unregister(ITrackedAudio trackedAudio)
+            {
+                _toRemove.Add(trackedAudio);
+            }
+
+            public bool IsChannelFull(SoundChannel channel)
+            {
+                if (_activeByChannel.ContainsKey(channel) == false) return false; 
+                
+                var limit = SoundManagerTools.GetChannelLimit(channel);
+                var amount = _activeByChannel[channel];
+                
+                return amount >= limit;
+            }
+
+            public void ClearChannel(SoundChannel channelToClear)
+            {
+                if (_activeByChannel.ContainsKey(channelToClear) == false)
+                {
+                    //Debug.LogWarning($"{channelToClear} Channel is empty");
+                    return;
+                }
+                
+                foreach (var item in _trackedAudios)
+                {
+                    if(item.SoundClass.Channel != channelToClear)
+                        continue;
+                    
+                    _toRemove.Add(item);
+                }
+            }
+
+            #endregion
+            
+            #region Private API
+
+            private void AddToChannel(SoundChannel channel)
+            {
+                _activeByChannel ??= new Dictionary<SoundChannel, int>();
+
+                if (_activeByChannel.ContainsKey(channel) == false)
+                {
+                    _activeByChannel.Add(channel, 0);
+                }
+
+                _activeByChannel[channel]++;
+                
+                OnChannelUpdated?.Invoke(channel, _activeByChannel[channel]);
+                
+            }
+
+            private void RemoveFromChannel(SoundChannel channel)
+            {
+                _activeByChannel ??= new Dictionary<SoundChannel, int>();
+                
+                if(_activeByChannel.ContainsKey(channel) == false) return;
+
+                _activeByChannel[channel]--;
+                
+                OnChannelUpdated?.Invoke(channel, _activeByChannel[channel]);
+            }
+            
+
+            private void ApplyPending()
+            {
+                if (_toAdd.Count > 0)
+                {
+                    foreach (var item in _toAdd)
+                    {
+                        //Debug.Log($"Adding: {item.AudioName}");
+                        _trackedAudios.Add(item);
+                        item.PlayAudio();
+                        AddToChannel(item.SoundClass.Channel);
+                    }
+                
+                    _toAdd.Clear();
+                }
+
+                if (_toRemove.Count > 0)
+                {
+                    foreach (var item in _toRemove)
+                    {
+                        item.TriggerFinish();
+                        _trackedAudios.Remove(item);
+                        RemoveFromChannel(item.SoundClass.Channel);
+                    }
+                
+                    _toRemove.Clear();
+                }
+            }
+
+            #endregion
+        }
+        
+        #endregion
+        
+        [Header("Prefab References")]
+        [SerializeField] private SoundSource soundPrefab;
+        [Header("Mixer References")]
+        [SerializeField] private AudioMixer mainMixer;
+        [SerializeField] private string mainMixerParameter;
+        
+        private readonly AudioPlaybackTracker _playbackTracker = new AudioPlaybackTracker();
+        private UIDefaultSounds _uiDefaultSounds;
+        private SoundGenerator _soundGenerator;
+        private MusicController _musicController;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
+        public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTarget;
         
-        private void Awake()
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+        private SoundDebugData _debugData;
+        
+#endif
+        
+        private void Start()
         {
-            _factory = new SoundBehaviourFactory(soundPrefab);
+            _uiDefaultSounds = new UIDefaultSounds();
+            _soundGenerator = new SoundGenerator(soundPrefab);
+            _musicController = new MusicController();
+
+            SetMainVolume(SettingsManager.Instance.GetMasterVolume());
+            SettingsManager.Instance.OnMasterVolumeChanged += Settings_OnMasterVolumeChangedHandler;
             
-            AddMusic(MusicType.MainMenu, menuMusic);
-            AddMusic(MusicType.Gameplay, gameplayMusic);
-            AddMusic(MusicType.EndGame, defeatMusic);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+            _debugData = new SoundDebugData();
             
-            SetEventBus();
+            _playbackTracker.OnChannelUpdated += (channel, amount) =>
+            {
+                _debugData.UpdateChannels(channel, amount);
+            };
+            
+#endif
         }
         
-        public void ManagedUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
             _playbackTracker.Execute();
-        }
-
-        private void AddMusic(MusicType type, ISoundData soundData)
-        {
-            if (soundData == null)
-            {
-                Debug.LogWarning($"{type} Music SoundData is not assigned");
-                return;
-            }
-
-            var tempSound = _factory.GetSound();
-            tempSound.SetData(soundData);
-            _musicController.AddMusic(type, tempSound);
-        }
-
-        private void SpawnSound(ISoundData soundData, Transform soundParent, ILoopableSound loopableSound)
-        {
-            if (soundData == null)
-            {
-                //Debug.Log("Sound Data is NULL");
-                return;
-            }
-
-            if (GetIsChannelFull(soundData.Channel))
-            {
-                //Debug.Log($"{soundData.Channel} channel is full");
-                return;
-            }
             
-            var tempSound = _factory.GetSound();
-            tempSound.SetData(soundData);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 
-            if (soundData.Is3DSound)
+            if (_musicController.HasMusicPlaying())
             {
-                tempSound.SetParent(soundParent);
-            }
-            
-            if (soundData.DoesLoop == false)
-            {
-                _playbackTracker.Register(tempSound);
+                var soundId = _musicController.PlayingId;
+                
+                var hasSound = _soundGenerator.DoesContain(soundId);
+                
+                _debugData.CurrentMusic = hasSound ? 
+                    _soundGenerator.Get(soundId).SoundClass.ClassName : "None";
+                
             }
             else
             {
-                tempSound.PlayAudio();
-                loopableSound.OnLoopFinished += tempSound.TriggerFinish;
+                _debugData.CurrentMusic = "None";
             }
             
-            _activeByChannel[soundData.Channel].Add(tempSound);
-            
-            tempSound.OnFinished += Sound_OnFinishedHandler;
-        }
-        private int GetChannelLimit(SoundChannel channel)
-        {
-            return _channelLimits[channel];
-        }
-
-        private bool GetIsChannelFull(SoundChannel channel)
-        {
-            return _activeByChannel[channel].Count >= GetChannelLimit(channel);
-        }
-
-
-        #region Event Bus
-
-        private void SetEventBus()
-        {
-            GameEventCaller.Subscribe<SoundEvents.PlaySound>(EventBus_Sounds_PlaySound);
-            GameEventCaller.Subscribe<SoundEvents.PlayMusic>(EventBus_Sounds_PlayMusic);
-            GameEventCaller.Subscribe<SoundEvents.StopMusic>(EventBus_Sounds_StopMusic);
-            GameEventCaller.Subscribe<SoundEvents.SetMusicLevel>(EventBus_Sounds_SetMusicLevel);
-            GameEventCaller.Subscribe<SoundEvents.PlayUIButton>(EventBus_Sounds_PlayUIButton);
-        }
-
-        private void EventBus_Sounds_PlayUIButton(SoundEvents.PlayUIButton input)
-        {
-            var soundData = input.Type switch
+            if (_musicController.HasMusicPaused())
             {
-                UISoundType.Default => defaultUISound,
-                UISoundType.Accept => acceptUISound,
-                UISoundType.Back => backUISound,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-            
-            SpawnSound(soundData, null, null);
+                var soundId = _musicController.PausedId;
+                
+                var hasSound = _soundGenerator.DoesContain(soundId);
+                
+                _debugData.PausedMusic = hasSound ? 
+                    _soundGenerator.Get(soundId).SoundClass.ClassName : "None";
+            }
+            else
+            {
+                _debugData.PausedMusic = "None";
+            }
+#endif
         }
 
-        private void EventBus_Sounds_PlaySound(SoundEvents.PlaySound input)
-        {
-            SpawnSound(input.Data, input.SoundParent, input.LoopableSound);
-        }
+        #region Mixer Actions
 
-        private void EventBus_Sounds_PlayMusic(SoundEvents.PlayMusic input)
+        private void SetMainVolume(float volume)
         {
-            _musicController.PlayMusic(input.Type);
-        }
-
-        private void EventBus_Sounds_StopMusic(SoundEvents.StopMusic input)
-        {
-            _musicController.StopCurrentMusic();
-        }
-
-        private void EventBus_Sounds_SetMusicLevel(SoundEvents.SetMusicLevel input)
-        {
-            _musicController.SetMusicVolume(input.Volume);
+            mainMixer.SetFloat(mainMixerParameter, SoundManagerTools.GetDbFrom01Value(volume));
         }
 
         #endregion
 
-        #region Handlers
+        #region Sounds
 
-        private void Sound_OnFinishedHandler(SoundBehavior soundBehavior)
+        #region Public
+
+        public GeneratedId PlayMusic(ISoundData soundData, bool isIsolated, GeneratedId soundId)
         {
-            if (_activeByChannel[soundBehavior.SoundClass.Channel].Contains(soundBehavior))
+            // If isolated is TRUE, it'll remove all existing music, even if is paused
+
+            // Music Controller Checks
+            
+            if (_musicController.IsThisPlaying(soundId))
             {
-                _activeByChannel[soundBehavior.SoundClass.Channel].Remove(soundBehavior);
+                Debug.Log("Already Playing This");
+                return soundId;
             }
+            
+            if (_musicController.IsThisPaused(soundId))
+            {
+                if (_musicController.HasMusicPlaying())
+                {
+                    StopSound(_musicController.PlayingId);
+                    
+                    Debug.Log("Music was playing and now has stopped");
+                }
+
+                ResumeSound(soundId);
+                Debug.Log("This was paused and now is Resume");
+                return soundId;
+            }
+            
+            if (_musicController.HasMusicPlaying())
+            {
+                StopSound(_musicController.PlayingId);
+            }
+            
+            // New TrackedAudio creation and ID generation
+
+            var tempId = PlaySound(soundData, null,isIsolated);
+
+            if (tempId == null)
+            {
+                return null;
+            }
+            
+            _musicController.SetNewMusic(tempId);
+            
+            return tempId;
+        }
+
+        public void PlayUISound(UISoundType uiSoundType)
+        {
+            PlaySound(_uiDefaultSounds.GetSound(uiSoundType), null);
+        }
+        
+        public GeneratedId PlaySound(ISoundData soundData, Transform soundParent = null, bool isIsolated = false)
+        {
+            if (soundData == null)
+            {
+                //Debug.LogWarning("Sound data is null");
+                return null;
+            }
+            
+            if (_playbackTracker.IsChannelFull(soundData.Channel))
+            {
+                //Debug.Log($"{soundData.Channel} channel is full");
+                return null;
+            }
+            
+            var createdItems = _soundGenerator.Create(soundData, soundParent);
+            
+            _playbackTracker.Register(createdItems.Item2, isIsolated);
+
+            return createdItems.Item1;
+        }
+
+
+        public void StopAllMusic()
+        {
+            _musicController.ClearMusicPlaying();
+            _musicController.ClearPausedMusic();
+            _playbackTracker.ClearChannel(SoundChannel.Music);
+        }
+
+        public void StopSound(GeneratedId soundId)
+        {
+            if(IsSoundValid(soundId, out var trackedAudio) == false)
+            {
+                //Debug.LogWarning("Sound could not be stopped");
+                return;
+            }
+            
+            trackedAudio.StopSound();
+            
+            if (_musicController.IsThisPlaying(soundId))
+            {
+                _musicController.ClearMusicPlaying();
+            }
+        }
+
+        public void PauseSound(GeneratedId soundId)
+        {
+            if (IsSoundValid(soundId, out var trackedAudio) == false)
+            {
+                //Debug.LogWarning("Sound could not be paused");
+                return;
+            }
+
+            trackedAudio.PauseSound();
+
+            if (_musicController.IsThisPlaying(soundId))
+            {
+                _musicController.PauseCurrenMusic();
+            }
+        }
+        
+        public void ResumeSound(GeneratedId soundId)
+        {
+            if(IsSoundValid(soundId, out var trackedAudio) == false)
+            {
+                //Debug.LogWarning("Sound could not be resumed");
+                return;
+            }
+            
+            trackedAudio.ResumeSound();
+            
+            if (_musicController.IsThisPaused(soundId))
+            {
+                _musicController.ResumePausedMusic();
+            }
+        }
+        
+        #endregion
+
+        #region Private
+
+        private bool IsSoundValid(GeneratedId soundId, out ITrackedAudio trackedAudio)
+        {
+            trackedAudio = null;
+            
+            if(soundId == null) return false;
+            if(soundId.IsValid == false) return false;
+            if (_soundGenerator.DoesContain(soundId) == false) return false;
+
+            trackedAudio = _soundGenerator.Get(soundId);
+            
+            return true;
+        }
+
+        #endregion
+        
+        #endregion
+        
+        #region Handlers
+        
+        private void Settings_OnMasterVolumeChangedHandler(float volume)
+        {
+            SetMainVolume(volume);
         }
 
 
         #endregion
     }
+
+    #region Extra Clases
+    
+
+
+
+    
+    #endregion
 }

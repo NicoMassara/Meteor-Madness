@@ -1,6 +1,8 @@
 ﻿using _Main.Scripts.Managers;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts.DebugTools
 {
@@ -34,7 +36,7 @@ namespace _Main.Scripts.DebugTools
             {
                 GameConfigManager.Instance.SetDamage(damageType);
             };
-            _viewUI.GameValues.OnLevelChange = GameModeEventCaller.UpdateLevel;
+            _viewUI.GameValues.OnLevelChange = ProjectileEventCaller.UpdateLevel;
             
             //Camera
             _viewUI.Camera.OnZoomIn = CameraEventCaller.ZoomIn;
@@ -49,26 +51,29 @@ namespace _Main.Scripts.DebugTools
                 Time.fixedDeltaTime = timeScale;*/
             };
             
+            // Reload
+            _viewUI.ReloadScene.OnReload += () =>
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            };
+
         }
 
         private void Start()
         {
             //Default Values
-            TimerManager.Add(new TimerData
+            TimerManager.Add(new TimerData(1f, () =>
             {
-                Time = 1f,
-                OnEndAction = () =>
-                {
-                    GameManager.Instance.CanPlay = true;
-                    GameModeEventCaller.Start();
-                    InputsEventCaller.SetEnable(true);
+                GameManager.Instance.CanPlay = true;
+                InputsEventCaller.SetEnable(true);
+                AbilitiesEventCaller.Enable();
+                AbilitiesEventCaller.SetEnableUI(true);
 #if UNITY_ANDROID || UNITY_IOS
                     InputsEventCaller.SetUIEnable(true);
-                    
+
 #endif
-                    ShieldEventCaller.SetEnableShield(true);
-                }
-            });
+                ShieldEventCaller.Enable();
+            }));
         }
 
         private void Update()

@@ -9,22 +9,34 @@ namespace _Main.Scripts.Gameplay.Shield
     {
         private readonly ShieldMotor _motor;
         
-        private class ActionGate
+        private class ShieldActionGate : FsmActionGate<States>
         {
+            public ShieldActionGate(FSM<States> fsm) : base(fsm) { }
+
             public bool RotationEnable { get; private set; }
-            public ActionGate(FSM<States> fsm)
+
+
+            protected override void OnNewState(States state)
             {
-                fsm.OnEnterState += state =>
-                {
-                    RotationEnable = state is States.Active or States.Gold or States.Slow;
-                };
+
+            }
+
+            protected override void OnEnterState(States state)
+            {
+                RotationEnable = state is States.Enable or States.Gold or States.Slow;
+            }
+
+            protected override void OnExitState(States state)
+            {
+
             }
         }
 
         private enum States
         {
-            Unactive,
-            Active,
+            None,
+            Disable,
+            Enable,
             Super,
             Gold,
             Automatic,
@@ -33,7 +45,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private FSM<States> _fsm;
 
-        private ActionGate _actionGate;
+        private ShieldActionGate _actionGate;
 
         public ShieldController(ShieldMotor motor)
         {
@@ -57,7 +69,7 @@ namespace _Main.Scripts.Gameplay.Shield
             }
             else if (Input.GetKeyDown(KeyCode.T))
             {
-                TransitionToActive();
+                TransitionToEnable();
             }
         }
 
@@ -66,20 +78,24 @@ namespace _Main.Scripts.Gameplay.Shield
         private void InitializeFsm()
         {
             var temp = new List<ShieldBaseState<States>>();
-            _fsm = new FSM<States>();
-            _actionGate = new ActionGate(_fsm);
+            _fsm = new FSM<States>("Shield");
+            _actionGate = new ShieldActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(2);
+#endif
 
             #region Variables
 
-            var unactive = new ShieldUnactiveState<States>();
-            var active = new ShieldActivateState<States>();
-            var super = new ShieldSuperState<States>();
-            var gold = new ShieldGoldState<States>();
-            var automatic = new ShieldAutomaticState<States>();
-            var slow = new ShieldSlowState<States>();
+            var disable = new DisableState<States>();
+            var enable = new EnableState<States>();
+            var super = new SuperState<States>();
+            var gold = new GoldState<States>();
+            var automatic = new AutomaticState<States>();
+            var slow = new SlowState<States>();
             
-            temp.Add(unactive);
-            temp.Add(active);
+            temp.Add(disable);
+            temp.Add(enable);
             temp.Add(super);
             temp.Add(gold);
             temp.Add(automatic);
@@ -89,23 +105,24 @@ namespace _Main.Scripts.Gameplay.Shield
 
             #region Transitions
 
-            unactive.AddTransition(States.Active, active);
             
-            active.AddTransition(States.Unactive, unactive);
-            active.AddTransition(States.Super, super);
-            active.AddTransition(States.Gold, gold);
-            active.AddTransition(States.Automatic, automatic);
-            active.AddTransition(States.Slow, slow);
+            disable.AddTransition(States.Enable, enable);
             
-            super.AddTransition(States.Active, active);
+            enable.AddTransition(States.Disable, disable);
+            enable.AddTransition(States.Super, super);
+            enable.AddTransition(States.Gold, gold);
+            enable.AddTransition(States.Automatic, automatic);
+            enable.AddTransition(States.Slow, slow);
             
-            gold.AddTransition(States.Active, active);
-            gold.AddTransition(States.Unactive, unactive);
+            super.AddTransition(States.Enable, enable);
             
-            slow.AddTransition(States.Active, active);
-            slow.AddTransition(States.Unactive, unactive);
+            gold.AddTransition(States.Enable, enable);
+            gold.AddTransition(States.Disable, disable);
             
-            automatic.AddTransition(States.Active, active);
+            slow.AddTransition(States.Enable, enable);
+            slow.AddTransition(States.Disable, disable);
+            
+            automatic.AddTransition(States.Enable, enable);
 
             #endregion
 
@@ -114,8 +131,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 state.Initialize(this);
             }
             
-            _fsm.SetInit(unactive);
-            _fsm.FSMName = "Shield";
+            _fsm.SetInit(disable);
         }
 
         private void SetTransitions(States state)
@@ -123,14 +139,14 @@ namespace _Main.Scripts.Gameplay.Shield
             _fsm.Transitions(state);
         }
 
-        public void TransitionToActive()
+        public void TransitionToEnable()
         {
-            SetTransitions(States.Active);
+            SetTransitions(States.Enable);
         }
 
-        public void TransitionToUnactive()
+        public void TransitionToDisable()
         {
-            SetTransitions(States.Unactive);
+            SetTransitions(States.Disable);
         }
 
         public void TransitionToSuper()
@@ -233,7 +249,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
     #region States
 
-    public class ShieldActivateState<T> : ShieldBaseState<T>
+    public class EnableState<T> : ShieldBaseState<T>
     {
         // ReSharper disable Unity.PerformanceAnalysis
         public override void Awake()
@@ -242,7 +258,7 @@ namespace _Main.Scripts.Gameplay.Shield
         }
     }
     
-    public class ShieldAutomaticState<T> : ShieldBaseState<T>
+    public class AutomaticState<T> : ShieldBaseState<T>
     {
         public override void Awake()
         {
@@ -255,7 +271,7 @@ namespace _Main.Scripts.Gameplay.Shield
         }
     }
     
-    public class ShieldGoldState<T> : ShieldBaseState<T>
+    public class GoldState<T> : ShieldBaseState<T>
     {
         public override void Awake()
         {
@@ -268,7 +284,7 @@ namespace _Main.Scripts.Gameplay.Shield
         }
     }
     
-    public class ShieldSuperState<T> : ShieldBaseState<T>
+    public class SuperState<T> : ShieldBaseState<T>
     {
         private const float MovementDirection = 1f;
         
@@ -288,7 +304,7 @@ namespace _Main.Scripts.Gameplay.Shield
         }
     }
     
-    public class ShieldUnactiveState<T> : ShieldBaseState<T>
+    public class DisableState<T> : ShieldBaseState<T>
     {
         public override void Awake()
         {
@@ -296,7 +312,7 @@ namespace _Main.Scripts.Gameplay.Shield
         }
     }
     
-    public class ShieldSlowState<T> : ShieldBaseState<T>
+    public class SlowState<T> : ShieldBaseState<T>
     {
         public override void Awake()
         {

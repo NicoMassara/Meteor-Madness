@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Utilities;
+﻿using System;
+using _Main.Scripts.Utilities;
 using _Main.Scripts.Managers;
 using UnityEngine;
 
@@ -41,7 +42,6 @@ namespace _Main.Scripts.Gameplay.Projectile
             SetEventBus();
         }
 
-        
         public Vector2 GetPositionByAngle(float currAngle)
         {
            return _location.GetPositionByAngle(currAngle, spawnRadius);
@@ -82,22 +82,23 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            GameEventCaller.Subscribe<GameModeEvents.UpdateLevel>(EventBus_GameMode_UpdateLevel);
+            ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
+            ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_EnableSpawn);
         }
 
-        private void EventBus_GameMode_UpdateLevel(GameModeEvents.UpdateLevel input)
-        {
-            _speed.SetLevelIndex(input.CurrentLevel);
-            _slot.SetLevel(input.CurrentLevel);
-        }
-
-        private void EventBus_GameMode_Start(GameModeEvents.Start input)
+        private void EventBus_Projectile_EnableSpawn(ProjectileEvents.EnableSpawn input)
         {
             _location.RestartValues();
             var gameplayData = GameConfigManager.Instance.GetGameplayData();
             _speed.SetLevelAmount(gameplayData.LevelAmount);
         }
+
+        private void EventBus_Projectile_UpdateLevel(ProjectileEvents.UpdateLevel input)
+        {
+            _speed.SetLevelIndex(input.Level);
+            _slot.SetLevel(input.Level);
+        }
+        
 
         #endregion
 

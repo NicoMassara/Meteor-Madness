@@ -1,22 +1,18 @@
 ﻿using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
     [RequireComponent(typeof(TutorialView))]
     [RequireComponent(typeof(TutorialUIView))]
-    public class TutorialSetup : ManagedBehavior, IUpdatable
+    public class TutorialSetup : ManagedBehavior
     {
         private TutorialMotor _motor;
         private TutorialController _controller;
         private TutorialView _view;
         private TutorialUIView _ui;
-
-        private bool _isEnable;
-
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         
         private void Awake()
         {
@@ -31,32 +27,23 @@ namespace _Main.Scripts.Tutorial.MVC
             
             SetViewHandlers();
             
-            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_GameScreen_SetGameScreen);
+            GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
+            GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
 
         private void Start()
         {
             _controller.Initialize();
         }
-        
-        public void ManagedUpdate()
-        {
-            if (_isEnable)
-            {
-                _controller.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-            }
-        }
 
-        private void TutorialEnable()
+        private void EnableTutorial()
         {
-            _isEnable = true;
             SubscribeEventBus();
-            _controller.TransitionToStart();
+            _controller.TransitionToEnable();
         }
 
-        private void TutorialDisable()
+        private void DisableTutorial()
         {
-            _isEnable = false;
             UnsubscribeEventBus();
             _controller.TransitionToDisable();
         }
@@ -65,14 +52,15 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void SetViewHandlers()
         {
-            _ui.OnStartTutorialButtonPressed += UIOnStartTutorialButtonPressedHandler;
+            _ui.OnStartButtonPressed += UIOnStartTutorialButtonPressedHandler;
 
             _view.OnTutorialEnable += ViewOnTutorialEnable;
+            _view.OnTutorialFinished += _controller.TransitionToMultiPage;
         }
 
         private void ViewOnTutorialEnable()
         {
-            TutorialEnable();
+            _controller.TransitionToStart();
         }
 
         private void UIOnStartTutorialButtonPressedHandler()
@@ -86,19 +74,27 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void SubscribeEventBus()
         {
-            GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
-            GameEventCaller.Subscribe<ProjectileEvents.Collision>(EventBus_Projectile_Collision);
-            GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
-            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
-            GameEventCaller.Subscribe<MultiPageUIEvents.Finished>(EventBus_MultiPage_Finished);
+
+            ProjectileEventSubscriber.Deflected(EventBus_Meteor_Deflected);
+            ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
+            //
+            AbilitiesEventSubscriber.NotifyIsActive(EventBus_Abilities_Active);
+            //
+            MeteorEventSubscriber.RingActive(EventBus_Meteor_RingActive);
+            //
+            MultiPageUIEventSubscriber.Finished(EventBus_MultiPage_Finished);
         }
 
         private void UnsubscribeEventBus()
         {
-            GameEventCaller.Unsubscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
-            GameEventCaller.Unsubscribe<AbilitiesEvents.SetActive>(EventBus_Abilities_Active);
-            GameEventCaller.Unsubscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
-            GameEventCaller.Unsubscribe<MultiPageUIEvents.Finished>(EventBus_MultiPage_Finished);
+            ProjectileEventUnSubscriber.Deflected(EventBus_Meteor_Deflected);
+            ProjectileEventUnSubscriber.Collision(EventBus_Projectile_Collision);
+            //
+            AbilitiesEventUnSubscriber.NotifyIsActive(EventBus_Abilities_Active);
+            //
+            MeteorEventUnSubscriber.RingActive(EventBus_Meteor_RingActive);
+            //
+            MultiPageUIEventUnSubscriber.Finished(EventBus_MultiPage_Finished);
         }
         
         private void EventBus_MultiPage_Finished(MultiPageUIEvents.Finished input)
@@ -111,26 +107,12 @@ namespace _Main.Scripts.Tutorial.MVC
                 case 1:
                     _controller.TransitionToAbility();
                     break;
-                case 2:
-                    TutorialDisable();
+                case 2: 
                     GameManager.Instance.LoadMainMenu();
                     break;
                 default:
                     Debug.Log("MultiPage_Finished - Finish Action Not Found");
                     break;
-            }
-        }
-        
-        private void EventBus_GameScreen_SetGameScreen(GameScreenEvents.SetScreen input)
-        {
-            if (input.ScreenType == ScreenType.Tutorial && 
-                input.IsEnable)
-            {
-                _controller.TransitionToEnable();
-            }
-            else
-            {
-                TutorialDisable();
             }
         }
         
@@ -146,12 +128,8 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             if (input.Type == ProjectileType.Meteor)
             {
-                TimerManager.Add(new TimerData
-                {
-                    Time = 0.5f,
-                    OnEndAction = ()=> _controller.TransitionToMultiPage()
-                }, UpdateGroup.Always);
-                
+                TimerManager.Add(new TimerData(0.5f, 
+                    () => _controller.TransitionToMultiPage()));
             }
             else if (input.Type == ProjectileType.AbilitySphere)
             {
@@ -165,7 +143,7 @@ namespace _Main.Scripts.Tutorial.MVC
         }
 
         
-        private void EventBus_Abilities_Active(AbilitiesEvents.SetActive input)
+        private void EventBus_Abilities_Active(AbilitiesEvents.NotifyIsActive input)
         {
             if (input.IsActive == false)
             {
@@ -176,6 +154,30 @@ namespace _Main.Scripts.Tutorial.MVC
                 _controller.TransitionToAbilityRunning();
             }
         }
+        
+        #region GameScreen
+
+        private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
+        {
+            if(input.ScreenType != ScreenType.Tutorial) return;
+            
+            if (input.RequestType == EventRequestType.Requested)
+            {
+                DisableTutorial();
+            }
+        }
+
+        private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
+        {
+            if(input.ScreenType != ScreenType.Tutorial) return;
+            
+            if (input.RequestType == EventRequestType.Granted)
+            {
+                EnableTutorial();
+            }
+        }
+
+        #endregion
         
         #endregion
     }

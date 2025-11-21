@@ -1,11 +1,12 @@
 ﻿using System;
-using _Main.Scripts.Managers.UpdateManager;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Observer;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.MVC
 {
-    public class CosmeticUIView : ManagedBehavior, IObserver
+    public class CosmeticUIView : ManagedBehavior, IObserver, ICosmeticUISounds
     {
         [SerializeField] private CosmeticUIPanelSelector uiSelector;
         
@@ -19,7 +20,6 @@ namespace _Main.Scripts.Cosmetics.MVC
             GetUiComponents().MainMenuButton.onClick.AddListener(() =>
             {
                 OnMainMenuButtonPressed?.Invoke();
-                PlayButtonSound();
             });
         }
 
@@ -47,11 +47,6 @@ namespace _Main.Scripts.Cosmetics.MVC
             GetUiComponents().MainPanel.SetActive(false);
         }
         
-        private void PlayButtonSound()
-        {
-            SoundEventCaller.PlayUIButton(UISoundType.Back);
-        }
-        
         private void SetActivePanel(GameObject panelObject)
         {
             _currentPanel?.SetActive(false);
@@ -68,5 +63,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             return _uiComponents ??= uiSelector.GetPanelData();
         }
+
+
     }
 }

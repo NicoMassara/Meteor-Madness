@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.Observer;
 using UnityEngine;
 
-namespace _Main.Scripts.FyingObject
+namespace _Main.Scripts.FlyingObject
 {
     public abstract class FlyingObjectMotor<TVS> : ObservableComponent where TVS : FlyingObjectValues
     {

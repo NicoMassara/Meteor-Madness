@@ -1,8 +1,6 @@
-﻿using System;
-using _Main.Scripts.Localization;
-using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+﻿using _Main.Scripts.Managers;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.GameScreens
@@ -10,63 +8,75 @@ namespace _Main.Scripts.GameScreens
     [RequireComponent(typeof(GameScreenView))]
     public class GameScreenSetup : ManagedBehavior
     {
+        [SerializeField] private ScreenType defaultScreen = ScreenType.MainMenu;
         private GameScreenMotor _motor;
-        private GameScreenController _controller;
         private GameScreenView _view;
 
         private void Awake()
         {
             _motor = new GameScreenMotor();
-            _controller = new GameScreenController(_motor);
             _view = GetComponent<GameScreenView>();
             
             _motor.Subscribe(_view);
             
             SetEventBus();
             
-            _controller.Initialize();
-
-            LocalizationEvents.OnLocalizationLoaded += () =>
-            {
-                _controller.TransitionToMainMenu();
-            };
+            ModuleLoaderEvents.OnModulesLoaded += ModuleLoader_OnModulesLoaded;
         }
 
-        /*private void Start()
+        private void SelectNewScreen(ScreenType screenType)
         {
-            _controller.TransitionToMainMenu();
-        }*/
+            _motor.SelectNewScreen((int)screenType);
+        }
 
+        private void TransitionToNewScreen()
+        {
+            _motor.LoadCurrentScreen();
+        }
+        
+        private void TransitionToLastScreen()
+        {
+            _motor.LoadLastScreen();
+        }
+
+        private void ModuleLoader_OnModulesLoaded()
+        {
+            ModuleLoaderEvents.OnModulesLoaded -= ModuleLoader_OnModulesLoaded;
+
+            TimerManager.Add(new TimerData(Time.unscaledDeltaTime, 
+                () => {
+                _motor.LoadScreenByIndex((int)defaultScreen);
+                }));
+        }
+        
         #region EventBus
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<GameScreenEvents.SetScreen>(EventBus_OnSetGameScreen);
+            GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
+            GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
+            GameScreenEventSubscriber.GoToLastScreen(EventBus_GameScreen_GoToLastScreen);
         }
 
-        private void EventBus_OnSetGameScreen(GameScreenEvents.SetScreen input)
+        private void EventBus_GameScreen_GoToLastScreen(GameScreenEvents.LastScreen input)
         {
-            if(input.IsEnable == true) return;
-            
-            switch (input.ScreenType)
+            TransitionToLastScreen();
+        }
+
+        private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
+        {
+            if (input.RequestType == EventRequestType.Granted)
             {
-                case ScreenType.MainMenu:
-                    _controller.TransitionToMainMenu();
-                    break;
-                case ScreenType.GameMode:
-                    _controller.TransitionToGameplay();
-                    break;
-                case ScreenType.Tutorial:
-                    _controller.TransitionToTutorial();
-                    break;
-                case ScreenType.Cosmetic:
-                    _controller.TransitionToCosmetic();
-                    break;
-                default:
-                    Debug.LogWarning("GameScene Index is out of range.");
-                    break;
+                TransitionToNewScreen();
             }
-            
+        }
+
+        private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
+        {
+            if (input.RequestType == EventRequestType.Requested)
+            {
+                SelectNewScreen(input.ScreenType);
+            }
         }
         #endregion
     }

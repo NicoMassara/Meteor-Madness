@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,8 +19,9 @@ namespace _Main.Scripts.Gameplay.AutoTarget
 
         public UnityAction OnTargetFound;
         public UnityAction OnTargetLost;
-
-        public ProjectileDetector(ProjectileDetectorData data, IMovement movement)
+        
+        public ProjectileDetector(ProjectileDetectorData data, IMovement movement) 
+            : base()
         {
             _data = data;
             _movement = movement;

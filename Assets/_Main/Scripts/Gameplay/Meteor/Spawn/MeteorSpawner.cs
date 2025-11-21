@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using _Main.Scripts.Gameplay.Projectile;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Meteor
@@ -51,7 +50,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
             tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
             
-            GameManager.Instance.EventManager.Publish(new ProjectileEvents.Add{Projectile = tempMeteor});
+            ProjectileEventCaller.Add(tempMeteor);
         }
 
         private void SpawnRingMeteor(float meteorSpeed)
@@ -108,6 +107,7 @@ namespace _Main.Scripts.Gameplay.Meteor
             yield return new WaitForSeconds(projectileData.MeteorSpawnDelayAfterRing);
             
             MeteorEventCaller.RingActive(false);
+            AbilitiesEventCaller.RunTimer();
             _isSpawningRing = false;
         }
         
@@ -198,11 +198,22 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<MeteorEvents.SpawnRing>(EnventBus_Meteor_SpawnRing);
-            GameEventCaller.Subscribe<MeteorEvents.RecycleAll>(EnventBus_Meteor_RecycleAll);
-            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            GameEventCaller.Subscribe<ProjectileEvents.Spawn>(EventBus_Projectile_Spawn);
+            MeteorEventSubscriber.SpawnRing(EnventBus_Meteor_SpawnRing);
+            //
+            ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_DisableSpawn);
+            ProjectileEventSubscriber.Spawn(EventBus_Projectile_Spawn);
         }
+
+        #region Meteor
+
+        private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
+        {
+            SpawnRingMeteor(GetMovementSpeed());
+        }
+
+        #endregion
+        
+        #region Projectiles
 
         private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
         {
@@ -211,21 +222,13 @@ namespace _Main.Scripts.Gameplay.Meteor
                 SpawnSingleMeteor(input.Position, input.Direction, input.MovementMultiplier);
             }
         }
-
-        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
-        {
-            RecycleAll();
-        }
         
-        private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
-        {
-            SpawnRingMeteor(GetMovementSpeed());
-        }
-
-        private void EnventBus_Meteor_RecycleAll(MeteorEvents.RecycleAll input)
+        private void EventBus_Projectile_DisableSpawn(ProjectileEvents.DisableSpawn input)
         {
             RecycleAll();
         }
+
+        #endregion
 
         #endregion
     }

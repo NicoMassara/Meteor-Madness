@@ -1,7 +1,5 @@
-﻿using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
-using _Main.Scripts.MyCustoms;
+﻿using _Main.Scripts.Managers;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
@@ -14,7 +12,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private ShieldView _view;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
-        
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+
         private void Awake()
         {
             _view = GetComponent<ShieldView>();
@@ -48,27 +47,35 @@ namespace _Main.Scripts.Gameplay.Shield
             _controller.TryRotate(direction);
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
-            _controller?.Execute(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+            _controller?.Execute(deltaTime);
         }
 
         #region EventBus
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<ShieldEvents.SetGold>(EventBus_Shield_SetGold);
-            GameEventCaller.Subscribe<ShieldEvents.SetAutomatic>(EventBus_Shield_SetAutomatic);
-            GameEventCaller.Subscribe<ShieldEvents.SetSlow>(EventBus_Shield_SetSlow);
-            GameEventCaller.Subscribe<ProjectileEvents.Deflected>(EventBus_Meteor_Deflected);
-            GameEventCaller.Subscribe<ShieldEvents.SetEnable>(EventBus_Shield_SetEnable);
-            GameEventCaller.Subscribe<ShieldEvents.EnableSuperShield>(EventBus_Shield_EnableSuperShield);
-            GameEventCaller.Subscribe<ShieldEvents.EnableNormalShield>(EventBus_Shield_EnableNormalShield);
-            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
+            ShieldEventSubscriber.Disable(EventBus_Shield_Disable);
+            ShieldEventSubscriber.Enable(EventBus_Shield_Enable);
+            ShieldEventSubscriber.SetGold(EventBus_Shield_SetGold);
+            ShieldEventSubscriber.SetAutomatic(EventBus_Shield_SetAutomatic);
+            ShieldEventSubscriber.SetSlow(EventBus_Shield_SetSlow);
+            ShieldEventSubscriber.RestartPosition(EventBus_Shield_RestartPosition);
+            ShieldEventSubscriber.EnableSuperShield(EventBus_Shield_EnableSuperShield);
+            ShieldEventSubscriber.EnableNormalShield(EventBus_Shield_EnableNormalShield);
+            //
+            ProjectileEventSubscriber.Deflected(EventBus_Meteor_Deflected);
         }
+        
+        #region Shield
 
-        private void EventBus_GameMode_Start(GameModeEvents.Start obj)
+        private void EventBus_Shield_Enable(ShieldEvents.Enable input)
+        {
+            _controller.TransitionToEnable();
+        }
+        
+        private void EventBus_Shield_RestartPosition(ShieldEvents.RestartPosition input)
         {
             _controller.RestartPosition();
         }
@@ -81,10 +88,10 @@ namespace _Main.Scripts.Gameplay.Shield
             }
             else
             {
-                _controller.TransitionToActive();
+                _controller.TransitionToEnable();
             }
         }
-
+        
         private void EventBus_Shield_SetGold(ShieldEvents.SetGold input)
         {
             if (input.IsActive)
@@ -93,10 +100,10 @@ namespace _Main.Scripts.Gameplay.Shield
             }
             else
             {
-                _controller.TransitionToActive();
+                _controller.TransitionToEnable();
             }
         }
-
+        
         private void EventBus_Shield_SetSlow(ShieldEvents.SetSlow input)
         {
             if (input.IsActive)
@@ -105,18 +112,18 @@ namespace _Main.Scripts.Gameplay.Shield
             }
             else
             {
-                _controller.TransitionToActive();
+                _controller.TransitionToEnable();
             }
         }
-
-        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
+        
+        private void EventBus_Shield_Disable(ShieldEvents.Disable input)
         {
-            _controller.TransitionToUnactive();
+            _controller.TransitionToDisable();
         }
-
+        
         private void EventBus_Shield_EnableNormalShield(ShieldEvents.EnableNormalShield input)
         {
-            _controller.TransitionToActive();
+            _controller.TransitionToEnable();
         }
 
         private void EventBus_Shield_EnableSuperShield(ShieldEvents.EnableSuperShield input)
@@ -124,23 +131,17 @@ namespace _Main.Scripts.Gameplay.Shield
             _controller.TransitionToSuper();
         }
 
+        #endregion
+
+        #region Projectile
+
         private void EventBus_Meteor_Deflected(ProjectileEvents.Deflected input)
         {
             _controller.HandleHit(input.Position, input.Rotation,input.Direction);
         }
 
-        private void EventBus_Shield_SetEnable(ShieldEvents.SetEnable input)
-        {
-            if (input.IsEnabled)
-            {
-                _controller.TransitionToActive();
-            }
-            else
-            {
-                _controller.TransitionToUnactive();
-            }
-        }
-
+        #endregion
+        
         #endregion
     }
 }

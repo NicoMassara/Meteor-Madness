@@ -2,7 +2,9 @@
 using _Main.Scripts.InspectorTools;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
+using NicolasMassara.CustomTimerManager;
+using NicolasMassara.CustomTimerManager.Tools;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 namespace _Main.Scripts.Gameplay.Projectile
 {
@@ -11,19 +13,20 @@ namespace _Main.Scripts.Gameplay.Projectile
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
         private readonly ProjectileDistanceTracker _distanceTracker = new ProjectileDistanceTracker();
         private readonly Queue<IProjectile> _projectileQueue = new Queue<IProjectile>();
-        private ulong _firstSpawnTimerId;
+        private TimerGeneratedId _firstSpawnTimerId;
         private bool _canLaunch = false;
         private bool _gameplayActive;
         [SerializeField] [ReadOnly] private int projectileCount;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        public TickGroup SelfTickGroup { get; } = TickGroup.HalfTarget;
 
         private void Awake()
         {
             SetEventBus();
         }
 
-        public void ManagedUpdate()
+        public void ExecuteUpdate(float deltaTime)
         {
             if (_distanceTracker.HasProjectile == false)
             {
@@ -72,14 +75,14 @@ namespace _Main.Scripts.Gameplay.Projectile
         private void LaunchProjectile()
         {
             var temp = _projectileQueue.Dequeue();
-            temp.EnableMovement = true;
+            temp.SetEnableMovement(true);
             _distanceTracker.SetProjectile(temp, spawnSettings.GetCenterOfGravity());
             projectileCount = _projectileQueue.Count;
         }
 
         private void AddProjectile(IProjectile projectile)
         {
-            projectile.EnableMovement = false;
+            projectile.SetEnableMovement(false);
             _projectileQueue.Enqueue(projectile);
             projectileCount = _projectileQueue.Count;
         }
@@ -100,38 +103,23 @@ namespace _Main.Scripts.Gameplay.Projectile
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<AbilitiesEvents.SetActive>(EventBus_Ability_SetActive);
-            GameEventCaller.Subscribe<GameModeEvents.Start>(EventBus_GameMode_Start);
-            GameEventCaller.Subscribe<GameModeEvents.Disable>(EventBus_GameMode_Disable);
-            GameEventCaller.Subscribe<GameModeEvents.Restart>(EventBus_GameMode_Restart);
-            GameEventCaller.Subscribe<MeteorEvents.RingActive>(EventBus_Meteor_RingActive);
-            GameEventCaller.Subscribe<MeteorEvents.EnableSpawn>(EnventBus_Meteor_EnableSpawn);
-            GameEventCaller.Subscribe<ProjectileEvents.Add>(EventBus_Projectile_Add);
-            GameEventCaller.Subscribe<ProjectileEvents.RequestSpawn>(EventBus_Projectile_SpawnRequest);
-            GameEventCaller.Subscribe<ProjectileEvents.ClearQueue>(EnventBus_Projectile_ClearQueue);
+            AbilitiesEventSubscriber.NotifyIsActive(EventBus_Ability_SetActive);
+            //
+            MeteorEventSubscriber.RingActive(EventBus_Meteor_RingActive);
+            //
+            ProjectileEventSubscriber.Add(EventBus_Projectile_Add);
+            ProjectileEventSubscriber.RequestSpawn(EventBus_Projectile_SpawnRequest);
+            ProjectileEventSubscriber.ClearQueue(EnventBus_Projectile_ClearQueue);
+            ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_DisableSpawn);
+            ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_EnableSpawn);
+            //
+            
         }
 
-        private void EventBus_GameMode_Start(GameModeEvents.Start input)
-        {
-            _gameplayActive = true;
-            ClearProjectiles();
-        }
+        
+        #region Ability
 
-
-        private void EnventBus_Projectile_ClearQueue(ProjectileEvents.ClearQueue input)
-        {
-            ClearProjectiles();
-        }
-
-        private void EventBus_Projectile_SpawnRequest(ProjectileEvents.RequestSpawn input)
-        {
-            if (input.RequestType == EventRequestType.Granted)
-            {
-                SpawnProjectile(input.ProjectileType);  
-            }
-        }
-
-        private void EventBus_Ability_SetActive(AbilitiesEvents.SetActive input)
+        private void EventBus_Ability_SetActive(AbilitiesEvents.NotifyIsActive input)
         {
             if (input.AbilityType == AbilityType.SlowMotion)
             {
@@ -146,47 +134,56 @@ namespace _Main.Scripts.Gameplay.Projectile
             }
         }
 
+        #endregion
+        
+        #region Meteor
+
         private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
         {
             _canLaunch = !input.IsActive;
         }
-
-        private void EventBus_Projectile_Add(ProjectileEvents.Add input)
+        #endregion
+        
+        #region Projectile
+        
+        private void EventBus_Projectile_EnableSpawn(ProjectileEvents.EnableSpawn input)
         {
-            AddProjectile(input.Projectile);
-        }
-
-        private void EventBus_GameMode_Restart(GameModeEvents.Restart input)
-        {
+            _gameplayActive = true;
             ClearProjectiles();
+
+            _firstSpawnTimerId = TimerManager.Add(new TimerData(1f,() =>
+            {
+                _canLaunch = true;
+            }));
         }
         
-        private void EnventBus_Meteor_EnableSpawn(MeteorEvents.EnableSpawn input)
-        {
-            if (input.CanSpawn)
-            {
-                _firstSpawnTimerId = TimerManager.Add(new TimerData
-                {
-                    Time = 1f,
-                    OnEndAction = () =>
-                    {
-                        _canLaunch = true;
-                    }
-                }, SelfUpdateGroup);
-            }
-            else
-            {
-                _canLaunch = false;
-            }
-        }
-        
-        private void EventBus_GameMode_Disable(GameModeEvents.Disable input)
+        private void EventBus_Projectile_DisableSpawn(ProjectileEvents.DisableSpawn input)
         {
             _gameplayActive = false;
             _canLaunch = false;
             _distanceTracker.ClearValues();
             TimerManager.Remove(_firstSpawnTimerId);
         }
+
+        private void EnventBus_Projectile_ClearQueue(ProjectileEvents.ClearQueue input)
+        {
+            ClearProjectiles();
+        }
+        
+        private void EventBus_Projectile_SpawnRequest(ProjectileEvents.RequestSpawn input)
+        {
+            if (input.RequestType == EventRequestType.Granted)
+            {
+                SpawnProjectile(input.ProjectileType);  
+            }
+        }
+        
+        private void EventBus_Projectile_Add(ProjectileEvents.Add input)
+        {
+            AddProjectile(input.Projectile);
+        }
+
+        #endregion
 
         #endregion
     }

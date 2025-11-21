@@ -2,6 +2,7 @@
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Gameplay.Earth.States;
 using _Main.Scripts.Interfaces;
+using NicolasMassara.CustomActionManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
@@ -14,6 +15,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private enum States
         {
+            None,
             Default,
             Dead,
             Shaking,
@@ -43,7 +45,15 @@ namespace _Main.Scripts.Gameplay.Earth
         private void InitializeFsm()
         {
             var temp = new List<EarthBaseState<States>>();
-            _fsm = new FSM<States>();
+            _fsm = new FSM<States>("Earth");
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(2);
+#endif
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(2);
+#endif
 
             #region Variables
 
@@ -83,7 +93,6 @@ namespace _Main.Scripts.Gameplay.Earth
             }
             
             _fsm.SetInit(defaultEarth);
-            _fsm.FSMName = "Earth";
         }
 
         #region Transitions
@@ -198,26 +207,32 @@ namespace _Main.Scripts.Gameplay.Earth
 
     public class EarthDeadShakingState<T> : EarthBaseState<T>
     {
-        private readonly ActionQueue _queue = new ActionQueue();
+        private IQueueAction _queue;
 
         public override void Awake()
         {
-            var temp = new ActionData[]
-            {
-                new(()=>Controller.SetDeathShake(true),
-                    Controller.GetEarthDestructionTimeValues().StartShake),
-                new(()=>Controller.SetDeathShake(false),
-                    Controller.GetEarthDestructionTimeValues().DeathShakeDuration),
-                new(()=>Controller.TransitionToDestruction(),
-                    Controller.GetEarthDestructionTimeValues().ShowEarthDestruction)
-            };
-            
-            _queue.AddAction(temp);
+            _queue = ActionBuilder.Start()
+                .Do(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().StartShake))
+                .Then(new InstantAction(() =>
+                {
+                    Controller.SetDeathShake(true);
+                }))
+                .Then(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().DeathShakeDuration))
+                .Then(new InstantAction(() =>
+                {
+                    Controller.SetDeathShake(false);
+                }))
+                .Then(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().ShowEarthDestruction))
+                .Then(new InstantAction(() =>
+                {
+                    Controller.TransitionToDestruction();
+                }))
+                .Build();
         }
 
         public override void Execute(float deltaTime)
         {
-            _queue.Run(deltaTime);
+            _queue.OnUpdate(deltaTime);
         }
     }
     
@@ -241,32 +256,32 @@ namespace _Main.Scripts.Gameplay.Earth
     
     public class EarthDestructionState<T> : EarthBaseState<T>
     {
-        private readonly ActionQueue _queue = new ActionQueue();
+        private IQueueAction _queue;
 
         public override void Awake()
         {
-            if (Controller == null)
-            {
-                Debug.Log("Controller is null");
-                return;
-            }
-
-            var temp = new ActionData[]
-            {
-                new (()=>Controller.TriggerDestruction(),
-                    Controller.GetEarthDestructionTimeValues().StartTriggerDestructionTime),
-                new (()=>Controller.SetRotation(true),
-                    Controller.GetEarthDestructionTimeValues().StartRotatingAfterDeath),
-                new (()=>Controller.TriggerEndDestruction(),
-                    Controller.GetEarthDestructionTimeValues().EndTriggerDestructionTime),
-            };
-
-            _queue.AddAction(temp);
+            _queue = ActionBuilder.Start()
+                .Do(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().StartTriggerDestructionTime))
+                .Then(new InstantAction(() =>
+                {
+                    Controller.TriggerDestruction();
+                }))
+                .Then(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().StartRotatingAfterDeath))
+                .Then(new InstantAction(() =>
+                {
+                    Controller.SetRotation(true);
+                }))
+                .Then(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().EndTriggerDestructionTime))
+                .Then(new InstantAction(() =>
+                {
+                    Controller.TriggerEndDestruction();
+                }))
+                .Build();
         }
 
         public override void Execute(float deltaTime)
         {
-            _queue.Run(deltaTime);
+            _queue.OnUpdate(deltaTime);
         }
     }
     

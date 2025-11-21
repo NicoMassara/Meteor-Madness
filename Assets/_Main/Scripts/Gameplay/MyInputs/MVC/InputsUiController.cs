@@ -1,5 +1,7 @@
-﻿using _Main.Scripts.Managers;
-using _Main.Scripts.Managers.UpdateManager;
+﻿using _Main.Scripts.Interfaces;
+using _Main.Scripts.Managers;
+using _Main.Scripts.Observer;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.MyInputs.MVC
@@ -7,24 +9,34 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
     [RequireComponent(typeof(InputsUiView))]
     public class InputsUiController : ManagedBehavior
     {
+#if UNITY_ANDROID
+        private InputsUiMotor _motor;
         private InputsUiView _view;
         private bool _isGameplayEnable;
         private ulong _timerId;
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
+#endif
 
         private void Awake()
         {
-            _view = GetComponent<InputsUiView>();
-            
-            if (SystemInfo.deviceType == DeviceType.Desktop)
+#if UNITY_STANDALONE_WIN
+
+            if (Application.platform == RuntimePlatform.WindowsPlayer)
             {
-                _view.DestroyContainer();
                 Destroy(gameObject);
                 return;
             }
+
+#else      
+            _view = GetComponent<InputsUiView>();
+            
+            _motor = new InputsUiMotor();
+            _motor.Subscribe(_view);
             
             SetEventBus();
+#endif
         }
+        
+#if UNITY_ANDROID
 
         private void Start()
         {
@@ -32,31 +44,24 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
             GameManager.Instance.InputReader.OnStopMovement += Input_OnStopMovementHandler;
             GameManager.Instance.InputReader.OnMovementDirectionChanged += Input_OnMovementDirectionChangedHandler;
             GameManager.Instance.InputReader.OnAbilityTriggered += Input_OnAbilityTriggeredHandler;
-            _view.InitializeImages(GameConfigManager.Instance.GetGameplayData().TouchInputData);
+            _motor.Initialize(GameConfigManager.Instance.GetGameplayData().TouchInputData);
         }
 
         #region Handlers
 
         private void Input_OnMovementDirectionChangedHandler(int direction)
         {
-            _view.SetCurrentImage(direction);
+            _motor.SetDirection(direction);
         }
 
         private void Input_OnStopMovementHandler()
         {
-            _view.DisableActiveImage();
+            _motor.SetDirection(0);
         }
         
         private void Input_OnAbilityTriggeredHandler(bool isTriggered)
         {
-            if (isTriggered)
-            {
-                _view.SetActiveBothImages();
-            }
-            else
-            {
-                _view.SetInactiveBothImages();
-            }
+            _motor.SetHasTriggeredAbility(isTriggered);
         }
 
         #endregion
@@ -65,14 +70,72 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
 
         private void SetEventBus()
         {
-            GameEventCaller.Subscribe<InputsEvents.SetUIEnable>(EventBus_Inputs_SetUIEnable);
+            InputsEventSubscriber.SetUIEnable(EventBus_Inputs_SetUIEnable);
         }
 
         private void EventBus_Inputs_SetUIEnable(InputsEvents.SetUIEnable input)
         {
-            _view.SetEnablePanel(input.IsEnable);
+            _motor.SetEnable(input.IsEnable);
         }
 
         #endregion
+#endif
     }
+
+#if UNITY_ANDROID
+    public class InputsUiMotor : ObservableComponent
+    {
+        private int _currentDirection;
+        private bool _hasTriggeredAbility;
+
+        public void Initialize(ITouchInputData data)
+        {
+            NotifyAll(InputsUIObserverMessage.Initialize, data);
+        }
+        
+        public void Destroy()
+        {
+            NotifyAll(InputsUIObserverMessage.Destroy);
+        }
+
+        public void SetEnable(bool isEnable)
+        {
+            NotifyAll(InputsUIObserverMessage.SetEnableUI, isEnable);
+        }
+
+        public void SetDirection(int direction)
+        {
+            _currentDirection = direction;
+            
+
+
+            switch (_currentDirection)
+            {
+                case 0:
+                    NotifyAll(InputsUIObserverMessage.SetEnableClock, false);
+                    NotifyAll(InputsUIObserverMessage.SetEnableCounterClock, false);
+                    break;
+                case -1: // ClockWise
+                    NotifyAll(InputsUIObserverMessage.SetEnableClock, true);
+                    NotifyAll(InputsUIObserverMessage.SetEnableCounterClock, false);
+                    break;
+                case 1: // CounterClock
+                    NotifyAll(InputsUIObserverMessage.SetEnableClock, false);
+                    NotifyAll(InputsUIObserverMessage.SetEnableCounterClock, true);
+                    break;
+            }
+        }
+
+        public void SetHasTriggeredAbility(bool hasTriggeredAbility)
+        {
+            _hasTriggeredAbility = hasTriggeredAbility;
+
+            if (_hasTriggeredAbility)
+            {
+                NotifyAll(InputsUIObserverMessage.SetEnableClock, true);
+                NotifyAll(InputsUIObserverMessage.SetEnableCounterClock, true);
+            }
+        }
+    }
+#endif
 }

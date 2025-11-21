@@ -5,7 +5,7 @@
         public const ulong Rotate = 0xA0001;
         public const ulong StopRotate = 0xA0002;
         public const ulong Deflect = 0xA0003;
-        public const ulong PlayMoveSound = 0xA0004;
+        public const ulong ChangedDirection = 0xA0004;
         public const ulong SetGold = 0xA0005;
         public const ulong SetActiveShield = 0xA0006;
         public const ulong SetActiveSuperShield = 0xA0007;
@@ -24,6 +24,8 @@
         public const ulong Heal = 0xA1006;
         public const ulong SetRotation = 0xA1007;
         public const ulong TriggerEndDestruction = 0xA1008;
+        public const ulong SetLowHealth = 0xA1009;
+        public const ulong Debug_UpdateHealth = 0xA1010;
     }
 
     public struct GameModeObserverMessage
@@ -50,6 +52,16 @@
         public const ulong CameraZoomIn = 0xA2020;
         public const ulong CameraZoomOut = 0xA2021;
         public const ulong SetCanPause = 0xA2022;
+        public const ulong TriggerMainMenu = 0xA2023;
+        public const ulong SaveHighScore = 0xA2024;
+        public const ulong UpdateHighScore = 0xA2025;
+        public const ulong SetHasHighScore = 0xA2026;
+        public const ulong PausePanel = 0xA2027;
+        public const ulong Options = 0xA2028;
+        public const ulong GameplayPanel = 0xA2029;
+        public const ulong GameUnPaused = 0xA2030;
+        public const ulong Asleep = 0xA2031;
+        public const ulong Leaving = 0xA2032;
     }
 
     public struct FlyingObjectObserverMessage
@@ -86,11 +98,11 @@
     
     public struct GameScreenObserverMessage
     {
-        public const ulong SetMainMenu = 0xA5001;
-        public const ulong SetGameplay = 0xA5002;
-        public const ulong SetTutorial = 0xA5003;
-        public const ulong SetStartLoading = 0xA5004;
-        public const ulong SetCosmeticMenu = 0xA5005;
+        public const ulong DisableScreen = 0xA5001;
+        public const ulong LoadScreen = 0xA5002;
+        public const ulong Empty1 = 0xA5003;
+        public const ulong Empty2 = 0xA5004;
+        public const ulong Empty3 = 0xA5005;
     }
     
     public struct TutorialObserverMessage
@@ -119,6 +131,8 @@
         public const ulong Quit = 0xA7007;
         public const ulong TutorialMenu = 0xA7008;
         public const ulong TriggerCosmetic = 0xA7009;
+        public const ulong CreditsMenu = 0xA7010;
+        public const ulong TriggerOptions = 0xA7011;
     }
 
     public struct CosmeticObserverMessage
@@ -135,5 +149,26 @@
         public const ulong Empty8 = 0xA8010;
         public const ulong Empty9 = 0xA8011;
         public const ulong Empty10 = 0xA8012;
+    }
+
+    public struct InputsUIObserverMessage
+    {
+        public const ulong SetEnableClock = 0xA9001;
+        public const ulong SetEnableCounterClock = 0xA0002;
+        public const ulong Empty1 = 0xA0003;
+        public const ulong SetEnableUI = 0xA0004;
+        public const ulong Initialize = 0xA0005;
+        public const ulong Destroy = 0xA0006;
+    }
+
+    public struct SettingsObserverMessage
+    {
+        public const ulong Enable = 0xA1001;
+        public const ulong Disable = 0xA1002;
+        public const ulong Initial = 0xA1003;
+        public const ulong Language = 0xA1004;
+        public const ulong Vibration = 0xA1005;
+        public const ulong Volume = 0xA1006;
+        public const ulong Close = 0xA1007;
     }
 }

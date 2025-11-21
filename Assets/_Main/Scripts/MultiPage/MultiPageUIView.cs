@@ -1,11 +1,12 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Localization;
-using _Main.Scripts.Managers.UpdateManager;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MultiPage
 {
-    public class MultiPageViewUI : ManagedBehavior
+    public class MultiPageViewUI : ManagedBehavior, IMultiPageUISounds
     {
         [SerializeField] private MultiPageUiSelector uiSelector;
 
@@ -23,14 +24,13 @@ namespace _Main.Scripts.MultiPage
             GetUiComponents().PreviousButton.onClick.AddListener(() =>
             {
                 OnPreviousButtonPressed?.Invoke();
-                SoundEventCaller.PlayUIButton(UISoundType.Back);
             });
             GetUiComponents().NextButton.onClick.AddListener(() =>
             {
                 OnNextButtonPressed?.Invoke();
-                SoundEventCaller.PlayUIButton(UISoundType.Default);
             });
         }
+        
 
         public void SetNextButtonText(string textCode)
         {

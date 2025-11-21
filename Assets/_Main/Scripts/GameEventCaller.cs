@@ -1,7 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using UnityEngine;
 
 namespace _Main.Scripts
 {
@@ -22,6 +21,68 @@ namespace _Main.Scripts
             GameManager.Instance.EventManager.Unsubscribe(listener);
         }
     }
+
+    #region GameMode
+    
+    public static class GameModeEventCaller
+    {
+        public static void InitializeValues()
+        {
+            GameEventCaller.Publish(new GameModeEvents.InitializeValues());
+        }
+        
+        public static void SetPause(bool isPaused)
+        {
+            GameEventCaller.Publish(new GameModeEvents.SetPause{IsPaused = isPaused});
+        }
+
+        public static void SetEnablePause(bool isEnable)
+        {
+            GameEventCaller.Publish(new GameModeEvents.SetEnablePause{CanPause = isEnable});
+        }
+
+    }
+
+    public static class GameModeEventSubscriber
+    {
+        public static void InitializeValues(Action<GameModeEvents.InitializeValues> action)
+        {
+            GameEventCaller.Subscribe<GameModeEvents.InitializeValues>(action);
+        }
+        
+        public static void SetPause(Action<GameModeEvents.InitializeValues> action)
+        {
+            GameEventCaller.Subscribe<GameModeEvents.InitializeValues>(action);
+        }
+        
+        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+    }
+    
+    public static class GameModeEventUnSubscriber
+    {
+        public static void InitializeValues(Action<GameModeEvents.InitializeValues> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void SetPause(Action<GameModeEvents.InitializeValues> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+    
+    #endregion
+    
+    #region Earth
 
     public static class EarthEventCaller
     {
@@ -55,17 +116,125 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new EarthEvents.DestructionStart());
         }
         
+        public static void SetToDefault()
+        {
+            GameEventCaller.Publish(new EarthEvents.SetToDefault());
+        }
+        
         public static void DestructionFinished()
         {
             GameEventCaller.Publish(new EarthEvents.DestructionFinished());
         }
+        
+        public static void Death()
+        {
+            GameEventCaller.Publish(new EarthEvents.Death());
+        }
     }
+    
+    public static class EarthEventSubscriber
+    {
+        public static void Restart(Action<EarthEvents.Restart> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void RestartFinished(Action<EarthEvents.RestartFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void ShakeStart(Action<EarthEvents.ShakeStart> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void Heal(Action<EarthEvents.Heal> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void SetEnableDamage(Action<EarthEvents.SetEnableDamage> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void DestructionStart(Action<EarthEvents.DestructionStart> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void SetToDefault(Action<EarthEvents.SetToDefault> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void DestructionFinished(Action<EarthEvents.DestructionFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void Death(Action<EarthEvents.Death> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+    }
+    
+    public static class EarthEventUnSubscriber
+    {
+        public static void Restart(Action<EarthEvents.Restart> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void RestartFinished(Action<EarthEvents.RestartFinished> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void ShakeStart(Action<EarthEvents.ShakeStart> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Heal(Action<EarthEvents.Heal> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetEnableDamage(Action<EarthEvents.SetEnableDamage> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DestructionStart(Action<EarthEvents.DestructionStart> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void SetToDefault(Action<EarthEvents.SetToDefault> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DestructionFinished(Action<EarthEvents.DestructionFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void Death(Action<EarthEvents.Death> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+    #endregion
+    
+    #region Shield
+    
+
     public static class ShieldEventCaller
     {
-        public static void SetEnableShield(bool isEnabled)
-        {
-            GameEventCaller.Publish(new ShieldEvents.SetEnable{IsEnabled = isEnabled});
-        }
         public static void SetGold(bool isActive)
         {
             GameEventCaller.Publish(new ShieldEvents.SetGold{IsActive = isActive});
@@ -90,8 +259,113 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new ShieldEvents.EnableNormalShield());
         }
-
+        
+        public static void RestartPosition()
+        {
+            GameEventCaller.Publish(new ShieldEvents.RestartPosition());
+        }
+        
+        public static void Enable()
+        {
+            GameEventCaller.Publish(new ShieldEvents.Enable());
+        }
+        
+        public static void Disable()
+        {
+            GameEventCaller.Publish(new ShieldEvents.Disable());
+        }
     }
+    
+    public static class ShieldEventSubscriber
+    {
+        public static void SetGold(Action<ShieldEvents.SetGold> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void SetSlow(Action<ShieldEvents.SetSlow> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void SetAutomatic(Action<ShieldEvents.SetAutomatic> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void EnableSuperShield(Action<ShieldEvents.EnableSuperShield> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void EnableNormalShield(Action<ShieldEvents.EnableNormalShield> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void RestartPosition(Action<ShieldEvents.RestartPosition> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void Enable(Action<ShieldEvents.Enable> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void Disable(Action<ShieldEvents.Disable> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+    }
+    
+    public static class ShieldEventUnSubscriber
+    {
+        public static void SetGold(Action<ShieldEvents.SetGold> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetSlow(Action<ShieldEvents.SetSlow> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetAutomatic(Action<ShieldEvents.SetAutomatic> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void EnableSuperShield(Action<ShieldEvents.EnableSuperShield> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void EnableNormalShield(Action<ShieldEvents.EnableNormalShield> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void RestartPosition(Action<ShieldEvents.RestartPosition> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Enable(Action<ShieldEvents.Enable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Disable(Action<ShieldEvents.Disable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+    #endregion
+    
+    #region GameScreen
+
     public static class GameScreenEventCaller
     {
         public static void SetGameScreen(ScreenType type, bool isEnable = false)
@@ -102,50 +376,82 @@ namespace _Main.Scripts
                 IsEnable = isEnable
             });
         }
+
+        public static void EnableScreen(ScreenType type, EventRequestType requestType)
+        {
+            GameEventCaller.Publish(new GameScreenEvents.EnableScreen
+            {
+                ScreenType = type,
+                RequestType = requestType
+            });
+        }
+        
+        public static void DisableScreen(ScreenType type, EventRequestType requestType)
+        {
+            GameEventCaller.Publish(new GameScreenEvents.DisableScreen
+            {
+                ScreenType = type,
+                RequestType = requestType
+            });
+        }
+
+        public static void LoadLastScreen()
+        {
+            GameEventCaller.Publish(new GameScreenEvents.LastScreen());
+        }
+
     }
-    public static class GameModeEventCaller
+    
+    public static class GameScreenEventSubscriber
     {
-        public static void InitializeValues()
+        public static void SetGameScreen(Action<GameScreenEvents.SetScreen> action)
         {
-            GameEventCaller.Publish(new GameModeEvents.InitializeValues());
-        }
-        
-        public static void Disable()
-        {
-            GameEventCaller.Publish(new GameModeEvents.Disable());
-        }
-        
-        public static void Start()
-        {
-            GameEventCaller.Publish(new GameModeEvents.Start());
-        }
-        
-        public static void Finish()
-        {
-            GameEventCaller.Publish(new GameModeEvents.Finish());
-        }
-        
-        public static void Restart()
-        {
-            GameEventCaller.Publish(new GameModeEvents.Restart());
+            GameEventCaller.Subscribe(action);
         }
 
-        public static void UpdateLevel(int currentLevel)
+        public static void EnableScreen(Action<GameScreenEvents.EnableScreen> action)
         {
-            GameEventCaller.Publish(new GameModeEvents.UpdateLevel{CurrentLevel = currentLevel});
+            GameEventCaller.Subscribe(action);
         }
         
-        public static void SetPause(bool isPaused)
+        public static void DisableScreen(Action<GameScreenEvents.DisableScreen> action)
         {
-            GameEventCaller.Publish(new GameModeEvents.SetPause{IsPaused = isPaused});
+            GameEventCaller.Subscribe(action);
         }
-
-        public static void SetEnablePause(bool isEnable)
+        
+        public static void GoToLastScreen(Action<GameScreenEvents.LastScreen> action)
         {
-            GameEventCaller.Publish(new GameModeEvents.SetEnablePause{CanPause = isEnable});
+            GameEventCaller.Subscribe(action);
         }
-
     }
+    
+    public static class GameScreenEventUnSubscriber
+    {
+        public static void SetGameScreen(Action<GameScreenEvents.SetScreen> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void EnableScreen(Action<GameScreenEvents.EnableScreen> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DisableScreen(Action<GameScreenEvents.DisableScreen> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void GoToLastScreen(Action<GameScreenEvents.LastScreen> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+    #endregion
+    
+    #region Projectile
+    
     public static class ProjectileEventCaller
     {
         public static void Collision(CollisionData data)
@@ -181,7 +487,7 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new ProjectileEvents.RequestSpawn
             {
                 ProjectileType = projectileType, 
-                RequestType = EventRequestType.Request
+                RequestType = EventRequestType.Requested
             });
         }
         
@@ -209,7 +515,133 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new ProjectileEvents.ClearQueue());
         }
+        
+        public static void DisableSpawn()
+        {
+            GameEventCaller.Publish(new ProjectileEvents.DisableSpawn());
+        }
+        
+        public static void EnableSpawn()
+        {
+            GameEventCaller.Publish(new ProjectileEvents.EnableSpawn());
+        }
+        
+        public static void UpdateLevel(int level)
+        {
+            GameEventCaller.Publish(new ProjectileEvents.UpdateLevel{Level = level});
+        }
     }
+    
+    public static class ProjectileEventSubscriber
+    {
+        public static void Collision(Action<ProjectileEvents.Collision> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void Deflected(Action<ProjectileEvents.Deflected> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void Add(Action<ProjectileEvents.Add> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void Spawn(Action<ProjectileEvents.Spawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+    }
+    
+    public static class ProjectileEventUnSubscriber
+    {
+        public static void Collision(Action<ProjectileEvents.Collision> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Deflected(Action<ProjectileEvents.Deflected> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void Add(Action<ProjectileEvents.Add> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void Spawn(Action<ProjectileEvents.Spawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+    #endregion
+    
+    #region Meteor
+
     public static class MeteorEventCaller
     {
         public static void GrantSpawnSingle()
@@ -231,17 +663,59 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new MeteorEvents.RingActive{IsActive = isActive});
         }
-
-        public static void RecycleAll()
+    }
+    
+    public static class MeteorEventSubscriber
+    {
+        public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
         {
-            GameEventCaller.Publish(new MeteorEvents.RecycleAll());
+            ProjectileEventSubscriber.GrantSpawn(action);
+        }
+        
+        public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            ProjectileEventSubscriber.RequestSpawn(action);
+        }
+        
+        public static void SpawnRing(Action<MeteorEvents.SpawnRing> action)
+        {
+            GameEventCaller.Subscribe(action);
         }
 
-        public static void EnableSpawn(bool canSpawn)
+        public static void RingActive(Action<MeteorEvents.RingActive> action)
         {
-            GameEventCaller.Publish(new MeteorEvents.EnableSpawn{CanSpawn = canSpawn});
+            GameEventCaller.Subscribe(action);
         }
     }
+    
+    public static class MeteorEventUnSubscriber
+    {
+        public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            ProjectileEventSubscriber.GrantSpawn(action);
+        }
+        
+        public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            ProjectileEventSubscriber.RequestSpawn(action);
+        }
+        
+        public static void SpawnRing(Action<MeteorEvents.SpawnRing> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void RingActive(Action<MeteorEvents.RingActive> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+    #endregion
+    
+    #region Particle
+    
+
     public static class ParticleEventCaller
     {
         public static void Spawn(ParticleSpawnData data)
@@ -255,6 +729,31 @@ namespace _Main.Scripts
             });
         }
     }
+    
+    
+    public static class ParticleEventSubscriber
+    {
+        public static void Spawn(Action<ParticleEvents.Spawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+    }
+    
+    public static class ParticleEventUnSubscribe
+    {
+        public static void Spawn(Action<ParticleEvents.Spawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+
+    
+    #endregion
+    
+    #region Camera
+    
+
     public static class CameraEventCaller
     {
         public static void ZoomIn()
@@ -272,6 +771,48 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new CameraEvents.Shake{ShakeData = shake});
         }
     }
+    
+    public static class CameraEventSubscriber
+    {
+        public static void ZoomIn(Action<CameraEvents.ZoomIn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void ZoomOut(Action<CameraEvents.ZoomOut> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void Shake(Action<CameraEvents.Shake> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+    }
+    
+    public static class CameraEventUnSubscriber
+    {
+        public static void ZoomIn(Action<CameraEvents.ZoomIn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void ZoomOut(Action<CameraEvents.ZoomOut> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void Shake(Action<CameraEvents.Shake> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+
+    #endregion
+    
+    #region Inputs
+    
+
     public static class InputsEventCaller
     {
         public static void SetEnable(bool enable)
@@ -284,6 +825,39 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new InputsEvents.SetUIEnable{IsEnable = enable});
         }
     }
+    
+    
+    public static class InputsEventSubscriber
+    {
+        public static void SetEnable(Action<InputsEvents.SetEnable> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void SetUIEnable(Action<InputsEvents.SetUIEnable> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+    }
+    
+    public static class InputsEventUnSubscriber
+    {
+        public static void SetEnable(Action<InputsEvents.SetEnable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetUIEnable(Action<InputsEvents.SetUIEnable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+
+    #endregion
+    
+    #region Abilities
+    
     public static class AbilitiesEventCaller
     {
         public static void SetCanUse(bool canUse)
@@ -310,15 +884,30 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
         }
         
-        public static void SetActive(SetActiveAbilityData data)
+        public static void NotifyIsActive(AbilityType type, bool isActive)
         {
-            GameEventCaller.Publish(new AbilitiesEvents.SetActive
+            GameEventCaller.Publish(new AbilitiesEvents.NotifyIsActive
             {
-                AbilityType = data.AbilityType,
-                IsActive = data.IsActive,
+                AbilityType = type,
+                IsActive = isActive,
             });
         }
+
+        public static void Enable()
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.Enable());
+        }
         
+        public static void Disable()
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.Disable());
+        }
+        
+        public static void RunTimer()
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.RunTimer());
+        }
+
         public static void GrantSpawn()
         {
             GameEventCaller.Publish(new ProjectileEvents.RequestSpawn
@@ -333,7 +922,7 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new ProjectileEvents.RequestSpawn
             {
                 ProjectileType = ProjectileType.AbilitySphere, 
-                RequestType = EventRequestType.Request
+                RequestType = EventRequestType.Requested
             });
         }
 
@@ -342,6 +931,126 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new AbilitiesEvents.SetNextSpawn{AbilityType = type});
         }
     }
+    public static class AbilitiesEventSubscriber
+    {
+        public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void SetEnableUI(Action<AbilitiesEvents.SetEnableUI> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void Add(Action<AbilitiesEvents.Add> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void SetStorageFull(Action<AbilitiesEvents.SetStorageFull> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void Enable(Action<AbilitiesEvents.Enable> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void Disable(Action<AbilitiesEvents.Disable> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void RunTimer(Action<AbilitiesEvents.RunTimer> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+
+        public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+    }
+    public static class AbilitiesEventUnSubscriber
+    {
+        public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetEnableUI(Action<AbilitiesEvents.SetEnableUI> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void Add(Action<AbilitiesEvents.Add> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetStorageFull(Action<AbilitiesEvents.SetStorageFull> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void Enable(Action<AbilitiesEvents.Enable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void Disable(Action<AbilitiesEvents.Disable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void RunTimer(Action<AbilitiesEvents.RunTimer> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+
+    #endregion
+    
+    #region Floatin Text
+    
+
     public static class FloatingTextEventCaller
     {
         public static void Spawn(FloatingTextValues data)
@@ -349,6 +1058,27 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new FloatingTextEvents.Spawn { Data = data });
         }
     }
+    
+    public static class FloatingTextEventSubscriber
+    {
+        public static void Spawn(Action<FloatingTextEvents.Spawn> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+    }
+    
+    public static class FloatingTextEventUnSubscriber
+    {
+        public static void Spawn(Action<FloatingTextEvents.Spawn> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+    #endregion
+    
+    #region MultiPage
+    
 
     public static class MultiPageUIEventCaller
     {
@@ -362,37 +1092,34 @@ namespace _Main.Scripts
             GameEventCaller.Publish(new MultiPageUIEvents.Finished{CreateId = createId});
         }
     }
-
-    public static class SoundEventCaller
+    
+    public static class MultiPageUIEventSubscriber
     {
-        public static void PlaySound(ISoundData data, Transform soundParent, ILoopableSound loopableSound)
+        public static void Create(Action<MultiPageUIEvents.Create> action)
         {
-            GameEventCaller.Publish(new SoundEvents.PlaySound
-            {
-                Data = data,
-                SoundParent = soundParent,
-                LoopableSound = loopableSound
-            });
-        }
-        
-        public static void PlayMusic(MusicType musicType)
-        {
-            GameEventCaller.Publish(new SoundEvents.PlayMusic{Type = musicType});
-        }
-        
-        public static void StopMusic()
-        {
-            GameEventCaller.Publish(new SoundEvents.StopMusic());
-        }
-        
-        public static void SetMusicLevel(float volume)
-        {
-            GameEventCaller.Publish(new SoundEvents.SetMusicLevel{Volume = volume});
+            GameEventCaller.Subscribe(action);
         }
 
-        public static void PlayUIButton(UISoundType uiButtonType)
+        public static void Finished(Action<MultiPageUIEvents.Finished> action)
         {
-            GameEventCaller.Publish(new SoundEvents.PlayUIButton{Type = uiButtonType});
+            GameEventCaller.Subscribe(action);
         }
     }
+    
+    public static class MultiPageUIEventUnSubscriber
+    {
+        public static void Create(Action<MultiPageUIEvents.Create> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+
+        public static void Finished(Action<MultiPageUIEvents.Finished> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+    }
+    
+    #endregion
+    
+    
 }

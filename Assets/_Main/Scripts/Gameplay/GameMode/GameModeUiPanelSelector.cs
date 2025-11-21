@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.GameMode.Pause;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Utilities;
 using TMPro;
@@ -14,7 +15,6 @@ namespace _Main.Scripts.Gameplay.GameMode
     {
         [Space(2)] 
         [Header("Sub Panels")] 
-        public GameObject PausePanel;
         public GameObject CountdownPanel;
         public GameObject GameplayPanel;
         public GameObject DeathPanel;
@@ -25,11 +25,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         public TMP_Text ScoreText;
         public TMP_Text DeathScoreText;
         public TMP_Text DeathText;
+        public TMP_Text HighScoreText;
         [Space]
         [Header("Buttons Components")]
         public Button RestartButton;
-        public Button ResumeButton;
         public Button PauseButton;
         public Button[] MainMenuButtons;
+        [Header("Pause Panel")]
+        [SerializeField] private PauseUiPanel pauseUiPanel;
+        
+        public IPausePanel PausePanel => pauseUiPanel;
     }
 }
