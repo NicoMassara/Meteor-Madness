@@ -28,7 +28,6 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private AnimationCurve rotationSpeedCurve;
         [SerializeField] private ParticleDataSo collisionParticleData;
         
-        private EarthMaterialController _earthMaterialController;
         private ShakerController _shakerController;
         private GameObject _currentSprite;
         private Rotator _planeRotator;
@@ -55,7 +54,6 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void Awake()
         {
-            _earthMaterialController = GetComponent<EarthMaterialController>();
             _planeRotator = new Rotator(planeMeshContainer.transform, Vector3.forward, rotationSpeed/2);
             _shakerController = new ShakerController(planeMeshContainer.transform);
             

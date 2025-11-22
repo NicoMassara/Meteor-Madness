@@ -141,7 +141,7 @@
         public const ulong Disable = 0xA8002;
         public const ulong Initial = 0xA8003;
         public const ulong TriggerMainMenu = 0xA8004;
-        public const ulong Empty3 = 0xA8005;
+        public const ulong AbilitySelect = 0xA8005;
         public const ulong Empty4 = 0xA8006;
         public const ulong Empty5 = 0xA8007;
         public const ulong Empty6 = 0xA8008;

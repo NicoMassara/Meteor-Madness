@@ -21,11 +21,12 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         {
             _earthHealth.OnHealthChanged += View_OnHealthChangedHandler;
             
-            LoadSkin();
             SkinManager.Instance.OnSkinChanged += SkinManager_OnSkinChanged;
+            LoadSkin();
             
             UpdateMaterialHealth();
         }
+        
 
         private void UpdateMaterialHealth()
         {

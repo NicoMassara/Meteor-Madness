@@ -30,27 +30,28 @@
     {
         public struct Group
         {
-            public const int Fps = -1;
-            public const int GameScreen = 0;
-            public const int Managers = 1;
-            public const int Gameplay = 2;
-            public const int Fsm = 3;
-            public const int Input = 4;
-            public const int Sounds = 5;
+            public const int Fps = -100;
+            public const int GameScreen = -90;
+            public const int Managers = -80;
+            public const int Gameplay = -70;
+            public const int Skin = -60;
+            public const int Fsm = -50;
+            public const int Input = -30;
+            public const int Sounds = 0;
         }
     
         public struct SubGroup
         {
-            public const int MainMenu = -5;
-            public const int GameMode = -4;
-            public const int Tutorial = -3;
-            public const int Cosmetics = -2;
-            public const int Earth = 1;
-            public const int Shield = 2;
-            public const int Ability = 3;
-            public const int UpdateManager = 0;
+            public const int MainMenu = -50;
+            public const int GameMode = -40;
+            public const int Tutorial = -30;
+            public const int Cosmetics = -20;
+            public const int Earth = 10;
+            public const int Shield = 20;
+            public const int Ability = 30;
+            public const int UpdateManager = 1;
             public const int SoundChannel = 0;
-            public const int Music = -1;
+            public const int Music = -11;
         }
     }
 #endif

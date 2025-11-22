@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Managers;
+using _Main.Scripts.MySettings;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
 
@@ -22,7 +23,16 @@ namespace _Main.Scripts.Cosmetics.MVC
                 case CosmeticObserverMessage.TriggerMainMenu:
                     HandleTriggerMainMenu();
                     break;
+                case CosmeticObserverMessage.AbilitySelect:
+                    HandleAbilitySelect((int)args[0]);
+                    break;
             }
+        }
+
+        private void HandleAbilitySelect(int skinIndex)
+        {
+            SkinManager.Instance.SelectSkin((SkinType)skinIndex);
+            SkinManager.Instance.SaveSelected();
         }
 
         private void HandleEnable()

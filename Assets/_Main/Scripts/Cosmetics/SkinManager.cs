@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using _Main.Scripts.MyComponents;
 using _Main.Scripts.MyTools;
+using _Main.Scripts.Save;
 using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics
@@ -14,8 +15,9 @@ namespace _Main.Scripts.Cosmetics
             private readonly Dictionary<SkinType, SkinDataSo> _dataDic = new Dictionary<SkinType, SkinDataSo>();
             private const string Path = "ScriptableObjects/Skins";
             private bool _hasLoaded = false;
+
+
             
-            public event Action OnLoaded;
             public AssetsLoader()
             {
                 Initialize();
@@ -49,7 +51,7 @@ namespace _Main.Scripts.Cosmetics
                 }
                 
                 _hasLoaded = true;
-                OnLoaded?.Invoke();
+                SkinEvents.TriggerOnAssetsLoaded();
             }
 
             public bool Contains(SkinType soundType)
@@ -66,37 +68,41 @@ namespace _Main.Scripts.Cosmetics
         #endregion
         
         private AssetsLoader _assetsLoader;
+        private SkinSaveData _skinData;
+        private CosmeticsDebugData _debugData;
 
-        public SkinType CurrentSkinType { get; private set; }
+        public SkinType CurrentSkinType => (SkinType)_skinData.SkinIndex;
 
         public event Action<SkinType> OnSkinChanged;
         
         private void Awake()
         {
             _assetsLoader = new AssetsLoader();
+            _debugData = new CosmeticsDebugData();
         }
 
         private void Start()
         {
-            SelectSkin(SkinType.Default);
+            _skinData = DataManager.Instance.GetData<SkinSaveData>(SaveDataType.Skin);
+            SelectSkin((SkinType)_skinData.SkinIndex);
+            Debug.Log(CurrentSkinType);
+            
+            SkinEvents.TriggerOnSaveLoaded();
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                var value = (SkinType)ValueCarousel.GetValue((int)CurrentSkinType, 2);
-                
-                SelectSkin(value);
-            }
-        }
-
-        private void SelectSkin(SkinType skinType)
+        public void SelectSkin(SkinType skinType)
         {
             if(CurrentSkinType == skinType) return;
             
-            CurrentSkinType = skinType;
+            _skinData.SkinIndex = (int)skinType;
+            
+            _debugData.CurrentSkin = CurrentSkinType;
             OnSkinChanged?.Invoke(skinType);
+        }
+        
+        public void SaveSelected()
+        {
+            DataManager.Instance.SaveGameData(_skinData, SaveDataType.Skin);
         }
 
         #region Data Getters
@@ -128,7 +134,6 @@ namespace _Main.Scripts.Cosmetics
         }
         
         #endregion
-        
     }
 
     public enum SkinType
