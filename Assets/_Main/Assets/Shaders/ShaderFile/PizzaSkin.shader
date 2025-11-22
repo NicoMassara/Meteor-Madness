@@ -1,6 +1,6 @@
 // Made with Amplify Shader Editor v1.9.1.5
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "Unlit/PizzaSkin"
+Shader "Mat_Skin_Pizza_Eath_Unlit"
 {
 	Properties
 	{
@@ -149,7 +149,7 @@ Node;AmplifyShaderEditor.RangedFloatNode;65;-2156.933,816.0224;Inherit;False;Con
 Node;AmplifyShaderEditor.RegisterLocalVarNode;67;-1309.645,755.3663;Inherit;False;RadialMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;68;-1063.017,-7.351945;Inherit;False;67;RadialMask;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;51;-1687.213,743.4583;Inherit;False;Property;_HealthAmount;HealthAmount;2;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;6;-483.269,-193.3502;Float;False;True;-1;2;ASEMaterialInspector;100;5;Unlit/PizzaSkin;0770190933193b94aaa3065e307002fa;True;Unlit;0;0;Unlit;2;False;True;0;1;False;;0;False;;0;1;False;;0;False;;True;0;False;;0;False;;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;RenderType=Opaque=RenderType;True;2;False;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;0;;0;0;Standard;1;Vertex Position,InvertActionOnDeselection;1;0;0;1;True;False;;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;6;-483.269,-193.3502;Float;False;True;-1;2;ASEMaterialInspector;100;5;Mat_Skin_Pizza_Eath_Unlit;0770190933193b94aaa3065e307002fa;True;Unlit;0;0;Unlit;2;False;True;0;1;False;;0;False;;0;1;False;;0;False;;True;0;False;;0;False;;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;RenderType=Opaque=RenderType;True;2;False;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;0;;0;0;Standard;1;Vertex Position,InvertActionOnDeselection;1;0;0;1;True;False;;False;0
 WireConnection;7;0;2;0
 WireConnection;7;1;1;0
 WireConnection;7;2;68;0
@@ -167,4 +167,4 @@ WireConnection;62;1;65;0
 WireConnection;67;0;64;0
 WireConnection;6;0;7;0
 ASEEND*/
-//CHKSM=4FBC8C52B7C1BA28FD39641023C2FDE9A7D7E268
+//CHKSM=F3E16113C5D6764B20CD0D51FF655E8A0CA143F7

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
@@ -12,11 +11,10 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
-    public class EarthView : ManagedBehavior, IObserver, IUpdatable, IEarthSounds
+    public class EarthView : ManagedBehavior, IObserver, IUpdatable, IEarthSounds, IEarthSkin
     {
         [Header("Model Components")]
         [SerializeField] private GameObject planeMeshContainer;
-        [SerializeField] private EarthSlicer earthMeshSlicer;
         [Space]
         [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
@@ -41,6 +39,7 @@ namespace _Main.Scripts.Gameplay.Earth
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
+        public event Action<float> OnHealthChanged;
         public event Action OnHealed;
         public event Action OnHealing;
         public event Action OnCollision;
@@ -57,7 +56,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private void Awake()
         {
             _earthMaterialController = GetComponent<EarthMaterialController>();
-            _planeRotator = new Rotator(planeMeshContainer.transform, Vector3.forward, rotationSpeed);
+            _planeRotator = new Rotator(planeMeshContainer.transform, Vector3.forward, rotationSpeed/2);
             _shakerController = new ShakerController(planeMeshContainer.transform);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -141,7 +140,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private void HandleCollision(float healthAmount, Vector3 position, Quaternion rotation, Vector2 direction)
         {
             SetShakeMultiplier(healthAmount);
-            UpdateColorByHealth(healthAmount);
+            UpdateHealth(healthAmount);
             
             ParticleEventCaller.Spawn(new ParticleSpawnData
             {
@@ -239,7 +238,7 @@ namespace _Main.Scripts.Gameplay.Earth
                     }, 0f);
                 }))
                 .Then(new HealAction(lastHealth,currentHealth,restartHealthTime,
-                    SetShakeMultiplier,UpdateColorByHealth))
+                    SetShakeMultiplier,UpdateHealth))
                 .Then(new InstantAction(() =>
                 {
                     CustomTime.SetChannelTimeScale(new[]
@@ -366,13 +365,8 @@ namespace _Main.Scripts.Gameplay.Earth
                 if (currentHealth <= 0)
                 {
                     action
-                        .Then(new RestartRotationAction(_restartTimeValues.RestartZRotation, planeMeshContainer.transform))
-                        // Unites the pieces and waits to end it
-                        .Then(new InstantAction(() => { earthMeshSlicer?.StartUnite(); }))
-                        .Then(new WaitForEventAction(
-                            subscribe: callback => earthMeshSlicer.OnEndUnite += callback,
-                            unsubscribe: callback => earthMeshSlicer.OnEndUnite -= callback
-                        ));
+                        .Then(new RestartRotationAction(_restartTimeValues.RestartZRotation,
+                            planeMeshContainer.transform));
                 }
                 
                 #endregion
@@ -384,7 +378,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 {
                     action
                         .Then(new RestartHealthColor(_restartTimeValues.RestartHealth, currentHealth,
-                            UpdateColorByHealth))
+                            UpdateHealth))
                         .WrapLast(a => new CallbackWrapperAction(a, OnHealing, null));
                 }
                 
@@ -425,13 +419,12 @@ namespace _Main.Scripts.Gameplay.Earth
         private void HandleDestruction()
         {
             OnDestruction?.Invoke();
-            earthMeshSlicer.StartSlicing();
             _isDead = true;
         }
 
         private void HandleDeath()
         {
-            UpdateColorByHealth(0);
+            UpdateHealth(0);
             _shakerController.SetMultiplier(0);
             _shakerController.SetShakeData(deathShakeData);
             OnPreDestruction?.Invoke();
@@ -454,9 +447,9 @@ namespace _Main.Scripts.Gameplay.Earth
             _shakerController.SetMultiplier(multiplier);
         }
 
-        private void UpdateColorByHealth(float currentHealth)
+        private void UpdateHealth(float currentHealth)
         {
-            _earthMaterialController.SetMaterialHealth(currentHealth);
+            OnHealthChanged?.Invoke(currentHealth);
         }
     }
 }

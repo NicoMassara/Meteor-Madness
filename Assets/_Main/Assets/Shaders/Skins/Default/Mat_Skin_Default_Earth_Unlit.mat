@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: EarthLit
+  m_Name: Mat_Skin_Default_Earth_Unlit
   m_Shader: {fileID: 4800000, guid: ca26db39b49d5bf4c9c9589bedce6bc4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -86,7 +86,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.5
-    - _AtmosphereSize: 3.5
+    - _AtmosphereSize: 3.73
     - _BottomFadeLenght: 0.80137295
     - _Cutoff: 0.5
     - _Float0: 1

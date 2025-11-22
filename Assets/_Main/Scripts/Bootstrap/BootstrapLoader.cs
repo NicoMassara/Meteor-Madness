@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Save;
-using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
