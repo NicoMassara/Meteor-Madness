@@ -171,4 +171,16 @@
         public const ulong Volume = 0xA1006;
         public const ulong Close = 0xA1007;
     }
+    
+    public struct CameraObserverMessage
+    {
+        public const ulong ZoomIn = 0xA9001;
+        public const ulong ZoomOut = 0xA0002;
+        public const ulong Shake = 0xA0003;
+        public const ulong LookCenter = 0xA0004;
+        public const ulong LookRight = 0xA0005;
+        public const ulong LookLeft = 0xA0006;
+        public const ulong LookTop = 0xA0007;
+        public const ulong LookBottom = 0xA0008;
+    }
 }

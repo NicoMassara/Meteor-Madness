@@ -1,118 +1,179 @@
-﻿using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers;
-using _Main.Scripts.Shaker;
-using NicolasMassara.CustomUpdateManager;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using _Main.Scripts.Cosmetics.MVC;
+using _Main.Scripts.DebugGUI;
+using _Main.Scripts.FiniteStateMachine;
+using _Main.Scripts.Interfaces;
 
 namespace _Main.Scripts.Gameplay.MyCamera
 {
-    public class CameraController : ManagedBehavior, ILateUpdatable
+    public class CameraController
     {
-        [Header("Components")]
-        [SerializeField] private Camera mainCamera;
-        [Range(0, 50)] 
-        [SerializeField] private float zoomSpeed = 10;
-        private ShakerController _shakerController;
-        private float _defaultSize = 10;
-        private float _zoomSize = 6;
-        private bool _doesChangeSize = false;
-        private float _targetSize;
+        #region States
 
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Camera;
-        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
-        public float LastTickTime { get; set; }
-
-        private void Awake()
+        private class StateBase<T> : State<T>
         {
-            SetEventBus();
-        }
+            protected CameraController Controller { get; private set; }
 
-        private void Start()
-        {
-            _shakerController = new ShakerController(mainCamera.transform);
-            _defaultSize = mainCamera.orthographicSize;
-        }
-
-
-
-        public void ExecuteLateUpdate(float deltaTime)
-        {
-            if (_shakerController.IsShaking)
+            public void Initialize(CameraController controller)
             {
-                _shakerController.HandleShake(deltaTime);
-            }
-
-            if (_doesChangeSize)
-            {
-                HandleSizeChange(deltaTime);
+                Controller = controller;
             }
         }
+    
+        private class IdleState<T> : StateBase<T> {}
+        private class ZoomingState<T> : StateBase<T> {}
+        private class LookingState<T> : StateBase<T> {}
+        private class ShakingState<T> : StateBase<T> {}
 
-        #region Zoom
+        #endregion
+        
+        private FSM<States> _fsm;
+        private readonly CameraMotor _motor;
 
-        private void HandleSizeChange(float deltaTime)
+        private enum States
         {
-            var newSize = mainCamera.orthographicSize;
-            newSize =
-                Mathf.Lerp(newSize, _targetSize, zoomSpeed * deltaTime);
-            Mathf.Clamp(newSize, _zoomSize, _defaultSize);
+            None,
+            Idle,
+            Zooming,
+            Looking,
+            Shaking
+        }
 
-            if (newSize == _targetSize)
+        private class ActionGate : FsmActionGate<States>
+        {
+            public bool IsIdle { get; private set; }
+            
+            public ActionGate(FSM<States> fsm) : base(fsm) { }
+
+            protected override void OnNewState(States state) { }
+            protected override void OnExitState(States state) { }
+
+            protected override void OnEnterState(States state)
             {
-                _doesChangeSize = false;
+                IsIdle = state == States.Idle;
             }
-
-            mainCamera.orthographicSize = newSize;
+        }
+        private ActionGate _actionGate;
+        
+        public CameraController(CameraMotor motor)
+        {
+            _motor = motor;
         }
 
-        private void ZoomIn()
+        public void Initialize()
         {
-            _targetSize = _zoomSize;
-            _doesChangeSize = true;
+            InitializeFsm();
         }
 
-        private void ZoomOut()
+        #region FSM
+
+        private void InitializeFsm()
         {
-            _targetSize = _defaultSize;
-            _doesChangeSize = true;
+            var temp = new List<StateBase<States>>();
+            _fsm = new FSM<States>("Camera");
+            _actionGate = new ActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fsm.CreateDebugGUI(DebugGUISortingOrder.SubGroup.Camera);
+#endif
+
+            #region Variables
+
+            var none = new BaseState<States>();
+            var idle = new IdleState<States>();
+            var zoom = new ZoomingState<States>();
+            var look = new LookingState<States>();
+            var shake = new ShakingState<States>();
+            
+            temp.Add(idle);
+            temp.Add(zoom);
+            temp.Add(look);
+            temp.Add(shake);
+
+            #endregion
+
+            #region Transitions
+
+            none.AddTransition(States.Idle, idle);
+            
+            idle.AddTransition(States.Zooming, zoom);
+            idle.AddTransition(States.Looking, look);
+            idle.AddTransition(States.Shaking, shake);
+            
+            zoom.AddTransition(States.Idle, idle);
+            
+            look.AddTransition(States.Idle, idle);
+            
+            shake.AddTransition(States.Idle, idle);
+
+            #endregion
+
+            foreach (var state in temp)
+            {
+                state.Initialize(this);
+            }
+            
+            _fsm.SetInit(none);
+        }
+
+        #region Transitions
+
+        private void SetTransition(States state)
+        {
+            _fsm?.Transitions(state);
+        }
+        
+        public void TransitionToIdle()
+        {
+            SetTransition(States.Idle);
+        }
+        
+        public void TransitionToZoom()
+        {
+            SetTransition(States.Zooming);
+        }
+        
+        public void TransitionToShaking()
+        {
+            SetTransition(States.Shaking);
+        }
+        
+        public void TransitionToLooking()
+        {
+            SetTransition(States.Looking);
         }
 
         #endregion
         
-        #region Shake
-
-        private void StartShake(IShakeData shakeData)
-        {
-            _shakerController.SetShakeData(shakeData);
-            _shakerController.StartShake();
-        }
-
         #endregion
-
-        #region Event Bus
-
-        private void SetEventBus()
+        
+        public void Zoom(CameraZoomPosition zoomPosition, float timeToZoom)
         {
-            CameraEventSubscriber.Shake(EventBus_Camera_StartShake);
-            CameraEventSubscriber.ZoomIn(EventBus_Camera_ZoomIn);
-            CameraEventSubscriber.ZoomOut(EventBus_Camera_ZoomOut);
+            if(_actionGate.IsIdle == false) return;
+            if(_motor.IsUnableToZoom(zoomPosition)) return;
+            
+            
+            TransitionToZoom();
+            _motor.Zoom(zoomPosition, timeToZoom);
         }
 
-        private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)
+        public void Look(CameraLookPosition position, float timeToLook)
         {
-            ZoomOut();
+            if(_actionGate.IsIdle == false) return;
+            if(_motor.IsUnableToLook(position)) return;
+            
+            TransitionToLooking();
+            _motor.Look(position, timeToLook);
         }
 
-        private void EventBus_Camera_ZoomIn(CameraEvents.ZoomIn input)
+        public void Shake(IShakeData shakeData)
         {
-            ZoomIn();
+            if(_actionGate.IsIdle == false) return;
+            
+            //
+            TransitionToShaking();
+            _motor.Shake(shakeData);
         }
 
-        private void EventBus_Camera_StartShake(CameraEvents.Shake input)
-        {
-            StartShake(input.ShakeData);
-        }
-
-        #endregion
     }
 }
