@@ -163,8 +163,37 @@ namespace _Main.Scripts.Managers
             public IShakeData ShakeData;
         }
 
-        public struct ZoomIn { }
-        public struct ZoomOut { }
+        public struct ZoomIn
+        {
+            public float TimeToZoom;
+        }
+        public struct ZoomOut
+        {
+            public float TimeToZoom;
+        }
+        
+        public struct LookCenter
+        {
+            public float TimeToLook;
+        }
+        public struct LookRight
+        {
+            public float TimeToLook;
+        }
+        public struct LookLeft
+        {
+            public float TimeToLook;
+        }
+        
+        public struct LookUp
+        {
+            public float TimeToLook;
+        }
+        
+        public struct LookDown
+        {
+            public float TimeToLook;
+        }
     }
 
     public struct InputsEvents

@@ -38,12 +38,13 @@ namespace _Main.Scripts.Cosmetics.MVC
         private void HandleEnable()
         {
             OnCosmeticEnable?.Invoke();
-            CameraEventCaller.ZoomIn();
+            CameraEventCaller.LookLeft();
         }
 
         private void HandleDisable()
         {
             GameScreenEventCaller.DisableScreen(ScreenType.Cosmetic, EventRequestType.Granted);
+            CameraEventCaller.LookCenter();
         }
         
         private void HandleTriggerMainMenu()
