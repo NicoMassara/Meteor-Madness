@@ -21,5 +21,5 @@ MonoBehaviour:
     material: {fileID: 2100000, guid: 47c3879eebf98744385b4c6415aa28d8, type: 2}
     scaleOffset: 1
   cometData:
-    material: {fileID: 0}
+    material: {fileID: 2100000, guid: 2c1801b43e0c35642bfa8b66825cde1a, type: 2}
     scaleOffset: 1
