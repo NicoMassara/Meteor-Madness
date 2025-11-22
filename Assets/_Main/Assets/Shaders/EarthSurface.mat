@@ -94,7 +94,7 @@ Material:
     - _Float2: 2.35
     - _Float3: 2.02
     - _Float4: 0.75
-    - _FlowIntensity: 1
+    - _FlowIntensity: 0
     - _GrassTextureTiling: 0.25
     - _HealthAmount: 1
     - _IceAmount: 0.75
