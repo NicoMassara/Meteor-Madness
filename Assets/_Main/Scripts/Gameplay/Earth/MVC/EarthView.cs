@@ -15,6 +15,7 @@ namespace _Main.Scripts.Gameplay.Earth
     {
         [Header("Model Components")]
         [SerializeField] private GameObject planeMeshContainer;
+        [SerializeField] private GameObject destroyedEarthContainer;
         [Space]
         [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
@@ -28,6 +29,7 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private AnimationCurve rotationSpeedCurve;
         [SerializeField] private ParticleDataSo collisionParticleData;
         
+        private EarthSlicer _slicer;
         private ShakerController _shakerController;
         private GameObject _currentSprite;
         private Rotator _planeRotator;
@@ -54,7 +56,8 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void Awake()
         {
-            _planeRotator = new Rotator(planeMeshContainer.transform, Vector3.forward, rotationSpeed/2);
+            _slicer = GetComponent<EarthSlicer>();
+            _planeRotator = new Rotator(destroyedEarthContainer.transform, Vector3.up, rotationSpeed/2);
             _shakerController = new ShakerController(planeMeshContainer.transform);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -364,7 +367,15 @@ namespace _Main.Scripts.Gameplay.Earth
                 {
                     action
                         .Then(new RestartRotationAction(_restartTimeValues.RestartZRotation,
-                            planeMeshContainer.transform));
+                            destroyedEarthContainer.transform))
+                        .Then(new InstantAction(() => _slicer.StartUnite()))
+                        .Then(new WaitForEventAction(
+                            subscribe: callback => _slicer.OnEndUnite += callback,
+                            unsubscribe: callback => _slicer.OnEndUnite -= callback
+                        ))
+                        .Then(new InstantAction(()=> planeMeshContainer.gameObject.SetActive(true)))
+                        .Then(new WaitFramesAction(3))
+                        .Then(new InstantAction(()=> _slicer.UniteMeshes()));
                 }
                 
                 #endregion
@@ -416,8 +427,10 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleDestruction()
         {
-            OnDestruction?.Invoke();
+            planeMeshContainer.gameObject.SetActive(false);
+            _slicer.StartSlicing();
             _isDead = true;
+            OnDestruction?.Invoke();
         }
 
         private void HandleDeath()
