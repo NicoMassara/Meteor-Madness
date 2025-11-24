@@ -96,7 +96,8 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             GameObject planeObj = slicePlane.gameObject;
             
-            SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, null);
+            SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, 
+                slicePlane.GetComponent<Renderer>().material);
 
             if (hull != null) {
                 GameObject upper = hull.CreateUpperHull(planeObj, planeObj.GetComponent<Renderer>().material);
@@ -129,8 +130,8 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void MoveSlicedParts(float targetDistance, float targetTime)
         {
-            HandlePartMovement(meshA.transform, Vector2.right, targetDistance,targetTime);
-            HandlePartMovement(meshB.transform, Vector2.left, targetDistance,targetTime);
+            HandlePartMovement(meshA.transform, Vector2.left, targetDistance,targetTime);
+            HandlePartMovement(meshB.transform, Vector2.right, targetDistance,targetTime);
         }
 
         private void HandlePartMovement(Transform partTransform, Vector2 direction, float targetDistance, float targetTime)

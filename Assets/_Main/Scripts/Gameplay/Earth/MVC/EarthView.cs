@@ -57,7 +57,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private void Awake()
         {
             _slicer = GetComponent<EarthSlicer>();
-            _planeRotator = new Rotator(destroyedEarthContainer.transform, Vector3.up, rotationSpeed/2);
+            _planeRotator = new Rotator(destroyedEarthContainer.transform, Vector3.forward, rotationSpeed/2);
             _shakerController = new ShakerController(planeMeshContainer.transform);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -375,7 +375,8 @@ namespace _Main.Scripts.Gameplay.Earth
                         ))
                         .Then(new InstantAction(()=> planeMeshContainer.gameObject.SetActive(true)))
                         .Then(new WaitFramesAction(3))
-                        .Then(new InstantAction(()=> _slicer.UniteMeshes()));
+                        .Then(new InstantAction(()=> _slicer.UniteMeshes()))
+                        .Then(new WaitSecondsAction(0.5f));
                 }
                 
                 #endregion
