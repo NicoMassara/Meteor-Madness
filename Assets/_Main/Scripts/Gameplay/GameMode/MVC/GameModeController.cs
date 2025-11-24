@@ -59,7 +59,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             {
                 IsInGameplay = state is States.Gameplay;
                 //
-                CanEnableSpawn = state is States.Enable;
+                CanEnableSpawn = state is States.Enable || LastState is States.Restart;
                 //
                 IsAsleep = state is States.Asleep;
                 //

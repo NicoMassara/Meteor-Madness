@@ -133,6 +133,13 @@ namespace _Main.Scripts.Cosmetics
             return _assetsLoader.GetData(skinType).CometData;
         }
         
+        public ShieldSkinData GetShieldData(SkinType skinType)
+        {
+            if(GetHasData(skinType) == false) return null;
+            
+            return _assetsLoader.GetData(skinType).ShieldData;
+        }
+        
         #endregion
     }
 

@@ -17,6 +17,9 @@ MonoBehaviour:
     material: {fileID: 2100000, guid: 2e1f081b661392f4a8844d7adf4093aa, type: 2}
     scaleOffset: 3.5
     rotationOffset: 12.5
+  shieldData:
+    material: {fileID: 2100000, guid: be408e41b07513a47a4436ea266aa07c, type: 2}
+    scaleOffset: 1
   meteorData:
     material: {fileID: 2100000, guid: 98baa2b1c8c12ae4f8d8d0851749b3f5, type: 2}
     scaleOffset: 1
