@@ -10,6 +10,7 @@ namespace _Main.Scripts.Cosmetics
         [SerializeField] private SkinType skinType;
         [Header("Materials")]
         [SerializeField] private EarthSkinData earthData;
+        [SerializeField] private ShieldSkinData shieldData;
         [SerializeField] private MeteorSkinData meteorData;
         [SerializeField] private CometSkinData cometData;
         
@@ -17,7 +18,9 @@ namespace _Main.Scripts.Cosmetics
 
         public EarthSkinData EarthData => earthData;
 
+        public ShieldSkinData ShieldData => shieldData;
         public MeteorSkinData MeteorData => meteorData;
+
 
         public CometSkinData CometData => cometData;
         
@@ -50,6 +53,12 @@ namespace _Main.Scripts.Cosmetics
     
     [Serializable]
     public class CometSkinData : SkinData
+    {
+
+    }
+    
+    [Serializable]
+    public class ShieldSkinData : SkinData
     {
 
     }

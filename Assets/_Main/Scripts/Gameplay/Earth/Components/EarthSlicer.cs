@@ -114,10 +114,6 @@ namespace _Main.Scripts.Gameplay.Earth
                 meshA = upper.GetComponent<MeshFilter>();
                 meshB = lower.GetComponent<MeshFilter>();
                 
-                
-                meshA.GetComponent<Renderer>().material.SetFloat("_HealthAmount", 0);
-                meshB.GetComponent<Renderer>().material.SetFloat("_HealthAmount", 0);
-                
                 meshA.gameObject.AddComponent<MeshSortingLayerSetter>().SetSortingLayer(
                     meshA.GetComponent<Renderer>(), "Earth", 0);
                 meshB.gameObject.AddComponent<MeshSortingLayerSetter>().SetSortingLayer(
