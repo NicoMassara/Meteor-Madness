@@ -577,7 +577,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalSprite: {fileID: 1133430233}
   superSprite: {fileID: 870347181}
-  abilityMaterial: {fileID: 2100000, guid: db5687b2ee1016e4ebdc65d9400b7ff7, type: 2}
+  abilityRenderer: {fileID: 742944995}
   materialOpacityLerpTime: 0.25
   timeToEnableSuperShield: 0.75
   timeToDisableSuperShield: 0.75
@@ -2673,7 +2673,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: db5687b2ee1016e4ebdc65d9400b7ff7, type: 2}
+  - {fileID: 2100000, guid: fae38c085f610a447bc0a32870bb1441, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

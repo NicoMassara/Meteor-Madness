@@ -14,7 +14,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [Header("Components")] 
         [SerializeField] private GameObject normalSprite;
         [SerializeField] private GameObject superSprite;
-        [SerializeField] private Material abilityMaterial;
+        [SerializeField] private SpriteRenderer abilityRenderer;
 
         [Header("Values")] 
         [Range(0, 1)] 
@@ -149,12 +149,12 @@ namespace _Main.Scripts.Gameplay.Shield
         private void SetMaterialColor(AbilityType abilityType)
         {
             var color = AbilityDataGetter.GetColor(abilityType);
-            abilityMaterial.SetColor(AbilityColor, color);
+            abilityRenderer.material.SetColor(AbilityColor, color);
         }
 
         private void SetMaterialOpacity(float opacity)
         {
-            abilityMaterial.SetFloat(MaterialOpacity, opacity);
+            abilityRenderer.material.SetFloat(MaterialOpacity, opacity);
         }
         
         private void SetTrailColor(AbilityType abilityType)
