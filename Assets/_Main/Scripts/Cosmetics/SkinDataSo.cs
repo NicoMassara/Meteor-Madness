@@ -30,11 +30,12 @@ namespace _Main.Scripts.Cosmetics
     public class SkinData
     {
         [SerializeField] private Material material;
-        [Range(0.1f, 10f)] [SerializeField] private float scaleOffset = 1f;
+        [Range(0.1f, 10f)] [SerializeField] private float scaleOffsetX = 1f;
+        [Range(0.1f, 10f)] [SerializeField] private float scaleOffsetY = 1f;
         
         public Material Material => material;
 
-        public Vector3 ScaleOffset => new Vector3(scaleOffset,scaleOffset,0);
+        public Vector3 ScaleOffset => new Vector3(scaleOffsetX,scaleOffsetY,0);
     }
 
     [Serializable]

@@ -15,14 +15,18 @@ MonoBehaviour:
   skinType: 1
   earthData:
     material: {fileID: 2100000, guid: 9b1b18bae012f9e49befa1c0c63b6b37, type: 2}
-    scaleOffset: 3.5
+    scaleOffsetX: 3.5
+    scaleOffsetY: 3.5
     rotationOffset: 0
   shieldData:
     material: {fileID: 2100000, guid: 2a92b8816b0f2e347a34a8d1d6aa21ed, type: 2}
-    scaleOffset: 1
+    scaleOffsetX: 1
+    scaleOffsetY: 1
   meteorData:
     material: {fileID: 2100000, guid: 47c3879eebf98744385b4c6415aa28d8, type: 2}
-    scaleOffset: 1
+    scaleOffsetX: 1
+    scaleOffsetY: 1
   cometData:
     material: {fileID: 2100000, guid: 2c1801b43e0c35642bfa8b66825cde1a, type: 2}
-    scaleOffset: 1
+    scaleOffsetX: 1
+    scaleOffsetY: 1
