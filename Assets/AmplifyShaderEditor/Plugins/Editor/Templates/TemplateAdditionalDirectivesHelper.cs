@@ -227,6 +227,7 @@ namespace AmplifyShaderEditor
 				{
 					AdditionalDirectiveContainer item = ScriptableObject.CreateInstance<AdditionalDirectiveContainer>();
 					item.Init( ownerOutputId, functionList[ i ] );
+					item.hideFlags = HideFlags.HideAndDontSave;
 					m_shaderFunctionDirectives.Add( item );
 				}
 			}
@@ -659,7 +660,7 @@ namespace AmplifyShaderEditor
 
 			if ( pass != null && !string.IsNullOrEmpty( directive.Passes ) )
 			{
-				string[] passes = directive.Passes.Split( ';' );
+				string[] passes = directive.Passes.Split( new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries ).Select( p => p.Trim() ).ToArray();
 				if ( !passes.Contains( pass.PassNameContainer.Data ) )
 				{
 					return false;

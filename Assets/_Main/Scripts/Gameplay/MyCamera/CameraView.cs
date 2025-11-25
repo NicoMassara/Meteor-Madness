@@ -13,9 +13,6 @@ namespace _Main.Scripts.Gameplay.MyCamera
         [Header("Components")]
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Camera dummyCamera;
-        [Header("Zoom Values")]
-        [Range(0, 3)] 
-        [SerializeField] private float zoomSpeed = 0.5f;
         [Range(0, 0.5f)] 
         [SerializeField] 
         private float horizontalLookOffset = 0.3f;
