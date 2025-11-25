@@ -194,6 +194,10 @@ namespace _Main.Scripts.Managers
         {
             public float TimeToLook;
         }
+
+        public struct ZoomFinished { }
+        public struct LookFinished { }
+        public struct ShakeFinished { }
     }
 
     public struct InputsEvents

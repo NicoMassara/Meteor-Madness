@@ -48,6 +48,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
                 if (_shakerController.IsShaking == false)
                 {
                     TriggerEndAction();
+                    CameraEventCaller.NotifyShakeFinished();
                 }
             }
 
@@ -94,7 +95,6 @@ namespace _Main.Scripts.Gameplay.MyCamera
         {
             _shakerController.SetShakeData(shakeData);
             _shakerController.StartShake();
-
         }
         
         private void HandleZoom(CameraZoomPosition zoomPosition, float timeToZoom)
@@ -183,61 +183,75 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
             public IQueueAction Copy() => null;
         }
-        
 
         private void LookRight(float timeToMove)
         {
             var value  = GetWorldPointFromScreen(Screen.width * (1-horizontalLookOffset),Screen.height * 0.5f);
             
-            _currentQueueAction = ActionBuilder.Start().
+            var actions = ActionBuilder.Start().
                 Do(new LookAction(value,
                     timeToMove, mainCamera))
                 .Then(new InstantAction(TriggerEndAction))
+                .Then(new InstantAction(CameraEventCaller.NotifyLookFinished))
                 .Build();
+            
+            _currentQueueAction = actions;
         }
         
         private void LookCenter(float timeToMove)
         {
             var value = GetWorldPointFromScreen(Screen.width * 0.5f, Screen.height * 0.5f);
             
-            _currentQueueAction = ActionBuilder.Start().
+            var actions = ActionBuilder.Start().
                 Do(new LookAction(value,
                     timeToMove, mainCamera))
                 .Then(new InstantAction(TriggerEndAction))
+                .Then(new InstantAction(CameraEventCaller.NotifyLookFinished))
                 .Build();
+            
+            _currentQueueAction = actions;
         }
         
         private void LookLeft(float timeToMove)
         {
             var value = GetWorldPointFromScreen(Screen.width * horizontalLookOffset,Screen.height * 0.5f); 
             
-            _currentQueueAction = ActionBuilder.Start().
+            var actions = ActionBuilder.Start().
                 Do(new LookAction(value,
                     timeToMove, mainCamera))
                 .Then(new InstantAction(TriggerEndAction))
+                .Then(new InstantAction(CameraEventCaller.NotifyLookFinished))
                 .Build();
+            
+            _currentQueueAction = actions;
         }
         
         private void LookUp(float timeToMove)
         {
             var value = GetWorldPointFromScreen(Screen.width * 0.5f, Screen.height * (1-verticalLookOffset));
             
-            _currentQueueAction = ActionBuilder.Start().
+            var actions = ActionBuilder.Start().
                 Do(new LookAction(value,
                     timeToMove, mainCamera))
                 .Then(new InstantAction(TriggerEndAction))
+                .Then(new InstantAction(CameraEventCaller.NotifyLookFinished))
                 .Build();
+            
+            _currentQueueAction = actions;
         }
         
         private void LookDown(float timeToMove)
         {
             var value = GetWorldPointFromScreen(Screen.width * 0.5f, Screen.height * verticalLookOffset);
             
-            _currentQueueAction = ActionBuilder.Start().
+            var actions = ActionBuilder.Start().
                 Do(new LookAction(value,
                     timeToMove, mainCamera))
                 .Then(new InstantAction(TriggerEndAction))
+                .Then(new InstantAction(CameraEventCaller.NotifyLookFinished))
                 .Build();
+            
+            _currentQueueAction = actions;
         }
         
         private Vector3 GetWorldPointFromScreen(float screenX, float screenY)
@@ -307,23 +321,28 @@ namespace _Main.Scripts.Gameplay.MyCamera
 
         private void ZoomIn(float timeToZoom)
         {
-            _currentQueueAction = ActionBuilder.Start().
+            var actions = ActionBuilder.Start().
                 Do(new ZoomAction(_defaultSize, 
                     _zoomSize, timeToZoom, 
                     mainCamera))
                 .Then(new InstantAction(TriggerEndAction))
+                .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
                 .Build();
+            
+            _currentQueueAction = actions;
         }
 
         private void ZoomOut(float timeToZoom)
         {
-            
-            _currentQueueAction = ActionBuilder.Start().
+            var actions = ActionBuilder.Start().
                 Do(new ZoomAction(_zoomSize, 
                     _defaultSize, timeToZoom, 
                     mainCamera))
                 .Then(new InstantAction(TriggerEndAction))
+                .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
                 .Build();
+            
+            _currentQueueAction = actions;
         }
 
         #endregion
