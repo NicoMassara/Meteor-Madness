@@ -12,8 +12,8 @@ namespace _Main.Scripts.Gameplay.Shield
         private static readonly int MaterialOpacity = Shader.PropertyToID("_Opacity");
 
         [Header("Components")] 
-        [SerializeField] private GameObject normalSprite;
-        [SerializeField] private GameObject superSprite;
+        [SerializeField] private SpriteRenderer normalSprite;
+        [SerializeField] private SpriteRenderer superSprite;
         [SerializeField] private SpriteRenderer abilityRenderer;
 
         [Header("Values")] 
@@ -23,17 +23,12 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private float timeToEnableSuperShield;
         [Range(0.1f, 5f)]
         [SerializeField] private float timeToDisableSuperShield;
-        
-        private ShieldSpriteAlphaSetter _spriteAlphaSetter;
+
         private ShieldTrail _shieldTrail;
         private IAbilityShield _abilityShield;
-        
 
         private void Awake()
         {
-            _spriteAlphaSetter = new ShieldSpriteAlphaSetter(normalSprite,superSprite, 
-                timeToEnableSuperShield,timeToDisableSuperShield);
-
             _shieldTrail = GetComponent<ShieldTrail>();
 
             _abilityShield = GetComponent<IAbilityShield>();
@@ -46,35 +41,17 @@ namespace _Main.Scripts.Gameplay.Shield
             _abilityShield.OnDisableSuperShield += Shield_OnDisableSuperShieldHandler;
             _abilityShield.OnDisableAbility += Shield_OnDisableAbilityHandler;
             
-            SetMaterialOpacity(0);
+            SetAbilityOpacity(0);
+            SetSuperShieldOpacity(0);
             SetActiveSuperShield(false);
         }
         
-        #region AlphaSetter
-
-        private void RestartValues()
-        {
-            _spriteAlphaSetter.RestartValues();
-        }
-
-        private void EnableSuperShield(float deltaTime)
-        {
-            _spriteAlphaSetter.EnableSuper(deltaTime);
-        }
-
-        private void EnableNormalShield(float deltaTime)
-        {
-            _spriteAlphaSetter.EnableNormal(deltaTime);
-        }
-
-        #endregion
-
         #region Material
 
         private void EnableMaterial()
         {
             var action = ActionBuilder.Start()
-                .Do(new SetMaterialOpacityAction(SetMaterialOpacity, 
+                .Do(new SetMaterialOpacityAction(SetAbilityOpacity, 
                     1,0,materialOpacityLerpTime))
                 .Build();
 
@@ -84,7 +61,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private void DisableMaterial()
         {
             var action = ActionBuilder.Start()
-                .Do(new SetMaterialOpacityAction(SetMaterialOpacity, 
+                .Do(new SetMaterialOpacityAction(SetAbilityOpacity, 
                     0,1,materialOpacityLerpTime))
                 .Build();
 
@@ -103,7 +80,8 @@ namespace _Main.Scripts.Gameplay.Shield
             public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
 
 
-            public SetMaterialOpacityAction(Action<float> updateOpacity, float targetValue, float startValue, float targetTime)
+            public SetMaterialOpacityAction(Action<float> updateOpacity, 
+                float targetValue, float startValue, float targetTime)
             {
                 _updateOpacity = updateOpacity;
                 _targetValue = targetValue;
@@ -152,11 +130,21 @@ namespace _Main.Scripts.Gameplay.Shield
             abilityRenderer.material.SetColor(AbilityColor, color);
         }
 
-        private void SetMaterialOpacity(float opacity)
+        private void SetAbilityOpacity(float opacity)
         {
             abilityRenderer.material.SetFloat(MaterialOpacity, opacity);
         }
+
+        private void SetNormalShieldOpacity(float opacity)
+        {
+            normalSprite.material.SetFloat(MaterialOpacity, opacity);
+        }
         
+        private void SetSuperShieldOpacity(float opacity)
+        {
+            superSprite.material.SetFloat(MaterialOpacity, opacity);
+        }
+
         private void SetTrailColor(AbilityType abilityType)
         {
             if (abilityType == AbilityType.None)
@@ -191,9 +179,14 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void SetActiveSuperShield(bool isActive)
         {
-            superSprite.SetActive(isActive);
+            superSprite.gameObject.SetActive(isActive);
         }
-        
+
+        private void SetActiveNormalShield(bool isActive)
+        {
+            normalSprite.gameObject.SetActive(isActive);
+        }
+
         private void SetActiveAutomatic(bool isActive)
         {
             SetMaterialData(isActive, abilityType: AbilityType.Automatic);
@@ -234,9 +227,16 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void Shield_OnEnableSuperShieldHandler(float targetTime)
         {
+            var disableNormalShield = new SetMaterialOpacityAction(SetNormalShieldOpacity,
+                0,1,targetTime);
+            var enableSuperShield = new SetMaterialOpacityAction(SetSuperShieldOpacity,
+                1,0,targetTime);
+            
             var actions = ActionBuilder.Start()
-                .Do(new TimedUpdateAction(EnableSuperShield,targetTime))
-                .Then(new InstantAction(RestartValues))
+                .Do(new SetBoolAction(true, SetActiveSuperShield))
+                .Then(new ParallelAction(new []{disableNormalShield, enableSuperShield}))
+                .Then(new SetBoolAction(false, SetActiveNormalShield))
+                .Then(new WaitFramesAction(1))
                 .Build();
             
             ActionManager.Add(actions);
@@ -244,9 +244,16 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void Shield_OnDisableSuperShieldHandler(float targetTime)
         {
+            var disableSuperShield = new SetMaterialOpacityAction(SetSuperShieldOpacity,
+                0,1,targetTime);
+            var enableNormalShield = new SetMaterialOpacityAction(SetNormalShieldOpacity,
+                1,0,targetTime);
+            
             var actions = ActionBuilder.Start()
-                .Do(new TimedUpdateAction(EnableNormalShield,targetTime))
-                .Then(new InstantAction(RestartValues))
+                .Do(new SetBoolAction(true, SetActiveNormalShield))
+                .Then(new ParallelAction(new []{enableNormalShield, disableSuperShield}))
+                .Then(new SetBoolAction(false, SetActiveSuperShield))
+                .Then(new WaitFramesAction(1))
                 .Build();
             
             ActionManager.Add(actions);
@@ -254,7 +261,7 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void Shield_OnDisableAbilityHandler()
         {
-            SetMaterialOpacity(0);
+            SetAbilityOpacity(0);
         }
         
         #endregion

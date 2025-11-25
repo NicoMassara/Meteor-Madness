@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.Interfaces.Sounds;
-using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.ScriptableObjects;
@@ -18,6 +17,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private GameObject spriteContainer;
         [SerializeField] private GameObject normalShieldSprite;
         [SerializeField] private CapsuleCollider2D shieldCollider;
+        [SerializeField] private Collider2D superShieldCollider;
         [Space]
         [Header("Sounds")]
 
@@ -56,7 +56,7 @@ namespace _Main.Scripts.Gameplay.Shield
             _debugData = new ShieldDebugData();
         
 #endif
-            
+            superShieldCollider.enabled = false;
             _movement = GetComponent<ShieldMovement>();
             _shakerController = new ShakerController(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
@@ -234,6 +234,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 {
                     OnAbilityStarted?.Invoke(AbilityType.SuperShield);
                     OnAbilitySetActive?.Invoke(AbilityType.SuperShield, true); 
+                    superShieldCollider.enabled = true;
                     OnEnableSuperShield?.Invoke(targetTime);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
                 }))
@@ -263,7 +264,8 @@ namespace _Main.Scripts.Gameplay.Shield
                 .Then(new InstantAction(() =>
                 {
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
-                    OnAbilitySetActive?.Invoke(AbilityType.SuperShield, false); 
+                    OnAbilitySetActive?.Invoke(AbilityType.SuperShield, false);
+                    superShieldCollider.enabled = false;
                     _movement.RestartSpeedValues();
                     _movement.RotateTowardsNearestProjectileSlot();
                     OnAbilityFinished?.Invoke();
