@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
@@ -12,12 +11,11 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
-    public class EarthView : ManagedBehavior, IObserver, IUpdatable, IEarthSounds
+    public class EarthView : ManagedBehavior, IObserver, IUpdatable, IEarthSounds, IEarthSkin
     {
         [Header("Model Components")]
-        [SerializeField] private GameObject modelContainer;
         [SerializeField] private GameObject planeMeshContainer;
-        [SerializeField] private EarthSlicer earthMeshSlicer;
+        [SerializeField] private GameObject destroyedEarthContainer;
         [Space]
         [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
@@ -31,19 +29,18 @@ namespace _Main.Scripts.Gameplay.Earth
         [SerializeField] private AnimationCurve rotationSpeedCurve;
         [SerializeField] private ParticleDataSo collisionParticleData;
         
-        private EarthMaterialController _earthMaterialController;
+        private EarthSlicer _slicer;
         private ShakerController _shakerController;
         private GameObject _currentSprite;
-        private EarthRotator _earthRotator;
+        private Rotator _planeRotator;
         private IEarthRestart _restartTimeValues;
-        private bool _canRotate;
         private bool _isDead;
         private float _deltaTime;
-
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Earth;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
+        public event Action<float> OnHealthChanged;
         public event Action OnHealed;
         public event Action OnHealing;
         public event Action OnCollision;
@@ -59,9 +56,9 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private void Awake()
         {
-            _earthMaterialController = GetComponent<EarthMaterialController>();
-            _earthRotator = new EarthRotator(modelContainer.transform, planeMeshContainer.transform, rotationSpeed);
-            _shakerController = new ShakerController(modelContainer.transform);
+            _slicer = GetComponent<EarthSlicer>();
+            _planeRotator = new Rotator(destroyedEarthContainer.transform, Vector3.forward, rotationSpeed/2);
+            _shakerController = new ShakerController(planeMeshContainer.transform);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData = new EarthDebugData();
@@ -84,11 +81,12 @@ namespace _Main.Scripts.Gameplay.Earth
         public void ExecuteUpdate(float deltaTime)
         {
             _deltaTime = deltaTime;
-            _shakerController.HandleShake(deltaTime);
+            //
+            _shakerController.HandleShake(_deltaTime);
             
-            if (_canRotate == true)
+            if (_isDead)
             {
-                _earthRotator.Rotate(deltaTime,_isDead);
+                _planeRotator.Rotate(_deltaTime);
             }
         }
 
@@ -117,9 +115,6 @@ namespace _Main.Scripts.Gameplay.Earth
                 case EarthObserverMessage.Heal:
                     HandleHeal((float)args[0],(float)args[1]);
                     break;
-                case EarthObserverMessage.SetRotation:
-                    HandleSetRotation((bool)args[0]);
-                    break;
                 case EarthObserverMessage.TriggerEndDestruction:
                     TriggerEndDestruction();
                     break;
@@ -146,8 +141,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private void HandleCollision(float healthAmount, Vector3 position, Quaternion rotation, Vector2 direction)
         {
             SetShakeMultiplier(healthAmount);
-            UpdateColorByHealth(healthAmount);
-            SetRotationSpeed(healthAmount);
+            UpdateHealth(healthAmount);
             
             ParticleEventCaller.Spawn(new ParticleSpawnData
             {
@@ -168,7 +162,6 @@ namespace _Main.Scripts.Gameplay.Earth
             private readonly float _duration;
             private readonly Action<float> setShakeMultiplier;
             private readonly Action<float> updateColorByHealth;
-            private readonly Action<float> setRotationSpeed;
 
             private float _elapsed;
 
@@ -177,15 +170,13 @@ namespace _Main.Scripts.Gameplay.Earth
             // Constructor
             public HealAction(float lastHealth, float targetHealth, float duration,
                 Action<float> setShakeMultiplier, 
-                Action<float> updateColorByHealth, 
-                Action<float> setRotationSpeed)
+                Action<float> updateColorByHealth)
             {
                 _lastHealth = lastHealth;
                 _targetHealth = targetHealth;
                 _duration = duration;
                 this.setShakeMultiplier = setShakeMultiplier;
                 this.updateColorByHealth = updateColorByHealth;
-                this.setRotationSpeed = setRotationSpeed;
             }
 
             public void OnStart()
@@ -206,7 +197,6 @@ namespace _Main.Scripts.Gameplay.Earth
                 
                 SetShakeMultiplier(value);
                 UpdateColorByHealth(value);
-                SetRotationSpeed(value);
                 
                 if (_elapsed >= _duration)
                     CurrentStatus = ActionStatus.Success;
@@ -233,11 +223,6 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 updateColorByHealth?.Invoke(value);
             }
-
-            private void SetRotationSpeed(float value)
-            {
-                setRotationSpeed?.Invoke(value);
-            }
         }
 
         private void HandleHeal(float currentHealth, float lastHealth)
@@ -254,7 +239,7 @@ namespace _Main.Scripts.Gameplay.Earth
                     }, 0f);
                 }))
                 .Then(new HealAction(lastHealth,currentHealth,restartHealthTime,
-                    SetShakeMultiplier,UpdateColorByHealth,SetRotationSpeed))
+                    SetShakeMultiplier,UpdateHealth))
                 .Then(new InstantAction(() =>
                 {
                     CustomTime.SetChannelTimeScale(new[]
@@ -373,7 +358,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleRestartHealth(float currentHealth)
         {
-            var action = ActionBuilder.Start().Do(new WaitFramesAction(1));
+            var action = ActionBuilder.Start().Do(new InstantAction(()=> _isDead = false));
                 // Only executes when is dead 
 
                 #region Slieces Unity
@@ -381,20 +366,21 @@ namespace _Main.Scripts.Gameplay.Earth
                 if (currentHealth <= 0)
                 {
                     action
-                        .Then(new RestartRotationAction(_restartTimeValues.RestartZRotation, planeMeshContainer.transform))
-                        // Unites the pieces and waits to end it
-                        .Then(new InstantAction(() => { earthMeshSlicer?.StartUnite(); }))
+                        .Then(new RestartRotationAction(_restartTimeValues.RestartZRotation,
+                            destroyedEarthContainer.transform))
+                        .Then(new InstantAction(() => _slicer.StartUnite()))
                         .Then(new WaitForEventAction(
-                            subscribe: callback => earthMeshSlicer.OnEndUnite += callback,
-                            unsubscribe: callback => earthMeshSlicer.OnEndUnite -= callback
-                        ));
+                            subscribe: callback => _slicer.OnEndUnite += callback,
+                            unsubscribe: callback => _slicer.OnEndUnite -= callback
+                        ))
+                        .Then(new InstantAction(()=> planeMeshContainer.gameObject.SetActive(true)))
+                        .Then(new WaitFramesAction(3))
+                        .Then(new InstantAction(()=> _slicer.UniteMeshes()))
+                        .Then(new WaitSecondsAction(0.5f));
                 }
                 
                 #endregion
-
-                action
-                    .Then(new InstantAction(() => HandleSetRotation(false)))
-                    .Then(new RestartRotationAction(_restartTimeValues.RestartYRotation, modelContainer.transform));
+            
                 
                 //Only Executes if it has damage
 
@@ -402,22 +388,19 @@ namespace _Main.Scripts.Gameplay.Earth
                 {
                     action
                         .Then(new RestartHealthColor(_restartTimeValues.RestartHealth, currentHealth,
-                            UpdateColorByHealth))
+                            UpdateHealth))
                         .WrapLast(a => new CallbackWrapperAction(a, OnHealing, null));
                 }
                 
                 action
                 .Then(new SetFloatAction(1, SetShakeMultiplier))
-                .Then(new SetFloatAction(rotationSpeed, _earthRotator.SetRotationSpeed))
                 .Then(new InstantAction(() =>
                 {
                     _shakerController.SetShakeData(healthShakeData);
-                    _isDead = false;
                 }))
                 .Then(new WaitSecondsAction(_restartTimeValues.FinishRestart))
                 .Then(new InstantAction(() =>
                 {
-                    HandleSetRotation(true);
                     OnHealed?.Invoke();
                     EarthEventCaller.RestartFinished();
                 }));
@@ -445,15 +428,15 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleDestruction()
         {
-            OnDestruction?.Invoke();
-            earthMeshSlicer.StartSlicing();
+            planeMeshContainer.gameObject.SetActive(false);
+            _slicer.StartSlicing();
             _isDead = true;
-            _earthRotator.SetRotationSpeed(rotationSpeed/2);
+            OnDestruction?.Invoke();
         }
 
         private void HandleDeath()
         {
-            UpdateColorByHealth(0);
+            UpdateHealth(0);
             _shakerController.SetMultiplier(0);
             _shakerController.SetShakeData(deathShakeData);
             OnPreDestruction?.Invoke();
@@ -467,20 +450,6 @@ namespace _Main.Scripts.Gameplay.Earth
 
         #endregion
         
-        private void SetRotationSpeed(float healAmount)
-        {
-            var rotationMultiplier = rotationSpeedCurve.Evaluate(healAmount);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.RotationSpeed = rotationMultiplier;
-#endif
-            _earthRotator.SetRotationSpeed(rotationSpeed * rotationMultiplier);
-        }
-        
-        private void HandleSetRotation(bool canRotate)
-        {
-            _canRotate = canRotate;
-        }
-
         private void SetShakeMultiplier(float currentHealth)
         {
             var multiplier = shakeMultiplier.Evaluate(currentHealth);
@@ -490,9 +459,9 @@ namespace _Main.Scripts.Gameplay.Earth
             _shakerController.SetMultiplier(multiplier);
         }
 
-        private void UpdateColorByHealth(float currentHealth)
+        private void UpdateHealth(float currentHealth)
         {
-            _earthMaterialController.SetMaterialHealth(currentHealth);
+            OnHealthChanged?.Invoke(currentHealth);
         }
     }
 }

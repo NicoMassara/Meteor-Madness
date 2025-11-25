@@ -10,8 +10,9 @@ namespace _Main.Scripts.Gameplay.Earth
 {
     public class EarthSlicer : ManagedBehavior, IUpdatable
     {
-        [SerializeField] private Material capMaterial;
+        [Header("Slice Values")]
         [SerializeField] private Transform slicePlane; // defines where & how to slice
+        [SerializeField] private GameObject sliceContainer;
         [Range(0,1.5f)]
         [SerializeField] private float sliceDistance;
         
@@ -28,15 +29,14 @@ namespace _Main.Scripts.Gameplay.Earth
         public event Action OnEndSlice;
         public event Action OnStartUnite;
         public event Action OnEndUnite;
-
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
-
+        
 
         private void Start()
         {
-            Slice();
+            PreSlice();
         }
 
         public void ExecuteUpdate(float deltaTime)
@@ -92,20 +92,21 @@ namespace _Main.Scripts.Gameplay.Earth
             ActionManager.Add(action);
         }
         
-        private void Slice() 
+        private void PreSlice() 
         {
-            GameObject planeObj = gameObject;
+            GameObject planeObj = slicePlane.gameObject;
             
-            SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, capMaterial);
+            SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, 
+                slicePlane.GetComponent<Renderer>().material);
 
             if (hull != null) {
                 GameObject upper = hull.CreateUpperHull(planeObj, planeObj.GetComponent<Renderer>().material);
                 GameObject lower = hull.CreateLowerHull(planeObj, planeObj.GetComponent<Renderer>().material);
 
-                upper.transform.SetParent(slicePlane);
+                upper.transform.SetParent(sliceContainer.transform);
                 upper.transform.localPosition = Vector3.zero;
                 
-                lower.transform.SetParent(slicePlane);
+                lower.transform.SetParent(sliceContainer.transform);
                 lower.transform.localPosition = Vector3.zero;
                 
                 upper.AddComponent<MeshCollider>().convex = true;
@@ -129,8 +130,8 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void MoveSlicedParts(float targetDistance, float targetTime)
         {
-            HandlePartMovement(meshA.transform, Vector2.right, targetDistance,targetTime);
-            HandlePartMovement(meshB.transform, Vector2.left, targetDistance,targetTime);
+            HandlePartMovement(meshA.transform, Vector2.left, targetDistance,targetTime);
+            HandlePartMovement(meshB.transform, Vector2.right, targetDistance,targetTime);
         }
 
         private void HandlePartMovement(Transform partTransform, Vector2 direction, float targetDistance, float targetTime)
@@ -170,13 +171,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 .Then(new WaitSecondsAction(sliceTimes.ReturnSlices))
                 .Then(new InstantAction(() =>
                 {
-                    UniteMeshes();
                     _canMove = false;
-                }))
-                .Then(new WaitSecondsAction(sliceTimes.ReturnSlices))
-                .Then(new InstantAction(() =>
-                {
-                    UniteMeshes();
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
                     OnEndUnite?.Invoke();
@@ -187,7 +182,7 @@ namespace _Main.Scripts.Gameplay.Earth
         }
 
 
-        private void UniteMeshes()
+        public void UniteMeshes()
         {
             SetActiveSlices(false);
         }
@@ -196,7 +191,6 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void SetActiveSlices(bool isActive)
         {
-            gameObject.GetComponent<MeshRenderer>().enabled = !isActive;
             meshA.gameObject.SetActive(isActive);
             meshB.gameObject.SetActive(isActive);
         }

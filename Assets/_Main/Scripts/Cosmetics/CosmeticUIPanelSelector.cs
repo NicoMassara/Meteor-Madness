@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Cosmetics.Components;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Utilities;
 using UnityEngine;
@@ -14,5 +15,9 @@ namespace _Main.Scripts.Cosmetics
         [Space]
         [Header("Button Components")]
         public Button MainMenuButton;
+        [Header("Components")]
+        [SerializeField] private SkinButtonSelector buttonSelector;
+
+        public IButtonSelector ButtonSelector => buttonSelector;
     }
 }

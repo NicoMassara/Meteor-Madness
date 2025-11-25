@@ -250,8 +250,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             _playSpeedTimeSound = new InstantAction(speedTimeSound);
             _playSlowTimeSound = new InstantAction(slowTimeSound);
             
-            _cameraZoomIn = new InstantAction(CameraEventCaller.ZoomIn);
-            _cameraZoomOut = new InstantAction(CameraEventCaller.ZoomOut);
+            _cameraZoomIn = new InstantAction(()=> CameraEventCaller.ZoomIn(0.1f));
+            _cameraZoomOut = new InstantAction(()=> CameraEventCaller.ZoomOut(0.1f));
             
             _enableInputs = new SetBoolAction(true,SetInputsEnable);
             _disableInputs = new SetBoolAction(false,SetInputsEnable);

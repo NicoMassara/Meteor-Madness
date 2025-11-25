@@ -6,8 +6,8 @@ namespace _Main.Scripts.Gameplay.Earth
 {
     public class EarthMaterialController : ManagedBehavior
     {
+        private static readonly int HealthAmount = Shader.PropertyToID("_HealthAmount");
         [SerializeField] private Material surfaceMaterial; 
-        [SerializeField] private Material atmosphereMaterial;
 
         private void Start()
         {
@@ -16,8 +16,7 @@ namespace _Main.Scripts.Gameplay.Earth
         
         public void SetMaterialHealth(float healthAmount)
         {
-            surfaceMaterial.SetFloat("_HealthAmount", healthAmount);
-            atmosphereMaterial.SetFloat("_HealthAmount", healthAmount);
+            surfaceMaterial.SetFloat(HealthAmount, healthAmount);
         }
     }
 }

@@ -3,6 +3,7 @@ using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
@@ -42,7 +43,7 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleEnable()
         {
             OnMainMenuEnable?.Invoke();
-            CameraEventCaller.ZoomIn();
+            CameraEventCaller.ZoomIn(0.5f);
         }
         
         private void HandleDisable()

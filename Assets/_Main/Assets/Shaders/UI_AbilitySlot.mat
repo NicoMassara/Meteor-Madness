@@ -46,7 +46,7 @@ Material:
     - _NoiseScale: 4
     - _NoiseSpeed: 0.25
     - _NoiseTilng: 0.23
-    - _Opacity: 1
+    - _Opacity: 0.75
     - _OutterMaskRadius: 1
     - _Stencil: 0
     - _StencilComp: 8

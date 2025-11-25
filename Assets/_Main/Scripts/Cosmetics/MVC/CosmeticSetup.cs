@@ -52,6 +52,10 @@ namespace _Main.Scripts.Cosmetics.MVC
         private void SetUIViewHandlers()
         {
             _ui.OnMainMenuButtonPressed += () => { _controller.TriggerMainMenu();};
+            _ui.OnSkinSelected += (value) =>
+            {
+                _motor.SelectAbility(value);
+            };
         }
 
         private void SetViewHandlers()

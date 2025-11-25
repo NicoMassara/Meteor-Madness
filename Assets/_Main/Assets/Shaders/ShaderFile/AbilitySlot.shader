@@ -232,7 +232,7 @@ Node;AmplifyShaderEditor.TFHCRemapNode;69;-1173.065,1263.999;Inherit;False;5;0;F
 Node;AmplifyShaderEditor.RegisterLocalVarNode;58;-333.2022,783.767;Inherit;False;OutterMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;59;-846.2501,1141.059;Inherit;False;InnerMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;98;-527.3519,-140.3377;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;99;-716.3519,56.66229;Inherit;False;Property;_Opacity;Opacity;4;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;99;-716.3519,56.66229;Inherit;False;Property;_Opacity;Opacity;4;0;Create;True;0;0;0;False;0;False;0;0.5;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;15;-1.513794,-147.7156;Float;False;True;-1;2;ASEMaterialInspector;0;3;AbilitySlot;5056123faa0c79b47ab6ad7e8bf059a4;True;Default;0;0;Default;2;False;True;3;1;False;;10;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;True;True;True;True;True;0;True;_ColorMask;False;False;False;False;False;False;False;True;True;0;True;_Stencil;255;True;_StencilReadMask;255;True;_StencilWriteMask;0;True;_StencilComp;0;True;_StencilOp;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;0;True;unity_GUIZTestMode;False;True;5;Queue=Transparent=Queue=0;IgnoreProjector=True;RenderType=Transparent=RenderType;PreviewType=Plane;CanUseSpriteAtlas=True;False;False;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;0;;0;0;Standard;0;0;1;True;False;;False;0
 Node;AmplifyShaderEditor.SaturateNode;67;-310.1303,-143.3865;Inherit;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.ColorNode;63;-3755.031,1230.735;Inherit;False;Property;_RingColor;RingColor;3;0;Create;True;0;0;0;False;0;False;0.3867925,0.3867925,0.3867925,1;0.3867925,0.3867925,0.3867925,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -338,4 +338,4 @@ WireConnection;234;0;181;0
 WireConnection;234;2;237;0
 WireConnection;237;0;236;0
 ASEEND*/
-//CHKSM=CE654B2376BB579B505021483EFE1400BE641900
+//CHKSM=EA292303A3A4B5E4B90A2DE55C96B9A5AE6D3C42
