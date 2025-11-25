@@ -140,7 +140,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 #endif
             
             ActionManager.Add(abilityDataController.GetAbilityStartQueue(
-                (AbilityType)abilityIndex),PriorityTick.High);
+                (AbilityType)abilityIndex));
             
             GameModeEventCaller.SetEnablePause(false);
             
@@ -160,7 +160,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
 
             ActionManager.Add(abilityDataController.GetAbilityEndQueue(
-                (AbilityType)abilityIndex),PriorityTick.High);
+                (AbilityType)abilityIndex),PriorityTick.EveryFrame);
         }
         
         private void HandleForceFinish()

@@ -247,7 +247,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 }))
                 .Build();
             
-            ActionManager.Add(temp, PriorityTick.High);
+            ActionManager.Add(temp, PriorityTick.EveryFrame);
         }
         
         private void RunNormalShieldQueue()
@@ -272,7 +272,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 }))
                 .Build();
             
-            ActionManager.Add(temp, PriorityTick.High);
+            ActionManager.Add(temp, PriorityTick.EveryFrame);
         }
         
         private void HandleSuperShieldEnable(float deltaTime)

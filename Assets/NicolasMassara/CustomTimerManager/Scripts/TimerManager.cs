@@ -91,19 +91,17 @@ namespace NicolasMassara.CustomTimerManager
             {
                 public static float GetTickByFrequency(UpdateFrequency group, float frameTime, float targetFrameRate)
                 {
-                    float targetFPS = targetFrameRate > 0 ? targetFrameRate : (1f / frameTime);
-                    float baseFrameTime = 1f / targetFPS;
-                    float adaptiveFrameTime = Mathf.Lerp(baseFrameTime, frameTime, 0.2f);
+                    float baseFrameTime = targetFrameRate > 0 ? 1f / targetFrameRate : frameTime;
 
                     return group switch
                     {
-                        UpdateFrequency.EveryFrame => adaptiveFrameTime,
-                        UpdateFrequency.HalfOfTarget => adaptiveFrameTime * 2f,
-                        UpdateFrequency.QuarterOfTarget => adaptiveFrameTime * 4f,
-                        UpdateFrequency.EightOfTarget => adaptiveFrameTime * 8f,
-                        UpdateFrequency.SixteenthOfTarget => adaptiveFrameTime * 16f,
+                        UpdateFrequency.EveryFrame => frameTime,
+                        UpdateFrequency.HalfOfTarget => baseFrameTime * 2f,
+                        UpdateFrequency.QuarterOfTarget => baseFrameTime * 4f,
+                        UpdateFrequency.EightOfTarget => baseFrameTime * 8f,
+                        UpdateFrequency.SixteenthOfTarget => baseFrameTime * 16f,
                         UpdateFrequency.EverySecond => 1f,
-                        _ => adaptiveFrameTime
+                        _ => baseFrameTime
                     };
                 }
             }
@@ -156,20 +154,36 @@ namespace NicolasMassara.CustomTimerManager
             {
                 if (!_canRun) return;
 
-                _elapsedSinceLastTick += deltaTime;
-                float interval = TimerTools.GetTickByFrequency(_timerData.Frequency, frameTime, _targetFrameRate);
-                
+                if (_timerData == null)
+                {
+                    Debug.LogWarning("TimerData is null. Timer will not run.");
+                    return;
+                }
+
                 if (!_hasStarted)
                 {
                     _hasStarted = true;
                     _timerData?.TriggerOnStartAction();
                 }
-                
-                if (_elapsedSinceLastTick < interval) 
-                    return;
-                
-                _currentTime -= _elapsedSinceLastTick;
-                _elapsedSinceLastTick = 0f;
+                //
+
+                if (_timerData?.Frequency == UpdateFrequency.EveryFrame)
+                {
+                    _currentTime -= deltaTime;
+                }
+                else
+                {
+                    _elapsedSinceLastTick += deltaTime;
+                    
+                    float interval = TimerTools.GetTickByFrequency(_timerData.Frequency, frameTime, _targetFrameRate);
+                    
+                    while (_elapsedSinceLastTick >= interval)
+                    {
+                        _elapsedSinceLastTick -= interval;
+                        _currentTime -= interval;
+                    }
+                }
+
                 
                 if (_currentTime <= 0)
                 {

@@ -22,7 +22,8 @@ namespace NicolasMassara.CustomActionManager
         MediumLow,
         Medium,
         MediumHigh,
-        High
+        High,
+        EveryFrame
     }
 
     public sealed class ActionQueueTools

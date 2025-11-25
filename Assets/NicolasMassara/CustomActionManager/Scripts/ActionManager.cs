@@ -151,19 +151,18 @@ namespace NicolasMassara.CustomActionManager
             {
                 public static float GetPriorityTick(PriorityTick group, float frameTime, float targetFrameRate)
                 {
-                    float targetFPS = targetFrameRate > 0 ? targetFrameRate : (1f / frameTime);
-                    float baseFrameTime = 1f / targetFPS;
-                    float adaptiveFrameTime = Mathf.Lerp(baseFrameTime, frameTime, 0.2f);
+                    float baseFrameTime = targetFrameRate > 0 ? 1f / targetFrameRate : frameTime;
 
                     return group switch
                     {
-                        PriorityTick.High => adaptiveFrameTime,
-                        PriorityTick.MediumHigh => adaptiveFrameTime * 2,
-                        PriorityTick.Medium => adaptiveFrameTime * 4,
-                        PriorityTick.MediumLow => adaptiveFrameTime * 8,
-                        PriorityTick.Low => adaptiveFrameTime * 16,
+                        PriorityTick.EveryFrame => baseFrameTime,
+                        PriorityTick.High => baseFrameTime * 2,
+                        PriorityTick.MediumHigh => baseFrameTime * 4,
+                        PriorityTick.Medium => baseFrameTime * 8,
+                        PriorityTick.MediumLow => baseFrameTime * 16,
+                        PriorityTick.Low => baseFrameTime * 32,
                         PriorityTick.None => 1f,
-                        _ => adaptiveFrameTime
+                        _ => baseFrameTime
                     };
                 }
             }
@@ -172,10 +171,11 @@ namespace NicolasMassara.CustomActionManager
             private bool _isPaused = false;
             private float _elapsedSinceLastTick = 0;
             private int _targetFrameRate = -1;
-            private PriorityTick _priority = PriorityTick.High;
+            private PriorityTick _priority = PriorityTick.EveryFrame;
             private ActionStatus _status = ActionStatus.Idle;
             public bool IsRunning => _status == ActionStatus.Running;
             public bool HasFinished => _status == ActionStatus.Success || _status == ActionStatus.Failure;
+            
             
             #region Setters
 
@@ -216,27 +216,11 @@ namespace NicolasMassara.CustomActionManager
             
             public void Execute(float deltaTime, float frameTime)
             {
-                if(_isPaused) return;
-                
+                if (_isPaused) return;
+
                 if (_current != null)
                 {
-                    _status = ActionStatus.Running;
-                    
-                    _elapsedSinceLastTick += deltaTime;
-                    float interval = TimerTools.GetPriorityTick(_priority, frameTime, _targetFrameRate);
-
-                    while (_elapsedSinceLastTick >= interval)
-                    {
-                        
-                        if (_current.OnUpdate(interval) == ActionStatus.Success)
-                        {
-                            _elapsedSinceLastTick = 0;
-                            _status = ActionStatus.Idle;
-                            break;
-                        }
-                        
-                        _elapsedSinceLastTick -= interval;
-                    }
+                    UpdateActionQueue(deltaTime, frameTime);
                 }
                 else
                 {
@@ -250,6 +234,37 @@ namespace NicolasMassara.CustomActionManager
                 _isPaused = false;
                 _status = ActionStatus.Idle;
                 _elapsedSinceLastTick = 0;
+            }
+
+            private void UpdateActionQueue(float deltaTime, float frameTime)
+            {
+                _status = ActionStatus.Running;
+
+                if (_priority == PriorityTick.EveryFrame)
+                {
+                    if (_current.OnUpdate(deltaTime) == ActionStatus.Success)
+                    {
+                        _status = ActionStatus.Idle;
+                    }
+                }
+                else
+                {
+                    _elapsedSinceLastTick += deltaTime;
+                    float interval = TimerTools.GetPriorityTick(_priority, frameTime, _targetFrameRate);
+
+                    while (_elapsedSinceLastTick >= interval)
+                    {
+                        var result = _current.OnUpdate(interval);
+
+                        _elapsedSinceLastTick -= interval;
+
+                        if (result == ActionStatus.Success)
+                        {
+                            _status = ActionStatus.Idle;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -339,7 +354,7 @@ namespace NicolasMassara.CustomActionManager
         #endregion
 
         public static ActionQueueRunner GetActionQueue(GeneratedId id) => Instance.GetActionQueueInternal(id);
-        public static GeneratedId Add(IQueueAction queueData, PriorityTick priority = PriorityTick.High) => Instance.AddInternal(queueData,priority);
+        public static GeneratedId Add(IQueueAction queueData, PriorityTick priority = PriorityTick.EveryFrame) => Instance.AddInternal(queueData,priority);
         public static bool Remove(GeneratedId id) => Instance.RemoveInternal(id);
         public static void Clear() => Instance.ClearInternal();
 
@@ -386,7 +401,7 @@ namespace NicolasMassara.CustomActionManager
             return _idsDic.TryGetValue(id.Id, out var value) ? value.ActionQueue : null;
         }
         
-        private GeneratedId AddInternal(IQueueAction queueData, PriorityTick priority = PriorityTick.High)
+        private GeneratedId AddInternal(IQueueAction queueData, PriorityTick priority = PriorityTick.EveryFrame)
         {
             var generatedId = _idStorage.Generate();
             var action = _actionFactory.GetActionQueue();

@@ -61,7 +61,7 @@ namespace NicolasMassara.CustomActionManager.Scripts.Test
                 Debug.Log("Action Interrupted, Removed!");
             });
             
-            _generatedId = ActionManager.Add(action, PriorityTick.High);
+            _generatedId = ActionManager.Add(action, PriorityTick.EveryFrame);
         }
 
         public void Remove()
