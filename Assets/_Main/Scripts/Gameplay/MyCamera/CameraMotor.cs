@@ -1,38 +1,66 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.MyCamera
 {
     public class CameraMotor : ObservableComponent
     {
-        private CameraZoomPosition _currentZoomPosition;
-        private CameraLookPosition _currentLookPosition;
+        private float _timeToZoom;
+        private float _timeToLook;
+        private IShakeData _shakeData;
         
-        public void Shake(IShakeData shakeData)
+        #region Shake Actions
+
+        public void TryShake(IShakeData shakeData)
+        {                
+            _shakeData = shakeData;
+        }
+        
+        public void ExecuteShake()
         {
-            NotifyAll(CameraObserverMessage.Shake,shakeData);
+            NotifyAll(CameraObserverMessage.Shake,_shakeData);
         }
 
-        public void Zoom(CameraZoomPosition zoomPosition, float timeToZoom)
-        {
-            _currentZoomPosition = zoomPosition;
+        #endregion
 
-            ulong observerMessage = _currentZoomPosition switch
+        #region Zoom Actions
+
+        public void TryZoom(float timeToZoom)
+        {
+            _timeToZoom = timeToZoom;
+        }
+
+        private void ExecuteZoom(CameraZoomPosition zoomPosition)
+        {
+            ulong observerMessage = zoomPosition switch
             {
                 CameraZoomPosition.ZoomOut => CameraObserverMessage.ZoomOut,
                 CameraZoomPosition.ZoomIn => CameraObserverMessage.ZoomIn,
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            NotifyAll(observerMessage,timeToZoom);
+            NotifyAll(observerMessage,_timeToZoom);
         }
 
-        public void Look(CameraLookPosition position, float timeToLook)
+        public void ExecuteZoomIn()
         {
-            _currentLookPosition = position;
+            ExecuteZoom(CameraZoomPosition.ZoomIn);
+        }
+        
+        public void ExecuteZoomOut()
+        {
+            ExecuteZoom(CameraZoomPosition.ZoomOut);
+        }
+        
+        #endregion
 
-            ulong observerMessage = _currentLookPosition switch
+        #region Look Actions
+        
+        private void ExecuteLook(CameraLookPosition position)
+        {
+            ulong observerMessage = position switch
             {
                 CameraLookPosition.Center => CameraObserverMessage.LookCenter,
                 CameraLookPosition.Right => CameraObserverMessage.LookRight,
@@ -41,18 +69,41 @@ namespace _Main.Scripts.Gameplay.MyCamera
                 CameraLookPosition.Bottom => CameraObserverMessage.LookBottom,
                 _ => 0
             };
-
-            NotifyAll(observerMessage,timeToLook);
+            
+            NotifyAll(observerMessage,_timeToLook);
         }
 
-        public bool IsUnableToLook(CameraLookPosition position)
+
+        public void TryLook(float timeToLook)
         {
-            return _currentLookPosition == position;
+            _timeToLook = timeToLook;
         }
 
-        public bool IsUnableToZoom(CameraZoomPosition zoomPosition)
+        public void LookCenter()
         {
-            return _currentZoomPosition == zoomPosition;
+            ExecuteLook(CameraLookPosition.Center);
         }
+
+        public void LookRight()
+        {
+            ExecuteLook(CameraLookPosition.Right);
+        }
+        
+        public void LookLeft()
+        {
+            ExecuteLook(CameraLookPosition.Left);
+        }
+        
+        public void LookAtTop()
+        {
+            ExecuteLook(CameraLookPosition.Top);
+        }
+        
+        public void LookAtBottom()
+        {
+            ExecuteLook(CameraLookPosition.Bottom);
+        }
+        
+        #endregion
     }
 }

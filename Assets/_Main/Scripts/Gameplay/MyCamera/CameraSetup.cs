@@ -7,7 +7,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
     public class CameraSetup : MonoBehaviour
     {
         private CameraView _view;
-        private CameraController _controller;
+        private CameraController.ICameraController _controller;
         private CameraMotor _motor;
 
         private void Awake()
@@ -16,7 +16,6 @@ namespace _Main.Scripts.Gameplay.MyCamera
             _motor = new CameraMotor();
             _controller = new CameraController(_motor);
             _motor.Subscribe(_view);
-            
             
             _controller.Initialize();
             _controller.TransitionToIdle();
@@ -72,42 +71,42 @@ namespace _Main.Scripts.Gameplay.MyCamera
         
         private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)
         {
-            _controller.Zoom(CameraZoomPosition.ZoomOut,input.TimeToZoom);
+            _controller.TryZoomOut(input.TimeToZoom);
         }
 
         private void EventBus_Camera_ZoomIn(CameraEvents.ZoomIn input)
         {
-            _controller.Zoom(CameraZoomPosition.ZoomIn,input.TimeToZoom);
+            _controller.TryZoomIn(input.TimeToZoom);
         }
 
         private void EventBus_Camera_StartShake(CameraEvents.Shake input)
         {
-            _controller.Shake(input.ShakeData);
+            _controller.TryShake(input.ShakeData);
         }
         
         private void EventBus_Camera_LookCenter(CameraEvents.LookCenter input)
         {
-            _controller.Look(CameraLookPosition.Center,input.TimeToLook);
+            _controller.TryLookCenter(input.TimeToLook);
         }
         
         private void EventBus_Camera_LookRight(CameraEvents.LookRight input)
         {
-            _controller.Look(CameraLookPosition.Right,input.TimeToLook);
+            _controller.TryLookRight(input.TimeToLook);
         }
         
         private void EventBus_Camera_LookLeft(CameraEvents.LookLeft input)
         {
-            _controller.Look(CameraLookPosition.Left,input.TimeToLook);
+            _controller.TryLookLeft(input.TimeToLook);
         }
         
         private void EventBus_Camera_LookUp(CameraEvents.LookUp input)
         {
-            _controller.Look(CameraLookPosition.Top,input.TimeToLook);
+            _controller.TryLookAtTop(input.TimeToLook);
         }
         
         private void EventBus_Camera_LookDown(CameraEvents.LookDown input)
         {
-            _controller.Look(CameraLookPosition.Bottom,input.TimeToLook);
+            _controller.TryLookAtBottom(input.TimeToLook);
         }
         
         #endregion

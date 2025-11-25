@@ -792,6 +792,21 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new CameraEvents.LookDown{TimeToLook = timeToLook});
         }
+        
+        public static void NotifyZoomFinished()
+        {
+            GameEventCaller.Publish(new CameraEvents.ZoomFinished());
+        }
+        
+        public static void NotifyLookFinished()
+        {
+            GameEventCaller.Publish(new CameraEvents.LookFinished());
+        }
+        
+        public static void NotifyShakeFinished()
+        {
+            GameEventCaller.Publish(new CameraEvents.ShakeFinished());
+        }
     }
     
     public static class CameraEventSubscriber
@@ -831,6 +846,21 @@ namespace _Main.Scripts
         {
             GameEventCaller.Subscribe(action);
         }
+        
+        public static void NotifyZoomFinished(Action<CameraEvents.ZoomFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void NotifyLookFinished(Action<CameraEvents.LookFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void NotifyShakeFinished(Action<CameraEvents.ShakeFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
     }
     
     public static class CameraEventUnSubscriber
@@ -867,6 +897,21 @@ namespace _Main.Scripts
             GameEventCaller.Unsubscribe(action);
         }
         public static void LookDown(Action<CameraEvents.LookDown> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyZoomFinished(Action<CameraEvents.ZoomFinished> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyLookFinished(Action<CameraEvents.LookFinished> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyShakeFinished(Action<CameraEvents.ShakeFinished> action)
         {
             GameEventCaller.Unsubscribe(action);
         }

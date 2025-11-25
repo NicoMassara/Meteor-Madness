@@ -47,6 +47,8 @@
             public const int Tutorial = -30;
             public const int Cosmetics = -20;
             public const int Camera = -19;
+            public const int CameraLook = -18;
+            public const int CameraZoom = -17;
             public const int Earth = 10;
             public const int Shield = 20;
             public const int Ability = 30;
