@@ -250,7 +250,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 }))
                 .Build();
             
-            ActionManager.Add(action);
+            ActionManager.Add(action,ActionManager.UpdateType.Update);
         }
         
         private class RestartRotationAction : IQueueAction
@@ -405,7 +405,7 @@ namespace _Main.Scripts.Gameplay.Earth
                     EarthEventCaller.RestartFinished();
                 }));
             
-            ActionManager.Add(action.Build());
+            ActionManager.Add(action.Build(),ActionManager.UpdateType.Update);
         }
 
         #endregion

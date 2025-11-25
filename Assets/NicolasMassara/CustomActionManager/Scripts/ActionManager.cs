@@ -6,6 +6,25 @@ namespace NicolasMassara.CustomActionManager
 {
     public class ActionManager : MonoBehaviour
     {
+        public enum PriorityTick
+        {
+            None,
+            Low,
+            MediumLow,
+            Medium,
+            MediumHigh,
+            High,
+            EveryFrame
+        }
+
+        public enum UpdateType
+        {
+            None, 
+            Update,
+            Fixed,
+            Late
+        }
+        
         //====================================================
         //                       SINGLETON
         //====================================================
@@ -218,14 +237,14 @@ namespace NicolasMassara.CustomActionManager
             {
                 if (_isPaused) return;
 
-                if (_current != null)
+                if (_current == null)
                 {
-                    UpdateActionQueue(deltaTime, frameTime);
+                    Debug.Log("Current is Null");
+                    _status = ActionStatus.Failure;
+                    return;
                 }
-                else
-                {
-                    _status = ActionStatus.Success;
-                }
+
+                UpdateActionQueue(deltaTime, frameTime);
             }
 
             public void ResetValues()
@@ -242,10 +261,7 @@ namespace NicolasMassara.CustomActionManager
 
                 if (_priority == PriorityTick.EveryFrame)
                 {
-                    if (_current.OnUpdate(deltaTime) == ActionStatus.Success)
-                    {
-                        _status = ActionStatus.Idle;
-                    }
+                    _current.OnUpdate(deltaTime);
                 }
                 else
                 {
@@ -254,94 +270,212 @@ namespace NicolasMassara.CustomActionManager
 
                     while (_elapsedSinceLastTick >= interval)
                     {
-                        var result = _current.OnUpdate(interval);
+                        _current.OnUpdate(interval);
 
                         _elapsedSinceLastTick -= interval;
-
-                        if (result == ActionStatus.Success)
-                        {
-                            _status = ActionStatus.Idle;
-                            break;
-                        }
                     }
+                }
+
+
+                if (_current.CurrentStatus == ActionStatus.Success)
+                {
+                    _status = ActionStatus.Success;
                 }
             }
         }
 
         #endregion
+
+        #region Runner
+
+        private interface IRunner
+        {
+            public int RunningCount { get; }
+            public void Execute(float deltaTime, float frameTime);
+            public void Pause(ulong id);
+            public void Resume(ulong id);
+            public ActionQueueRunner GetActionQueue(ulong id);
+            public void Add(ActionQueueData queueData);
+            public void Remove(ulong id);
+            public void Clear();
+        }
         
+        private class Runner : IRunner
+        {
+            private readonly List<ulong> _cancelIds = new List<ulong>();
+            private readonly List<ActionQueueData> _running = new List<ActionQueueData>();
+            private readonly List<ActionQueueData> _toAdd = new List<ActionQueueData>();
+            private readonly List<ActionQueueData> _toRemove = new List<ActionQueueData>();
+            private readonly Dictionary<ulong, ActionQueueData> _idsDic = new Dictionary<ulong, ActionQueueData>();
+            private event Action<ActionQueueRunner> OnReturned;
+            private event Action<ulong> OnRemoved;
+            
+            public int RunningCount => _running.Count;
+
+            public Runner(Action<ActionQueueRunner> onReturned, Action<ulong> onRemoved)
+            {
+                OnReturned = onReturned;
+                OnRemoved = onRemoved;
+            }
+            
+            private void ApplyPending()
+            {
+                if (_toAdd.Count > 0)
+                {
+                    var cancelIds = new HashSet<ulong>(_cancelIds);
+                
+                    foreach (var data in _toAdd)
+                    {
+                        if (cancelIds.Contains(data.ExternalId.Id))
+                        {
+                            data.ExternalId.Release();
+                            continue;
+                        }
+                    
+                        _running.Add(data);
+                        _idsDic.Add(data.ExternalId.Id, data);
+                    }
+            
+                    _toAdd.Clear();
+                }
+            
+                if (_toRemove.Count > 0)
+                {
+                    foreach (var data in _toRemove)
+                    {
+                        _running.Remove(data);
+                        _idsDic.Remove(data.ExternalId.Id);
+                        OnReturned?.Invoke(data.ActionQueue);
+                        OnRemoved?.Invoke(data.ExternalId.Id);
+                        data.ExternalId.Release();
+                    }
+            
+                    _toRemove.Clear();
+                }
+            }
+                
+            #region IRunner
+
+            public void Execute(float deltaTime, float frameTime)
+            {
+                ApplyPending();
+            
+                if (_running.Count == 0) return;
+            
+                foreach (var data in _running)
+                {
+                    data.ActionQueue.Execute(Time.deltaTime, Time.unscaledDeltaTime);
+
+                    if (data.ActionQueue.HasFinished)
+                    {
+                        _toRemove.Add(data);
+                    }
+                }
+            
+                ApplyPending();
+            }
+
+            public void Pause(ulong id)
+            {
+                _idsDic[id].ActionQueue.Pause();
+            }
+
+            public void Resume(ulong id)
+            {
+                _idsDic[id].ActionQueue.Resume();
+            }
+
+            public ActionQueueRunner GetActionQueue(ulong id)
+            {
+                return _idsDic[id].ActionQueue;
+            }
+
+            public void Add(ActionQueueData queueData)
+            {
+                _toAdd.Add(queueData);
+            }
+
+            public void Remove(ulong id)
+            {
+                // If _idsDic doesn't have it, it means it's not running yet, so it can be cancelled
+                
+                if (_idsDic.ContainsKey(id) == false)
+                {
+                    _cancelIds.Add(id);
+                }
+                else
+                {
+                    _idsDic[id].ActionQueue.Interrupt();
+                }
+            }
+
+            public void Clear()
+            {
+                foreach (var value in _running)
+                {
+                    _toRemove.Add(value);
+                }
+            }
+            
+            #endregion
+        }
+        
+        #endregion
+
+        private IRunner _updateRunner;
+        private IRunner _fixedUpdateRunner;
+        private IRunner _lateUpdateRunner;
+
         private readonly ActionFactory _actionFactory = new ActionFactory();
         private readonly RandomIdGenerator _idStorage = new RandomIdGenerator();
-
-        private readonly List<ulong> _cancelIds = new List<ulong>();
-        private readonly List<ActionQueueData> _running = new List<ActionQueueData>();
-        private readonly List<ActionQueueData> _toAdd = new List<ActionQueueData>();
-        private readonly List<ActionQueueData> _toRemove = new List<ActionQueueData>();
-        private readonly Dictionary<ulong, ActionQueueData> _idsDic = new Dictionary<ulong, ActionQueueData>();
-        private int RunningCount => _running.Count;
         
-        private class ActionQueueData
+        private readonly Dictionary<ulong, UpdateType> _updateById = new Dictionary<ulong, UpdateType>();
+        
+        public class ActionQueueData
         {
-            public ActionQueueRunner ActionQueue;
-            public GeneratedId ExternalId;
+            public ActionQueueRunner ActionQueue { get; private set; }
+            public GeneratedId ExternalId { get; private set; }
+            public UpdateType UpdateType { get; private set; }
+
+            public ActionQueueData(ActionQueueRunner actionQueue, GeneratedId externalId, UpdateType updateType)
+            {
+                ActionQueue = actionQueue;
+                ExternalId = externalId;
+                UpdateType = updateType;
+            }
+        }
+
+        private void Awake()
+        {
+            _updateRunner = new Runner(_actionFactory.ReturnActionQueue, RemoveFromUpdateDic);
+            _fixedUpdateRunner = new Runner(_actionFactory.ReturnActionQueue, RemoveFromUpdateDic);
+            _lateUpdateRunner = new Runner(_actionFactory.ReturnActionQueue, RemoveFromUpdateDic);
+        }
+
+        private void RemoveFromUpdateDic(ulong id)
+        {
+            if(_updateById.ContainsKey(id) == false) return;
+            
+            _updateById.Remove(id);
         }
 
         #region Action Logic
 
         private void Update()
         {
-            ApplyPending();
-            
-            if (_running.Count == 0) return;
-            
-            foreach (var data in _running)
-            {
-                data.ActionQueue.Execute(Time.deltaTime, Time.unscaledDeltaTime);
+            _updateRunner?.Execute(Time.deltaTime, Time.unscaledDeltaTime);
+        }
 
-                if (data.ActionQueue.HasFinished)
-                {
-                    _toRemove.Add(data);
-                }
-            }
-            
-            ApplyPending();
+        private void FixedUpdate()
+        {
+            _fixedUpdateRunner?.Execute(Time.fixedTime, Time.fixedUnscaledTime);
+        }
+
+        private void LateUpdate()
+        {
+            _lateUpdateRunner?.Execute(Time.deltaTime, Time.unscaledDeltaTime);
         }
         
-
-        private void ApplyPending()
-        {
-            if (_toAdd.Count > 0)
-            {
-                var cancelIds = new HashSet<ulong>(_cancelIds);
-                
-                foreach (var data in _toAdd)
-                {
-                    if (cancelIds.Contains(data.ExternalId.Id))
-                    {
-                        data.ExternalId.Release();
-                        continue;
-                    }
-                    
-                    _running.Add(data);
-                    _idsDic.Add(data.ExternalId.Id, data);
-                }
-            
-                _toAdd.Clear();
-            }
-            
-            if (_toRemove.Count > 0)
-            {
-                foreach (var data in _toRemove)
-                {
-                    _running.Remove(data);
-                    _idsDic.Remove(data.ExternalId.Id); ;
-                    _actionFactory.ReturnActionQueue(data.ActionQueue);
-                    data.ExternalId.Release();
-                }
-            
-                _toRemove.Clear();
-            }
-        }
 
         #endregion
         
@@ -354,41 +488,70 @@ namespace NicolasMassara.CustomActionManager
         #endregion
 
         public static ActionQueueRunner GetActionQueue(GeneratedId id) => Instance.GetActionQueueInternal(id);
-        public static GeneratedId Add(IQueueAction queueData, PriorityTick priority = PriorityTick.EveryFrame) => Instance.AddInternal(queueData,priority);
+        public static GeneratedId Add(IQueueAction queueData, UpdateType updateType, PriorityTick priority = PriorityTick.EveryFrame) => Instance.AddInternal(queueData,updateType,priority);
         public static bool Remove(GeneratedId id) => Instance.RemoveInternal(id);
-        public static void Clear() => Instance.ClearInternal();
+        public static void Clear(UpdateType updateType) => Instance.ClearInternal(updateType);
 
         #endregion
 
         #region Internal API
 
         #region ActionQueue Settings
-        
+
+        private bool DoesContainIdInRunner(GeneratedId id)
+        {
+            return _updateById.ContainsKey(id.Id);
+        }
+
 
         private bool PauseInternal(GeneratedId id)
         {
             if(id == null) return false;
-            
-            if (_idsDic.TryGetValue(id.Id, out var value))
+
+            if (DoesContainIdInRunner(id) == false) return false;
+
+            var updateType = _updateById[id.Id];
+
+            switch (updateType)
             {
-                value.ActionQueue.Pause();
-                return true;
+                case UpdateType.Update:
+                    _updateRunner.Pause(id.Id);
+                    break;
+                case UpdateType.Fixed:
+                    _fixedUpdateRunner.Pause(id.Id);
+                    break;
+                case UpdateType.Late:
+                    _lateUpdateRunner.Pause(id.Id);
+                    break;
             }
             
-            return false;
+
+            return true;
+
         }
         
         private bool ResumeInternal(GeneratedId id)
         {
             if(id == null) return false;
-            
-            if (_idsDic.TryGetValue(id.Id, out var value))
+
+            if (DoesContainIdInRunner(id) == false) return false;
+
+            var updateType = _updateById[id.Id];
+
+            switch (updateType)
             {
-                value.ActionQueue.Resume();
-                return true;
+                case UpdateType.Update:
+                    _updateRunner.Resume(id.Id);
+                    break;
+                case UpdateType.Fixed:
+                    _fixedUpdateRunner.Resume(id.Id);
+                    break;
+                case UpdateType.Late:
+                    _lateUpdateRunner.Resume(id.Id);
+                    break;
             }
             
-            return false;
+            return true;
         }
 
         #endregion
@@ -397,39 +560,87 @@ namespace NicolasMassara.CustomActionManager
         private ActionQueueRunner GetActionQueueInternal(GeneratedId id)
         {
             if(id == null) return null;
+            if (DoesContainIdInRunner(id) == false) return null;
             
-            return _idsDic.TryGetValue(id.Id, out var value) ? value.ActionQueue : null;
+            var updateType = _updateById[id.Id];
+
+#pragma warning disable CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
+            return updateType switch
+#pragma warning restore CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
+            {
+                UpdateType.Update => _updateRunner.GetActionQueue(id.Id),
+                UpdateType.Fixed => _fixedUpdateRunner.GetActionQueue(id.Id),
+                UpdateType.Late => _lateUpdateRunner.GetActionQueue(id.Id)
+            };
         }
         
-        private GeneratedId AddInternal(IQueueAction queueData, PriorityTick priority = PriorityTick.EveryFrame)
+        private GeneratedId AddInternal(IQueueAction queueData, UpdateType updateType, PriorityTick priority = PriorityTick.EveryFrame)
         {
+            if (updateType == UpdateType.None)
+            {
+                Debug.Log("Action Will not be Added! UpdateType must be set to be added!");
+                return null;
+            }
+
             var generatedId = _idStorage.Generate();
             var action = _actionFactory.GetActionQueue();
-            
             action.AddAction(queueData).SetTargetFrameRate(Application.targetFrameRate).SetPriority(priority);
+            var actionData = new ActionQueueData(action, generatedId, updateType);
+
+            switch (updateType)
+            {
+                case UpdateType.Update:
+                    _updateRunner.Add(actionData);
+                    break;
+                case UpdateType.Fixed:
+                    _fixedUpdateRunner.Add(actionData);
+                    break;
+                case UpdateType.Late:
+                    _lateUpdateRunner.Add(actionData);
+                    break;
+            }
             
-            _toAdd.Add(new ActionQueueData {ActionQueue = action, ExternalId = generatedId});
+            _updateById.Add(generatedId.Id, updateType);
+            
             return generatedId;
         }
         
         private bool RemoveInternal(GeneratedId id)
         {
             if(id == null) return false;
+            if (DoesContainIdInRunner(id) == false) return false;
             
-            if (_idsDic.TryGetValue(id.Id, out var value))
-            {
-                value.ActionQueue.Interrupt();
-                return true;
-            }
+            var updateType = _updateById[id.Id];
 
-            return false;
+            switch (updateType)
+            {
+                case UpdateType.Update:
+                    _updateRunner.Remove(id.Id);
+                    break;
+                case UpdateType.Fixed:
+                    _fixedUpdateRunner.Remove(id.Id);
+                    break;
+                case UpdateType.Late:
+                    _lateUpdateRunner.Remove(id.Id);
+                    break;
+            }
+            
+            return true;
         }
 
-        private void ClearInternal()
+        private void ClearInternal(UpdateType updateType)
         {
-            foreach (var value in _running)
+            switch (updateType)
             {
-                _toRemove.Add(value);
+                case UpdateType.Update:
+                    _updateRunner.Clear();
+                    break;
+                case UpdateType.Fixed:
+                    _fixedUpdateRunner.Clear();
+                    break;
+                case UpdateType.Late:
+                    _lateUpdateRunner.Clear();
+                    break;
             }
         }
 

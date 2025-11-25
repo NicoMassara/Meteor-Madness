@@ -85,7 +85,7 @@ namespace _Main.Scripts.Sounds
                     .Then(new WaitFramesAction(1))
                     .Build();
 
-                ActionManager.Add(actions);
+                ActionManager.Add(actions,ActionManager.UpdateType.Update);
             }
 
         }

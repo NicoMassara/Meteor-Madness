@@ -55,7 +55,7 @@ namespace _Main.Scripts.Gameplay.Shield
                     1,0,materialOpacityLerpTime))
                 .Build();
 
-            ActionManager.Add(action);
+            ActionManager.Add(action,ActionManager.UpdateType.Update);
         }
         
         private void DisableMaterial()
@@ -65,7 +65,7 @@ namespace _Main.Scripts.Gameplay.Shield
                     0,1,materialOpacityLerpTime))
                 .Build();
 
-            ActionManager.Add(action);
+            ActionManager.Add(action,ActionManager.UpdateType.Update);
         }
         
         private class SetMaterialOpacityAction : IQueueAction
@@ -239,7 +239,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 .Then(new WaitFramesAction(1))
                 .Build();
             
-            ActionManager.Add(actions);
+            ActionManager.Add(actions,ActionManager.UpdateType.Update);
         }
         
         private void Shield_OnDisableSuperShieldHandler(float targetTime)
@@ -256,7 +256,7 @@ namespace _Main.Scripts.Gameplay.Shield
                 .Then(new WaitFramesAction(1))
                 .Build();
             
-            ActionManager.Add(actions);
+            ActionManager.Add(actions,ActionManager.UpdateType.Update);
         }
         
         private void Shield_OnDisableAbilityHandler()

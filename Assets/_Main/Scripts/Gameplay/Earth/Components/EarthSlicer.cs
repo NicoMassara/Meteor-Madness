@@ -89,7 +89,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 .Build();
             
             
-            ActionManager.Add(action);
+            ActionManager.Add(action,ActionManager.UpdateType.Update);
         }
         
         private void PreSlice() 
@@ -178,7 +178,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 }))
                 .Build();
             
-            ActionManager.Add(action);
+            ActionManager.Add(action,ActionManager.UpdateType.Update);
         }
 
 
