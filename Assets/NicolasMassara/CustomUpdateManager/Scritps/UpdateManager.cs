@@ -32,22 +32,22 @@ namespace NicolasMassara.CustomUpdateManager
 
         #region Tools
 
-        private static float GetTickByGroup(TickGroup group, float frameTime, int targetFrameRate)
+        private static float GetTickInterval(TickGroup group, int targetFrameRate, float scaledDeltaTime)
         {
-            float targetFPS = targetFrameRate > 0 ? targetFrameRate : (1f / frameTime);
-            float baseFrameTime = 1f / targetFPS;
-            float adaptiveFrameTime = Mathf.Lerp(baseFrameTime, frameTime, 0.2f);
-            
-            var tickValue = group switch
+            float baseInterval = targetFrameRate > 0
+                ? 1f / targetFrameRate
+                : scaledDeltaTime;
+
+            float tickValue = group switch
             {
-                TickGroup.EveryFrame => adaptiveFrameTime,
-                TickGroup.HalfTarget => adaptiveFrameTime * 2,
-                TickGroup.QuarterTarget => adaptiveFrameTime * 4,
-                TickGroup.EightTarget => adaptiveFrameTime * 8,
-                TickGroup.SixteenthTarget => adaptiveFrameTime * 16,
-                TickGroup.ThirtySecondTarget => adaptiveFrameTime * 32,
-                TickGroup.SixtyFourthTarget => adaptiveFrameTime * 64,
-                TickGroup.EverySecond => 1f,
+                TickGroup.EveryFrame       => baseInterval,
+                TickGroup.HalfTarget       => baseInterval * 2f,
+                TickGroup.QuarterTarget    => baseInterval * 4f,
+                TickGroup.EightTarget      => baseInterval * 8f,
+                TickGroup.SixteenthTarget  => baseInterval * 16f,
+                TickGroup.ThirtySecondTarget => baseInterval * 32f,
+                TickGroup.SixtyFourthTarget => baseInterval * 64f,
+                TickGroup.EverySecond      => 1f,
                 _ => throw new ArgumentOutOfRangeException(nameof(group), group, null)
             };
 
@@ -193,8 +193,12 @@ namespace NicolasMassara.CustomUpdateManager
 
             protected float GetAccumulatedDeltaTime(T updatable)
             {
-                return _accumulatedDeltaTimeDic.ContainsKey(updatable) ? 
-                    _accumulatedDeltaTimeDic[updatable] : 0f;
+                if (_accumulatedDeltaTimeDic.ContainsKey(updatable) == false)
+                {
+                    return 0f;
+                }
+
+                return _accumulatedDeltaTimeDic[updatable];
             }
 
             #endregion
@@ -203,83 +207,92 @@ namespace NicolasMassara.CustomUpdateManager
         private class UpdatableComponent : UpdateController<IUpdatable>
         {
             public UpdatableComponent(int targetFrameRate) : 
-                base(targetFrameRate)
-            {
-            }
+                base(targetFrameRate) { }
 
             protected override void UpdateElement(IUpdatable element)
             {
                 if (CustomTime.GetChannel(element.SelfUpdateGroup).IsPaused)
                     return;
+                
+                float scaledDeltaTime = 0;
 
-                float frameTime = CustomTime.GetUnscaledDeltaTimeByChannel(element.SelfUpdateGroup);
-                float interval = GetTickByGroup(element.SelfTickGroup, frameTime, TargetFrameRate);
-                float deltaTime = GetAccumulatedDeltaTime(element);
-                deltaTime += CustomTime.GetDeltaTimeByChannel(element.SelfUpdateGroup);
-
-                // Ejecutar múltiples actualizaciones si deltaTime excede interval
-                while (deltaTime >= interval)
+                if (element.SelfTickGroup == TickGroup.EveryFrame)
                 {
-                    element.ExecuteUpdate(interval);
-                    deltaTime -= interval;
+                    scaledDeltaTime = CustomTime.GetDeltaTimeByChannel(element.SelfUpdateGroup);
+                    element.ExecuteUpdate(scaledDeltaTime);
                 }
+                else
+                {
+                    float deltaTime = GetAccumulatedDeltaTime(element);
+                    scaledDeltaTime = CustomTime.GetDeltaTimeByChannel(element.SelfUpdateGroup);
+                    var interval = GetTickInterval(element.SelfTickGroup, UpdateManager.TargetFrameRate,scaledDeltaTime);
+                    deltaTime += scaledDeltaTime;
 
-                SetAccumulatedDeltaTime(element, deltaTime);
+                    while (deltaTime >= interval)
+                    {
+                        element.ExecuteUpdate(interval);
+                        deltaTime -= interval;
+                    
+                        if (deltaTime > interval * 10f)
+                            break;
+                    }
+
+                    SetAccumulatedDeltaTime(element, deltaTime);
+                }
             }
         }
-        
         private class FixedUpdatableComponent : UpdateController<IFixedUpdatable>
         {
             public FixedUpdatableComponent(int targetFrameRate) :
-                base(targetFrameRate)
-            {
-            }
+                base(targetFrameRate) { }
 
             protected override void UpdateElement(IFixedUpdatable element)
             {
                 if(CustomTime.GetChannel(element.SelfUpdateGroup).IsPaused)
                     return;
+                
+                float scaledDeltaTime = CustomTime.GetFixedDeltaTimeByChannel(element.SelfUpdateGroup);
+                float interval = 1f / TargetFrameRate;
+                float stepTime = Mathf.Min(scaledDeltaTime, interval);
 
-                float frameTime = CustomTime.GetUnscaledFixedDeltaTimeByChannel(element.SelfUpdateGroup);
-                float interval = GetTickByGroup(element.SelfTickGroup,frameTime ,TargetFrameRate);
-                var deltaTime = GetAccumulatedDeltaTime(element);
-                deltaTime += CustomTime.GetFixedDeltaTimeByChannel(element.SelfUpdateGroup);
-
-                while (deltaTime >= interval)
-                {
-                    element.ExecuteFixedUpdate(interval);
-                    deltaTime -= interval;
-                }
-
-                SetAccumulatedDeltaTime(element, deltaTime);;
+                element.ExecuteFixedUpdate(stepTime);
             }
         }
-        
         private class LateUpdatableComponent : UpdateController<ILateUpdatable>
         {
             public LateUpdatableComponent(int targetFrameRate) : 
-                base(targetFrameRate)
-            {
-            }
+                base(targetFrameRate) { }
 
             protected override void UpdateElement(ILateUpdatable element)
             {
                 if (CustomTime.GetChannel(element.SelfUpdateGroup).IsPaused)
                     return;
+                
+                float scaledDeltaTime = 0;
 
-                float frameTime = CustomTime.GetUnscaledDeltaTimeByChannel(element.SelfUpdateGroup);
-                float interval = GetTickByGroup(element.SelfTickGroup, frameTime, TargetFrameRate);
-                float deltaTime = GetAccumulatedDeltaTime(element);
-                deltaTime += CustomTime.GetDeltaTimeByChannel(element.SelfUpdateGroup);
-
-                // Ejecutar múltiples actualizaciones si deltaTime excede interval
-                while (deltaTime >= interval)
+                if (element.SelfTickGroup == TickGroup.EveryFrame)
                 {
-                    element.ExecuteLateUpdate(interval);
-                    deltaTime -= interval;
+                    scaledDeltaTime = CustomTime.GetDeltaTimeByChannel(element.SelfUpdateGroup);
+                    element.ExecuteLateUpdate(scaledDeltaTime);
                 }
+                else
+                {
+                    float deltaTime = GetAccumulatedDeltaTime(element);
+                    scaledDeltaTime = CustomTime.GetDeltaTimeByChannel(element.SelfUpdateGroup);
+                    var interval = GetTickInterval(element.SelfTickGroup, UpdateManager.TargetFrameRate,scaledDeltaTime);
+                    deltaTime += scaledDeltaTime;
 
-                SetAccumulatedDeltaTime(element, deltaTime);
+                    while (deltaTime >= interval)
+                    {
+                        element.ExecuteLateUpdate(interval);
+                        deltaTime -= interval;
+                    
+                        if (deltaTime > interval * 10f)
+                            break;
+                    }
+
+                    SetAccumulatedDeltaTime(element, deltaTime);
+                }
             }
         }
 

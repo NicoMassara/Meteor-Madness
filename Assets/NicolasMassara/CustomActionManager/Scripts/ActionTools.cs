@@ -14,16 +14,7 @@ namespace NicolasMassara.CustomActionManager
         Success,
         Failure
     }
-
-    public enum PriorityTick
-    {
-        None,
-        Low,
-        MediumLow,
-        Medium,
-        MediumHigh,
-        High
-    }
+    
 
     public sealed class ActionQueueTools
     {
@@ -145,7 +136,7 @@ namespace NicolasMassara.CustomActionManager
                     CurrentStatus = ActionStatus.Success;
                     return CurrentStatus;
                 }
-
+                
                 _current = _actions.Dequeue();
                 _current.OnStart();
             }

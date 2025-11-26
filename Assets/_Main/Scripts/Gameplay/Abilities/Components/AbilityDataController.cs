@@ -498,10 +498,10 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new WaitSecondsAction(timeData.SlowDown))
                 .Then(new SetBoolAction(true, ShieldEventCaller.SetSlow))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
-                .Then(new SetChannelPausedAction(false, new[]{UpdateGroup.Gameplay}))
+                .Then(_enableInputs)
                 .Then(_cameraZoomOut)
                 .Then(_enableAbilityUI)
-                .Then(_enableInputs)
+                .Then(new SetChannelPausedAction(false, new[]{UpdateGroup.Gameplay}))
                 .Then(runAbilityTimer)
                 .Then(new SimpleCommandAction(endSequence))
                 .Build();
