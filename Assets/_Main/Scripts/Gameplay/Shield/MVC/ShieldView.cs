@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.Interfaces.Sounds;
-using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.ScriptableObjects;
@@ -12,13 +11,13 @@ using UnityEngine;
 namespace _Main.Scripts.Gameplay.Shield
 {
     [RequireComponent(typeof(ShieldMovement))]
-    [RequireComponent(typeof(ShieldAppereance))]
-    public class ShieldView : ManagedBehavior, IObserver, IShieldSounds
+    public class ShieldView : ManagedBehavior, IObserver, IShieldSounds, IAbilityShield
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
         [SerializeField] private GameObject normalShieldSprite;
         [SerializeField] private CapsuleCollider2D shieldCollider;
+        [SerializeField] private Collider2D superShieldCollider;
         [Space]
         [Header("Sounds")]
 
@@ -28,8 +27,7 @@ namespace _Main.Scripts.Gameplay.Shield
         [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
         [SerializeField] private ShieldMovementDataSo movementData;
-
-        private ShieldAppereance _appereance;
+        
         private ShieldMovement _movement;
         private ShakerController _shakerController;
         private ShieldColliderExtender _colliderExtender;
@@ -39,6 +37,10 @@ namespace _Main.Scripts.Gameplay.Shield
         public event Action<AbilityType> OnAbilityStarted;
         public event Action<AbilityType> OnAbilityRunning;
         public event Action OnAbilityFinished;
+        public event Action<AbilityType, bool> OnAbilitySetActive;
+        public event Action<float> OnEnableSuperShield;
+        public event Action<float> OnDisableSuperShield;
+        public event Action OnDisableAbility;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -54,17 +56,10 @@ namespace _Main.Scripts.Gameplay.Shield
             _debugData = new ShieldDebugData();
         
 #endif
-            
+            superShieldCollider.enabled = false;
             _movement = GetComponent<ShieldMovement>();
-            _appereance = GetComponent<ShieldAppereance>();
-            
             _shakerController = new ShakerController(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
-        }
-
-        private void Start()
-        {
-            _appereance.SetActiveSuperShieldSprite(false);;
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -112,7 +107,7 @@ namespace _Main.Scripts.Gameplay.Shield
         private void HandleSetAutomatic(bool isActive)
         {
             _movement.SetAutomaticEnable(isActive);
-            _appereance.SetAutomaticEnable(isActive);
+            OnAbilitySetActive?.Invoke(AbilityType.Automatic, isActive);
 
             if (isActive)
             {
@@ -126,7 +121,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void HandleSetGold(bool isActive)
         {
-            _appereance.SetGoldEnable(isActive);
+            OnAbilitySetActive?.Invoke(AbilityType.DoublePoints, isActive);
             
             if (isActive)
             {
@@ -139,7 +134,7 @@ namespace _Main.Scripts.Gameplay.Shield
         }
         private void HandleSetSlow(bool isActive)
         {
-            _appereance.SetSlowEnable(isActive);
+            OnAbilitySetActive?.Invoke(AbilityType.SlowMotion, isActive);
             
             if (isActive)
             {
@@ -155,6 +150,10 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             spriteContainer.SetActive(isActive);
             OnShieldActivated?.Invoke(isActive);
+            if (isActive == false)
+            {
+                OnDisableAbility?.Invoke();
+            }
         }
         
         private void HandleRotation(float direction)
@@ -217,6 +216,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (isActive)
             {
+                
                 RunSuperShieldQueue();
             }
             else
@@ -227,57 +227,61 @@ namespace _Main.Scripts.Gameplay.Shield
         
         private void RunSuperShieldQueue()
         {
+            var targetTime = 0.75f;
+            
             var temp = ActionBuilder.Start()
                 .Do(new InstantAction(() =>
                 {
                     OnAbilityStarted?.Invoke(AbilityType.SuperShield);
-                    _appereance.SetActiveSuperShieldSprite(true);
+                    OnAbilitySetActive?.Invoke(AbilityType.SuperShield, true); 
+                    superShieldCollider.enabled = true;
+                    OnEnableSuperShield?.Invoke(targetTime);
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
                 }))
-                .Then(new TimedUpdateAction(HandleSuperShieldEnable, _appereance.TimeToEnableSuperShield))
+                .Then(new TimedUpdateAction(HandleSuperShieldEnable, targetTime))
                 .Then(new InstantAction(() =>
                 {
                     _movement.RestartSpeedValues();
-                    _appereance.RestartValues();
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                     OnAbilityRunning?.Invoke(AbilityType.SuperShield);
                 }))
                 .Build();
             
-            ActionManager.Add(temp, PriorityTick.High);
+            ActionManager.Add(temp,ActionManager.UpdateType.Update ,ActionManager.PriorityTick.EveryFrame);
         }
         
         private void RunNormalShieldQueue()
         {
+            var targetTime = 0.75f;
+            
             var temp = ActionBuilder.Start()
                 .Do(new InstantAction(() =>
                 {
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
+                    OnDisableSuperShield?.Invoke(targetTime);
                 }))
-                .Then(new TimedUpdateAction(HandleNormalShieldEnable, _appereance.TimeToDisableSuperShield))
+                .Then(new TimedUpdateAction(HandleNormalShieldEnable, targetTime))
                 .Then(new InstantAction(() =>
                 {
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
-                    _appereance.SetActiveSuperShieldSprite(false);
-                    _appereance.RestartValues();
+                    OnAbilitySetActive?.Invoke(AbilityType.SuperShield, false);
+                    superShieldCollider.enabled = false;
                     _movement.RestartSpeedValues();
                     _movement.RotateTowardsNearestProjectileSlot();
                     OnAbilityFinished?.Invoke();
                 }))
                 .Build();
             
-            ActionManager.Add(temp, PriorityTick.High);
+            ActionManager.Add(temp,ActionManager.UpdateType.Update, ActionManager.PriorityTick.EveryFrame);
         }
         
         private void HandleSuperShieldEnable(float deltaTime)
         {
-            _appereance.EnableSuperShield(deltaTime);
             _movement.IncreaseSpeed(deltaTime);
         }
 
         private void HandleNormalShieldEnable(float deltaTime)
         {
-            _appereance.EnableNormalShield(deltaTime);
             _movement.DecreaseSpeed(deltaTime);
         }
         
@@ -298,6 +302,5 @@ namespace _Main.Scripts.Gameplay.Shield
         }
 
         #endregion
-        
     }
 }

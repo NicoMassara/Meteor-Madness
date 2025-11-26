@@ -141,7 +141,7 @@
         public const ulong Disable = 0xA8002;
         public const ulong Initial = 0xA8003;
         public const ulong TriggerMainMenu = 0xA8004;
-        public const ulong Empty3 = 0xA8005;
+        public const ulong AbilitySelect = 0xA8005;
         public const ulong Empty4 = 0xA8006;
         public const ulong Empty5 = 0xA8007;
         public const ulong Empty6 = 0xA8008;
@@ -170,5 +170,17 @@
         public const ulong Vibration = 0xA1005;
         public const ulong Volume = 0xA1006;
         public const ulong Close = 0xA1007;
+    }
+    
+    public struct CameraObserverMessage
+    {
+        public const ulong ZoomIn = 0xA9001;
+        public const ulong ZoomOut = 0xA0002;
+        public const ulong Shake = 0xA0003;
+        public const ulong LookCenter = 0xA0004;
+        public const ulong LookRight = 0xA0005;
+        public const ulong LookLeft = 0xA0006;
+        public const ulong LookTop = 0xA0007;
+        public const ulong LookBottom = 0xA0008;
     }
 }

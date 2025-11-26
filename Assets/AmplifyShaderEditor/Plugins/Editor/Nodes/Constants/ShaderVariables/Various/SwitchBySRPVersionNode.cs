@@ -19,7 +19,12 @@ namespace AmplifyShaderEditor
 			new Tuple<string, int>( "12.x", 120000 ),
 			new Tuple<string, int>( "13.x", 130000 ),
 			new Tuple<string, int>( "14.x", 140000 ),
-			new Tuple<string, int>( "15.x", 150000 )
+			new Tuple<string, int>( "15.x", 150000 ),
+			new Tuple<string, int>( "16.x", 160000 ),
+			new Tuple<string, int>( "17.0", 170000 ),
+			new Tuple<string, int>( "17.1", 170100 ),
+			new Tuple<string, int>( "17.2", 170200 ),
+			new Tuple<string, int>( "17.3", 170300 )
 		};
 
 		private static readonly string[] SRPTypeNames =
@@ -80,7 +85,7 @@ namespace AmplifyShaderEditor
 			base.RefreshExternalReferences();
 			UpdateConnections();
 		}
-		
+
 		private int GetActivePortArrayId()
 		{
 			if ( ContainerGraph != null )
@@ -88,7 +93,7 @@ namespace AmplifyShaderEditor
 				int srpVersion = ASEPackageManagerHelper.CurrentSRPVersion;
 				for ( int i = SRPVersionList.Length - 1; i >= 0; i-- )
 				{
-					if ( srpVersion > SRPVersionList[ i ].Item2 )
+					if ( srpVersion >= SRPVersionList[ i ].Item2 )
 					{
 						return i;
 					}
@@ -96,7 +101,7 @@ namespace AmplifyShaderEditor
 
 			}
 			return 0;
-		}		
+		}
 
 		private void UpdateConnections()
 		{
@@ -106,7 +111,7 @@ namespace AmplifyShaderEditor
 
 			string srpTypeName = ( ContainerGraph != null ) ? SRPTypeNames[ ( int )ContainerGraph.CurrentSRPType ] : "Unknown";
 			SetAdditonalTitleText( string.Format( Constants.SubTitleCurrentFormatStr, srpTypeName + ", " + SRPVersionList[ activePortIndex ].Item1 ) );
-		}		
+		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{

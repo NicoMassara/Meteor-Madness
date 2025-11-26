@@ -1,7 +1,7 @@
 ﻿using System.Collections;
+using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Save;
-using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,6 +17,7 @@ namespace _Main.Scripts.Bootstrap
         
         private bool _hasLocalizationLoaded;
         private bool _hasLoadedData;
+        private bool _hasLoadedSkins;
 
         private void Awake()
         {
@@ -30,8 +31,15 @@ namespace _Main.Scripts.Bootstrap
                 _hasLocalizationLoaded = true;
             };
             
+            SkinEvents.OnSaveLoaded += () =>
+            {
+                _hasLoadedSkins = true;
+            };
+            
+            
             var localization = LocalizationManager.Instance;
             var dataManager = DataManager.Instance;
+            var skinManager = SkinManager.Instance;
         }
 
         private void Start()
@@ -63,7 +71,7 @@ namespace _Main.Scripts.Bootstrap
         private bool GetHasLoadedAssets()
         {
             return _hasLocalizationLoaded &&
-                   _hasLoadedData;
+                   _hasLoadedData && _hasLoadedSkins;
         }
     }
 }

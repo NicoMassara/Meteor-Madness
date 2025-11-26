@@ -42,15 +42,16 @@ namespace AmplifyShaderEditor
 		TEXCOORD15,
 		NORMAL,
 		TANGENT,
-		SV_IsFrontFacing,
+		SV_IsFrontFace,
 		SV_VertexID,
 		SV_PrimitiveID,
 		SV_InstanceID,
 		INTERNALTESSPOS,
 		INSTANCEID_SEMANTIC,
+		VERTEXID_SEMANTIC,
+		PRIMITIVEID_SEMANTIC,
 		BLENDWEIGHTS,
 		BLENDINDICES
-
 	}
 
 	public enum TemplateInfoOnSematics
@@ -81,9 +82,14 @@ namespace AmplifyShaderEditor
 		OTHER,
 		VFACE,
 		SHADOWCOORDS,
+		INSTANCEID,
 		VERTEXID,
+		PRIMITIVEID,
 		BLENDWEIGHTS,
-		BLENDINDICES
+		BLENDINDICES,
+		OBJECT_POSITION,
+		VIEW_POSITION,
+		LIGHT_ATTENUATION
 	}
 
 	public enum TemplateShaderPropertiesIdx
@@ -475,7 +481,7 @@ namespace AmplifyShaderEditor
 			int nonLightmappedOnly;
 			float diffuseScale;
 			float specularScale;
-		}; 
+		};
 		*/
 		public static string HDLightInfoFormat = "_DirectionalLightDatas[{0}].{1}";
 
@@ -553,6 +559,7 @@ namespace AmplifyShaderEditor
 			{WirePortDataType.FLOAT2,2 },
 			{WirePortDataType.FLOAT3,3 },
 			{WirePortDataType.FLOAT4,4 },
+			{WirePortDataType.FLOAT2x2,0 },
 			{WirePortDataType.FLOAT3x3,0 },
 			{WirePortDataType.FLOAT4x4,0 },
 			{WirePortDataType.COLOR,4 },
@@ -582,7 +589,7 @@ namespace AmplifyShaderEditor
 			{TemplateSemantics.POSITION			,"ase_position"},
 			{TemplateSemantics.SV_POSITION		,"ase_sv_position"},
 			{TemplateSemantics.TANGENT			,"ase_tangent"},
-			{TemplateSemantics.SV_IsFrontFacing			,"ase_vface"},
+			{TemplateSemantics.SV_IsFrontFace	,"ase_vface"},
 			{TemplateSemantics.SV_VertexID		,"ase_vertexId"},
 			{TemplateSemantics.SV_InstanceID    ,"ase_instanceId"},
 			{TemplateSemantics.SV_PrimitiveID   ,"ase_primitiveId"},
@@ -640,8 +647,11 @@ namespace AmplifyShaderEditor
 			{"wvd"  ,TemplateInfoOnSematics.WORLD_VIEW_DIR},
 			{"wp"   ,TemplateInfoOnSematics.WORLD_POSITION},
 			{"rwp"  ,TemplateInfoOnSematics.RELATIVE_WORLD_POS},
+			{"op"   ,TemplateInfoOnSematics.OBJECT_POSITION},
+			{"vp"   ,TemplateInfoOnSematics.VIEW_POSITION},
 			{"vf"   ,TemplateInfoOnSematics.VFACE},
-			{"sc"   ,TemplateInfoOnSematics.SHADOWCOORDS}
+			{"sc"   ,TemplateInfoOnSematics.SHADOWCOORDS},
+			{"latt"   ,TemplateInfoOnSematics.LIGHT_ATTENUATION}
 		};
 
 		public static readonly Dictionary<TemplateInfoOnSematics, string> InfoToDefineFrag = new Dictionary<TemplateInfoOnSematics, string>
@@ -667,8 +677,10 @@ namespace AmplifyShaderEditor
 			{TemplateInfoOnSematics.WORLD_VIEW_DIR,"ASE_NEEDS_FRAG_WORLD_VIEW_DIR"},
 			{TemplateInfoOnSematics.WORLD_POSITION,"ASE_NEEDS_FRAG_WORLD_POSITION"},
 			{TemplateInfoOnSematics.RELATIVE_WORLD_POS,"ASE_NEEDS_FRAG_RELATIVE_WORLD_POS"},
+			{TemplateInfoOnSematics.OBJECT_POSITION,"ASE_NEEDS_FRAG_OBJECT_POSITION"},
+			{TemplateInfoOnSematics.VIEW_POSITION,"ASE_NEEDS_FRAG_VIEW_POSITION"},
 			{TemplateInfoOnSematics.VFACE,"ASE_NEEDS_FRAG_VFACE"},
-			{TemplateInfoOnSematics.SHADOWCOORDS,"ASE_NEEDS_FRAG_SHADOWCOORDS"}
+			{TemplateInfoOnSematics.SHADOWCOORDS,"ASE_NEEDS_FRAG_SHADOWCOORDS"},
 		};
 
 		public static readonly Dictionary<TemplateInfoOnSematics, string> InfoToDefineVertex = new Dictionary<TemplateInfoOnSematics, string>
@@ -694,16 +706,47 @@ namespace AmplifyShaderEditor
 			{TemplateInfoOnSematics.WORLD_VIEW_DIR,"ASE_NEEDS_VERT_WORLD_VIEW_DIR"},
 			{TemplateInfoOnSematics.WORLD_POSITION,"ASE_NEEDS_VERT_WORLD_POSITION"},
 			{TemplateInfoOnSematics.RELATIVE_WORLD_POS,"ASE_NEEDS_VERT_RELATIVE_WORLD_POS"},
+			{TemplateInfoOnSematics.OBJECT_POSITION,"ASE_NEEDS_VERT_OBJECT_POSITION"},
+			{TemplateInfoOnSematics.VIEW_POSITION,"ASE_NEEDS_VERT_VIEW_POSITION"},
 			{TemplateInfoOnSematics.VFACE,"ASE_NEEDS_VERT_VFACE"},
 			{TemplateInfoOnSematics.SHADOWCOORDS,"ASE_NEEDS_VERT_SHADOWCOORDS"}
+		};
+
+		public static readonly Dictionary<TemplateInfoOnSematics, string> InfoToDefine = new Dictionary<TemplateInfoOnSematics, string>
+		{
+			{TemplateInfoOnSematics.POSITION ,"ASE_NEEDS_POSITION"},
+			{TemplateInfoOnSematics.CLIP_POS ,"ASE_NEEDS_CLIP_POS"},
+			{TemplateInfoOnSematics.SCREEN_POSITION,"ASE_NEEDS_SCREEN_POSITION" },
+			{TemplateInfoOnSematics.SCREEN_POSITION_NORMALIZED,"ASE_NEEDS_SCREEN_POSITION_NORMALIZED" },
+			{TemplateInfoOnSematics.COLOR, "ASE_NEEDS_COLOR"},
+			{TemplateInfoOnSematics.TEXTURE_COORDINATES0,"ASE_NEEDS_TEXTURE_COORDINATES0" },
+			{TemplateInfoOnSematics.TEXTURE_COORDINATES1,"ASE_NEEDS_TEXTURE_COORDINATES1" },
+			{TemplateInfoOnSematics.TEXTURE_COORDINATES2,"ASE_NEEDS_TEXTURE_COORDINATES2" },
+			{TemplateInfoOnSematics.TEXTURE_COORDINATES3,"ASE_NEEDS_TEXTURE_COORDINATES3" },
+			{TemplateInfoOnSematics.TEXTURE_COORDINATES4,"ASE_NEEDS_TEXTURE_COORDINATES4" },
+			{TemplateInfoOnSematics.TEXTURE_COORDINATES5,"ASE_NEEDS_TEXTURE_COORDINATES5" },
+			{TemplateInfoOnSematics.TEXTURE_COORDINATES6,"ASE_NEEDS_TEXTURE_COORDINATES6" },
+			{TemplateInfoOnSematics.TEXTURE_COORDINATES7,"ASE_NEEDS_TEXTURE_COORDINATES7" },
+			{TemplateInfoOnSematics.NORMAL,"ASE_NEEDS_NORMAL" },
+			{TemplateInfoOnSematics.TANGENT ,"ASE_NEEDS_TANGENT"},
+			{TemplateInfoOnSematics.WORLD_NORMAL,"ASE_NEEDS_WORLD_NORMAL"},
+			{TemplateInfoOnSematics.WORLD_TANGENT,"ASE_NEEDS_WORLD_TANGENT"},
+			{TemplateInfoOnSematics.WORLD_BITANGENT,"ASE_NEEDS_WORLD_BITANGENT"},
+			{TemplateInfoOnSematics.WORLD_VIEW_DIR,"ASE_NEEDS_WORLD_VIEW_DIR"},
+			{TemplateInfoOnSematics.WORLD_POSITION,"ASE_NEEDS_WORLD_POSITION"},
+			{TemplateInfoOnSematics.RELATIVE_WORLD_POS,"ASE_NEEDS_RELATIVE_WORLD_POS"},
+			{TemplateInfoOnSematics.OBJECT_POSITION,"ASE_NEEDS_OBJECT_POSITION"},
+			{TemplateInfoOnSematics.VIEW_POSITION,"ASE_NEEDS_VIEW_POSITION"},
+			{TemplateInfoOnSematics.VFACE,"ASE_NEEDS_VFACE"},
+			{TemplateInfoOnSematics.SHADOWCOORDS,"ASE_NEEDS_SHADOWCOORDS"}
 		};
 
 		public static readonly Dictionary<TemplateInfoOnSematics, string> InfoToLocalVar = new Dictionary<TemplateInfoOnSematics, string>
 		{
 			{TemplateInfoOnSematics.POSITION,GeneratorUtils.VertexPosition4Str },
 			{TemplateInfoOnSematics.CLIP_POS,GeneratorUtils.ClipPositionStr },
-			{TemplateInfoOnSematics.SCREEN_POSITION,GeneratorUtils.ScreenPositionStr },
-			{TemplateInfoOnSematics.SCREEN_POSITION_NORMALIZED,GeneratorUtils.ScreenPositionNormalizedStr },
+			{TemplateInfoOnSematics.SCREEN_POSITION,GeneratorUtils.ScreenPosRawStr },
+			{TemplateInfoOnSematics.SCREEN_POSITION_NORMALIZED,GeneratorUtils.ScreenPosNormStr },
 			{TemplateInfoOnSematics.COLOR, "ase_color" },
 			{TemplateInfoOnSematics.TEXTURE_COORDINATES0, "ase_uv0" },
 			{TemplateInfoOnSematics.TEXTURE_COORDINATES1, "ase_uv1" },
@@ -717,8 +760,11 @@ namespace AmplifyShaderEditor
 			{TemplateInfoOnSematics.WORLD_VIEW_DIR, GeneratorUtils.WorldViewDirectionStr},
 			{TemplateInfoOnSematics.WORLD_POSITION, GeneratorUtils.WorldPositionStr},
 			{TemplateInfoOnSematics.RELATIVE_WORLD_POS, GeneratorUtils.RelativeWorldPositionStr},
+			{TemplateInfoOnSematics.OBJECT_POSITION, GeneratorUtils.VertexPosition3Str},
+			{TemplateInfoOnSematics.VIEW_POSITION, GeneratorUtils.ViewPositionStr},
 			{TemplateInfoOnSematics.VFACE, GeneratorUtils.VFaceStr},
-			{TemplateInfoOnSematics.SHADOWCOORDS, GeneratorUtils.ShadowCoordsStr}
+			{TemplateInfoOnSematics.SHADOWCOORDS, GeneratorUtils.ShadowCoordsStr},
+			{TemplateInfoOnSematics.LIGHT_ATTENUATION, GeneratorUtils.LightAttenuationStr}
 		};
 
 
@@ -741,8 +787,11 @@ namespace AmplifyShaderEditor
 			{TemplateInfoOnSematics.WORLD_VIEW_DIR, WirePortDataType.FLOAT3},
 			{TemplateInfoOnSematics.WORLD_POSITION, WirePortDataType.FLOAT3},
 			{TemplateInfoOnSematics.RELATIVE_WORLD_POS, WirePortDataType.FLOAT3},
+			{TemplateInfoOnSematics.OBJECT_POSITION, WirePortDataType.FLOAT3},
+			{TemplateInfoOnSematics.VIEW_POSITION, WirePortDataType.FLOAT3},
 			{TemplateInfoOnSematics.VFACE, WirePortDataType.FLOAT},
 			{TemplateInfoOnSematics.SHADOWCOORDS, WirePortDataType.FLOAT4},
+			{TemplateInfoOnSematics.LIGHT_ATTENUATION, WirePortDataType.FLOAT}
 		};
 		public static readonly Dictionary<int, TemplateInfoOnSematics> IntToUVChannelInfo = new Dictionary<int, TemplateInfoOnSematics>
 		{
@@ -827,18 +876,21 @@ namespace AmplifyShaderEditor
 			{"float2"           ,WirePortDataType.FLOAT2},
 			{"float3"           ,WirePortDataType.FLOAT3},
 			{"float4"           ,WirePortDataType.FLOAT4},
+			{"float2x2"         ,WirePortDataType.FLOAT2x2},
 			{"float3x3"         ,WirePortDataType.FLOAT3x3},
 			{"float4x4"         ,WirePortDataType.FLOAT4x4},
 			{"half"             ,WirePortDataType.FLOAT},
 			{"half2"            ,WirePortDataType.FLOAT2},
 			{"half3"            ,WirePortDataType.FLOAT3},
 			{"half4"            ,WirePortDataType.FLOAT4},
+			{"half2x2"          ,WirePortDataType.FLOAT2x2},
 			{"half3x3"          ,WirePortDataType.FLOAT3x3},
 			{"half4x4"          ,WirePortDataType.FLOAT4x4},
 			{"fixed"            ,WirePortDataType.FLOAT},
 			{"fixed2"           ,WirePortDataType.FLOAT2},
 			{"fixed3"           ,WirePortDataType.FLOAT3},
 			{"fixed4"           ,WirePortDataType.FLOAT4},
+			{"fixed2x2"         ,WirePortDataType.FLOAT2x2},
 			{"fixed3x3"         ,WirePortDataType.FLOAT3x3},
 			{"fixed4x4"         ,WirePortDataType.FLOAT4x4},
 			{"int"              ,WirePortDataType.INT},
@@ -852,16 +904,50 @@ namespace AmplifyShaderEditor
 			{"SamplerState"     ,WirePortDataType.SAMPLERSTATE}
 		};
 
+		public static readonly Dictionary<string, PrecisionType> CgToPrecisionType = new Dictionary<string, PrecisionType>()
+		{
+			{"float"            ,PrecisionType.Float},
+			{"float2"           ,PrecisionType.Float},
+			{"float3"           ,PrecisionType.Float},
+			{"float4"           ,PrecisionType.Float},
+			{"float2x2"         ,PrecisionType.Float},
+			{"float3x3"         ,PrecisionType.Float},
+			{"float4x4"         ,PrecisionType.Float},
+			{"half"             ,PrecisionType.Half},
+			{"half2"            ,PrecisionType.Half},
+			{"half3"            ,PrecisionType.Half},
+			{"half4"            ,PrecisionType.Half},
+			{"half2x2"          ,PrecisionType.Half},
+			{"half3x3"          ,PrecisionType.Half},
+			{"half4x4"          ,PrecisionType.Half},
+			{"fixed"            ,PrecisionType.Half},
+			{"fixed2"           ,PrecisionType.Half},
+			{"fixed3"           ,PrecisionType.Half},
+			{"fixed4"           ,PrecisionType.Half},
+			{"fixed2x2"         ,PrecisionType.Half},
+			{"fixed3x3"         ,PrecisionType.Half},
+			{"fixed4x4"         ,PrecisionType.Half},
+			{"int"              ,PrecisionType.Float},
+			{"uint"             ,PrecisionType.Float},
+			{"sampler1D"        ,PrecisionType.Float},
+			{"sampler2D"        ,PrecisionType.Float},
+			{"sampler2D_float"  ,PrecisionType.Float},
+			{"sampler3D"        ,PrecisionType.Float},
+			{"samplerCUBE"      ,PrecisionType.Float},
+			{"sampler2DArray"   ,PrecisionType.Float},
+			{"SamplerState"     ,PrecisionType.Float}
+		};
+
 		public static readonly Dictionary<string, int> AvailableInterpolators = new Dictionary<string, int>()
 		{
 			{"2.0",8 },
 			{"2.5",8 },
 			{"3.0",10},
-			{"3.5",10},
-			{"4.0",16},
-			{"4.5",16},
-			{"4.6",16},
-			{"5.0",16}
+			{"3.5",15},
+			{"4.0",15},
+			{"4.5",15},
+			{"4.6",15},
+			{"5.0",15}
 		};
 
 		public static readonly string[] AvailableShaderModels =
@@ -929,6 +1015,7 @@ namespace AmplifyShaderEditor
 		public static readonly string InlinePattern = @"\/\*ase_inline_begin\*\/(.*?)\/\*ase_inline_end\*\/";
 
 		public static readonly string SRPConditionPattern = @"\/\*ase_srp_cond_begin:([==|!=|>=|<=|>|<]*)(\d*)\*\/(?s)(.*?)\s\/\*ase_srp_cond_end\*\/";
+		public static readonly string UnityConditionPattern = @"\/\*ase_unity_cond_begin:([==|!=|>=|<=|>|<]*)(\d*)\*\/(?s)(.*?)\s\/\*ase_unity_cond_end\*\/";
 
 		public static readonly string SubShaderLODPattern = @"\sLOD\s+(\d+)";
 
@@ -1133,7 +1220,7 @@ namespace AmplifyShaderEditor
 																								passId);
 						propertiesList.Add( newData );
 						duplicatesHelper.Add( newData.PropertyName, newData );
-					}	
+					}
 				}
 			}
 		}
@@ -1162,7 +1249,7 @@ namespace AmplifyShaderEditor
 		{
 			int typeIdx = (int)TemplateShaderGlobalsIdx.Type;
 			int nameIdx = (int)TemplateShaderGlobalsIdx.Name;
-			
+
 			// removes structs
 			propertyData = Regex.Replace( propertyData, StructsRemoval, "" );
 			MatchCollection matchCollection = Regex.Matches( propertyData, ShaderGlobalsOverallPattern );
@@ -1181,7 +1268,8 @@ namespace AmplifyShaderEditor
 																								CgToWirePortType[ lineMatch.Groups[ typeIdx ].Value ],
 																								PropertyType.Global,
 																								subShaderId,
-																								passId);
+																								passId,
+																								precisionType: CgToPrecisionType[ lineMatch.Groups[ typeIdx ].Value ]);
 						duplicatesHelper.Add( newData.PropertyName, newData );
 						propertiesList.Add( newData );
 					}
@@ -1631,7 +1719,7 @@ namespace AmplifyShaderEditor
 			bool noMatches = true;
 			blendDataObj.ValidBlendOp = true;
 			string property = string.Empty;
-			// TODO: OPTIMIZE REGEX EXPRESSIONS TO NOT CATCH EMPTY GROUPS 
+			// TODO: OPTIMIZE REGEX EXPRESSIONS TO NOT CATCH EMPTY GROUPS
 			Match match = Regex.Match( blendOpData, pattern );
 			{
 				if( match.Groups.Count == 3 )
@@ -1714,11 +1802,6 @@ namespace AmplifyShaderEditor
 				blendDataObj.ValidBlendOp = false;
 		}
 
-		struct SRPConditionalTag
-		{
-
-		}
-
 		public static string ProcessSRPConditionals( string body )
 		{
 			int srpVersion = ASEPackageManagerHelper.PackageSRPVersion;
@@ -1759,7 +1842,7 @@ namespace AmplifyShaderEditor
 					}
 					else
 					{
-						// @diogo: fell here? ignore SRP conditional
+						// @diogo: fell here? ignore conditional
 						body = body.Replace( signature, string.Empty );
 					}
 
@@ -1767,7 +1850,117 @@ namespace AmplifyShaderEditor
 					processedSignatures.Add( signature );
 				}
 			}
-			return body;			
+			return body;
+		}
+
+		public static int GetUnityVersion()
+		{
+			var versionParts = Application.unityVersion.Split( '.', 'f', 'b' );
+			if ( versionParts.Length != 4 || versionParts[ 0 ].Length < 4 )
+			{
+				// @diogo: invalid Unity version format; ignore these conditionals
+				return 0;
+			}
+
+			bool testMajor = int.TryParse( versionParts[ 0 ], out int major );
+			bool testMinor = int.TryParse( versionParts[ 1 ], out int minor );
+			bool testPatch = int.TryParse( versionParts[ 2 ], out int patch );
+			if ( !testMajor || !testMinor || !testPatch )
+			{
+				// @diogo: invalid Unity version format; ignore these conditionals
+				return 0;
+			}
+
+		#if UNITY_6000_0_OR_NEWER
+			// e.g. major = 6000, minor = 999, patch = 9999
+			return ( major + minor ) * 10000 + patch;
+		#else
+			return major * 10000 + minor * 100 + patch;
+		#endif
+		}
+
+		public static bool GetUnityBetaVersion( out int betaVersion )
+		{
+			string version = Application.unityVersion;
+			if ( !version.Contains( "b" ) )
+			{
+				betaVersion = 0;
+				return false;
+			}
+
+			var versionParts = version.Split( 'b' );
+			if ( versionParts.Length != 2 || versionParts[ 0 ].Length < 4 )
+			{
+				// @diogo: invalid Unity version format; ignore these conditionals
+				betaVersion = 0;
+				return false;
+			}
+
+			bool testBeta = int.TryParse( versionParts[ 1 ], out int beta );
+			if ( !testBeta )
+			{
+				// @diogo: invalid Unity version format; ignore these conditionals
+				betaVersion = 0;
+				return false;
+			}
+
+			betaVersion = beta;
+			return true;
+		}
+
+		public static string ProcessUnityConditionals( string body )
+		{
+			int unityVersion = GetUnityVersion();
+			if ( unityVersion <= 0 )
+			{
+				return body;
+			}
+			var processedSignatures = new HashSet<string>();
+
+			foreach ( Match match in Regex.Matches( body, UnityConditionPattern ) )
+			{
+				string signature;
+				if ( match.Success && match.Groups.Count == 4 && !processedSignatures.Contains( signature = match.Groups[ 0 ].Value ) )
+				{
+					string comparisonOp = match.Groups[ 1 ].Value;
+					bool validVersion = int.TryParse( match.Groups[ 2 ].Value, out int version );
+					string content = match.Groups[ 3 ].Value;
+
+					if ( validVersion && !string.IsNullOrEmpty( comparisonOp ) && version >= 20190000 )
+					{
+						bool passed = false;
+						switch ( comparisonOp )
+						{
+							case "==": passed = ( unityVersion == version ); break;
+							case "!=": passed = ( unityVersion != version ); break;
+							case ">=": passed = ( unityVersion >= version ); break;
+							case "<=": passed = ( unityVersion <= version ); break;
+							case ">" : passed = ( unityVersion > version ); break;
+							case "<" : passed = ( unityVersion < version ); break;
+						}
+
+						if ( passed )
+						{
+							// @diogo: test passed? include conditional text
+							body = body.Replace( signature, content );
+						}
+						else
+						{
+							// @diogo: test failed? exclude conditional text
+							body = body.Replace( signature, string.Empty );
+						}
+					}
+					else
+					{
+						// @diogo: fell here? ignore conditional
+						body = body.Replace( signature, string.Empty );
+					}
+
+					// @diogo: mark as processed to prevent duplicates
+					processedSignatures.Add( signature );
+				}
+			}
+			return body;
 		}
 
 		public static void FetchLocalVars( string body, ref List<TemplateLocalVarData> localVarList, TemplateFunctionData vertexFunction, TemplateFunctionData fragFunction )
@@ -1830,7 +2023,7 @@ namespace AmplifyShaderEditor
 					idManager.RegisterTag( id, prop );
 				}
 			}
-		}		
+		}
 
 		public static TemplateSRPType CreateTags( ref TemplateTagsModuleData tagsObj, bool isSubShader )
 		{
@@ -1973,7 +2166,7 @@ namespace AmplifyShaderEditor
 					{
 						semantics = (TemplateSemantics)Enum.Parse( typeof( TemplateSemantics ), match.Groups[ 3 ].Value );
 					}
-					catch(Exception e) 
+					catch(Exception e)
 					{
 						Debug.LogException( e );
 					}
@@ -2191,8 +2384,8 @@ namespace AmplifyShaderEditor
 					}
 				}
 
-				/*TODO: 
-				1) Remove interpDataList.Add( templateVertexData ); from initial foreach 
+				/*TODO:
+				1) Remove interpDataList.Add( templateVertexData ); from initial foreach
 				2) When looping though each foreach array element, create a new TemplateVertexData
 				from the one containted on the interpDataDict and add it to interpDataList
 				*/
@@ -2241,7 +2434,7 @@ namespace AmplifyShaderEditor
 				inspectorContainer.Data = match.Groups[ 1 ].Value;
 
 				if( inspectorContainer.Data.Equals( "UnityEditor.Experimental.Rendering.HDPipeline.HDLitGUI" ) )
-					inspectorContainer.Data = "UnityEditor.Rendering.HighDefinition.HDLitGUI";				
+					inspectorContainer.Data = "UnityEditor.Rendering.HighDefinition.HDLitGUI";
 			}
 			else
 			{
@@ -2354,6 +2547,7 @@ namespace AmplifyShaderEditor
 				{
 					switch( second )
 					{
+						case WirePortDataType.FLOAT2x2:
 						case WirePortDataType.FLOAT3x3:
 						case WirePortDataType.FLOAT4x4:
 						case WirePortDataType.SAMPLER1D:
@@ -2366,6 +2560,7 @@ namespace AmplifyShaderEditor
 					}
 				}
 				break;
+				case WirePortDataType.FLOAT2x2:
 				case WirePortDataType.FLOAT3x3:
 				case WirePortDataType.FLOAT4x4:
 				{
@@ -2399,6 +2594,7 @@ namespace AmplifyShaderEditor
 						case WirePortDataType.FLOAT2:
 						case WirePortDataType.FLOAT3:
 						case WirePortDataType.FLOAT4:
+						case WirePortDataType.FLOAT2x2:
 						case WirePortDataType.FLOAT3x3:
 						case WirePortDataType.FLOAT4x4:
 						case WirePortDataType.COLOR:

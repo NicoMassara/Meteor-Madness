@@ -14,6 +14,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         private GameObject _currentPanel;
         
         public event Action OnMainMenuButtonPressed;
+        public event Action<int> OnSkinSelected;
 
         private void Awake()
         {
@@ -21,6 +22,8 @@ namespace _Main.Scripts.Cosmetics.MVC
             {
                 OnMainMenuButtonPressed?.Invoke();
             });
+            
+            GetUiComponents().ButtonSelector.OnSkinSelected += OnSkinSelected;
         }
 
         public void OnNotify(ulong message, params object[] args)

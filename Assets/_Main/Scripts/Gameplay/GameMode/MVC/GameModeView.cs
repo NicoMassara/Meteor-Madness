@@ -12,6 +12,13 @@ namespace _Main.Scripts.Gameplay.GameMode
     public class GameModeView : ManagedBehavior, IObserver,
         IGameModeSounds
     {
+        [Range(0,1f)]
+        [SerializeField] private float timeToZoomOutOnEnable = 0.25f;
+        [Range(0,1f)]
+        [SerializeField] private float timeToZoomInOnDeath = 0.25f;
+        [Range(0,1f)]
+        [SerializeField] private float timeToZoomOutOnPause = 0.25f;
+        
         public event Action<bool> OnEarthRestarted;
         public event Action OnCountdownFinished;
         public event Action OnCountDownStarted;
@@ -45,8 +52,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData = new GameModeDebugData();
         
 #endif
-            
-            
             
         }
 
@@ -204,7 +209,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             AbilitiesEventCaller.Disable();
             ShieldEventCaller.Disable();
             EarthEventCaller.Restart();
-            CameraEventCaller.ZoomIn();
+            CameraEventCaller.ZoomIn(timeToZoomOutOnPause);
             
             SetEnableInputs(false);
             SetEnableUIInputs(false);
@@ -287,7 +292,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetEnableInputs(false);
             AbilitiesEventCaller.SetEnableUI(false);
             GameModeEventCaller.SetPause(true);
-            CameraEventCaller.ZoomIn();
+            CameraEventCaller.ZoomIn(timeToZoomInOnDeath);
                 
 #if UNITY_ANDROID || UNITY_IOS
 
@@ -383,7 +388,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleStartCountdown()
         {
-            CameraEventCaller.ZoomOut();
+            CameraEventCaller.ZoomOut(timeToZoomOutOnEnable);
             OnCountDownStarted?.Invoke();
         }
         

@@ -114,8 +114,8 @@ namespace _Main.Scripts.FiniteStateMachine
             };
         }
             
-        protected abstract void OnNewState(T state);
-        protected abstract void OnExitState(T state);
-        protected abstract void OnEnterState(T state);
+        protected virtual void OnNewState(T state){}
+        protected virtual void OnExitState(T state){}
+        protected virtual void OnEnterState(T state){}
     }
 }
