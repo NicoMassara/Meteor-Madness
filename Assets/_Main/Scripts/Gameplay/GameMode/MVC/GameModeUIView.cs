@@ -469,7 +469,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             // Add Sequence to Manager
             
-            ActionManager.Add(actions.Build());
+            ActionManager.Add(actions.Build(),ActionManager.UpdateType.Update);
         }
         
         private void SetActiveDeathText(bool isActive)

@@ -250,8 +250,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             _playSpeedTimeSound = new InstantAction(speedTimeSound);
             _playSlowTimeSound = new InstantAction(slowTimeSound);
             
-            _cameraZoomIn = new InstantAction(CameraEventCaller.ZoomIn);
-            _cameraZoomOut = new InstantAction(CameraEventCaller.ZoomOut);
+            _cameraZoomIn = new InstantAction(()=> CameraEventCaller.ZoomIn(0.1f));
+            _cameraZoomOut = new InstantAction(()=> CameraEventCaller.ZoomOut(0.1f));
             
             _enableInputs = new SetBoolAction(true,SetInputsEnable);
             _disableInputs = new SetBoolAction(false,SetInputsEnable);
@@ -498,10 +498,10 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new WaitSecondsAction(timeData.SlowDown))
                 .Then(new SetBoolAction(true, ShieldEventCaller.SetSlow))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
-                .Then(new SetChannelPausedAction(false, new[]{UpdateGroup.Gameplay}))
+                .Then(_enableInputs)
                 .Then(_cameraZoomOut)
                 .Then(_enableAbilityUI)
-                .Then(_enableInputs)
+                .Then(new SetChannelPausedAction(false, new[]{UpdateGroup.Gameplay}))
                 .Then(runAbilityTimer)
                 .Then(new SimpleCommandAction(endSequence))
                 .Build();

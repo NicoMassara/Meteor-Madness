@@ -64,8 +64,6 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void SetRotation(bool canRotate)
         {
-            _canRotate = canRotate;
-            NotifyAll(EarthObserverMessage.SetRotation, _canRotate);
         }
 
         public void TriggerDeath()

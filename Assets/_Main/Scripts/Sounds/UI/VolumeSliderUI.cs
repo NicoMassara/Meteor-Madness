@@ -12,7 +12,7 @@ namespace _Main.Scripts.Sounds.UI
         
         public event Action<float> OnChanged;
 
-        private void Start()
+        private void Awake()
         {
             volumeSlider.wholeNumbers = true;
             volumeSlider.maxValue = 10;

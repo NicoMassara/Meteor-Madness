@@ -23,5 +23,10 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             NotifyAll(CosmeticObserverMessage.TriggerMainMenu);
         }
+
+        public void SelectAbility(int index)
+        {
+            NotifyAll(CosmeticObserverMessage.AbilitySelect,index);
+        }
     }
 }

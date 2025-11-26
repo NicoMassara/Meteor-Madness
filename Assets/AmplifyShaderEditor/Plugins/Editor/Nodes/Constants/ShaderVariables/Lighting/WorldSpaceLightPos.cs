@@ -6,7 +6,7 @@ using UnityEngine;
 namespace AmplifyShaderEditor
 {
 	[System.Serializable]
-	[NodeAttributes( "World Space Light Pos", "Light", "Light Position" )]
+	[NodeAttributes( "World Space Light Pos", "Lighting", "Light Position" )]
 	public sealed class WorldSpaceLightPos : ShaderVariablesNode
 	{
 		private const string HelperText =
@@ -75,7 +75,7 @@ namespace AmplifyShaderEditor
 				return;
 
 			SetPreviewInputs();
-			if( !Preferences.GlobalDisablePreviews )
+			if( !Preferences.User.DisablePreviews )
 			{
 				RenderTexture temp = RenderTexture.active;
 
@@ -87,7 +87,7 @@ namespace AmplifyShaderEditor
 				Graphics.Blit( null , m_outputPorts[ 2 ].OutputPreviewTexture , PreviewMaterial , 1 );
 				RenderTexture.active = temp;
 			}
-			PreviewIsDirty = m_continuousPreviewRefresh;
+			PreviewIsDirty = ContinuousPreviewRefresh;
 		}
 	}
 }

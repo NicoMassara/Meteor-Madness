@@ -63,7 +63,11 @@
   },
   
   "Cosmetic": {
-    "Title" : "Coming Soon!"
+    "Title" : "Skin Selector",
+    "SkinType" : {
+      "Default" : "Default",
+      "Pizza" : "Pizza"
+    }
   },
   
   "Pause": {

@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
+using UnityEngine;
 
 namespace _Main.Scripts
 {
@@ -756,19 +757,55 @@ namespace _Main.Scripts
 
     public static class CameraEventCaller
     {
-        public static void ZoomIn()
+        public static void ZoomIn(float timeToZoom = 0.1f)
         {
-            GameEventCaller.Publish(new CameraEvents.ZoomIn());
+            GameEventCaller.Publish(new CameraEvents.ZoomIn{TimeToZoom = timeToZoom});
         }
         
-        public static void ZoomOut()
+        public static void ZoomOut(float timeToZoom = 0.1f)
         {
-            GameEventCaller.Publish(new CameraEvents.ZoomOut());
+            GameEventCaller.Publish(new CameraEvents.ZoomOut{TimeToZoom = timeToZoom});
         }
 
         public static void Shake(IShakeData shake)
         {
             GameEventCaller.Publish(new CameraEvents.Shake{ShakeData = shake});
+        }
+
+        public static void LookCenter(float timeToLook = 0.5f)
+        {
+            GameEventCaller.Publish(new CameraEvents.LookCenter{TimeToLook = timeToLook});
+        }
+        public static void LookRight(float timeToLook = 0.5f)
+        {
+            GameEventCaller.Publish(new CameraEvents.LookRight{TimeToLook = timeToLook});
+        }
+        public static void LookLeft(float timeToLook = 0.5f)
+        {
+            GameEventCaller.Publish(new CameraEvents.LookLeft{TimeToLook = timeToLook});
+        }
+        public static void LookUp(float timeToLook = 0.5f)
+        {
+            GameEventCaller.Publish(new CameraEvents.LookUp{TimeToLook = timeToLook});
+        }
+        public static void LookDown(float timeToLook = 0.5f)
+        {
+            GameEventCaller.Publish(new CameraEvents.LookDown{TimeToLook = timeToLook});
+        }
+        
+        public static void NotifyZoomFinished()
+        {
+            GameEventCaller.Publish(new CameraEvents.ZoomFinished());
+        }
+        
+        public static void NotifyLookFinished()
+        {
+            GameEventCaller.Publish(new CameraEvents.LookFinished());
+        }
+        
+        public static void NotifyShakeFinished()
+        {
+            GameEventCaller.Publish(new CameraEvents.ShakeFinished());
         }
     }
     
@@ -788,6 +825,42 @@ namespace _Main.Scripts
         {
             GameEventCaller.Subscribe(action);
         }
+        
+        public static void LookCenter(Action<CameraEvents.LookCenter> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        public static void LookRight(Action<CameraEvents.LookRight> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        public static void LookLeft(Action<CameraEvents.LookLeft> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        public static void LookUp(Action<CameraEvents.LookUp> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        public static void LookDown(Action<CameraEvents.LookDown> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void NotifyZoomFinished(Action<CameraEvents.ZoomFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void NotifyLookFinished(Action<CameraEvents.LookFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void NotifyShakeFinished(Action<CameraEvents.ShakeFinished> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
     }
     
     public static class CameraEventUnSubscriber
@@ -803,6 +876,42 @@ namespace _Main.Scripts
         }
 
         public static void Shake(Action<CameraEvents.Shake> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void LookCenter(Action<CameraEvents.LookCenter> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        public static void LookRight(Action<CameraEvents.LookRight> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        public static void LookLeft(Action<CameraEvents.LookLeft> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        public static void LookUp(Action<CameraEvents.LookUp> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        public static void LookDown(Action<CameraEvents.LookDown> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyZoomFinished(Action<CameraEvents.ZoomFinished> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyLookFinished(Action<CameraEvents.LookFinished> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyShakeFinished(Action<CameraEvents.ShakeFinished> action)
         {
             GameEventCaller.Unsubscribe(action);
         }

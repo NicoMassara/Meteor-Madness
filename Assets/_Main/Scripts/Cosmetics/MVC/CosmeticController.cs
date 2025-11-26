@@ -124,6 +124,12 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         #endregion
 
+        public void SelectAbility(int index)
+        {
+            _motor.SelectAbility(index);
+        }
+
+
     }
     #region States
     

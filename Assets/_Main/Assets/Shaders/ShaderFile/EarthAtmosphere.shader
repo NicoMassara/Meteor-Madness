@@ -140,7 +140,7 @@ Shader "EarthAtmosphere"
 Version=19105
 Node;AmplifyShaderEditor.CommentaryNode;1;-2397.612,-56.0346;Inherit;False;1686.716;480.2203;Comment;12;17;13;12;9;5;3;2;4;32;33;38;37;Atmosthere;1,1,1,1;0;0
 Node;AmplifyShaderEditor.WorldNormalVector;2;-2375.559,-1.683052;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.RangedFloatNode;32;-2330.737,320.5914;Inherit;False;Property;_Intensity;Intensity;3;0;Create;True;0;0;0;False;0;False;0;1.1;0.5;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;32;-2330.737,320.5914;Inherit;False;Property;_Intensity;Intensity;3;0;Create;True;0;0;0;False;0;False;0;1.233;0.5;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.ViewDirInputsCoordNode;4;-2372.559,159.3165;Inherit;False;World;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.SimpleDivideOpNode;33;-2171.737,3.59137;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.FresnelNode;5;-2027.341,49.52071;Inherit;True;Standard;WorldNormal;ViewDir;False;False;5;0;FLOAT3;0,0,1;False;4;FLOAT3;0,0,0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;5;False;1;FLOAT;0
@@ -150,12 +150,12 @@ Node;AmplifyShaderEditor.RegisterLocalVarNode;13;-921.7961,37.41951;Inherit;True
 Node;AmplifyShaderEditor.SaturateNode;12;-1077.797,42.41951;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;9;-1693.648,46.10042;Inherit;True;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;38;-1217.286,48.93158;Inherit;False;2;2;0;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;15;-580.554,410.2496;Inherit;False;Property;_HealthAmount;HealthAmount;1;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;37;-1313.286,164.9316;Inherit;False;Constant;_Color0;Color 0;4;0;Create;True;0;0;0;False;0;False;0,0.6039736,1,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;3;-2040.612,302.9656;Inherit;False;Property;_Size;Size;2;0;Create;True;0;0;0;False;0;False;2;2;0;2;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;3;-2040.612,302.9656;Inherit;False;Property;_Size;Size;2;0;Create;True;0;0;0;False;0;False;2;1.057;0;2;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;17;-1688.137,286.5401;Inherit;False;Mask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;18;-518.6136,263.8553;Inherit;False;17;Mask;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;36;-234.2253,311.3208;Inherit;True;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;15;-580.554,410.2496;Inherit;False;Property;_HealthAmount;HealthAmount;1;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
 WireConnection;33;0;2;0
 WireConnection;33;1;32;0
 WireConnection;5;0;33;0
@@ -173,4 +173,4 @@ WireConnection;17;0;9;0
 WireConnection;36;0;18;0
 WireConnection;36;1;15;0
 ASEEND*/
-//CHKSM=B5C6EE06D0EBBB467EE5B097D790A783154D3E5A
+//CHKSM=5C6CBE7E18A73C3D2126A3CA26EC5D0D40B25BB8

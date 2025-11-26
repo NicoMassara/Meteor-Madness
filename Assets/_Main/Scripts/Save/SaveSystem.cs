@@ -12,6 +12,7 @@ namespace _Main.Scripts.Save
         public const string SettingsFileName = "settings";
         public const string ScoreFileName = "score";
         public const string StatsFileName = "stats";
+        public const string SkinFileName = "skin";
         public const string TestFileName = "test";
     }
 
@@ -43,6 +44,7 @@ namespace _Main.Scripts.Save
                 SaveDataType.Settings => SaveParameters.SettingsFileName,
                 SaveDataType.Stats => SaveParameters.StatsFileName,
                 SaveDataType.Score => SaveParameters.ScoreFileName,
+                SaveDataType.Skin => SaveParameters.SkinFileName,
                 SaveDataType.Test => SaveParameters.TestFileName,
                 _ => throw new ArgumentOutOfRangeException(nameof(saveType), saveType, null)
             };
@@ -155,6 +157,13 @@ namespace _Main.Scripts.Save
         public bool VibrationEnable = true;
     }
     
+    [System.Serializable]
+    public class SkinSaveData : SaveDataBase
+    {
+        public override SaveDataType Type => SaveDataType.Skin;
+        public int SkinIndex = 0;
+    }
+    
     
 
     public enum SaveDataType
@@ -162,6 +171,7 @@ namespace _Main.Scripts.Save
         Settings,
         Stats,
         Score,
+        Skin,
         Test
     }
 }

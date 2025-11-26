@@ -19,6 +19,7 @@ namespace _Main.Scripts.Save
             TryLoadSaveData<ScoreSaveData>(SaveDataType.Score);
             TryLoadSaveData<StatsSaveData>(SaveDataType.Stats);
             TryLoadSaveData<SettingsSaveData>(SaveDataType.Settings);
+            TryLoadSaveData<SkinSaveData>(SaveDataType.Skin);
             
             SaveDataEvents.TriggerOnSaveInitialized();
         }

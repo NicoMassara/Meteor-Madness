@@ -38,8 +38,8 @@ namespace _Main.Scripts.FlyingObject
     }
 
     [RequireComponent(typeof(Rigidbody2D))]
-    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IProjectileSounds,
-        IObserver, IUpdatable, IPoolable<TS>
+    public class FlyingObjectView<T, TS, TVS> : ManagedBehavior, IProjectileSounds, 
+        IObserver, IUpdatable, IPoolable<TS>, IFlyingObjectSkin
     where T : FlyingObjectMotor<TVS>
     where TS : FlyingObjectView<T, TS, TVS>
     where TVS : FlyingObjectValues
@@ -70,6 +70,7 @@ namespace _Main.Scripts.FlyingObject
         
         public event Action OnStart;
         public event Action OnStop;
+        public event Action OnSkinEnable;
         
         private void Awake()
         {
@@ -129,6 +130,7 @@ namespace _Main.Scripts.FlyingObject
         {
             OnValuesChanged?.Invoke(data);
             OnStart?.Invoke();
+            OnSkinEnable?.Invoke();
         }
 
         protected virtual void HandleCollision(bool canMove, Vector2 position, Vector2 direction, bool doesShowParticles)
@@ -171,7 +173,5 @@ namespace _Main.Scripts.FlyingObject
             OnRecycle?.Invoke((TS)this);
             OnStop?.Invoke();
         }
-
-
     }
 }

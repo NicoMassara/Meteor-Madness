@@ -29,7 +29,7 @@ namespace AmplifyShaderEditor
 			"#define ASE_TEXTURE2D_ARRAY_PARAMS(textureName) textureName",
 			"#endif//ASE Args Macros\n"
 		};
-		
+
 		public readonly static string[] CustomASEDeclararionMacros =
 		{
 			"#define ASE_TEXTURE2D(textureName) {0}2D(textureName)",
@@ -74,9 +74,6 @@ namespace AmplifyShaderEditor
 			"#define ASE_TEXTURE2D_ARRAY_PARAMS(textureName) textureName, sampler##textureName\n"
 		};*/
 
-		public readonly static RenderTextureFormat PreviewFormat = RenderTextureFormat.ARGBFloat;
-		public readonly static int PreviewSize = 128;
-
 		public readonly static List<string> UnityNativeInspectors = new List<string>
 		{
 			"Rendering.HighDefinition.LightingShaderGraphGUI",
@@ -119,7 +116,7 @@ namespace AmplifyShaderEditor
 
 
 		public readonly static string CustomASEStandardSamplerParams = "#define ASE_TEXTURE_PARAMS(textureName) textureName\n";
-		public readonly static string[] CustomASESRPTextureArrayMacros = 
+		public readonly static string[] CustomASESRPTextureArrayMacros =
 		{
 			"#define ASE_TEXTURE2D_ARRAY_ARGS(textureName) TEXTURE2D_ARRAY_ARGS(textureName,sampler##textureName)\n" ,
 			"#define ASE_TEXTURE2D_ARRAY_PARAM(textureName) TEXTURE2D_ARRAY_PARAM(textureName,sampler##textureName)\n" ,
@@ -154,7 +151,7 @@ namespace AmplifyShaderEditor
 			{ TextureType.Cube,"SAMPLER(sampler{0});"},
 			{ TextureType.Texture2DArray,"SAMPLER(sampler{0});"},
 		};
-		
+
 		public readonly static Dictionary<TextureType, string> TexDeclarationNoSamplerSRPMacros = new Dictionary<TextureType, string>
 		{
 			{ TextureType.Texture2D,"TEXTURE2D({0})"},
@@ -334,7 +331,7 @@ namespace AmplifyShaderEditor
 		"\t\t\tfloat4 texcoord3 : TEXCOORD3;\n" +
 		"\t\t\tfloat4 color : COLOR;\n" +
 		"\t\t\tUNITY_VERTEX_INPUT_INSTANCE_ID\n";
-		
+
 		public readonly static string IncludeFormat = "#include \"{0}\"";
 		public readonly static string PragmaFormat = "#pragma {0}";
 		public readonly static string DefineFormat = "#define {0}";
@@ -385,7 +382,8 @@ namespace AmplifyShaderEditor
 		public readonly static string UndoCreateConnectionId = "Create Connection";
 
 		public readonly static float MenuDragSpeed = -0.5f;
-		public readonly static string DefaultCustomInspector = "ASEMaterialInspector";
+		public readonly static string DefaultCustomInspector = "AmplifyShaderEditor.MaterialInspector";
+		public readonly static string OldCustomInspector = "ASEMaterialInspector";
 		public readonly static string ReferenceTypeStr = "Mode";
 		public readonly static string AvailableReferenceStr = "Reference";
 		public readonly static string InstancePostfixStr = " (Reference) ";
@@ -451,8 +449,8 @@ namespace AmplifyShaderEditor
 		public readonly static float PreviewExpanderWidth = 16f;
 		public readonly static float PreviewExpanderHeight = 16f;
 		public readonly static float TextFieldFontSize = 11f;
-		public readonly static float DefaultFontSize = 15f;
-		public readonly static float DefaultTitleFontSize = 13f;
+		public readonly static float DefaultFontSize = 14f;
+		public readonly static float DefaultTitleFontSize = 12f;
 		public readonly static float PropertiesTitleFontSize = 11f;
 		public readonly static float MessageFontSize = 40f;
 		public readonly static float SelectedObjectFontSize = 30f;
@@ -460,12 +458,12 @@ namespace AmplifyShaderEditor
 		public readonly static float PORT_X_ADJUST = 10;
 		public readonly static float PORT_INITIAL_X = 10;
 
-		public readonly static float PORT_INITIAL_Y = 40;
-		public readonly static float INPUT_PORT_DELTA_Y = 5;
-		public readonly static float PORT_TO_LABEL_SPACE_X = 5;
+		public readonly static float PORT_INITIAL_Y = 41;
+		public readonly static float INPUT_PORT_DELTA_Y = 7;
+		public readonly static float PORT_TO_LABEL_SPACE_X = 4;
 
 		public readonly static float NODE_HEADER_HEIGHT = 32;
-		public readonly static float NODE_HEADER_EXTRA_HEIGHT = 5;
+		public readonly static float NODE_HEADER_EXTRA_HEIGHT = 0;
 		public readonly static float NODE_HEADER_LEFTRIGHT_MARGIN = 10;
 
 		public readonly static float MULTIPLE_SELECION_BOX_ALPHA = 0.5f;
@@ -485,11 +483,13 @@ namespace AmplifyShaderEditor
 		public readonly static string SubTitleNameFormatStr = "Name( {0} )";
 		public readonly static string SubTitleSpaceFormatStr = "Space( {0} )";
 		public readonly static string SubTitleTypeFormatStr = "Type( {0} )";
+		public readonly static string SubTitleModeFormatStr = "Mode( {0} )";
 		public readonly static string SubTitleValueFormatStr = "Value( {0} )";
 		public readonly static string SubTitleConstFormatStr = "Const( {0} )";
 		public readonly static string SubTitleVarNameFormatStr = "Var( {0} )";
 		public readonly static string SubTitleRefNameFormatStr = "Ref( {0} )";
 		public readonly static string SubTitleCurrentFormatStr = "Current( {0} )";
+		public readonly static string SubTitleUVChannelFormatStr = "Channel( {0}, vec{1} )";
 
 		public readonly static string CodeWrapper = "( {0} )";
 		public readonly static string InlineCodeWrapper = "{{\n{0}\n}}";
@@ -559,10 +559,9 @@ namespace AmplifyShaderEditor
 		public readonly static string IncidentVecFragStr = InputVarStr + "." + IncidentVecNameStr;
 		public readonly static string IncidentVecVertStr = VertexShaderOutputStr + "." + IncidentVecNameStr;
 		public readonly static string WorldNormalLocalDecStr = "WorldNormalVector( " + Constants.InputVarStr + " , {0}( 0,0,1 ))";
-		
-		public readonly static string IsFrontFacingVariable = "ASEIsFrontFacing";
-		public readonly static string IsFrontFacingInput = "half ASEIsFrontFacing : SV_IsFrontFacing";
-		public readonly static string IsFrontFacingInputVFACE = "half ASEIsFrontFacing : VFACE";
+
+		public readonly static string IsFrontFaceVariable = "ASEIsFrontFace";
+		public readonly static string IsFrontFaceInput = "uint ASEIsFrontFace : SV_IsFrontFace";
 
 		public readonly static string ColorVariable = "vertexColor";
 		public readonly static string ColorInput = "float4 vertexColor : COLOR";
@@ -571,14 +570,15 @@ namespace AmplifyShaderEditor
 		public readonly static string EmptyPortValue = "  ";
 
 		public readonly static string[] OverallInvalidChars = { "\r", "\n", "\\", " ", ".", ">", ",", "<", "\'", "\"", ";", ":", "[", "{", "]", "}","|", "=", "+", "`", "~", "/", "?", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-" };
-		public readonly static string[] ShaderInvalidChars = { "\r", "\n", "\\", "\'", "\"", };
+        public readonly static string[] RegisterInvalidChars = { "\r", "\n", "\\", ".", ">", ",", "<", "\'", "\"", ";", ":", "[", "{", "]", "}", "|", "=", "+", "`", "~", "?", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-" };
+        public readonly static string[] ShaderInvalidChars = { "\r", "\n", "\\", "\'", "\"", };
 		public readonly static string[] EnumInvalidChars = { "\r", "\n", "\\", ".", ">", ",", "<", "\'", "\"", ";", ":", "[", "{", "]", "}", "=", "+", "`", "~", "/", "?", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-" };
 		public readonly static string[] AttrInvalidChars = { "\r", "\n", "\\", ">", "<", "\'", "\"", ";", ":", "[", "{", "]", "}", "=", "+", "`", "~", "/", "?", "!", "@", "#", "$", "%", "^", "&", "*" };
 		public readonly static string[] HeaderInvalidChars = { "\r", "\n", "\\", ">", ",", "<", "\'", "\"", ";", ":", "[", "{", "]", "}", "=", "+", "`", "~", "/", "?", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-" };
 
 		public readonly static string[] WikiInvalidChars = { "#", "<", ">", "[", "]", "|", "{", "}", "%", "+", "?", "\\", "/", ",", ";", "." };
 
-		public readonly static string[,] UrlReplacementStringValues = 
+		public readonly static string[,] UrlReplacementStringValues =
 		{
 			{ " = ", "Equals" },
 			{ " == ", "Equals" },
