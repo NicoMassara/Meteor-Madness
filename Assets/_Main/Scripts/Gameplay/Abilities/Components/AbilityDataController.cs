@@ -402,8 +402,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             var endSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueFinished);
             
             
-            var disableEarthDamage = new SetBoolAction(false, EarthEventCaller.SetEnableDamage);
-            var enableEarthDamage = new SetBoolAction(true, EarthEventCaller.SetEnableDamage);
+            var disableEarthDamage = new InstantAction(EarthEventCaller.EnableDamage);
+            var enableEarthDamage = new InstantAction(EarthEventCaller.DisableDamage);
             
             // SlowDown
             var setShieldTimeScale = new SetChannelTimeScaleAction(shieldMinTimeScale, new[]{UpdateGroup.Shield});

@@ -10,13 +10,8 @@ namespace _Main.Scripts.Managers
         public struct RestartFinished { }
         public struct ShakeStart { }
         public struct Heal { }
-        public struct SetEnableDamage
-        {
-            public bool DamageEnable;
-        }
-        
-        public struct SetToDefault { }
-        
+        public struct EnableDamage { }
+        public struct DisableDamage { }
         public struct DestructionStart {}
         public struct DestructionFinished {}
         public struct Death {}

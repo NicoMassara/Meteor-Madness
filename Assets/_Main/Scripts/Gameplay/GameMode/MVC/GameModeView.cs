@@ -339,7 +339,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             OnGameModeDisable?.Invoke();
             OnStopMusic?.Invoke();
-            EarthEventCaller.SetToDefault();
+            EarthEventCaller.DisableDamage();
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
 
@@ -394,6 +394,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleCountdownFinish()
         {
+            EarthEventCaller.EnableDamage();
             AbilitiesEventCaller.Enable();
             AbilitiesEventCaller.EnableUI();
             SetEnableInputs(true);

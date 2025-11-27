@@ -105,20 +105,20 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new EarthEvents.Heal());
         }
-
-        public static void SetEnableDamage(bool enable)
+        
+        public static void EnableDamage()
         {
-            GameEventCaller.Publish(new EarthEvents.SetEnableDamage{DamageEnable = enable});
+            GameEventCaller.Publish(new EarthEvents.EnableDamage());
+        }
+        
+        public static void DisableDamage()
+        {
+            GameEventCaller.Publish(new EarthEvents.DisableDamage());
         }
         
         public static void DestructionStart()
         {
             GameEventCaller.Publish(new EarthEvents.DestructionStart());
-        }
-        
-        public static void SetToDefault()
-        {
-            GameEventCaller.Publish(new EarthEvents.SetToDefault());
         }
         
         public static void DestructionFinished()
@@ -154,17 +154,17 @@ namespace _Main.Scripts
             GameEventCaller.Subscribe(action);
         }
 
-        public static void SetEnableDamage(Action<EarthEvents.SetEnableDamage> action)
+        public static void EnableDamage(Action<EarthEvents.EnableDamage> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void DisableDamage(Action<EarthEvents.DisableDamage> action)
         {
             GameEventCaller.Subscribe(action);
         }
         
         public static void DestructionStart(Action<EarthEvents.DestructionStart> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-        
-        public static void SetToDefault(Action<EarthEvents.SetToDefault> action)
         {
             GameEventCaller.Subscribe(action);
         }
@@ -202,17 +202,17 @@ namespace _Main.Scripts
             GameEventCaller.Unsubscribe(action);
         }
 
-        public static void SetEnableDamage(Action<EarthEvents.SetEnableDamage> action)
+        public static void EnableDamage(Action<EarthEvents.EnableDamage> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DisableDamage(Action<EarthEvents.DisableDamage> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
         
         public static void DestructionStart(Action<EarthEvents.DestructionStart> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-        
-        public static void SetToDefault(Action<EarthEvents.SetToDefault> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
