@@ -32,6 +32,7 @@ namespace _Main.Scripts.Gameplay.Earth
         private interface IController
         {
             public IEarthDestruction GetEarthDestructionTimeValues();
+            public void GoToDestruction();
             public void EnableDeathShake();
             public void DisableDeathShake();
             public void StartDestruction();
@@ -41,12 +42,9 @@ namespace _Main.Scripts.Gameplay.Earth
             public void RestartHealth();
             public void TriggerDeath();
         }
-
-
-
+        
         private class MainController
         {
-            
             #region States
 
             private class BaseState<T> : State<T>
@@ -56,6 +54,16 @@ namespace _Main.Scripts.Gameplay.Earth
                 public void Initialize(IController controller)
                 {
                     this.Controller = controller;
+                }
+            }
+            private class IdleState<T> : BaseState<T> { }
+            private class GameplayState<T> : BaseState<T> { }
+            private class DeadState<T> : BaseState<T>
+            {
+                public override void Awake()
+                {
+                    Controller.DisableRotation();
+                    Controller.TriggerDeath();
                 }
             }
             private class DeadShakingState<T> : BaseState<T>
@@ -70,20 +78,13 @@ namespace _Main.Scripts.Gameplay.Earth
                         .Then(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().DeathShakeDuration))
                         .Then(new InstantAction(() => { Controller.DisableDeathShake(); }))
                         .Then(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().ShowEarthDestruction))
-                        .Then(new InstantAction(() => { Controller.StartDestruction(); }))
+                        .Then(new InstantAction(() => { Controller.GoToDestruction(); }))
                         .Build();
                 }
 
                 public override void Execute(float deltaTime) => _queue.OnUpdate(deltaTime);
             }
-            private class DeadState<T> : BaseState<T>
-            {
-                public override void Awake()
-                {
-                    Controller.DisableRotation();
-                    Controller.TriggerDeath();
-                }
-            }
+
             private class DestructionState<T> : BaseState<T>
             {
                 private IQueueAction _queue;
@@ -96,7 +97,10 @@ namespace _Main.Scripts.Gameplay.Earth
                         .Then(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().StartRotatingAfterDeath))
                         .Then(new InstantAction(() => { Controller.EnableRotation(); }))
                         .Then(new WaitSecondsAction(Controller.GetEarthDestructionTimeValues().EndTriggerDestructionTime))
-                        .Then(new InstantAction(() => { Controller.EndDestruction(); }))
+                        .Then(new InstantAction(() =>
+                        {
+                            Controller.EndDestruction();
+                        }))
                         .Build();
                 }
 
@@ -106,8 +110,8 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 public override void Awake() => Controller.RestartHealth();
             }
-            private class GameplayState<T> : BaseState<T> { }
-            private class IdleState<T> : BaseState<T> { }
+
+
 
             #endregion
             
@@ -131,7 +135,6 @@ namespace _Main.Scripts.Gameplay.Earth
 
                 protected override void OnEnterState(States state)
                 {
-                    Debug.Log("Here");
                     IsDamageDisable = state is not States.Gameplay;
                 }
             }
@@ -285,7 +288,12 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             return _earthDestructionTimeValues;
         }
-        
+
+        public void GoToDestruction()
+        {
+            _mainController.TransitionToDestruction();
+        }
+
         public void TryCollision(float damage, Vector3 position, Quaternion rotation, Vector2 direction)
         {
             if (_mainController.GetIsDamageDisable())
