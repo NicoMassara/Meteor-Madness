@@ -24,25 +24,23 @@ namespace _Main.Scripts.Managers
 
     public struct ShieldEvents
     {
+        public struct RequestEnableShieldType
+        {
+            public ShieldType Type;
+        }
+        public struct RequestDisableShieldType
+        {
+            public ShieldType Type;
+        }
+        public struct NotifyShieldTypeEnabled
+        {
+            public ShieldType Type;
+        }
+        public struct NotifyShieldTypeDisabled
+        {
+            public ShieldType Type;
+        }
         
-        public struct SetGold
-        {
-            public bool IsActive;
-        }
-
-        public struct SetSlow
-        {
-            public bool IsActive;
-        }
-
-        public struct SetAutomatic
-        {
-            public bool IsActive;
-        }
-        public struct EnableSuperShield { }
-        public struct EnableNormalShield { }
-        
-        public struct RestartPosition { }
         public struct Enable { }
         public struct Disable { }
     }

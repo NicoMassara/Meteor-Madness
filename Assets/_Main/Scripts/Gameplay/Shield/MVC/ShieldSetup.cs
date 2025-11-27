@@ -8,7 +8,7 @@ namespace _Main.Scripts.Gameplay.Shield
     public class ShieldSetup : ManagedBehavior, IUpdatable
     {
         private ShieldMotor _motor;
-        private ShieldController _controller;
+        private ShieldController.IShieldController _controller;
         private ShieldView _view;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
@@ -37,7 +37,7 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             if (GameManager.Instance.CanPlay == false) return;
             
-            _controller.TryStopRotate();
+            _controller.TryStop();
         }
         
         private void Input_OnMovementDirectionChangedHandler(int direction)
@@ -58,12 +58,8 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             ShieldEventSubscriber.Disable(EventBus_Shield_Disable);
             ShieldEventSubscriber.Enable(EventBus_Shield_Enable);
-            ShieldEventSubscriber.SetGold(EventBus_Shield_SetGold);
-            ShieldEventSubscriber.SetAutomatic(EventBus_Shield_SetAutomatic);
-            ShieldEventSubscriber.SetSlow(EventBus_Shield_SetSlow);
-            ShieldEventSubscriber.RestartPosition(EventBus_Shield_RestartPosition);
-            ShieldEventSubscriber.EnableSuperShield(EventBus_Shield_EnableSuperShield);
-            ShieldEventSubscriber.EnableNormalShield(EventBus_Shield_EnableNormalShield);
+            ShieldEventSubscriber.RequestEnableShieldType(EventBus_Shield_EnableType);
+            ShieldEventSubscriber.RequestDisableShieldType(EventBus_Shield_DisableType);
             //
             ProjectileEventSubscriber.Deflected(EventBus_Meteor_Deflected);
         }
@@ -72,63 +68,22 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void EventBus_Shield_Enable(ShieldEvents.Enable input)
         {
-            _controller.TransitionToEnable();
+            _controller.TryEnable();
         }
         
-        private void EventBus_Shield_RestartPosition(ShieldEvents.RestartPosition input)
+        private void EventBus_Shield_Disable(ShieldEvents.Disable obj)
         {
-            _controller.RestartPosition();
+            _controller.TryDisable();
         }
         
-        private void EventBus_Shield_SetAutomatic(ShieldEvents.SetAutomatic input)
+        private void EventBus_Shield_EnableType(ShieldEvents.RequestEnableShieldType input)
         {
-            if (input.IsActive)
-            {
-                _controller.TransitionToAutomatic();
-            }
-            else
-            {
-                _controller.TransitionToEnable();
-            }
+            _controller.TryEnableType(input.Type);
         }
         
-        private void EventBus_Shield_SetGold(ShieldEvents.SetGold input)
+        private void EventBus_Shield_DisableType(ShieldEvents.RequestDisableShieldType input)
         {
-            if (input.IsActive)
-            {
-                _controller.TransitionToGold();
-            }
-            else
-            {
-                _controller.TransitionToEnable();
-            }
-        }
-        
-        private void EventBus_Shield_SetSlow(ShieldEvents.SetSlow input)
-        {
-            if (input.IsActive)
-            {
-                _controller.TransitionToSlow();
-            }
-            else
-            {
-                _controller.TransitionToEnable();
-            }
-        }
-        
-        private void EventBus_Shield_Disable(ShieldEvents.Disable input)
-        {
-            _controller.TransitionToDisable();
-        }
-        
-        private void EventBus_Shield_EnableNormalShield(ShieldEvents.EnableNormalShield input)
-        {
-            _controller.TransitionToEnable();
-        }
-
-        private void EventBus_Shield_EnableSuperShield(ShieldEvents.EnableSuperShield input)
-        {
-            _controller.TransitionToSuper();
+            _controller.TryDisableShieldType();
         }
 
         #endregion
@@ -137,7 +92,7 @@ namespace _Main.Scripts.Gameplay.Shield
 
         private void EventBus_Meteor_Deflected(ProjectileEvents.Deflected input)
         {
-            _controller.HandleHit(input.Position, input.Rotation,input.Direction);
+            _controller.TryHit(input.Position, input.Rotation,input.Direction);
         }
 
         #endregion

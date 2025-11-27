@@ -26,7 +26,7 @@ namespace _Main.Scripts
             }
             else if (Input.GetKeyDown(KeyCode.N))
             {
-                Kill();
+                DisableShieldType();
             }
         }
 
@@ -55,7 +55,15 @@ namespace _Main.Scripts
             CustomTime.GlobalTimeScale = _timeScaleHalved ? 1f : 0.1f;
             CustomTime.GlobalFixedTimeScale = _timeScaleHalved ? 1f : 0.1f;
         }
-        
+
+        private void DisableShieldType()
+        {
+            ShieldEventSubscriber.NotifyShieldTypeDisabled((value) =>
+            {
+                ShieldEventCaller.Disable();
+            });
+            ShieldEventCaller.RequestDisableShieldType(ShieldType.None);
+        }
     }
 #endif
 }

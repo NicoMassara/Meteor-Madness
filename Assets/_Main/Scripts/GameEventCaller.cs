@@ -1,7 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using UnityEngine;
 
 namespace _Main.Scripts
 {
@@ -236,34 +235,24 @@ namespace _Main.Scripts
 
     public static class ShieldEventCaller
     {
-        public static void SetGold(bool isActive)
+        public static void RequestEnableShieldType(ShieldType type)
         {
-            GameEventCaller.Publish(new ShieldEvents.SetGold{IsActive = isActive});
-        }
-
-        public static void SetSlow(bool isActive)
-        {
-            GameEventCaller.Publish(new ShieldEvents.SetSlow{IsActive = isActive});
-        }
-
-        public static void SetAutomatic(bool isActive)
-        {
-            GameEventCaller.Publish(new ShieldEvents.SetAutomatic{IsActive = isActive});
-        }
-
-        public static void EnableSuperShield()
-        {
-            GameEventCaller.Publish(new ShieldEvents.EnableSuperShield());
+            GameEventCaller.Publish(new ShieldEvents.RequestEnableShieldType{Type = type});
         }
         
-        public static void EnableNormalShield()
+        public static void RequestDisableShieldType(ShieldType type)
         {
-            GameEventCaller.Publish(new ShieldEvents.EnableNormalShield());
+            GameEventCaller.Publish(new ShieldEvents.RequestDisableShieldType{Type = type});
         }
         
-        public static void RestartPosition()
+        public static void NotifyShieldTypeEnabled(ShieldType type)
         {
-            GameEventCaller.Publish(new ShieldEvents.RestartPosition());
+            GameEventCaller.Publish(new ShieldEvents.NotifyShieldTypeEnabled{Type = type});
+        }
+        
+        public static void NotifyShieldTypeDisabled(ShieldType type)
+        {
+            GameEventCaller.Publish(new ShieldEvents.NotifyShieldTypeDisabled{Type = type});
         }
         
         public static void Enable()
@@ -279,32 +268,22 @@ namespace _Main.Scripts
     
     public static class ShieldEventSubscriber
     {
-        public static void SetGold(Action<ShieldEvents.SetGold> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void SetSlow(Action<ShieldEvents.SetSlow> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void SetAutomatic(Action<ShieldEvents.SetAutomatic> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void EnableSuperShield(Action<ShieldEvents.EnableSuperShield> action)
+        public static void RequestEnableShieldType(Action<ShieldEvents.RequestEnableShieldType> action)
         {
             GameEventCaller.Subscribe(action);
         }
         
-        public static void EnableNormalShield(Action<ShieldEvents.EnableNormalShield> action)
+        public static void RequestDisableShieldType(Action<ShieldEvents.RequestDisableShieldType> action)
         {
             GameEventCaller.Subscribe(action);
         }
         
-        public static void RestartPosition(Action<ShieldEvents.RestartPosition> action)
+        public static void NotifyShieldTypeEnabled(Action<ShieldEvents.NotifyShieldTypeEnabled> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void NotifyShieldTypeDisabled(Action<ShieldEvents.NotifyShieldTypeDisabled> action)
         {
             GameEventCaller.Subscribe(action);
         }
@@ -322,32 +301,22 @@ namespace _Main.Scripts
     
     public static class ShieldEventUnSubscriber
     {
-        public static void SetGold(Action<ShieldEvents.SetGold> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void SetSlow(Action<ShieldEvents.SetSlow> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void SetAutomatic(Action<ShieldEvents.SetAutomatic> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void EnableSuperShield(Action<ShieldEvents.EnableSuperShield> action)
+        public static void RequestEnableShieldType(Action<ShieldEvents.RequestEnableShieldType> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
         
-        public static void EnableNormalShield(Action<ShieldEvents.EnableNormalShield> action)
+        public static void RequestDisableShieldType(Action<ShieldEvents.RequestDisableShieldType> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
         
-        public static void RestartPosition(Action<ShieldEvents.RestartPosition> action)
+        public static void NotifyShieldTypeEnabled(Action<ShieldEvents.NotifyShieldTypeEnabled> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyShieldTypeDisabled(Action<ShieldEvents.NotifyShieldTypeDisabled> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
