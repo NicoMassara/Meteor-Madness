@@ -942,10 +942,15 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new AbilitiesEvents.SetCanUse{CanUse = canUse});
         }
-
-        public static void SetEnableUI(bool isEnable)
+        
+        public static void EnableUI()
         {
-            GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = isEnable});
+            GameEventCaller.Publish(new AbilitiesEvents.EnableUI());
+        }
+        
+        public static void DisableUI()
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.DisableUI());
         }
 
         public static void Add(AbilityAddData data)
@@ -1015,8 +1020,13 @@ namespace _Main.Scripts
         {
             GameEventCaller.Subscribe(action);
         }
-
-        public static void SetEnableUI(Action<AbilitiesEvents.SetEnableUI> action)
+        
+        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action)
         {
             GameEventCaller.Subscribe(action);
         }
@@ -1073,11 +1083,15 @@ namespace _Main.Scripts
             GameEventCaller.Unsubscribe(action);
         }
 
-        public static void SetEnableUI(Action<AbilitiesEvents.SetEnableUI> action)
+        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
-
+        
+        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
         public static void Add(Action<AbilitiesEvents.Add> action)
         {
             GameEventCaller.Unsubscribe(action);

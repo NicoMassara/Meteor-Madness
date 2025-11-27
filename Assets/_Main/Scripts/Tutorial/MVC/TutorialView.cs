@@ -64,7 +64,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleSphereDeflected()
         {
-            AbilitiesEventCaller.SetEnableUI(true);
+            AbilitiesEventCaller.EnableUI();
         }
         
         private void HandleMultiPage()
@@ -113,7 +113,7 @@ namespace _Main.Scripts.Tutorial.MVC
             CameraEventCaller.ZoomOut();
             AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
             AbilitiesEventCaller.Enable();
-            AbilitiesEventCaller.SetEnableUI(false);
+            AbilitiesEventCaller.DisableUI();
             InputsEventCaller.SetEnable(true);
 #if UNITY_ANDROID || UNITY_IOS
             

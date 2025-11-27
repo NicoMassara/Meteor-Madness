@@ -239,11 +239,8 @@ namespace _Main.Scripts.Managers
         {
             public AbilityType AbilityType;
         }
-        
-        public struct SetEnableUI
-        {
-            public bool IsEnable;
-        }
+        public struct EnableUI { }
+        public struct DisableUI { }
         
         public struct Enable { }
         public struct Disable { }

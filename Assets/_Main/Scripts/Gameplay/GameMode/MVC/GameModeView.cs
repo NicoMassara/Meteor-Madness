@@ -268,7 +268,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             OnGameModePaused?.Invoke(false);
             SetEnableInputs(true);
-            AbilitiesEventCaller.SetEnableUI(true);
+            AbilitiesEventCaller.EnableUI();
             GameModeEventCaller.SetPause(false);
             GameManager.Instance.UnpauseGame();
             
@@ -290,7 +290,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             OnGameModePaused?.Invoke(true);
             GameManager.Instance.PauseGame();
             SetEnableInputs(false);
-            AbilitiesEventCaller.SetEnableUI(false);
+            AbilitiesEventCaller.DisableUI();
             GameModeEventCaller.SetPause(true);
             CameraEventCaller.ZoomIn(timeToZoomInOnDeath);
                 
@@ -395,6 +395,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleCountdownFinish()
         {
             AbilitiesEventCaller.Enable();
+            AbilitiesEventCaller.EnableUI();
             SetEnableInputs(true);
             SetEnableUIInputs(true);
             OnCountdownFinished?.Invoke();

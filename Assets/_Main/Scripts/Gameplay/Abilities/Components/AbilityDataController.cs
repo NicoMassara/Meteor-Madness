@@ -774,7 +774,14 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void SetEnableAbilityUI(bool isEnable)
         {
-            AbilitiesEventCaller.SetEnableUI(isEnable);
+            if (isEnable)
+            {
+                AbilitiesEventCaller.EnableUI();
+            }
+            else
+            {
+                AbilitiesEventCaller.DisableUI();
+            }
         }
 
         public bool HasAbilityData(AbilityType abilityType)

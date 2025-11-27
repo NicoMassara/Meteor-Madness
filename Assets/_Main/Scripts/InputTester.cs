@@ -26,7 +26,7 @@ namespace _Main.Scripts
             }
             else if (Input.GetKeyDown(KeyCode.N))
             {
-                DisableShieldType();
+                Kill();
             }
         }
 
@@ -64,6 +64,12 @@ namespace _Main.Scripts
             });
             ShieldEventCaller.RequestDisableShieldType(ShieldType.None);
         }
+
+        private void DisableAbility()
+        {
+            AbilitiesEventCaller.Disable();
+        }
+        
     }
 #endif
 }
