@@ -20,8 +20,9 @@ namespace _Main.Scripts.Gameplay.Abilies
         [SerializeField] private SoundClassSo abilityTrigger;
         [SerializeField] private SoundClassSo slowTime;
         [SerializeField] private SoundClassSo speedTime;
-
+        
         private TimerGeneratedId _finishAbilityTimerId;
+        private ActionManager.GeneratedId _actionId;
         
         private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
@@ -32,11 +33,8 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         public event Action OnAbilityTriggered;
         public event Action OnAbilityAdded;
-
         public event Action OnTimeSlowDown;
         public event Action OnTimeSpeedUp;
-
-
         
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -139,7 +137,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             _debugData.CurrentAbility = (AbilityType)abilityIndex;
 #endif
             
-            ActionManager.Add(abilityDataController.GetAbilityStartQueue(
+            _actionId = ActionManager.Add(abilityDataController.GetAbilityStartQueue(
                 (AbilityType)abilityIndex),ActionManager.UpdateType.Update);
             
             GameModeEventCaller.SetEnablePause(false);
@@ -159,13 +157,22 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return;
             }
 
-            ActionManager.Add(abilityDataController.GetAbilityEndQueue(
+            _actionId = ActionManager.Add(abilityDataController.GetAbilityEndQueue(
                 (AbilityType)abilityIndex),ActionManager.UpdateType.Update,ActionManager.PriorityTick.EveryFrame);
         }
         
         private void HandleForceFinish()
         {
-            TimerManager.Remove(_finishAbilityTimerId);
+            if (_actionId != null
+                && _actionId.IsActive)
+            {
+                ActionManager.Remove(_actionId);
+            }
+            else if(_finishAbilityTimerId != null 
+                    && _finishAbilityTimerId.IsActive)
+            {
+                TimerManager.Remove(_finishAbilityTimerId);
+            }
             
             OnAbilityFinished?.Invoke();
         }

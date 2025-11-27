@@ -111,10 +111,12 @@ namespace _Main.Scripts.Gameplay.Shield
 
             if (isActive)
             {
+                ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Automatic);
                 OnAbilityRunning?.Invoke(AbilityType.Automatic);
             }
             else
             {
+                ShieldEventCaller.NotifyShieldTypeDisabled(ShieldType.Automatic);
                 OnAbilityFinished?.Invoke();
             }
         }
@@ -125,10 +127,12 @@ namespace _Main.Scripts.Gameplay.Shield
             
             if (isActive)
             {
+                ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Gold);
                 OnAbilityRunning?.Invoke(AbilityType.DoublePoints);
             }
             else
             {
+                ShieldEventCaller.NotifyShieldTypeDisabled(ShieldType.Gold);
                 OnAbilityFinished?.Invoke();
             }
         }
@@ -138,10 +142,12 @@ namespace _Main.Scripts.Gameplay.Shield
             
             if (isActive)
             {
+                ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Slow);
                 OnAbilityRunning?.Invoke(AbilityType.SlowMotion);
             }
             else
             {
+                ShieldEventCaller.NotifyShieldTypeDisabled(ShieldType.Slow);
                 OnAbilityFinished?.Invoke();
             }
         }
@@ -210,13 +216,14 @@ namespace _Main.Scripts.Gameplay.Shield
 
         #endregion
         
-        #region Change Form 
+        #region Change Form
 
+        #region SuperShield
+        
         private void HandleSetSuperActive(bool isActive)
         {
             if (isActive)
             {
-                
                 RunSuperShieldQueue();
             }
             else
@@ -245,6 +252,7 @@ namespace _Main.Scripts.Gameplay.Shield
                     CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                     OnAbilityRunning?.Invoke(AbilityType.SuperShield);
                 }))
+                .Then(new InstantAction(()=> ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Super)))
                 .Build();
             
             ActionManager.Add(temp,ActionManager.UpdateType.Update ,ActionManager.PriorityTick.EveryFrame);
@@ -270,6 +278,7 @@ namespace _Main.Scripts.Gameplay.Shield
                     _movement.RotateTowardsNearestProjectileSlot();
                     OnAbilityFinished?.Invoke();
                 }))
+                .Then(new InstantAction(()=> ShieldEventCaller.NotifyShieldTypeDisabled(ShieldType.Super)))
                 .Build();
             
             ActionManager.Add(temp,ActionManager.UpdateType.Update, ActionManager.PriorityTick.EveryFrame);
@@ -284,6 +293,8 @@ namespace _Main.Scripts.Gameplay.Shield
         {
             _movement.DecreaseSpeed(deltaTime);
         }
+        
+        #endregion
         
         #endregion
 
