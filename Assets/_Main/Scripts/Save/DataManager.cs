@@ -6,7 +6,7 @@ namespace _Main.Scripts.Save
 {
     public class DataManager : SingletonBehaviour<DataManager>
     {
-        private Dictionary<SaveDataType, SaveDataBase> _saveDataDic;
+        private Dictionary<SaveDataType, SaveDataBase> _saveDataDic = new Dictionary<SaveDataType, SaveDataBase>();
         
         private void Start()
         {
@@ -35,6 +35,11 @@ namespace _Main.Scripts.Save
                 SaveSystem.Save<T>(new T(), type);
                 TryLoadSaveData<T>(type);
             }
+        }
+
+        public bool DoesContainData(SaveDataType type)
+        {
+            return _saveDataDic.ContainsKey(type);
         }
 
         public void ClearSaveData<T>(SaveDataType type) where T : SaveDataBase, new()

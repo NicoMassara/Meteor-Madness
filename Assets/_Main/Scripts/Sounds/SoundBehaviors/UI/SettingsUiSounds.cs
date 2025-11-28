@@ -7,12 +7,12 @@ namespace _Main.Scripts.Sounds.Components
     {
         private void Start()
         {
-            GetComponentToSound.OnVolumeChanged += (value) =>
+            ComponentToSound.OnVolumeChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
             
-            GetComponentToSound.OnLanguageChanged += (value) =>
+            ComponentToSound.OnLanguageChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
@@ -26,7 +26,7 @@ namespace _Main.Scripts.Sounds.Components
 
 #endif
             
-            GetComponentToSound.OnBackButtonPressed += () =>
+            ComponentToSound.OnBackButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Back);
             };

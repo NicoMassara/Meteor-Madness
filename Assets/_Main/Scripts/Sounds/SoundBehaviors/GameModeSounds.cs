@@ -29,7 +29,7 @@ namespace _Main.Scripts.Sounds.Components
         {
             // Music
             
-            GetComponentToSound.OnCountdownFinished += () =>
+            ComponentToSound.OnCountdownFinished += () =>
             {
                 // Adds a delay
                 
@@ -37,7 +37,7 @@ namespace _Main.Scripts.Sounds.Components
                     () => { PlayGameMusic(true); }));
             };
             
-            GetComponentToSound.OnGameModePaused += (isPaused) =>
+            ComponentToSound.OnGameModePaused += (isPaused) =>
             {
                 if (isPaused)
                 {
@@ -52,31 +52,31 @@ namespace _Main.Scripts.Sounds.Components
                 }
             };   
             
-            GetComponentToSound.OnCountDownStarted += () =>
+            ComponentToSound.OnCountDownStarted += () =>
             {
                 if(_pauseMusicId == null) return;
                 
                 StopSound(_pauseMusicId);
             };  
             
-            GetComponentToSound.OnGameModeFinished += () =>
+            ComponentToSound.OnGameModeFinished += () =>
             {
                 _deathMusicId = PlayMusic(deathMusicData, _deathMusicId);
             };   
             
-            GetComponentToSound.OnStopMusic += () =>
+            ComponentToSound.OnStopMusic += () =>
             {
                 StopAllMusic();
             };  
             
             // Sounds
             
-            GetComponentToSound.OnCountdownUpdated += () =>
+            ComponentToSound.OnCountdownUpdated += () =>
             {
                 PlaySound(countdownSound);
             };
             
-            GetComponentToSound.OnCountdownUpdatedFinished += () =>
+            ComponentToSound.OnCountdownUpdatedFinished += () =>
             {
                 PlaySound(countdownFinish);
             };

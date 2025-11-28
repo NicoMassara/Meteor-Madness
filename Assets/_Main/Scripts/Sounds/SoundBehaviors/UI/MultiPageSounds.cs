@@ -6,12 +6,12 @@ namespace _Main.Scripts.Sounds.Components
     {
         private void Start()
         {
-            GetComponentToSound.OnNextButtonPressed += () =>
+            ComponentToSound.OnNextButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
             
-            GetComponentToSound.OnPreviousButtonPressed += () =>
+            ComponentToSound.OnPreviousButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Back);
             };

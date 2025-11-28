@@ -8,7 +8,7 @@ namespace _Main.Scripts.Sounds
     public abstract class SoundBehaviour<T> : MonoBehaviour
     where T : ISoundComponent
     {
-        protected T GetComponentToSound => _componentToSound != null ? _componentToSound : SetComponentToSound();
+        protected T ComponentToSound => _componentToSound != null ? _componentToSound : SetComponentToSound();
 
         private T _componentToSound;
 
@@ -32,13 +32,13 @@ namespace _Main.Scripts.Sounds
         }
         protected void StopSound(GeneratedId soundId)
         {
-            if(IsIdValid(soundId)) return;
+            if(IsIdValid(soundId) == false) return;
             
             SoundManager.StopSound(soundId);
         }
         protected void ResumeSound(GeneratedId soundId)
         {
-            if(IsIdValid(soundId)) return;
+            if(IsIdValid(soundId) == false) return;
             
             SoundManager.ResumeSound(soundId);
         }
@@ -52,7 +52,19 @@ namespace _Main.Scripts.Sounds
         // If ID is valid it means that is already in use and playing
         protected bool IsIdValid(GeneratedId soundId)
         {
-            return soundId != null && soundId.IsValid;
+            if (soundId == null)
+            {
+                //Debug.LogWarning($"Sound Id is null");
+                return false;
+            }
+
+            if (soundId.IsValid == false)
+            {
+                //Debug.Log("Sound Id is not valid");
+                return false;
+            }
+
+            return true;
         }
 
         private T SetComponentToSound()
