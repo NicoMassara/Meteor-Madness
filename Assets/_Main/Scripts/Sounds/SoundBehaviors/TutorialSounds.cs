@@ -12,12 +12,12 @@ namespace _Main.Scripts.Sounds.Components
 
         private void Start()
         {
-            GetComponentToSound.OnTutorialEnable += () =>
+            ComponentToSound.OnTutorialEnable += () =>
             {
                 _musicId = PlaySound(music);
             };
             
-            GetComponentToSound.OnTutorialFinished += () =>
+            ComponentToSound.OnTutorialFinished += () =>
             {
                 StopSound(_musicId);
             };

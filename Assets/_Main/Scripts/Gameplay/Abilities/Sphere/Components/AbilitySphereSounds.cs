@@ -12,12 +12,12 @@ namespace _Main.Scripts.Gameplay.Abilities.Sphere.Components
 
         private void Start()
         {
-            GetComponentToSound.OnValuesChanged += (value) =>
+            ComponentToSound.OnValuesChanged += (value) =>
             {
                 _movementSoundId = PlaySound(movement);
             };
 
-            GetComponentToSound.OnRecycle += (value) =>
+            ComponentToSound.OnRecycle += (value) =>
             {
                 StopSound(_movementSoundId);
             };

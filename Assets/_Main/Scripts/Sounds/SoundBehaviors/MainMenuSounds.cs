@@ -14,7 +14,7 @@ namespace _Main.Scripts.Sounds.Components
         
         private void Start()
         {
-            GetComponentToSound.OnMainMenuEnable += () =>
+            ComponentToSound.OnMainMenuEnable += () =>
             {
                 _musicId = PlayMusic(music, _musicId, true);
             };

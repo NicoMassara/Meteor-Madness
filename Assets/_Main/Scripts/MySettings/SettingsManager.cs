@@ -15,7 +15,13 @@ namespace _Main.Scripts.MySettings
 
         private void Start()
         {
-            _settingsData = DataManager.Instance.GetData<SettingsSaveData>(SaveDataType.Settings);
+            var dataManager = DataManager.Instance;
+            _settingsData = new SettingsSaveData();
+
+            if (dataManager.DoesContainData(SaveDataType.Settings))
+            {
+                _settingsData = DataManager.Instance.GetData<SettingsSaveData>(SaveDataType.Settings);
+            }
         }
 
         #region Settings Actions
