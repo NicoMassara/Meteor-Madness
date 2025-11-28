@@ -43,18 +43,13 @@ namespace NicolasMassara.CustomActionManager
         }
         
         #region ID Generator
-
         public class GeneratedId
         {
-            public ulong Id { get; private set; }
+            public ushort Id { get; private set; }
             public bool IsActive => Id > 0;
             private event Action<GeneratedId> _onRelease;
 
-            public GeneratedId()
-            {
-            }
-
-            public GeneratedId(ulong id, Action<GeneratedId> onRelease)
+            public GeneratedId(ushort id, Action<GeneratedId> onRelease)
             {
                 Id = id;
                 _onRelease = onRelease;
@@ -70,65 +65,51 @@ namespace NicolasMassara.CustomActionManager
                 Id = 0;
             }
         }
-
         private class RandomIdGenerator
         {
-            private const ulong NullId = 0; // Default ID used as a null
-            
-            private readonly HashSet<ulong> _inUseId = new HashSet<ulong>(); // In Used ID List 
-            private readonly System.Random _random = new System.Random();
-            
-            /// <summary>
-            /// Generates a random GeneratedId
-            /// That contains an ulong used as the ID
-            /// </summary>
-            /// <returns></returns>
-            public GeneratedId Generate()
+            private const ushort NullId = 0; // Default ID used as null
+
+            private readonly HashSet<ushort> _inUseId;// IDs currently in use
+            private ushort _nextId = 1; // Start from 1 (0 = NullId)
+
+            public RandomIdGenerator(int initialSize = 10)
             {
-                ulong value;
-                int attempts = 0;
-
-                do
-                {
-                    value = NextUlong();
-                    attempts++;
-
-                    if (attempts > 100)
-                    {
-                        break;
-                    }
-
-                } while (_inUseId.Contains(value));
-
-                _inUseId.Add(value);
-                
-                var generatedId = new GeneratedId(value,Release);
-                
-                return generatedId;
+                initialSize = Math.Clamp(initialSize, 0, ushort.MaxValue);
+                _inUseId = new HashSet<ushort>(initialSize);
             }
             
+
+            /// <summary>
+            /// Generates an incremental GeneratedId
+            /// </summary>
+            public GeneratedId Generate()
+            {
+                if (_inUseId.Count >= ushort.MaxValue - 1)
+                    throw new InvalidOperationException("All available IDs are in use.");
+
+                // Find the next free ID
+                while (_inUseId.Contains(_nextId) || _nextId == NullId)
+                {
+                    _nextId++;
+
+                    if (_nextId == ushort.MaxValue)
+                        _nextId = 1; // Wrap around if overflow
+                }
+
+                ushort value = _nextId;
+                _inUseId.Add(value);
+                _nextId++;
+
+                return new GeneratedId(value, Release);
+            }
+
             private void Release(GeneratedId idData)
             {
                 _inUseId.Remove(idData.Id);
                 idData.Reset();
             }
-            
-            private ulong NextUlong()
-            {
-                ulong value;
-
-                do
-                {
-                    byte[] bytes = new byte[8];
-                    _random.NextBytes(bytes);
-                    value = BitConverter.ToUInt64(bytes, 0);
-
-                } while (value == NullId);
-
-                return value;
-            }
         }
-
+        
         #endregion
         
         #region Action Factory
@@ -292,27 +273,27 @@ namespace NicolasMassara.CustomActionManager
         {
             public int RunningCount { get; }
             public void Execute(float deltaTime, float frameTime);
-            public void Pause(ulong id);
-            public void Resume(ulong id);
-            public ActionQueueRunner GetActionQueue(ulong id);
+            public void Pause(ushort id);
+            public void Resume(ushort id);
+            public ActionQueueRunner GetActionQueue(ushort id);
             public void Add(ActionQueueData queueData);
-            public void Remove(ulong id);
+            public void Remove(ushort id);
             public void Clear();
         }
         
         private class Runner : IRunner
         {
-            private readonly List<ulong> _cancelIds = new List<ulong>();
+            private readonly List<ushort> _cancelIds = new List<ushort>();
             private readonly List<ActionQueueData> _running = new List<ActionQueueData>();
             private readonly List<ActionQueueData> _toAdd = new List<ActionQueueData>();
             private readonly List<ActionQueueData> _toRemove = new List<ActionQueueData>();
-            private readonly Dictionary<ulong, ActionQueueData> _idsDic = new Dictionary<ulong, ActionQueueData>();
+            private readonly Dictionary<ushort, ActionQueueData> _idsDic = new Dictionary<ushort, ActionQueueData>();
             private event Action<ActionQueueRunner> OnReturned;
-            private event Action<ulong> OnRemoved;
+            private event Action<ushort> OnRemoved;
             
             public int RunningCount => _running.Count;
 
-            public Runner(Action<ActionQueueRunner> onReturned, Action<ulong> onRemoved)
+            public Runner(Action<ActionQueueRunner> onReturned, Action<ushort> onRemoved)
             {
                 OnReturned = onReturned;
                 OnRemoved = onRemoved;
@@ -322,7 +303,7 @@ namespace NicolasMassara.CustomActionManager
             {
                 if (_toAdd.Count > 0)
                 {
-                    var cancelIds = new HashSet<ulong>(_cancelIds);
+                    var cancelIds = new HashSet<ushort>(_cancelIds);
                 
                     foreach (var data in _toAdd)
                     {
@@ -375,17 +356,17 @@ namespace NicolasMassara.CustomActionManager
                 ApplyPending();
             }
 
-            public void Pause(ulong id)
+            public void Pause(ushort id)
             {
                 _idsDic[id].ActionQueue.Pause();
             }
 
-            public void Resume(ulong id)
+            public void Resume(ushort id)
             {
                 _idsDic[id].ActionQueue.Resume();
             }
 
-            public ActionQueueRunner GetActionQueue(ulong id)
+            public ActionQueueRunner GetActionQueue(ushort id)
             {
                 return _idsDic[id].ActionQueue;
             }
@@ -395,7 +376,7 @@ namespace NicolasMassara.CustomActionManager
                 _toAdd.Add(queueData);
             }
 
-            public void Remove(ulong id)
+            public void Remove(ushort id)
             {
                 // If _idsDic doesn't have it, it means it's not running yet, so it can be cancelled
                 
@@ -426,12 +407,12 @@ namespace NicolasMassara.CustomActionManager
         private IRunner _fixedUpdateRunner;
         private IRunner _lateUpdateRunner;
 
-        private readonly ActionFactory _actionFactory = new ActionFactory();
+        private readonly ActionFactory _actionFactory = new ActionFactory(25);
         private readonly RandomIdGenerator _idStorage = new RandomIdGenerator();
         
-        private readonly Dictionary<ulong, UpdateType> _updateById = new Dictionary<ulong, UpdateType>();
+        private readonly Dictionary<ushort, UpdateType> _updateById = new Dictionary<ushort, UpdateType>();
         
-        public class ActionQueueData
+        private class ActionQueueData
         {
             public ActionQueueRunner ActionQueue { get; private set; }
             public GeneratedId ExternalId { get; private set; }
@@ -452,7 +433,7 @@ namespace NicolasMassara.CustomActionManager
             _lateUpdateRunner = new Runner(_actionFactory.ReturnActionQueue, RemoveFromUpdateDic);
         }
 
-        private void RemoveFromUpdateDic(ulong id)
+        private void RemoveFromUpdateDic(ushort id)
         {
             if(_updateById.ContainsKey(id) == false) return;
             

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using _Main.Scripts.Gameplay.Abilities;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomTimerManager;
-using NicolasMassara.CustomTimerManager.Tools;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using UnityEngine.Events;
@@ -21,7 +19,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         [SerializeField] private SoundClassSo slowTime;
         [SerializeField] private SoundClassSo speedTime;
         
-        private TimerGeneratedId _finishAbilityTimerId;
+        private TimerManager.GeneratedId _finishAbilityTimerId;
         private ActionManager.GeneratedId _actionId;
         
         private AbilityStoredData currentAbilityStored;
