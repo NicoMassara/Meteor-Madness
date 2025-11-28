@@ -1,5 +1,4 @@
 ﻿using _Main.Scripts.Interfaces.Sounds;
-using _Main.Scripts.Sounds;
 
 namespace _Main.Scripts.Sounds.Components
 {
@@ -17,9 +16,9 @@ namespace _Main.Scripts.Sounds.Components
                 PlayUISound(UISoundType.Confirm);
             };
             
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID
             
-            GetComponentToSound.OnVibrationChanged += (value) =>
+            ComponentToSound.OnVibrationChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
