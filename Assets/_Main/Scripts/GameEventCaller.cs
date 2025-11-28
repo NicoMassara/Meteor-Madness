@@ -1,7 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
-using UnityEngine;
 
 namespace _Main.Scripts
 {
@@ -106,20 +105,20 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new EarthEvents.Heal());
         }
-
-        public static void SetEnableDamage(bool enable)
+        
+        public static void EnableDamage()
         {
-            GameEventCaller.Publish(new EarthEvents.SetEnableDamage{DamageEnable = enable});
+            GameEventCaller.Publish(new EarthEvents.EnableDamage());
+        }
+        
+        public static void DisableDamage()
+        {
+            GameEventCaller.Publish(new EarthEvents.DisableDamage());
         }
         
         public static void DestructionStart()
         {
             GameEventCaller.Publish(new EarthEvents.DestructionStart());
-        }
-        
-        public static void SetToDefault()
-        {
-            GameEventCaller.Publish(new EarthEvents.SetToDefault());
         }
         
         public static void DestructionFinished()
@@ -155,17 +154,17 @@ namespace _Main.Scripts
             GameEventCaller.Subscribe(action);
         }
 
-        public static void SetEnableDamage(Action<EarthEvents.SetEnableDamage> action)
+        public static void EnableDamage(Action<EarthEvents.EnableDamage> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void DisableDamage(Action<EarthEvents.DisableDamage> action)
         {
             GameEventCaller.Subscribe(action);
         }
         
         public static void DestructionStart(Action<EarthEvents.DestructionStart> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-        
-        public static void SetToDefault(Action<EarthEvents.SetToDefault> action)
         {
             GameEventCaller.Subscribe(action);
         }
@@ -203,17 +202,17 @@ namespace _Main.Scripts
             GameEventCaller.Unsubscribe(action);
         }
 
-        public static void SetEnableDamage(Action<EarthEvents.SetEnableDamage> action)
+        public static void EnableDamage(Action<EarthEvents.EnableDamage> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void DisableDamage(Action<EarthEvents.DisableDamage> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
         
         public static void DestructionStart(Action<EarthEvents.DestructionStart> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-        
-        public static void SetToDefault(Action<EarthEvents.SetToDefault> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
@@ -236,34 +235,24 @@ namespace _Main.Scripts
 
     public static class ShieldEventCaller
     {
-        public static void SetGold(bool isActive)
+        public static void RequestEnableShieldType(ShieldType type)
         {
-            GameEventCaller.Publish(new ShieldEvents.SetGold{IsActive = isActive});
-        }
-
-        public static void SetSlow(bool isActive)
-        {
-            GameEventCaller.Publish(new ShieldEvents.SetSlow{IsActive = isActive});
-        }
-
-        public static void SetAutomatic(bool isActive)
-        {
-            GameEventCaller.Publish(new ShieldEvents.SetAutomatic{IsActive = isActive});
-        }
-
-        public static void EnableSuperShield()
-        {
-            GameEventCaller.Publish(new ShieldEvents.EnableSuperShield());
+            GameEventCaller.Publish(new ShieldEvents.RequestEnableShieldType{Type = type});
         }
         
-        public static void EnableNormalShield()
+        public static void RequestDisableShieldType(ShieldType type)
         {
-            GameEventCaller.Publish(new ShieldEvents.EnableNormalShield());
+            GameEventCaller.Publish(new ShieldEvents.RequestDisableShieldType{Type = type});
         }
         
-        public static void RestartPosition()
+        public static void NotifyShieldTypeEnabled(ShieldType type)
         {
-            GameEventCaller.Publish(new ShieldEvents.RestartPosition());
+            GameEventCaller.Publish(new ShieldEvents.NotifyShieldTypeEnabled{Type = type});
+        }
+        
+        public static void NotifyShieldTypeDisabled(ShieldType type)
+        {
+            GameEventCaller.Publish(new ShieldEvents.NotifyShieldTypeDisabled{Type = type});
         }
         
         public static void Enable()
@@ -279,32 +268,22 @@ namespace _Main.Scripts
     
     public static class ShieldEventSubscriber
     {
-        public static void SetGold(Action<ShieldEvents.SetGold> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void SetSlow(Action<ShieldEvents.SetSlow> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void SetAutomatic(Action<ShieldEvents.SetAutomatic> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void EnableSuperShield(Action<ShieldEvents.EnableSuperShield> action)
+        public static void RequestEnableShieldType(Action<ShieldEvents.RequestEnableShieldType> action)
         {
             GameEventCaller.Subscribe(action);
         }
         
-        public static void EnableNormalShield(Action<ShieldEvents.EnableNormalShield> action)
+        public static void RequestDisableShieldType(Action<ShieldEvents.RequestDisableShieldType> action)
         {
             GameEventCaller.Subscribe(action);
         }
         
-        public static void RestartPosition(Action<ShieldEvents.RestartPosition> action)
+        public static void NotifyShieldTypeEnabled(Action<ShieldEvents.NotifyShieldTypeEnabled> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void NotifyShieldTypeDisabled(Action<ShieldEvents.NotifyShieldTypeDisabled> action)
         {
             GameEventCaller.Subscribe(action);
         }
@@ -322,32 +301,22 @@ namespace _Main.Scripts
     
     public static class ShieldEventUnSubscriber
     {
-        public static void SetGold(Action<ShieldEvents.SetGold> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void SetSlow(Action<ShieldEvents.SetSlow> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void SetAutomatic(Action<ShieldEvents.SetAutomatic> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void EnableSuperShield(Action<ShieldEvents.EnableSuperShield> action)
+        public static void RequestEnableShieldType(Action<ShieldEvents.RequestEnableShieldType> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
         
-        public static void EnableNormalShield(Action<ShieldEvents.EnableNormalShield> action)
+        public static void RequestDisableShieldType(Action<ShieldEvents.RequestDisableShieldType> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
         
-        public static void RestartPosition(Action<ShieldEvents.RestartPosition> action)
+        public static void NotifyShieldTypeEnabled(Action<ShieldEvents.NotifyShieldTypeEnabled> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyShieldTypeDisabled(Action<ShieldEvents.NotifyShieldTypeDisabled> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
@@ -973,10 +942,15 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new AbilitiesEvents.SetCanUse{CanUse = canUse});
         }
-
-        public static void SetEnableUI(bool isEnable)
+        
+        public static void EnableUI()
         {
-            GameEventCaller.Publish(new AbilitiesEvents.SetEnableUI{IsEnable = isEnable});
+            GameEventCaller.Publish(new AbilitiesEvents.EnableUI());
+        }
+        
+        public static void DisableUI()
+        {
+            GameEventCaller.Publish(new AbilitiesEvents.DisableUI());
         }
 
         public static void Add(AbilityAddData data)
@@ -1046,8 +1020,13 @@ namespace _Main.Scripts
         {
             GameEventCaller.Subscribe(action);
         }
-
-        public static void SetEnableUI(Action<AbilitiesEvents.SetEnableUI> action)
+        
+        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
+        
+        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action)
         {
             GameEventCaller.Subscribe(action);
         }
@@ -1104,11 +1083,15 @@ namespace _Main.Scripts
             GameEventCaller.Unsubscribe(action);
         }
 
-        public static void SetEnableUI(Action<AbilitiesEvents.SetEnableUI> action)
+        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
-
+        
+        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
         public static void Add(Action<AbilitiesEvents.Add> action)
         {
             GameEventCaller.Unsubscribe(action);

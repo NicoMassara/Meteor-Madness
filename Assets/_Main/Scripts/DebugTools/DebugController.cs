@@ -67,7 +67,7 @@ namespace _Main.Scripts.DebugTools
                 GameManager.Instance.CanPlay = true;
                 InputsEventCaller.SetEnable(true);
                 AbilitiesEventCaller.Enable();
-                AbilitiesEventCaller.SetEnableUI(true);
+                AbilitiesEventCaller.EnableUI();
 #if UNITY_ANDROID || UNITY_IOS
                     InputsEventCaller.SetUIEnable(true);
 

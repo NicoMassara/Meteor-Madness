@@ -60,4 +60,13 @@
         Confirm,
         Back
     }
+    
+    public enum ShieldType
+    {
+        None,
+        Super,
+        Gold,
+        Automatic,
+        Slow
+    }
 }

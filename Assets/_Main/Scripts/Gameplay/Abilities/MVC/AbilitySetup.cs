@@ -10,7 +10,7 @@ namespace _Main.Scripts.Gameplay.Abilies
     public class AbilitySetup : ManagedBehavior
     {
         private AbilityMotor _motor;
-        private AbilityController _controller;
+        private AbilityController.IAbilityController _controller;
         private IInputReader _inputReader;
         
         private AbilityView _view;
@@ -59,12 +59,12 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void View_OnAbilitySelectedHandler()
         {
-            _controller.TransitionToRunning();
+            _controller.TryTriggerAbility();
         }
 
         private void View_OnAbilityFinishedHandler()
         {
-            _controller.TransitionToEnable();
+            _controller.TryDisableAbility();
         }
 
         #endregion
@@ -75,28 +75,34 @@ namespace _Main.Scripts.Gameplay.Abilies
         {
             AbilitiesEventSubscriber.Disable(EventBus_Ability_Disable);
             AbilitiesEventSubscriber.Enable(EventBus_Ability_Enable);
-            AbilitiesEventSubscriber.SetEnableUI(EventBus_Ability_SetEnableUI);
+            AbilitiesEventSubscriber.EnableUI(EventBus_Ability_UI_Enable);
+            AbilitiesEventSubscriber.DisableUI(EventBus_Ability_UI_Disable);
             AbilitiesEventSubscriber.SetCanUse(EventBus_Ability_CanUse);
             AbilitiesEventSubscriber.Add(EventBus_Ability_Add);
             AbilitiesEventSubscriber.RunTimer(EventBus_Ability_RunTimer);
-
+            //
         }
-
+        
         #region Ability
 
         private void EventBus_Ability_Enable(AbilitiesEvents.Enable input)
         {
-            _controller.TransitionToEnable();
+            _controller.TryEnableAbility();
         }
 
         private void EventBus_Ability_Disable(AbilitiesEvents.Disable input)
         {
-            _controller.TransitionToDisable();
+            _controller.TryDisableAbility();
         }
         
-        private void EventBus_Ability_SetEnableUI(AbilitiesEvents.SetEnableUI input)
+        private void EventBus_Ability_UI_Enable(AbilitiesEvents.EnableUI input)
         {
-            _controller.SetEnableUI(input.IsEnable);
+            _controller.TryEnableUI();
+        }
+        
+        private void EventBus_Ability_UI_Disable(AbilitiesEvents.DisableUI input)
+        {
+            _controller.TryDisableUI();
         }
         
         private void EventBus_Ability_Add(AbilitiesEvents.Add input)
