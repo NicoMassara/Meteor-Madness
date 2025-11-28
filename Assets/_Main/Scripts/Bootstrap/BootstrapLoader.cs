@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Localization;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Save;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,10 +16,11 @@ namespace _Main.Scripts.Bootstrap
         [SerializeField] private float delayBeforeLoad = 0.1f;    // opcional, da tiempo al splash
         [SerializeField] private Image progressBar;
         
+        public const bool DebugDisabled = true;
         private bool _hasLocalizationLoaded;
         private bool _hasLoadedData;
         private bool _hasLoadedSkins;
-
+        
         private void Awake()
         {
             LocalizationEvents.OnLocalizationLoaded += () =>
@@ -28,10 +30,15 @@ namespace _Main.Scripts.Bootstrap
             
             SaveDataEvents.OnSaveInitialized += () =>
             {
-                _hasLocalizationLoaded = true;
+                _hasLoadedData = true;
             };
             
-            SkinEvents.OnSaveLoaded += () =>
+            SaveDataEvents.OnSaveDataCorrupted += () =>
+            {
+                GameManager.Instance.HadCorruptedSaveData = true;
+            };
+            
+            SkinEvents.OnAssetsLoaded += () =>
             {
                 _hasLoadedSkins = true;
             };
@@ -49,10 +56,25 @@ namespace _Main.Scripts.Bootstrap
 
         private IEnumerator LoadCoreScene()
         {
+            var boostrapScene = SceneManager.GetActiveScene();
+            
             yield return new WaitForSeconds(delayBeforeLoad);
             
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(coreScene, LoadSceneMode.Single);
+            // Save Data
+            yield return new WaitUntil(()=> _hasLoadedData);
+            PrintDebug("Save Data loaded");
             
+            // Localization
+            yield return new WaitUntil(()=> _hasLocalizationLoaded);
+            PrintDebug("Localization loaded");
+            
+            // Skins
+            yield return new WaitUntil(()=> _hasLoadedSkins);
+            PrintDebug("Skins loaded");
+            
+            yield return new WaitForSeconds(delayBeforeLoad);
+            
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(coreScene, LoadSceneMode.Additive);
             asyncLoad.allowSceneActivation = false;
             
             while (asyncLoad.progress < 0.9f)
@@ -60,18 +82,36 @@ namespace _Main.Scripts.Bootstrap
                 yield return null;
             }
             
+            PrintDebug("Core Module Loaded");
+            
+            yield return new WaitForSeconds(delayBeforeLoad);
+            
             asyncLoad.allowSceneActivation = true;
             
-            yield return new WaitUntil(() => asyncLoad.isDone &&
-                                             GetHasLoadedAssets());
+            PrintDebug("Activating Core Module");
+
+            yield return null;
             
+            yield return new WaitUntil(() => asyncLoad.isDone);
+            
+            PrintDebug("Game Loaded");
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(coreScene));
+            GameEvents.TriggerOnGameLoaded();
+
+            yield return new WaitForEndOfFrame();
+            
+            PrintDebug("Removing Boostrap");
+
+            SceneManager.UnloadSceneAsync(boostrapScene);
         }
 
-        private bool GetHasLoadedAssets()
+        private void PrintDebug(string message)
         {
-            return _hasLocalizationLoaded &&
-                   _hasLoadedData && _hasLoadedSkins;
+            if(DebugDisabled) return;
+            
+#pragma warning disable CS0162 // Unreachable code detected
+            Debug.Log($"[Boostrap] - {message}");
+#pragma warning restore CS0162 // Unreachable code detected
         }
     }
 }

@@ -3,6 +3,7 @@ using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
@@ -10,7 +11,7 @@ namespace _Main.Scripts.MainMenu.MVC
         IMainMenuSounds
     {
         public event Action OnMainMenuEnable;
-        
+
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)

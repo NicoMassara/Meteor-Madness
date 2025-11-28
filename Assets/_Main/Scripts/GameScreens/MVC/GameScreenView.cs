@@ -1,4 +1,6 @@
-﻿using _Main.Scripts.Observer;
+﻿using System;
+using _Main.Scripts.Managers;
+using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -20,6 +22,14 @@ namespace _Main.Scripts.GameScreens
             _debugData = new GameScreenDebugData();
             
 #endif
+        }
+
+        private void Start()
+        {
+            if (GameManager.Instance.HadCorruptedSaveData)
+            {
+                Debug.LogWarning("Save data was corrupted, new save files were created!");
+            }
         }
 
         public void OnNotify(ulong message, params object[] args)

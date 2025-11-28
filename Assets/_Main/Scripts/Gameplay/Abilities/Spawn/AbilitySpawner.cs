@@ -29,10 +29,14 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void Awake()
         {
             SetEventBus();
+
+            GameEvents.OnGameLoaded += Initialize;
         }
 
-        private void Start()
+        private void Initialize()
         {
+            GameEvents.OnGameLoaded -= Initialize;
+            //
             var selectorData = GameConfigManager.Instance.GetGameplayData().AbilitySelectorData;
             _minUnlockLevel = selectorData.MinUnlockLevel;
             

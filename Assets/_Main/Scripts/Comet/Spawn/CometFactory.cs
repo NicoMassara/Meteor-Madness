@@ -21,8 +21,15 @@ namespace _Main.Scripts.Comet
         private bool _isBottomSpawn;
         private TimerManager.GeneratedId _spawnTimerId;
 
-        private void Start()
+        private void Awake()
         {
+            GameEvents.OnGameLoaded += Initialize;
+        }
+
+        private void Initialize()
+        {            
+            GameEvents.OnGameLoaded -= Initialize;
+            //
             _pool = new GenericPool<CometView>(cometPrefab, 1, 5);
             
             SetTimer(GameConfigManager.Instance.GetGameplayData().GameTimeData.FirstCometSpawnDelay);
