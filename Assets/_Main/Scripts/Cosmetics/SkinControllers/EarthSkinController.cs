@@ -22,8 +22,14 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             _earthHealth.OnHealthChanged += View_OnHealthChangedHandler;
             
             SkinManager.Instance.OnSkinChanged += SkinManager_OnSkinChanged;
-            LoadSkin();
+            SkinEvents.OnSaveLoaded += InitializeSkin;
             
+        }
+        
+        private void InitializeSkin()
+        {
+            SkinEvents.OnSaveLoaded -= InitializeSkin;
+            LoadSkin();
             UpdateMaterialHealth();
         }
         
@@ -35,7 +41,7 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         
         private void LoadSkin()
         {
-            SkinManager_OnSkinChanged(SkinManager.Instance.CurrentSkinType);
+            SkinManager_OnSkinChanged(SkinManager.Instance.GetCurrentSkinType());
         }
 
         private void View_OnHealthChangedHandler(float health)

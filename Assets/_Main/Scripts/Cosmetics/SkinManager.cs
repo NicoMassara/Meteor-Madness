@@ -15,8 +15,6 @@ namespace _Main.Scripts.Cosmetics
             private readonly Dictionary<SkinType, SkinDataSo> _dataDic = new Dictionary<SkinType, SkinDataSo>();
             private const string Path = "ScriptableObjects/Skins";
             private bool _hasLoaded = false;
-
-
             
             public AssetsLoader()
             {
@@ -44,7 +42,7 @@ namespace _Main.Scripts.Cosmetics
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 
-                    Debug.Log($"{skinType} Skin loaded from Resources/{Path}");
+                    //Debug.Log($"{skinType} Skin loaded from Resources/{Path}");
 #endif
                 
                     _dataDic.Add(skinType, data);
@@ -68,41 +66,60 @@ namespace _Main.Scripts.Cosmetics
         #endregion
         
         private AssetsLoader _assetsLoader;
-        private SkinSaveData _skinData;
+        private DataManager.SkinSaveData _skinData;
         private CosmeticsDebugData _debugData;
-
-        public SkinType CurrentSkinType => (SkinType)_skinData.SkinIndex;
-
+        
         public event Action<SkinType> OnSkinChanged;
         
         private void Awake()
         {
             _assetsLoader = new AssetsLoader();
             _debugData = new CosmeticsDebugData();
+            
+            GameEvents.OnGameLoaded += Initialize;
         }
-
-        private void Start()
+        
+        private void Initialize()
         {
-            _skinData = DataManager.Instance.GetData<SkinSaveData>(SaveDataType.Skin);
+            GameEvents.OnGameLoaded -= Initialize;
+            //
+            _skinData = DataManager.Instance.GetData<DataManager.SkinSaveData>(DataManager.SaveDataType.Skin);
+            if (_skinData == null)
+            {
+                Debug.LogWarning("Skin save data not found");
+                return;
+            }
+
             SelectSkin((SkinType)_skinData.SkinIndex);
-            Debug.Log(CurrentSkinType);
             
             SkinEvents.TriggerOnSaveLoaded();
         }
-
+        
         public void SelectSkin(SkinType skinType)
         {
-            if(CurrentSkinType == skinType) return;
+            if(GetCurrentSkinType() == skinType) return;
             
             _skinData.SkinIndex = (int)skinType;
             
-            _debugData.CurrentSkin = CurrentSkinType;
+            _debugData.CurrentSkin = GetCurrentSkinType();
+            Debug.Log($"Skin {GetCurrentSkinType()} is selected");
             OnSkinChanged?.Invoke(skinType);
         }
         
         public void SaveSelected()
         {
-            DataManager.Instance.SaveGameData(_skinData, SaveDataType.Skin);
+            DataManager.Instance.SaveGameData(_skinData, DataManager.SaveDataType.Skin);
+        }
+        
+        public SkinType GetCurrentSkinType()
+        {
+            if (_skinData == null)
+            {
+                Debug.LogWarning("Skin save data not found");
+                return SkinType.Default;
+            }
+            
+            return (SkinType)_skinData.SkinIndex;
         }
 
         #region Data Getters

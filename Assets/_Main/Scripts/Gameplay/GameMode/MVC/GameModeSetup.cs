@@ -45,7 +45,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _controller.Initialize();
             
-            var saveData = DataManager.Instance.GetData<ScoreSaveData>(SaveDataType.Score);
+            var saveData = DataManager.Instance.GetData<DataManager.ScoreSaveData>(DataManager.SaveDataType.Score);
             _controller.SetHighScore(saveData.HighScore);
         }
         

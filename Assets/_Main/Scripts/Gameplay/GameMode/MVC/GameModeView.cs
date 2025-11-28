@@ -230,10 +230,10 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData.HighScore = highScore;
 #endif
             
-            DataManager.Instance.SaveGameData(new ScoreSaveData
+            DataManager.Instance.SaveGameData(new DataManager.ScoreSaveData
             {
                 HighScore = highScore,
-            }, SaveDataType.Score);
+            }, DataManager.SaveDataType.Score);
         }
         
         private void HandlePointsGained(Vector2 position, float pointsAmount, bool isDouble = false)
