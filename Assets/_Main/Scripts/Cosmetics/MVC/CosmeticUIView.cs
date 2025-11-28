@@ -20,6 +20,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             GetUiComponents().MainMenuButton.onClick.AddListener(() =>
             {
+                Debug.Log("Here");
                 OnMainMenuButtonPressed?.Invoke();
             });
             
