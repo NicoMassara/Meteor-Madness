@@ -64,7 +64,7 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void View_OnAbilityFinishedHandler()
         {
-            _controller.TryDisableAbility();
+            _controller.TryEnableAbility();
         }
 
         #endregion
@@ -73,8 +73,8 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void EventBusSetup()
         {
-            AbilitiesEventSubscriber.Disable(EventBus_Ability_Disable);
             AbilitiesEventSubscriber.Enable(EventBus_Ability_Enable);
+            AbilitiesEventSubscriber.Disable(EventBus_Ability_Disable);
             AbilitiesEventSubscriber.EnableUI(EventBus_Ability_UI_Enable);
             AbilitiesEventSubscriber.DisableUI(EventBus_Ability_UI_Disable);
             AbilitiesEventSubscriber.SetCanUse(EventBus_Ability_CanUse);
