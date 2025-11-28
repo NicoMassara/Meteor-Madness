@@ -10,7 +10,8 @@ namespace _Main.Scripts.Managers
         public bool CanPlay { get; set; }
         public bool IsPaused { get; private set; }
         private int _currentPoints;
-        
+        public bool HadCorruptedSaveData { get; set; }
+
         public EventBusManager EventManager { get; private set; }
         public IInputReader InputReader { get; private set; }
         

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Localization;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Save;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,6 +22,8 @@ namespace _Main.Scripts.Bootstrap
 
         private void Awake()
         {
+            var gm = GameManager.Instance;
+            
             LocalizationEvents.OnLocalizationLoaded += () =>
             {
                 _hasLocalizationLoaded = true;
@@ -29,6 +32,11 @@ namespace _Main.Scripts.Bootstrap
             SaveDataEvents.OnSaveInitialized += () =>
             {
                 _hasLocalizationLoaded = true;
+            };
+            
+            SaveDataEvents.OnSaveDataCorrupted += () =>
+            {
+                GameManager.Instance.HadCorruptedSaveData = true;
             };
             
             SkinEvents.OnSaveLoaded += () =>

@@ -18,6 +18,7 @@ namespace _Main.Scripts.Save
 
     public static class SaveSystem
     {
+        // ReSharper disable Unity.PerformanceAnalysis
         private static string GetSavePath(string fileName)
         {
             fileName = fileName.Replace("/", "_").Replace("\\", "_");
@@ -31,7 +32,7 @@ namespace _Main.Scripts.Save
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
-                Debug.Log($"Save Folder Created At: {folderPath}");
+                //Debug.Log($"Save Folder Created At: {folderPath}");
             }
             
             return folderPath;
@@ -91,7 +92,7 @@ namespace _Main.Scripts.Save
             
             if (!File.Exists(path))
             {
-                Debug.LogWarning($"No save file found at: {path}");
+                //Debug.LogWarning($"No save file found at: {path}");
                 return false;
             }
 
@@ -100,13 +101,30 @@ namespace _Main.Scripts.Save
                 using (StreamReader reader = new StreamReader(path))
                 {
                     string json = reader.ReadToEnd();
+
+                    if (string.IsNullOrWhiteSpace(json))
+                    {
+                        SaveDataEvents.TriggerOnSaveDataCorrupted();
+                        //Debug.LogWarning($"Save file is empty at: {path}");
+                        return false;
+                    }
+
                     saveData = JsonUtility.FromJson<T>(json);
+
+                    if (saveData == null)
+                    {
+                        SaveDataEvents.TriggerOnSaveDataCorrupted();
+                        //Debug.LogWarning($"Save file is corrupt at: {path}");
+                        return false;
+                    }
+
                     return true;
                 }
             }
             catch (Exception e)
             {
-                Debug.LogError("Failed to load game: " + e.Message);
+                SaveDataEvents.TriggerOnSaveDataCorrupted();
+                //Debug.LogWarning($"Failed to load save file at {path}: " + e.Message);
                 return false;
             }
         }
@@ -117,14 +135,15 @@ namespace _Main.Scripts.Save
             if (File.Exists(path))
             {
                 Save<T>(new T(),saveType);
-                Debug.Log($"Save File Cleared at: {path}");
+                //Debug.Log($"Save File Cleared at: {path}");
             }
             else
             {
-                Debug.LogWarning($"No save file found at: {path}");
+                //Debug.LogWarning($"No save file found at: {path}");
             }
         }
     }
+    
 
     [System.Serializable]
     public abstract class SaveDataBase
