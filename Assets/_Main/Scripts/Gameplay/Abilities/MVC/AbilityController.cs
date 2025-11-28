@@ -4,135 +4,390 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
-    public class AbilityController
+    public class AbilityController : 
+        AbilityController.IAbilityController, 
+        AbilityController.IController,
+        AbilityController.IAbilityUI
     {
+        #region Intefaces
+
+        public interface IAbilityController
+        {
+            public void Initialize();
+            public void SelectAbility();
+            public void TryAddAbility(int inputAbilityType, Vector2 inputPosition);
+            public void SetCanUse(bool inputCanUse);
+            public void RunActiveTimer();
+            public void TryEnableUI();
+            public void TryDisableUI();
+            public void TryEnableAbility();
+            public void TryDisableAbility();
+            public void TryTriggerAbility();
+        }
+        
+        private interface IController
+        {
+            public void TriggerAbility();
+            public void FinishAbility();
+            public void SetCanUseAbility(bool canUse);
+            public void RestartAbilities();
+            public void ForceFinishAbility();
+            public void DisableUI();
+        }
+        
+        #endregion
+        
+        #region UI Controller
+        
+        private interface IAbilityUI
+        {
+            public void SetEnableUI(bool isEnable);
+        }
+
+        private class UIController
+        {
+            #region States
+
+            private class BaseState<T> : State<T>
+            {
+                protected IAbilityUI Controller { get; private set; }
+
+                public void Initialize(IAbilityUI controller)
+                {
+                    Controller = controller;
+                }
+            }
+            
+            private class EnableState<T> : BaseState<T>
+            {
+                public override void Awake() => Controller.SetEnableUI(true);
+            }
+    
+            private class DisableState<T> : BaseState<T>
+            {
+                public override void Awake() => Controller.SetEnableUI(false);
+            }
+
+            #endregion
+            
+            private enum States
+            {
+                None,
+                Enable,
+                Disabled,
+            }
+            private FSM<States> _fsm;
+
+            public UIController(IAbilityUI controller)
+            {
+                InitializeFsm(controller);
+            }
+
+            #region FSM
+
+            private void InitializeFsm(IAbilityUI controller)
+            {
+                var temp = new List<BaseState<States>>();
+                _fsm = new FSM<States>("Ability - UI");
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                _fsm.CreateDebugGUI(2);
+#endif
+
+                #region Variables
+
+                var none = new BaseState<States>();
+                var enable = new EnableState<States>();
+                var disable = new DisableState<States>();
+            
+                temp.Add(none);
+                temp.Add(enable);
+                temp.Add(disable);
+
+                #endregion
+
+                #region Transitions
+            
+                none.AddTransition(States.Enable, enable);
+            
+                enable.AddTransition(States.Disabled, disable);
+            
+                disable.AddTransition(States.Enable, enable);
+                
+
+                #endregion
+
+                foreach (var state in temp)
+                {
+                    state.Initialize(controller);
+                }
+            
+                _fsm.SetInit(none);
+            }
+
+            #region Transitions
+
+            private void SetTransition(States state)
+            {
+                _fsm?.Transitions(state);
+            }
+        
+            public void TransitionToEnable()
+            {
+                SetTransition(States.Enable);
+            }
+
+            public void TransitionToDisable()
+            {
+                SetTransition(States.Disabled);
+            }
+
+            #endregion
+
+            #endregion
+        }
+
+        #endregion
+
+        #region Main Controller
+
+        private class MainController
+        {
+            #region States
+
+            private class BaseState<T> : State<T>
+            {
+                protected IController Controller { get; private set; }
+
+                public void Initialize(IController controller)
+                {
+                    Controller = controller;
+                }
+            }
+    
+            private class RunningState<T> : BaseState<T>
+            {
+                public override void Awake() => Controller.TriggerAbility();
+
+                public override void Sleep() => Controller.FinishAbility();
+            }
+    
+            private class EnableState<T> : BaseState<T>
+            {
+                public override void Awake() => Controller.SetCanUseAbility(true);
+
+                public override void Sleep() => Controller.SetCanUseAbility(false);
+            }
+    
+            private class DisableState<T> : BaseState<T>
+            {
+                public override void Awake()
+                {
+                    Controller.DisableUI();
+                    Controller.RestartAbilities();
+                    Controller.ForceFinishAbility();
+                    Controller.SetCanUseAbility(false);
+                }
+            }
+
+            #endregion
+            
+            private enum States
+            {
+                None,
+                Enable,
+                Running,
+                Disabled,
+            }
+            private FSM<States> _fsm;
+        
+            private class AbilityActionGate : FsmActionGate<States>
+            {
+                public bool IsAbilityDisabled { get; private set; }
+                public AbilityActionGate(FSM<States> fsm) : base(fsm) { }
+
+                protected override void OnEnterState(States state)
+                {
+                    IsAbilityDisabled = state is States.Disabled;
+                }
+            }
+            
+            private AbilityActionGate _actionGate;
+
+            public MainController(IController controller)
+            {
+                InitializeFsm(controller);
+            }
+
+            #region FSM
+
+            private void InitializeFsm(IController controller)
+            {
+                var temp = new List<BaseState<States>>();
+                _fsm = new FSM<States>("Ability");
+                _actionGate = new AbilityActionGate(_fsm);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                _fsm.CreateDebugGUI(2);
+#endif
+
+                #region Variables
+
+                var none = new BaseState<States>();
+                var enable = new EnableState<States>();
+                var disable = new DisableState<States>();
+                var running = new RunningState<States>();
+            
+                temp.Add(none);
+                temp.Add(enable);
+                temp.Add(running);
+                temp.Add(disable);
+
+                #endregion
+
+                #region Transitions
+            
+                none.AddTransition(States.Enable, enable);
+            
+                enable.AddTransition(States.Disabled, disable);
+                enable.AddTransition(States.Running, running);
+            
+                disable.AddTransition(States.Enable, enable);
+            
+                running.AddTransition(States.Enable, enable);
+                running.AddTransition(States.Disabled, disable);
+            
+
+                #endregion
+
+                foreach (var state in temp)
+                {
+                    state.Initialize(controller);
+                }
+            
+                _fsm.SetInit(none);
+            }
+
+            #region Transitions
+
+            private void SetTransition(States state)
+            {
+                _fsm?.Transitions(state);
+            }
+        
+            public void TransitionToEnable()
+            {
+                SetTransition(States.Enable);
+            }
+
+            public void TransitionToDisable()
+            {
+                SetTransition(States.Disabled);
+            }
+        
+            public void TransitionToRunning()
+            {
+                SetTransition(States.Running);
+            }
+
+            #endregion
+
+            #endregion
+
+            public bool GetIsAbilityDisabled() => _actionGate.IsAbilityDisabled;
+        }
+
+        #endregion
+        
         private readonly AbilityMotor _motor;
-        private FSM<States> _fsm;
+        private MainController _mainController;
+        private UIController _uiController;
         
-        private enum States
-        {
-            None,
-            Enable,
-            Running,
-            Disabled,
-        }
-        
-        private class AbilityActionGate : FsmActionGate<States>
-        {
-            public AbilityActionGate(FSM<States> fsm) : base(fsm) { }
-            public bool IsAbilityEnable { get; private set; }
-
-            protected override void OnNewState(States state)
-            {
-
-            }
-
-            protected override void OnEnterState(States state)
-            {
-                IsAbilityEnable = state is not States.Disabled;
-            }
-
-            protected override void OnExitState(States state)
-            {
-
-            }
-        }
-        
-        private AbilityActionGate _actionGate;
-
         public AbilityController(AbilityMotor motor)
         {
             _motor = motor;
         }
+        
+        #region IAbilityController
 
         public void Initialize()
         {
-            InitializeFsm();
-        }
-
-        #region FSM
-
-        private void InitializeFsm()
-        {
-            var temp = new List<BaseState<States>>();
-            _fsm = new FSM<States>("Ability");
-            _actionGate = new AbilityActionGate(_fsm);
-            
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _fsm.CreateDebugGUI(2);
-#endif
-
-            #region Variables
-
-            var none = new BaseState<States>();
-            var enable = new EnableState<States>();
-            var disable = new DisableState<States>();
-            var running = new RunningState<States>();
-            
-            temp.Add(none);
-            temp.Add(enable);
-            temp.Add(running);
-            temp.Add(disable);
-
-            #endregion
-
-            #region Transitions
-            
-            none.AddTransition(States.Enable, enable);
-            
-            enable.AddTransition(States.Disabled, disable);
-            enable.AddTransition(States.Running, running);
-            
-            disable.AddTransition(States.Enable, enable);
-            
-            running.AddTransition(States.Enable, enable);
-            running.AddTransition(States.Disabled, disable);
-            
-
-            #endregion
-
-            foreach (var state in temp)
-            {
-                state.Initialize(this);
-            }
-            
-            _fsm.SetInit(none);
-        }
-
-        #region Transitions
-
-        private void SetTransition(States state)
-        {
-            _fsm?.Transitions(state);
+            _mainController = new MainController(this);
+            _uiController = new UIController(this);
         }
         
-        public void TransitionToEnable()
+        public void TryEnableUI()
         {
-            SetTransition(States.Enable);
+            if (_mainController.GetIsAbilityDisabled()) return;
+            
+            _uiController.TransitionToEnable();
         }
 
-        public void TransitionToDisable()
+        public void TryDisableUI()
         {
-            SetTransition(States.Disabled);
-        }
-        
-        public void TransitionToRunning()
-        {
-            SetTransition(States.Running);
+            _uiController.TransitionToDisable();
         }
 
-        #endregion
+        public void TryEnableAbility()
+        {
+            _mainController.TransitionToEnable();
+        }
 
-        #endregion
+        public void TryDisableAbility()
+        {
+            _mainController.TransitionToDisable();
+        }
+
+        public void TryTriggerAbility()
+        {
+            _mainController.TransitionToRunning();
+        }
 
         public void TryAddAbility(int abilityTypeIndex, Vector2 abilityPosition)
         {
+            if(_mainController.GetIsAbilityDisabled()) return;
+            
             _motor.TryAddAbility(abilityTypeIndex,abilityPosition);
         }
 
         public void SelectAbility()
         {
             _motor.SelectAbility();
+        }
+        
+        public void RunActiveTimer()
+        {
+            _motor.RunActiveTimer();
+        }
+
+        public void SetCanUse(bool inputCanUse)
+        {
+            _motor.SetCanUseAbility(inputCanUse);
+        }
+
+        #endregion
+        
+        #region IController
+
+        public void FinishAbility()
+        {
+            _motor.FinishAbility();
+        }
+
+        public void RestartAbilities()
+        {
+            _motor.RestartAbilities();
+        }
+        
+        public void ForceFinishAbility()
+        {
+            _motor.ForceFinishAbility();
+        }
+
+        public void DisableUI()
+        {
+            Debug.Log("Here");
+            _uiController.TransitionToDisable();
         }
 
         public void TriggerAbility()
@@ -145,86 +400,15 @@ namespace _Main.Scripts.Gameplay.Abilies
             _motor.SetCanUseAbility(canUse);
         }
 
+        #endregion
+        
+        #region IAbilityUI
+
         public void SetEnableUI(bool isEnable)
         {
             _motor.SetEnableUI(isEnable);
         }
 
-        public void FinishAbility()
-        {
-            _motor.FinishAbility();
-        }
-
-        public void RestartAbilities()
-        {
-            _motor.RestartAbilities();
-        }
-
-        public void RunActiveTimer()
-        {
-            _motor.RunActiveTimer();
-        }
-
-        public void ForceFinishAbility()
-        {
-            _motor.ForceFinishAbility();
-        }
-
-        public void SetCanUse(bool inputCanUse)
-        {
-            _motor.SetCanUseAbility(inputCanUse);
-        }
+        #endregion
     }
-    
-    #region States
-
-    public class BaseState<T> : State<T>
-    {
-        protected AbilityController Controller { get; private set; }
-
-        public void Initialize(AbilityController controller)
-        {
-            Controller = controller;
-        }
-    }
-    
-    public class RunningState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.TriggerAbility();
-        }
-
-        public override void Sleep()
-        {
-            Controller.FinishAbility();
-        }
-    }
-    
-    public class EnableState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.SetCanUseAbility(true);
-            Controller.SetEnableUI(true);
-        }
-
-        public override void Sleep()
-        {
-            Controller.SetCanUseAbility(false);
-        }
-    }
-    
-    public class DisableState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.RestartAbilities();
-            Controller.ForceFinishAbility();
-            Controller.SetCanUseAbility(false);
-            Controller.SetEnableUI(false);
-        }
-    }
-
-    #endregion
 }

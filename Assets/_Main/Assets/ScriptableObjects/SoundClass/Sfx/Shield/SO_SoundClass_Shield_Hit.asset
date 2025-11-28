@@ -24,10 +24,18 @@ MonoBehaviour:
     ignoreReverbZones: 0
     loop: 0
     priority: 128
-    volume: 0.5
-    pitch: 1
+    volume: 0.323
+    pitch: 0
     stereoPan: 0
     spatialBlend: 0
     reverbZoneMix: 1
     dopplerLevel: 1
+  fadeInData:
+    FadeTime: 0.05
+    ExpStrength: 5
+    FadeType: 0
+  fadeOutData:
+    FadeTime: 0.05
+    ExpStrength: 5
+    FadeType: 0
   randomPitchRange: 0

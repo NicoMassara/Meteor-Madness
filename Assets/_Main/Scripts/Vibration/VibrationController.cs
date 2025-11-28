@@ -1,6 +1,5 @@
 ﻿using System;
 using NicolasMassara.CustomTimerManager;
-using NicolasMassara.CustomTimerManager.Tools;
 using UnityEngine;
 
 namespace _Main.Scripts.Vibration
@@ -9,7 +8,7 @@ namespace _Main.Scripts.Vibration
     public class VibrationController
     {
         private AndroidJavaObject _vibrator;
-        private TimerGeneratedId _timerId;
+        private TimerManager.GeneratedId _timerId;
 
         public event Action OnVibrate;
         public event Action OnStopVibration;

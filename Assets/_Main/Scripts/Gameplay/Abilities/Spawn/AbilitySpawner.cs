@@ -4,7 +4,6 @@ using _Main.Scripts.Gameplay.Abilities.Sphere;
 using _Main.Scripts.Managers;
 using _Main.Scripts.MyTools;
 using NicolasMassara.CustomTimerManager;
-using NicolasMassara.CustomTimerManager.Tools;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -23,7 +22,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private bool _isTimerRunning;
         private int _minUnlockLevel;
         private int _currentLevel;
-        private TimerGeneratedId _spawnTimerId;
+        private TimerManager.GeneratedId _spawnTimerId;
         private AbilitySphereFactory _factory;
         private AbilitySelector _selector;
 

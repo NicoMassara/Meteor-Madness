@@ -4,7 +4,6 @@ using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyComponents;
 using _Main.Scripts.MySettings;
-using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -205,7 +204,7 @@ namespace _Main.Scripts.Sounds
             public SoundGenerator(SoundSource prefab)
             {
                 _factory = new SoundBehaviourFactory(prefab);
-                _idGenerator = new CustomIdGenerator();
+                _idGenerator = new CustomIdGenerator(50);
             }
 
             public Tuple<GeneratedId,ITrackedAudio> Create(ISoundData soundData, Transform transform)
@@ -237,8 +236,8 @@ namespace _Main.Scripts.Sounds
             
                 sound.OnFinished -= Return;
             
-                _idGenerator.Release(id);
                 _soundsDic.Remove(id);
+                id.Reset();
                 _idsDic.Remove(sound);
             }
         }

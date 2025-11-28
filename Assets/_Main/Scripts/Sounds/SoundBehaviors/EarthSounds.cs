@@ -11,15 +11,15 @@ namespace _Main.Scripts.Sounds.Components
 
         private void Start()
         {
-            GetComponentToSound.OnCollision += () =>
+            ComponentToSound.OnCollision += () =>
             {
                 PlaySound(collision);
             };
-            GetComponentToSound.OnHealing += () =>
+            ComponentToSound.OnHealing += () =>
             {
                 PlaySound(heal);
             };
-            GetComponentToSound.OnDestruction += () =>
+            ComponentToSound.OnDestruction += () =>
             {
                 PlaySound(death);
             };
