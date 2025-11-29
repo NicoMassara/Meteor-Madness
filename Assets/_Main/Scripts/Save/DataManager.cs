@@ -152,17 +152,13 @@ namespace _Main.Scripts.Save
                         }
                         catch (FormatException)
                         {
-                            Debug.LogWarning("Save file not base64 / malformed");
-                            SaveDataEvents.TriggerOnSaveDataCorrupted();
-                            return false;
+                            goto FILE_CORRUPTED;
                         }
                         
                         int sepIndex = combined.LastIndexOf(ChecksumCalculator.Separator);
                         if (sepIndex <= 0 || sepIndex == combined.Length - 1)
                         {
-                            Debug.LogWarning("Save format invalid (separator issue)");
-                            SaveDataEvents.TriggerOnSaveDataCorrupted();
-                            return false;
+                            goto FILE_CORRUPTED;
                         }
                         
                         string encrypted = combined.Substring(0, sepIndex);
@@ -171,18 +167,14 @@ namespace _Main.Scripts.Save
                         // 3) Parseo seguro del checksum
                         if (!byte.TryParse(checksumStr, out byte checksumOriginal))
                         {
-                            Debug.LogWarning("Save checksum parse failed");
-                            SaveDataEvents.TriggerOnSaveDataCorrupted();
-                            return false;
+                            goto FILE_CORRUPTED;
                         }
                         
                         // 4) Recalcular checksum y comparar
                         byte checksumCalc = ChecksumCalculator.CalculateXorChecksum(encrypted);
                         if (checksumOriginal != checksumCalc)
                         {
-                            Debug.LogWarning("Save file has been modified or corrupted (checksum mismatch)");
-                            SaveDataEvents.TriggerOnSaveDataCorrupted();
-                            return false;
+                            goto FILE_CORRUPTED;
                         }
                         
                         string json;
@@ -192,21 +184,19 @@ namespace _Main.Scripts.Save
                         }
                         catch (Exception e)
                         {
-                            Debug.LogWarning("Decrypt failed: " + e.Message);
-                            SaveDataEvents.TriggerOnSaveDataCorrupted();
-                            return false;
+                            goto FILE_CORRUPTED;
                         }
                         
                         saveData = JsonUtility.FromJson<MainSaveData>(json);
                         if (saveData == null)
                         {
-                            Debug.LogWarning("Deserialized saveData is null");
-                            SaveDataEvents.TriggerOnSaveDataCorrupted();
-                            return false;
+                            goto FILE_CORRUPTED;
                         }
                         return true;
+                        
                     }
                 }
+                
                 catch (FileNotFoundException)
                 {
                     Debug.LogWarning("Save file not found");
@@ -218,6 +208,10 @@ namespace _Main.Scripts.Save
                     Debug.LogWarning("Save file corrupted: " + e.Message);
                     return false;
                 }
+                
+                FILE_CORRUPTED:
+                SaveDataEvents.TriggerOnSaveDataCorrupted();
+                return false;
             }
 
             public static void ClearSaveFile()
@@ -258,7 +252,6 @@ namespace _Main.Scripts.Save
         }
         private static class SaveEncryption
         {
-            //private static readonly string EncryptionKey = "G7d$k9V2pL#8sQ1rT6wZ4mN5xY0bC3@!";
             public static string Encrypt(string plainText)
             {
                 using Aes aes = Aes.Create();
@@ -325,7 +318,6 @@ namespace _Main.Scripts.Save
                 return checksum;
             }
         }
-
 
         #endregion
 
