@@ -2,6 +2,7 @@
 using System.Collections;
 using _Main.Scripts.MyComponents;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
@@ -36,7 +37,6 @@ namespace _Main.Scripts.Save
             public SettingsSaveData Settings = new(); 
             public SkinSaveData Skin = new(); 
         }
-        
         private static class SaveSystem
         {
             private const string FolderName = "saves";
@@ -69,13 +69,15 @@ namespace _Main.Scripts.Save
                 string path = GetSavePath();
                 string json = JsonUtility.ToJson(data, true);
                 string encryptedJson  = SaveEncryption.Encrypt(json);
+                //string finalData = Obfuscator.Obfuscate(encryptedJson);
+                string finalData = Obfuscator.XorObfuscate(encryptedJson);
                 try
                 {
                     bool isNewSave = GetDoesSaveExist() == false;
                     
                     using (StreamWriter writer = new StreamWriter(path))
                     {
-                        writer.Write(encryptedJson);
+                        writer.Write(finalData);
                     }
 
                     if (isNewSave)
@@ -104,11 +106,13 @@ namespace _Main.Scripts.Save
                 
                 string json = JsonUtility.ToJson(new MainSaveData() , true);
                 string encryptedJson  = SaveEncryption.Encrypt(json);
+                //string finalData = Obfuscator.Obfuscate(encryptedJson);
+                string finalData = Obfuscator.XorObfuscate(encryptedJson);
                 try
                 {
                     using (StreamWriter writer = new StreamWriter(GetSavePath()))
                     {
-                        writer.Write(encryptedJson);
+                        writer.Write(finalData);
                     }
                     
                     Debug.Log($"Save File Created");
@@ -129,7 +133,9 @@ namespace _Main.Scripts.Save
                 {
                     using (StreamReader reader = new StreamReader(path))
                     {
-                        string encryptedJson = reader.ReadToEnd();
+                        string stored = reader.ReadToEnd();
+                        //string encryptedJson = Obfuscator.Deobfuscate(stored);
+                        string encryptedJson = Obfuscator.XorDeobfuscate(stored);
                         string json = SaveEncryption.Decrypt(encryptedJson);
 
                         if (string.IsNullOrWhiteSpace(json))
@@ -170,7 +176,6 @@ namespace _Main.Scripts.Save
                 }
             }
         }
-        
         private static class SaveEncryption
         {
             private static readonly string EncryptionKey = "G7d$k9V2pL#8sQ1rT6wZ4mN5xY0bC3@!";
@@ -206,6 +211,40 @@ namespace _Main.Scripts.Save
                 using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
                 using var sr = new StreamReader(cs);
                 return sr.ReadToEnd();
+            }
+        }
+        private static class Obfuscator
+        {
+            /*private const string Salt = "[DO-NOT-MODIFY-OR-DATA-WILL-BE-DELETED-YOU-HAVE-BEEN-WARNED]";
+            
+            public static string Obfuscate(string input)
+            {
+                string reversed = new string(input.Reverse().ToArray());
+                return Salt + reversed;
+            }
+
+            public static string Deobfuscate(string input)
+            {
+                if (input.StartsWith(Salt))
+                    input = input.Substring(5);
+
+                return new string(input.Reverse().ToArray());
+            }*/
+            
+            public static string XorObfuscate(string input, byte key = 0x5A)
+            {
+                byte[] data = Encoding.UTF8.GetBytes(input);
+                for (int i = 0; i < data.Length; i++)
+                    data[i] ^= key;
+                return Convert.ToBase64String(data);
+            }
+
+            public static string XorDeobfuscate(string input, byte key = 0x5A)
+            {
+                byte[] data = Convert.FromBase64String(input);
+                for (int i = 0; i < data.Length; i++)
+                    data[i] ^= key;
+                return Encoding.UTF8.GetString(data);
             }
         }
 
