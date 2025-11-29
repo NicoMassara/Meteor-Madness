@@ -295,7 +295,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void SetHighScore(float highScore)
         {
-            _motor.SetHighScore(highScore);
+            _motor.LoadHighScore(highScore);
         }
         
         public void HandleGameFinish()

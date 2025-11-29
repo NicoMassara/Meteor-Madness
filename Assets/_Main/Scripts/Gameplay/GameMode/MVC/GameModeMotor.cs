@@ -1,11 +1,12 @@
-﻿using _Main.Scripts.Observer;
+﻿using _Main.Scripts.CustomId;
+using _Main.Scripts.Observer;
+using _Main.Scripts.SecurityData;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeMotor : ObservableComponent
     {
-        private float _meteorDeflectCount;
 #pragma warning disable CS0414 // Field is assigned but its value is never used
         private int _meteorCollisionCount;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
@@ -21,9 +22,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         private bool _doesRestartGameMode;
         private bool _hasDoublePoints;
         private bool _canPause;
-        private float _highScore;
         private bool _hasGameplayPanelActive;
         private bool _hasPausePanelActive;
+
+        private GeneratedId _highScoreSecuredId;
+        private GeneratedId _currentScoreSecuredId;
         
 
         public GameModeMotor(int[] levelStreakAmount, int startTimer)
@@ -31,6 +34,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             _levelController = new(levelStreakAmount);
             _levelController.OnLevelChange += OnLevelChangeHandler;
             _startDelay = startTimer + 1;
+
+            _currentScoreSecuredId = SecureValueManager.RegisterValue<float>(0);
         }
         
         #region Earth
@@ -47,16 +52,19 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void HandleEarthEndDestruction()
         {
-            var hasBeaten = GetHasBeatenHighScore();
+            var currentScore = GetCurrentScore();
+            var highScore = GetHighScore();
+            var hasBeaten = GetHasBeatenHighScore(currentScore);
             
             if (hasBeaten)
             {
-                _highScore = _meteorDeflectCount;
-                NotifyAll(GameModeObserverMessage.SaveHighScore, _highScore);
+                highScore = currentScore;
+                UpdateHighScore(highScore);
+                NotifyAll(GameModeObserverMessage.SaveHighScore, highScore);
             }
             
-            NotifyAll(GameModeObserverMessage.SetHasHighScore, hasBeaten, _highScore);
-            NotifyAll(GameModeObserverMessage.EarthEndDestruction, _meteorDeflectCount);
+            NotifyAll(GameModeObserverMessage.SetHasHighScore, hasBeaten, highScore);
+            NotifyAll(GameModeObserverMessage.EarthEndDestruction, currentScore);
         }
         
         public void EarthRestartFinish()
@@ -99,7 +107,9 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
         {
             var finalValue = _hasDoublePoints ? meteorDeflectValue*2 : meteorDeflectValue;
-            _meteorDeflectCount += finalValue;
+            var currentScore = GetCurrentScore();
+            
+            currentScore += finalValue;
             
             if (meteorDeflectValue >= 1)
             {
@@ -107,11 +117,13 @@ namespace _Main.Scripts.Gameplay.GameMode
                 _levelController.CheckForNextLevel();
             }
             
+            UpdateCurrentScore(currentScore);
+            
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
-            if (GetHasBeatenHighScore())
+            if (GetHasBeatenHighScore(currentScore))
             {
-                NotifyAll(GameModeObserverMessage.UpdateHighScore, _meteorDeflectCount);
+                NotifyAll(GameModeObserverMessage.UpdateHighScore, currentScore);
             }
 #endif
             
@@ -120,13 +132,13 @@ namespace _Main.Scripts.Gameplay.GameMode
                 NotifyAll(GameModeObserverMessage.PointsGained,position,finalValue,_hasDoublePoints);
             }
 
-            NotifyAll(GameModeObserverMessage.MeteorDeflect,_meteorDeflectCount);
+            NotifyAll(GameModeObserverMessage.MeteorDeflect,currentScore);
         }
         
-        public void SetHighScore(float highScore)
+        public void LoadHighScore(float highScore)
         {
-            _highScore = highScore;
-            NotifyAll(GameModeObserverMessage.UpdateHighScore, _highScore);
+            _highScoreSecuredId = SecureValueManager.RegisterValue(highScore);
+            NotifyAll(GameModeObserverMessage.UpdateHighScore, highScore);
         }
 
         public void InitializeValues()
@@ -169,15 +181,15 @@ namespace _Main.Scripts.Gameplay.GameMode
             }
         }
 
-        public bool GetHasBeatenHighScore()
+        private bool GetHasBeatenHighScore(float currentScore)
         {
-            return _meteorDeflectCount > _highScore;
+            return currentScore > GetHighScore();
         }
 
         public void RestartValues()
         {
             _meteorCollisionCount = 0;
-            _meteorDeflectCount = 0;
+            UpdateCurrentScore(0);
             _levelController.ResetLevel();
         }
 
@@ -278,5 +290,31 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             NotifyAll(GameModeObserverMessage.Leaving);
         }
+
+        #region Secured Data
+
+        private float GetHighScore()
+        {
+            var highScore = 0f;
+            return SecureValueManager.GetDoesContainValue(_highScoreSecuredId, out highScore) ? highScore : 0;
+        }
+
+        private float GetCurrentScore()
+        {
+            var highScore = 0f;
+            return SecureValueManager.GetDoesContainValue(_currentScoreSecuredId, out highScore) ? highScore : 0;
+        }
+
+        private void UpdateHighScore(float input)
+        {
+            SecureValueManager.ModifyValue(_highScoreSecuredId, input);
+        }
+        
+        private void UpdateCurrentScore(float input)
+        {
+            SecureValueManager.ModifyValue(_currentScoreSecuredId, input);
+        }
+        
+        #endregion
     }
 }

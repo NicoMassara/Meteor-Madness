@@ -386,7 +386,6 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         public void DisableUI()
         {
-            Debug.Log("Here");
             _uiController.TransitionToDisable();
         }
 
