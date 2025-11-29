@@ -153,7 +153,7 @@ namespace _Main.Scripts.SecurityData
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         public TickGroup SelfTickGroup { get; private set; } = TickGroup.EverySecond;
         
-        public event Action<ushort> OnCheatDetected;
+        public static event Action<ushort> OnCheatDetected;
 
         private void ApplyPending()
         {
@@ -191,7 +191,7 @@ namespace _Main.Scripts.SecurityData
 
         #region Public API
 
-        public static GeneratedId RegisterValue<T>(T startValue) where T : struct 
+        public static GeneratedId RegisterValue<T>(T startValue = default) where T : struct 
             => Instance.Internal_RegisterValue<T>(startValue);
         
         public static void RemoveValue(GeneratedId valueId)

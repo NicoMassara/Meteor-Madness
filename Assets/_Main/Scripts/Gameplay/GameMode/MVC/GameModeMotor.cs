@@ -36,8 +36,25 @@ namespace _Main.Scripts.Gameplay.GameMode
             _startDelay = startTimer + 1;
 
             _currentScoreSecuredId = SecureValueManager.RegisterValue<float>(0);
+
+            SecureValueManager.OnCheatDetected += OnCheatDetectedHandler;
         }
-        
+
+        private void OnCheatDetectedHandler(ushort id)
+        {
+            if (_currentScoreSecuredId.Id == id)
+            {
+                Debug.LogWarning("Cheat Detected! Restarting Points!");
+                UpdateCurrentScore(Mathf.NegativeInfinity);
+            }
+            
+            if (_highScoreSecuredId.Id == id)
+            {
+                Debug.LogWarning("Cheat Detected! Restarting High Score!");
+                UpdateHighScore(Mathf.NegativeInfinity);
+            }
+        }
+
         #region Earth
 
         public void HandleEarthShake()
