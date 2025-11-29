@@ -233,13 +233,36 @@ namespace _Main.Scripts.Save
                 }
             }
         }
+        private static class KeyEncryptor
+        {
+            private static readonly string[] keyParts =
+            {
+                "\u0045\u0031\u0038\u0032\u0033\u0037\u004D\u0054", // Parte 1 XOR
+                "\u0042\u0036\u0039\u0034\u0053\u0034\u004C\u0033", // Parte 2 XOR
+                "\u0051\u0038\u0055\u0046\u0032\u0035\u004B\u0037", // Parte 3 XOR
+                "\u0044\u0031\u0039\u0047\u0038\u0040\u0035\u0050"  // Parte 4 XOR
+            };
+
+            private const char obfuscator = '\x55'; // XOR Key
+
+            public static string GetEncryptionKey()
+            {
+                StringBuilder keyBuilder = new StringBuilder();
+                foreach (var p in keyParts)
+                {
+                    foreach (char ch in p)
+                        keyBuilder.Append((char)(ch ^ obfuscator)); // 🔓 Desofuscar
+                }
+                return keyBuilder.ToString();
+            }
+        }
         private static class SaveEncryption
         {
-            private static readonly string EncryptionKey = "G7d$k9V2pL#8sQ1rT6wZ4mN5xY0bC3@!";
+            //private static readonly string EncryptionKey = "G7d$k9V2pL#8sQ1rT6wZ4mN5xY0bC3@!";
             public static string Encrypt(string plainText)
             {
                 using Aes aes = Aes.Create();
-                aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+                aes.Key = Encoding.UTF8.GetBytes(KeyEncryptor.GetEncryptionKey());
                 aes.GenerateIV();
                 byte[] iv = aes.IV;
 
@@ -258,7 +281,7 @@ namespace _Main.Scripts.Save
             {
                 byte[] buffer = Convert.FromBase64String(encryptedText);
                 using Aes aes = Aes.Create();
-                aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+                aes.Key = Encoding.UTF8.GetBytes(KeyEncryptor.GetEncryptionKey());
 
                 byte[] iv = new byte[aes.BlockSize / 8];
                 Array.Copy(buffer, iv, iv.Length);
@@ -288,11 +311,9 @@ namespace _Main.Scripts.Save
                 return Encoding.UTF8.GetString(data);
             }
         }
-
         private static class ChecksumCalculator
         {
             public const char Separator = '|';
-            
             
             public static byte CalculateXorChecksum(string data)
             {
@@ -304,6 +325,7 @@ namespace _Main.Scripts.Save
                 return checksum;
             }
         }
+
 
         #endregion
 
