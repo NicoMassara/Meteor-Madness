@@ -2,6 +2,8 @@
 using System.Collections;
 using _Main.Scripts.MyComponents;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using UnityEngine;
 
 namespace _Main.Scripts.Save
@@ -66,13 +68,14 @@ namespace _Main.Scripts.Save
             {
                 string path = GetSavePath();
                 string json = JsonUtility.ToJson(data, true);
+                string encryptedJson  = SaveEncryption.Encrypt(json);
                 try
                 {
                     bool isNewSave = GetDoesSaveExist() == false;
                     
                     using (StreamWriter writer = new StreamWriter(path))
                     {
-                        writer.Write(json);
+                        writer.Write(encryptedJson);
                     }
 
                     if (isNewSave)
@@ -91,7 +94,6 @@ namespace _Main.Scripts.Save
                     Debug.LogError("Failed to save game: " + e.Message);
                 }
             }
-
             public static void CreateSaveFile()
             {
                 if (GetDoesSaveExist())
@@ -101,11 +103,12 @@ namespace _Main.Scripts.Save
                 }
                 
                 string json = JsonUtility.ToJson(new MainSaveData() , true);
+                string encryptedJson  = SaveEncryption.Encrypt(json);
                 try
                 {
                     using (StreamWriter writer = new StreamWriter(GetSavePath()))
                     {
-                        writer.Write(json);
+                        writer.Write(encryptedJson);
                     }
                     
                     Debug.Log($"Save File Created");
@@ -116,8 +119,6 @@ namespace _Main.Scripts.Save
                     Debug.LogError("Failed to save game: " + e.Message);
                 }
             }
-            
-
             public static bool TryLoadSaveFileIfNotCorrupted(out MainSaveData saveData)
             {
                 saveData = null;
@@ -128,7 +129,8 @@ namespace _Main.Scripts.Save
                 {
                     using (StreamReader reader = new StreamReader(path))
                     {
-                        string json = reader.ReadToEnd();
+                        string encryptedJson = reader.ReadToEnd();
+                        string json = SaveEncryption.Decrypt(encryptedJson);
 
                         if (string.IsNullOrWhiteSpace(json))
                         {
@@ -166,6 +168,44 @@ namespace _Main.Scripts.Save
                 {
                     //Debug.LogWarning($"No save file found at: {path}");
                 }
+            }
+        }
+        
+        private static class SaveEncryption
+        {
+            private static readonly string EncryptionKey = "G7d$k9V2pL#8sQ1rT6wZ4mN5xY0bC3@!";
+            public static string Encrypt(string plainText)
+            {
+                using Aes aes = Aes.Create();
+                aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+                aes.GenerateIV();
+                byte[] iv = aes.IV;
+
+                using var encryptor = aes.CreateEncryptor(aes.Key, iv);
+                using var ms = new MemoryStream();
+                ms.Write(iv, 0, iv.Length);
+                using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                using (var sw = new StreamWriter(cs))
+                {
+                    sw.Write(plainText);
+                }
+
+                return Convert.ToBase64String(ms.ToArray());
+            }
+            public static string Decrypt(string encryptedText)
+            {
+                byte[] buffer = Convert.FromBase64String(encryptedText);
+                using Aes aes = Aes.Create();
+                aes.Key = Encoding.UTF8.GetBytes(EncryptionKey);
+
+                byte[] iv = new byte[aes.BlockSize / 8];
+                Array.Copy(buffer, iv, iv.Length);
+
+                using var decryptor = aes.CreateDecryptor(aes.Key, iv);
+                using var ms = new MemoryStream(buffer, iv.Length, buffer.Length - iv.Length);
+                using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
+                using var sr = new StreamReader(cs);
+                return sr.ReadToEnd();
             }
         }
 
