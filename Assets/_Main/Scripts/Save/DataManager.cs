@@ -69,15 +69,17 @@ namespace _Main.Scripts.Save
                 string path = GetSavePath();
                 string json = JsonUtility.ToJson(data, true);
                 string encryptedJson  = SaveEncryption.Encrypt(json);
-                //string finalData = Obfuscator.Obfuscate(encryptedJson);
-                string finalData = Obfuscator.XorObfuscate(encryptedJson);
+                byte checksum = ChecksumCalculator.CalculateXorChecksum(encryptedJson);
+                string finalString = encryptedJson + "|" + checksum;
+                string obfuscatedData = Obfuscator.XorObfuscate(finalString);
+                
                 try
                 {
                     bool isNewSave = GetDoesSaveExist() == false;
                     
                     using (StreamWriter writer = new StreamWriter(path))
                     {
-                        writer.Write(finalData);
+                        writer.Write(obfuscatedData);
                     }
 
                     if (isNewSave)
@@ -106,13 +108,15 @@ namespace _Main.Scripts.Save
                 
                 string json = JsonUtility.ToJson(new MainSaveData() , true);
                 string encryptedJson  = SaveEncryption.Encrypt(json);
-                //string finalData = Obfuscator.Obfuscate(encryptedJson);
-                string finalData = Obfuscator.XorObfuscate(encryptedJson);
+                byte checksum = ChecksumCalculator.CalculateXorChecksum(encryptedJson);
+                string finalString = encryptedJson + "|" + checksum;
+                string obfuscatedData = Obfuscator.XorObfuscate(finalString);
+                
                 try
                 {
                     using (StreamWriter writer = new StreamWriter(GetSavePath()))
                     {
-                        writer.Write(finalData);
+                        writer.Write(obfuscatedData);
                     }
                     
                     Debug.Log($"Save File Created");
@@ -133,32 +137,85 @@ namespace _Main.Scripts.Save
                 {
                     using (StreamReader reader = new StreamReader(path))
                     {
-                        string stored = reader.ReadToEnd();
-                        //string encryptedJson = Obfuscator.Deobfuscate(stored);
-                        string encryptedJson = Obfuscator.XorDeobfuscate(stored);
-                        string json = SaveEncryption.Decrypt(encryptedJson);
-
-                        if (string.IsNullOrWhiteSpace(json))
+                        string obfuscated = reader.ReadToEnd();
+                        
+                        if (string.IsNullOrWhiteSpace(obfuscated))
                         {
                             SaveDataEvents.TriggerOnSaveDataCorrupted();
                             return false;
                         }
 
+                        string combined;
+                        try
+                        {
+                            combined = Obfuscator.XorDeobfuscate(obfuscated);
+                        }
+                        catch (FormatException)
+                        {
+                            Debug.LogWarning("Save file not base64 / malformed");
+                            SaveDataEvents.TriggerOnSaveDataCorrupted();
+                            return false;
+                        }
+                        
+                        int sepIndex = combined.LastIndexOf(ChecksumCalculator.Separator);
+                        if (sepIndex <= 0 || sepIndex == combined.Length - 1)
+                        {
+                            Debug.LogWarning("Save format invalid (separator issue)");
+                            SaveDataEvents.TriggerOnSaveDataCorrupted();
+                            return false;
+                        }
+                        
+                        string encrypted = combined.Substring(0, sepIndex);
+                        string checksumStr = combined.Substring(sepIndex + 1);
+                        
+                        // 3) Parseo seguro del checksum
+                        if (!byte.TryParse(checksumStr, out byte checksumOriginal))
+                        {
+                            Debug.LogWarning("Save checksum parse failed");
+                            SaveDataEvents.TriggerOnSaveDataCorrupted();
+                            return false;
+                        }
+                        
+                        // 4) Recalcular checksum y comparar
+                        byte checksumCalc = ChecksumCalculator.CalculateXorChecksum(encrypted);
+                        if (checksumOriginal != checksumCalc)
+                        {
+                            Debug.LogWarning("Save file has been modified or corrupted (checksum mismatch)");
+                            SaveDataEvents.TriggerOnSaveDataCorrupted();
+                            return false;
+                        }
+                        
+                        string json;
+                        try
+                        {
+                            json = SaveEncryption.Decrypt(encrypted);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogWarning("Decrypt failed: " + e.Message);
+                            SaveDataEvents.TriggerOnSaveDataCorrupted();
+                            return false;
+                        }
+                        
                         saveData = JsonUtility.FromJson<MainSaveData>(json);
-
                         if (saveData == null)
                         {
+                            Debug.LogWarning("Deserialized saveData is null");
                             SaveDataEvents.TriggerOnSaveDataCorrupted();
                             return false;
                         }
-
                         return true;
                     }
+                }
+                catch (FileNotFoundException)
+                {
+                    Debug.LogWarning("Save file not found");
+                    return false;
                 }
                 catch (Exception e)
                 {
                     SaveDataEvents.TriggerOnSaveDataCorrupted();
-                    Debug.LogWarning($"Save file is empty or corrupted: " + e.Message);
+                    Debug.LogWarning("Save file corrupted: " + e.Message);
                     return false;
                 }
             }
@@ -215,22 +272,6 @@ namespace _Main.Scripts.Save
         }
         private static class Obfuscator
         {
-            /*private const string Salt = "[DO-NOT-MODIFY-OR-DATA-WILL-BE-DELETED-YOU-HAVE-BEEN-WARNED]";
-            
-            public static string Obfuscate(string input)
-            {
-                string reversed = new string(input.Reverse().ToArray());
-                return Salt + reversed;
-            }
-
-            public static string Deobfuscate(string input)
-            {
-                if (input.StartsWith(Salt))
-                    input = input.Substring(5);
-
-                return new string(input.Reverse().ToArray());
-            }*/
-            
             public static string XorObfuscate(string input, byte key = 0x5A)
             {
                 byte[] data = Encoding.UTF8.GetBytes(input);
@@ -245,6 +286,22 @@ namespace _Main.Scripts.Save
                 for (int i = 0; i < data.Length; i++)
                     data[i] ^= key;
                 return Encoding.UTF8.GetString(data);
+            }
+        }
+
+        private static class ChecksumCalculator
+        {
+            public const char Separator = '|';
+            
+            
+            public static byte CalculateXorChecksum(string data)
+            {
+                byte checksum = 0;
+                foreach (char c in data)
+                {
+                    checksum ^= (byte)c;
+                }
+                return checksum;
             }
         }
 
