@@ -41,7 +41,8 @@ namespace _Main.Scripts.Save
         {
             private const string FolderName = "saves";
             private const string FileExtension = "sav";
-            private const string FileName = "saveData";
+            private const string BackupExtension = "bak";
+            private const string FileName = "savedata";
 
             // ReSharper disable Unity.PerformanceAnalysis
             private static string GetSavePath()
@@ -49,8 +50,15 @@ namespace _Main.Scripts.Save
                 var fileName = FileName.Replace("/", "_").Replace("\\", "_");
                 return Path.Combine(GetSaveFolder(), $"{fileName}.{FileExtension}");
             }
+            
+            private static string GetBackupPath()
+            {
+                var fileName = FileName.Replace("/", "_").Replace("\\", "_");
+                return Path.Combine(GetSaveFolder(), $"{fileName}.{BackupExtension}");
+            }
 
             public static bool GetDoesSaveExist() => File.Exists(GetSavePath());
+            public static bool GetDoesBackupExist() => File.Exists(GetBackupPath());
 
             private static string GetSaveFolder()
             {
@@ -67,6 +75,7 @@ namespace _Main.Scripts.Save
             public static void Save(MainSaveData data)
             {
                 string path = GetSavePath();
+                string backupPath = GetBackupPath();
                 string json = JsonUtility.ToJson(data, true);
                 string encryptedJson  = SaveEncryption.Encrypt(json);
                 byte checksum = ChecksumCalculator.CalculateXorChecksum(encryptedJson);
@@ -81,17 +90,10 @@ namespace _Main.Scripts.Save
                     {
                         writer.Write(obfuscatedData);
                     }
+                    
+                    File.Copy(path, backupPath, true);
 
-                    if (isNewSave)
-                    {
-                        Debug.Log($"Save File Created");
-                    }
-                    else
-                    {
-                        Debug.Log($"Game saved");
-                    }
-
-
+                    Debug.Log(isNewSave ? $"Save File Created" : $"Game saved");
                 }
                 catch (Exception e)
                 {
@@ -106,6 +108,8 @@ namespace _Main.Scripts.Save
                     return;
                 }
                 
+                string path = GetSavePath();
+                string backupPath = GetBackupPath();
                 string json = JsonUtility.ToJson(new MainSaveData() , true);
                 string encryptedJson  = SaveEncryption.Encrypt(json);
                 byte checksum = ChecksumCalculator.CalculateXorChecksum(encryptedJson);
@@ -114,10 +118,12 @@ namespace _Main.Scripts.Save
                 
                 try
                 {
-                    using (StreamWriter writer = new StreamWriter(GetSavePath()))
+                    using (StreamWriter writer = new StreamWriter(path))
                     {
                         writer.Write(obfuscatedData);
                     }
+                    
+                    File.Copy(path, backupPath, true);
                     
                     Debug.Log($"Save File Created");
                     
@@ -129,89 +135,60 @@ namespace _Main.Scripts.Save
             }
             public static bool TryLoadSaveFileIfNotCorrupted(out MainSaveData saveData)
             {
-                saveData = null;
-                
-                string path = GetSavePath();
-                
-                try
-                {
-                    using (StreamReader reader = new StreamReader(path))
-                    {
-                        string obfuscated = reader.ReadToEnd();
-                        
-                        if (string.IsNullOrWhiteSpace(obfuscated))
-                        {
-                            SaveDataEvents.TriggerOnSaveDataCorrupted();
-                            return false;
-                        }
+                if (TryLoadFromPath(GetSavePath(), out saveData))
+                    return true;
 
-                        string combined;
-                        try
-                        {
-                            combined = Obfuscator.XorDeobfuscate(obfuscated);
-                        }
-                        catch (FormatException)
-                        {
-                            goto FILE_CORRUPTED;
-                        }
-                        
-                        int sepIndex = combined.LastIndexOf(ChecksumCalculator.Separator);
-                        if (sepIndex <= 0 || sepIndex == combined.Length - 1)
-                        {
-                            goto FILE_CORRUPTED;
-                        }
-                        
-                        string encrypted = combined.Substring(0, sepIndex);
-                        string checksumStr = combined.Substring(sepIndex + 1);
-                        
-                        // 3) Parseo seguro del checksum
-                        if (!byte.TryParse(checksumStr, out byte checksumOriginal))
-                        {
-                            goto FILE_CORRUPTED;
-                        }
-                        
-                        // 4) Recalcular checksum y comparar
-                        byte checksumCalc = ChecksumCalculator.CalculateXorChecksum(encrypted);
-                        if (checksumOriginal != checksumCalc)
-                        {
-                            goto FILE_CORRUPTED;
-                        }
-                        
-                        string json;
-                        try
-                        {
-                            json = SaveEncryption.Decrypt(encrypted);
-                        }
-                        catch (Exception e)
-                        {
-                            goto FILE_CORRUPTED;
-                        }
-                        
-                        saveData = JsonUtility.FromJson<MainSaveData>(json);
-                        if (saveData == null)
-                        {
-                            goto FILE_CORRUPTED;
-                        }
-                        return true;
-                        
-                    }
-                }
-                
-                catch (FileNotFoundException)
+                Debug.LogWarning("Main save corrupted. Trying backup...");
+
+                if (TryLoadFromPath(GetBackupPath(), out saveData))
                 {
-                    Debug.LogWarning("Save file not found");
-                    return false;
+                    Debug.LogWarning("Backup save loaded successfully. Restoring main save.");
+                    Save(saveData); // reescribimos el main save con backup
+                    return true;
                 }
-                catch (Exception e)
-                {
-                    SaveDataEvents.TriggerOnSaveDataCorrupted();
-                    Debug.LogWarning("Save file corrupted: " + e.Message);
-                    return false;
-                }
-                
-                FILE_CORRUPTED:
+
                 SaveDataEvents.TriggerOnSaveDataCorrupted();
                 return false;
+            }
+            private static bool TryLoadFromPath(string path, out MainSaveData saveData)
+            {
+                saveData = null;
+    
+                if (!File.Exists(path))
+                    return false;
+
+                try
+                {
+                    string obfuscated = File.ReadAllText(path);
+                    if (string.IsNullOrWhiteSpace(obfuscated))
+                        return false;
+
+                    string combined = Obfuscator.XorDeobfuscate(obfuscated);
+                    int sepIndex = combined.LastIndexOf(ChecksumCalculator.Separator);
+                    if (sepIndex <= 0 || sepIndex == combined.Length - 1)
+                        return false;
+
+                    string encrypted = combined.Substring(0, sepIndex);
+                    string checksumStr = combined.Substring(sepIndex + 1);
+
+                    if (!byte.TryParse(checksumStr, out byte checksumOriginal))
+                        return false;
+
+                    byte checksumCalc = ChecksumCalculator.CalculateXorChecksum(encrypted);
+                    if (checksumOriginal != checksumCalc)
+                        return false;
+
+                    string json = SaveEncryption.Decrypt(encrypted);
+                    saveData = JsonUtility.FromJson<MainSaveData>(json);
+                    if (saveData == null)
+                        return false;
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
             }
 
             public static void ClearSaveFile()
