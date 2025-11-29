@@ -25,9 +25,9 @@ namespace _Main.Scripts.Utilities
 
             return false;
 #endif
-#endif
-            
+#else
             return SystemInfo.deviceType == DeviceType.Handheld;
+#endif
         }
 
         public T GetPanelData()

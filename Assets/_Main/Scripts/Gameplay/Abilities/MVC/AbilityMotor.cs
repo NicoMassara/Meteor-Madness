@@ -12,9 +12,9 @@ namespace _Main.Scripts.Gameplay.Abilies
         private bool _hasAbilityRunning;
         private Vector2 _abilityAddedPosition;
 
-        public AbilityMotor(int maxAbilityStorage)
+        public AbilityMotor()
         {
-            _storage = new AbilityStorage(maxAbilityStorage);
+            _storage = new AbilityStorage();
             Initialize();
         }
 
