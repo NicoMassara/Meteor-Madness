@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NicolasMassara.CustomTimerManager.Tools;
 using UnityEngine;
+using Random = UnityEngine;
 
 namespace NicolasMassara.CustomTimerManager
 {
@@ -80,11 +80,78 @@ namespace NicolasMassara.CustomTimerManager
         //                       TOOLS
         //====================================================
 
+        #region ID Generator
+        public class GeneratedId
+        {
+            public ushort Id { get; private set; }
+            public bool IsActive => Id > 0;
+            private event Action<GeneratedId> _onRelease;
+
+            public GeneratedId(ushort id, Action<GeneratedId> onRelease)
+            {
+                Id = id;
+                _onRelease = onRelease;
+            }
+
+            public void Release()
+            {
+                _onRelease?.Invoke(this);
+            }
+
+            public void Reset()
+            {
+                Id = 0;
+            }
+        }
+        private class RandomIdGenerator
+        {
+            private const ushort NullId = 0; // Default ID used as null
+
+            private readonly HashSet<ushort> _inUseId;// IDs currently in use
+            private ushort _nextId = 1; // Start from 1 (0 = NullId)
+
+            public RandomIdGenerator(int initialSize = 10)
+            {
+                initialSize = Mathf.Clamp(initialSize, 0, ushort.MaxValue);
+                _inUseId = new HashSet<ushort>(initialSize);
+            }
+
+            /// <summary>
+            /// Generates an incremental GeneratedId
+            /// </summary>
+            public GeneratedId Generate()
+            {
+                if (_inUseId.Count >= ushort.MaxValue - 1)
+                    throw new InvalidOperationException("All available IDs are in use.");
+
+                // Find the next free ID
+                while (_inUseId.Contains(_nextId) || _nextId == NullId)
+                {
+                    _nextId++;
+
+                    if (_nextId == ushort.MaxValue)
+                        _nextId = 1; // Wrap around if overflow
+                }
+
+                ushort value = _nextId;
+                _inUseId.Add(value);
+                _nextId++;
+
+                return new GeneratedId(value, Release);
+            }
+
+            private void Release(GeneratedId idData)
+            {
+                _inUseId.Remove(idData.Id);
+                idData.Reset();
+            }
+        }
+        #endregion
+        
         #region Timer
 
         public class Timer
         {
-            
             #region Tools
 
             private class TimerTools
@@ -215,7 +282,7 @@ namespace NicolasMassara.CustomTimerManager
         private class TimerManagerData
         {
             public Timer Timer;
-            public TimerGeneratedId ExternalId;
+            public GeneratedId ExternalId;
         }
 
         #endregion
@@ -252,11 +319,11 @@ namespace NicolasMassara.CustomTimerManager
         private readonly RandomIdGenerator _idStorage = new RandomIdGenerator();
         private float _applicationTargetFrameRate;
 
-        private readonly List<ulong> _cancelAddIds = new List<ulong>();
+        private readonly List<ushort> _cancelAddIds = new List<ushort>();
         private readonly List<TimerManagerData> _running = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toAdd = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toRemove = new List<TimerManagerData>();
-        private readonly Dictionary<ulong, TimerManagerData> _timerDic = new Dictionary<ulong, TimerManagerData>();
+        private readonly Dictionary<ushort, TimerManagerData> _timerDic = new Dictionary<ushort, TimerManagerData>();
 
         //====================================================
         //                       COUNTERS
@@ -312,7 +379,7 @@ namespace NicolasMassara.CustomTimerManager
         {
             if (_toAdd.Count > 0)
             {
-                var cancelIds = new HashSet<ulong>(_cancelAddIds);
+                var cancelIds = new HashSet<ushort>(_cancelAddIds);
 
                 foreach (var data in _toAdd)
                 {
@@ -349,8 +416,8 @@ namespace NicolasMassara.CustomTimerManager
         //====================================================
         #region Public
 
-        public static TimerGeneratedId Add(TimerData timerData) => Instance.AddInternal(timerData);
-        public static bool Remove(TimerGeneratedId generatedId) => Instance.RemoveInternal(generatedId);
+        public static GeneratedId Add(TimerData timerData) => Instance.AddInternal(timerData);
+        public static bool Remove(GeneratedId generatedId) => Instance.RemoveInternal(generatedId);
         public static void Clear() => Instance.ClearInternal();
 
         #endregion
@@ -360,7 +427,7 @@ namespace NicolasMassara.CustomTimerManager
         //====================================================
         #region Internal
 
-        private TimerGeneratedId AddInternal(TimerData timerData)
+        private GeneratedId AddInternal(TimerData timerData)
         {
             var generatedId = _idStorage.Generate();
             var timer = _timerFactory.GetTimer();
@@ -375,7 +442,7 @@ namespace NicolasMassara.CustomTimerManager
             return generatedId;
         }
 
-        private bool RemoveInternal(TimerGeneratedId generatedId)
+        private bool RemoveInternal(GeneratedId generatedId)
         {
             if(generatedId == null) return false;
             

@@ -6,17 +6,17 @@ namespace _Main.Scripts.Sounds.Components
     {
         private void Start()
         {
-            GetComponentToSound.OnResumeButtonPressed += () =>
+            ComponentToSound.OnResumeButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
             
-            GetComponentToSound.OnOptionsButtonPressed += () =>
+            ComponentToSound.OnOptionsButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
             
-            GetComponentToSound.OnMainMenuButtonPressed += () =>
+            ComponentToSound.OnMainMenuButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Back);
             };

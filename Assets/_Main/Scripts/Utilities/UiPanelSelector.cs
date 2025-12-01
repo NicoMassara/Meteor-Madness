@@ -18,7 +18,16 @@ namespace _Main.Scripts.Utilities
 
         protected bool GetIsMobile()
         {
+#if UNITY_EDITOR
+#if UNITY_ANDROID || UNITY_IOS
+            return true;
+#else
+
+            return false;
+#endif
+#else
             return SystemInfo.deviceType == DeviceType.Handheld;
+#endif
         }
 
         public T GetPanelData()

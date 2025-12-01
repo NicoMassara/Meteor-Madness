@@ -7,15 +7,22 @@ namespace _Main.Scripts.MySettings
 {
     public class SettingsManager : SingletonBehaviour<SettingsManager>
     {
-        private SettingsSaveData _settingsData;
+        private DataManager.SettingsSaveData _settingsData;
         
         public event Action<int> OnLanguageChanged;
         public event Action<float> OnMasterVolumeChanged;
         public event Action<bool> OnVibrationChanged;
 
-        private void Start()
+        private void Awake()
         {
-            _settingsData = DataManager.Instance.GetData<SettingsSaveData>(SaveDataType.Settings);
+            SaveDataEvents.OnSaveInitialized += Initialize;
+        }
+
+        private void Initialize()
+        {
+            SaveDataEvents.OnSaveInitialized -= Initialize;
+            //
+            _settingsData = DataManager.Instance.GetData<DataManager.SettingsSaveData>(DataManager.SaveDataType.Settings);
         }
 
         #region Settings Actions
@@ -41,7 +48,7 @@ namespace _Main.Scripts.MySettings
 
         public void SaveSettings()
         {
-            DataManager.Instance.SaveGameData(_settingsData, SaveDataType.Settings);
+            DataManager.Instance.SaveGameData(_settingsData, DataManager.SaveDataType.Settings);
         }
 
         #endregion

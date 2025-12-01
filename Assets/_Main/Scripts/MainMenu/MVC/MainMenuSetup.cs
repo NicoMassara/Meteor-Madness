@@ -1,7 +1,4 @@
-﻿using System;
-using _Main.Scripts.Managers;
-using _Main.Scripts.MySettings;
-using _Main.Scripts.Sounds;
+﻿using _Main.Scripts.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 

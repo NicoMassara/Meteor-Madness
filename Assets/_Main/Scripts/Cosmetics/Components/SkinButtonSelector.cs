@@ -14,7 +14,7 @@ namespace _Main.Scripts.Cosmetics.Components
 
         private void OnEnable()
         {
-            var current = SkinManager.Instance.CurrentSkinType;
+            var current = SkinManager.Instance.GetCurrentSkinType();
 
             if (current == 0)
             {

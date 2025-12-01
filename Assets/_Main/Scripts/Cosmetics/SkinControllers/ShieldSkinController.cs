@@ -11,12 +11,18 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         private void Start()
         {
             SkinManager.Instance.OnSkinChanged += SkinManager_OnSkinChanged;
+            SkinEvents.OnSaveLoaded += InitializeSkin;
+        }
+
+        private void InitializeSkin()
+        {
+            SkinEvents.OnSaveLoaded -= InitializeSkin;
             LoadSkin();
         }
-        
+
         private void LoadSkin()
         {
-            SkinManager_OnSkinChanged(SkinManager.Instance.CurrentSkinType);
+            SkinManager_OnSkinChanged(SkinManager.Instance.GetCurrentSkinType());
         }
         
         private void SkinManager_OnSkinChanged(SkinType skinType)
