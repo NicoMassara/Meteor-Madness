@@ -21,8 +21,8 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private float verticalLookOffset = 0.3f;
         
         private ShakerController _shakerController;
-        private float _defaultSize = 10;
-        private float _zoomSize = 6;
+        private const float ZoomOutSize = 11;
+        private const float ZoomInSize = 6;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Camera;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
@@ -32,7 +32,6 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private void Start()
         {
             _shakerController = new ShakerController(mainCamera.transform);
-            _defaultSize = mainCamera.orthographicSize;
         }
         
         public void ExecuteLateUpdate(float deltaTime)
@@ -313,8 +312,8 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private void ZoomIn(float timeToZoom)
         {
             var actions = ActionBuilder.Start().
-                Do(new ZoomAction(_defaultSize, 
-                    _zoomSize, timeToZoom, 
+                Do(new ZoomAction(ZoomOutSize, 
+                    ZoomInSize, timeToZoom, 
                     mainCamera))
                 .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
                 .Then(new InstantAction(TriggerEndAction))
@@ -327,8 +326,8 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private void ZoomOut(float timeToZoom)
         {
             var actions = ActionBuilder.Start().
-                Do(new ZoomAction(_zoomSize, 
-                    _defaultSize, timeToZoom, 
+                Do(new ZoomAction(ZoomInSize, 
+                    ZoomOutSize, timeToZoom, 
                     mainCamera))
                 .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
                 .Then(new InstantAction(TriggerEndAction))
