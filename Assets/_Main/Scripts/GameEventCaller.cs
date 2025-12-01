@@ -130,6 +130,11 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new EarthEvents.Death());
         }
+        
+        public static void PreSlice()
+        {
+            GameEventCaller.Publish(new EarthEvents.PreSlice());
+        }
     }
     
     public static class EarthEventSubscriber
@@ -178,6 +183,11 @@ namespace _Main.Scripts
         {
             GameEventCaller.Subscribe(action);
         }
+        
+        public static void PreSlice(Action<EarthEvents.PreSlice> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
     }
     
     public static class EarthEventUnSubscriber
@@ -223,6 +233,11 @@ namespace _Main.Scripts
         }
         
         public static void Death(Action<EarthEvents.Death> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void PreSlice(Action<EarthEvents.PreSlice> action)
         {
             GameEventCaller.Unsubscribe(action);
         }

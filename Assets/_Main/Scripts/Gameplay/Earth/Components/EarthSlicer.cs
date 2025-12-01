@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
+using _Main.Slicer;
 using EzySlice;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
@@ -11,19 +12,24 @@ namespace _Main.Scripts.Gameplay.Earth
     public class EarthSlicer : ManagedBehavior, IUpdatable
     {
         [Header("Slice Values")]
-        [SerializeField] private Transform slicePlane; // defines where & how to slice
+        [SerializeField] private GameObject slicePlane; // defines where & how to slice
         [SerializeField] private GameObject sliceContainer;
-        [Range(0,1.5f)]
-        [SerializeField] private float sliceDistance;
-        
-        private MeshFilter meshA;
-        private MeshFilter meshB;
+        private SliceType _sliceType = SliceType.Default;
+
+        private GameObject[] _slices;
+            
+        public enum SliceType
+        {
+            Default,
+            Pizza
+        }
         
         private bool _isSliced;
         private bool _canMove;
         private float _moveTargetDistance;
         private float _moveTargetTime;
         private float _deltaTime;
+        private bool _shouldPreSlice = true;
         
         public event Action OnStartSlice;
         public event Action OnEndSlice;
@@ -32,11 +38,7 @@ namespace _Main.Scripts.Gameplay.Earth
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
-        
-        private void Start()
-        {
-            PreSlice();
-        }
+
 
         public void ExecuteUpdate(float deltaTime)
         {
@@ -52,7 +54,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void StartSlicing()
         {
-            _moveTargetDistance = sliceDistance;
+            _moveTargetDistance = GetSliceDistance();
             var sliceTimes = GameConfigManager.Instance.GetGameplayData().EarthTimeData.Slice;
             _moveTargetTime = sliceTimes.MoveSlices;
             SetSliceQueue(sliceTimes);
@@ -81,6 +83,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 .Then(new WaitSecondsAction(sliceTimes.ReturnToNormalTime))
                 .Then(new InstantAction(() =>
                 {
+                    _isSliced = true;
                     OnEndSlice?.Invoke();
                     CustomTime.SetChannelTimeScale(
                         new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
@@ -91,56 +94,23 @@ namespace _Main.Scripts.Gameplay.Earth
             ActionManager.Add(action,ActionManager.UpdateType.Update);
         }
         
-        public void PreSlice() 
+        public void PreSlice()
         {
-            GameObject planeObj = slicePlane.gameObject;
-            
-            SlicedHull hull = planeObj.Slice(slicePlane.position, slicePlane.right, 
-                slicePlane.GetComponent<Renderer>().material);
+            if(_shouldPreSlice == false) return;
 
-            if (hull != null) {
-                GameObject upper = hull.CreateUpperHull(planeObj, planeObj.GetComponent<Renderer>().material);
-                GameObject lower = hull.CreateLowerHull(planeObj, planeObj.GetComponent<Renderer>().material);
+            _slices = _sliceType switch
+            {
+                SliceType.Default => MeshSlicer.SplitMesh(slicePlane, sliceContainer.transform),
+                SliceType.Pizza => MeshSlicer.SplitTwiceMesh(slicePlane, sliceContainer.transform),
+                _ => null
+            };
 
-                upper.transform.SetParent(sliceContainer.transform);
-                upper.transform.localPosition = Vector3.zero;
-                
-                lower.transform.SetParent(sliceContainer.transform);
-                lower.transform.localPosition = Vector3.zero;
-                
-                upper.AddComponent<MeshCollider>().convex = true;
-                lower.AddComponent<MeshCollider>().convex = true;
-                
-                meshA = upper.GetComponent<MeshFilter>();
-                meshB = lower.GetComponent<MeshFilter>();
-                
-                meshA.gameObject.AddComponent<MeshSortingLayerSetter>().SetSortingLayer(
-                    meshA.GetComponent<Renderer>(), "Earth", 0);
-                meshB.gameObject.AddComponent<MeshSortingLayerSetter>().SetSortingLayer(
-                    meshB.GetComponent<Renderer>(), "Earth", 0);
-
-                _isSliced = true;
-
-                planeObj.GetComponent<MeshRenderer>().enabled = false;
-                
-                SetActiveSlices(false);
+            if (_slices == null)
+            {
+                Debug.Log("Slices could not be created");
             }
-        }
 
-        private void MoveSlicedParts(float targetDistance, float targetTime)
-        {
-            HandlePartMovement(meshA.transform, Vector2.left, targetDistance,targetTime);
-            HandlePartMovement(meshB.transform, Vector2.right, targetDistance,targetTime);
-        }
-
-        private void HandlePartMovement(Transform partTransform, Vector2 direction, float targetDistance, float targetTime)
-        {
-            var lastPosition = partTransform.localPosition;
-            var targetPosition = new Vector2(targetDistance * direction.x, lastPosition.y);
-            var distance = Vector2.Distance(lastPosition, targetPosition);
-            var speed = (distance / targetTime) * _deltaTime;
-            var newX = Mathf.MoveTowards(lastPosition.x, targetPosition.x, speed);
-            partTransform.localPosition = new Vector2(newX, lastPosition.y);
+            _shouldPreSlice = false;
         }
 
         #endregion
@@ -163,16 +133,13 @@ namespace _Main.Scripts.Gameplay.Earth
                 .Do(new InstantAction(() =>
                 {
                     OnStartUnite?.Invoke();
-                    CustomTime.SetChannelTimeScale(
-                        new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 0f);
                     _canMove = true;
                 }))
                 .Then(new WaitSecondsAction(sliceTimes.ReturnSlices))
                 .Then(new InstantAction(() =>
                 {
+                    _isSliced = false;
                     _canMove = false;
-                    CustomTime.SetChannelTimeScale(
-                        new []{UpdateGroup.UI, UpdateGroup.Gameplay, UpdateGroup.Earth}, 1f);
                     OnEndUnite?.Invoke();
                 }))
                 .Build();
@@ -188,18 +155,83 @@ namespace _Main.Scripts.Gameplay.Earth
 
         #endregion
 
-        private void SetActiveSlices(bool isActive)
+        #region Movement
+        
+        private void MoveSlicedParts(float targetDistance, float targetTime)
         {
-            meshA.gameObject.SetActive(isActive);
-            meshB.gameObject.SetActive(isActive);
+            if (_sliceType == SliceType.Pizza)
+            {
+                for (int i = 0; i < _slices.Length; i++)
+                {
+                    float xDir = (i < 2) ? 1 : -1;
+                    float yDir = (i % 2 == 0) ? 1 : -1;
+                
+                    HandlePartMovement(_slices[i].transform, new Vector2(xDir,yDir), targetDistance,targetTime);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _slices.Length; i++)
+                {
+                    float xDir = (i % 2 == 0) ? 1 : -1;
+                    HandlePartMovement(_slices[i].transform, new Vector2(xDir,_slices[i].transform.position.y), targetDistance,targetTime);
+                }
+            }
+        }
+        
+        private void HandlePartMovement(Transform partTransform, Vector2 direction, float targetDistance, float targetTime)
+        {
+            var lastPosition = partTransform.localPosition;
+            var targetPosition = new Vector2(targetDistance * direction.x, targetDistance * direction.y);
+            var distance = Vector2.Distance(lastPosition, targetPosition);
+            var speed = (distance / targetTime) * _deltaTime;
+            var newX = Mathf.MoveTowards(lastPosition.x, targetPosition.x, speed);
+            var newY = Mathf.MoveTowards(lastPosition.y, targetPosition.y, speed);
+            partTransform.localPosition = new Vector2(newX,newY);
+        }
+        
+        #endregion
+
+        public void SetSliceType(SliceType sliceType)
+        {
+            if(_sliceType == sliceType)
+                return;
+            
+            DestroyActiveSlices();
+            _sliceType = sliceType;
+            _shouldPreSlice = true;
         }
 
-        private void OnDrawGizmosSelected()
+        private void SetActiveSlices(bool isActive)
         {
-            Gizmos.color = Color.red;
-            var start = new Vector3(slicePlane.position.x - sliceDistance, slicePlane.position.y, slicePlane.position.z);
-            var end = new Vector3(slicePlane.position.x + sliceDistance, slicePlane.position.y, slicePlane.position.z);
-            Gizmos.DrawLine(start,end);
+            foreach (var slice in _slices)
+            {
+                slice.SetActive(isActive);
+            }
+        }
+
+        private void DestroyActiveSlices()
+        {
+            if(_slices == null) return;
+            
+            var tempArray = (GameObject[]) _slices.Clone();
+            
+            foreach (var item in tempArray)
+            {
+                Destroy(item);
+            }
+
+            _slices = null;
+        }
+
+        private float GetSliceDistance()
+        {
+            return _sliceType switch
+            {
+                SliceType.Default => 1.25f,
+                SliceType.Pizza => 0.75f,
+                _ => 1f
+            };
         }
     }
 }

@@ -25,7 +25,8 @@
         public const ulong SetRotation = 0xA1007;
         public const ulong TriggerEndDestruction = 0xA1008;
         public const ulong SetLowHealth = 0xA1009;
-        public const ulong Debug_UpdateHealth = 0xA1010;
+        public const ulong PreSlice = 0xA1010;
+        public const ulong Debug_UpdateHealth = 0xB1010;
     }
 
     public struct GameModeObserverMessage

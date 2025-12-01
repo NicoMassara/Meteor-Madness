@@ -164,10 +164,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 #endif
             }
         }
-
-
-
-
+        
         private void HandleOptions()
         {
             GameManager.Instance.LoadOptionsMenu();
@@ -319,6 +316,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleEnable()
         {
+            EarthEventCaller.PreSlice();
             OnGameModeEnable?.Invoke();
             OnStopMusic?.Invoke();
         }

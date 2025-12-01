@@ -1,4 +1,6 @@
-﻿using _Main.Scripts.Interfaces;
+﻿using System;
+using _Main.Scripts.Gameplay.Earth;
+using _Main.Scripts.Interfaces;
 using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.SkinControllers
@@ -11,12 +13,14 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         private static readonly int HealthInShader = Shader.PropertyToID("_HealthAmount");
         private static readonly int OpacityInShader = Shader.PropertyToID("_Opacity");
         private IEarthSkin _earthHealth;
+        private EarthSlicer _slicer;
         private float _healthAmount = 1f;
         private float _opacity = 1f;
         
         private void Awake()
         {
             _earthHealth = GetComponent<IEarthSkin>();
+            _slicer = GetComponent<EarthSlicer>();
         }
 
         private void Start()
@@ -27,17 +31,14 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             
             SkinManager.Instance.OnSkinChanged += SkinManager_OnSkinChanged;
             SkinEvents.OnSaveLoaded += InitializeSkin;
-            
         }
         
-
         private void InitializeSkin()
         {
             SkinEvents.OnSaveLoaded -= InitializeSkin;
             LoadSkin();
             UpdateMaterialHealth();
         }
-        
 
         private void UpdateMaterialHealth()
         {
@@ -88,7 +89,18 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             spriteRenderer.transform.localScale = data.ScaleOffset;
             
             UpdateMaterialHealth();
+            _slicer.SetSliceType(GetSliceType(skinType));
         }
-        
+
+        private EarthSlicer.SliceType GetSliceType(SkinType skinType)
+        {
+            return skinType switch
+            {
+                SkinType.Default => EarthSlicer.SliceType.Default,
+                SkinType.Pizza => EarthSlicer.SliceType.Pizza,
+                _ => EarthSlicer.SliceType.Default
+            };
+        }
+
     }
 }

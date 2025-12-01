@@ -15,6 +15,10 @@ namespace _Main.Scripts.Managers
         public struct DestructionStart {}
         public struct DestructionFinished {}
         public struct Death {}
+
+        public struct PreSlice
+        {
+        }
     }
 
     public struct ShieldEvents

@@ -800,6 +800,66 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
+  - m_Index: 60
+    m_Metrics:
+      m_Width: 76.078125
+      m_Height: 108.28125
+      m_HorizontalBearingX: 4.5
+      m_HorizontalBearingY: 107.71875
+      m_HorizontalAdvance: 71.015625
+    m_GlyphRect:
+      m_X: 515
+      m_Y: 272
+      m_Width: 77
+      m_Height: 109
+    m_Scale: 1
+    m_AtlasIndex: 0
+    m_ClassDefinitionType: 0
+  - m_Index: 99
+    m_Metrics:
+      m_Width: 63.421875
+      m_Height: 107.015625
+      m_HorizontalBearingX: 8.4375
+      m_HorizontalBearingY: 105.75
+      m_HorizontalAdvance: 54.5625
+    m_GlyphRect:
+      m_X: 581
+      m_Y: 138
+      m_Width: 64
+      m_Height: 108
+    m_Scale: 1
+    m_AtlasIndex: 0
+    m_ClassDefinitionType: 0
+  - m_Index: 70
+    m_Metrics:
+      m_Width: 64.125
+      m_Height: 103.921875
+      m_HorizontalBearingX: 11.109375
+      m_HorizontalBearingY: 106.03125
+      m_HorizontalAdvance: 55.265625
+    m_GlyphRect:
+      m_X: 509
+      m_Y: 780
+      m_Width: 65
+      m_Height: 105
+    m_Scale: 1
+    m_AtlasIndex: 0
+    m_ClassDefinitionType: 0
+  - m_Index: 37
+    m_Metrics:
+      m_Width: 81.84375
+      m_Height: 108.703125
+      m_HorizontalBearingX: 2.8125
+      m_HorizontalBearingY: 107.15625
+      m_HorizontalAdvance: 74.53125
+    m_GlyphRect:
+      m_X: 557
+      m_Y: 402
+      m_Width: 83
+      m_Height: 110
+    m_Scale: 1
+    m_AtlasIndex: 0
+    m_ClassDefinitionType: 0
   m_CharacterTable:
   - m_ElementType: 1
     m_Unicode: 95
@@ -968,6 +1028,22 @@ MonoBehaviour:
   - m_ElementType: 1
     m_Unicode: 103
     m_GlyphIndex: 84
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 79
+    m_GlyphIndex: 60
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 118
+    m_GlyphIndex: 99
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 89
+    m_GlyphIndex: 70
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 56
+    m_GlyphIndex: 37
     m_Scale: 1
   m_AtlasTextures:
   - {fileID: 28584486757587946}
@@ -1144,6 +1220,22 @@ MonoBehaviour:
     m_Y: 508
     m_Width: 97
     m_Height: 133
+  - m_X: 504
+    m_Y: 261
+    m_Width: 98
+    m_Height: 130
+  - m_X: 570
+    m_Y: 127
+    m_Width: 85
+    m_Height: 129
+  - m_X: 498
+    m_Y: 769
+    m_Width: 86
+    m_Height: 126
+  - m_X: 546
+    m_Y: 391
+    m_Width: 104
+    m_Height: 131
   m_FreeGlyphRects:
   - m_X: 121
     m_Y: 129
@@ -1230,10 +1322,6 @@ MonoBehaviour:
     m_Width: 57
     m_Height: 1
   - m_X: 477
-    m_Y: 261
-    m_Width: 546
-    m_Height: 122
-  - m_X: 477
     m_Y: 258
     m_Width: 15
     m_Height: 125
@@ -1245,14 +1333,6 @@ MonoBehaviour:
     m_Y: 907
     m_Width: 967
     m_Height: 116
-  - m_X: 563
-    m_Y: 127
-    m_Width: 460
-    m_Height: 1
-  - m_X: 570
-    m_Y: 127
-    m_Width: 453
-    m_Height: 896
   - m_X: 655
     m_Y: 0
     m_Width: 368
@@ -1261,30 +1341,54 @@ MonoBehaviour:
     m_Y: 641
     m_Width: 68
     m_Height: 1
-  - m_X: 422
-    m_Y: 769
-    m_Width: 601
-    m_Height: 3
-  - m_X: 498
-    m_Y: 769
-    m_Width: 525
-    m_Height: 254
   - m_X: 435
     m_Y: 508
     m_Width: 14
     m_Height: 5
-  - m_X: 504
+  - m_X: 477
     m_Y: 261
-    m_Width: 519
-    m_Height: 247
+    m_Width: 27
+    m_Height: 122
+  - m_X: 563
+    m_Y: 127
+    m_Width: 7
+    m_Height: 1
+  - m_X: 570
+    m_Y: 256
+    m_Width: 453
+    m_Height: 5
+  - m_X: 422
+    m_Y: 769
+    m_Width: 76
+    m_Height: 3
+  - m_X: 498
+    m_Y: 895
+    m_Width: 525
+    m_Height: 128
   - m_X: 517
     m_Y: 641
     m_Width: 506
-    m_Height: 382
+    m_Height: 128
+  - m_X: 504
+    m_Y: 391
+    m_Width: 42
+    m_Height: 117
+  - m_X: 602
+    m_Y: 256
+    m_Width: 421
+    m_Height: 135
+  - m_X: 650
+    m_Y: 256
+    m_Width: 373
+    m_Height: 767
   - m_X: 546
-    m_Y: 261
+    m_Y: 522
     m_Width: 477
-    m_Height: 762
+    m_Height: 247
+  - m_X: 584
+    m_Y: 522
+    m_Width: 439
+    m_Height: 501
   m_FontFeatureTable:
     m_MultipleSubstitutionRecords: []
     m_LigatureSubstitutionRecords: []

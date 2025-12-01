@@ -102,6 +102,9 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             switch (message)
             {
+                case EarthObserverMessage.PreSlice:
+                    HandleGameplayStarted();
+                    break;
                 case EarthObserverMessage.RestartHealth:
                     HandleRestartHealth((float)args[0]);
                     break;
@@ -137,6 +140,11 @@ namespace _Main.Scripts.Gameplay.Earth
 #endif
                 
             }
+        }
+
+        private void HandleGameplayStarted()
+        {
+            _slicer.PreSlice();
         }
 
         private void HandleSetLowHealth(bool isLowHealth)
@@ -388,7 +396,6 @@ namespace _Main.Scripts.Gameplay.Earth
                 }
                 
                 #endregion
-            
                 
                 //Only Executes if it has damage
 

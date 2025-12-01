@@ -2265,9 +2265,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907f69c77e9e4872b59e8345befea170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slicePlane: {fileID: 495744296}
+  slicePlane: {fileID: 495744295}
   sliceContainer: {fileID: 774162836}
   sliceDistance: 1.5
+  sliceType: 1
 --- !u!1 &651941567
 GameObject:
   m_ObjectHideFlags: 0

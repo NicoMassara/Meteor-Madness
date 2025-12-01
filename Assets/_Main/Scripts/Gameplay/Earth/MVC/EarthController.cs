@@ -23,6 +23,7 @@ namespace _Main.Scripts.Gameplay.Earth
             public void TryCollision(float damage, Vector3 position, Quaternion rotation, Vector2 direction);
             public void TryRestart();
             public void TryShake();
+            public void TryPreSlice();
         }
 
         #endregion
@@ -131,11 +132,13 @@ namespace _Main.Scripts.Gameplay.Earth
             private class ActionGate : FsmActionGate<States>
             {
                 public bool IsDamageDisable { get; private set; }
+                public bool IsInIdle { get; private set; }
                 public ActionGate(FSM<States> fsm) : base(fsm) { }
 
                 protected override void OnEnterState(States state)
                 {
                     IsDamageDisable = state is not States.Gameplay;
+                    IsInIdle = state is States.Idle;
                 }
             }
             
@@ -250,6 +253,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
             #region Public Getters
             public bool GetIsDamageDisable() => _actionGate.IsDamageDisable;
+            public bool GetIsInIdle() => _actionGate.IsInIdle;
             
             #endregion
 
@@ -327,6 +331,14 @@ namespace _Main.Scripts.Gameplay.Earth
         public void TryShake()
         {
             _mainController.TransitionToShaking();
+        }
+
+        public void TryPreSlice()
+        {
+            if (_mainController.GetIsInIdle())
+            {
+                _motor.PreSlice();
+            }
         }
 
         #endregion
