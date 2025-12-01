@@ -54,10 +54,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _Cutoff: 0.5
-    - _Float0: -0.29
+    - _Float0: 0
     - _Float1: 0.26052976
     - _Float2: 18.56
-    - _HealthAmount: 0.3011053
+    - _HealthAmount: 1
     - _Intensity: 1
     - _Opacity: 1
     - _PineappleSize: 6

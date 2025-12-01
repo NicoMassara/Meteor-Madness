@@ -47,6 +47,14 @@ namespace _Main.Scripts.Gameplay.Earth
         public event Action OnDestruction;
         public event Action OnPreDestruction;
         public event Action<bool> OnLowHealth;
+
+        #region IEarthSkin
+
+        public event Action OnShow;
+        public event Action OnHide;
+
+        #endregion
+        
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -373,7 +381,7 @@ namespace _Main.Scripts.Gameplay.Earth
                             subscribe: callback => _slicer.OnEndUnite += callback,
                             unsubscribe: callback => _slicer.OnEndUnite -= callback
                         ))
-                        .Then(new InstantAction(()=> planeMeshContainer.gameObject.SetActive(true)))
+                        .Then(new InstantAction(()=> OnShow?.Invoke()))
                         .Then(new WaitFramesAction(3))
                         .Then(new InstantAction(()=> _slicer.UniteMeshes()))
                         .Then(new WaitSecondsAction(0.5f));
@@ -428,7 +436,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleDestruction()
         {
-            planeMeshContainer.gameObject.SetActive(false);
+            OnHide?.Invoke();
             _slicer.StartSlicing();
             _isDead = true;
             OnDestruction?.Invoke();

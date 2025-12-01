@@ -9,8 +9,10 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         [SerializeField] private Transform spriteContainer;
         
         private static readonly int HealthInShader = Shader.PropertyToID("_HealthAmount");
+        private static readonly int OpacityInShader = Shader.PropertyToID("_Opacity");
         private IEarthSkin _earthHealth;
         private float _healthAmount = 1f;
+        private float _opacity = 1f;
         
         private void Awake()
         {
@@ -20,12 +22,15 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         private void Start()
         {
             _earthHealth.OnHealthChanged += View_OnHealthChangedHandler;
+            _earthHealth.OnHide += OnHideHandler;
+            _earthHealth.OnShow += OnShowHandler;
             
             SkinManager.Instance.OnSkinChanged += SkinManager_OnSkinChanged;
             SkinEvents.OnSaveLoaded += InitializeSkin;
             
         }
         
+
         private void InitializeSkin()
         {
             SkinEvents.OnSaveLoaded -= InitializeSkin;
@@ -39,14 +44,32 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             spriteRenderer.material.SetFloat(HealthInShader, _healthAmount);
         }
         
+        private void UpdateMaterialOpacity()
+        {
+            spriteRenderer.material.SetFloat(OpacityInShader, _opacity);
+        }
+        
         private void LoadSkin()
         {
             SkinManager_OnSkinChanged(SkinManager.Instance.GetCurrentSkinType());
+        }
+        
+        private void OnHideHandler()
+        {
+            _opacity = 0;
+            UpdateMaterialOpacity();
+        }
+        
+        private void OnShowHandler()
+        {
+            _opacity = 1;
+            UpdateMaterialOpacity();
         }
 
         private void View_OnHealthChangedHandler(float health)
         {
             _healthAmount = health;
+
             UpdateMaterialHealth();
         }
 
