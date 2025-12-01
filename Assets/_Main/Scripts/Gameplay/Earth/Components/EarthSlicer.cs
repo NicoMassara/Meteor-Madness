@@ -33,7 +33,6 @@ namespace _Main.Scripts.Gameplay.Earth
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Effects;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
         
-
         private void Start()
         {
             PreSlice();
@@ -92,7 +91,7 @@ namespace _Main.Scripts.Gameplay.Earth
             ActionManager.Add(action,ActionManager.UpdateType.Update);
         }
         
-        private void PreSlice() 
+        public void PreSlice() 
         {
             GameObject planeObj = slicePlane.gameObject;
             
