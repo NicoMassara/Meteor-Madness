@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Skin_Pizza_Eath_Unlit
-  m_Shader: {fileID: 4800000, guid: 5547aa54f29592345bb7a2dba1935678, type: 3}
+  m_Name: Mat_Skin_Pizza_Earth_Unlit
+  m_Shader: {fileID: 4800000, guid: d4cbcd0039393764393e3f434c990632, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -27,16 +27,24 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainText:
-        m_Texture: {fileID: 2800000, guid: 8aba6bb20faf8824d9d81946542f1ce1, type: 3}
+    - _Pineapple:
+        m_Texture: {fileID: 2800000, guid: 2dc229ee75747054188f795698b9d01c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _NormalPizza:
+    - _PinneAppleTexture:
+        m_Texture: {fileID: 2800000, guid: 2dc229ee75747054188f795698b9d01c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PinneapplePizzaTexture:
+        m_Texture: {fileID: 2800000, guid: 11bc1573a32bba14eb92bc29b790bc25, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PizzaTexture:
         m_Texture: {fileID: 2800000, guid: 1c85d5552e55b3747b6b79d1e7cfe17d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _PineapplePizza:
-        m_Texture: {fileID: 2800000, guid: 11bc1573a32bba14eb92bc29b790bc25, type: 3}
+    - _Texture0:
+        m_Texture: {fileID: 2800000, guid: 2dc229ee75747054188f795698b9d01c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -45,8 +53,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Cutoff: 0.5
+    - _Float0: -0.29
+    - _Float1: 0.26052976
+    - _Float2: 18.56
     - _HealthAmount: 1
+    - _Intensity: 1
+    - _PineappleSize: 6
     - __dirty: 0
-    m_Colors: []
+    m_Colors:
+    - _Vector0: {r: -0.26, g: -1.52, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
