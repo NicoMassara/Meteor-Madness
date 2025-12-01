@@ -35,7 +35,7 @@ namespace _Main.Scripts.MySettings.MVC
 
         private void HandleEnable()
         {
-            GetUiComponents().MainPanel.SetActive(true);
+            GetUiComponents().SetActivePanel(GetUiComponents().MainPanel);
             //
             GetUiComponents().BackButton.onClick.AddListener(() => OnBackButtonPressed?.Invoke());
             GetUiComponents().VolumeSlider.OnChanged += OnVolumeChanged;
@@ -55,7 +55,7 @@ namespace _Main.Scripts.MySettings.MVC
 #endif
             GetUiComponents().LanguageSelector.OnChanged -= OnLanguageChanged;
             //
-            GetUiComponents().MainPanel.SetActive(false);
+            GetUiComponents().DisableAllPanels();
         }
         
         private SettingsUiComponents GetUiComponents()

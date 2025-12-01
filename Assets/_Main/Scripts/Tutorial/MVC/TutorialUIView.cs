@@ -14,8 +14,6 @@ namespace _Main.Scripts.Tutorial.MVC
         private const string AbilityHintCode = "Tutorial.Hint.Ability";
         private const string ShieldHintCode = "Tutorial.Hint.Shield";
         private TutorialUiComponents _uiComponents;
-
-        private GameObject _currentActivePanel;
         public event Action OnStartButtonPressed;
         
         public void OnNotify(ulong message, params object[] args)
@@ -55,8 +53,8 @@ namespace _Main.Scripts.Tutorial.MVC
         }
 
         private void HandleAbilityRunning()
-        {
-            DisableActivePanel();
+        { 
+            GetUiComponents().DisableActivePanel();
         }
 
         private void HandleSphereDeflected()
@@ -74,12 +72,12 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleMultiPage()
         {
-            DisableActivePanel();
+            GetUiComponents().DisableActivePanel();
         }
 
         private void HandleEnable()
         {
-            GetUiComponents().MainPanel.SetActive(true);
+            GetUiComponents().SetActivePanel(GetUiComponents().HintPanel);
         }
         
         private void HandleMovement()
@@ -94,27 +92,13 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleDisable()
         {
-            DisableActivePanel();
-            GetUiComponents().MainPanel.SetActive(false);
+            GetUiComponents().DisableAllPanels();
         }
 
         private void SetHintText(string text)
         {
             GetUiComponents().HintText.text = text;
-            SetActivePanel(GetUiComponents().HintPanel);
-        }
-
-        private void SetActivePanel(GameObject input)
-        {
-            _currentActivePanel?.SetActive(false);
-            _currentActivePanel = input;
-            _currentActivePanel?.SetActive(true);
-        }
-
-        private void DisableActivePanel()
-        {
-            _currentActivePanel?.SetActive(false);
-            _currentActivePanel = null;
+            GetUiComponents().SetActivePanel(GetUiComponents().HintPanel);
         }
 
         private string GetLocalizedText(string key)

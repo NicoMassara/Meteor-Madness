@@ -12,9 +12,6 @@ namespace _Main.Scripts.MainMenu.MVC
         [SerializeField] private MainMenuUiPanelSelector uiPanelSelector;
         
         private MainMenuUiComponents _uiComponents;
-
-        private GameObject _currentPanel;
-        
         
         // Buttons Actions
         public event Action OnConfirmButtonClicked;
@@ -124,50 +121,37 @@ namespace _Main.Scripts.MainMenu.MVC
         
         private void HandleTutorialMenu()
         {
-            SetActivePanel(GetUiComponents().TutorialPanel);
-        }
-
-        private MainMenuUiComponents GetUiComponents()
-        {
-            return _uiComponents ??= uiPanelSelector.GetPanelData();
+            GetUiComponents().SetActivePanel(GetUiComponents().TutorialPanel);
         }
 
         private void HandleEnable()
         {
-            GetUiComponents().MainPanel.SetActive(true);
+            GetUiComponents().SetActivePanel(GetUiComponents().MenuPanel);
         }
         
         private void HandleDisable()
         {
-            DisableActivePanel();
-            GetUiComponents().MainPanel.SetActive(false);
+            GetUiComponents().DisableAllPanels();
         }
         
         private void HandleMainMenu()
         {
-            SetActivePanel(GetUiComponents().MenuPanel);
+            GetUiComponents().SetActivePanel(GetUiComponents().MenuPanel);
         }
         
         private void HandleCreditsMenu()
         {
-            SetActivePanel(GetUiComponents().CreditsPanel);
+            GetUiComponents().SetActivePanel(GetUiComponents().CreditsPanel);
         }
 
         private void HandleLoreMenu()
         {
-            SetActivePanel(GetUiComponents().LorePanel);
+            GetUiComponents().SetActivePanel(GetUiComponents().LorePanel);
         }
         
-        private void SetActivePanel(GameObject panelObject)
+        private MainMenuUiComponents GetUiComponents()
         {
-            _currentPanel?.SetActive(false);
-            _currentPanel = panelObject;
-            _currentPanel.SetActive(true);
-        }
-
-        private void DisableActivePanel()
-        {
-            _currentPanel?.SetActive(false);
+            return _uiComponents ??= uiPanelSelector.GetPanelData();
         }
     }
 }

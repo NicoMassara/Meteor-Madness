@@ -13,7 +13,29 @@ namespace _Main.Scripts.Interfaces
     [Serializable]
     public abstract class UiComponentsData
     {
-        [Header("Main Panel")] 
-        public GameObject MainPanel;
+        [Header("Main Data")]
+        public GameObject[] Panels;
+        
+        private GameObject _activePanel;
+
+        public void SetActivePanel(GameObject panelObject)
+        {
+            _activePanel?.SetActive(false);
+            _activePanel = panelObject;
+            _activePanel.SetActive(true);
+        }
+        public void DisableActivePanel()
+        {
+            _activePanel?.SetActive(false);
+        }
+        public void DisableAllPanels()
+        {
+            DisableActivePanel();
+            
+            foreach (GameObject panel in Panels)
+            {
+                panel.SetActive(false);
+            }
+        }
     }
 }

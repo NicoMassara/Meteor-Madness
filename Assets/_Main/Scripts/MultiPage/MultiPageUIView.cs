@@ -47,10 +47,16 @@ namespace _Main.Scripts.MultiPage
             GetUiComponents().PanelText.text = GetLocalizedString($"{textCode}[{index}]");
         }
 
-        public void SetActiveMainPanel(bool isActive)
+        public void EnableMainPanel()
         {
-            GetUiComponents().MainPanel.SetActive(isActive);
+            GetUiComponents().SetActivePanel(GetUiComponents().MainPanel);
         }
+
+        public void DisableMainPanel()
+        {
+            GetUiComponents().DisableAllPanels();
+        }
+        
         
         private string GetLocalizedString(string key)
         {

@@ -42,32 +42,17 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         private void HandleEnable()
         {
-            SetActivePanel(GetUiComponents().MainPanel);
+            GetUiComponents().SetActivePanel(GetUiComponents().MainPanel);
         }
 
         private void HandleDisable()
         {
-            DisableActivePanel();
-            GetUiComponents().MainPanel.SetActive(false);
-        }
-        
-        private void SetActivePanel(GameObject panelObject)
-        {
-            _currentPanel?.SetActive(false);
-            _currentPanel = panelObject;
-            _currentPanel.SetActive(true);
-        }
-
-        private void DisableActivePanel()
-        {
-            _currentPanel?.SetActive(false);
+            GetUiComponents().DisableAllPanels();
         }
         
         private CosmeticUIComponents GetUiComponents()
         {
             return _uiComponents ??= uiSelector.GetPanelData();
         }
-
-
     }
 }

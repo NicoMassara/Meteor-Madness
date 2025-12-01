@@ -13,7 +13,7 @@ namespace _Main.Scripts.Tutorial
     public class TutorialUiComponents : UiComponentsData
     {
         [Space(2)] 
-        [Header("Sub Panels")] 
+        [Header("Panels")] 
         public GameObject HintPanel;
         [Space]
         [Header("Text Components")]
