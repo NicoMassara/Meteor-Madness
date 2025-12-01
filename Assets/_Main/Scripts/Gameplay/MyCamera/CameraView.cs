@@ -316,8 +316,9 @@ namespace _Main.Scripts.Gameplay.MyCamera
                 Do(new ZoomAction(_defaultSize, 
                     _zoomSize, timeToZoom, 
                     mainCamera))
-                .Then(new InstantAction(TriggerEndAction))
                 .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
+                .Then(new InstantAction(TriggerEndAction))
+                .Then(new WaitFramesAction(1))
                 .Build();
             
             ActionManager.Add(actions, ActionManager.UpdateType.Late);
@@ -329,8 +330,9 @@ namespace _Main.Scripts.Gameplay.MyCamera
                 Do(new ZoomAction(_zoomSize, 
                     _defaultSize, timeToZoom, 
                     mainCamera))
-                .Then(new InstantAction(TriggerEndAction))
                 .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
+                .Then(new InstantAction(TriggerEndAction))
+                .Then(new WaitFramesAction(1))
                 .Build();
             
             ActionManager.Add(actions, ActionManager.UpdateType.Late);

@@ -36,6 +36,9 @@ namespace _Main.Scripts.GameScreens
         {
             switch (message)
             {
+                case GameScreenObserverMessage.ZoomIn:
+                    HandleZoomIn();
+                    break;
                 case GameScreenObserverMessage.DisableScreen:
                     HandleDisableScreen((int)args[0]);
                     break;
@@ -44,7 +47,12 @@ namespace _Main.Scripts.GameScreens
                     break;
             }
         }
-        
+
+        private void HandleZoomIn()
+        {
+            CameraEventCaller.ZoomIn(1f);
+        }
+
         private void HandleDisableScreen(int currentScreenIndex)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

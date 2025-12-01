@@ -42,11 +42,9 @@ namespace _Main.Scripts.GameScreens
         private void ModuleLoader_OnModulesLoaded()
         {
             ModuleLoaderEvents.OnModulesLoaded -= ModuleLoader_OnModulesLoaded;
-
+            
             TimerManager.Add(new TimerData(Time.unscaledDeltaTime, 
-                () => {
-                _motor.LoadScreenByIndex((int)defaultScreen);
-                }));
+                () => { _motor.ZoomIn(); }));
         }
         
         #region EventBus
@@ -56,6 +54,16 @@ namespace _Main.Scripts.GameScreens
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
             GameScreenEventSubscriber.GoToLastScreen(EventBus_GameScreen_GoToLastScreen);
+            CameraEventSubscriber.NotifyZoomFinished(EventBus_Camera_ZoomFinished);
+        }
+
+        private void EventBus_Camera_ZoomFinished(CameraEvents.ZoomFinished input)
+        {
+            CameraEventUnSubscriber.NotifyZoomFinished(EventBus_Camera_ZoomFinished);
+            //
+            
+            TimerManager.Add(new TimerData(0.25f, 
+                () => { _motor.LoadScreenByIndex((int)ScreenType.MainMenu); }));
         }
 
         private void EventBus_GameScreen_GoToLastScreen(GameScreenEvents.LastScreen input)
@@ -78,6 +86,7 @@ namespace _Main.Scripts.GameScreens
                 SelectNewScreen(input.ScreenType);
             }
         }
+        
         #endregion
     }
 }

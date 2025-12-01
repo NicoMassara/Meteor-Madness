@@ -1766,7 +1766,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 11
+  orthographic size: 100
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2267,8 +2267,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slicePlane: {fileID: 495744295}
   sliceContainer: {fileID: 774162836}
-  sliceDistance: 1.5
-  sliceType: 1
 --- !u!1 &651941567
 GameObject:
   m_ObjectHideFlags: 0
