@@ -12,6 +12,8 @@ namespace _Main.Scripts.Gameplay.Abilities
     public class AbilityUIComponents : UiComponentsData
     {
         [Space(2)] 
+        [Header("Panels")]
+        public GameObject MainPanel;
         public Image[] AbilitySprites;
     }
 }

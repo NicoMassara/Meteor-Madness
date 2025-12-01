@@ -37,7 +37,27 @@ namespace _Main.Scripts.Utilities
                 _isMobile = GetIsMobile();
                 string panelType = _isMobile ? "Mobile" : "Desktop";
                 //Debug.Log($"{panelName} Panel Selected for {panelType}");
-                Destroy(_isMobile ? desktopData.MainPanel : mobileData.MainPanel);
+                if (_isMobile)
+                {
+                    if(desktopData.Panels != null)
+                        foreach (var panel in desktopData.Panels)
+                        {
+                            Destroy(panel.gameObject);
+                        }
+
+                    desktopData = null;
+                }
+                else
+                {
+                    if(mobileData.Panels != null)
+                        foreach (var panel in mobileData.Panels)
+                        {
+                            Destroy(panel.gameObject);
+                        }
+                    
+                    mobileData = null;
+                }
+                
                 _hasAlreadySelected = true;
             }
 

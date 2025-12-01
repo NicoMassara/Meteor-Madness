@@ -14,10 +14,10 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void Start()
         {
-            GetAbilityUIComponents().MainPanel.SetActive(false);
+            GetUIComponents().DisableAllPanels();
         }
         
-        private AbilityUIComponents GetAbilityUIComponents()
+        private AbilityUIComponents GetUIComponents()
         {
             return uiSelector.GetPanelData();
         }
@@ -44,7 +44,15 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleSetEnableUI(bool isEnable)
         {
-            GetAbilityUIComponents().MainPanel.SetActive(isEnable);
+            if (isEnable)
+            {
+                GetUIComponents().SetActivePanel(GetUIComponents().MainPanel);
+            }
+            else
+            {
+                GetUIComponents().DisableAllPanels();
+            }
+
         }
 
         private void HandleRestartAbilities()

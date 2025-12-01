@@ -17,7 +17,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         [SerializeField] private GameModeUiPanelSelector uiSelector;
         
         private GameModeUIComponents _uiComponents;
-        private GameObject _currentPanel;
         private NumberIncrementer _numberIncrementer = new NumberIncrementer();
         private Coroutine _gameplayPointsCoroutine;
         private IGameUIConfig _gameUIConfig;
@@ -158,7 +157,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleTriggerMainMenu()
         {
-            DisableActivePanel();
+            GetUiComponents(). DisableActivePanel();
         }
 
         private void HandleSetCanPause(bool canPause)
@@ -183,23 +182,23 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleEnable()
         {
-            GetUiComponents().MainPanel.SetActive(true);
+            GetUiComponents().SetActivePanel(GetUiComponents().CountdownPanel);
         }
 
         private void HandleDisable()
         {
-            GetUiComponents().MainPanel.SetActive(false);
+            GetUiComponents().DisableAllPanels();
         }
         
         private void HandleGameplayPanel(bool isActive)
         {
             if (isActive)
             {
-                SetActivePanel(GetUiComponents().GameplayPanel);
+                GetUiComponents().SetActivePanel(GetUiComponents().GameplayPanel);
             }
             else
             {
-                DisableActivePanel();
+                GetUiComponents().DisableActivePanel();
             }
         }
         
@@ -207,38 +206,22 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             if (isActive)
             {
-                SetActivePanel(GetUiComponents().PausePanel.Panel);
+                GetUiComponents().SetActivePanel(GetUiComponents().PausePanel.Panel);
             }
             else
             {
-                DisableActivePanel();
+                GetUiComponents().DisableActivePanel();
             }
 
         }
 
-        #region Panel
-
-        private void SetActivePanel(GameObject panel)
-        {
-            _currentPanel?.SetActive(false);
-            _currentPanel = panel;
-            _currentPanel?.SetActive(true);
-        }
-
-        private void DisableActivePanel()
-        {
-            _currentPanel?.SetActive(false);
-            _currentPanel = null;
-        }
-
-        #endregion
 
         #region Start
 
         private void HandleStartCountdown()
         {
-            DisableActivePanel();
-            SetActivePanel(GetUiComponents().CountdownPanel);
+            GetUiComponents().DisableActivePanel();
+            GetUiComponents().SetActivePanel(GetUiComponents().CountdownPanel);
         }
         
         private void HandleCountdown(float countdownTime)
@@ -266,12 +249,12 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleGameFinish()
         {
-            DisableActivePanel();
+            GetUiComponents().DisableActivePanel();
         }
         
         private void HandleGameRestart()
         {
-            DisableActivePanel();
+            GetUiComponents().DisableActivePanel();
         }
         
         private void HandleEarthEndDestruction(float deflectCount)
@@ -281,7 +264,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleEarthStartDestruction()
         {
-            DisableActivePanel();
+            GetUiComponents().DisableActivePanel();
         }
 
         #endregion
@@ -404,7 +387,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetActiveHighScoreText(false);
             UpdateDeathScoreText(0);
             UpdateHighScoreText(0);
-            SetActivePanel(GetUiComponents().DeathPanel);
+            GetUiComponents().SetActivePanel(GetUiComponents().DeathPanel);
 
             var deathPanelData = _gameUIConfig.DeathUITimeData;
 

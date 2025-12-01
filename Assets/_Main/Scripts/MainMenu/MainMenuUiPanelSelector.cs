@@ -13,7 +13,7 @@ namespace _Main.Scripts.Menu
     public class MainMenuUiComponents : UiComponentsData
     {
         [Space(2)] 
-        [Header("Sub Panels")] 
+        [Header("Panels")] 
         public GameObject MenuPanel;
         public GameObject LorePanel;
         public GameObject TutorialPanel;
@@ -23,14 +23,20 @@ namespace _Main.Scripts.Menu
         public TMP_Text CreditsText;
         [Space]
         [Header("Buttons Components")]
+        [Space(1)]
+        [Header("Menu Panel")]
         public Button PlayButton;
         public Button TutorialButton;
-        public Button OpenTutorialButton;
-        public Button LoreButton;
-        public Button CreditsButton;
         public Button CosmeticButton;
+        public Button LoreButton;
         public Button OptionsButton;
+        public Button CreditsButton;
         public Button QuitButton;
+        [Space(1)]
+        [Header("Tutorial Panel")]
+        public Button OpenTutorialButton;
+        [Space(1)]
+        [Header("Back")]
         public Button[] BackButtons;
     }
 }
