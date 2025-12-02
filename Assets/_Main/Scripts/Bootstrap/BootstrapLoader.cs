@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
@@ -9,7 +10,12 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Bootstrap
 {
-    public class BootstrapLoader : MonoBehaviour
+    public interface IBoostrap
+    {
+        public event Action<string> OnLoadingAsset;
+    }
+
+    public class BootstrapLoader : MonoBehaviour, IBoostrap
     {
         [SerializeField] private string coreScene = "MainMenu"; // o el nombre de tu primera escena real
         [SerializeField] private string[] additiveScenes;
@@ -20,6 +26,8 @@ namespace _Main.Scripts.Bootstrap
         private bool _hasLocalizationLoaded;
         private bool _hasLoadedData;
         private bool _hasLoadedSkins;
+        
+        public event Action<string> OnLoadingAsset;
         
         private void Awake()
         {
@@ -61,19 +69,23 @@ namespace _Main.Scripts.Bootstrap
             yield return new WaitForSeconds(delayBeforeLoad);
             
             // Save Data
+            OnLoadingAsset?.Invoke("Loading Saves");
             yield return new WaitUntil(()=> _hasLoadedData);
             PrintDebug("Save Data loaded");
             
             // Localization
+            OnLoadingAsset?.Invoke("Loading Texts");
             yield return new WaitUntil(()=> _hasLocalizationLoaded);
             PrintDebug("Localization loaded");
             
             // Skins
+            OnLoadingAsset?.Invoke("Loading Skins");
             yield return new WaitUntil(()=> _hasLoadedSkins);
             PrintDebug("Skins loaded");
             
             yield return new WaitForSeconds(delayBeforeLoad);
             
+            OnLoadingAsset?.Invoke("Loading Scenes");
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(coreScene, LoadSceneMode.Additive);
             asyncLoad.allowSceneActivation = false;
             
@@ -95,6 +107,11 @@ namespace _Main.Scripts.Bootstrap
             yield return new WaitUntil(() => asyncLoad.isDone);
             
             PrintDebug("Game Loaded");
+            
+            OnLoadingAsset?.Invoke("Game Loaded");
+            
+            yield return new WaitForEndOfFrame();
+            
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(coreScene));
             GameEvents.TriggerOnGameLoaded();
 
