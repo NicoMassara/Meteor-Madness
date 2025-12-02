@@ -82,9 +82,6 @@ namespace _Main.Scripts.FiniteStateMachine
             _current = newState;
             _current.Awake();
             CurrentState = input;
-            /*Debug.Log($"{FSMName} Curren State->{CurrentState} : " +
-                      $"Last State->{LastState} : " +
-                      $"At->{Time.realtimeSinceStartup}");*/
             OnEnterState?.Invoke(CurrentState);
         }
     }

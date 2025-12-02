@@ -14,15 +14,11 @@ namespace _Main.Scripts.Tutorial.MVC
         private const string AbilityHintCode = "Tutorial.Hint.Ability";
         private const string ShieldHintCode = "Tutorial.Hint.Shield";
         private TutorialUiComponents _uiComponents;
-        public event Action OnStartButtonPressed;
         
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
-                case TutorialObserverMessage.Start:
-                    HandleStart();
-                    break;
                 case TutorialObserverMessage.Movement:
                     HandleMovement();
                     break;
@@ -60,14 +56,6 @@ namespace _Main.Scripts.Tutorial.MVC
         private void HandleSphereDeflected()
         {
             SetHintText(GetLocalizedText(ShieldHintCode));
-        }
-
-        private void HandleStart()
-        {
-            // Structure has changed, easiest and fastest way to do it
-            // This works to auto start tutorial without changing to much code
-            // and breaking anything
-            OnStartButtonPressed?.Invoke();
         }
 
         private void HandleMultiPage()

@@ -41,7 +41,7 @@ namespace _Main.Scripts.MultiPage
         
         private void View_OnFinishedHandler(ulong createId)
         {
-            _ui.EnableMainPanel();
+            _ui.DisableMainPanel();
             GameEventCaller.Publish(new MultiPageUIEvents.Finished{CreateId = createId});
         }
 
@@ -49,7 +49,7 @@ namespace _Main.Scripts.MultiPage
         {
             _view.SetTextData(newText);
             _view.SetCreateId(createId);
-            _ui.DisableMainPanel();
+            _ui.EnableMainPanel();
         }
 
         #region EventBus
