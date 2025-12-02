@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -18,13 +17,13 @@ namespace _Main.Scripts.Localization
             {"RightKey", "<color=blue>D</color>"},
             {"AbilityKey", "<color=blue>S</color>"}
         };
-        
+
         private readonly Dictionary<string, string> _loadedText = new Dictionary<string, string>();
         private MonoBehaviour _behaviour;
-        
+
         private event Action _onTextLoaded;
 
-        public LanguageTextLoader(MonoBehaviour behaviour,Action onTextLoaded)
+        public LanguageTextLoader(MonoBehaviour behaviour, Action onTextLoaded)
         {
             _behaviour = behaviour;
             _onTextLoaded += onTextLoaded;
@@ -32,73 +31,90 @@ namespace _Main.Scripts.Localization
         }
 
         #region Public API
-        
-        public async Task SelectLanguageToLoad(SystemLanguage language)
+
+        public void SelectLanguageToLoad(SystemLanguage language)
         {
             _loadedText.Clear();
-            
+
             string langCode = LocalizationTools.GetLanguageCode(language).ToLower();
             string path = Path.Combine(Application.streamingAssetsPath, "Localization", $"{langCode}.json");
-            
+
             Debug.Log($"Path To Load: {path}");
-            
-            JObject rootJson = await LoadJsonRecursive(path);
-            FlattenJson("", rootJson);
-            
+            _behaviour.StartCoroutine(LoadAndProcessJson(path));
         }
-        
+
         public int GetArrayLength(string prefix)
         {
             return _loadedText.Keys.Count(
                 key => key.StartsWith($"{prefix}[") && key.Contains("]"));
         }
-        
+
         public string GetText(string key)
         {
             return _loadedText.TryGetValue(key, out string value) ? value : $"[MISSING:{key}]";
         }
-        
+
         #endregion
-        
+
         #region Private API
 
-        // Carga recursiva de JSON/TXT
-        private async Task<JObject> LoadJsonRecursive(string path)
+        private IEnumerator LoadAndProcessJson(string path)
         {
-            string content = await ReadFileMobile(path);
-            content = content.Trim();
+            JObject rootJson = null;
+            yield return _behaviour.StartCoroutine(LoadJsonCoroutine(path, result => rootJson = result));
 
-            // Si es .txt solo devolvemos un objeto simple
-            if (path.EndsWith(".txt"))
+            if (rootJson == null)
             {
-                return new JObject { ["value"] = content };
+                Debug.LogError("Error cargando JSON: " + path);
+                yield break;
+            }
+
+            FlattenJson("", rootJson);
+            ReplacePlaceholderText();
+            _onTextLoaded?.Invoke();
+        }
+
+        private IEnumerator LoadJsonCoroutine(string path, Action<JObject> callback)
+        {
+            string content = null;
+            yield return _behaviour.StartCoroutine(ReadFileMobileCoroutine(path, result => content = result));
+            content = content?.Trim() ?? "";
+            
+            if (!string.IsNullOrEmpty(content) && content[0] == '\uFEFF')
+            {
+                content = content.Substring(1);
+            }
+
+            if (string.IsNullOrEmpty(content))
+            {
+                callback?.Invoke(new JObject());
+                yield break;
+            }
+
+            // Si es .txt
+            if (path.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+            {
+                callback?.Invoke(new JObject { ["value"] = content });
+                yield break;
             }
 
             JObject json = JObject.Parse(content);
 
+            // Procesar recursivamente objetos internos
             foreach (var prop in json.Properties())
             {
-                if (prop.Value.Type == JTokenType.String && prop.Value.ToString().StartsWith("@"))
+                if (prop.Value.Type == JTokenType.Object)
                 {
-                    string refPath = prop.Value.ToString().Substring(1);
-                    string resolvedPath = Path.Combine(Path.GetDirectoryName(path), refPath);
-                    JObject loadedRef = await LoadJsonRecursive(resolvedPath);
-
-                    if (loadedRef.ContainsKey("value"))
-                        json[prop.Name] = loadedRef["value"];
-                    else
-                        json[prop.Name] = loadedRef;
-                }
-                else if (prop.Value.Type == JTokenType.Object)
-                {
-                    json[prop.Name] = await LoadJsonRecursiveObject(prop.Value as JObject, Path.GetDirectoryName(path));
+                    JObject nested = null;
+                    yield return _behaviour.StartCoroutine(LoadJsonObjectCoroutine((JObject)prop.Value, Path.GetDirectoryName(path) ?? "", result => nested = result));
+                    json[prop.Name] = nested;
                 }
             }
 
-            return json;
+            callback?.Invoke(json);
         }
 
-        private async Task<JObject> LoadJsonRecursiveObject(JObject obj, string currentDir)
+        private IEnumerator LoadJsonObjectCoroutine(JObject obj, string currentDir, Action<JObject> callback)
         {
             foreach (var prop in obj.Properties())
             {
@@ -106,48 +122,61 @@ namespace _Main.Scripts.Localization
                 {
                     string refPath = prop.Value.ToString().Substring(1);
                     string resolvedPath = Path.Combine(currentDir, refPath);
-                    JObject loadedRef = await LoadJsonRecursive(resolvedPath);
 
-                    if (loadedRef.ContainsKey("value"))
-                        obj[prop.Name] = loadedRef["value"];
-                    else
-                        obj[prop.Name] = loadedRef;
+                    JObject loadedRef = null;
+                    yield return _behaviour.StartCoroutine(LoadJsonCoroutine(resolvedPath, result => loadedRef = result));
+
+                    obj[prop.Name] = loadedRef.ContainsKey("value") ? loadedRef["value"] : loadedRef;
                 }
                 else if (prop.Value.Type == JTokenType.Object)
                 {
-                    obj[prop.Name] = await LoadJsonRecursiveObject(prop.Value as JObject, currentDir);
+                    JObject nested = null;
+                    yield return _behaviour.StartCoroutine(LoadJsonObjectCoroutine((JObject)prop.Value, currentDir, result => nested = result));
+                    obj[prop.Name] = nested;
                 }
             }
-            return obj;
+
+            callback?.Invoke(obj);
         }
 
-        // Lectura de archivo compatible con mobile
-        private async Task<string> ReadFileMobile(string path)
+        private IEnumerator ReadFileMobileCoroutine(string path, Action<string> callback)
         {
-            if (path.Contains("://") || path.Contains(":///")) // ya es URL
+#if UNITY_ANDROID
+            using (var www = UnityWebRequest.Get(path))
             {
-                UnityWebRequest www = UnityWebRequest.Get(path);
-                await www.SendWebRequest();
+                var op = www.SendWebRequest();
+                while (!op.isDone)
+                    yield return null;
 
                 if (www.result != UnityWebRequest.Result.Success)
                 {
-                    Debug.LogError($"Error leyendo archivo: {path} | {www.error}");
-                    return "";
+                    Debug.LogError("Error leyendo archivo: " + path + " | " + www.error);
+                    callback?.Invoke("");
+                    yield break;
                 }
-                return www.downloadHandler.text;
+
+                callback?.Invoke(www.downloadHandler.text);
             }
-            else if (Application.platform == RuntimePlatform.Android)
+#else
+            if (!File.Exists(path))
             {
-                UnityWebRequest www = UnityWebRequest.Get("jar:file://" + path);
-                await www.SendWebRequest();
-                return www.downloadHandler.text;
+                Debug.LogError("Archivo no encontrado: " + path);
+                callback?.Invoke("");
             }
             else
             {
-                return File.ReadAllText(path);
+                byte[] bytes = File.ReadAllBytes(path);
+                string content = System.Text.Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+
+                // Opcional: quitar BOM si existe
+                if (!string.IsNullOrEmpty(content) && content[0] == '\uFEFF')
+                    content = content.Substring(1);
+
+                callback?.Invoke(File.ReadAllText(content));
             }
+#endif
         }
-        
+
         private void FlattenArray(string prefix, JArray array)
         {
             for (int i = 0; i < array.Count; i++)
@@ -160,11 +189,9 @@ namespace _Main.Scripts.Localization
                     case JTokenType.Object:
                         FlattenJson(key, (JObject)value);
                         break;
-
                     case JTokenType.Array:
                         FlattenArray(key, (JArray)value);
                         break;
-
                     default:
                         _loadedText[key] = value.ToString();
                         break;
@@ -172,7 +199,6 @@ namespace _Main.Scripts.Localization
             }
         }
 
-        // Convierte el JSON anidado a diccionario con claves tipo "en.settings.title"
         private void FlattenJson(string prefix, JObject obj)
         {
             foreach (var prop in obj.Properties())
@@ -184,33 +210,26 @@ namespace _Main.Scripts.Localization
                     case JTokenType.Object:
                         FlattenJson(key, (JObject)prop.Value);
                         break;
-
                     case JTokenType.Array:
                         FlattenArray(key, (JArray)prop.Value);
                         break;
-
                     default:
                         _loadedText[key] = prop.Value.ToString();
                         break;
                 }
             }
-
-            ReplacePlaceholderText();
-            
-            _onTextLoaded?.Invoke();
         }
-        
-        
+
         private void OnTextLoadedHandler()
         {
-  
+            // opcional
         }
-        
+
         private void ReplacePlaceholderText()
         {
             LocalizationTools.ReplacePlaceHolders(_loadedText, _textReplacement);
         }
-        
+
         #endregion
     }
 }

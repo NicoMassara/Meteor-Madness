@@ -42,6 +42,8 @@ namespace _Main.Scripts.Bootstrap
                 count = (count + 1) % 4;
                 yield return new WaitForSeconds(0.25f);
             }
+            
+            yield return null;
         }
     }
 }
