@@ -31,7 +31,6 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private EarthSlicer _slicer;
         private ShakerController _shakerController;
-        private GameObject _currentSprite;
         private Rotator _planeRotator;
         private IEarthRestart _restartTimeValues;
         private bool _isDead;

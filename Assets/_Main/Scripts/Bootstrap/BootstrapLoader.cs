@@ -99,7 +99,7 @@ namespace _Main.Scripts.Bootstrap
             
             yield return new WaitForSeconds(delayBeforeLoad);
             
-            OnLoadingAsset?.Invoke("Loading Secondary Scenes");
+            OnLoadingAsset?.Invoke("Loading Main Scene");
             yield return new WaitForSeconds(delayBeforeLoad);
             
             foreach (string sceneName in additiveScenes)
@@ -115,7 +115,7 @@ namespace _Main.Scripts.Bootstrap
             
             yield return new WaitForEndOfFrame();
             
-            OnLoadingAsset?.Invoke("Loading Main Scene");
+            OnLoadingAsset?.Invoke("Loading Secondary Scenes");
             
             AsyncOperation coreSceneAsyncLoad = SceneManager.LoadSceneAsync(coreScene, LoadSceneMode.Additive);
             coreSceneAsyncLoad.allowSceneActivation = false;

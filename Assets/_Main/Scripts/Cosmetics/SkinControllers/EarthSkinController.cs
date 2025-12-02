@@ -19,9 +19,19 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         
         private void Awake()
         {
+            spriteRenderer.gameObject.SetActive(false);
             _earthHealth = GetComponent<IEarthSkin>();
             _slicer = GetComponent<EarthSlicer>();
             
+            //Hack
+            BootEvents.OnGameLoaded += OnGameLoadedHandler;
+        }
+
+        private void OnGameLoadedHandler()
+        {
+            BootEvents.OnGameLoaded -= OnGameLoadedHandler;
+            //
+            spriteRenderer.gameObject.SetActive(true);
         }
 
         private void Start()

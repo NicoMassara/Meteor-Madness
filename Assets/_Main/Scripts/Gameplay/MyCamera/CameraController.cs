@@ -296,7 +296,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
             {
                 if (_actionGate.IsZoomedIn)
                 {
-                    Debug.Log("Can't Zoom In");
+                    //Debug.Log("Can't Zoom In");
                     return;
                 }
 
