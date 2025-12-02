@@ -23,8 +23,11 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         private void Awake()
         {
 #if !UNITY_ANDROID || !UNITY_IOS
-            SetActiveImage(clockwiseImage, false);
-            SetActiveImage(counterClockwiseImage, false);
+            
+            HandleSetEnableUI(false);
+            
+            SetEnableImage(clockwiseImage, false);
+            SetEnableImage(counterClockwiseImage, false);
 #endif
         }
 
@@ -59,12 +62,12 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         
         private void HandleEnableClock(bool isActive)
         {
-            SetActiveImage(clockwiseImage, isActive);
+            SetEnableImage(clockwiseImage, isActive);
         }
 
         private void HandleEnableCounterClock(bool isActive)
         {
-            SetActiveImage(counterClockwiseImage, isActive);
+            SetEnableImage(counterClockwiseImage, isActive);
         }
         
         private void HandleSetEnableUI(bool isEnable)
@@ -123,7 +126,7 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         }
 #endif
 
-        private void SetActiveImage(Image image, bool isActive)
+        private void SetEnableImage(Image image, bool isActive)
         {
             if (image == null) return;
             
