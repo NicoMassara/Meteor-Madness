@@ -70,22 +70,26 @@ namespace _Main.Scripts.Bootstrap
             
             // Save Data
             OnLoadingAsset?.Invoke("Loading Saves");
+            yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedData);
             PrintDebug("Save Data loaded");
             
             // Localization
             OnLoadingAsset?.Invoke("Loading Texts");
+            yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLocalizationLoaded);
             PrintDebug("Localization loaded");
             
             // Skins
             OnLoadingAsset?.Invoke("Loading Skins");
+            yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedSkins);
             PrintDebug("Skins loaded");
             
             yield return new WaitForSeconds(delayBeforeLoad);
             
             OnLoadingAsset?.Invoke("Loading Scenes");
+            yield return new WaitForSeconds(delayBeforeLoad);
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(coreScene, LoadSceneMode.Additive);
             asyncLoad.allowSceneActivation = false;
             
