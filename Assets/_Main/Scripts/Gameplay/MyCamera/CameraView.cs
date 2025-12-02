@@ -312,7 +312,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private void ZoomIn(float timeToZoom)
         {
             var actions = ActionBuilder.Start().
-                Do(new ZoomAction(ZoomOutSize, 
+                Do(new ZoomAction(GetCameraSize(), 
                     ZoomInSize, timeToZoom, 
                     mainCamera))
                 .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
@@ -326,7 +326,7 @@ namespace _Main.Scripts.Gameplay.MyCamera
         private void ZoomOut(float timeToZoom)
         {
             var actions = ActionBuilder.Start().
-                Do(new ZoomAction(ZoomInSize, 
+                Do(new ZoomAction(GetCameraSize(), 
                     ZoomOutSize, timeToZoom, 
                     mainCamera))
                 .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
@@ -335,6 +335,11 @@ namespace _Main.Scripts.Gameplay.MyCamera
                 .Build();
             
             ActionManager.Add(actions, ActionManager.UpdateType.Late);
+        }
+
+        private float GetCameraSize()
+        {
+            return mainCamera.orthographicSize;
         }
 
         #endregion
