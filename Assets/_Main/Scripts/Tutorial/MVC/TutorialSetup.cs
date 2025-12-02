@@ -10,7 +10,7 @@ namespace _Main.Scripts.Tutorial.MVC
     public class TutorialSetup : ManagedBehavior
     {
         private TutorialMotor _motor;
-        private TutorialController _controller;
+        private TutorialController.ITutorialController _controller;
         private TutorialView _view;
         private TutorialUIView _ui;
         
@@ -52,18 +52,11 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void SetViewHandlers()
         {
-            _ui.OnStartButtonPressed += UIOnStartTutorialButtonPressedHandler;
-
             _view.OnTutorialEnable += ViewOnTutorialEnable;
             _view.OnTutorialFinished += _controller.TransitionToMultiPage;
         }
 
         private void ViewOnTutorialEnable()
-        {
-            _controller.TransitionToStart();
-        }
-
-        private void UIOnStartTutorialButtonPressedHandler()
         {
             _controller.TransitionToMultiPage();
         }

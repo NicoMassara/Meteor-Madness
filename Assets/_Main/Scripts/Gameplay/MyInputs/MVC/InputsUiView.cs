@@ -126,9 +126,9 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         }
 #endif
 
-        private void SetEnablePanel(bool isEnable)
+        private void SetEnablePanel(bool isActive)
         {
-            imageContainer.SetActive(isEnable);
+            imageContainer.SetActive(isActive);
         }
 
         private void SetEnableImage(Image image, bool isActive)
