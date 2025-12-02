@@ -5,11 +5,6 @@ namespace _Main.Scripts.Tutorial.MVC
     public class TutorialMotor : ObservableComponent
     {
         
-        public void Start()
-        {
-            NotifyAll(TutorialObserverMessage.Start);
-        }
-
         public void Movement()
         {
             NotifyAll(TutorialObserverMessage.Movement);

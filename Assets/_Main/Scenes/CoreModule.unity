@@ -639,8 +639,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23df50d13ef44a1918ac581ae274b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotateData: {fileID: 0}
-  deflectData: {fileID: 0}
 --- !u!114 &168416682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -864,9 +862,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3917780fb8e642179c0e88966d96a8c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggeredData: {fileID: 0}
-  finishedData: {fileID: 0}
-  addedData: {fileID: 0}
 --- !u!114 &234428184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2107,7 +2102,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65107d1653634bd08614a35e7790b571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionData: {fileID: 0}
 --- !u!114 &593039196
 MonoBehaviour:
   m_ObjectHideFlags: 0

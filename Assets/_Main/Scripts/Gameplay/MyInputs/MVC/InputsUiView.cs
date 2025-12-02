@@ -24,7 +24,7 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         {
 #if !UNITY_ANDROID || !UNITY_IOS
             
-            HandleSetEnableUI(false);
+            SetEnablePanel(false);
             
             SetEnableImage(clockwiseImage, false);
             SetEnableImage(counterClockwiseImage, false);
@@ -72,7 +72,7 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         
         private void HandleSetEnableUI(bool isEnable)
         {
-            imageContainer.SetActive(isEnable);
+            SetEnablePanel(isEnable);
         }
         private void HandleInitialize(ITouchInputData touchInputData)
         {
@@ -125,6 +125,11 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
             return (pointA + pointB) * 0.5f;
         }
 #endif
+
+        private void SetEnablePanel(bool isActive)
+        {
+            imageContainer.SetActive(isActive);
+        }
 
         private void SetEnableImage(Image image, bool isActive)
         {
