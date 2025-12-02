@@ -16,7 +16,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         [Header("Values")] 
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
-
+        
+        private bool _hasTimerEnable;
         private bool _isGameplayActive;
         private bool _isStorageFull;
         private bool _isTimerRunning;
@@ -32,7 +33,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
 
             BootEvents.OnSubSystemRequestInitialize += Initialize;
         }
-
         private void Initialize()
         {
             BootEvents.OnSubSystemRequestInitialize -= Initialize;
@@ -45,12 +45,11 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             BootEvents.TriggerOnSubSystemInitialized();
         }
-        
         private void SendAbility()
         {
+            Debug.Log("Ability Sent");
             AbilitiesEventCaller.RequestSpawn();
         }
-
         private void CreateAbilitySphere(Vector2 position, Vector2 direction, float movementMultiplier)
         {
             var tempSphere = _factory.SpawnAbilitySphere();
@@ -73,7 +72,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             ProjectileEventCaller.Add(tempSphere);
         }
-
         private void DeflectionHandler(AbilitySphereCollisionData data)
         {
             data.Sphere.OnDeflection = null;
@@ -99,7 +97,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             temp = _isStorageFull ? temp/2 : temp;
             TryRunTimer(temp);
         }
-        
         private void OnEarthCollisionHandler(AbilitySphereCollisionData data)
         {
             data.Sphere.OnDeflection = null;
@@ -119,7 +116,6 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             temp = _isStorageFull ? temp/2 : temp;
             TryRunTimer(temp);
         }
-
         private void SetTimer(float time)
         {
             _isTimerRunning = true;
@@ -129,35 +125,52 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
                 _isTimerRunning = false;
             }));
         }
-
-        private void RemoveTimer()
+        private void RemoveTimer(TimerManager.GeneratedId timerId)
         {
-            if(_spawnTimerId == null) return;   
+            if(timerId == null) return;   
             
-            if (_spawnTimerId.IsActive)
+            if (timerId.IsActive)
             {
-                TimerManager.Remove(_spawnTimerId);
+                TimerManager.Remove(timerId);
+            }
+        }
+        private void PauseTimer(TimerManager.GeneratedId timerId)
+        {
+            if(timerId == null) return;   
+            
+            if (timerId.IsActive)
+            {
+                TimerManager.Pause(timerId);
+            }
+        }
+        private void ResumeTimer(TimerManager.GeneratedId timerId)
+        {
+            if(timerId == null) return;   
+            
+            if (timerId.IsActive)
+            {
+                TimerManager.Resume(timerId);
             }
         }
 
         private void TryRunTimer(float time)
         {
-            if(GetCanRunTimer() == false) return;
-            
-            SetTimer(time);
+            if (_isTimerRunning)
+            {
+                Debug.Log("Ability Timer already running");
+            }
+            else
+            {
+                Debug.Log($"Ability Timer Set To: {time}");
+                SetTimer(time);
+            }
         }
         
         private AbilityType GetAbilityToAdd()
         {
             return _selector.GetAbilityToAdd();
         }
-
-        private bool GetCanRunTimer()
-        {
-            return _isGameplayActive && 
-                   _currentLevel >= _minUnlockLevel && 
-                   _isTimerRunning == false;
-        }
+        
 
         #region EventBus
 
@@ -172,8 +185,22 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             AbilitiesEventSubscriber.NotifyIsActive(EventBus_Ability_SetActive);
             AbilitiesEventSubscriber.Add(EventBus_Ability_Add);
             AbilitiesEventSubscriber.SetNextSpawn(EventBus_Ability_NextSpawn);
+            //
+            GameModeEventSubscriber.SetPause(EventBus_GameMode_SetPause);
         }
-        
+
+        private void EventBus_GameMode_SetPause(GameModeEvents.SetPause input)
+        {
+            if (input.IsPaused)
+            {
+                PauseTimer(_spawnTimerId);
+            }
+            else
+            {
+                ResumeTimer(_spawnTimerId);
+            }
+        }
+
         #region Ability
 
         private void EventBus_Ability_NextSpawn(AbilitiesEvents.SetNextSpawn input)
@@ -201,7 +228,8 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             if (input.IsActive)
             {
                 _selector.IncreaseValue(input.AbilityType);
-                RemoveTimer();
+                _isTimerRunning = false;
+                RemoveTimer(_spawnTimerId);
             }
             else
             {
@@ -224,7 +252,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         private void EventBus_Projectile_DisableSpawn(ProjectileEvents.DisableSpawn input)
         {
             _isGameplayActive = false;
-            RemoveTimer();
+            RemoveTimer(_spawnTimerId);
             _selector.Reset();
             _factory.RecycleAll();
         }
@@ -238,8 +266,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             _currentLevel = input.Level;
             _selector.UpdateLevel(_currentLevel);
-            if (GetCanRunTimer())
+            if (_currentLevel>= _minUnlockLevel &&
+                _hasTimerEnable == false)
             {
+                _hasTimerEnable = true;
                 TryRunTimer(spawnDelay);
             }
         }

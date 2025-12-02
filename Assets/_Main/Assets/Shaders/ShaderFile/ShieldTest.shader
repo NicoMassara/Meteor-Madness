@@ -157,7 +157,7 @@ Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, C
 Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;562;-5603.173,722.4761;Inherit;False;2095.877;380.4474;Comment;13;521;522;523;524;534;529;526;528;527;525;539;538;533;Cross Mask;1,1,1,1;0;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;146;-4862.96,-382.5276;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;169;-4774.167,-135.6268;Inherit;False;Property;_LinesSpeed;LinesSpeed;5;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;112;-3472,-368;Inherit;False;Property;_RotationSpeed;RotationSpeed;4;0;Create;True;0;0;0;False;0;False;10;0;0;10;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;112;-3472,-368;Inherit;False;Property;_RotationSpeed;RotationSpeed;4;0;Create;True;0;0;0;False;0;False;10;10;0;10;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleSubtractOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;147;-4589.961,-381.5276;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT2;0.5,0.5;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.TFHCRemapNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;170;-4454.167,-146.6268;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;0.01;False;4;FLOAT;0.05;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;533;-5553.173,885.3088;Inherit;False;Constant;_Anchor;Anchor;7;0;Create;True;0;0;0;False;0;False;0.5;0;0;0;0;1;FLOAT;0
@@ -288,4 +288,4 @@ WireConnection;0;0;414;0
 WireConnection;0;2;57;0
 WireConnection;0;9;53;0
 ASEEND*/
-//CHKSM=513DF1275A7CB0A2E0F32F479D15EC9EF7E8293E
+//CHKSM=15E67F8BF2A195664C6A3D7B2903D072C8992084
