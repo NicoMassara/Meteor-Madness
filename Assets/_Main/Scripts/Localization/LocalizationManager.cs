@@ -15,6 +15,27 @@ namespace _Main.Scripts.Localization
             Initialize();
         }
         
+        #region Public API
+        
+        public void LoadLanguage(SystemLanguage language)
+        {
+            _textLoader?.SelectLanguageToLoad(language);
+        }
+
+        public int GetArrayLength(string prefix)
+        {
+            return _textLoader.GetArrayLength(prefix);
+        }
+        
+        public string GetText(string key)
+        {
+            return _textLoader.GetText(key);
+        }
+
+        #endregion
+
+        #region Private API
+
         private void Initialize()
         {
             StartCoroutine(WaitForSettingsData());
@@ -58,23 +79,6 @@ namespace _Main.Scripts.Localization
             LoadLanguage(LocalizationTools.GetLanguageFromIndex(languageIndex));
 
             yield return null;
-        }
-
-        #region Public API
-        
-        public void LoadLanguage(SystemLanguage language)
-        {
-            _textLoader?.SelectLanguageToLoad(language);
-        }
-
-        public int GetArrayLength(string prefix)
-        {
-            return _textLoader.GetArrayLength(prefix);
-        }
-        
-        public string GetText(string key)
-        {
-            return _textLoader.GetText(key);
         }
 
         #endregion

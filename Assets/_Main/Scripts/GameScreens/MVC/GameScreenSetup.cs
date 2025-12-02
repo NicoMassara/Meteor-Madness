@@ -63,7 +63,7 @@ namespace _Main.Scripts.GameScreens
             //
             
             TimerManager.Add(new TimerData(0.25f, 
-                () => { _motor.LoadScreenByIndex((int)ScreenType.MainMenu); }));
+                () => { _motor.LoadScreenByIndex((int)defaultScreen); }));
         }
 
         private void EventBus_GameScreen_GoToLastScreen(GameScreenEvents.LastScreen input)

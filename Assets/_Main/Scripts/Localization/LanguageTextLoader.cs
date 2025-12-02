@@ -147,6 +147,30 @@ namespace _Main.Scripts.Localization
                 return File.ReadAllText(path);
             }
         }
+        
+        private void FlattenArray(string prefix, JArray array)
+        {
+            for (int i = 0; i < array.Count; i++)
+            {
+                string key = $"{prefix}[{i}]";
+                JToken value = array[i];
+
+                switch (value.Type)
+                {
+                    case JTokenType.Object:
+                        FlattenJson(key, (JObject)value);
+                        break;
+
+                    case JTokenType.Array:
+                        FlattenArray(key, (JArray)value);
+                        break;
+
+                    default:
+                        _loadedText[key] = value.ToString();
+                        break;
+                }
+            }
+        }
 
         // Convierte el JSON anidado a diccionario con claves tipo "en.settings.title"
         private void FlattenJson(string prefix, JObject obj)
@@ -154,10 +178,21 @@ namespace _Main.Scripts.Localization
             foreach (var prop in obj.Properties())
             {
                 string key = string.IsNullOrEmpty(prefix) ? prop.Name : $"{prefix}.{prop.Name}";
-                if (prop.Value.Type == JTokenType.Object)
-                    FlattenJson(key, (JObject)prop.Value);
-                else
-                    _loadedText[key] = prop.Value.ToString();
+
+                switch (prop.Value.Type)
+                {
+                    case JTokenType.Object:
+                        FlattenJson(key, (JObject)prop.Value);
+                        break;
+
+                    case JTokenType.Array:
+                        FlattenArray(key, (JArray)prop.Value);
+                        break;
+
+                    default:
+                        _loadedText[key] = prop.Value.ToString();
+                        break;
+                }
             }
 
             ReplacePlaceholderText();
