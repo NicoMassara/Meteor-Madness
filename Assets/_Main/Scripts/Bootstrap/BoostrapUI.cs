@@ -40,7 +40,7 @@ namespace _Main.Scripts.Bootstrap
             {
                 loadingText.text = baseText + new string('.', count);
                 count = (count + 1) % 4;
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.25f);
             }
         }
     }

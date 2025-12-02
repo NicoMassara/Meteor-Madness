@@ -238,7 +238,7 @@ MonoBehaviour:
   - MainMenuModule
   - CosmeticsModule
   - GameplayModule
-  delayBeforeLoad: 0.1
+  delayBeforeLoad: 0.5
   progressBar: {fileID: 0}
 --- !u!4 &388010119
 Transform:
