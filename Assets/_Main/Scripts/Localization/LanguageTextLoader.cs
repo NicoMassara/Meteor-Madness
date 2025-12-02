@@ -165,15 +165,10 @@ namespace _Main.Scripts.Localization
             }
             else
             {
-                byte[] bytes = File.ReadAllBytes(path);
-                string content = System.Text.Encoding.UTF8.GetString(bytes, 0, bytes.Length);
-
-                // Opcional: quitar BOM si existe
-                if (!string.IsNullOrEmpty(content) && content[0] == '\uFEFF')
-                    content = content.Substring(1);
-
-                callback?.Invoke(File.ReadAllText(content));
+                callback?.Invoke(File.ReadAllText(path));
             }
+
+            yield return null;
 #endif
         }
 
