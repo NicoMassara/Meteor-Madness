@@ -23,16 +23,18 @@ namespace _Main.Scripts.Comet
 
         private void Awake()
         {
-            GameEvents.OnGameLoaded += Initialize;
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
         }
 
         private void Initialize()
         {            
-            GameEvents.OnGameLoaded -= Initialize;
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
             //
             _pool = new GenericPool<CometView>(cometPrefab, 1, 5);
             
             SetTimer(GameConfigManager.Instance.GetGameplayData().GameTimeData.FirstCometSpawnDelay);
+            
+            BootEvents.TriggerOnSubSystemInitialized();
         }
 
         private void SetTimer(float spawnDelay)

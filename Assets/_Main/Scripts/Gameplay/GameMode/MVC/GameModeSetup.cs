@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Save;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -19,9 +20,16 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Systems;
         public TickGroup SelfTickGroup { get; } = TickGroup.EightTarget;
-        
+
         private void Awake()
         {
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
+        }
+
+        private void Initialize()
+        {
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
+            //
             var gameplayData = GameConfigManager.Instance.GetGameplayData();
             
             _motor = new GameModeMotor(gameplayData.LevelData.GetGameplayLevelRequierment(),
@@ -39,15 +47,17 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
-        }
-
-        private void Start()
-        {
+            
             _controller.Initialize();
+            
+            _controller.InitializeData();
             
             var saveData = DataManager.Instance.GetData<DataManager.ScoreSaveData>(DataManager.SaveDataType.Score);
             _controller.SetHighScore(saveData.HighScore);
+            
+            BootEvents.TriggerOnSubSystemInitialized();
         }
+        
         
         public void ExecuteUpdate(float deltaTime)
         {

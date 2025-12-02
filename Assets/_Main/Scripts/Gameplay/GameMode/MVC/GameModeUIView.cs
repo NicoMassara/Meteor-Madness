@@ -34,8 +34,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void Start()
         {
-            _gameUIConfig = GameConfigManager.Instance.GetUIData();
-            
             GetUiComponents().PausePanel.OnResumeButtonPressed += () =>
             {
                 OnResumeButtonPressed?.Invoke();
@@ -77,6 +75,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             switch (message)
             {
+                // Initialize
+                case GameModeObserverMessage.InitializeData:
+                    HandleInitializeData();
+                    break;
+                
                 // Enable / Disable
                 case GameModeObserverMessage.Disable:
                     HandleDisable();
@@ -147,6 +150,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleSetHighScore((bool)args[0],(float)args[1]);
                     break;
             }
+        }
+
+        private void HandleInitializeData()
+        {
+            _gameUIConfig = GameConfigManager.Instance.GetUIData();
         }
 
         private void HandleSetHighScore(bool hasNewHighScore, float highScore)

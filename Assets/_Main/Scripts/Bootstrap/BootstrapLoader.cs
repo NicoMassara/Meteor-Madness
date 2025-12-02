@@ -4,6 +4,7 @@ using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Save;
+using _Main.Scripts.Sounds;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -26,6 +27,9 @@ namespace _Main.Scripts.Bootstrap
         private bool _hasLocalizationLoaded;
         private bool _hasLoadedData;
         private bool _hasLoadedSkins;
+
+        private int _mainSystemCount;
+        private int _subSystemCount;
         
         public event Action<string> OnLoadingAsset;
         
@@ -50,8 +54,18 @@ namespace _Main.Scripts.Bootstrap
             {
                 _hasLoadedSkins = true;
             };
+
+            BootEvents.OnSubSystemInitialized += () =>
+            {
+                _subSystemCount++;
+            };
             
-            
+            BootEvents.OnMainSystemInitialized += () =>
+            {
+                _mainSystemCount++;
+            };
+
+
             var localization = LocalizationManager.Instance;
             var dataManager = DataManager.Instance;
             var skinManager = SkinManager.Instance;
@@ -72,67 +86,94 @@ namespace _Main.Scripts.Bootstrap
             OnLoadingAsset?.Invoke("Loading Saves");
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedData);
-            PrintDebug("Save Data loaded");
             
             // Localization
             OnLoadingAsset?.Invoke("Loading Texts");
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLocalizationLoaded);
-            PrintDebug("Localization loaded");
             
             // Skins
             OnLoadingAsset?.Invoke("Loading Skins");
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedSkins);
-            PrintDebug("Skins loaded");
             
             yield return new WaitForSeconds(delayBeforeLoad);
             
-            OnLoadingAsset?.Invoke("Loading Scenes");
+            OnLoadingAsset?.Invoke("Loading Secondary Scenes");
             yield return new WaitForSeconds(delayBeforeLoad);
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(coreScene, LoadSceneMode.Additive);
-            asyncLoad.allowSceneActivation = false;
             
-            while (asyncLoad.progress < 0.9f)
+            foreach (string sceneName in additiveScenes)
+            {
+                AsyncOperation secondarySceneAsyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+
+                // Espera hasta que la escena termine de cargar
+                while (!secondarySceneAsyncLoad.isDone)
+                {
+                    yield return null;
+                }
+            }
+            
+            yield return new WaitForEndOfFrame();
+            
+            OnLoadingAsset?.Invoke("Loading Main Scene");
+            
+            AsyncOperation coreSceneAsyncLoad = SceneManager.LoadSceneAsync(coreScene, LoadSceneMode.Additive);
+            coreSceneAsyncLoad.allowSceneActivation = false;
+            
+            while (coreSceneAsyncLoad.progress < 0.9f)
             {
                 yield return null;
             }
             
-            PrintDebug("Core Module Loaded");
-            
             yield return new WaitForSeconds(delayBeforeLoad);
             
-            asyncLoad.allowSceneActivation = true;
-            
-            PrintDebug("Activating Core Module");
+            coreSceneAsyncLoad.allowSceneActivation = true;
 
             yield return null;
             
-            yield return new WaitUntil(() => asyncLoad.isDone);
-            
-            PrintDebug("Game Loaded");
-            
-            OnLoadingAsset?.Invoke("Game Loaded");
+            yield return new WaitUntil(() => coreSceneAsyncLoad.isDone);
             
             yield return new WaitForEndOfFrame();
             
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(coreScene));
-            GameEvents.TriggerOnGameLoaded();
-
-            yield return new WaitForEndOfFrame();
             
-            PrintDebug("Removing Boostrap");
+            OnLoadingAsset?.Invoke("Initializing Data");
+            
+            yield return new WaitForSeconds(delayBeforeLoad);
+            
+            BootEvents.TriggerOnMainSystemRequestInitialize();
+            
+            OnLoadingAsset?.Invoke("Initializing Main Systems");
+            
+            yield return new WaitUntil(GetHasLoadedMainSystems);
+            yield return new WaitForSeconds(delayBeforeLoad);
+            
+            BootEvents.TriggerOnMainSubSystemRequestInitialize();
+            
+            OnLoadingAsset?.Invoke("Initializing Sub Systems");
+            
+            yield return new WaitUntil(GetHasLoadedSubsystems);
+            yield return new WaitForSeconds(delayBeforeLoad);
+
+            OnLoadingAsset?.Invoke("Initializing Game");
+            
+            yield return new WaitForSeconds(delayBeforeLoad);
+            
+            BootEvents.TriggerOnGameLoaded();
+            
+            yield return new WaitForEndOfFrame();
 
             SceneManager.UnloadSceneAsync(boostrapScene);
         }
 
-        private void PrintDebug(string message)
+        private bool GetHasLoadedMainSystems()
         {
-            if(DebugDisabled) return;
-            
-#pragma warning disable CS0162 // Unreachable code detected
-            Debug.Log($"[Boostrap] - {message}");
-#pragma warning restore CS0162 // Unreachable code detected
+            return _mainSystemCount >= 2;
+        }
+
+        private bool GetHasLoadedSubsystems()
+        {
+            return _subSystemCount >= 3;
         }
     }
 }

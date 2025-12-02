@@ -30,18 +30,20 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             SetEventBus();
 
-            GameEvents.OnGameLoaded += Initialize;
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
         }
 
         private void Initialize()
         {
-            GameEvents.OnGameLoaded -= Initialize;
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
             //
             var selectorData = GameConfigManager.Instance.GetGameplayData().AbilitySelectorData;
             _minUnlockLevel = selectorData.MinUnlockLevel;
             
             _selector = new AbilitySelector(selectorData.GetRarityValues,selectorData.GetUnlockLevelValues);
             _factory = new AbilitySphereFactory(prefab);
+            
+            BootEvents.TriggerOnSubSystemInitialized();
         }
         
         private void SendAbility()

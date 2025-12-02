@@ -43,7 +43,7 @@ namespace _Main.Scripts.Bootstrap
                 yield return new WaitForSeconds(0.25f);
             }
             
-            yield return null;
+            // ReSharper disable once IteratorNeverReturns
         }
     }
 }

@@ -21,7 +21,7 @@ namespace _Main.Scripts.GameScreens
             
             SetEventBus();
             
-            ModuleLoaderEvents.OnModulesLoaded += ModuleLoader_OnModulesLoaded;
+            BootEvents.OnGameLoaded += BootEvents_OnGameLoaded;
         }
 
         private void SelectNewScreen(ScreenType screenType)
@@ -39,9 +39,9 @@ namespace _Main.Scripts.GameScreens
             _motor.LoadLastScreen();
         }
 
-        private void ModuleLoader_OnModulesLoaded()
+        private void BootEvents_OnGameLoaded()
         {
-            ModuleLoaderEvents.OnModulesLoaded -= ModuleLoader_OnModulesLoaded;
+            BootEvents.OnGameLoaded -= BootEvents_OnGameLoaded;
             
             TimerManager.Add(new TimerData(Time.unscaledDeltaTime, 
                 () => { _motor.ZoomIn(); }));

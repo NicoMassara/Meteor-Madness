@@ -76,12 +76,12 @@ namespace _Main.Scripts.Cosmetics
             _assetsLoader = new AssetsLoader();
             _debugData = new CosmeticsDebugData();
             
-            GameEvents.OnGameLoaded += Initialize;
+            BootEvents.OnMainSystemRequestInitialize += Initialize;
         }
         
         private void Initialize()
         {
-            GameEvents.OnGameLoaded -= Initialize;
+            BootEvents.OnMainSystemRequestInitialize -= Initialize;
             //
             _skinData = DataManager.Instance.GetData<DataManager.SkinSaveData>(DataManager.SaveDataType.Skin);
             if (_skinData == null)
@@ -92,6 +92,8 @@ namespace _Main.Scripts.Cosmetics
 
             SelectSkin((SkinType)_skinData.SkinIndex);
             
+            
+            BootEvents.TriggerOnMainSystemInitialized();
             SkinEvents.TriggerOnSaveLoaded();
         }
         

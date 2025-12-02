@@ -477,6 +477,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _actionGate.IsGoingToSleep = false;
         }
+
+        public void InitializeData()
+        {
+            _motor.InitializeData();
+        }
     }
 
     #region States

@@ -19,7 +19,7 @@ namespace _Main.Scripts.Sounds
         UI
     }
     
-    public class SoundManager : SingletonManagedBehaviour<SoundManager>, IUpdatable
+    public class SoundManager : ManagedBehavior, IUpdatable
     {
         #region Tools
         private class MusicController
@@ -391,26 +391,53 @@ namespace _Main.Scripts.Sounds
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTarget;
+
+
+        public static SoundManager Instance => _instance;
+        protected static SoundManager _instance;
+        
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
         private SoundDebugData _debugData;
         
 #endif
-
-        protected override void Awake()
+        
+        private void MakeSingleton()
         {
-            base.Awake();
+            if (_instance == null)
+            {
+                _instance = this;
+                DontDestroyOnLoad(this);
+            }
+            else
+            {
+                Destroy(_instance);
+            }
+        }
+
+        protected void Awake()
+        {
+            MakeSingleton();
             
-            GameEvents.OnGameLoaded += Initialize;
+            BootEvents.OnMainSystemRequestInitialize += Initialize;
         }
 
         private void Initialize()
         {
-            GameEvents.OnGameLoaded -= Initialize;
+            BootEvents.OnMainSystemRequestInitialize -= Initialize;
             //
             _uiDefaultSounds = new UIDefaultSounds();
-            _soundGenerator = new SoundGenerator(soundPrefab);
+
+            if (soundPrefab == null)
+            {
+                Debug.Log("Prefab Reference is null");
+            }
+            else
+            {
+                _soundGenerator = new SoundGenerator(soundPrefab);
+            }
+            
             _musicController = new MusicController();
 
             SetMainVolume(SettingsManager.Instance.GetMasterVolume());
@@ -427,6 +454,7 @@ namespace _Main.Scripts.Sounds
             
 #endif
 
+            BootEvents.TriggerOnMainSystemInitialized();
             _hasInitialized = true;
         }
         

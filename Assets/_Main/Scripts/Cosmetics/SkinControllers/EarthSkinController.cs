@@ -21,6 +21,7 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         {
             _earthHealth = GetComponent<IEarthSkin>();
             _slicer = GetComponent<EarthSlicer>();
+            
         }
 
         private void Start()

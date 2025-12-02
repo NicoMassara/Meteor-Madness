@@ -63,6 +63,7 @@
         public const ulong GameUnPaused = 0xA2030;
         public const ulong Asleep = 0xA2031;
         public const ulong Leaving = 0xA2032;
+        public const ulong InitializeData = 0xA2033;
     }
 
     public struct FlyingObjectObserverMessage
