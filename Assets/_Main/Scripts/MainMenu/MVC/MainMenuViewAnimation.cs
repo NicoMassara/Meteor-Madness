@@ -60,8 +60,8 @@ namespace _Main.Scripts.MainMenu.MVC
                     .Append(Components.GameTitle.rectTransform.DOAnchorPosY(TitlePos, FadeOutTime).From())
                     .Join(Components.LeftButtonsPanel.DOAnchorPosX(LeftButtonsPos, FadeOutTime).From())
                     .Join(Components.RightButtonsPanel.DOAnchorPosX(RightButtonsPos, FadeOutTime).From())
-                    .AppendCallback(() => Components.QuitButton.gameObject.SetActive(true));
-                //.AppendInterval(0.1f);
+                    .AppendCallback(() => Components.QuitButton.gameObject.SetActive(true))
+                    .AppendInterval(0.1f);
             }
             
             protected override Sequence CreateFadeIn()
@@ -76,8 +76,7 @@ namespace _Main.Scripts.MainMenu.MVC
                     .Join(Components.GameTitle.rectTransform.DOAnchorPosY(TitlePos, FadeOutTime))
                     .Join(Components.LeftButtonsPanel.DOAnchorPosX(LeftButtonsPos, FadeOutTime))
                     .Join(Components.RightButtonsPanel.DOAnchorPosX(RightButtonsPos, FadeOutTime))
-                    .AppendCallback(() => Components.MenuPanel.gameObject.SetActive(false))
-                    .AppendInterval(0.25f);
+                    .AppendCallback(() => Components.MenuPanel.gameObject.SetActive(false));
             }
         }
         private class LoreAnimator : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel>
@@ -86,7 +85,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 : base(components) { }
 
 
-            private const float FadeTime = 0.5f;
+            private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
             
@@ -124,7 +123,7 @@ namespace _Main.Scripts.MainMenu.MVC
             public TutorialAnimator(MainMenuUiAnimationComponents.ITutorialPanel components) 
                 : base(components) { }
             
-            private const float FadeTime = 0.5f;
+            private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
             
@@ -157,7 +156,7 @@ namespace _Main.Scripts.MainMenu.MVC
             public CreditsAnimator(MainMenuUiAnimationComponents.ICreditsPanel components) 
                 : base(components) { }
 
-            private const float FadeTime = 0.5f;
+            private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
             
@@ -227,7 +226,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.CreditsMenu:
                     HandleCreditsMenu();
                     break;
-                case MainMenuObserverMessage.Disable:
+                case MainMenuObserverMessage.StartDisable:
                     HandleDisable();
                     break;
             }

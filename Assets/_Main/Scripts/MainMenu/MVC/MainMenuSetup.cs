@@ -65,6 +65,8 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
             _ui.OnOptionsOpen += () => _controller.TriggerOptions();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
+            
+            _animation.OnPanelClosed += () => _controller.ExecuteDisable();
         }
 
         #endregion
