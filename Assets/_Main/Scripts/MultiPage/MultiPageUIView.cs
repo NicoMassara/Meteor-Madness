@@ -54,7 +54,7 @@ namespace _Main.Scripts.MultiPage
 
         public void DisableMainPanel()
         {
-            GetUiComponents().DisableAllPanels();
+            GetUiComponents().DisableActivePanel();
         }
         
         

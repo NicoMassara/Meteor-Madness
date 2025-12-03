@@ -50,7 +50,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             }
             else
             {
-                GetUIComponents().DisableAllPanels();
+                GetUIComponents().DisableActivePanel();
             }
 
         }

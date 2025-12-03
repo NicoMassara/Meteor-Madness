@@ -42,7 +42,7 @@ namespace _Main.Scripts.MultiPage
         private void View_OnFinishedHandler(ulong createId)
         {
             _ui.DisableMainPanel();
-            GameEventCaller.Publish(new MultiPageUIEvents.Finished{CreateId = createId});
+            MultiPageUIEventCaller.Finished(createId);
         }
 
         private void SetTextData(IMultiPageData newText, ulong createId = 0)

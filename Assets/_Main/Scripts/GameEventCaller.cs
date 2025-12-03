@@ -742,12 +742,12 @@ namespace _Main.Scripts
 
     public static class CameraEventCaller
     {
-        public static void ZoomIn(float timeToZoom = 0.1f)
+        public static void ZoomIn(float timeToZoom = 0.5f)
         {
             GameEventCaller.Publish(new CameraEvents.ZoomIn{TimeToZoom = timeToZoom});
         }
         
-        public static void ZoomOut(float timeToZoom = 0.1f)
+        public static void ZoomOut(float timeToZoom = 0.5f)
         {
             GameEventCaller.Publish(new CameraEvents.ZoomOut{TimeToZoom = timeToZoom});
         }
