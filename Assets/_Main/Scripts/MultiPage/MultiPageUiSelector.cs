@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.MultiPage
 {
-    public class MultiPageUiSelector : UiPanelSelector<MultiPageUIComponents> { }
+    public class MultiPageUiSelector : UiComponentsSelector<MultiPageUIComponents> { }
     
     [Serializable]
     public class MultiPageUIComponents : UiComponentsData

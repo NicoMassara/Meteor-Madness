@@ -7,17 +7,12 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Menu
 {
-    public class MainMenuUiPanelSelector : UiPanelSelector<MainMenuUiComponents> { }
+    public class MainMenuUiPanelComponents : UiComponentsSelector<MainMenuUiComponents> { }
     
     [Serializable]
     public class MainMenuUiComponents : UiComponentsData
     {
         [Space(2)] 
-        [Header("Panels")] 
-        public GameObject MenuPanel;
-        public GameObject LorePanel;
-        public GameObject TutorialPanel;
-        public GameObject CreditsPanel;
         [Space]
         [Header("Text Components")]
         public TMP_Text CreditsText;

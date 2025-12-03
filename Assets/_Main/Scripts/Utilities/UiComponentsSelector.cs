@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Utilities
 {
-    public abstract class UiPanelSelector<T> : MonoBehaviour, IPanelSelector<T>
+    public abstract class UiComponentsSelector<T> : MonoBehaviour, IPanelSelector<T>
     where T : UiComponentsData
     {
         [SerializeField] private string panelName;

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Tutorial
 {
-    public class TutorialUiSelector : UiPanelSelector<TutorialUiComponents> { }
+    public class TutorialUiSelector : UiComponentsSelector<TutorialUiComponents> { }
     
     [Serializable]
     public class TutorialUiComponents : UiComponentsData

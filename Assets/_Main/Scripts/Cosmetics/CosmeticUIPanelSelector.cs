@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Cosmetics
 {
-    public class CosmeticUIPanelSelector : UiPanelSelector<CosmeticUIComponents> { }
+    public class CosmeticUIPanelSelector : UiComponentsSelector<CosmeticUIComponents> { }
 
     [Serializable]
     public class CosmeticUIComponents : UiComponentsData

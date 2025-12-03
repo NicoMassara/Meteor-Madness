@@ -9,7 +9,7 @@ namespace _Main.Scripts.Menu
         [SerializeField] private string linkedin;
         [SerializeField] private string itchIo;
         [SerializeField] private string github;
-        [SerializeField] private MainMenuUiPanelSelector uiSelector;
+        [SerializeField] private MainMenuUiPanelComponents uiSelector;
         
         private void Awake()
         {

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeUiPanelSelector : UiPanelSelector<GameModeUIComponents> { }
+    public class GameModeUiPanelSelector : UiComponentsSelector<GameModeUIComponents> { }
     
     [Serializable]
     public class GameModeUIComponents : UiComponentsData

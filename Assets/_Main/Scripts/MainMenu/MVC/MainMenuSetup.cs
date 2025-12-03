@@ -4,12 +4,15 @@ using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
+    [RequireComponent(typeof(MainMenuViewAnimation))]
     [RequireComponent(typeof(MainMenuUiView))]
     [RequireComponent(typeof(MainMenuView))]
     public class MainMenuSetup : ManagedBehavior
     {
         private MainMenuUiView _ui;
         private MainMenuView _view;
+        private MainMenuViewAnimation _animation;
+        //
         private MainMenuMotor _motor;
         private MainMenuController _controller;
 
@@ -17,11 +20,12 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             _ui = GetComponent<MainMenuUiView>();
             _view = GetComponent<MainMenuView>();
+            _animation = GetComponent<MainMenuViewAnimation>();
 
             _motor = new MainMenuMotor();
             _controller = new MainMenuController(_motor);
             
-            _motor.Subscribe(_ui);
+            _motor.Subscribe(_animation);
             _motor.Subscribe(_view);
             
             SetViewHandlers();
