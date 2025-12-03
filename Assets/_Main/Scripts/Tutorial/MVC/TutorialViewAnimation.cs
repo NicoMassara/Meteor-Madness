@@ -11,7 +11,7 @@ namespace _Main.Scripts.Tutorial.MVC
         private class MainPanelAnimator : SequenceUIAnimator<TutorialUiAnimationComponents.IHintPanel>
         {
             public MainPanelAnimator(TutorialUiAnimationComponents.IHintPanel components) : base(components) { }
-            private const float FadeTime = 0.15f;
+            private const float FadeTime = 0.1f;
             private Vector2 _panelOriginalPos;
             private Vector2 _fadeInOffPos;
             private Vector2 _fadeOutOffPos;

@@ -51,7 +51,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleAbilityRunning()
         { 
-            GetUiComponents().DisableActivePanel();
+            OnHintTextDisable?.Invoke();
         }
 
         private void HandleSphereDeflected()
