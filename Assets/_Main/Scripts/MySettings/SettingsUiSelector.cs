@@ -15,8 +15,6 @@ namespace _Main.Scripts.MySettings
     public class SettingsUiComponents : UiComponentsData
     {
         [Space]
-        [Header("Panels")]
-        public GameObject MainPanel;
         [Header("Buttons")]
         public Button BackButton;
         [Header("Components")]

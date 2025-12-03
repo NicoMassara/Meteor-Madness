@@ -1,17 +1,16 @@
-﻿using System;
-using _Main.Scripts.MyAnimations;
+﻿using _Main.Scripts.MyAnimations;
 using _Main.Scripts.Observer;
 using DG.Tweening;
 using UnityEngine;
 
-namespace _Main.Scripts.Cosmetics.MVC
+namespace _Main.Scripts.MySettings.MVC
 {
-    public class CosmeticViewAnimation : BaseViewAnimation<CosmeticUiAnimationSelector,CosmeticUiAnimationComponents>
+    public class SettingsViewAnimation : BaseViewAnimation<SettingsUiAnimationSelector,SettingsUiAnimationComponents>
     {
         #region Animators
-        private class MainPanelAnimator : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel>
+        private class MainPanelAnimator : SequenceUIAnimator<SettingsUiAnimationComponents.IMainPanel>
         {
-            public MainPanelAnimator(CosmeticUiAnimationComponents.IMainPanel components) : base(components) { }
+            public MainPanelAnimator(SettingsUiAnimationComponents.IMainPanel components) : base(components) { }
             private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
@@ -22,7 +21,7 @@ namespace _Main.Scripts.Cosmetics.MVC
                 
                 _panelOriginalPos = Components.MainPanel.anchoredPosition;
                 
-                _offscreenPos = AnimationHelper.GetOffscreenPos(Components.MainPanel, AnimationHelper.Direction.Left);
+                _offscreenPos = AnimationHelper.GetOffscreenPos(Components.MainPanel, AnimationHelper.Direction.Right);
                 Components.MainPanel.anchoredPosition = _offscreenPos;
             }
 
@@ -54,10 +53,10 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             switch (message)
             {
-                case CosmeticObserverMessage.Initial:
+                case SettingsObserverMessage.Enable:
                     HandleEnable();
                     break;
-                case CosmeticObserverMessage.StartDisable:
+                case SettingsObserverMessage.StartDisable:
                     HandleDisable();
                     break;
             }

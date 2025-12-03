@@ -4,9 +4,9 @@ namespace _Main.Scripts.MySettings.MVC
 {
     public class SettingsMotor : ObservableComponent
     {
-        public void Disable()
+        public void StartDisable()
         {
-            NotifyAll(SettingsObserverMessage.Disable);
+            NotifyAll(SettingsObserverMessage.StartDisable);
         }
 
         public void Enable()
@@ -38,6 +38,10 @@ namespace _Main.Scripts.MySettings.MVC
         {
             NotifyAll(SettingsObserverMessage.Language, index);
         }
-        
+
+        public void ExecuteDisable()
+        {
+            NotifyAll(SettingsObserverMessage.Disable);
+        }
     }
 }

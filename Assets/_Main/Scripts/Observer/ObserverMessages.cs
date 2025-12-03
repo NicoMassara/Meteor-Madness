@@ -177,6 +177,10 @@
         public const ulong Vibration = 0xA1005;
         public const ulong Volume = 0xA1006;
         public const ulong Close = 0xA1007;
+        public const ulong StartDisable = 0xA1008;
+        public const ulong Empty1 = 0xA1009;
+        public const ulong Empty2 = 0xA1010;
+        public const ulong Empty3 = 0xA1011;
     }
     
     public struct CameraObserverMessage
