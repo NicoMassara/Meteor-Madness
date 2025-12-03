@@ -11,11 +11,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         [SerializeField] private AbilityUiPanelSelector uiSelector;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
-
-        private void Start()
-        {
-            GetUIComponents().DisableAllPanels();
-        }
         
         private AbilityUIComponents GetUIComponents()
         {
