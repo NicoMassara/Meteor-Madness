@@ -49,11 +49,13 @@ namespace _Main.Scripts.MultiPage
 
         public void EnableMainPanel()
         {
+            Debug.Log("Enable");
             GetUiComponents().SetActivePanel(GetUiComponents().MainPanel);
         }
 
         public void DisableMainPanel()
         {
+            Debug.Log("Disable");
             GetUiComponents().DisableAllPanels();
         }
         

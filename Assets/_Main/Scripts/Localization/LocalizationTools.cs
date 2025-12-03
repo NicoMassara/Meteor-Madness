@@ -33,6 +33,7 @@ namespace _Main.Scripts.Localization
             }
         }
         
+        
         public static string GetLanguageCode(SystemLanguage language)
         {
             return language switch
@@ -88,6 +89,6 @@ namespace _Main.Scripts.Localization
                 _ => "English"
             };
         }
-
+        
     }   
-}
+}   

@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
+using UnityEngine;
 
 namespace _Main.Scripts
 {
@@ -47,12 +48,12 @@ namespace _Main.Scripts
     {
         public static void InitializeValues(Action<GameModeEvents.InitializeValues> action)
         {
-            GameEventCaller.Subscribe<GameModeEvents.InitializeValues>(action);
+            GameEventCaller.Subscribe(action);
         }
         
-        public static void SetPause(Action<GameModeEvents.InitializeValues> action)
+        public static void SetPause(Action<GameModeEvents.SetPause> action)
         {
-            GameEventCaller.Subscribe<GameModeEvents.InitializeValues>(action);
+            GameEventCaller.Subscribe(action);
         }
         
         public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action)
@@ -68,7 +69,7 @@ namespace _Main.Scripts
             GameEventCaller.Unsubscribe(action);
         }
         
-        public static void SetPause(Action<GameModeEvents.InitializeValues> action)
+        public static void SetPause(Action<GameModeEvents.SetPause> action)
         {
             GameEventCaller.Unsubscribe(action);
         }
@@ -130,6 +131,11 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new EarthEvents.Death());
         }
+        
+        public static void PreSlice()
+        {
+            GameEventCaller.Publish(new EarthEvents.PreSlice());
+        }
     }
     
     public static class EarthEventSubscriber
@@ -178,6 +184,11 @@ namespace _Main.Scripts
         {
             GameEventCaller.Subscribe(action);
         }
+        
+        public static void PreSlice(Action<EarthEvents.PreSlice> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
     }
     
     public static class EarthEventUnSubscriber
@@ -223,6 +234,11 @@ namespace _Main.Scripts
         }
         
         public static void Death(Action<EarthEvents.Death> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void PreSlice(Action<EarthEvents.PreSlice> action)
         {
             GameEventCaller.Unsubscribe(action);
         }

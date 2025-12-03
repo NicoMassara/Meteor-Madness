@@ -31,7 +31,6 @@ namespace _Main.Scripts.Gameplay.Earth
         
         private EarthSlicer _slicer;
         private ShakerController _shakerController;
-        private GameObject _currentSprite;
         private Rotator _planeRotator;
         private IEarthRestart _restartTimeValues;
         private bool _isDead;
@@ -47,6 +46,14 @@ namespace _Main.Scripts.Gameplay.Earth
         public event Action OnDestruction;
         public event Action OnPreDestruction;
         public event Action<bool> OnLowHealth;
+
+        #region IEarthSkin
+
+        public event Action OnShow;
+        public event Action OnHide;
+
+        #endregion
+        
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -94,6 +101,9 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             switch (message)
             {
+                case EarthObserverMessage.PreSlice:
+                    HandleGameplayStarted();
+                    break;
                 case EarthObserverMessage.RestartHealth:
                     HandleRestartHealth((float)args[0]);
                     break;
@@ -129,6 +139,11 @@ namespace _Main.Scripts.Gameplay.Earth
 #endif
                 
             }
+        }
+
+        private void HandleGameplayStarted()
+        {
+            _slicer.PreSlice();
         }
 
         private void HandleSetLowHealth(bool isLowHealth)
@@ -373,14 +388,13 @@ namespace _Main.Scripts.Gameplay.Earth
                             subscribe: callback => _slicer.OnEndUnite += callback,
                             unsubscribe: callback => _slicer.OnEndUnite -= callback
                         ))
-                        .Then(new InstantAction(()=> planeMeshContainer.gameObject.SetActive(true)))
+                        .Then(new InstantAction(()=> OnShow?.Invoke()))
                         .Then(new WaitFramesAction(3))
                         .Then(new InstantAction(()=> _slicer.UniteMeshes()))
                         .Then(new WaitSecondsAction(0.5f));
                 }
                 
                 #endregion
-            
                 
                 //Only Executes if it has damage
 
@@ -428,7 +442,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void HandleDestruction()
         {
-            planeMeshContainer.gameObject.SetActive(false);
+            OnHide?.Invoke();
             _slicer.StartSlicing();
             _isDead = true;
             OnDestruction?.Invoke();

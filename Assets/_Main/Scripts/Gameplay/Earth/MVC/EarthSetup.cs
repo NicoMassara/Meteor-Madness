@@ -59,12 +59,20 @@ namespace _Main.Scripts.Gameplay.Earth
             EarthEventSubscriber.Heal(EventBus_Earth_Heal);
             EarthEventSubscriber.EnableDamage(EventBus_Earth_Damage_Enable);
             EarthEventSubscriber.DisableDamage(EventBus_Earth_Damage_Disable);
+            EarthEventSubscriber.PreSlice(EventBus_Earth_PreSlice);
             //
             ProjectileEventSubscriber.Collision(EventBus_Meteor_Collision);
         }
-        
+
+
+
         #region Earth
 
+        private void EventBus_Earth_PreSlice(EarthEvents.PreSlice input)
+        {
+            _controller.TryPreSlice();
+        }
+        
         private void EventBus_Earth_Damage_Enable(EarthEvents.EnableDamage input)
         {
             _controller.EnableDamage();

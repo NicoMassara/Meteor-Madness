@@ -12,11 +12,10 @@ namespace _Main.Scripts.Sounds
 
         private T _componentToSound;
 
-        protected SoundManager SoundManager { get; private set; }
+        protected SoundManager SoundManager => SoundManager.Instance;
 
         private void Awake()
         {
-            SoundManager = SoundManager.Instance;
             _componentToSound = GetComponent<T>();
 
             if (_componentToSound == null)
@@ -25,7 +24,7 @@ namespace _Main.Scripts.Sounds
                 this.enabled = false;
             }
         }
-        
+
         protected GeneratedId PlaySound(SoundClassSo soundClass)
         {
             return SoundManager.PlaySound(soundClass, transform);
@@ -73,6 +72,8 @@ namespace _Main.Scripts.Sounds
 
             return _componentToSound;
         }
+        
+        
 
     }
 }

@@ -93,6 +93,7 @@ Material:
     - _FlowIntensity: 1
     - _HealthAmount: 1
     - _MinToIncreasePannerSpeed: 0.35
+    - _Opacity: 1
     - _PannerSpeedMultiplier: 10
     - _QueueControl: -1
     - _QueueOffset: 0

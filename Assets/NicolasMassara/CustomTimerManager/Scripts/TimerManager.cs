@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine;
 
 namespace NicolasMassara.CustomTimerManager
 {
@@ -182,8 +181,10 @@ namespace NicolasMassara.CustomTimerManager
             private float _targetTime;
             private float _targetFrameRate;
             private float _elapsedSinceLastTick;
+            private bool _isPaused;
 
             public bool HasEnded { get; private set; }
+            public bool IsPaused => _isPaused;
             public bool HasStarted => _hasStarted;
             public float CurrentTime => _currentTime;
             public float TargetTime => _targetTime;
@@ -258,6 +259,16 @@ namespace NicolasMassara.CustomTimerManager
                     Reset();
                 }
                 
+            }
+
+            public void Pause()
+            {
+                _isPaused = true;
+            }
+
+            public void Resume()
+            {
+                _isPaused = false;
             }
 
             /// <summary>
@@ -368,6 +379,10 @@ namespace NicolasMassara.CustomTimerManager
             for (int i = 0; i < _running.Count; i++)
             {
                 var data = _running[i];
+                
+                if(data.Timer.IsPaused)
+                    continue;
+                
                 data.Timer.TryRun(deltaTime, frameTime);
 
                 if (data.Timer.HasEnded)
@@ -418,6 +433,8 @@ namespace NicolasMassara.CustomTimerManager
 
         public static GeneratedId Add(TimerData timerData) => Instance.AddInternal(timerData);
         public static bool Remove(GeneratedId generatedId) => Instance.RemoveInternal(generatedId);
+        public static bool Pause(GeneratedId generatedId) => Instance.PauseInternal(generatedId);
+        public static bool Resume(GeneratedId generatedId) => Instance.ResumeInternal(generatedId);
         public static void Clear() => Instance.ClearInternal();
 
         #endregion
@@ -455,6 +472,32 @@ namespace NicolasMassara.CustomTimerManager
             if (_cancelAddIds.Contains(generatedId.Id))
             {
                 _cancelAddIds.Add(generatedId.Id);
+                return true;
+            }
+
+            return false;
+        }
+        
+        private bool PauseInternal(GeneratedId generatedId)
+        {
+            if(generatedId == null) return false;
+            
+            if (_timerDic.TryGetValue(generatedId.Id, out var value))
+            {
+                value.Timer.Pause();
+                return true;
+            }
+
+            return false;
+        }
+        
+        private bool ResumeInternal(GeneratedId generatedId)
+        {
+            if(generatedId == null) return false;
+            
+            if (_timerDic.TryGetValue(generatedId.Id, out var value))
+            {
+                value.Timer.Resume();
                 return true;
             }
 

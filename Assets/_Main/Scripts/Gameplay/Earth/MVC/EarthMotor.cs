@@ -85,5 +85,10 @@ namespace _Main.Scripts.Gameplay.Earth
         {
             return _currentHealth <= LowHealthThreshold;
         }
+
+        public void PreSlice()
+        {
+            NotifyAll(EarthObserverMessage.PreSlice);
+        }
     }
 }

@@ -333,5 +333,10 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
         
         #endregion
+
+        public void InitializeData()
+        {
+            NotifyAll(GameModeObserverMessage.InitializeData);
+        }
     }
 }

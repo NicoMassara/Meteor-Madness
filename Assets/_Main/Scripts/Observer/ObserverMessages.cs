@@ -25,7 +25,8 @@
         public const ulong SetRotation = 0xA1007;
         public const ulong TriggerEndDestruction = 0xA1008;
         public const ulong SetLowHealth = 0xA1009;
-        public const ulong Debug_UpdateHealth = 0xA1010;
+        public const ulong PreSlice = 0xA1010;
+        public const ulong Debug_UpdateHealth = 0xB1010;
     }
 
     public struct GameModeObserverMessage
@@ -62,6 +63,7 @@
         public const ulong GameUnPaused = 0xA2030;
         public const ulong Asleep = 0xA2031;
         public const ulong Leaving = 0xA2032;
+        public const ulong InitializeData = 0xA2033;
     }
 
     public struct FlyingObjectObserverMessage
@@ -100,14 +102,14 @@
     {
         public const ulong DisableScreen = 0xA5001;
         public const ulong LoadScreen = 0xA5002;
-        public const ulong Empty1 = 0xA5003;
+        public const ulong ZoomIn = 0xA5003;
         public const ulong Empty2 = 0xA5004;
         public const ulong Empty3 = 0xA5005;
     }
     
     public struct TutorialObserverMessage
     {
-        public const ulong Start = 0xA6001;
+        public const ulong Empty1 = 0xA6001;
         public const ulong Movement = 0xA6002;
         public const ulong Disable = 0xA6003;
         public const ulong Ability = 0xA6004;
