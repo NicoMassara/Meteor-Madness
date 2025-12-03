@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
-    public class TutorialViewAnimation : BaseViewAnimation<TutorialUiAnimationSelector,TutorialUiAnimationComponents >
+    public class TutorialViewAnimation : BaseViewAnimation<TutorialUiAnimationSelector,TutorialUiAnimationComponents>
     {
         #region Animators
         private class MainPanelAnimator : SequenceUIAnimator<TutorialUiAnimationComponents.IHintPanel>

@@ -11,7 +11,7 @@ namespace _Main.Scripts.MultiPage
         private IMultiPageData _data;
         private int _currentPageIndex;
         private ulong _createId;
-
+        
         public event Action<ulong> OnFinished;
         public event Action<string> OnNextButtonTextChanged;
         public event Action<bool> OnPreviousButtonSetEnable;
@@ -103,6 +103,11 @@ namespace _Main.Scripts.MultiPage
         public void SetCreateId(ulong createId)
         {
             _createId = createId;
+        }
+
+        public void TriggerFinish()
+        {
+            MultiPageUIEventCaller.Finished(_createId);
         }
     }
 }

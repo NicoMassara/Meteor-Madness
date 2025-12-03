@@ -13,8 +13,6 @@ namespace _Main.Scripts.MultiPage
     public class MultiPageUIComponents : UiComponentsData
     {
         [Space(2)]
-        [Header("Panels")]
-        public GameObject MainPanel;
         [Header("Text Components")]
         public TMP_Text PanelText;
         public TMP_Text NextButtonText;

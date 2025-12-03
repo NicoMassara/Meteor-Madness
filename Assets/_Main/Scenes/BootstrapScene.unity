@@ -375,6 +375,7 @@ MonoBehaviour:
   - CosmeticsModule
   - GameplayModule
   - OptionsModule
+  - MultiPageModule
   delayBeforeLoad: 0.05
   progressBar: {fileID: 0}
 --- !u!4 &388010119

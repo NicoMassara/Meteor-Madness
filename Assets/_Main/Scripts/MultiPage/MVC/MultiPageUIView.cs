@@ -13,7 +13,7 @@ namespace _Main.Scripts.MultiPage
         private MultiPageUIComponents _uiComponents;
         public event Action OnPreviousButtonPressed;
         public event Action OnNextButtonPressed;
-
+        
         private MultiPageUIComponents GetUiComponents()
         {
             return _uiComponents ??= _uiComponents = uiSelector.GetPanelData();
@@ -46,17 +46,6 @@ namespace _Main.Scripts.MultiPage
         {
             GetUiComponents().PanelText.text = GetLocalizedString($"{textCode}[{index}]");
         }
-
-        public void EnableMainPanel()
-        {
-            GetUiComponents().SetActivePanel(GetUiComponents().MainPanel);
-        }
-
-        public void DisableMainPanel()
-        {
-            GetUiComponents().DisableActivePanel();
-        }
-        
         
         private string GetLocalizedString(string key)
         {

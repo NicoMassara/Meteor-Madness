@@ -8,16 +8,20 @@ namespace _Main.Scripts.MultiPage
 {
     [RequireComponent(typeof(MultiPageView))]
     [RequireComponent(typeof(MultiPageViewUI))]
+    [RequireComponent(typeof(MultiPageViewAnimation))]
     public class MultiPageSetup : ManagedBehavior
     {
         [SerializeField] private MultiPageTextDataSo startData;
         private MultiPageView _view;
         private MultiPageViewUI _ui;
+        private MultiPageViewAnimation _animation;
+        
 
         private void Awake()
         {
             _view = GetComponent<MultiPageView>();
             _ui = GetComponent<MultiPageViewUI>();
+            _animation = GetComponent<MultiPageViewAnimation>();
 
             //View
             _view.OnFinished += View_OnFinishedHandler;
@@ -27,8 +31,15 @@ namespace _Main.Scripts.MultiPage
             //UI
             _ui.OnNextButtonPressed += ()=> _view.TryIncreasePageIndex();
             _ui.OnPreviousButtonPressed += ()=> _view.TryDecreasePageIndex();
+            //
+            _animation.OnPanelClosed += Anim_OnPanelCosedHandler;
             
             SetupEventBus();
+        }
+
+        private void Anim_OnPanelCosedHandler()
+        {
+            _view.TriggerFinish();
         }
 
         private void Start()
@@ -41,15 +52,14 @@ namespace _Main.Scripts.MultiPage
         
         private void View_OnFinishedHandler(ulong createId)
         {
-            _ui.DisableMainPanel();
-            MultiPageUIEventCaller.Finished(createId);
+            _animation.DisablePanel();
         }
 
         private void SetTextData(IMultiPageData newText, ulong createId = 0)
         {
             _view.SetTextData(newText);
             _view.SetCreateId(createId);
-            _ui.EnableMainPanel();
+            _animation.EnablePanel();
         }
 
         #region EventBus
@@ -65,7 +75,5 @@ namespace _Main.Scripts.MultiPage
         }
 
         #endregion
-        
-
     }
 }
