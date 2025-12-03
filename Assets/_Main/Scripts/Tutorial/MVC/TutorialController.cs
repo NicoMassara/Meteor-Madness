@@ -23,6 +23,8 @@ namespace _Main.Scripts.Tutorial.MVC
             public void TriggerSphereDeflected();
             public void TransitionToAbilityRunning();
             public void SendAdditionalProjectile(int inputType);
+            public void EnableHint();
+            public void DisableHint();
         }
         private interface IController
         {
@@ -331,6 +333,16 @@ namespace _Main.Scripts.Tutorial.MVC
             {
                 _motor.SendAdditionalProjectile(projectileTypeIndex);
             }
+        }
+
+        public void EnableHint()
+        {
+            _motor.EnableHint();
+        }
+
+        public void DisableHint()
+        {
+            _motor.DisableHint();
         }
 
         public void SetMultiPage()

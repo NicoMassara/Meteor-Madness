@@ -15,7 +15,6 @@ namespace _Main.Scripts.Interfaces
     public abstract class UiComponentsData
     {
         [Header("Main Data")]
-        [Header("Main Data")]
         public GameObject[] Panels;
         
         private GameObject _activePanel;

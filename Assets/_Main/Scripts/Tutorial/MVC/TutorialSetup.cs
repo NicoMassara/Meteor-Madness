@@ -7,23 +7,27 @@ namespace _Main.Scripts.Tutorial.MVC
 {
     [RequireComponent(typeof(TutorialView))]
     [RequireComponent(typeof(TutorialUIView))]
+    [RequireComponent(typeof(TutorialViewAnimation))]
     public class TutorialSetup : ManagedBehavior
     {
         private TutorialMotor _motor;
         private TutorialController.ITutorialController _controller;
         private TutorialView _view;
+        private TutorialViewAnimation _animator;
         private TutorialUIView _ui;
         
         private void Awake()
         {
             _view = GetComponent<TutorialView>();
             _ui = GetComponent<TutorialUIView>();
+            _animator = GetComponent<TutorialViewAnimation>();
             
             _motor = new TutorialMotor();
             _controller = new TutorialController(_motor);
             
             _motor.Subscribe(_view);
             _motor.Subscribe(_ui);
+            _motor.Subscribe(_animator);
             
             SetViewHandlers();
             
@@ -54,6 +58,9 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             _view.OnTutorialEnable += ViewOnTutorialEnable;
             _view.OnTutorialFinished += _controller.TransitionToMultiPage;
+            //
+            _ui.OnHintTextEnable += _controller.EnableHint;
+            _ui.OnHintTextDisable += _controller.DisableHint;
         }
 
         private void ViewOnTutorialEnable()
