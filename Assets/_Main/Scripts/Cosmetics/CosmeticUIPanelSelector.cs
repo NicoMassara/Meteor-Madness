@@ -13,9 +13,7 @@ namespace _Main.Scripts.Cosmetics
     public class CosmeticUIComponents : UiComponentsData
     {
         [Space]
-        [Header("Panels")]
-        public GameObject MainPanel;
-        [Header("Button Components")]
+        [Header("Buttons")]
         public Button MainMenuButton;
         [Header("Components")]
         [SerializeField] private SkinButtonSelector buttonSelector;

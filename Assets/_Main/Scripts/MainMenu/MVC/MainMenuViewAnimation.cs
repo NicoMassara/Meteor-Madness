@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
-    public class MainMenuViewAnimation : ManagedBehavior, IObserver
+    public class MainMenuViewAnimation : BaseViewAnimation<MainMenuUiAnimationSelector,MainMenuUiAnimationComponents>
     {
         #region Animators
         private class MenuAnimator : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel>
@@ -99,11 +99,6 @@ namespace _Main.Scripts.MainMenu.MVC
                 Components.LorePanel.anchoredPosition = _offscreenPos;
             }
 
-            protected override void RestartValues()
-            {
-                
-            }
-
             protected override Sequence CreateFadeIn()
             {
                 return DOTween.Sequence()
@@ -187,30 +182,21 @@ namespace _Main.Scripts.MainMenu.MVC
 
         #endregion
         
-        [SerializeField] private MainMenuUiAnimationSelector uiPanelSelector;
-        
         private IAnimator _menuAnimator;
         private IAnimator _loreAnimator;
         private IAnimator _tutorialAnimator;
         private IAnimator _creditsAnimator;
 
-        private IAnimator _currentAnimator;
-        
-        public event Action OnPanelOpened;
-        public event Action OnPanelClosed;
-
         private void Start()
         {
-
-            var components = uiPanelSelector.GetPanelData();
-            _menuAnimator = new MenuAnimator(components);
-            _loreAnimator = new LoreAnimator(components);
-            _tutorialAnimator = new TutorialAnimator(components);
-            _creditsAnimator = new CreditsAnimator(components);
+            _menuAnimator = new MenuAnimator(UIComponents);
+            _loreAnimator = new LoreAnimator(UIComponents);
+            _tutorialAnimator = new TutorialAnimator(UIComponents);
+            _creditsAnimator = new CreditsAnimator(UIComponents);
         }
 
 
-        public void OnNotify(ulong message, params object[] args)
+        public override void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
@@ -235,56 +221,26 @@ namespace _Main.Scripts.MainMenu.MVC
         
         private void HandleMainMenu()
         {
-            SetCurrentAction(_menuAnimator);
+            SetAnimator(_menuAnimator);
         }
         private void HandleTutorialMenu()
         {
-            SetCurrentAction(_tutorialAnimator);
+            SetAnimator(_tutorialAnimator);
         }
         
         private void HandleCreditsMenu()
         {
-            SetCurrentAction(_creditsAnimator);
+            SetAnimator(_creditsAnimator);
         }
 
         private void HandleLoreMenu()
         {
-            SetCurrentAction(_loreAnimator);
+            SetAnimator(_loreAnimator);
         }
         
         private void HandleDisable()
         {
-            ClearCurrentAction();
-        }
-
-        private void SetCurrentAction(IAnimator animator)
-        {
-            if (_currentAnimator != null)
-            {
-                _currentAnimator?.FadeOut(() =>
-                {
-                    OnPanelClosed?.Invoke();
-                    
-                    animator?.FadeIn(() =>
-                    {
-                        OnPanelOpened?.Invoke();
-                    });
-                });
-            }
-            else
-            {
-                animator?.FadeIn(() =>
-                {
-                    OnPanelOpened?.Invoke();
-                });
-            }
-
-            _currentAnimator = animator;
-        }
-
-        private void ClearCurrentAction()
-        {
-            SetCurrentAction(null);
+            ClearAnimator();
         }
     }
 }

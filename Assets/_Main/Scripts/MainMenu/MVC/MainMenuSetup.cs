@@ -51,10 +51,7 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void SetViewHandlers()
         {
-            _view.OnMainMenuEnable += () =>
-            {
-                _controller.TransitionToMenu();
-            };
+            _view.OnMainMenuEnable += () => _controller.TransitionToMenu();
             //
             _ui.OnGameModeTriggered += () => _controller.TriggerGameMode();
             _ui.OnTutorialTriggered += () => _controller.TriggerTutorial();
@@ -65,7 +62,7 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
             _ui.OnOptionsOpen += () => _controller.TriggerOptions();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
-            
+            //
             _animation.OnPanelClosed += () => _controller.ExecuteDisable();
         }
 
