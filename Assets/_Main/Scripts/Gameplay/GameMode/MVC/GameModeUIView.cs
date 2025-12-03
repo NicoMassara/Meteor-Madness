@@ -195,7 +195,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleDisable()
         {
-            GetUiComponents().DisableAllPanels();
+            GetUiComponents().DisableActivePanel();
         }
         
         private void HandleGameplayPanel(bool isActive)

@@ -8,7 +8,6 @@ namespace _Main.Scripts.MySettings
 {
     public class SettingsUiAnimationSelector : UiComponentsSelector<SettingsUiAnimationComponents> { }
     
-    
     [Serializable]
     public class SettingsUiAnimationComponents : UiComponentsData,
         SettingsUiAnimationComponents.IMainPanel

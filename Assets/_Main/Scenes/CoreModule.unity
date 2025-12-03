@@ -3537,6 +3537,7 @@ GameObject:
   - component: {fileID: 1294975347}
   - component: {fileID: 1294975346}
   - component: {fileID: 1294975349}
+  - component: {fileID: 1294975350}
   m_Layer: 0
   m_Name: UISelector
   m_TagString: Untagged
@@ -3558,16 +3559,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelName: Ability
   mobileData:
-    Panels:
-    - {fileID: 276659171}
     MainPanel: {fileID: 1280538970}
     AbilitySprites:
     - {fileID: 385754011}
     - {fileID: 817968721}
     - {fileID: 1629932659}
   desktopData:
-    Panels:
-    - {fileID: 385104970}
     MainPanel: {fileID: 853069961}
     AbilitySprites:
     - {fileID: 1661130643}
@@ -3601,10 +3598,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelName: Core
-  mobileData:
-    Panels: []
-  desktopData:
-    Panels: []
+--- !u!114 &1294975350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294975345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 118196d4f3584bd4995c40a33d0a7c43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mobileCanvas:
+  - {fileID: 1356343176}
+  - {fileID: 276659171}
+  - {fileID: 244942275}
+  desktopCanvas:
+  - {fileID: 385104970}
 --- !u!1 &1356343176
 GameObject:
   m_ObjectHideFlags: 0

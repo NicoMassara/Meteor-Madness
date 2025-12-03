@@ -365,6 +365,7 @@ GameObject:
   - component: {fileID: 604189447}
   - component: {fileID: 604189448}
   - component: {fileID: 604189449}
+  - component: {fileID: 604189450}
   m_Layer: 0
   m_Name: UISelector
   m_TagString: Untagged
@@ -401,12 +402,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelName: Tutorial
   mobileData:
-    Panels:
-    - {fileID: 1170793944}
     HintText: {fileID: 1696873426}
   desktopData:
-    Panels:
-    - {fileID: 88750763}
     HintText: {fileID: 774236484}
 --- !u!114 &604189449
 MonoBehaviour:
@@ -422,11 +419,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelName: Tutorial-Animator
   mobileData:
-    Panels: []
     hintPanel: {fileID: 2111792462}
   desktopData:
-    Panels: []
     hintPanel: {fileID: 482978060}
+--- !u!114 &604189450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 604189446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 118196d4f3584bd4995c40a33d0a7c43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mobileCanvas:
+  - {fileID: 1170793944}
+  desktopCanvas:
+  - {fileID: 88750763}
 --- !u!1 &774236482
 GameObject:
   m_ObjectHideFlags: 0

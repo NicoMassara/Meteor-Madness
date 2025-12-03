@@ -234,6 +234,7 @@ GameObject:
   - component: {fileID: 604189447}
   - component: {fileID: 604189448}
   - component: {fileID: 604189449}
+  - component: {fileID: 604189450}
   m_Layer: 0
   m_Name: UISelector
   m_TagString: Untagged
@@ -270,15 +271,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelName: Settings
   mobileData:
-    Panels:
-    - {fileID: 2186970679396353052}
     BackButton: {fileID: 726767435390371064}
     languageSelector: {fileID: 5690379400181665465}
     volumeSlider: {fileID: 989882472240148706}
     vibrationToggle: {fileID: 9119544661938408683}
   desktopData:
-    Panels:
-    - {fileID: 8682310597446746783}
     BackButton: {fileID: 3720962691266588373}
     languageSelector: {fileID: 2052536223523393569}
     volumeSlider: {fileID: 2551045341149329469}
@@ -297,11 +294,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelName: Settings-Animation
   mobileData:
-    Panels: []
     mainPanel: {fileID: 415486581}
   desktopData:
-    Panels: []
     mainPanel: {fileID: 1031255299}
+--- !u!114 &604189450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 604189446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 118196d4f3584bd4995c40a33d0a7c43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mobileCanvas:
+  - {fileID: 2186970679396353052}
+  desktopCanvas:
+  - {fileID: 8682310597446746783}
 --- !u!1 &609130551
 GameObject:
   m_ObjectHideFlags: 0

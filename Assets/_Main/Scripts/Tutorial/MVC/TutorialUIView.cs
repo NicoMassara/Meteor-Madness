@@ -38,9 +38,6 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.AbilityRunning:
                     HandleAbilityRunning();
                     break;
-                case TutorialObserverMessage.Disable:
-                    HandleDisable();
-                    break;
             }
         }
         
@@ -72,11 +69,6 @@ namespace _Main.Scripts.Tutorial.MVC
         private void HandleAbility()
         {
             SetHintText(GetLocalizedText(AbilityHintCode));
-        }
-        
-        private void HandleDisable()
-        {
-            GetUiComponents().DisableAllPanels();
         }
 
         private void SetHintText(string text)
