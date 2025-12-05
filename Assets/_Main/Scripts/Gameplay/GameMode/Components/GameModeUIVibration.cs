@@ -9,14 +9,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         protected override void Start()
         {
             base.Start();
-            ComponentToVibrate.OnMainMenuButtonPressed += () =>
-            {
-                Vibrate(VibrationType.UIButtonCancel);
-            };
-            ComponentToVibrate.OnRestartButtonPressed += () =>
-            {
-                Vibrate(VibrationType.UIButtonAccept);
-            };
             ComponentToVibrate.OnPauseButtonPressed += () =>
             {
                 Vibrate(VibrationType.UIButtonAccept);

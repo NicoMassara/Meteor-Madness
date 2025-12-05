@@ -8,46 +8,62 @@ namespace _Main.Scripts.Cosmetics.MVC
 {
     public class CosmeticViewAnimation : BaseViewAnimation<CosmeticUiAnimationSelector,CosmeticUiAnimationComponents>
     {
+        
         #region Animators
-        private class MainPanelAnimator : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel>
+        private class Animation_MainPanel_Open : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel>
         {
-            public MainPanelAnimator(CosmeticUiAnimationComponents.IMainPanel components) : base(components) { }
+            public Animation_MainPanel_Open(CosmeticUiAnimationComponents.IMainPanel uiComponents) : base(uiComponents) { }
             private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
             
             protected override void Initialize()
             {
-                Components.MainPanel.gameObject.SetActive(false);
+                UIComponents.MainPanel.gameObject.SetActive(false);
                 
-                _panelOriginalPos = Components.MainPanel.anchoredPosition;
+                _panelOriginalPos = UIComponents.MainPanel.anchoredPosition;
                 
-                _offscreenPos = AnimationHelper.GetOffscreenPos(Components.MainPanel, AnimationHelper.Direction.Left);
-                Components.MainPanel.anchoredPosition = _offscreenPos;
+                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.MainPanel, AnimationHelper.Direction.Left);
+                UIComponents.MainPanel.anchoredPosition = _offscreenPos;
             }
 
-            protected override Sequence CreateFadeIn()
+            protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .AppendCallback(() => Components.MainPanel.gameObject.SetActive(true))
-                    .Append(Components.MainPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
+                    .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(true))
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
+            }
+        }
+        
+        private class Animation_MainPanel_Close : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel>
+        {
+            public Animation_MainPanel_Close(CosmeticUiAnimationComponents.IMainPanel uiComponents) : base(uiComponents) { }
+            private const float FadeTime = 0.3f;
+            private Vector2 _offscreenPos;
+            
+            protected override void Initialize()
+            {
+                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.MainPanel, AnimationHelper.Direction.Left);
             }
 
-            protected override Sequence CreateFadeOut()
+            protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(Components.MainPanel.DOAnchorPos(_offscreenPos, FadeTime/2))
-                    .AppendCallback(() => Components.MainPanel.gameObject.SetActive(false));
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_offscreenPos, FadeTime/2))
+                    .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(false));
             }
+            
         }
 
         #endregion
 
-        private IAnimator _mainPanelAnimator;
+        private IUIAnimator _animationOpen;
+        private IUIAnimator _animationClose;
         
         private void Start()
         {
-            _mainPanelAnimator = new MainPanelAnimator(UIComponents);
+            _animationOpen = new Animation_MainPanel_Open(UIComponents);
+            _animationClose = new Animation_MainPanel_Close(UIComponents);
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -65,12 +81,12 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void HandleEnable()
         {
-            SetAnimator(_mainPanelAnimator);
+            PlayAnimation(_animationOpen, TriggerOnPanelOpened);
         }
         
         private void HandleDisable()
         {
-            ClearAnimator();
+            PlayAnimation(_animationClose,TriggerOnPanelClosed);
         }
     }
 }

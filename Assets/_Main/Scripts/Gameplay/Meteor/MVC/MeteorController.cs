@@ -32,7 +32,7 @@ namespace _Main.Scripts.Gameplay.Meteor
     
     public class MeteorMotor : FlyingObjectMotor<MeteorValuesData>
     {
-        private float _value = 1;
+        private byte _value = 100;
         
 
         public override void SetValues(MeteorValuesData data)
@@ -55,6 +55,6 @@ namespace _Main.Scripts.Gameplay.Meteor
 
     public class MeteorValuesData : FlyingObjectValues
     {
-        public float Value;
+        public byte Value;
     }
 }

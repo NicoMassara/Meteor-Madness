@@ -18,7 +18,7 @@ namespace _Main.Scripts.MyAnimations
         }
         
         [SerializeField] private T uiPanelSelector;
-        private IAnimator _currentAnimator;
+        private IUIAnimator _currentAnimator;
         
         protected TS UIComponents => uiPanelSelector.GetPanelData();
         
@@ -28,40 +28,20 @@ namespace _Main.Scripts.MyAnimations
         public abstract void OnNotify(ulong message, params object[] args);
 
         #region Actions
+
+        protected void TriggerOnPanelOpened()
+        {
+            OnPanelOpened?.Invoke();
+        }
+
+        protected void TriggerOnPanelClosed()
+        {
+            OnPanelClosed?.Invoke();
+        }
         
-        protected void SetAnimator(IAnimator animator)
+        protected void PlayAnimation(IUIAnimator animator, Action onFinished = null)
         {
-            SetAnimator(animator,OnPanelOpened,OnPanelClosed);
-        }
-
-        protected void SetAnimator(IAnimator animator, Action onOpen, Action onClosed)
-        {
-            if (_currentAnimator != null)
-            {
-                _currentAnimator?.FadeOut(() =>
-                {
-                    onClosed?.Invoke();
-                    
-                    animator?.FadeIn(() =>
-                    {
-                        onOpen?.Invoke();
-                    });
-                });
-            }
-            else
-            {
-                animator?.FadeIn(() =>
-                {
-                    onOpen?.Invoke();
-                });
-            }
-
-            _currentAnimator = animator;
-        }
-
-        protected void ClearAnimator()
-        {
-            SetAnimator(null);
+            animator.Play(onFinished);
         }
 
         #endregion

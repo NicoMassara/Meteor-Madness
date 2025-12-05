@@ -4,10 +4,30 @@ using _Main.Scripts.FiniteStateMachine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
-    public class MainMenuController
+    public class MainMenuController : MainMenuController.IIMainMenuController
     {
+        public interface IIMainMenuController
+        {
+            public void Initialize();
+            public void TransitionToEnable();
+            public void TransitionToDisable();
+            public void TransitionToMenu();
+            public void TriggerGameMode();
+            public void TriggerTutorial();
+            public void TransitionToLore();
+            public void TriggerQuit();
+            public void TransitionToCredits();
+            public void TransitionToTutorial();
+            public void TriggerOptions();
+            public void TriggerCosmetic();
+            public void ExecuteDisable();
+        }
+        
         private readonly MainMenuMotor _motor;
         private FSM<States> _fsm;
+        
+        #region States
+    
         private enum States
         {
             None,
@@ -18,7 +38,65 @@ namespace _Main.Scripts.MainMenu.MVC
             Tutorial,
             Credits
         }
+        
+        private class StateBase<T> : State<T>
+        {
+            protected MainMenuController Controller { get; private set; }
 
+            public void Initialize(MainMenuController controller)
+            {
+                Controller = controller;
+            }
+        }
+    
+        private class EnableState<T> : StateBase<T>
+        {
+            public override void Awake()
+            {
+                Controller.Enable();
+            }
+        }
+    
+        private class DisableState<T> : StateBase<T>
+        {
+            public override void Awake()
+            {
+                Controller.Disable();
+            }
+        }
+        private class LoreState<T> : StateBase<T>
+        {
+            public override void Awake()
+            {
+                Controller.Lore();
+            }
+        }
+        private class MenuState<T> : StateBase<T>
+        {
+            public override void Awake()
+            {
+                Controller.Menu();
+            }
+        }
+    
+        private class TutorialState<T> : StateBase<T>
+        {
+            public override void Awake()
+            {
+                Controller.Tutorial();
+            }
+        }
+    
+    
+        private class CreditsState<T> : StateBase<T>
+        {
+            public override void Awake()
+            {
+                Controller.Credits();
+            }
+        }
+
+        #endregion
         
         public MainMenuController(MainMenuMotor motor)
         {
@@ -188,79 +266,16 @@ namespace _Main.Scripts.MainMenu.MVC
             _motor.TriggerCosmetic();
         }
         
+        public void TriggerOptions()
+        {
+            _motor.TriggerOptions();
+        }
+        
         public void Credits()
         {
             _motor.Credits();
         }
         #endregion
-
-        public void TriggerOptions()
-        {
-            _motor.TriggerOptions();
-        }
-
-
     }
-
-    #region States
-    
-    public class StateBase<T> : State<T>
-    {
-        protected MainMenuController Controller { get; private set; }
-
-        public void Initialize(MainMenuController controller)
-        {
-            Controller = controller;
-        }
-    }
-    
-    public class EnableState<T> : StateBase<T>
-    {
-        public override void Awake()
-        {
-            Controller.Enable();
-        }
-    }
-    
-    public class DisableState<T> : StateBase<T>
-    {
-        public override void Awake()
-        {
-            Controller.Disable();
-        }
-    }
-    public class LoreState<T> : StateBase<T>
-    {
-        public override void Awake()
-        {
-            Controller.Lore();
-        }
-    }
-    public class MenuState<T> : StateBase<T>
-    {
-        public override void Awake()
-        {
-            Controller.Menu();
-        }
-    }
-    
-    public class TutorialState<T> : StateBase<T>
-    {
-        public override void Awake()
-        {
-            Controller.Tutorial();
-        }
-    }
-    
-    
-    public class CreditsState<T> : StateBase<T>
-    {
-        public override void Awake()
-        {
-            Controller.Credits();
-        }
-    }
-
-    #endregion
     
 }

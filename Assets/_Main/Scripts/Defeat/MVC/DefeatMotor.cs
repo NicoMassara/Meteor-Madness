@@ -35,10 +35,10 @@ namespace _Main.Scripts.Defeat
             _highScoreId = highScore;
             _hasNewHighScore = hasNewHigh;
             
-            NotifyAll(DefeatObserverMessage.InitializeData);
+            NotifyAll(DefeatObserverMessage.InitializeData, _highScoreId,_scoreId,_hasNewHighScore);
         }
         
-        public void SendScore()
+        public void SendScore() 
         {
             NotifyAll(DefeatObserverMessage.SendScore, _scoreId);   
         }
@@ -51,6 +51,19 @@ namespace _Main.Scripts.Defeat
         public void SendButtons()
         {
             NotifyAll(DefeatObserverMessage.SendButtons);
+        }
+
+        public void EnableButtons()
+        {
+            NotifyAll(DefeatObserverMessage.EnableButtons);
+        }
+
+        public void SaveHighScore()
+        {
+            if (_hasNewHighScore)
+            {
+                NotifyAll(DefeatObserverMessage.SaveHighScore);
+            }
         }
     }
 }

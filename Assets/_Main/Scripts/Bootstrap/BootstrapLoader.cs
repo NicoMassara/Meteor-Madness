@@ -141,14 +141,14 @@ namespace _Main.Scripts.Bootstrap
             
             yield return new WaitForSeconds(delayBeforeLoad);
             
-            BootEvents.TriggerOnMainSystemRequestInitialize();
+            BootEvents.InitializeMainSystem();
             
             OnLoadingAsset?.Invoke("Initializing Main Systems");
             
             yield return new WaitUntil(GetHasLoadedMainSystems);
             yield return new WaitForSeconds(delayBeforeLoad);
             
-            BootEvents.TriggerOnMainSubSystemRequestInitialize();
+            BootEvents.InitializeSubSystems();
             
             OnLoadingAsset?.Invoke("Initializing Sub Systems");
             
@@ -173,7 +173,7 @@ namespace _Main.Scripts.Bootstrap
 
         private bool GetHasLoadedSubsystems()
         {
-            return _subSystemCount >= 3;
+            return _subSystemCount >= 6;
         }
     }
 }

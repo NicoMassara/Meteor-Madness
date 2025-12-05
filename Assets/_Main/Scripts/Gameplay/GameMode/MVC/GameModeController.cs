@@ -23,7 +23,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             public void ExecuteDisable();
             public void EnablePause();
             public void DisablePause();
-            public void HandleMeteorDeflect(Vector2 position, float projectileValue);
+            public void HandleMeteorDeflect(Vector2 position, byte projectileValue);
             public void GrantProjectileSpawn(int projectileTypeIndex);
             public void SetDoublePoints(bool isActive);
             public void IncreaseCollisionCount();
@@ -33,6 +33,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             public void EnableGameplayUI();
             
             public void Execute(float deltaTime);
+            public void TransitionToSaveScore();
+            public void TriggerFinishAddingPoints();
+            public void TriggerPauseMenu();
         }
         
         #region Private Classes
@@ -50,6 +53,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             public void UpdateCountdown(float remainingTime);
             public void DisableProjectileSpawn();
             public void FinishGame();
+            public void StartFinish();
         }
 
         private class MainController
@@ -64,6 +68,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 Playing,
                 Paused,
                 Finished,
+                SaveScore,
                 Disable
             }
             
@@ -76,7 +81,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                     this.Controller = controller;
                 }
             }
-
             private class InitializeState<T> : BaseState<T>
             {
                 public override void Awake()
@@ -84,7 +88,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                     Controller.InitializeData();
                 }
             }
-            
             private class CountdownState<T> : BaseState<T>
             {
                 private readonly float _countdownTime;
@@ -121,7 +124,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                     }
                 }
             }
-            
             private class PlayingState<T> : BaseState<T>
             {
                 public override void Awake()
@@ -134,7 +136,6 @@ namespace _Main.Scripts.Gameplay.GameMode
                     Controller.StopGameplay();
                 }
             }
-            
             private class PausedState<T> : BaseState<T>
             {
                 public override void Awake()
@@ -142,18 +143,29 @@ namespace _Main.Scripts.Gameplay.GameMode
                     Controller.PauseGame();
                 }
             }
-            
             private class FinishedState<T> : BaseState<T>
             {
                 public override void Awake()
                 {
                     Controller.DisableProjectileSpawn();
-                    Controller.SaveHighScoreValues();
+                    Controller.StartFinish();
+                }
+
+                public override void Sleep()
+                {
                     Controller.FinishGame();
-                    
                 }
             }
             
+            private class SaveScoreState<T> : BaseState<T>
+            {
+                public override void Awake()
+                {
+                    Controller.DisableProjectileSpawn();
+                    Controller.SaveHighScoreValues();
+                    
+                }
+            }
             private class DisableState<T> : BaseState<T>
             {
                 public override void Awake()
@@ -216,6 +228,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 var playing = new PlayingState<States>();
                 var paused = new PausedState<States>();
                 var finished = new FinishedState<States>();
+                var saveScore = new SaveScoreState<States>();
                 var disable = new DisableState<States>();
                 
                 temp.Add(none);
@@ -224,6 +237,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 temp.Add(playing);
                 temp.Add(paused);
                 temp.Add(finished);
+                temp.Add(saveScore);
                 temp.Add(disable);
                 
                 #endregion
@@ -237,11 +251,16 @@ namespace _Main.Scripts.Gameplay.GameMode
                 countdown.AddTransition(States.Playing, playing);
                 //
                 playing.AddTransition(States.Paused, paused);
-                playing.AddTransition(States.Finished, finished);
+                playing.AddTransition(States.SaveScore, saveScore);
                 //
                 paused.AddTransition(States.Countdown, countdown);  
+                paused.AddTransition(States.Finished, finished);  
                 //
                 finished.AddTransition(States.Disable, disable);
+                //
+                saveScore.AddTransition(States.Disable, disable);
+                //
+                disable.AddTransition(States.Initialize, initialize);
 
                 #endregion
 
@@ -290,6 +309,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                 SetTransition(States.Disable);
             }
             
+            public void TransitionToSaveScore()
+            {
+                SetTransition(States.SaveScore);
+            }
+            
             #endregion
 
             #endregion
@@ -301,7 +325,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             public bool GetIsPaused() => _actionGate.IsPaused;
 
             #endregion
-            
+
+
         }
         
         #endregion
@@ -324,7 +349,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             _mainController?.Execute(deltaTime);
         }
-
+        
         #region IController
 
         public void StartDisable()
@@ -335,11 +360,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void PauseGame()
         {
             _motor.PauseGame();
-        }
-        
-        public void UnPauseGame()
-        {
-            _motor.UnPauseGame();
         }
         
         public void InitializeData()
@@ -389,6 +409,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void FinishGame()
         {
             _motor.FinishGame();
+        }
+
+        public void StartFinish()
+        {
+            _motor.StartFinish();
         }
 
         public void UpdateCountdown(float remainingTime)
@@ -446,6 +471,23 @@ namespace _Main.Scripts.Gameplay.GameMode
                 _mainController.TransitionToDisable();
             }
         }
+        
+        public void TransitionToSaveScore()
+        {
+            _mainController.TransitionToSaveScore();
+        }
+
+        public void TriggerFinishAddingPoints()
+        {
+            if(_mainController.GetIsInGameplay())
+                _motor.TriggerFinishAddingPoints();
+        }
+
+        public void TriggerPauseMenu()
+        {
+            if(_mainController.GetIsPaused())
+                _motor.TriggerPauseMenu();
+        }
 
         #endregion
 
@@ -464,7 +506,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _motor.DisablePause();
         }
 
-        public void HandleMeteorDeflect(Vector2 position, float projectileValue)
+        public void HandleMeteorDeflect(Vector2 position, byte projectileValue)
         {
             if(_mainController.GetIsInGameplay())
                 _motor.HandleMeteorDeflect(position, projectileValue);
@@ -515,7 +557,8 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void EnableGameplayUI()
         {
-            _motor.EnableGameplayUI();
+            if(_mainController.GetIsInGameplay())
+                _motor.EnableGameplayUI();
         }
 
         #endregion

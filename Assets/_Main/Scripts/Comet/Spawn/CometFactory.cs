@@ -34,7 +34,7 @@ namespace _Main.Scripts.Comet
             
             SetTimer(GameConfigManager.Instance.GetGameplayData().GameTimeData.FirstCometSpawnDelay);
             
-            BootEvents.TriggerOnSubSystemInitialized();
+            BootEvents.SubSystemInitialized();
         }
 
         private void SetTimer(float spawnDelay)

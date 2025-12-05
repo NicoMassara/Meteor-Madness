@@ -59,7 +59,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             
             _controller.InitializeController(gameplayData.GameTimeData);
             
-            BootEvents.TriggerOnSubSystemInitialized();
+            BootEvents.SubSystemInitialized();
         }
         
         private void EnableGameMode()
@@ -82,11 +82,23 @@ namespace _Main.Scripts.Gameplay.GameMode
             _view.OnCountDownFinished += _controller.TransitionToPlaying;
             _view.OnScoreSaved += GameManager.Instance.LoadDefeatScreen;
             _view.OnGameModeDisable += _controller.ExecuteDisable;
+            _view.OnPaused += () =>
+            {
+                EarthEventSubscriber.Restart(EventBus_Earth_Restart_Started);
+                EarthEventSubscriber.RestartFinished(EventBus_Earth_Restart_Finished);
+            };
+            _view.OnUnPaused += () =>
+            {
+                EarthEventUnSubscriber.RestartFinished(EventBus_Earth_Restart_Finished);
+                EarthEventUnSubscriber.Restart(EventBus_Earth_Restart_Started);
+            };
             //
             _ui.OnPauseButtonPressed += _controller.TransitionToPaused;
+            _ui.OnFinishAddingPoints += _controller.TriggerFinishAddingPoints;
             //
+            _animation.OnUiClosed += _controller.TriggerPauseMenu;
         }
-
+        
         #endregion
         
         #region EventBus
@@ -150,6 +162,20 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void EventBus_Earth_Death(EarthEvents.Death input)
         {
+            _controller.TransitionToSaveScore();
+        }
+        
+        private void EventBus_Earth_Restart_Finished(EarthEvents.RestartFinished input)
+        {
+            EarthEventUnSubscriber.RestartFinished(EventBus_Earth_Restart_Finished);
+            //
+            DisableGameMode();
+        }
+
+        private void EventBus_Earth_Restart_Started(EarthEvents.Restart input)
+        {
+            EarthEventUnSubscriber.Restart(EventBus_Earth_Restart_Started);
+            //
             _controller.TransitionToFinished();
         }
 

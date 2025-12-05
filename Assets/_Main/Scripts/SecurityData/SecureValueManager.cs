@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _Main.Scripts.CustomId;
 using _Main.Scripts.MyComponents;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.SecurityData
 {
@@ -252,7 +253,7 @@ namespace _Main.Scripts.SecurityData
                 value = (T)secureValue.GetValue();
                 return true;
             }
-
+            
             value = default!;
             return false;
         }

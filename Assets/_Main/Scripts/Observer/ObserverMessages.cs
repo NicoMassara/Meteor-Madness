@@ -50,11 +50,11 @@
         public const ulong StopGameplay = 0xA2017;
         public const ulong DisableGameplayUI = 0xA2018; 
         public const ulong EnableGameplayUI = 0xA2019;
-        public const ulong TriggerPause = 0xA2020;
-        public const ulong Empty2 = 0xA2021;
-        public const ulong Empty3 = 0xA2022;
-        public const ulong Empty4 = 0xA2023;
-        public const ulong Empty5 = 0xA2024;
+        public const ulong PauseGameModeScreen = 0xA2020;
+        public const ulong DisableShield = 0xA2021;
+        public const ulong OpenPauseScreen = 0xA2022;
+        public const ulong StartFinish = 0xA2023;
+        public const ulong FinishAddingPoints = 0xA2024;
 
         //
         public const ulong Debug_MeteorDeflect = 0xB2001;
@@ -207,7 +207,7 @@
         public const ulong SendHighScore  = 0xA1207;
         public const ulong SendButtons  = 0xA1208;
         public const ulong EnableButtons  = 0xA1209;
-        public const ulong Empty10 = 0xA120A;
+        public const ulong SaveHighScore = 0xA120A;
     }
     
     public struct PauseObserverMessage
@@ -215,13 +215,13 @@
         public const ulong Initialize  = 0xA1301;
         public const ulong Enable  = 0xA1302;
         public const ulong StartDisable  = 0xA1303;
-        public const ulong Empty4  = 0xA1304;
-        public const ulong Empty5  = 0xA1305;
-        public const ulong Empty6  = 0xA1306;
-        public const ulong Empty7  = 0xA1307;
+        public const ulong ExecuteDisable  = 0xA1304;
+        public const ulong Options  = 0xA1305;
+        public const ulong LoadMainMenu  = 0xA1306;
+        public const ulong RestartEarth  = 0xA1307;
         public const ulong Empty8  = 0xA1308;
         public const ulong Empty9  = 0xA1309;
-        public const ulong Empty10 = 0xA130A;
+        public const ulong GameMode = 0xA130A;
     }
 
     public struct EmptyObserverMessage2

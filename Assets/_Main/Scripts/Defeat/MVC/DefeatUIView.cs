@@ -1,26 +1,24 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Observer;
-using UnityEngine;
+using _Main.Scripts.ViewUI;
 
 namespace _Main.Scripts.Defeat
 {
-    [AddComponentMenu("_Main/Defeat/MVC")]
-    public class DefeatUIView : MonoBehaviour, IObserver
+    public class DefeatUIView : BaseViewUI<DefeatUiPanelSelector,DefeatUIComponents>, IObserver,
+        DefeatUIView.IDefeatUIView, IDefeatUiSounds
     {
-        [SerializeField] private DefeatUiPanelSelector uiComponentSelector;
-        
-        private DefeatUIComponents _uiComponents;
+        public interface IDefeatUIView
+        {
+            public event Action OnMainMenuButtonPressed;
+            public event Action OnRestartButtonPressed;
+        }
         
         public event Action OnMainMenuButtonPressed;
         public event Action OnRestartButtonPressed;
         
-        private DefeatUIComponents GetUiComponents()
-        {
-            return _uiComponents ?? uiComponentSelector.GetPanelData();
-        }
 
-
-        public void OnNotify(ulong message, params object[] args)
+        public override void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
@@ -35,18 +33,18 @@ namespace _Main.Scripts.Defeat
 
         private void HandleStartDisable()
         {
-            GetUiComponents().RestartButton.onClick.RemoveAllListeners();
-            GetUiComponents().MainMenuButtons.onClick.RemoveAllListeners();
+            UIComponents.RestartButton.onClick.RemoveAllListeners();
+            UIComponents.MainMenuButtons.onClick.RemoveAllListeners();
         }
 
         private void HandleEnableButtons()
         {
-            GetUiComponents().RestartButton.onClick.AddListener(() =>
+            UIComponents.RestartButton.onClick.AddListener(() =>
             {
                 OnRestartButtonPressed?.Invoke();
             });
             
-            GetUiComponents().MainMenuButtons.onClick.AddListener(() =>
+            UIComponents.MainMenuButtons.onClick.AddListener(() =>
             {
                 OnMainMenuButtonPressed?.Invoke();
             });

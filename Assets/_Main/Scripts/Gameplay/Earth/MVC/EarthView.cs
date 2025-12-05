@@ -403,21 +403,23 @@ namespace _Main.Scripts.Gameplay.Earth
                     action
                         .Then(new RestartHealthColor(_restartTimeValues.RestartHealth, currentHealth,
                             UpdateHealth))
-                        .WrapLast(a => new CallbackWrapperAction(a, OnHealing, null));
+                        .WrapLast(a => new CallbackWrapperAction(a, OnHealing, null))
+                        .Then(new SetFloatAction(1, SetShakeMultiplier))
+                        .Then(new InstantAction(() =>
+                        {
+                            _shakerController.SetShakeData(healthShakeData);
+                        }))
+                        .Then(new WaitSecondsAction(_restartTimeValues.FinishRestart));
                 }
                 
                 action
-                .Then(new SetFloatAction(1, SetShakeMultiplier))
                 .Then(new InstantAction(() =>
                 {
-                    _shakerController.SetShakeData(healthShakeData);
-                }))
-                .Then(new WaitSecondsAction(_restartTimeValues.FinishRestart))
-                .Then(new InstantAction(() =>
-                {
+                    Debug.Log("EarthView::RestartFinished");
                     OnHealed?.Invoke();
                     EarthEventCaller.RestartFinished();
                 }));
+                
             
             ActionManager.Add(action.Build(),ActionManager.UpdateType.Update);
         }

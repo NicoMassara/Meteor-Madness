@@ -45,7 +45,7 @@ namespace _Main.Scripts.Gameplay.Meteor
                 Rotation = tempRot,
                 Position = spawnPosition,
                 Direction = direction.normalized,
-                Value = 1f
+                Value = 100
             });
             tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
             tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
@@ -112,13 +112,20 @@ namespace _Main.Scripts.Gameplay.Meteor
         }
         
         
-        
-        private float GetRingMeteorValue(float amountToSpawn, float ringsToUse)
+        public static byte GetRingMeteorValue(int countPerWave, int waves, byte baseValue = 100)
         {
-            var temp1 = 1f - (amountToSpawn * 0.1f);
-            var temp2 = temp1 * (ringsToUse * 0.1f);
+            int total = countPerWave * waves;
+
+            if (total <= 0)
+                return baseValue;
             
-            return temp2 * 1.5f;
+            float rawValue = (float)baseValue / total;
+            
+            int value = Mathf.RoundToInt(rawValue);
+            
+            value = Mathf.Clamp(value, 0, 255);
+
+            return (byte)value;
         }
 
         #endregion
@@ -127,7 +134,7 @@ namespace _Main.Scripts.Gameplay.Meteor
 
         // ReSharper disable Unity.PerformanceAnalysis
         
-        private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition, float value = 1)
+        private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition, byte value = 100)
         {
             var tempMeteor = _meteorFactory.SpawnMeteor();
             var cog = spawnSettings.GetCenterOfGravity();

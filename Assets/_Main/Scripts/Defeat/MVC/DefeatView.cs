@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace _Main.Scripts.Defeat
 {
-    [AddComponentMenu("_Main/Defeat/MVC")]
     public class DefeatView : MonoBehaviour, IObserver,
         DefeatView.IDefeatView
     {
@@ -15,9 +14,14 @@ namespace _Main.Scripts.Defeat
             public event Action<GeneratedId, GeneratedId, bool> OnDataLoaded;
             public event Action OnDataInitialized;
         }
-        
+
+        #region IDefeatView
+
         public event Action<GeneratedId, GeneratedId, bool> OnDataLoaded;
         public event Action OnDataInitialized;
+
+        #endregion
+        
         
         public void OnNotify(ulong message, params object[] args)
         {
@@ -36,12 +40,29 @@ namespace _Main.Scripts.Defeat
                     HandleDataLoaded();
                     break;
                 case DefeatObserverMessage.InitializeData:
-                    HandleInitializeData();
+                    HandleInitializeData((GeneratedId)args[0],(GeneratedId)args[1],(bool)args[2]);
+                    break;
+                case DefeatObserverMessage.SaveHighScore:
+                    HandleSaveHighScore();
                     break;
             }
         }
-        
 
+        private void HandleInitializeData(GeneratedId highScoreId, GeneratedId currentScoreId, bool hasNewHighScore)
+        {
+            if (hasNewHighScore)
+            {
+                GameManager.Instance.SaveRuntimeHighScore(highScoreId, currentScoreId);
+            }
+            
+            OnDataInitialized?.Invoke();
+        }
+
+        private void HandleSaveHighScore()
+        {
+            GameManager.Instance.SaveHighScore(GameManager.Instance.GetHighScoreSecuredId());
+        }
+        
         private void HandleExecuteDisable()
         {
             GameScreenEventCaller.DisableScreen(ScreenType.Defeat, EventRequestType.Granted);
@@ -59,11 +80,6 @@ namespace _Main.Scripts.Defeat
                 GameManager.Instance.GetHighScoreSecuredId(),
                 GameManager.Instance.GetHasNewHighScore());
 
-        }
-        
-        private void HandleInitializeData()
-        {
-            OnDataInitialized?.Invoke();
         }
     }
 }

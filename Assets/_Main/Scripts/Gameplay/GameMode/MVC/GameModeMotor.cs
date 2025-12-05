@@ -28,7 +28,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _levelController = new(levelStreakAmount);
             _levelController.OnLevelChange += UpdateCurrentLevel;
 
-            _currentScoreId = SecureValueManager.RegisterValue<float>(0);
+            _currentScoreId = SecureValueManager.RegisterValue<uint>(0);
 
             SecureValueManager.OnCheatDetected += OnCheatDetectedHandler;
         }
@@ -38,10 +38,9 @@ namespace _Main.Scripts.Gameplay.GameMode
             _hasDoublePoints = false;
             _canPause = true;
             _isPaused = false;
+            _levelController.ResetLevel();
         }
         
-
-
         #region Enable / Disable
 
         public void StartDisable()
@@ -85,7 +84,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         public void TriggerPause()
         {
-            NotifyAll(GameModeObserverMessage.TriggerPause);
+            NotifyAll(GameModeObserverMessage.PauseGameModeScreen);
         }
 
         #endregion
@@ -109,11 +108,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         #region Meteor 
         
-        public void HandleMeteorDeflect(Vector2 position, float projectileValue)
+        public void HandleMeteorDeflect(Vector2 position, byte projectileValue)
         {
-            var finalValue = _hasDoublePoints ? projectileValue * 2 : projectileValue;
+            var finalValue = (uint)(_hasDoublePoints ? projectileValue * 2 : projectileValue);
             var currentScore = GetCurrentScore();
-            
+
             currentScore += finalValue;
             
             UpdateCurrentScore(currentScore);
@@ -194,8 +193,6 @@ namespace _Main.Scripts.Gameplay.GameMode
             _hasDoublePoints = isActive;
         }
         
-        
-        
         #region UI
 
         public void DisableGameplayUI()
@@ -206,6 +203,11 @@ namespace _Main.Scripts.Gameplay.GameMode
         public void EnableGameplayUI()
         {
             NotifyAll(GameModeObserverMessage.EnableGameplayUI);
+        }
+        
+        public void TriggerFinishAddingPoints()
+        {
+            NotifyAll(GameModeObserverMessage.FinishAddingPoints);
         }
 
         #endregion
@@ -218,7 +220,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         {
             var current = GetCollisionCount();
             current++;
-            UpdateCurrentScore(current);
+            UpdateCollisionCount(current);
         }
 
         public void IncreaseAbilityUseCount()
@@ -250,12 +252,11 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #region Score
 
-        private float GetCurrentScore()
+        private uint GetCurrentScore()
         {
-            var value = 0f;
-            return SecureValueManager.GetDoesContainValue(_currentScoreId, out value) ? value : 0;
+            return SecureValueManager.GetDoesContainValue(_currentScoreId, out uint value) ? value : 0;
         }
-        private void UpdateCurrentScore(float input)
+        private void UpdateCurrentScore(uint input)
         {
             SecureValueManager.ModifyValue(_currentScoreId, input);
         }
@@ -299,7 +300,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             if (_currentScoreId.Id == id)
             {
                 Debug.LogWarning("Cheat Detected! Restarting Points!");
-                UpdateCurrentScore(Mathf.NegativeInfinity);
+                UpdateCurrentScore(0);
             }
             if (_collisionId.Id == id)
             {
@@ -321,5 +322,15 @@ namespace _Main.Scripts.Gameplay.GameMode
         }
         
         #endregion
+
+        public void StartFinish()
+        {
+            NotifyAll(GameModeObserverMessage.StartFinish);
+        }
+
+        public void TriggerPauseMenu()
+        {
+            NotifyAll(GameModeObserverMessage.OpenPauseScreen);
+        }
     }
 }

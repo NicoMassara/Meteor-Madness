@@ -1,42 +1,66 @@
 ﻿using System;
+using _Main.Scripts.Interfaces;
 using DG.Tweening;
 
 namespace _Main.Scripts.MyAnimations
 {
-    public abstract class SequenceUIAnimator<T> : IAnimator
+    public abstract class SequenceUIAnimator<T> : IUIAnimator
+    where T : IUiAnimationComponent
     {
-        protected readonly T Components;
-
+        protected readonly T UIComponents;
+        
         protected SequenceUIAnimator(T components)
         {
-            Components = components;
+            UIComponents = components;
             // ReSharper disable once VirtualMemberCallInConstructor
             Initialize();
         }
-            
-        protected abstract void Initialize();
+
+
+        protected virtual void Initialize() { }
+
         protected virtual void RestartValues(){}
-
-        protected abstract Sequence CreateFadeIn();
-        protected abstract Sequence CreateFadeOut();
-
-        public virtual void FadeIn(Action onFinished)
+        
+        protected abstract Sequence CreateAnimation();
+        
+        
+        public void Play(Action onFinished)
         {
-            CreateFadeIn()
-                .AppendCallback(() => onFinished?.Invoke());
-        }
-
-        public virtual void FadeOut(Action onFinished)
-        {
-            CreateFadeOut()
-                .AppendCallback(RestartValues)
-                .AppendCallback(() => onFinished?.Invoke());
+            CreateAnimation()
+                .AppendCallback(() => onFinished?.Invoke())
+                .AppendCallback(RestartValues);
         }
     }
-    public interface IAnimator
+
+    /// <summary>
+    /// This is used to set Initial Positions and Values to UI Components or restart them
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class UIComponentsInitializer<T> : IUIComponentsInitializer     
+        where T : IUiAnimationComponent
     {
-        public void FadeIn(Action onFinished);
-        public void FadeOut(Action onFinished);
+        protected readonly T UIComponents;
+        
+        // ReSharper disable once VirtualMemberCallInConstructor
+        protected UIComponentsInitializer(T components)
+        {
+            UIComponents = components;
+            Initialize();
+        }
+
+        protected abstract void Initialize();
+        
+        public void RestartValues() => Initialize();
+    }
+
+    public interface IUIComponentsInitializer
+    {
+        public void RestartValues();
+    }
+
+    public interface IUIAnimator
+    {
+        public void Play(Action onFinished);
     }
     
     public interface IUiAnimationComponent {}

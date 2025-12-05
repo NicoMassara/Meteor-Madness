@@ -1,4 +1,7 @@
-﻿namespace Plugins.Demigiant.DOTween
+﻿using System;
+using UnityEngine;
+
+namespace Plugins.Demigiant.DOTween
 {
     using DG.Tweening;
     using TMPro;
@@ -31,6 +34,30 @@
                 v = x;
                 target.text = string.Format(format, v);
             }, endValue, duration).SetTarget(target);
+        }
+    }
+    
+    public static class TweenUtils
+    {
+        public static Tweener AnimateScore(Action<TMP_Text,long> action, TMP_Text text, 
+            long targetScore, float duration, Ease ease = Ease.OutQuad)
+        {
+            return DOTween.To(
+                () => 0,
+                x => action(text,(long)x),
+                targetScore,  
+                duration 
+            ).SetEase(ease);
+        }
+            
+        public static float GetDurationLinear(int number, float baseTime = 0.5f, float timePerUnit = 0.01f)
+        {
+            return baseTime + number * timePerUnit;
+        }
+            
+        public static float GetDurationLog(uint number, float scale = 0.15f)
+        {
+            return Mathf.Log(number + 1) * scale;
         }
     }
 }

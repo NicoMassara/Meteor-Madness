@@ -24,6 +24,7 @@ namespace _Main.Scripts.Gameplay.Earth
             public void TryRestart();
             public void TryShake();
             public void TryPreSlice();
+            public void FinishHealing();
         }
 
         #endregion
@@ -85,7 +86,6 @@ namespace _Main.Scripts.Gameplay.Earth
 
                 public override void Execute(float deltaTime) => _queue.OnUpdate(deltaTime);
             }
-
             private class DestructionState<T> : BaseState<T>
             {
                 private IQueueAction _queue;
@@ -111,9 +111,7 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 public override void Awake() => Controller.RestartHealth();
             }
-
-
-
+            
             #endregion
             
             private enum States
@@ -133,12 +131,22 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 public bool IsDamageDisable { get; private set; }
                 public bool IsInIdle { get; private set; }
+                
+                public bool WasInIdle { get; private set; }
+                public bool WasInGameplay { get; private set; }
+                public bool WasInDead { get; private set; }
                 public ActionGate(FSM<States> fsm) : base(fsm) { }
 
                 protected override void OnEnterState(States state)
                 {
                     IsDamageDisable = state is not States.Gameplay;
                     IsInIdle = state is States.Idle;
+                }
+
+                protected override void OnExitState(States state)
+                {
+                    WasInIdle = state is States.Idle;
+                    WasInGameplay = state is States.Gameplay;
                 }
             }
             
@@ -186,6 +194,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 none.AddTransition(States.Idle, idle);
                 
                 idle.AddTransition(States.Gameplay, gameplay);
+                idle.AddTransition(States.Heal, heal);
                 
                 gameplay.AddTransition(States.Dead, dead);
                 gameplay.AddTransition(States.Heal, heal);
@@ -199,6 +208,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 destruction.AddTransition(States.Heal, heal);
                 
                 heal.AddTransition(States.Gameplay, gameplay);
+                heal.AddTransition(States.Idle, idle);
 
                 #endregion
 
@@ -254,6 +264,8 @@ namespace _Main.Scripts.Gameplay.Earth
             #region Public Getters
             public bool GetIsDamageDisable() => _actionGate.IsDamageDisable;
             public bool GetIsInIdle() => _actionGate.IsInIdle;
+            public bool GetWasInIdle() => _actionGate.WasInIdle;
+            public bool GetWasInGameplay() => _actionGate.WasInGameplay;
             
             #endregion
 
@@ -339,6 +351,11 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 _motor.PreSlice();
             }
+        }
+
+        public void FinishHealing()
+        {
+            _mainController.TransitionToIdle();
         }
 
         #endregion

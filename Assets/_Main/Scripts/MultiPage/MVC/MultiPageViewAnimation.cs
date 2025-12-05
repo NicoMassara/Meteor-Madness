@@ -7,48 +7,60 @@ namespace _Main.Scripts.MultiPage
     public class MultiPageViewAnimation : BaseViewAnimation<MultiPageUiAnimationSelector,MultiPageUiAnimationComponents>
     {
         #region Animators
-        private class MainPanelAnimator : SequenceUIAnimator<MultiPageUiAnimationComponents.IMainPanel>
+        private class Animation_MainPanel_Open : SequenceUIAnimator<MultiPageUiAnimationComponents.IMainPanel>
         {
-            public MainPanelAnimator(MultiPageUiAnimationComponents.IMainPanel components) : base(components) { }
-            private const float FadeTime = 0.5f;
+            public Animation_MainPanel_Open(MultiPageUiAnimationComponents.IMainPanel uiComponents) : base(uiComponents) { }
+            private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
-            private Vector2 _fadeInOffPos;
-            private Vector2 _fadeOutOffPos;
+            private Vector2 _offscreenPos;
             
             protected override void Initialize()
             {
-                Components.MainPanel.gameObject.SetActive(false);
+                UIComponents.MainPanel.gameObject.SetActive(false);
                 
-                _panelOriginalPos = Components.MainPanel.anchoredPosition;
+                _panelOriginalPos = UIComponents.MainPanel.anchoredPosition;
                 
-                _fadeInOffPos = AnimationHelper.GetOffscreenPos(Components.MainPanel, AnimationHelper.Direction.Down);
-                _fadeOutOffPos = AnimationHelper.GetOffscreenPos(Components.MainPanel, AnimationHelper.Direction.Down);
+                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.MainPanel, AnimationHelper.Direction.Up);
+                UIComponents.MainPanel.anchoredPosition = _offscreenPos;
             }
 
-            protected override Sequence CreateFadeIn()
+            protected override Sequence CreateAnimation()
             {
-                Components.MainPanel.anchoredPosition = _fadeInOffPos;
-                
                 return DOTween.Sequence()
-                    .AppendCallback(() => Components.MainPanel.gameObject.SetActive(true))
-                    .Append(Components.MainPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
+                    .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(true))
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
+            }
+        }
+        
+        private class Animation_MainPanel_Close : SequenceUIAnimator<MultiPageUiAnimationComponents.IMainPanel>
+        {
+            public Animation_MainPanel_Close(MultiPageUiAnimationComponents.IMainPanel uiComponents) : base(uiComponents) { }
+            private const float FadeTime = 0.3f;
+            private Vector2 _offscreenPos;
+            
+            protected override void Initialize()
+            {
+                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.MainPanel, AnimationHelper.Direction.Down);
             }
 
-            protected override Sequence CreateFadeOut()
+            protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(Components.MainPanel.DOAnchorPos(_fadeOutOffPos, FadeTime))
-                    .AppendCallback(() => Components.MainPanel.gameObject.SetActive(false));
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_offscreenPos, FadeTime/2))
+                    .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(false));
             }
+            
         }
 
         #endregion
         
-        private IAnimator _hintPanelAnimator;
+        private IUIAnimator _animationOpen;
+        private IUIAnimator _animationClose;
         
         private void Start()
         {
-            _hintPanelAnimator = new MainPanelAnimator(UIComponents);
+            _animationOpen = new Animation_MainPanel_Open(UIComponents);
+            _animationClose = new Animation_MainPanel_Close(UIComponents);
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -59,12 +71,12 @@ namespace _Main.Scripts.MultiPage
 
         public void EnablePanel()
         {
-            SetAnimator(_hintPanelAnimator);
+            PlayAnimation(_animationOpen, TriggerOnPanelOpened);
         }
 
         public void DisablePanel()
         {
-            ClearAnimator();
+            PlayAnimation(_animationClose, TriggerOnPanelClosed);
         }
     }
 }

@@ -3,21 +3,23 @@ using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
+using _Main.Scripts.SecurityData;
+using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeView : ManagedBehavior, IObserver,
+    public class GameModeView : ManagedBehavior, IObserver,IGameModeSounds,
         GameModeView.IGameModeView
     {
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
-        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
-        
         public interface IGameModeView
         {
+            public event Action OnPaused;
+            public event Action OnUnPaused;
+            
             public event Action OnDataInitialized;
-            public event Action OnCountdownUpdated;
+            public event Action<float> OnCountdownUpdated;
             public event Action OnCountDownStarted;
             public event Action OnCountDownFinished;
             
@@ -25,18 +27,36 @@ namespace _Main.Scripts.Gameplay.GameMode
             public event Action OnGameStopped;
             public event Action OnScoreSaved;
             public event Action OnGameModeDisable;
+            public event Action OnGameFinished;
         }
         
+        #region IGameModeView
         
-        public event Action OnGameModeDisable;
-        public event Action OnScoreSaved;
-        public event Action OnCountdownUpdated;
+        public event Action OnPaused;
+        public event Action OnUnPaused;
+            
+        public event Action OnDataInitialized;
+        public event Action<float> OnCountdownUpdated;
+        public event Action OnInitialized;
+        public event Action OnCountDownStarted;
+        public event Action OnCountDownFinished;
+            
         public event Action OnGameStarted;
         public event Action OnGameStopped;
-        public event Action OnDataInitialized;
-        public event Action OnCountDownFinished;
-        public event Action OnCountDownStarted;
+        public event Action OnScoreSaved;
+        public event Action OnGameModeDisable;
+        public event Action OnGameFinished;
+        
+        #endregion
+
+        #region IGameModeSounds
+
+        public event Action OnGameModeFinished;
+        public event Action OnCountdownUpdatedFinished;
         public event Action OnStopMusic;
+        public event Action OnPlayMusic;
+
+        #endregion
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         
@@ -74,8 +94,11 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.GameUnPaused:
                     HandleGameUnPaused();
                     break;
-                case GameModeObserverMessage.TriggerPause:
-                    HandleTriggerPause();
+                case GameModeObserverMessage.PauseGameModeScreen:
+                    HandlePauseGameModeScreen();
+                    break;
+                case GameModeObserverMessage.OpenPauseScreen:
+                    HandleOpenPauseScreen();
                     break;
                 
                 //=== Data ===//
@@ -88,7 +111,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 
                 //=== Meteor ===//
                 case GameModeObserverMessage.PointsGained:
-                    HandlePointsGained((Vector2)args[0],(float)args[1],(bool)args[2]);
+                    HandlePointsGained((Vector2)args[0],(uint)args[1],(bool)args[2]);
                     break;
                 
                 //=== Projectile ===//
@@ -103,6 +126,9 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.StartCountdown:
                     HandleStartCountdown((int)args[0]);
                     break;
+                case GameModeObserverMessage.UpdateCountdown:
+                    HandleUpdateCountdown((float)args[0]);
+                    break;
                 case GameModeObserverMessage.FinishCountdown:
                     HandleFinishCountdown();
                     break;
@@ -114,22 +140,45 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.StopGameplay:
                     HandleStopGameplay();
                     break;
-                case GameModeObserverMessage.GameFinish:
-                    HandleGameFinish();
-                    break;
                 
                 //=== Internal Level ===//
                 case GameModeObserverMessage.UpdateGameLevel:
                     HandleUpdateGameLevel((int)args[0]);
                     break;
                 
+                //=== Finish ===//
+                case GameModeObserverMessage.StartFinish:
+                    HandleStartFinish();
+                    break;
+                case GameModeObserverMessage.GameFinish:
+                    HandleGameFinish();
+                    break;
             }
         }
+        
+        #region Finish
 
+        private void HandleStartFinish()
+        {
+            OnStopMusic?.Invoke();
+            ShieldEventCaller.Disable();
+        }
+        
+        private void HandleGameFinish()
+        {
+            GameManager.Instance.UnpauseGame();
+            GameManager.Instance.CanPlay = false;
+            ShieldEventCaller.Disable();
+            OnGameFinished?.Invoke();
+        }
+
+        #endregion
+        
         #region Gameplay
         
         private void HandleStartGameplay()
         {
+            OnGameStarted?.Invoke();
             EarthEventCaller.EnableDamage();
             AbilitiesEventCaller.Enable();
             AbilitiesEventCaller.EnableUI();
@@ -148,26 +197,19 @@ namespace _Main.Scripts.Gameplay.GameMode
             CameraEventCaller.ZoomIn(0.5F);
             OnGameStopped?.Invoke();
         }
-        
-        private void HandleGameFinish()
-        {
-            GameModeEventCaller.SetEnablePause(false);
-            GameManager.Instance.CanPlay = false;
-            ShieldEventCaller.Disable();
-        }
 
         #endregion
         
         #region Meteor
 
-        private void HandlePointsGained(Vector2 position, float amount, bool isDouble)
+        private void HandlePointsGained(Vector2 position, uint amount, bool isDouble)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
             _debugData.PointsGained += amount;
             
 #endif
-            var finalScore = (int)(amount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
+            var finalScore = (ushort)(amount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
             FloatingTextEventCaller.Spawn(new FloatingTextValues
             {
                 Position = position, 
@@ -186,12 +228,19 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleExecuteDisable()
         {
             OnStopMusic?.Invoke();
+            GameManager.Instance.VisualPoints = 0;
             EarthEventCaller.DestructionStart();
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
         
         private void HandleStartDisable()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            _debugData.PointsGained = 0;
+            
+#endif
+            
             OnGameModeDisable?.Invoke();
         }
         
@@ -206,11 +255,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData.IsPaused = true;
             
 #endif
-            GameManager.Instance.PauseGame();
             SetEnableInputs(false);
             AbilitiesEventCaller.DisableUI();
             GameModeEventCaller.SetPause(true);
             CameraEventCaller.ZoomIn(0.5f);
+            OnPaused?.Invoke();
                 
 #if UNITY_ANDROID || UNITY_IOS
 
@@ -227,6 +276,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             _debugData.IsPaused = false;
 #endif
             
+            OnUnPaused?.Invoke();
             SetEnableInputs(true);
             AbilitiesEventCaller.EnableUI();
             GameModeEventCaller.SetPause(false);
@@ -239,9 +289,14 @@ namespace _Main.Scripts.Gameplay.GameMode
 #endif
         }
         
-        private void HandleTriggerPause()
+        private void HandlePauseGameModeScreen()
         {
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
+        }
+
+        private void HandleOpenPauseScreen()
+        {
+            GameManager.Instance.PauseGame();
         }
 
         #endregion
@@ -253,12 +308,27 @@ namespace _Main.Scripts.Gameplay.GameMode
             // There's nothing to initialize yet
             // Now works as a bypass
             EarthEventCaller.PreSlice();
-            OnDataInitialized?.Invoke();
+
+            TimerManager.Add(new TimerData(0.5f, () =>
+            {
+                OnDataInitialized?.Invoke();
+            }));
+            
+            OnInitialized?.Invoke();
         }
         
         private void HandleSaveScore(GeneratedId generatedId)
         {
+            GameModeEventCaller.SetEnablePause(false);
+            GameManager.Instance.CanPlay = false;
+            ShieldEventCaller.Disable();
             GameManager.Instance.CurrentScoreSecuredId = generatedId;
+            
+            if (SecureValueManager.GetDoesContainValue<uint>(generatedId,
+                    out var currentScore))
+            {
+                //Debug.LogWarning($"Current Score: {currentScore}");
+            }
             OnScoreSaved?.Invoke();
         }
 
@@ -293,6 +363,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             OnCountDownStarted?.Invoke();
         }
         
+        private void HandleUpdateCountdown(float time)
+        {
+            OnCountdownUpdated?.Invoke(time);
+        }
+        
         private void HandleFinishCountdown()
         {
             GameModeEventCaller.SetEnablePause(true);
@@ -300,6 +375,8 @@ namespace _Main.Scripts.Gameplay.GameMode
             ShieldEventCaller.Enable();
             GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
             OnCountDownFinished?.Invoke();
+            OnPlayMusic?.Invoke();
+            
         }
 
         #endregion

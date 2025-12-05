@@ -314,7 +314,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &145722716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,7 +434,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &217036840
 Canvas:
   m_ObjectHideFlags: 0
@@ -1205,9 +1205,11 @@ MonoBehaviour:
   panelName: Gameplay
   mobileData:
     CountdownText: {fileID: 1425980919}
+    ScoreText: {fileID: 1273441779}
     PauseButton: {fileID: 1874520946}
   desktopData:
     CountdownText: {fileID: 1016699662}
+    ScoreText: {fileID: 1285684197}
     PauseButton: {fileID: 1880084339}
 --- !u!4 &1059927931
 Transform:
@@ -1259,14 +1261,14 @@ MonoBehaviour:
     countdownPanel: {fileID: 637835839}
     countdownText: {fileID: 1425980918}
     gameplayPanel: {fileID: 217036837}
-    scoreText: {fileID: 1273441778}
-    pauseButton: {fileID: 1874520946}
+    scorePanel: {fileID: 1059663738}
+    pauseButton: {fileID: 1919243666}
   desktopData:
     countdownPanel: {fileID: 575877854}
     countdownText: {fileID: 1016699660}
     gameplayPanel: {fileID: 81793092}
-    scoreText: {fileID: 1285684194}
-    pauseButton: {fileID: 1880084339}
+    scorePanel: {fileID: 649174707}
+    pauseButton: {fileID: 1237854095}
 --- !u!1 &1142360723
 GameObject:
   m_ObjectHideFlags: 0
@@ -1477,6 +1479,7 @@ GameObject:
   - component: {fileID: 1253651373}
   - component: {fileID: 1253651375}
   - component: {fileID: 1253651374}
+  - component: {fileID: 1253651376}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -1523,7 +1526,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 935ef18d510e4e2cb557e315f289bea0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiSelector: {fileID: 1059927930}
+  uiPanelSelector: {fileID: 1059927930}
 --- !u!114 &1253651367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1574,6 +1577,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointsAdded: {fileID: 11400000, guid: 2e659106af03afc4c9382e8803fa99ec, type: 2}
+--- !u!114 &1253651376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253651362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27cb7ef6b6d4404cbff738c552f32274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameMusicData: {fileID: 11400000, guid: 2e659106af03afc4c9382e8803fa99ec, type: 2}
+  countdownSound: {fileID: 11400000, guid: 72349cb5a1b79094090034040d420787, type: 2}
+  countdownFinish: {fileID: 11400000, guid: 53106164b81249c4bbf7a598ffde2cb3, type: 2}
 --- !u!1 &1273441777
 GameObject:
   m_ObjectHideFlags: 0
@@ -2502,7 +2520,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2118220938
 MonoBehaviour:
   m_ObjectHideFlags: 0

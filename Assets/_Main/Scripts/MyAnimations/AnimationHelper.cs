@@ -24,11 +24,15 @@ namespace _Main.Scripts.MyAnimations
         {
             return dir switch
             {
-                Direction.Left  => new Vector2(-size.x, 0),
-                Direction.Right => new Vector2(size.x, 0),
-                Direction.Up    => new Vector2(0, size.y),
-                Direction.Down  => new Vector2(0, -size.y),
-                _ => Vector2.zero
+                Direction.Left       => new Vector2(-size.x, 0),
+                Direction.Right      => new Vector2(size.x, 0),
+                Direction.Up         => new Vector2(0, size.y),
+                Direction.Down       => new Vector2(0, -size.y),
+                Direction.UpLeft     => new Vector2(-size.x, size.y),
+                Direction.UpRight    => new Vector2(size.x, size.y),
+                Direction.DownLeft   => new Vector2(-size.x, -size.y),
+                Direction.DownRight  => new Vector2(size.x, -size.y),
+                _                    => Vector2.zero
             };
         }
             
@@ -37,7 +41,11 @@ namespace _Main.Scripts.MyAnimations
             Left,
             Right,
             Up,
-            Down
+            Down,
+            UpLeft,
+            UpRight,
+            DownLeft,
+            DownRight
         }
     }
 }

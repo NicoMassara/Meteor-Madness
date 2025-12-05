@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using _Main.Scripts.CustomId;
 using _Main.Scripts.FiniteStateMachine;
+using UnityEngine;
 
 namespace _Main.Scripts.Defeat
 {
@@ -20,6 +21,8 @@ namespace _Main.Scripts.Defeat
             public void SendScore();
             public void SendHighScore();
             public void SendButtons();
+            public void SetDataIsLoaded();
+            public void EnableButtons();
         }
 
         #region Private Classes
@@ -29,6 +32,7 @@ namespace _Main.Scripts.Defeat
             public void Enable();
             public void Disable();
             public void LoadData();
+            public void SaveHighScore();
         }
         
         private class MainController
@@ -56,6 +60,8 @@ namespace _Main.Scripts.Defeat
             private class EnableState<T> : BaseState<T>
             {
                 public override void Awake() => Controller.Enable();
+
+                public override void Sleep() => Controller.SaveHighScore();
             }
             
             private class DisableState<T> : BaseState<T>
@@ -70,10 +76,11 @@ namespace _Main.Scripts.Defeat
 
             
             #endregion
-
+            
             private class ActionGate : FsmActionGate<States>
             {
                 public bool IsDisable { get; private set; }
+                public bool IsDataLoaded { get; set; }
                 
                 public ActionGate(FSM<States> fsm) : base(fsm) { }
 
@@ -106,7 +113,7 @@ namespace _Main.Scripts.Defeat
                 #region Varibales
 
                 var none = new BaseState<States>();
-                var initialize = new BaseState<States>();
+                var initialize = new InitializeState<States>();
                 var enable = new EnableState<States>();
                 var disable = new DisableState<States>();
                 
@@ -146,7 +153,8 @@ namespace _Main.Scripts.Defeat
             
             public void TransitionToEnable()
             {
-                SetTransition(States.Enable);
+                if(_actionGate.IsDataLoaded)
+                    SetTransition(States.Enable);
             }
         
             public void TransitionToDisable()
@@ -163,17 +171,26 @@ namespace _Main.Scripts.Defeat
 
             #endregion
 
-
             #region Public Getters
 
             public bool GetIsDisable() => _actionGate.IsDisable;
 
             #endregion
+
+            public void SetDataIsLoaded()
+            {
+                _actionGate.IsDataLoaded = true;
+            }
+
+            public void UnloadData()
+            {
+                _actionGate.IsDataLoaded = false;
+            }
         }
 
         #endregion
         
-        private DefeatMotor _motor;
+        private readonly DefeatMotor _motor;
         private MainController _controller;
 
         public DefeatController(DefeatMotor motor)
@@ -202,8 +219,6 @@ namespace _Main.Scripts.Defeat
 
         public void EnableScreen()
         {
-            
-            
             _controller.TransitionToEnable();
         }
 
@@ -235,6 +250,16 @@ namespace _Main.Scripts.Defeat
             _motor.SendButtons();
         }
 
+        public void SetDataIsLoaded()
+        {
+            _controller.SetDataIsLoaded();
+        }
+
+        public void EnableButtons()
+        {
+            _motor.EnableButtons();
+        }
+
         #endregion
 
         #region IController
@@ -246,12 +271,18 @@ namespace _Main.Scripts.Defeat
 
         public void Disable()
         {
+            _controller.UnloadData();
             _motor.StartDisable();
         }
 
         public void LoadData()
         {
             _motor.LoadData();
+        }
+
+        public void SaveHighScore()
+        {
+            _motor.SaveHighScore();
         }
 
         #endregion

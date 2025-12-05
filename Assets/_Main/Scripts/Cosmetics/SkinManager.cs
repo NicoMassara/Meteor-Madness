@@ -93,7 +93,7 @@ namespace _Main.Scripts.Cosmetics
             SelectSkin((SkinType)_skinData.SkinIndex);
             
             
-            BootEvents.TriggerOnMainSystemInitialized();
+            BootEvents.MainSystemInitialized();
             SkinEvents.TriggerOnSaveLoaded();
         }
         

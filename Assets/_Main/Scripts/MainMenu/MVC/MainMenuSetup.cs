@@ -14,7 +14,7 @@ namespace _Main.Scripts.MainMenu.MVC
         private MainMenuViewAnimation _animation;
         //
         private MainMenuMotor _motor;
-        private MainMenuController _controller;
+        private MainMenuController.IIMainMenuController _controller;
 
         private void Awake()
         {

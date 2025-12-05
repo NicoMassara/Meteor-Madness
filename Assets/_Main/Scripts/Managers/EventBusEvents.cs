@@ -93,7 +93,7 @@ namespace _Main.Scripts.Managers
             public Vector3 Position;
             public Quaternion Rotation;
             public Vector2 Direction;
-            public float Value;
+            public byte Value;
             public ProjectileType Type;
         }
         

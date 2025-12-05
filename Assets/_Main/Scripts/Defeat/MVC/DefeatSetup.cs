@@ -8,12 +8,10 @@ namespace _Main.Scripts.Defeat
     [RequireComponent(typeof(DefeatViewAnimation))]
     public class DefeatSetup : MonoBehaviour
     {
-        private DefeatView _view;
-        private DefeatUIView _ui;
-        private DefeatViewAnimation _animation;
-        
+        private DefeatView.IDefeatView _view;
+        private DefeatUIView.IDefeatUIView _ui;
+        private DefeatViewAnimation.IDefeatViewAnimation _animation;
         private DefeatController.IDefeatController _controller;
-        
         
         private void Awake()
         {
@@ -28,17 +26,17 @@ namespace _Main.Scripts.Defeat
             var motor = new DefeatMotor();
             _controller = new DefeatController(motor);
             
-            //
-            
-            _view = GetComponent<DefeatView>();
-            _ui = GetComponent<DefeatUIView>();
-            _animation = GetComponent<DefeatViewAnimation>();
-            
-            //
+            var view  = GetComponent<DefeatView>();
+            var ui = GetComponent<DefeatUIView>();
+            var anim = GetComponent<DefeatViewAnimation>();
 
-            motor.Subscribe(_view);
-            motor.Subscribe(_ui);
-            motor.Subscribe(_animation);
+            motor.Subscribe(view);
+            motor.Subscribe(ui);
+            motor.Subscribe(anim);
+            
+            _view = view;
+            _ui = ui;
+            _animation = anim;
             
             //
             
@@ -50,9 +48,9 @@ namespace _Main.Scripts.Defeat
             _controller.InitializeController();
             SetViewHandlers();
             
-            BootEvents.TriggerOnSubSystemInitialized();
+            BootEvents.SubSystemInitialized();
         }
-        
+
         /// <summary>
         /// Step by Step - Enable
         /// 1 - GameScreenEvents Request Enable
@@ -65,11 +63,12 @@ namespace _Main.Scripts.Defeat
         /// 8 - Buttons Does Enable
         ///
         /// Step by Step - Disable
-        /// 1 - OnRestartButtonPressed or OnMainMenuButtonPressed opens another screen
+        /// 1 - OnRestartButtonPressed or OnMainMenuButtonPressed requests another screen
         /// 2 - GameScreenEvents requests to disable
         /// 3 - StartDisable is triggered
         /// 4 - Main Animation Fade Out
-        /// 5 - When animations ends, OnPanelClosed is triggered and completly disables the screen
+        /// 5 - When animations ends, OnPanelClosed triggers Earth's restart
+        /// 5 - When Earth's restart finished, ExecuteDisable is triggered
         /// </summary>
         
         private void SetViewHandlers()
@@ -78,32 +77,62 @@ namespace _Main.Scripts.Defeat
             {
                 _controller.LoadScoreData(score,highScore,hasNewHigh);
             };
-            _view.OnDataInitialized += _controller.EnableScreen;
+            _view.OnDataInitialized += _controller.SetDataIsLoaded;
             //
             _ui.OnRestartButtonPressed += GameManager.Instance.LoadGameMode;
             _ui.OnMainMenuButtonPressed += GameManager.Instance.LoadMainMenu;
             //
             _animation.OnPanelOpened += _controller.SendScore;
-            _animation.OnPanelClosed += _controller.ExecuteDisable;
+            _animation.OnPanelClosed += EarthEventCaller.Restart;
             _animation.OnScoreFinished += _controller.SendHighScore;
             _animation.OnHighScoreFinished += _controller.SendButtons;
+            _animation.OnButtonsFinished += _controller.EnableButtons;
         }
 
         #region Enable / Disable
 
         private void DisableDefeat()
         {
+            UnsubscribeEventsBus();
             _controller.StartDisable();
         }
         
         private void EnableDefeat()
         {
             _controller.InitializeData();
+            SubscribeEventsBus();
         }
 
         #endregion
 
         #region Event Bus
+
+        private void SubscribeEventsBus()
+        {
+            EarthEventSubscriber.DestructionFinished(EventBus_Earth_Destruction_Finished);
+            EarthEventSubscriber.RestartFinished(EventBus_Earth_Restart_Finished);
+        }
+        
+        private void UnsubscribeEventsBus()
+        {
+            EarthEventUnSubscriber.DestructionFinished(EventBus_Earth_Destruction_Finished);
+        }
+
+        #region Earth
+
+        private void EventBus_Earth_Destruction_Finished(EarthEvents.DestructionFinished input)
+        {
+            _controller.EnableScreen();
+        }
+        
+        private void EventBus_Earth_Restart_Finished(EarthEvents.RestartFinished input)
+        {
+            _controller.ExecuteDisable();
+        }
+
+        #endregion
+        
+        #region Game Screens
 
         private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
         {
@@ -124,6 +153,8 @@ namespace _Main.Scripts.Defeat
                 EnableDefeat();
             }
         }
+
+        #endregion
 
         #endregion
     }

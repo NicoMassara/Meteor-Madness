@@ -5,6 +5,7 @@ using _Main.Scripts.CustomId;
 using _Main.Scripts.Save;
 using _Main.Scripts.SecurityData;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
@@ -18,9 +19,12 @@ namespace _Main.Scripts.Managers
         public IInputReader InputReader { get; private set; }
         
         // Game Stored Data
+        
+        public uint VisualPoints { get;  set; }
 
         public GeneratedId CurrentScoreSecuredId { get; set; }
-        
+        public bool AntiEpileptic { get; set; } = true;
+
         private GeneratedId _highScoreSecuredId;
 
         private void Awake()
@@ -114,6 +118,8 @@ namespace _Main.Scripts.Managers
             QuitUtility.Quit();
         }
 
+        #region Score
+
         public void ClearScoreData()
         {
             CurrentScoreSecuredId = null;
@@ -121,11 +127,11 @@ namespace _Main.Scripts.Managers
 
         public bool GetHasNewHighScore()
         {
-            if(SecureValueManager.GetDoesContainValue<float>(CurrentScoreSecuredId, out var currentScore) == false) 
+            if(SecureValueManager.GetDoesContainValue<uint>(CurrentScoreSecuredId, out var currentScore) == false) 
                 return false;
             
-            if(SecureValueManager.GetDoesContainValue<float>(GetHighScoreSecuredId(), out var highScore) == false) 
-                return false;
+            if(SecureValueManager.GetDoesContainValue<uint>(GetHighScoreSecuredId(), out var highScore) == false) 
+                return true;
             
             return currentScore > highScore;
         }
@@ -140,5 +146,42 @@ namespace _Main.Scripts.Managers
 
             return _highScoreSecuredId;
         }
+
+        public void SaveHighScore(GeneratedId currentScoreId)
+        {
+            if (currentScoreId == null)
+            {
+                Debug.LogWarning("Failed To Save High Score Data");
+                return;
+            }
+
+            // Gets current Score
+            if (SecureValueManager.GetDoesContainValue<uint>(CurrentScoreSecuredId, out var currentScore) == false)
+            {
+                Debug.LogWarning("Failed To Save High Score Data");
+                return;
+            }
+
+            // Gets Saved High Score
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.ScoreSaveData>(DataManager.SaveDataType.Score);
+            
+            // Overwrites the data
+            saveData.HighScore = currentScore;
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Score);
+        }
+
+        public void SaveRuntimeHighScore(GeneratedId highScoreId, GeneratedId currentScoreId)
+        {
+            if (SecureValueManager.GetDoesContainValue<uint>(currentScoreId, out var currentScore) == false)
+            {
+                Debug.LogWarning("Failed To Save High Score Data");
+                return;
+            }
+            
+            SecureValueManager.ModifyValue(highScoreId,currentScore);
+        }
+
+        #endregion
     }
 }
