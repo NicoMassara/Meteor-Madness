@@ -105,12 +105,7 @@ namespace _Main.Scripts.Interfaces.Sounds
 
     public interface IGameModeUISounds : ISoundComponent
     {
-        public event Action OnMainMenuButtonPressed;
-        public event Action OnRestartButtonPressed;
         public event Action OnPauseButtonPressed;
-        public event Action OnResumeButtonPressed;
-        public event Action OnOptionsButtonPressed;
-        public event Action OnPointsAdded;
     }
     
     // Cosmetics

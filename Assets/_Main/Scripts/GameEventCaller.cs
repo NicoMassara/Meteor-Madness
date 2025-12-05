@@ -354,29 +354,20 @@ namespace _Main.Scripts
 
     public static class GameScreenEventCaller
     {
-        public static void SetGameScreen(ScreenType type, bool isEnable = false)
-        {
-            GameEventCaller.Publish(new GameScreenEvents.SetScreen
-            {
-                ScreenType = type,
-                IsEnable = isEnable
-            });
-        }
-
-        public static void EnableScreen(ScreenType type, EventRequestType requestType)
+        public static void EnableScreen(ScreenType currentScreen,EventRequestType requestType)
         {
             GameEventCaller.Publish(new GameScreenEvents.EnableScreen
             {
-                ScreenType = type,
+                ScreenType = currentScreen,
                 RequestType = requestType
             });
         }
         
-        public static void DisableScreen(ScreenType type, EventRequestType requestType)
+        public static void DisableScreen(ScreenType currentScreen,EventRequestType requestType)
         {
             GameEventCaller.Publish(new GameScreenEvents.DisableScreen
             {
-                ScreenType = type,
+                ScreenType = currentScreen,
                 RequestType = requestType
             });
         }
@@ -390,10 +381,6 @@ namespace _Main.Scripts
     
     public static class GameScreenEventSubscriber
     {
-        public static void SetGameScreen(Action<GameScreenEvents.SetScreen> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
 
         public static void EnableScreen(Action<GameScreenEvents.EnableScreen> action)
         {
@@ -413,11 +400,6 @@ namespace _Main.Scripts
     
     public static class GameScreenEventUnSubscriber
     {
-        public static void SetGameScreen(Action<GameScreenEvents.SetScreen> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
         public static void EnableScreen(Action<GameScreenEvents.EnableScreen> action)
         {
             GameEventCaller.Unsubscribe(action);

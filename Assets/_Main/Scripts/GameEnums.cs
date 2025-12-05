@@ -43,7 +43,18 @@
         Tutorial,
         Cosmetic,
         OptionsMenu,
-        Empty2
+        Defeat,
+        Pause,
+        Empty2,
+        Empty3,
+        Empty4,
+        Empty5,
+        Empty6,
+        Empty7,
+        Empty8,
+        Empty9,
+        Empty10,
+        
     }
     
     public enum MusicType

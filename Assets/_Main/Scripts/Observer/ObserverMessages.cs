@@ -31,39 +31,34 @@
 
     public struct GameModeObserverMessage
     {
-        public const ulong StartCountdown = 0xA2001;
-        public const ulong UpdateCountdown = 0xA2002;
-        public const ulong CountdownFinish = 0xA2003;
+        public const ulong StartCountdown  = 0xA2001; 
+        public const ulong UpdateCountdown = 0xA2002; 
+        public const ulong FinishCountdown  = 0xA2003; 
         public const ulong StartGameplay = 0xA2004;
-        public const ulong MeteorDeflect = 0xA2005;
-        public const ulong EarthStartDestruction = 0xA2006;
-        public const ulong EarthEndDestruction = 0xA2007;
-        public const ulong EarthShaking = 0xA2008;
-        public const ulong SetEnableSpawnMeteor = 0xA2009;
-        public const ulong PointsGained = 0xA2010;
-        public const ulong GameFinish = 0xA2011;
-        public const ulong UpdateGameLevel = 0xA2012;
-        public const ulong GameRestart = 0xA2013;
-        public const ulong EarthRestartFinish = 0xA2014;
-        public const ulong GamePaused = 0xA2015;
-        public const ulong Disable = 0xA2016;
-        public const ulong InitializeValues = 0xA2017;
-        public const ulong GrantProjectileSpawn = 0xA2018;
-        public const ulong Enable = 0xA2019;
-        public const ulong CameraZoomIn = 0xA2020;
-        public const ulong CameraZoomOut = 0xA2021;
-        public const ulong SetCanPause = 0xA2022;
-        public const ulong TriggerMainMenu = 0xA2023;
-        public const ulong SaveHighScore = 0xA2024;
-        public const ulong UpdateHighScore = 0xA2025;
-        public const ulong SetHasHighScore = 0xA2026;
-        public const ulong PausePanel = 0xA2027;
-        public const ulong Options = 0xA2028;
-        public const ulong GameplayPanel = 0xA2029;
-        public const ulong GameUnPaused = 0xA2030;
-        public const ulong Asleep = 0xA2031;
-        public const ulong Leaving = 0xA2032;
-        public const ulong InitializeData = 0xA2033;
+        public const ulong SetEnableSpawnMeteor  = 0xA2005;
+        public const ulong PointsGained = 0xA2006;
+        public const ulong GameFinish  = 0xA2007;
+        public const ulong UpdateGameLevel  = 0xA2008;
+        public const ulong GamePaused  = 0xA2009;
+        public const ulong ExecuteDisable  = 0xA2010;
+        public const ulong InitializeData  = 0xA2011;
+        public const ulong GrantProjectileSpawn = 0xA2012; 
+        public const ulong SetCanPause = 0xA2013;
+        public const ulong SaveScore = 0xA2014; 
+        public const ulong GameUnPaused = 0xA2015;
+        public const ulong StartDisable = 0xA2016; 
+        public const ulong StopGameplay = 0xA2017;
+        public const ulong DisableGameplayUI = 0xA2018; 
+        public const ulong EnableGameplayUI = 0xA2019;
+        public const ulong TriggerPause = 0xA2020;
+        public const ulong Empty2 = 0xA2021;
+        public const ulong Empty3 = 0xA2022;
+        public const ulong Empty4 = 0xA2023;
+        public const ulong Empty5 = 0xA2024;
+
+        //
+        public const ulong Debug_MeteorDeflect = 0xB2001;
+        public const ulong Debug_UpdateHighScore = 0xB2002;
     }
 
     public struct FlyingObjectObserverMessage
@@ -167,11 +162,11 @@
     public struct InputsUIObserverMessage
     {
         public const ulong SetEnableClock = 0xA9001;
-        public const ulong SetEnableCounterClock = 0xA0002;
-        public const ulong Empty1 = 0xA0003;
-        public const ulong SetEnableUI = 0xA0004;
-        public const ulong Initialize = 0xA0005;
-        public const ulong Destroy = 0xA0006;
+        public const ulong SetEnableCounterClock = 0xA9002;
+        public const ulong Empty1 = 0xA9003;
+        public const ulong SetEnableUI = 0xA9004;
+        public const ulong Initialize = 0xA9005;
+        public const ulong Destroy = 0xA9006;
     }
 
     public struct SettingsObserverMessage
@@ -191,13 +186,167 @@
     
     public struct CameraObserverMessage
     {
-        public const ulong ZoomIn = 0xA9001;
-        public const ulong ZoomOut = 0xA0002;
-        public const ulong Shake = 0xA0003;
-        public const ulong LookCenter = 0xA0004;
-        public const ulong LookRight = 0xA0005;
-        public const ulong LookLeft = 0xA0006;
-        public const ulong LookTop = 0xA0007;
-        public const ulong LookBottom = 0xA0008;
+        public const ulong ZoomIn = 0xA1101;
+        public const ulong ZoomOut = 0xA1102;
+        public const ulong Shake = 0xA1103;
+        public const ulong LookCenter = 0xA1104;
+        public const ulong LookRight = 0xA1105;
+        public const ulong LookLeft = 0xA1106;
+        public const ulong LookTop = 0xA1107;
+        public const ulong LookBottom = 0xA1108;
+    }
+    
+    public struct DefeatObserverMessage
+    {
+        public const ulong ExecuteDisable  = 0xA1201;
+        public const ulong StartDisable  = 0xA1202;
+        public const ulong InitializeData  = 0xA1203;
+        public const ulong Enable  = 0xA1204;
+        public const ulong LoadData  = 0xA1205;
+        public const ulong SendScore  = 0xA1206;
+        public const ulong SendHighScore  = 0xA1207;
+        public const ulong SendButtons  = 0xA1208;
+        public const ulong EnableButtons  = 0xA1209;
+        public const ulong Empty10 = 0xA120A;
+    }
+    
+    public struct PauseObserverMessage
+    {
+        public const ulong Initialize  = 0xA1301;
+        public const ulong Enable  = 0xA1302;
+        public const ulong StartDisable  = 0xA1303;
+        public const ulong Empty4  = 0xA1304;
+        public const ulong Empty5  = 0xA1305;
+        public const ulong Empty6  = 0xA1306;
+        public const ulong Empty7  = 0xA1307;
+        public const ulong Empty8  = 0xA1308;
+        public const ulong Empty9  = 0xA1309;
+        public const ulong Empty10 = 0xA130A;
+    }
+
+    public struct EmptyObserverMessage2
+    {
+        public const ulong Empty1  = 0xA1401;
+        public const ulong Empty2  = 0xA1402;
+        public const ulong Empty3  = 0xA1403;
+        public const ulong Empty4  = 0xA1404;
+        public const ulong Empty5  = 0xA1405;
+        public const ulong Empty6  = 0xA1406;
+        public const ulong Empty7  = 0xA1407;
+        public const ulong Empty8  = 0xA1408;
+        public const ulong Empty9  = 0xA1409;
+        public const ulong Empty10 = 0xA140A;
+    }
+
+    public struct EmptyObserverMessage3
+    {
+        public const ulong Empty1  = 0xA1501;
+        public const ulong Empty2  = 0xA1502;
+        public const ulong Empty3  = 0xA1503;
+        public const ulong Empty4  = 0xA1504;
+        public const ulong Empty5  = 0xA1505;
+        public const ulong Empty6  = 0xA1506;
+        public const ulong Empty7  = 0xA1507;
+        public const ulong Empty8  = 0xA1508;
+        public const ulong Empty9  = 0xA1509;
+        public const ulong Empty10 = 0xA150A;
+    }
+
+    public struct EmptyObserverMessage4
+    {
+        public const ulong Empty1  = 0xA1601;
+        public const ulong Empty2  = 0xA1602;
+        public const ulong Empty3  = 0xA1603;
+        public const ulong Empty4  = 0xA1604;
+        public const ulong Empty5  = 0xA1605;
+        public const ulong Empty6  = 0xA1606;
+        public const ulong Empty7  = 0xA1607;
+        public const ulong Empty8  = 0xA1608;
+        public const ulong Empty9  = 0xA1609;
+        public const ulong Empty10 = 0xA160A;
+    }
+
+    public struct EmptyObserverMessage5
+    {
+        public const ulong Empty1  = 0xA1701;
+        public const ulong Empty2  = 0xA1702;
+        public const ulong Empty3  = 0xA1703;
+        public const ulong Empty4  = 0xA1704;
+        public const ulong Empty5  = 0xA1705;
+        public const ulong Empty6  = 0xA1706;
+        public const ulong Empty7  = 0xA1707;
+        public const ulong Empty8  = 0xA1708;
+        public const ulong Empty9  = 0xA1709;
+        public const ulong Empty10 = 0xA170A;
+    }
+
+    public struct EmptyObserverMessage6
+    {
+        public const ulong Empty1  = 0xA1801;
+        public const ulong Empty2  = 0xA1802;
+        public const ulong Empty3  = 0xA1803;
+        public const ulong Empty4  = 0xA1804;
+        public const ulong Empty5  = 0xA1805;
+        public const ulong Empty6  = 0xA1806;
+        public const ulong Empty7  = 0xA1807;
+        public const ulong Empty8  = 0xA1808;
+        public const ulong Empty9  = 0xA1809;
+        public const ulong Empty10 = 0xA180A;
+    }
+
+    public struct EmptyObserverMessage7
+    {
+        public const ulong Empty1  = 0xA1901;
+        public const ulong Empty2  = 0xA1902;
+        public const ulong Empty3  = 0xA1903;
+        public const ulong Empty4  = 0xA1904;
+        public const ulong Empty5  = 0xA1905;
+        public const ulong Empty6  = 0xA1906;
+        public const ulong Empty7  = 0xA1907;
+        public const ulong Empty8  = 0xA1908;
+        public const ulong Empty9  = 0xA1909;
+        public const ulong Empty10 = 0xA190A;
+    }
+
+    public struct EmptyObserverMessage8
+    {
+        public const ulong Empty1  = 0xA1A01;
+        public const ulong Empty2  = 0xA1A02;
+        public const ulong Empty3  = 0xA1A03;
+        public const ulong Empty4  = 0xA1A04;
+        public const ulong Empty5  = 0xA1A05;
+        public const ulong Empty6  = 0xA1A06;
+        public const ulong Empty7  = 0xA1A07;
+        public const ulong Empty8  = 0xA1A08;
+        public const ulong Empty9  = 0xA1A09;
+        public const ulong Empty10 = 0xA1A0A;
+    }
+
+    public struct EmptyObserverMessage9
+    {
+        public const ulong Empty1  = 0xA1B01;
+        public const ulong Empty2  = 0xA1B02;
+        public const ulong Empty3  = 0xA1B03;
+        public const ulong Empty4  = 0xA1B04;
+        public const ulong Empty5  = 0xA1B05;
+        public const ulong Empty6  = 0xA1B06;
+        public const ulong Empty7  = 0xA1B07;
+        public const ulong Empty8  = 0xA1B08;
+        public const ulong Empty9  = 0xA1B09;
+        public const ulong Empty10 = 0xA1B0A;
+    }
+
+    public struct EmptyObserverMessage10
+    {
+        public const ulong Empty1  = 0xA1C01;
+        public const ulong Empty2  = 0xA1C02;
+        public const ulong Empty3  = 0xA1C03;
+        public const ulong Empty4  = 0xA1C04;
+        public const ulong Empty5  = 0xA1C05;
+        public const ulong Empty6  = 0xA1C06;
+        public const ulong Empty7  = 0xA1C07;
+        public const ulong Empty8  = 0xA1C08;
+        public const ulong Empty9  = 0xA1C09;
+        public const ulong Empty10 = 0xA1C0A;
     }
 }

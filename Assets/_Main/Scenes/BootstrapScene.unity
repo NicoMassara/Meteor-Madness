@@ -376,6 +376,8 @@ MonoBehaviour:
   - GameplayModule
   - OptionsModule
   - MultiPageModule
+  - DefeatModule
+  - PauseModule
   delayBeforeLoad: 0.05
   progressBar: {fileID: 0}
 --- !u!4 &388010119

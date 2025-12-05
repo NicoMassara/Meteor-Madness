@@ -9,7 +9,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         protected override void Start()
         {
             base.Start();
-            ComponentToVibrate.OnCountdownUpdatedFinished += () =>
+            ComponentToVibrate.OnCountDownFinished += () =>
             {
                 Vibrate(VibrationDurationType.MediumLong,VibrationIntensityType.MediumHeavy);
             };

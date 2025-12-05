@@ -4,7 +4,6 @@ using DG.Tweening;
 namespace _Main.Scripts.MyAnimations
 {
     public abstract class SequenceUIAnimator<T> : IAnimator
-        where T : IUiAnimationComponent
     {
         protected readonly T Components;
 

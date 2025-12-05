@@ -11,6 +11,12 @@ namespace _Main.Scripts.MyAnimations
     where TS : UiComponentsData
     where T : UiComponentsSelector<TS>
     {
+        public interface IBaseViewAnimation
+        {
+            public event Action OnPanelOpened;
+            public event Action OnPanelClosed;
+        }
+        
         [SerializeField] private T uiPanelSelector;
         private IAnimator _currentAnimator;
         
@@ -22,18 +28,23 @@ namespace _Main.Scripts.MyAnimations
         public abstract void OnNotify(ulong message, params object[] args);
 
         #region Actions
-
+        
         protected void SetAnimator(IAnimator animator)
+        {
+            SetAnimator(animator,OnPanelOpened,OnPanelClosed);
+        }
+
+        protected void SetAnimator(IAnimator animator, Action onOpen, Action onClosed)
         {
             if (_currentAnimator != null)
             {
                 _currentAnimator?.FadeOut(() =>
                 {
-                    OnPanelClosed?.Invoke();
+                    onClosed?.Invoke();
                     
                     animator?.FadeIn(() =>
                     {
-                        OnPanelOpened?.Invoke();
+                        onOpen?.Invoke();
                     });
                 });
             }
@@ -41,7 +52,7 @@ namespace _Main.Scripts.MyAnimations
             {
                 animator?.FadeIn(() =>
                 {
-                    OnPanelOpened?.Invoke();
+                    onOpen?.Invoke();
                 });
             }
 

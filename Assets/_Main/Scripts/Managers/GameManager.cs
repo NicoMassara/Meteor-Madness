@@ -1,7 +1,10 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyComponents;
+using _Main.Scripts.MyTools;
+using _Main.Scripts.CustomId;
+using _Main.Scripts.Save;
+using _Main.Scripts.SecurityData;
 using NicolasMassara.CustomUpdateManager;
-using UnityEngine;
 
 namespace _Main.Scripts.Managers
 {
@@ -9,13 +12,17 @@ namespace _Main.Scripts.Managers
     {
         public bool CanPlay { get; set; }
         public bool IsPaused { get; private set; }
-        private int _currentPoints;
         public bool HadCorruptedSaveData { get; set; }
 
         public EventBusManager EventManager { get; private set; }
         public IInputReader InputReader { get; private set; }
         
+        // Game Stored Data
+
+        public GeneratedId CurrentScoreSecuredId { get; set; }
         
+        private GeneratedId _highScoreSecuredId;
+
         private void Awake()
         {
             EventManager = new EventBusManager();
@@ -54,6 +61,16 @@ namespace _Main.Scripts.Managers
         {
             LoadGameScreen(ScreenType.OptionsMenu);
         }
+        
+        public void LoadDefeatScreen()
+        {
+            LoadGameScreen(ScreenType.Defeat);
+        }
+        
+        public void LoadPauseScreen()
+        {
+            LoadGameScreen(ScreenType.Pause);
+        }
 
         public void LoadLastScreen()
         {
@@ -69,17 +86,17 @@ namespace _Main.Scripts.Managers
 
         public void PauseGame()
         {
-            SetPauseInChannels(true);
+            SetPauseChannels(true);
             IsPaused = true;
         }
 
         public void UnpauseGame()
         {
-            SetPauseInChannels(false);
+            SetPauseChannels(false);
             IsPaused = false;
         }
 
-        private void SetPauseInChannels(bool isPaused)
+        private void SetPauseChannels(bool isPaused)
         {
             CustomTime.SetChannelPaused(new []
             {
@@ -90,12 +107,38 @@ namespace _Main.Scripts.Managers
                 
             }, isPaused);
         }
+        
 
         public void QuitGame()
         {
-            Application.Quit();
+            QuitUtility.Quit();
         }
 
+        public void ClearScoreData()
+        {
+            CurrentScoreSecuredId = null;
+        }
 
+        public bool GetHasNewHighScore()
+        {
+            if(SecureValueManager.GetDoesContainValue<float>(CurrentScoreSecuredId, out var currentScore) == false) 
+                return false;
+            
+            if(SecureValueManager.GetDoesContainValue<float>(GetHighScoreSecuredId(), out var highScore) == false) 
+                return false;
+            
+            return currentScore > highScore;
+        }
+
+        public GeneratedId GetHighScoreSecuredId()
+        {
+            if (_highScoreSecuredId == null)
+            {
+                var temp = DataManager.Instance.GetData<DataManager.ScoreSaveData>(DataManager.SaveDataType.Score);
+                _highScoreSecuredId = SecureValueManager.RegisterValue(temp.HighScore);
+            }
+
+            return _highScoreSecuredId;
+        }
     }
 }
