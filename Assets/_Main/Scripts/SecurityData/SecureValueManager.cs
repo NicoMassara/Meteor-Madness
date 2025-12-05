@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _Main.Scripts.CustomId;
 using _Main.Scripts.MyComponents;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.SecurityData
 {
@@ -221,6 +222,8 @@ namespace _Main.Scripts.SecurityData
 
         private void Internal_RemoveValue(GeneratedId valueId)
         {
+            if(valueId == null) return;
+            
             if (_secureValuesById.ContainsKey(valueId.Id))
             {
                 _secureValuesById.Remove(valueId.Id);
@@ -229,6 +232,8 @@ namespace _Main.Scripts.SecurityData
 
         private void Internal_ModifyValue<T>(GeneratedId valueId, T value) where T : struct
         {
+            if(valueId == null) return;
+            
             if (_secureValuesById.TryGetValue(valueId.Id, out var storedValue))
             {
                 storedValue.SetValue(value);
@@ -237,12 +242,18 @@ namespace _Main.Scripts.SecurityData
 
         private bool Internal_GetDoesContainValue<T>(GeneratedId valueId, out T value) where T : struct
         {
+            if (valueId == null)
+            {
+                value = default;
+                return false;
+            }
+
             if (_secureValuesById.TryGetValue(valueId.Id, out var secureValue))
             {
                 value = (T)secureValue.GetValue();
                 return true;
             }
-
+            
             value = default!;
             return false;
         }

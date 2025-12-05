@@ -80,9 +80,9 @@ namespace _Main.Scripts.FiniteStateMachine
             
             _current.Sleep();
             _current = newState;
-            _current.Awake();
             CurrentState = input;
             OnEnterState?.Invoke(CurrentState);
+            _current.Awake();
         }
     }
     

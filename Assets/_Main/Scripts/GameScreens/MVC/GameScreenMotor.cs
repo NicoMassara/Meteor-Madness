@@ -21,6 +21,8 @@ namespace _Main.Scripts.GameScreens
 
         public void LoadScreenByIndex(int screenIndex)
         {
+            if(screenIndex == 0) return;
+            
             _currentScreenIndex = screenIndex;
             NotifyAll(GameScreenObserverMessage.LoadScreen, _currentScreenIndex);
         }

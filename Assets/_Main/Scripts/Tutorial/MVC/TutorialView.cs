@@ -13,6 +13,7 @@ namespace _Main.Scripts.Tutorial.MVC
         [SerializeField] private MultiPageTextDataSo[] mobileMultiPageData;
         [SerializeField] private MultiPageTextDataSo[] desktopMultiPageData;
         private int _currentMultiPageIndex;
+        private const float ZoomOutTime = 0.5f;
         
         public event Action OnTutorialEnable;
         public event Action OnTutorialFinished;
@@ -88,10 +89,9 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleMovement()
         {
-            CameraEventCaller.ZoomOut();
+            CameraEventCaller.ZoomOut(ZoomOutTime);
             ProjectileEventCaller.UpdateLevel(0);
             GameManager.Instance.CanPlay = true;
-            CameraEventCaller.ZoomOut();
             ShieldEventCaller.Enable();
             InputsEventCaller.SetEnable(true);
 #if UNITY_ANDROID || UNITY_IOS
@@ -110,7 +110,7 @@ namespace _Main.Scripts.Tutorial.MVC
         private void HandleAbility()
         {
             ShieldEventCaller.Enable();
-            CameraEventCaller.ZoomOut();
+            CameraEventCaller.ZoomOut(ZoomOutTime);
             AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
             AbilitiesEventCaller.Enable();
             AbilitiesEventCaller.DisableUI();

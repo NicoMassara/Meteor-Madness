@@ -12,22 +12,22 @@ namespace _Main.Scripts
         
         public static event Action OnGameLoaded;
 
-        public static void TriggerOnMainSystemRequestInitialize()
+        public static void InitializeMainSystem()
         {
             OnMainSystemRequestInitialize?.Invoke();
         }
 
-        public static void TriggerOnMainSubSystemRequestInitialize()
+        public static void InitializeSubSystems()
         {
             OnSubSystemRequestInitialize?.Invoke();
         }
         
-        public static void TriggerOnMainSystemInitialized()
+        public static void MainSystemInitialized()
         {
             OnMainSystemInitialized?.Invoke();
         }
 
-        public static void TriggerOnSubSystemInitialized()
+        public static void SubSystemInitialized()
         {
             OnSubSystemInitialized?.Invoke();
         }

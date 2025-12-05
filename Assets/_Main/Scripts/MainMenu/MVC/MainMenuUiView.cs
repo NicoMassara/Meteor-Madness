@@ -1,15 +1,14 @@
 ﻿using System;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Menu;
-using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
-    public class MainMenuUiView : ManagedBehavior, IObserver, IMainMenuUISounds
+    public class MainMenuUiView : ManagedBehavior, IMainMenuUISounds
     {
-        [SerializeField] private MainMenuUiPanelSelector uiPanelSelector;
+        [SerializeField] private MainMenuUiPanelComponents uiPanelSelector;
         
         private MainMenuUiComponents _uiComponents;
         
@@ -33,7 +32,7 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             // --- Actions ---
             
-            #region Screens
+            #region Buttons
             
             GetUiComponents().PlayButton.onClick.AddListener(() =>
             {
@@ -92,61 +91,6 @@ namespace _Main.Scripts.MainMenu.MVC
             });
             #endregion
             
-        }
-        
-        public void OnNotify(ulong message, params object[] args)
-        {
-            switch (message)
-            {
-                case MainMenuObserverMessage.Enable:
-                    HandleEnable();
-                    break;
-                case MainMenuObserverMessage.Disable:
-                    HandleDisable();
-                    break;
-                case MainMenuObserverMessage.MainMenu:
-                    HandleMainMenu();
-                    break;
-                case MainMenuObserverMessage.LoreMenu:
-                    HandleLoreMenu();
-                    break;
-                case MainMenuObserverMessage.TutorialMenu:
-                    HandleTutorialMenu();
-                    break;
-                case MainMenuObserverMessage.CreditsMenu:
-                    HandleCreditsMenu();
-                    break;
-            }
-        }
-        
-        private void HandleTutorialMenu()
-        {
-            GetUiComponents().SetActivePanel(GetUiComponents().TutorialPanel);
-        }
-
-        private void HandleEnable()
-        {
-            GetUiComponents().SetActivePanel(GetUiComponents().MenuPanel);
-        }
-        
-        private void HandleDisable()
-        {
-            GetUiComponents().DisableAllPanels();
-        }
-        
-        private void HandleMainMenu()
-        {
-            GetUiComponents().SetActivePanel(GetUiComponents().MenuPanel);
-        }
-        
-        private void HandleCreditsMenu()
-        {
-            GetUiComponents().SetActivePanel(GetUiComponents().CreditsPanel);
-        }
-
-        private void HandleLoreMenu()
-        {
-            GetUiComponents().SetActivePanel(GetUiComponents().LorePanel);
         }
         
         private MainMenuUiComponents GetUiComponents()

@@ -43,11 +43,10 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             _selector = new AbilitySelector(selectorData.GetRarityValues,selectorData.GetUnlockLevelValues);
             _factory = new AbilitySphereFactory(prefab);
             
-            BootEvents.TriggerOnSubSystemInitialized();
+            BootEvents.SubSystemInitialized();
         }
         private void SendAbility()
         {
-            Debug.Log("Ability Sent");
             AbilitiesEventCaller.RequestSpawn();
         }
         private void CreateAbilitySphere(Vector2 position, Vector2 direction, float movementMultiplier)
@@ -58,17 +57,20 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
             
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
+            var abi = GetAbilityToAdd();
             tempSphere.SetValues(new AbilitySphereValues
             {
                 MovementSpeed = movementSpeed,
                 Rotation = tempRot,
                 Position = position,
                 Direction = direction.normalized,
-                AbilityType = GetAbilityToAdd()
+                AbilityType = abi
             });
             tempSphere.OnDeflection += DeflectionHandler;
             tempSphere.OnEarthCollision += OnEarthCollisionHandler;
             tempSphere.EnableMovement = true;
+            
+            Debug.LogWarning(abi);
             
             ProjectileEventCaller.Add(tempSphere);
         }
@@ -101,6 +103,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             data.Sphere.OnDeflection = null;
             data.Sphere.OnEarthCollision = null;
+            
             
             ProjectileEventCaller.Collision(new CollisionData
             {
@@ -157,11 +160,11 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             if (_isTimerRunning)
             {
-                Debug.Log("Ability Timer already running");
+                //Debug.Log("Ability Timer already running");
             }
             else
             {
-                Debug.Log($"Ability Timer Set To: {time}");
+                //Debug.Log($"Ability Timer Set To: {time}");
                 SetTimer(time);
             }
         }
@@ -266,7 +269,7 @@ namespace _Main.Scripts.Gameplay.Abilities.Spawn
         {
             _currentLevel = input.Level;
             _selector.UpdateLevel(_currentLevel);
-            if (_currentLevel>= _minUnlockLevel &&
+            if (_currentLevel >= _minUnlockLevel &&
                 _hasTimerEnable == false)
             {
                 _hasTimerEnable = true;

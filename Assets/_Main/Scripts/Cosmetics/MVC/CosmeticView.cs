@@ -1,6 +1,5 @@
 ﻿using System;
 using _Main.Scripts.Managers;
-using _Main.Scripts.MySettings;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
 

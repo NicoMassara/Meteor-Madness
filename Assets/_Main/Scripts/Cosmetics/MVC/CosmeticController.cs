@@ -109,7 +109,15 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         public void Disable()
         {
-            _motor.Disable();
+            _motor.StartDisable();
+        }
+        
+        public void ExecuteDisable()
+        {
+            if (_fsm.CurrentState == States.Disable)
+            {
+                _motor.Disable();
+            }
         }
 
         public void Initial()

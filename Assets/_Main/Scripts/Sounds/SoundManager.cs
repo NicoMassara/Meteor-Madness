@@ -454,7 +454,7 @@ namespace _Main.Scripts.Sounds
             
 #endif
 
-            BootEvents.TriggerOnMainSystemInitialized();
+            BootEvents.MainSystemInitialized();
             _hasInitialized = true;
         }
         

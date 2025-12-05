@@ -59,5 +59,10 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             NotifyAll(MainMenuObserverMessage.TriggerOptions);
         }
+
+        public void StartDisable()
+        {
+            NotifyAll(MainMenuObserverMessage.StartDisable);
+        }
     }
 }

@@ -7,15 +7,13 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Cosmetics
 {
-    public class CosmeticUIPanelSelector : UiPanelSelector<CosmeticUIComponents> { }
+    public class CosmeticUIPanelSelector : UiComponentsSelector<CosmeticUIComponents> { }
 
     [Serializable]
     public class CosmeticUIComponents : UiComponentsData
     {
         [Space]
-        [Header("Panels")]
-        public GameObject MainPanel;
-        [Header("Button Components")]
+        [Header("Buttons")]
         public Button MainMenuButton;
         [Header("Components")]
         [SerializeField] private SkinButtonSelector buttonSelector;

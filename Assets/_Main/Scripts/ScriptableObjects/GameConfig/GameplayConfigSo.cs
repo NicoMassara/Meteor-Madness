@@ -10,7 +10,7 @@ namespace _Main.Scripts.ScriptableObjects
         [Header("Values")]
         [Range(1,25)]
         [SerializeField] private int levelAmount;
-        [Range(10,500)]
+        [Range(1,25)]
         [SerializeField] private int pointsMultiplier;
 
         [Space]

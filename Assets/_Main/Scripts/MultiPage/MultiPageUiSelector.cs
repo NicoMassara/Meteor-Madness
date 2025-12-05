@@ -7,14 +7,12 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.MultiPage
 {
-    public class MultiPageUiSelector : UiPanelSelector<MultiPageUIComponents> { }
+    public class MultiPageUiSelector : UiComponentsSelector<MultiPageUIComponents> { }
     
     [Serializable]
     public class MultiPageUIComponents : UiComponentsData
     {
         [Space(2)]
-        [Header("Panels")]
-        public GameObject MainPanel;
         [Header("Text Components")]
         public TMP_Text PanelText;
         public TMP_Text NextButtonText;

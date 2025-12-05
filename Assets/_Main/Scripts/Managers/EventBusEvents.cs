@@ -46,12 +46,6 @@ namespace _Main.Scripts.Managers
 
     public struct GameScreenEvents
     {
-        public struct SetScreen
-        {
-            public ScreenType ScreenType;
-            public bool IsEnable;
-        }
-        
         public struct EnableScreen
         {
             public ScreenType ScreenType;
@@ -99,7 +93,7 @@ namespace _Main.Scripts.Managers
             public Vector3 Position;
             public Quaternion Rotation;
             public Vector2 Direction;
-            public float Value;
+            public byte Value;
             public ProjectileType Type;
         }
         

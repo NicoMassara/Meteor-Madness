@@ -28,5 +28,10 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             NotifyAll(CosmeticObserverMessage.AbilitySelect,index);
         }
+
+        public void StartDisable()
+        {
+            NotifyAll(CosmeticObserverMessage.StartDisable);
+        }
     }
 }

@@ -9,60 +9,27 @@ namespace _Main.Scripts.Sounds.Components
     {
         [Header("Music")]
         [SerializeField] private SoundClassSo gameMusicData;
-        [SerializeField] private SoundClassSo deathMusicData;
-        [SerializeField] private SoundClassSo pauseMusicData;
         [Space]
         [Header("Countdown")]
         [SerializeField] private SoundClassSo countdownSound;
         [SerializeField] private SoundClassSo countdownFinish;
         
         private GeneratedId _gameMusicId;
-        private GeneratedId _deathMusicId;
-        private GeneratedId _pauseMusicId;
-
-        private void PlayGameMusic(bool isIsolated = false)
-        {
-            _gameMusicId = PlayMusic(gameMusicData, _gameMusicId,isIsolated);
-        }
-
+        
         private void Start()
         {
             // Music
             
-            ComponentToSound.OnCountdownFinished += () =>
+            ComponentToSound.OnInitialized += () =>
             {
-                // Adds a delay
-                
-                TimerManager.Add(new TimerData(0.5f,
-                    () => { PlayGameMusic(true); }));
-            };
-            
-            ComponentToSound.OnGameModePaused += (isPaused) =>
-            {
-                if (isPaused)
-                {
-                    PauseSound(_gameMusicId);
-
-                    _pauseMusicId = PlayMusic(pauseMusicData, _pauseMusicId);
-                }
-                else
-                {
-                    Debug.Log("Trying to Pause Music of Paused Panel");
-
-                }
-            };   
-            
-            ComponentToSound.OnCountDownStarted += () =>
-            {
-                if(_pauseMusicId == null) return;
-                
-                StopSound(_pauseMusicId);
+                StopAllMusic();
             };  
             
-            ComponentToSound.OnGameModeFinished += () =>
+            ComponentToSound.OnPlayMusic += () =>
             {
-                _deathMusicId = PlayMusic(deathMusicData, _deathMusicId);
-            };   
+                // Adds a delay
+                _gameMusicId = PlayMusic(gameMusicData, _gameMusicId);
+            };
             
             ComponentToSound.OnStopMusic += () =>
             {
@@ -71,14 +38,22 @@ namespace _Main.Scripts.Sounds.Components
             
             // Sounds
             
-            ComponentToSound.OnCountdownUpdated += () =>
+            ComponentToSound.OnCountdownUpdated += (value) =>
             {
-                PlaySound(countdownSound);
+                if (value > 1)
+                {
+                    PlaySound(countdownSound);
+                }
+                else if(value >= 0)
+                {
+                    PlaySound(countdownFinish);
+                }
+
+
             };
             
             ComponentToSound.OnCountdownUpdatedFinished += () =>
             {
-                PlaySound(countdownFinish);
             };
         }
     }

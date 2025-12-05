@@ -7,237 +7,51 @@ namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeMotor : ObservableComponent
     {
-#pragma warning disable CS0414 // Field is assigned but its value is never used
-        private int _meteorCollisionCount;
-#pragma warning restore CS0414 // Field is assigned but its value is never used
-
+        // Scores Values
+        private GeneratedId _currentScoreId;
+        // Gameplay Values
         private readonly GameLevelController _levelController;
-        
-        private float _startTimer;
-        private float _lastDisplayedTimer;
+        private bool _hasDoublePoints;
         private readonly int _startDelay;
+        private bool _canPause;
 #pragma warning disable CS0414 // Field is assigned but its value is never used
         private bool _isPaused;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
-        private bool _doesRestartGameMode;
-        private bool _hasDoublePoints;
-        private bool _canPause;
-        private bool _hasGameplayPanelActive;
-        private bool _hasPausePanelActive;
+        // Stats Values
+        private GeneratedId _collisionId;
+        private GeneratedId _abilityUseId;
+        private GeneratedId _deflectId;
 
-        private GeneratedId _highScoreSecuredId;
-        private GeneratedId _currentScoreSecuredId;
-        
 
-        public GameModeMotor(int[] levelStreakAmount, int startTimer)
+        public GameModeMotor(int[] levelStreakAmount)
         {
             _levelController = new(levelStreakAmount);
-            _levelController.OnLevelChange += OnLevelChangeHandler;
-            _startDelay = startTimer + 1;
+            _levelController.OnLevelChange += UpdateCurrentLevel;
 
-            _currentScoreSecuredId = SecureValueManager.RegisterValue<float>(0);
+            _currentScoreId = SecureValueManager.RegisterValue<uint>(0);
 
             SecureValueManager.OnCheatDetected += OnCheatDetectedHandler;
         }
 
-        private void OnCheatDetectedHandler(ushort id)
+        private void RestartValues()
         {
-            if (_currentScoreSecuredId.Id == id)
-            {
-                Debug.LogWarning("Cheat Detected! Restarting Points!");
-                UpdateCurrentScore(Mathf.NegativeInfinity);
-            }
-            
-            if (_highScoreSecuredId.Id == id)
-            {
-                Debug.LogWarning("Cheat Detected! Restarting High Score!");
-                UpdateHighScore(Mathf.NegativeInfinity);
-            }
-        }
-
-        #region Earth
-
-        public void HandleEarthShake()
-        {
-            NotifyAll(GameModeObserverMessage.EarthShaking);
-        }
-
-        public void HandleEarthStartDestruction()
-        {
-            NotifyAll(GameModeObserverMessage.EarthStartDestruction);
-        }
-
-        public void HandleEarthEndDestruction()
-        {
-            var currentScore = GetCurrentScore();
-            var highScore = GetHighScore();
-            var hasBeaten = GetHasBeatenHighScore(currentScore);
-            
-            if (hasBeaten)
-            {
-                highScore = currentScore;
-                UpdateHighScore(highScore);
-                NotifyAll(GameModeObserverMessage.SaveHighScore, highScore);
-            }
-            
-            NotifyAll(GameModeObserverMessage.SetHasHighScore, hasBeaten, highScore);
-            NotifyAll(GameModeObserverMessage.EarthEndDestruction, currentScore);
-        }
-        
-        public void EarthRestartFinish()
-        {
-            NotifyAll(GameModeObserverMessage.EarthRestartFinish, _doesRestartGameMode);
-        }
-
-        #endregion
-        
-        #region Ability
-
-        public void SetDoublePoints(bool isEnable)
-        {
-            _hasDoublePoints = isEnable;
-        }
-
-        #endregion
-
-        #region Spawn
-
-        public void GrantSpawnMeteor(int projectileTypeIndex)
-        {
-            NotifyAll(GameModeObserverMessage.GrantProjectileSpawn,projectileTypeIndex);
-        }
-        
-        public void SetEnableMeteorSpawn(bool canSpawn)
-        {
-            NotifyAll(GameModeObserverMessage.SetEnableSpawnMeteor, canSpawn);
-        }
-
-        #endregion
-
-        #region GameMode
-        
-        public void StartGameplay()
-        {
-            NotifyAll(GameModeObserverMessage.StartGameplay);
-        }
-        
-        public void HandleMeteorDeflect(Vector2 position, float meteorDeflectValue)
-        {
-            var finalValue = _hasDoublePoints ? meteorDeflectValue*2 : meteorDeflectValue;
-            var currentScore = GetCurrentScore();
-            
-            currentScore += finalValue;
-            
-            if (meteorDeflectValue >= 1)
-            {
-                _levelController.IncreaseStreak();
-                _levelController.CheckForNextLevel();
-            }
-            
-            UpdateCurrentScore(currentScore);
-            
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-
-            if (GetHasBeatenHighScore(currentScore))
-            {
-                NotifyAll(GameModeObserverMessage.UpdateHighScore, currentScore);
-            }
-#endif
-            
-            if (meteorDeflectValue > 0)
-            {
-                NotifyAll(GameModeObserverMessage.PointsGained,position,finalValue,_hasDoublePoints);
-            }
-
-            NotifyAll(GameModeObserverMessage.MeteorDeflect,currentScore);
-        }
-        
-        public void LoadHighScore(float highScore)
-        {
-            _highScoreSecuredId = SecureValueManager.RegisterValue(highScore);
-            NotifyAll(GameModeObserverMessage.UpdateHighScore, highScore);
-        }
-
-        public void InitializeValues()
-        {
-            NotifyAll(GameModeObserverMessage.InitializeValues);
-        }
-
-        public void SetCanPause(bool canPause)
-        {
-            _canPause = canPause;
-            NotifyAll(GameModeObserverMessage.SetCanPause, _canPause);
-        }
-
-        public void SetDoesRestartGameMode(bool doesRestart)
-        {
-            _doesRestartGameMode = doesRestart;
-        }
-
-        public void StartCountdown()
-        {
-            _startTimer = _startDelay;
-            _lastDisplayedTimer = Mathf.Infinity;
-            NotifyAll(GameModeObserverMessage.StartCountdown);
-        }
-        
-        public void HandleCountdownTimer(float deltaTime)
-        {
-            _startTimer -= deltaTime;
-            int seconds = Mathf.CeilToInt(_startTimer);
-
-            if (seconds != _lastDisplayedTimer)
-            {
-                _lastDisplayedTimer = seconds;
-                NotifyAll(GameModeObserverMessage.UpdateCountdown, _startTimer);
-                
-                if (_startTimer <= 0)
-                {
-                    NotifyAll(GameModeObserverMessage.CountdownFinish);
-                }
-            }
-        }
-
-        private bool GetHasBeatenHighScore(float currentScore)
-        {
-            return currentScore > GetHighScore();
-        }
-
-        public void RestartValues()
-        {
-            _meteorCollisionCount = 0;
-            UpdateCurrentScore(0);
+            _hasDoublePoints = false;
+            _canPause = true;
+            _isPaused = false;
             _levelController.ResetLevel();
         }
+        
+        #region Enable / Disable
 
-        public void DisableGameMode()
+        public void StartDisable()
         {
-            NotifyAll(GameModeObserverMessage.Disable);
+            RestartValues();
+            NotifyAll(GameModeObserverMessage.StartDisable);
         }
         
-        public void Enable()
+        public void ExecuteDisable()
         {
-            NotifyAll(GameModeObserverMessage.Enable);
-        }
-        
-        public void UpdateCurrentLevel()
-        {
-            NotifyAll(GameModeObserverMessage.UpdateGameLevel, _levelController.GetCurrentLevel());
-        }
-
-        public void HandleGameFinish()
-        {
-            NotifyAll(GameModeObserverMessage.GameFinish);
-        }
-        
-        private void OnLevelChangeHandler()
-        {
-            UpdateCurrentLevel();
-        }
-
-        public void GameRestart()
-        {
-            NotifyAll(GameModeObserverMessage.GameRestart);
+            NotifyAll(GameModeObserverMessage.ExecuteDisable);
         }
 
         #endregion
@@ -255,88 +69,268 @@ namespace _Main.Scripts.Gameplay.GameMode
             _isPaused = false;
             NotifyAll(GameModeObserverMessage.GameUnPaused);
         }
-
-        #endregion
-
-        #region Camera
-
-        public void HandleCameraZoomOut()
+        
+        public void EnablePause()
         {
-            NotifyAll(GameModeObserverMessage.CameraZoomOut);
+            _canPause = true;
+            NotifyAll(GameModeObserverMessage.SetCanPause, _canPause);
         }
 
-        public void HandleCameraZoomIn()
+        public void DisablePause()
         {
-            NotifyAll(GameModeObserverMessage.CameraZoomIn);
-        }
-
-        #endregion
-
-        #region Screens
-
-        public void SetGameplayPanel(bool isActive)
-        {
-            _hasGameplayPanelActive = isActive;
-            NotifyAll(GameModeObserverMessage.GameplayPanel, _hasGameplayPanelActive);
-        }
-
-        public void SetPausePanel(bool isActive)
-        {
-            _hasPausePanelActive = isActive;
-            NotifyAll(GameModeObserverMessage.PausePanel, _hasPausePanelActive);
+            _canPause = false;
+            NotifyAll(GameModeObserverMessage.SetCanPause, _canPause);
         }
         
-        public void TriggerOptions()
+        public void TriggerPause()
         {
-            NotifyAll(GameModeObserverMessage.Options);
-        }
-
-        public void TriggerMainMenu()
-        {
-            NotifyAll(GameModeObserverMessage.TriggerMainMenu);
+            NotifyAll(GameModeObserverMessage.PauseGameModeScreen);
         }
 
         #endregion
 
-        public void Asleep()
-        {
-            NotifyAll(GameModeObserverMessage.Asleep);
-        }
-
-        public void Leaving()
-        {
-            NotifyAll(GameModeObserverMessage.Leaving);
-        }
-
-        #region Secured Data
-
-        private float GetHighScore()
-        {
-            var highScore = 0f;
-            return SecureValueManager.GetDoesContainValue(_highScoreSecuredId, out highScore) ? highScore : 0;
-        }
-
-        private float GetCurrentScore()
-        {
-            var highScore = 0f;
-            return SecureValueManager.GetDoesContainValue(_currentScoreSecuredId, out highScore) ? highScore : 0;
-        }
-
-        private void UpdateHighScore(float input)
-        {
-            SecureValueManager.ModifyValue(_highScoreSecuredId, input);
-        }
-        
-        private void UpdateCurrentScore(float input)
-        {
-            SecureValueManager.ModifyValue(_currentScoreSecuredId, input);
-        }
-        
-        #endregion
+        #region Data
 
         public void InitializeData()
         {
+            UpdateCurrentScore(0);
             NotifyAll(GameModeObserverMessage.InitializeData);
+        }
+
+        public void SaveScore()
+        {
+            // The View receives this data and stores it in the GameManager
+            // So the DefeatScreen can use it 
+            NotifyAll(GameModeObserverMessage.SaveScore, _currentScoreId);
+        }
+
+        #endregion    
+        
+        #region Meteor 
+        
+        public void HandleMeteorDeflect(Vector2 position, byte projectileValue)
+        {
+            var finalValue = (uint)(_hasDoublePoints ? projectileValue * 2 : projectileValue);
+            var currentScore = GetCurrentScore();
+
+            currentScore += finalValue;
+            
+            UpdateCurrentScore(currentScore);
+            
+            if (projectileValue >= 1)
+            {
+                _levelController.IncreaseStreak();
+                _levelController.CheckForNextLevel();
+            }
+            
+            if (projectileValue > 0)
+            {
+                NotifyAll(GameModeObserverMessage.PointsGained,position,finalValue,_hasDoublePoints);
+            }
+        }
+        
+        #endregion
+        
+        #region Projectile Spawn
+
+        public void GrantProjectileSpawn(int projectileTypeIndex)
+        {
+            NotifyAll(GameModeObserverMessage.GrantProjectileSpawn,projectileTypeIndex);
+        }
+        
+        public void EnableProjectileSpawn()
+        {
+            NotifyAll(GameModeObserverMessage.SetEnableSpawnMeteor, true);
+        }
+
+        public void DisableProjectileSpawn()
+        {
+            NotifyAll(GameModeObserverMessage.SetEnableSpawnMeteor, false);
+        }
+
+        #endregion
+
+        #region Countdown
+
+        public void StartCountdown()
+        {
+            NotifyAll(GameModeObserverMessage.StartCountdown,_startDelay);
+        }
+        
+        public void UpdateCountdown(float remainingTime)
+        {
+            NotifyAll(GameModeObserverMessage.UpdateCountdown, remainingTime);
+        }
+        
+        public void FinishCountdown()
+        {
+            NotifyAll(GameModeObserverMessage.FinishCountdown);
+        }
+
+        #endregion
+        
+        #region Gameplay
+        
+        public void StartGameplay()
+        {
+            NotifyAll(GameModeObserverMessage.StartGameplay);
+            EnableGameplayUI();
+        }
+        
+        public void StopGameplay()
+        {
+            NotifyAll(GameModeObserverMessage.StopGameplay);
+            DisableGameplayUI();
+        }
+        
+        public void FinishGame()
+        {
+            NotifyAll(GameModeObserverMessage.GameFinish);
+        }
+
+        public void SetDoublePoints(bool isActive)
+        {
+            _hasDoublePoints = isActive;
+        }
+        
+        #region UI
+
+        public void DisableGameplayUI()
+        {
+            NotifyAll(GameModeObserverMessage.DisableGameplayUI);
+        }
+
+        public void EnableGameplayUI()
+        {
+            NotifyAll(GameModeObserverMessage.EnableGameplayUI);
+        }
+        
+        public void TriggerFinishAddingPoints()
+        {
+            NotifyAll(GameModeObserverMessage.FinishAddingPoints);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Stats
+
+        public void IncreaseCollisionCount()
+        {
+            var current = GetCollisionCount();
+            current++;
+            UpdateCollisionCount(current);
+        }
+
+        public void IncreaseAbilityUseCount()
+        {
+            var current = GetUsedAbilityCount();
+            current++;
+            UpdateAbilityCount(current);
+        }
+        
+        public void IncreaseDeflectCount()
+        {
+            var current = GetDeflectCount();
+            current++;
+            UpdateDeflectCount(current);
+        }
+
+        #endregion
+
+        #region Internal Level
+
+        private void UpdateCurrentLevel()
+        {
+            NotifyAll(GameModeObserverMessage.UpdateGameLevel, _levelController.GetCurrentLevel());
+        }
+
+        #endregion
+        
+        #region Secured Data
+
+        #region Score
+
+        private uint GetCurrentScore()
+        {
+            return SecureValueManager.GetDoesContainValue(_currentScoreId, out uint value) ? value : 0;
+        }
+        private void UpdateCurrentScore(uint input)
+        {
+            SecureValueManager.ModifyValue(_currentScoreId, input);
+        }
+        
+        #endregion
+
+        #region Stats
+
+        private float GetCollisionCount()
+        {
+            return SecureValueManager.GetDoesContainValue(_collisionId, out float value) ? value : 0;
+        }
+        private void UpdateCollisionCount(float input)
+        {
+            SecureValueManager.ModifyValue(_collisionId, input);
+        }
+        
+        private float GetUsedAbilityCount()
+        {
+            return SecureValueManager.GetDoesContainValue(_abilityUseId, out float value) ? value : 0;
+        }
+        private void UpdateAbilityCount(float input)
+        {
+            SecureValueManager.ModifyValue(_abilityUseId, input);
+        }
+        
+        private float GetDeflectCount()
+        {
+            return SecureValueManager.GetDoesContainValue(_deflectId, out float value) ? value : 0;
+        }
+        private void UpdateDeflectCount(float input)
+        {
+            SecureValueManager.ModifyValue(_deflectId, input);
+        }
+
+
+        #endregion
+        
+        private void OnCheatDetectedHandler(ushort id)
+        {
+            if (_currentScoreId.Id == id)
+            {
+                Debug.LogWarning("Cheat Detected! Restarting Points!");
+                UpdateCurrentScore(0);
+            }
+            if (_collisionId.Id == id)
+            {
+                Debug.LogWarning("Cheat Detected! Restarting Collision Stats!");
+                UpdateCollisionCount(Mathf.Infinity);
+            }
+            
+            if (_abilityUseId.Id == id)
+            {
+                Debug.LogWarning("Cheat Detected! Restarting Ability Stats!");
+                UpdateAbilityCount(Mathf.NegativeInfinity);
+            }
+            
+            if (_deflectId.Id == id)
+            {
+                Debug.LogWarning("Cheat Detected! Restarting Ability Stats!");
+                UpdateDeflectCount(Mathf.NegativeInfinity);
+            }
+        }
+        
+        #endregion
+
+        public void StartFinish()
+        {
+            NotifyAll(GameModeObserverMessage.StartFinish);
+        }
+
+        public void TriggerPauseMenu()
+        {
+            NotifyAll(GameModeObserverMessage.OpenPauseScreen);
         }
     }
 }

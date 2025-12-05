@@ -54,5 +54,15 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             NotifyAll(TutorialObserverMessage.AbilityRunning);
         }
+
+        public void EnableHint()
+        {
+            NotifyAll(TutorialObserverMessage.EnableHint);
+        }
+
+        public void DisableHint()
+        {
+            NotifyAll(TutorialObserverMessage.DisableHint);
+        }
     }
 }

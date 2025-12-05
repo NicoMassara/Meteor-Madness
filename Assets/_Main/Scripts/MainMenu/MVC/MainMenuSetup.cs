@@ -4,24 +4,28 @@ using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
+    [RequireComponent(typeof(MainMenuViewAnimation))]
     [RequireComponent(typeof(MainMenuUiView))]
     [RequireComponent(typeof(MainMenuView))]
     public class MainMenuSetup : ManagedBehavior
     {
         private MainMenuUiView _ui;
         private MainMenuView _view;
+        private MainMenuViewAnimation _animation;
+        //
         private MainMenuMotor _motor;
-        private MainMenuController _controller;
+        private MainMenuController.IIMainMenuController _controller;
 
         private void Awake()
         {
             _ui = GetComponent<MainMenuUiView>();
             _view = GetComponent<MainMenuView>();
+            _animation = GetComponent<MainMenuViewAnimation>();
 
             _motor = new MainMenuMotor();
             _controller = new MainMenuController(_motor);
             
-            _motor.Subscribe(_ui);
+            _motor.Subscribe(_animation);
             _motor.Subscribe(_view);
             
             SetViewHandlers();
@@ -47,10 +51,7 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void SetViewHandlers()
         {
-            _view.OnMainMenuEnable += () =>
-            {
-                _controller.TransitionToMenu();
-            };
+            _view.OnMainMenuEnable += () => _controller.TransitionToMenu();
             //
             _ui.OnGameModeTriggered += () => _controller.TriggerGameMode();
             _ui.OnTutorialTriggered += () => _controller.TriggerTutorial();
@@ -61,6 +62,8 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
             _ui.OnOptionsOpen += () => _controller.TriggerOptions();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
+            //
+            _animation.OnPanelClosed += () => _controller.ExecuteDisable();
         }
 
         #endregion

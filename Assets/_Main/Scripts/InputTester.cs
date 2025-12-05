@@ -45,7 +45,7 @@ namespace _Main.Scripts
 
         private void Deflect()
         {
-            ProjectileEventCaller.Deflected(new DeflectData{Value = 1f});
+            ProjectileEventCaller.Deflected(new DeflectData{Value = 100});
         }
 
         private void ChangeTimeScale()

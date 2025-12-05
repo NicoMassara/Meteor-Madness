@@ -40,12 +40,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void SetViewHandlers()
         {
-            _view.OnHealed += View_OnHealedHandler;
-        }
-
-        private void View_OnHealedHandler()
-        {
-            _controller.EnableDamage();
+            _view.OnHealed += _controller.FinishHealing;
         }
 
         #endregion

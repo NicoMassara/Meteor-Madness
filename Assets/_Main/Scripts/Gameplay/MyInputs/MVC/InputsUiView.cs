@@ -34,7 +34,6 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         public void OnNotify(ulong message, params object[] args)
         {
 #if UNITY_ANDROID
-            
 
             switch (message)
             {

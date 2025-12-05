@@ -313,14 +313,13 @@ namespace _Main.Scripts.Save
         public abstract class SaveDataBase
         {
             public abstract SaveDataType Type { get;}
-        
         }
 
         [System.Serializable]
         public class ScoreSaveData : SaveDataBase
         {
             public override SaveDataType Type => SaveDataType.Score;
-            public float HighScore;
+            public uint HighScore;
         }
     
         [System.Serializable]
@@ -329,6 +328,7 @@ namespace _Main.Scripts.Save
             public override SaveDataType Type => SaveDataType.Stats;
             public int DeflectAmount;
             public int CollisionAmount;
+            public int AbilityUseAmount;
         }
     
         [System.Serializable]

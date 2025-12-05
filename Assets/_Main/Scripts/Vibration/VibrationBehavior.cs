@@ -5,7 +5,7 @@ using UnityEngine;
 namespace _Main.Scripts.Vibration
 {
     
-    public abstract class VibrationBehavior<T> : MonoBehaviour where T : MonoBehaviour
+    public abstract class VibrationBehavior<T> : MonoBehaviour
     {
 #if UNITY_ANDROID 
         private VibrationManager _vibration;

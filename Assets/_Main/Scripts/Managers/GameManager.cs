@@ -1,5 +1,9 @@
 ﻿using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyComponents;
+using _Main.Scripts.MyTools;
+using _Main.Scripts.CustomId;
+using _Main.Scripts.Save;
+using _Main.Scripts.SecurityData;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -9,13 +13,20 @@ namespace _Main.Scripts.Managers
     {
         public bool CanPlay { get; set; }
         public bool IsPaused { get; private set; }
-        private int _currentPoints;
         public bool HadCorruptedSaveData { get; set; }
 
         public EventBusManager EventManager { get; private set; }
         public IInputReader InputReader { get; private set; }
         
+        // Game Stored Data
         
+        public uint VisualPoints { get;  set; }
+
+        public GeneratedId CurrentScoreSecuredId { get; set; }
+        public bool AntiEpileptic { get; set; } = true;
+
+        private GeneratedId _highScoreSecuredId;
+
         private void Awake()
         {
             EventManager = new EventBusManager();
@@ -54,6 +65,16 @@ namespace _Main.Scripts.Managers
         {
             LoadGameScreen(ScreenType.OptionsMenu);
         }
+        
+        public void LoadDefeatScreen()
+        {
+            LoadGameScreen(ScreenType.Defeat);
+        }
+        
+        public void LoadPauseScreen()
+        {
+            LoadGameScreen(ScreenType.Pause);
+        }
 
         public void LoadLastScreen()
         {
@@ -69,17 +90,17 @@ namespace _Main.Scripts.Managers
 
         public void PauseGame()
         {
-            SetPauseInChannels(true);
+            SetPauseChannels(true);
             IsPaused = true;
         }
 
         public void UnpauseGame()
         {
-            SetPauseInChannels(false);
+            SetPauseChannels(false);
             IsPaused = false;
         }
 
-        private void SetPauseInChannels(bool isPaused)
+        private void SetPauseChannels(bool isPaused)
         {
             CustomTime.SetChannelPaused(new []
             {
@@ -90,12 +111,77 @@ namespace _Main.Scripts.Managers
                 
             }, isPaused);
         }
+        
 
         public void QuitGame()
         {
-            Application.Quit();
+            QuitUtility.Quit();
         }
 
+        #region Score
 
+        public void ClearScoreData()
+        {
+            CurrentScoreSecuredId = null;
+        }
+
+        public bool GetHasNewHighScore()
+        {
+            if(SecureValueManager.GetDoesContainValue<uint>(CurrentScoreSecuredId, out var currentScore) == false) 
+                return false;
+            
+            if(SecureValueManager.GetDoesContainValue<uint>(GetHighScoreSecuredId(), out var highScore) == false) 
+                return true;
+            
+            return currentScore > highScore;
+        }
+
+        public GeneratedId GetHighScoreSecuredId()
+        {
+            if (_highScoreSecuredId == null)
+            {
+                var temp = DataManager.Instance.GetData<DataManager.ScoreSaveData>(DataManager.SaveDataType.Score);
+                _highScoreSecuredId = SecureValueManager.RegisterValue(temp.HighScore);
+            }
+
+            return _highScoreSecuredId;
+        }
+
+        public void SaveHighScore(GeneratedId currentScoreId)
+        {
+            if (currentScoreId == null)
+            {
+                Debug.LogWarning("Failed To Save High Score Data");
+                return;
+            }
+
+            // Gets current Score
+            if (SecureValueManager.GetDoesContainValue<uint>(CurrentScoreSecuredId, out var currentScore) == false)
+            {
+                Debug.LogWarning("Failed To Save High Score Data");
+                return;
+            }
+
+            // Gets Saved High Score
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.ScoreSaveData>(DataManager.SaveDataType.Score);
+            
+            // Overwrites the data
+            saveData.HighScore = currentScore;
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Score);
+        }
+
+        public void SaveRuntimeHighScore(GeneratedId highScoreId, GeneratedId currentScoreId)
+        {
+            if (SecureValueManager.GetDoesContainValue<uint>(currentScoreId, out var currentScore) == false)
+            {
+                Debug.LogWarning("Failed To Save High Score Data");
+                return;
+            }
+            
+            SecureValueManager.ModifyValue(highScoreId,currentScore);
+        }
+
+        #endregion
     }
 }

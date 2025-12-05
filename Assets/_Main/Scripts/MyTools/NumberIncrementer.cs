@@ -5,25 +5,34 @@ namespace _Main.Scripts
 {
     public class NumberIncrementer
     {
-        private float _targetValue;
-        private float _currentValue;
-        private float _startValue;
-        private float _targetTime;
-        private Action _actionOnFinish;
+        private readonly float _targetTime;
+        private readonly Action<uint> _increaseAction;
+        private readonly Action _actionOnFinish;
+        private uint _targetValue;
+        private uint _currentValue;
+        private uint _startValue;
 
-        public float CurrentValue => _currentValue;
+        public uint CurrentValue => _currentValue;
         public bool IsFinished => _currentValue >= _targetValue;
-        
+
+        public NumberIncrementer(float targetTime, Action<uint> increaseAction, Action actionOnFinish)
+        {
+            _targetTime = targetTime;
+            _increaseAction = increaseAction;
+            _actionOnFinish = actionOnFinish;
+        }
+
         public void Run(float deltaTime)
         {
-            _currentValue = Mathf.MoveTowards(
-                _currentValue,
-                _targetValue,
+            _currentValue = (uint)Mathf.MoveTowards(_currentValue, _targetValue,
                 (_targetValue - _startValue) / _targetTime * deltaTime
             );
+            
+            _increaseAction?.Invoke(_currentValue);
 
             if (IsFinished)
             {
+                _startValue = _currentValue;
                 _actionOnFinish?.Invoke();
             }
         }
@@ -33,26 +42,9 @@ namespace _Main.Scripts
             _currentValue = 0;
         }
 
-        public void SetData(NumberIncrementerData data)
+        public void AddValue(uint value)
         {
-            _currentValue = data.Current;
-            _startValue = _currentValue;
-            _targetValue = data.Target;
-            _targetTime = data.TargetTime;
-            _actionOnFinish = data.ActionOnFinish;
+            _targetValue += value;
         }
-
-        public void SetNewTarget(float targetValue)
-        {
-            _targetValue = targetValue;
-        }
-    }
-
-    public class NumberIncrementerData
-    {
-        public float Target = 0;
-        public float Current = 0;
-        public float TargetTime = 0;
-        public Action ActionOnFinish;
     }
 }

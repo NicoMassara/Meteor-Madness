@@ -27,6 +27,9 @@ namespace _Main.Scripts.Sounds
 
         protected GeneratedId PlaySound(SoundClassSo soundClass)
         {
+            if (soundClass == null)
+                return null;
+            
             return SoundManager.PlaySound(soundClass, transform);
         }
         protected void StopSound(GeneratedId soundId)

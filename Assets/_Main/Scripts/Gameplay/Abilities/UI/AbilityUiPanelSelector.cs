@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Gameplay.Abilities
 {
-    public class AbilityUiPanelSelector : UiPanelSelector<AbilityUIComponents> { }
+    public class AbilityUiPanelSelector : UiComponentsSelector<AbilityUIComponents> { }
     
     [Serializable]
     public class AbilityUIComponents : UiComponentsData

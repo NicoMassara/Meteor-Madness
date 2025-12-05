@@ -14,6 +14,10 @@ namespace _Main.Scripts.Tutorial.MVC
         private const string AbilityHintCode = "Tutorial.Hint.Ability";
         private const string ShieldHintCode = "Tutorial.Hint.Shield";
         private TutorialUiComponents _uiComponents;
+
+        public event Action OnHintTextEnable;
+        public event Action OnHintTextDisable;
+        
         
         public void OnNotify(ulong message, params object[] args)
         {
@@ -34,12 +38,6 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.AbilityRunning:
                     HandleAbilityRunning();
                     break;
-                case TutorialObserverMessage.Disable:
-                    HandleDisable();
-                    break;
-                case TutorialObserverMessage.Enable:
-                    HandleEnable();
-                    break;
             }
         }
         
@@ -50,7 +48,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleAbilityRunning()
         { 
-            GetUiComponents().DisableActivePanel();
+            OnHintTextDisable?.Invoke();
         }
 
         private void HandleSphereDeflected()
@@ -60,12 +58,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void HandleMultiPage()
         {
-            GetUiComponents().DisableActivePanel();
-        }
-
-        private void HandleEnable()
-        {
-            GetUiComponents().SetActivePanel(GetUiComponents().HintPanel);
+            OnHintTextDisable?.Invoke();
         }
         
         private void HandleMovement()
@@ -77,16 +70,11 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             SetHintText(GetLocalizedText(AbilityHintCode));
         }
-        
-        private void HandleDisable()
-        {
-            GetUiComponents().DisableAllPanels();
-        }
 
         private void SetHintText(string text)
         {
             GetUiComponents().HintText.text = text;
-            GetUiComponents().SetActivePanel(GetUiComponents().HintPanel);
+            OnHintTextEnable?.Invoke();
         }
 
         private string GetLocalizedText(string key)
