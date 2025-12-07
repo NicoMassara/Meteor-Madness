@@ -32,7 +32,6 @@ namespace _Main.Slicer
         }
         private static GameObject[] SplitMesh(GameObject target, Vector3 planePoint, Vector3 planeNormal, Material material, Transform newParent = null)
         {
-            
             SlicedHull hull = target.Slice(planePoint, planeNormal);
 
             if (hull != null)

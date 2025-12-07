@@ -72,7 +72,7 @@ namespace _Main.Scripts.Gameplay.Earth
                 .Then(new WaitSecondsAction(sliceTimes.StartSlice))
                 .Then(new InstantAction(() =>
                 {
-                    SetActiveSlices(true);
+                    SetActiveContainer(true);
                     _canMove = true;
                 }))
                 .Then(new WaitSecondsAction(sliceTimes.MoveSlices))
@@ -109,6 +109,8 @@ namespace _Main.Scripts.Gameplay.Earth
             {
                 Debug.Log("Slices could not be created");
             }
+            
+            SetActiveContainer(false);
 
             _shouldPreSlice = false;
         }
@@ -150,7 +152,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         public void UniteMeshes()
         {
-            SetActiveSlices(false);
+            SetActiveContainer(false);
         }
 
         #endregion
@@ -202,12 +204,9 @@ namespace _Main.Scripts.Gameplay.Earth
             _shouldPreSlice = true;
         }
 
-        private void SetActiveSlices(bool isActive)
+        private void SetActiveContainer(bool isActive)
         {
-            foreach (var slice in _slices)
-            {
-                slice.SetActive(isActive);
-            }
+            sliceContainer.SetActive(isActive);
         }
 
         private void DestroyActiveSlices()
