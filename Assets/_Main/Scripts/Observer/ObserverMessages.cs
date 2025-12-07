@@ -51,7 +51,7 @@
         public const ulong DisableGameplayUI = 0xA2018; 
         public const ulong EnableGameplayUI = 0xA2019;
         public const ulong PauseGameModeScreen = 0xA2020;
-        public const ulong DisableShield = 0xA2021;
+        public const ulong TriggerEarthDestruction = 0xA2021;
         public const ulong OpenPauseScreen = 0xA2022;
         public const ulong StartFinish = 0xA2023;
         public const ulong FinishAddingPoints = 0xA2024;

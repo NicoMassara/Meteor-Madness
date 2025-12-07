@@ -15,14 +15,16 @@ namespace _Main.Scripts.Gameplay.GameMode
         GameModeUIAnimationComponents.IGameplayPanel,
         GameModeUIAnimationComponents.ICountdownPanel
     {
-        public interface IGameplayPanel : IUiAnimationComponent
+        public interface IGameModeUIAnimation : IUiAnimationComponent { }
+        
+        public interface IGameplayPanel : IGameModeUIAnimation
         {
             public RectTransform GameplayPanel { get; }
             public RectTransform ScorePanel { get; }
             public RectTransform PauseButton { get; }
         }
         
-        public interface ICountdownPanel : IUiAnimationComponent
+        public interface ICountdownPanel : IGameModeUIAnimation
         {
             public RectTransform CountdownPanel { get; }
             public RectTransform CountdownText { get; }

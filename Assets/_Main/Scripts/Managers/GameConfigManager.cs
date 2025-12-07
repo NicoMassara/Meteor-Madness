@@ -8,7 +8,6 @@ namespace _Main.Scripts.Managers
     {
         [SerializeField] private DamageTypes currentDamageDamageType = DamageTypes.Standard;
         [SerializeField] private GameplayConfigSo gameplayConfigSo;
-        [SerializeField] private GameUIConfigSo gameUIConfigSo;
         
         public static GameConfigManager Instance { get; private set; }
         
@@ -27,12 +26,6 @@ namespace _Main.Scripts.Managers
         {
             return gameplayConfigSo;
         }
-        
-        public GameUIConfigSo GetUIData()
-        {
-            return gameUIConfigSo;
-        }
-        
         
         #region Damage
 

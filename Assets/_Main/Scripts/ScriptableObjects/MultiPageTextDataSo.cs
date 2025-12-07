@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "SO_MultiPageTextData_Name", menuName = "Scriptable Objects/UI/Multi Page", order = 0)]
+    [CreateAssetMenu(fileName = "SO_MultiPageTextData_Name", menuName = "Scriptable Objects/Multi Page", order = 0)]
     public class MultiPageTextDataSo : ScriptableObject, IMultiPageData
     {
         [SerializeField] private string textCode;

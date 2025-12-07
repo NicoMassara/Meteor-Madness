@@ -1527,6 +1527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 1059927930}
+  timeData: {fileID: 11400000, guid: 098efdc4d5a5a3f40a9248644e56e8c5, type: 2}
 --- !u!114 &1253651367
 MonoBehaviour:
   m_ObjectHideFlags: 0

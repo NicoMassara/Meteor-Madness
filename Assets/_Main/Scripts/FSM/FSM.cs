@@ -10,6 +10,7 @@ namespace _Main.Scripts.FiniteStateMachine
         public T CurrentState { get; set; }
         public T LastState { get; set; }
         public string FSMName { get; private set; }
+
         public event Action<T> OnEnterState;
         public event Action<T> OnExitState;
         public event Action<T> OnNewState;

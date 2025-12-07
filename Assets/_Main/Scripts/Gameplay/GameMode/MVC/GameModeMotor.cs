@@ -54,6 +54,11 @@ namespace _Main.Scripts.Gameplay.GameMode
             NotifyAll(GameModeObserverMessage.ExecuteDisable);
         }
 
+        public void TriggerEarthDestruction()
+        {
+            NotifyAll(GameModeObserverMessage.TriggerEarthDestruction);
+        }
+
         #endregion
 
         #region Pause

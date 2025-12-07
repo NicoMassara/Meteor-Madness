@@ -184,6 +184,8 @@ namespace _Main.Scripts.Gameplay.GameMode
                 public bool WasPaused { get; private set; }
                 public bool IsPaused { get; private set; }
                 public bool IsPlaying { get; private set; }
+                public bool HasSavedScore { get; private set; }
+
                 public GameModeActionGate(FSM<States> fsm) : base(fsm) { }
                 
                 protected override void OnEnterState(States state)
@@ -195,6 +197,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 protected override void OnExitState(States state)
                 {
                     WasPaused = state == States.Paused;
+                    HasSavedScore = state == States.SaveScore;
                 }
             }
 
@@ -327,6 +330,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             #endregion
 
 
+            public bool GetWasFinished() => _actionGate.HasSavedScore;
         }
         
         #endregion
@@ -493,6 +497,11 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void ExecuteDisable()
         {
+            if (_mainController.GetWasFinished())
+            {
+                _motor.TriggerEarthDestruction();
+            }
+
             _motor.ExecuteDisable();
         }
 
@@ -564,6 +573,5 @@ namespace _Main.Scripts.Gameplay.GameMode
         #endregion
 
         #endregion
-        
     }
 }

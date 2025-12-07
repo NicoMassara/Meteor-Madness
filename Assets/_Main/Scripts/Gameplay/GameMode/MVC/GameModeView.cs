@@ -87,6 +87,12 @@ namespace _Main.Scripts.Gameplay.GameMode
                     HandleStartDisable();
                     break;
                 
+                case GameModeObserverMessage.TriggerEarthDestruction:
+                    HandleTriggerEarthDestruction();
+                    break;
+                
+                
+                
                 //=== Pause ===//
                 case GameModeObserverMessage.GamePaused:
                     HandleGamePaused();
@@ -190,7 +196,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         private void HandleStopGameplay()
         {
             EarthEventCaller.DisableDamage();
-            AbilitiesEventCaller.Disable();
             AbilitiesEventCaller.DisableUI();
             SetEnableInputs(false);
             SetEnableUIInputs(false);
@@ -224,12 +229,17 @@ namespace _Main.Scripts.Gameplay.GameMode
         #endregion
         
         #region Disable
+
+        private void HandleTriggerEarthDestruction()
+        {
+            EarthEventCaller.DestructionStart();
+        }
         
         private void HandleExecuteDisable()
         {
             OnStopMusic?.Invoke();
+            AbilitiesEventCaller.Disable();
             GameManager.Instance.VisualPoints = 0;
-            EarthEventCaller.DestructionStart();
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
         

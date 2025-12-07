@@ -10,7 +10,6 @@ namespace _Main.Scripts.Gameplay.GameMode
     public class GameModeSetup : ManagedBehavior, IUpdatable
     {
         private GameModeController.IGameModeController _controller;
-        
         private GameModeView.IGameModeView _view;
         private GameModeUIView.IGameModeUIView _ui;
         private GameModeViewAnimation.IGameModeViewAnimation _animation;

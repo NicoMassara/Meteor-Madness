@@ -42,8 +42,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             Localization_OnLanguageChangedHandler();
             LocalizationEvents.OnLanguageChanged += Localization_OnLanguageChangedHandler;
             
-            _numberIncrementer = new NumberIncrementer(GameConfigManager.Instance.GetUIData().GameplayPointsTimeToIncrease,
-                HandleUpdatePointsText,OnFinishAddingPoints);
+            _numberIncrementer = new NumberIncrementer(HandleUpdatePointsText,OnFinishAddingPoints);
             
             BootEvents.SubSystemInitialized();
         }
