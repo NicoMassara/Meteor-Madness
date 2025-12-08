@@ -105,7 +105,7 @@ namespace _Main.Scripts.Gameplay.GameMode
                 case GameModeObserverMessage.PauseGameModeScreen:
                     HandlePauseGameModeScreen();
                     break;
-                case GameModeObserverMessage.OpenPauseScreen:
+                case GameModeObserverMessage.OpenPauseMenu:
                     HandleOpenPauseScreen();
                     break;
                 
@@ -278,7 +278,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             SetEnableUIInputs(false);
                 
 #endif
-            GameManager.Instance.LoadPauseScreen();
+            GameManager.Instance.PauseGame();
         }
         
         private void HandleGameUnPaused()
@@ -308,7 +308,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         private void HandleOpenPauseScreen()
         {
-            GameManager.Instance.PauseGame();
+            GameManager.Instance.LoadPauseScreen();
         }
 
         #endregion

@@ -19,7 +19,8 @@ namespace _Main.Scripts.Pause
         [Serializable]
         private class PanelOpenData : UiAnimationData
         {
-            
+            public AnimationHelper.Direction offscreenPos = AnimationHelper.Direction.Up;
+            public float movementDuration = 0.25f;
         }
         
         [SerializeField] private PanelOpenData panelOpenData;
@@ -27,7 +28,8 @@ namespace _Main.Scripts.Pause
         [Serializable]
         private class PanelCloseData : UiAnimationData
         {
-            
+            public AnimationHelper.Direction offscreenPos = AnimationHelper.Direction.Up;
+            public float movementDuration = 0.25f;
         }
         
         [SerializeField] private PanelCloseData panelCloseData;
@@ -35,53 +37,56 @@ namespace _Main.Scripts.Pause
         #endregion
         
         #region Animators
-        private class Animation_MainPanel_Open : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel,PanelOpenData>
+
+        private class Animation_Initialize : UIComponentsInitializer<PauseUIAnimationComponents.IMainPanel>
         {
-            public Animation_MainPanel_Open(PauseUIAnimationComponents.IMainPanel components, PanelOpenData animationData)
-                : base(components, animationData)
+            public Animation_Initialize(PauseUIAnimationComponents.IMainPanel components) : base(components)
             {
             }
-            private const float FadeTime = 0.3f;
-            private Vector2 _panelOriginalPos;
-            private Vector2 _offscreenPos;
-            
+
             protected override void Initialize()
             {
                 UIComponents.MainPanel.gameObject.SetActive(false);
-                
-                _panelOriginalPos = UIComponents.MainPanel.anchoredPosition;
-                
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.MainPanel, AnimationHelper.Direction.Up);
-                UIComponents.MainPanel.anchoredPosition = _offscreenPos;
+            }
+        }
+
+        private class Animation_MainPanel_Open : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel,PanelOpenData>
+        {
+            private readonly AnimationHelper.PanelPosition _panel;
+            
+            public Animation_MainPanel_Open(PauseUIAnimationComponents.IMainPanel components, PanelOpenData animationData)
+                : base(components, animationData)
+            {
+                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel,AnimationData.offscreenPos);
+            }
+
+            
+            protected override void Initialize()
+            {
+                UIComponents.MainPanel.anchoredPosition = _panel.OffScreenPos;
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(true))
-                    .Append(UIComponents.MainPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.StartPos, AnimationData.movementDuration));
             }
         }
-        
         private class Animation_MainPanel_Close : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel,PanelCloseData>
         {
+            private readonly AnimationHelper.PanelPosition _panel;
+            
             public Animation_MainPanel_Close(PauseUIAnimationComponents.IMainPanel components, PanelCloseData animationData)
                 : base(components, animationData)
             {
-            }
-            
-            private const float FadeTime = 0.3f;
-            private Vector2 _offscreenPos;
-            
-            protected override void Initialize()
-            {
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.MainPanel, AnimationHelper.Direction.Up);
+                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel,AnimationData.offscreenPos);
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.MainPanel.DOAnchorPos(_offscreenPos, FadeTime/2))
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.movementDuration))
                     .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(false));
             }
             
@@ -96,6 +101,8 @@ namespace _Main.Scripts.Pause
         {
             _animationPanelOpen = new Animation_MainPanel_Open(UIComponents, panelOpenData);
             _animationPanelClose = new Animation_MainPanel_Close(UIComponents, panelCloseData);
+            
+            var initialize = new Animation_Initialize(UIComponents);
         }
         
         public override void OnNotify(ulong message, params object[] args)

@@ -335,7 +335,7 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         public void TriggerPauseMenu()
         {
-            NotifyAll(GameModeObserverMessage.OpenPauseScreen);
+            NotifyAll(GameModeObserverMessage.OpenPauseMenu);
         }
     }
 }
