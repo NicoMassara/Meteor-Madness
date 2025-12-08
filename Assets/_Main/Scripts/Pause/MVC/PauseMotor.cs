@@ -1,10 +1,12 @@
 ﻿using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.Pause
 {
     public class PauseMotor : ObservableComponent
     {
         private bool _isGoingToMainMenu;
+        private bool _isEnable;
         
         public void StartDisable()
         {
@@ -13,6 +15,9 @@ namespace _Main.Scripts.Pause
 
         public void Enable()
         {
+            if(_isEnable) return;
+            
+            _isEnable = true;
             NotifyAll(PauseObserverMessage.Enable);
         }
 
@@ -28,7 +33,8 @@ namespace _Main.Scripts.Pause
                 TryRestartEarth();
                 return;
             }
-
+            
+            _isEnable = false;
             NotifyAll(PauseObserverMessage.ExecuteDisable);
         }
 

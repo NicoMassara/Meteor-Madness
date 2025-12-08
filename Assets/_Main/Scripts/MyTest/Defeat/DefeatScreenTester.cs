@@ -2,6 +2,7 @@
 using _Main.Scripts.Defeat;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
+using _Main.Scripts.MySettings;
 using _Main.Scripts.Save;
 using _Main.Scripts.SecurityData;
 using UnityEngine;
@@ -10,7 +11,7 @@ using UnityEngine.SceneManagement;
 namespace _Main.Scripts.MyTest.Defeat
 {
 #if UNITY_EDITOR   
-        [AddComponentMenu("_Main/ModuleTester/DefeatScreenTester")]
+        [AddComponentMenu("_Main/ModuleTester/Defeat Screen Tester")]
         public class DefeatScreenTester : MonoBehaviour
         {
             [Range(0,1000)]
@@ -45,6 +46,7 @@ namespace _Main.Scripts.MyTest.Defeat
             
             private void Start()
             {
+                var settings = SettingsManager.Instance;
                 var localization = LocalizationManager.Instance;
                 var dataManager = DataManager.Instance;
             }

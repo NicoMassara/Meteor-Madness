@@ -30,7 +30,7 @@ namespace _Main.Scripts.MySettings
         
         public void SetLanguageIndex(int index)
         {
-            _settingsData.LanguageIndex = index;
+            _settingsData.LanguageIndex = Math.Min(index,0);
             OnLanguageChanged?.Invoke(_settingsData.LanguageIndex);
         }
 

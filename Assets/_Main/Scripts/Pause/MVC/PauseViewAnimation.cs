@@ -17,22 +17,26 @@ namespace _Main.Scripts.Pause
         #region Animation Data
 
         [Serializable]
-        private class PanelOpenData : UiAnimationData
+        private class PanelData : UiAnimationData
         {
-            public AnimationHelper.Direction offscreenPos = AnimationHelper.Direction.Up;
+            [Header("Positions")]
+            public AnimationHelper.Direction titleOffscreenPos = AnimationHelper.Direction.Up;
+            public AnimationHelper.Direction leftButtonsPanelOffscreenPos = AnimationHelper.Direction.Left;
+            public AnimationHelper.Direction pointsTextPanelOffscreenPos = AnimationHelper.Direction.Right;
+            [Header("Offsets")] 
+            public Vector2 titleOffset;
+            public Vector2 leftButtonsOffset;
+            public Vector2 pointsTextOffset;
+            [Space]
+            [Header("Queue Values")]
+            public float backgroundFadeDuration = 0.2f;
+            public float backgroundFadeIntensity = 0.25f;
             public float movementDuration = 0.25f;
+            public float finishDelay = 0.25f;
         }
         
-        [SerializeField] private PanelOpenData panelOpenData;
-        
-        [Serializable]
-        private class PanelCloseData : UiAnimationData
-        {
-            public AnimationHelper.Direction offscreenPos = AnimationHelper.Direction.Up;
-            public float movementDuration = 0.25f;
-        }
-        
-        [SerializeField] private PanelCloseData panelCloseData;
+        [SerializeField] private PanelData panelOpenData;
+        [SerializeField] private PanelData panelCloseData;
 
         #endregion
         
@@ -42,6 +46,7 @@ namespace _Main.Scripts.Pause
         {
             public Animation_Initialize(PauseUIAnimationComponents.IMainPanel components) : base(components)
             {
+                
             }
 
             protected override void Initialize()
@@ -50,43 +55,62 @@ namespace _Main.Scripts.Pause
             }
         }
 
-        private class Animation_MainPanel_Open : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel,PanelOpenData>
+        private class Animation_MainPanel_Open : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel,PanelData>
         {
-            private readonly AnimationHelper.PanelPosition _panel;
+            private readonly AnimationHelper.PanelPosition _titlePanel;
+            private readonly AnimationHelper.PanelPosition _leftButtonsPanel;
+            private readonly AnimationHelper.PanelPosition _pointsTextPanel;
             
-            public Animation_MainPanel_Open(PauseUIAnimationComponents.IMainPanel components, PanelOpenData animationData)
+            public Animation_MainPanel_Open(PauseUIAnimationComponents.IMainPanel components, PanelData animationData)
                 : base(components, animationData)
             {
-                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel,AnimationData.offscreenPos);
+                _titlePanel = new AnimationHelper.PanelPosition(UIComponents.TitleText,AnimationData.titleOffscreenPos,AnimationData.titleOffset);
+                _leftButtonsPanel = new AnimationHelper.PanelPosition(UIComponents.LeftButtonsPanel,AnimationData.leftButtonsPanelOffscreenPos, AnimationData.leftButtonsOffset);
+                _pointsTextPanel = new AnimationHelper.PanelPosition(UIComponents.PointsText,AnimationData.pointsTextPanelOffscreenPos, AnimationData.pointsTextOffset);
             }
-
             
             protected override void Initialize()
             {
-                UIComponents.MainPanel.anchoredPosition = _panel.OffScreenPos;
+                UIComponents.TitleText.anchoredPosition = _titlePanel.OffScreenPos;
+                UIComponents.LeftButtonsPanel.anchoredPosition = _leftButtonsPanel.OffScreenPos;
+                UIComponents.PointsText.anchoredPosition = _pointsTextPanel.OffScreenPos;
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(true))
-                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.StartPos, AnimationData.movementDuration));
+                        .Append(UIComponents.BackgroundImage.DOFade(0f, 0f))
+                        .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(true))
+                        .Append(UIComponents.BackgroundImage.DOFade(AnimationData.backgroundFadeIntensity, AnimationData.backgroundFadeDuration))
+                        .Join(UIComponents.TitleText.DOAnchorPos(_titlePanel.StartPos, AnimationData.movementDuration))
+                        .Join(UIComponents.LeftButtonsPanel.DOAnchorPos(_leftButtonsPanel.StartPos, AnimationData.movementDuration))
+                        .Join(UIComponents.PointsText.DOAnchorPos(_pointsTextPanel.StartPos, AnimationData.movementDuration))
+                        .AppendInterval(AnimationData.finishDelay)
+                    ;
             }
         }
-        private class Animation_MainPanel_Close : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel,PanelCloseData>
+        private class Animation_MainPanel_Close : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel,PanelData>
         {
-            private readonly AnimationHelper.PanelPosition _panel;
+            private readonly AnimationHelper.PanelPosition _titlePanel;
+            private readonly AnimationHelper.PanelPosition _leftButtonsPanel;
+            private readonly AnimationHelper.PanelPosition _pointsTextPanel;
             
-            public Animation_MainPanel_Close(PauseUIAnimationComponents.IMainPanel components, PanelCloseData animationData)
+            public Animation_MainPanel_Close(PauseUIAnimationComponents.IMainPanel components, PanelData animationData)
                 : base(components, animationData)
             {
-                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel,AnimationData.offscreenPos);
+                _titlePanel = new AnimationHelper.PanelPosition(UIComponents.TitleText,AnimationData.titleOffscreenPos,AnimationData.titleOffset);
+                _leftButtonsPanel = new AnimationHelper.PanelPosition(UIComponents.LeftButtonsPanel,AnimationData.leftButtonsPanelOffscreenPos, AnimationData.leftButtonsOffset);
+                _pointsTextPanel = new AnimationHelper.PanelPosition(UIComponents.PointsText,AnimationData.pointsTextPanelOffscreenPos, AnimationData.pointsTextOffset);
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.movementDuration))
+                    .Join(UIComponents.TitleText.DOAnchorPos(_titlePanel.OffScreenPos, AnimationData.movementDuration))
+                    .Join(UIComponents.LeftButtonsPanel.DOAnchorPos(_leftButtonsPanel.OffScreenPos, AnimationData.movementDuration))
+                    .Join(UIComponents.PointsText.DOAnchorPos(_pointsTextPanel.OffScreenPos, AnimationData.movementDuration))
+                    .Join(UIComponents.BackgroundImage.DOFade(0f, AnimationData.backgroundFadeDuration))
+                    .AppendInterval(AnimationData.finishDelay)
                     .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(false));
             }
             

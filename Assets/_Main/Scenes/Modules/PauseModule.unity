@@ -1151,6 +1151,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 1059927933}
+  panelOpenData:
+    titleOffscreenPos: 2
+    leftButtonsPanelOffscreenPos: 0
+    pointsTextPanelOffscreenPos: 1
+    titleOffset: {x: 0, y: 125}
+    leftButtonsOffset: {x: -125, y: 0}
+    pointsTextOffset: {x: 125, y: 0}
+    backgroundFadeDuration: 0.75
+    backgroundFadeIntensity: 0.5
+    movementDuration: 0.5
+    finishDelay: 0.15
+  panelCloseData:
+    titleOffscreenPos: 2
+    leftButtonsPanelOffscreenPos: 0
+    pointsTextPanelOffscreenPos: 1
+    titleOffset: {x: 0, y: 125}
+    leftButtonsOffset: {x: -125, y: 0}
+    pointsTextOffset: {x: 125, y: 0}
+    backgroundFadeDuration: 0.5
+    backgroundFadeIntensity: 0.25
+    movementDuration: 0.25
+    finishDelay: 0.15
 --- !u!114 &883773021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1564,8 +1586,16 @@ MonoBehaviour:
   panelName: Pause-Animation
   mobileData:
     mainPanel: {fileID: 72738909}
+    titleText: {fileID: 1052976942}
+    leftButtonsPanel: {fileID: 261768102}
+    pointsText: {fileID: 1231779764}
+    backgroundImage: {fileID: 820020880}
   desktopData:
     mainPanel: {fileID: 6838317603508682922}
+    titleText: {fileID: 2828380327620153767}
+    leftButtonsPanel: {fileID: 1289971262111475954}
+    pointsText: {fileID: 1255960818}
+    backgroundImage: {fileID: 5250063441909371351}
 --- !u!114 &1059927934
 MonoBehaviour:
   m_ObjectHideFlags: 0
