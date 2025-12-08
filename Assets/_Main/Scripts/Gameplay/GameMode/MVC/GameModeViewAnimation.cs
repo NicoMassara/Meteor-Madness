@@ -16,6 +16,101 @@ namespace _Main.Scripts.Gameplay.GameMode
             public event Action OnUiClosed;
         }
         
+        #region Animation Data
+
+        #region Gameplay UI
+        
+        [Serializable]
+        private class GameplayUiOpenData : UiAnimationData
+        {
+            [Header("Position")]
+            public AnimationHelper.Direction scoreOffscreenPos = AnimationHelper.Direction.UpLeft;
+            public AnimationHelper.Direction pauseOffscreenPos = AnimationHelper.Direction.UpRight;
+            [Header("Offset")]
+            public Vector2 scoreOffset;
+            public Vector2 pauseOffset;
+            [Space]
+            [Header("Time Values")] 
+            public float movementDuration = 0.25f;
+
+        }
+        
+        [SerializeField] private GameplayUiOpenData gameplayUiOpenData;
+        
+        [Serializable]
+        private class GameplayUiCloseData : UiAnimationData
+        {
+            [Header("Position")]
+            public AnimationHelper.Direction scoreOffscreenPos = AnimationHelper.Direction.UpLeft;
+            public AnimationHelper.Direction pauseOffscreenPos = AnimationHelper.Direction.UpRight;
+            [Header("Offset")]
+            public Vector2 scoreOffset;
+            public Vector2 pauseOffset;
+            [Space]
+            [Header("Time Values")] 
+            public float movementDuration = 0.25f;
+            public float finishDelay = 0.5f;
+        }
+        
+        [SerializeField] private GameplayUiCloseData gameplayUiCloseData;
+        
+        [Serializable]
+        private class ScoreFinishAdding : UiAnimationData
+        {
+            public float bounceScale = 1.25f;
+            public float bounceDuration = 0.25f;
+            public float bounceReturnTime = 0.1f;
+        }
+        
+        [SerializeField] private ScoreFinishAdding scoreFinishAddingData;
+        
+        #endregion
+
+        #region Countdown
+
+        [Serializable]
+        private class CountdownUpdate : UiAnimationData
+        {
+            [Header("Time Values")]
+            public float fadeDuration = 0.4f;
+            public float bounceDuration = 0.4f;
+            public float fadeDelay = 0.15f;
+            public float finalFadeDuration = 0.45f;
+            [Header("Anti Epileptic - Time Values")]
+            public float aeScaleDuration = 0.4f;
+            public float aeFinishDelay = 0.45f;
+
+        }
+        
+        [SerializeField] private CountdownUpdate countdownUpdateData;
+        
+        [Serializable]
+        private class CountdownFinish : UiAnimationData
+        {
+            [Header("Time Values")]
+            public float fadeDuration = 0.05f;
+            public float bounceDuration = 0.10f;
+            public float bounceScale = 1.5f;
+            public float fadeDelay = 0.6f;
+            public float finalFadeDuration = 0.25f;
+            [Space]
+            [Header("Anti Epileptic - Time Values")]
+            public float aeScaleDuration = 0.4f;
+            public float aeBounceScale = 1.5f;
+            public float aeScaleDelay = 0.45f;
+            public float aeFinishScaleDuration = 0.45f;
+            [Space]
+            [Header("Global Values")]
+            public float finishDelay = 0.5f;
+            
+        }
+        
+        [SerializeField] private CountdownFinish countdownFinishData;
+
+        #endregion
+        
+        #endregion
+        
         #region Animations
 
         private static class TextTween
@@ -42,12 +137,89 @@ namespace _Main.Scripts.Gameplay.GameMode
                 return text.DOFade(endAlpha, duration);
             }
         }
+        
+        #region Gameplay
 
+        private class Animation_UI_Open : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel,GameplayUiOpenData>
+        {
+            private readonly AnimationHelper.PanelPosition _scorePanel;
+            private readonly AnimationHelper.PanelPosition _pausePanel;
+
+            public Animation_UI_Open(GameModeUIAnimationComponents.IGameplayPanel components,
+                GameplayUiOpenData animationData)
+                : base(components, animationData)
+            {
+                _scorePanel =
+                    new AnimationHelper.PanelPosition(UIComponents.ScorePanel,
+                        AnimationData.scoreOffscreenPos, 
+                        AnimationData.scoreOffset);
+                _pausePanel =
+                    new AnimationHelper.PanelPosition(UIComponents.PauseButton, 
+                        AnimationData.pauseOffscreenPos,
+                        AnimationData.pauseOffset);
+            }
+
+            protected override void Initialize()
+            {
+                UIComponents.ScorePanel.anchoredPosition = _scorePanel.OffScreenPos;
+                UIComponents.PauseButton.anchoredPosition = _pausePanel.OffScreenPos;
+            }
+
+            protected override Sequence CreateAnimation()
+            {
+                Initialize();
+                
+                return DOTween.Sequence()
+                    .AppendCallback(()=>UIComponents.GameplayPanel.gameObject.SetActive(true))
+                    .Append(UIComponents.ScorePanel.DOAnchorPos(_scorePanel.StartPos, AnimationData.movementDuration))
+                    .Join(UIComponents.PauseButton.DOAnchorPos(_pausePanel.StartPos, AnimationData.movementDuration));
+            }
+        }
+        private class Animation_UI_Close : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel,GameplayUiCloseData>
+        {
+            private readonly AnimationHelper.PanelPosition _scorePanel;
+            private readonly AnimationHelper.PanelPosition _pausePanel;
+
+
+            public Animation_UI_Close(GameModeUIAnimationComponents.IGameplayPanel components, GameplayUiCloseData animationData)
+                : base(components, animationData)
+            {
+                _scorePanel =
+                    new AnimationHelper.PanelPosition(UIComponents.ScorePanel, AnimationData.scoreOffscreenPos, AnimationData.scoreOffset);
+                _pausePanel =
+                    new AnimationHelper.PanelPosition(UIComponents.PauseButton, AnimationData.pauseOffscreenPos, AnimationData.pauseOffset);
+            }
+            
+            protected override Sequence CreateAnimation()
+            {
+                return DOTween.Sequence()
+                    .Append(UIComponents.ScorePanel.DOAnchorPos(_scorePanel.OffScreenPos, AnimationData.movementDuration))
+                    .Join(UIComponents.PauseButton.DOAnchorPos(_pausePanel.OffScreenPos, AnimationData.movementDuration))
+                    .AppendInterval(AnimationData.finishDelay)
+                    .AppendCallback(()=> UIComponents.GameplayPanel.gameObject.SetActive(false));
+            }
+        }
+        private class Animation_Score_FinishAdding : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel,ScoreFinishAdding>
+        {
+            public Animation_Score_FinishAdding(GameModeUIAnimationComponents.IGameplayPanel components, ScoreFinishAdding animationData)
+                : base(components, animationData) { }
+            
+            protected override Sequence CreateAnimation()
+            {
+                return DOTween.Sequence()
+                    .Append(UIComponents.ScorePanel.DOScale(AnimationData.bounceScale, AnimationData.bounceDuration))
+                    .Append(UIComponents.ScorePanel.DOScale(1, AnimationData.bounceReturnTime));
+            }
+        }
+
+        #endregion
+        
         #region Countdown
         
-        private class Animation_Countdown_Update : SequenceUIAnimator<GameModeUIAnimationComponents.ICountdownPanel>
+        private class Animation_Countdown_Update : SequenceUIAnimator<GameModeUIAnimationComponents.ICountdownPanel,CountdownUpdate>
         {
-            public Animation_Countdown_Update(GameModeUIAnimationComponents.ICountdownPanel uiComponents) : base(uiComponents) { }
+            public Animation_Countdown_Update(GameModeUIAnimationComponents.ICountdownPanel components, CountdownUpdate animationData) 
+                : base(components, animationData) { }
 
             protected override Sequence CreateAnimation()
             {
@@ -57,27 +229,28 @@ namespace _Main.Scripts.Gameplay.GameMode
                 if (GameManager.Instance.AntiEpileptic == false)
                 {
                     sequence
-                        .Append(TextTween.Fade(UIComponents.CountdownText, 0.4f, true))
-                        .Join(UIComponents.CountdownText.DOScale(1, 0.4f))
-                        .AppendInterval(0.15f)
-                        .Append(TextTween.Fade(UIComponents.CountdownText, 0.45f, false))
+                        .Append(TextTween.Fade(UIComponents.CountdownText, AnimationData.fadeDuration, true))
+                        .Join(UIComponents.CountdownText.DOScale(1, AnimationData.bounceDuration))
+                        .AppendInterval(AnimationData.fadeDuration)
+                        .Append(TextTween.Fade(UIComponents.CountdownText, AnimationData.finalFadeDuration, false))
                         ;
                 }
                 else
                 {
                     sequence
-                        .Join(UIComponents.CountdownText.DOScale(1, 0.4f))
-                        .AppendInterval(0.15f)
+                        .Join(UIComponents.CountdownText.DOScale(1, AnimationData.aeScaleDuration))
+                        .AppendInterval(AnimationData.aeFinishDelay)
                         ;
                 }
                 
                 return sequence;
             }
         }
-        private class Animation_Countdown_Finish : SequenceUIAnimator<GameModeUIAnimationComponents.ICountdownPanel>
+        private class Animation_Countdown_Finish : SequenceUIAnimator<GameModeUIAnimationComponents.ICountdownPanel,CountdownFinish>
         {
-            public Animation_Countdown_Finish(GameModeUIAnimationComponents.ICountdownPanel uiComponents) : base(uiComponents) { }
-
+            public Animation_Countdown_Finish(GameModeUIAnimationComponents.ICountdownPanel components, CountdownFinish animationData)
+                : base(components, animationData) { }
+            
             protected override void RestartValues()
             {
                 UIComponents.CountdownPanel.gameObject.SetActive(false);
@@ -90,103 +263,26 @@ namespace _Main.Scripts.Gameplay.GameMode
                 if (GameManager.Instance.AntiEpileptic == false)
                 {
                     sequence
-                        .Append(TextTween.Fade(UIComponents.CountdownText, 0.05f, true))
-                        .Append(UIComponents.CountdownText.DOScale(1.5f, 0.10f))
-                        .AppendInterval(0.6f)
-                        .Append(TextTween.Fade(UIComponents.CountdownText, 0.25f, false));
+                        .Append(TextTween.Fade(UIComponents.CountdownText, AnimationData.fadeDuration, true))
+                        .Append(UIComponents.CountdownText.DOScale(AnimationData.bounceScale, AnimationData.bounceDuration))
+                        .AppendInterval(AnimationData.fadeDelay)
+                        .Append(TextTween.Fade(UIComponents.CountdownText, AnimationData.finalFadeDuration, false));
                 }
                 else
                 {
                     sequence
-                        .Append(UIComponents.CountdownText.DOScale(1.5f, 0.4f))
-                        .AppendInterval(0.6f)
-                        .Append(UIComponents.CountdownText.DOScale(0, 0.25f));
+                        .Append(UIComponents.CountdownText.DOScale(AnimationData.aeBounceScale, AnimationData.aeScaleDuration))
+                        .AppendInterval(AnimationData.aeScaleDelay)
+                        .Append(UIComponents.CountdownText.DOScale(0, AnimationData.aeFinishScaleDuration));
                 }
+
+                sequence
+                    .AppendInterval(AnimationData.finishDelay);
                 
                 return sequence;
             }
         }
         
-        #endregion
-
-        #region Gameplay
-
-        private class Animation_UI_Open : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel>
-        {
-            private readonly Vector2 _scoreOffscreenPos;
-            private readonly Vector2 _scoreStartPos;
-            //
-            private readonly Vector2 _pauseOffscreenPos;
-            private readonly Vector2 _pauseStartPos;
-            
-            public Animation_UI_Open(GameModeUIAnimationComponents.IGameplayPanel components) 
-                : base(components)
-            {
-                _scoreStartPos = UIComponents.ScorePanel.anchoredPosition;
-                _scoreOffscreenPos = AnimationHelper.
-                    GetOffscreenPos(UIComponents.ScorePanel, AnimationHelper.Direction.UpLeft);
-                //
-                _pauseStartPos = UIComponents.ScorePanel.anchoredPosition;
-                _pauseOffscreenPos = AnimationHelper.
-                    GetOffscreenPos(UIComponents.PauseButton, AnimationHelper.Direction.UpRight);
-            }
-
-            protected override void Initialize()
-            {
-                UIComponents.ScorePanel.anchoredPosition = _scoreOffscreenPos;
-                UIComponents.PauseButton.anchoredPosition = _pauseOffscreenPos;
-            }
-
-            protected override Sequence CreateAnimation()
-            {
-                Initialize();
-                
-                return DOTween.Sequence()
-                    .AppendCallback(()=>UIComponents.GameplayPanel.gameObject.SetActive(true))
-                    .Append(UIComponents.ScorePanel.DOAnchorPos(_scoreStartPos, 0.25f))
-                    .Join(UIComponents.PauseButton.DOAnchorPos(_pauseStartPos, 0.25f));
-            }
-        }
-        private class Animation_UI_Close : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel>
-        {
-            private readonly Vector2 _scoreOffscreenPos;
-            //
-            private readonly Vector2 _pauseOffscreenPos;
-            
-            public Animation_UI_Close(GameModeUIAnimationComponents.IGameplayPanel components) 
-                : base(components)
-            {
-                _scoreOffscreenPos = AnimationHelper
-                    .GetOffscreenPos(UIComponents.ScorePanel, AnimationHelper.Direction.UpLeft);
-                //
-                _pauseOffscreenPos = AnimationHelper
-                    .GetOffscreenPos(UIComponents.PauseButton, AnimationHelper.Direction.UpRight);
-            }
-            
-            protected override Sequence CreateAnimation()
-            {
-                
-                return DOTween.Sequence()
-                    .Append(UIComponents.ScorePanel.DOAnchorPos(_scoreOffscreenPos, 0.5f))
-                    .Join(UIComponents.PauseButton.DOAnchorPos(_pauseOffscreenPos, 0.5f))
-                    .AppendCallback(()=> UIComponents.GameplayPanel.gameObject.SetActive(false));
-            }
-        }
-        private class Animation_Points_FinishAdding : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel>
-        {
-            public Animation_Points_FinishAdding(GameModeUIAnimationComponents.IGameplayPanel components) 
-                : base(components)
-            {
-            }
-            
-            protected override Sequence CreateAnimation()
-            {
-                return DOTween.Sequence()
-                    .Append(UIComponents.ScorePanel.DOScale(1.25f, 0.25f))
-                    .Append(UIComponents.ScorePanel.DOScale(1, 0.1f));
-            }
-        }
-
         #endregion
 
         #endregion
@@ -195,7 +291,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         private IUIAnimator _animationCountdownFinish;
         private IUIAnimator _animationUiOpen;
         private IUIAnimator _animationUiClose;
-        private IUIAnimator _animationFinishAddingPoints;
+        private IUIAnimator _animationFinishAddingScore;
 
         #region IGameModeViewAnimation
 
@@ -205,13 +301,13 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void Awake()
         {
-            _animationCountdownUpdate = new Animation_Countdown_Update(UIComponents);
-            _animationCountdownFinish = new Animation_Countdown_Finish(UIComponents);
+            _animationCountdownUpdate = new Animation_Countdown_Update(UIComponents, countdownUpdateData);
+            _animationCountdownFinish = new Animation_Countdown_Finish(UIComponents, countdownFinishData);
             //
-            _animationUiOpen = new Animation_UI_Open(UIComponents);
-            _animationUiClose = new Animation_UI_Close(UIComponents);
+            _animationUiOpen = new Animation_UI_Open(UIComponents, gameplayUiOpenData);
+            _animationUiClose = new Animation_UI_Close(UIComponents, gameplayUiCloseData);
             //
-            _animationFinishAddingPoints = new Animation_Points_FinishAdding(UIComponents);
+            _animationFinishAddingScore = new Animation_Score_FinishAdding(UIComponents, scoreFinishAddingData);
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -287,7 +383,7 @@ namespace _Main.Scripts.Gameplay.GameMode
         
         private void HandleFinishAddingPoints()
         {
-            PlayAnimation(_animationFinishAddingPoints);
+            PlayAnimation(_animationFinishAddingScore);
         }
 
 

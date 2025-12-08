@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.MyAnimations;
+﻿using System;
+using _Main.Scripts.MyAnimations;
 using DG.Tweening;
 using UnityEngine;
 
@@ -6,10 +7,33 @@ namespace _Main.Scripts.MultiPage
 {
     public class MultiPageViewAnimation : BaseViewAnimation<MultiPageUiAnimationSelector,MultiPageUiAnimationComponents>
     {
-        #region Animators
-        private class Animation_MainPanel_Open : SequenceUIAnimator<MultiPageUiAnimationComponents.IMainPanel>
+        #region Animation Data
+
+        [Serializable]
+        private class PanelOpenData : UiAnimationData
         {
-            public Animation_MainPanel_Open(MultiPageUiAnimationComponents.IMainPanel uiComponents) : base(uiComponents) { }
+            
+        }
+        
+        [SerializeField] private PanelOpenData panelOpenData;
+        
+        [Serializable]
+        private class PanelCloseData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private PanelCloseData panelCloseData;
+
+        #endregion
+        
+        #region Animators
+        private class Animation_MainPanel_Open : SequenceUIAnimator<MultiPageUiAnimationComponents.IMainPanel,PanelOpenData>
+        {
+            public Animation_MainPanel_Open(MultiPageUiAnimationComponents.IMainPanel components, PanelOpenData animationData)
+                : base(components, animationData)
+            {
+            }
             private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
@@ -32,9 +56,13 @@ namespace _Main.Scripts.MultiPage
             }
         }
         
-        private class Animation_MainPanel_Close : SequenceUIAnimator<MultiPageUiAnimationComponents.IMainPanel>
+        private class Animation_MainPanel_Close : SequenceUIAnimator<MultiPageUiAnimationComponents.IMainPanel,PanelCloseData>
         {
-            public Animation_MainPanel_Close(MultiPageUiAnimationComponents.IMainPanel uiComponents) : base(uiComponents) { }
+            public Animation_MainPanel_Close(MultiPageUiAnimationComponents.IMainPanel components, PanelCloseData animationData)
+                : base(components, animationData)
+            {
+            }
+
             private const float FadeTime = 0.3f;
             private Vector2 _offscreenPos;
             
@@ -59,8 +87,8 @@ namespace _Main.Scripts.MultiPage
         
         private void Start()
         {
-            _animationOpen = new Animation_MainPanel_Open(UIComponents);
-            _animationClose = new Animation_MainPanel_Close(UIComponents);
+            _animationOpen = new Animation_MainPanel_Open(UIComponents, panelOpenData);
+            _animationClose = new Animation_MainPanel_Close(UIComponents, panelCloseData);
         }
 
         public override void OnNotify(ulong message, params object[] args)

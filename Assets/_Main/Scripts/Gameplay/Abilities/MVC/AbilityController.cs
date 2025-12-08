@@ -14,6 +14,7 @@ namespace _Main.Scripts.Gameplay.Abilies
         public interface IAbilityController
         {
             public void Initialize();
+            public void TryInitialize();
             public void SelectAbility();
             public void TryAddAbility(int inputAbilityType, Vector2 inputPosition);
             public void SetCanUse(bool inputCanUse);
@@ -33,6 +34,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             public void RestartAbilities();
             public void ForceFinishAbility();
             public void DisableUI();
+            public void InitializeData();
         }
         
         #endregion
@@ -171,6 +173,12 @@ namespace _Main.Scripts.Gameplay.Abilies
 
                 public override void Sleep() => Controller.FinishAbility();
             }
+            
+            private class InitializeState<T> : BaseState<T>
+            {
+                public override void Awake() => Controller.InitializeData();
+                
+            }
     
             private class EnableState<T> : BaseState<T>
             {
@@ -195,6 +203,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             private enum States
             {
                 None,
+                Initialize,
                 Enable,
                 Running,
                 Disabled,
@@ -204,11 +213,17 @@ namespace _Main.Scripts.Gameplay.Abilies
             private class AbilityActionGate : FsmActionGate<States>
             {
                 public bool IsAbilityDisabled { get; private set; }
+                public bool IsInitialized { get; private set; }
                 public AbilityActionGate(FSM<States> fsm) : base(fsm) { }
 
                 protected override void OnEnterState(States state)
                 {
                     IsAbilityDisabled = state is States.Disabled;
+                    
+                    if (state is States.Initialize)
+                    {
+                        IsInitialized = true;
+                    }
                 }
             }
             
@@ -234,11 +249,13 @@ namespace _Main.Scripts.Gameplay.Abilies
                 #region Variables
 
                 var none = new BaseState<States>();
+                var initialize = new InitializeState<States>();
                 var enable = new EnableState<States>();
                 var disable = new DisableState<States>();
                 var running = new RunningState<States>();
             
                 temp.Add(none);
+                temp.Add(initialize);
                 temp.Add(enable);
                 temp.Add(running);
                 temp.Add(disable);
@@ -246,8 +263,11 @@ namespace _Main.Scripts.Gameplay.Abilies
                 #endregion
 
                 #region Transitions
-            
-                none.AddTransition(States.Enable, enable);
+
+
+                none.AddTransition(States.Initialize, initialize);
+                
+                initialize.AddTransition(States.Enable, enable);
             
                 enable.AddTransition(States.Disabled, disable);
                 enable.AddTransition(States.Running, running);
@@ -289,12 +309,19 @@ namespace _Main.Scripts.Gameplay.Abilies
             {
                 SetTransition(States.Running);
             }
+            
+            public void TransitionToInitialize()
+            {
+                SetTransition(States.Initialize);
+            }
 
             #endregion
 
             #endregion
 
             public bool GetIsAbilityDisabled() => _actionGate.IsAbilityDisabled;
+
+            public bool GetIsInitialized() => _actionGate.IsInitialized;
         }
 
         #endregion
@@ -315,7 +342,12 @@ namespace _Main.Scripts.Gameplay.Abilies
             _mainController = new MainController(this);
             _uiController = new UIController(this);
         }
-        
+
+        public void TryInitialize()
+        {
+            _mainController.TransitionToInitialize();
+        }
+
         public void TryEnableUI()
         {
             if (_mainController.GetIsAbilityDisabled()) return;
@@ -330,7 +362,16 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         public void TryEnableAbility()
         {
-            _mainController.TransitionToEnable();
+            if (_mainController.GetIsInitialized())
+            {
+                _mainController.TransitionToEnable();
+            }
+            else
+            {
+                _mainController.TransitionToInitialize();
+            }
+
+
         }
 
         public void TryDisableAbility()
@@ -387,6 +428,11 @@ namespace _Main.Scripts.Gameplay.Abilies
         public void DisableUI()
         {
             _uiController.TransitionToDisable();
+        }
+
+        public void InitializeData()
+        {
+            _motor.InitializeData();
         }
 
         public void TriggerAbility()

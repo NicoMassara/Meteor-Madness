@@ -11,8 +11,16 @@ using UnityEngine.Events;
 
 namespace _Main.Scripts.Gameplay.Abilies
 {
-    public class AbilityView : ManagedBehavior, IObserver, IAbilitySounds
+    public class AbilityView : ManagedBehavior, IObserver, IAbilitySounds,
+        AbilityView.IAbilityView
     {
+        public interface IAbilityView
+        {
+            public event Action OnAbilitySelected;
+            public event Action OnAbilityFinished;
+
+        }
+        
         [Header("Sound Data")]
         [SerializeField] private SoundClassSo abilityAdd;
         [SerializeField] private SoundClassSo abilityTrigger;
@@ -25,9 +33,11 @@ namespace _Main.Scripts.Gameplay.Abilies
         private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
         
-        public UnityAction OnAbilitySelected;
-        public UnityAction OnAbilityFinished;
+
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Ability;
+        
+        public event Action OnAbilitySelected;
+        public event Action OnAbilityFinished;
         
         public event Action OnAbilityTriggered;
         public event Action OnAbilityAdded;

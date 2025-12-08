@@ -7,14 +7,16 @@ namespace _Main.Scripts.Gameplay.Abilies
 {
     [RequireComponent(typeof(AbilityView))]
     [RequireComponent(typeof(AbilityUIView))]
+    [RequireComponent(typeof(AbilityViewAnimation))]
     public class AbilitySetup : ManagedBehavior
     {
         private AbilityMotor _motor;
         private AbilityController.IAbilityController _controller;
         private IInputReader _inputReader;
         
-        private AbilityView _view;
-        private AbilityUIView _ui;
+        private AbilityView.IAbilityView _view;
+        private AbilityUIView.IAbilityUIView _ui;
+        private AbilityViewAnimation.IAbilityViewAnimation _animation;
         
 
         private void Awake()
@@ -22,11 +24,17 @@ namespace _Main.Scripts.Gameplay.Abilies
             _motor = new AbilityMotor();
             _controller = new AbilityController(_motor);
             
-            _view = GetComponent<AbilityView>();
-            _ui = GetComponent<AbilityUIView>();
+            var view = GetComponent<AbilityView>();
+            var ui = GetComponent<AbilityUIView>();
+            var anim = GetComponent<AbilityViewAnimation>();
             
-            _motor.Subscribe(_view);
-            _motor.Subscribe(_ui);
+            _motor.Subscribe(view);
+            _motor.Subscribe(ui);
+            _motor.Subscribe(anim);
+            
+            _view = view;
+            _ui = ui;
+            _animation = anim;
             
             SetViewHandlers();
             EventBusSetup();
@@ -53,18 +61,10 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void SetViewHandlers()
         {
-            _view.OnAbilityFinished += View_OnAbilityFinishedHandler;
-            _view.OnAbilitySelected += View_OnAbilitySelectedHandler;
-        }
-
-        private void View_OnAbilitySelectedHandler()
-        {
-            _controller.TryTriggerAbility();
-        }
-
-        private void View_OnAbilityFinishedHandler()
-        {
-            _controller.TryEnableAbility();
+            _view.OnAbilityFinished += _controller.TryEnableAbility;
+            _view.OnAbilitySelected += _controller.TryTriggerAbility;
+            //
+            _animation.OnDataInitialized += _controller.TryEnableAbility;
         }
 
         #endregion

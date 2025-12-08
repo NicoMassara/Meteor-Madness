@@ -83,10 +83,30 @@ namespace _Main.Scripts.Defeat
             _ui.OnMainMenuButtonPressed += GameManager.Instance.LoadMainMenu;
             //
             _animation.OnPanelOpened += _controller.SendScore;
-            _animation.OnPanelClosed += EarthEventCaller.Restart;
+            _animation.OnPanelClosed += () =>
+            {
+                EarthEventCaller.Restart();
+                
+#if UNITY_EDITOR
+                
+                DebugDefeatEvents.TriggerDefeatScreenClosed();
+#endif
+            };
             _animation.OnScoreFinished += _controller.SendHighScore;
             _animation.OnHighScoreFinished += _controller.SendButtons;
-            _animation.OnButtonsFinished += _controller.EnableButtons;
+            _animation.OnButtonsFinished += () =>
+            {
+                _controller.EnableButtons();
+                
+#if UNITY_EDITOR
+                
+                DebugDefeatEvents.TriggerDefeatScreenAnimationFinished();
+#endif
+            };
+
+            
+            
+
         }
 
         #region Enable / Disable

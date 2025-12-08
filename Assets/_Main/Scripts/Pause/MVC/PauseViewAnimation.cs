@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.MyAnimations;
+﻿using System;
+using _Main.Scripts.MyAnimations;
 using _Main.Scripts.Observer;
 using DG.Tweening;
 using UnityEngine;
@@ -13,10 +14,33 @@ namespace _Main.Scripts.Pause
             
         }
         
-        #region Animators
-        private class Animation_MainPanel_Open : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel>
+        #region Animation Data
+
+        [Serializable]
+        private class PanelOpenData : UiAnimationData
         {
-            public Animation_MainPanel_Open(PauseUIAnimationComponents.IMainPanel uiComponents) : base(uiComponents) { }
+            
+        }
+        
+        [SerializeField] private PanelOpenData panelOpenData;
+        
+        [Serializable]
+        private class PanelCloseData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private PanelCloseData panelCloseData;
+
+        #endregion
+        
+        #region Animators
+        private class Animation_MainPanel_Open : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel,PanelOpenData>
+        {
+            public Animation_MainPanel_Open(PauseUIAnimationComponents.IMainPanel components, PanelOpenData animationData)
+                : base(components, animationData)
+            {
+            }
             private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
@@ -39,9 +63,13 @@ namespace _Main.Scripts.Pause
             }
         }
         
-        private class Animation_MainPanel_Close : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel>
+        private class Animation_MainPanel_Close : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel,PanelCloseData>
         {
-            public Animation_MainPanel_Close(PauseUIAnimationComponents.IMainPanel uiComponents) : base(uiComponents) { }
+            public Animation_MainPanel_Close(PauseUIAnimationComponents.IMainPanel components, PanelCloseData animationData)
+                : base(components, animationData)
+            {
+            }
+            
             private const float FadeTime = 0.3f;
             private Vector2 _offscreenPos;
             
@@ -66,8 +94,8 @@ namespace _Main.Scripts.Pause
         
         private void Start()
         {
-            _animationPanelOpen = new Animation_MainPanel_Open(UIComponents);
-            _animationPanelClose = new Animation_MainPanel_Close(UIComponents);
+            _animationPanelOpen = new Animation_MainPanel_Open(UIComponents, panelOpenData);
+            _animationPanelClose = new Animation_MainPanel_Close(UIComponents, panelCloseData);
         }
         
         public override void OnNotify(ulong message, params object[] args)

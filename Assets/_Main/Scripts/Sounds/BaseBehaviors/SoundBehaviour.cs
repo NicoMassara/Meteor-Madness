@@ -25,11 +25,17 @@ namespace _Main.Scripts.Sounds
             }
         }
 
-        protected GeneratedId PlaySound(SoundClassSo soundClass)
+        protected GeneratedId PlaySound(SoundClassSo soundClass, GeneratedId soundId = null)
         {
             if (soundClass == null)
                 return null;
-            
+
+            if (soundId != null && soundId.IsValid)
+            {
+                ResumeSound(soundId);
+                return soundId;
+            }
+
             return SoundManager.PlaySound(soundClass, transform);
         }
         protected void StopSound(GeneratedId soundId)
@@ -46,7 +52,7 @@ namespace _Main.Scripts.Sounds
         }
         protected void PauseSound(GeneratedId soundId)
         {
-            if(IsIdValid(soundId)) return;
+            if(IsIdValid(soundId) == false) return;
             
             SoundManager.PauseSound(soundId);
         }

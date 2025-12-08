@@ -85,12 +85,22 @@
         public const ulong FinishAbility = 0xA4002;
         public const ulong AddAbility = 0xA4003;
         public const ulong SetCanUse = 0xA4004;
-        public const ulong SetEnableUI = 0xA4005;
+        public const ulong EnableUI = 0xA4005;
         public const ulong SelectAbility = 0xA4006;
         public const ulong ForceFinish = 0xA4007;
         public const ulong RestartAbilities = 0xA4008;
         public const ulong RunActiveTimer = 0xA4009;
         public const ulong SetStorageFull = 0xA4010;
+        public const ulong DisableUI = 0xA4011;
+        public const ulong Initialize = 0xA4012;
+        public const ulong Empty2 = 0xA4013;
+        public const ulong Empty3 = 0xA4014;
+        public const ulong Empty4 = 0xA4015;
+        public const ulong Empty5 = 0xA4016;
+        public const ulong Empty6 = 0xA4017;
+        public const ulong Empty7 = 0xA4018;
+        public const ulong Empty8 = 0xA4019;
+        public const ulong Empty9 = 0xA4020;
     }
     
     public struct GameScreenObserverMessage

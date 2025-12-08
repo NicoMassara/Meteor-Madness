@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Menu;
 using _Main.Scripts.MyAnimations;
@@ -25,6 +26,90 @@ namespace _Main.Scripts.MainMenu.MVC
             Tutorial,
             Credits
         }
+        
+        #region Animation Data
+
+        #region Menu
+
+        [Serializable]
+        private class MenuOpenData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private MenuOpenData menuOpenData;
+        
+        [Serializable]
+        private class MenuCloseData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private MenuCloseData menuCloseData;
+
+        #endregion
+        
+        #region Lore
+
+        [Serializable]
+        private class LoreOpenData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private LoreOpenData loreOpenData;
+        
+        [Serializable]
+        private class LoreCloseData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private LoreCloseData loreCloseData;
+
+        #endregion
+        
+        #region Tutorial
+
+        [Serializable]
+        private class TutorialOpenData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private TutorialOpenData tutorialOpenData;
+        
+        [Serializable]
+        private class TutorialCloseData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private TutorialCloseData tutorialCloseData;
+
+        #endregion
+        
+        #region Credits
+
+        [Serializable]
+        private class CreditsOpenData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private CreditsOpenData creditsOpenData;
+        
+        [Serializable]
+        private class CreditsCloseData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private CreditsCloseData creditsCloseData;
+
+        #endregion
+
+        #endregion
         
         #region Animator
 
@@ -188,7 +273,7 @@ namespace _Main.Scripts.MainMenu.MVC
 
         #region Menu
 
-        private class Animation_Menu_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel>
+        private class Animation_Menu_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel,MenuOpenData>
         {
             private const float TitlePos = 500;
             private const float LeftButtonsPos = -1000;
@@ -197,9 +282,11 @@ namespace _Main.Scripts.MainMenu.MVC
             private const float FadeOutTime = 0.25f; 
             
             private bool _hasPlayedFirstAnimation = false;
-            
-            public Animation_Menu_Open(MainMenuUiAnimationComponents.IMainMenuPanel uiComponents) 
-                : base(uiComponents) { }
+
+            public Animation_Menu_Open(MainMenuUiAnimationComponents.IMainMenuPanel components, MenuOpenData animationData)
+                : base(components, animationData)
+            {
+            }
 
             protected override void Initialize()
             {
@@ -239,7 +326,7 @@ namespace _Main.Scripts.MainMenu.MVC
             }
             
         }
-        private class Animation_Menu_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel>
+        private class Animation_Menu_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel,MenuCloseData>
         {
             private const float TitlePos = 500;
             private const float LeftButtonsPos = -1000;
@@ -247,10 +334,10 @@ namespace _Main.Scripts.MainMenu.MVC
             //
             private const float FadeOutTime = 0.25f; 
             
-            private bool _hasPlayedFirstAnimation = false;
-            
-            public Animation_Menu_Close(MainMenuUiAnimationComponents.IMainMenuPanel uiComponents) 
-                : base(uiComponents) { }
+            public Animation_Menu_Close(MainMenuUiAnimationComponents.IMainMenuPanel components, MenuCloseData animationData)
+                : base(components, animationData)
+            {
+            }
 
             protected override void Initialize()
             {
@@ -280,12 +367,13 @@ namespace _Main.Scripts.MainMenu.MVC
 
         #region Lore
 
-        private class Animation_Lore_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel>
+        private class Animation_Lore_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel,LoreOpenData>
         {
-            public Animation_Lore_Open(MainMenuUiAnimationComponents.ILorePanel uiComponents) 
-                : base(uiComponents) { }
-
-
+            public Animation_Lore_Open(MainMenuUiAnimationComponents.ILorePanel components, LoreOpenData animationData)
+                : base(components, animationData)
+            {
+            }
+            
             private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
@@ -307,10 +395,12 @@ namespace _Main.Scripts.MainMenu.MVC
                     .Append(UIComponents.LorePanel.DOAnchorPos(_panelOriginalPos, FadeTime));
             }
         }
-        private class Animation_Lore_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel>
+        private class Animation_Lore_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel,LoreCloseData>
         {
-            public Animation_Lore_Close(MainMenuUiAnimationComponents.ILorePanel uiComponents) 
-                : base(uiComponents) { }
+            public Animation_Lore_Close(MainMenuUiAnimationComponents.ILorePanel components, LoreCloseData animationData)
+                : base(components, animationData)
+            {
+            }
 
 
             private const float FadeTime = 0.3f;
@@ -334,11 +424,13 @@ namespace _Main.Scripts.MainMenu.MVC
         #endregion
 
         #region Tutorial
-        private class Animation_Tutorial_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel>
+        private class Animation_Tutorial_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel,TutorialOpenData>
         {
-            public Animation_Tutorial_Open(MainMenuUiAnimationComponents.ITutorialPanel uiComponents) 
-                : base(uiComponents) { }
-            
+            public Animation_Tutorial_Open(MainMenuUiAnimationComponents.ITutorialPanel components, TutorialOpenData animationData)
+                : base(components, animationData)
+            {
+            }
+
             private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
@@ -360,10 +452,12 @@ namespace _Main.Scripts.MainMenu.MVC
                     .Append(UIComponents.TutorialPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
             }
         }
-        private class Animation_Tutorial_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel>
+        private class Animation_Tutorial_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel,TutorialCloseData>
         {
-            public Animation_Tutorial_Close(MainMenuUiAnimationComponents.ITutorialPanel uiComponents) 
-                : base(uiComponents) { }
+            public Animation_Tutorial_Close(MainMenuUiAnimationComponents.ITutorialPanel components, TutorialCloseData animationData)
+                : base(components, animationData)
+            {
+            }
             
             private const float FadeTime = 0.3f;
             private Vector2 _offscreenPos;
@@ -386,10 +480,12 @@ namespace _Main.Scripts.MainMenu.MVC
         #endregion
 
         #region Credits
-        private class Animation_Credtis_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel>
+        private class Animation_Credtis_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel,CreditsOpenData>
         {
-            public Animation_Credtis_Open(MainMenuUiAnimationComponents.ICreditsPanel uiComponents) 
-                : base(uiComponents) { }
+            public Animation_Credtis_Open(MainMenuUiAnimationComponents.ICreditsPanel components, CreditsOpenData animationData)
+                : base(components, animationData)
+            {
+            }
 
             private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
@@ -412,10 +508,12 @@ namespace _Main.Scripts.MainMenu.MVC
                     .Append(UIComponents.CreditsPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
             }
         }
-        private class Animation_Credtis_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel>
+        private class Animation_Credits_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel,CreditsCloseData>
         {
-            public Animation_Credtis_Close(MainMenuUiAnimationComponents.ICreditsPanel uiComponents) 
-                : base(uiComponents) { }
+            public Animation_Credits_Close(MainMenuUiAnimationComponents.ICreditsPanel components, CreditsCloseData animationData) 
+                : base(components, animationData)
+            {
+            }
 
             private const float FadeTime = 0.3f;
             private Vector2 _offscreenPos;
@@ -463,17 +561,17 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void Start()
         {
-            _animationMenuOpen = new Animation_Menu_Open(UIComponents);
-            _animationMenuClose = new Animation_Menu_Close(UIComponents);
+            _animationMenuOpen = new Animation_Menu_Open(UIComponents,menuOpenData);
+            _animationMenuClose = new Animation_Menu_Close(UIComponents, menuCloseData);
             //
-            _animationLoreOpen = new Animation_Lore_Open(UIComponents);
-            _animationLoreClose = new Animation_Lore_Close(UIComponents);
+            _animationLoreOpen = new Animation_Lore_Open(UIComponents, loreOpenData);
+            _animationLoreClose = new Animation_Lore_Close(UIComponents, loreCloseData);
             //
-            _animationTutorialOpen = new Animation_Tutorial_Open(UIComponents);
-            _animationTutorialClose = new Animation_Tutorial_Close(UIComponents);
+            _animationTutorialOpen = new Animation_Tutorial_Open(UIComponents, tutorialOpenData);
+            _animationTutorialClose = new Animation_Tutorial_Close(UIComponents, tutorialCloseData);
             //
-            _animationCreditsOpen = new Animation_Credtis_Open(UIComponents);
-            _animationCreditsClose = new Animation_Credtis_Close(UIComponents);
+            _animationCreditsOpen = new Animation_Credtis_Open(UIComponents, creditsOpenData);
+            _animationCreditsClose = new Animation_Credits_Close(UIComponents, creditsCloseData);
         }
 
         #region Observer

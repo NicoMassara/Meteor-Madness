@@ -1,9 +1,9 @@
 ﻿using System.Collections;
+using _Main.Scripts.Defeat;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Save;
 using _Main.Scripts.SecurityData;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,7 +18,9 @@ namespace _Main.Scripts.MyTest.Defeat
             [Range(0,1000)]
             [SerializeField] private uint highScore;
             
+#pragma warning disable CS0414 // Field is assigned but its value is never used
             private bool _canReload;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
             
             private void Awake()
             {
@@ -27,7 +29,18 @@ namespace _Main.Scripts.MyTest.Defeat
                     StartCoroutine(LoadDefeatScreen());
                 };
 
+                DebugDefeatEvents.OnDefeatScreenAnimationFinished += () =>
+                {
+                    StartCoroutine(Coroutine_DisableDefeatScreen());
+                };
+
+                DebugDefeatEvents.OnDefeatScreenClosed += () =>
+                {
+                    EarthEventCaller.RestartFinished();
+                };
+
                 GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
+                GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
             }
             
             private void Start()
@@ -43,7 +56,16 @@ namespace _Main.Scripts.MyTest.Defeat
 
                 SecureValueManager.ModifyValue(GameManager.Instance.GetHighScoreSecuredId(), highScore);
             }
-            
+
+            private IEnumerator Coroutine_DisableDefeatScreen()
+            {
+                yield return new WaitForEndOfFrame();
+                
+                GameManager.Instance.LoadGameMode();
+                
+                yield return null;
+            }
+
             private IEnumerator LoadDefeatScreen()
             {
                 AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("DefeatModule", LoadSceneMode.Additive);
@@ -76,6 +98,8 @@ namespace _Main.Scripts.MyTest.Defeat
 
             private IEnumerator ReloadDefeatScreen()
             {
+                yield return new WaitForEndOfFrame();
+                
                 SetScoreValue();
                 
                 yield return new WaitForEndOfFrame();
@@ -86,14 +110,17 @@ namespace _Main.Scripts.MyTest.Defeat
                 
                 EarthEventCaller.DestructionFinished();
             }
-
-            public void LoadScreen()
-            {
-                if(_canReload)
-                    StartCoroutine(ReloadDefeatScreen());
-            }
+            
 
             #region Event Bus
+
+            private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
+            {
+                if (input.RequestType == EventRequestType.Granted)
+                {
+                    StartCoroutine(ReloadDefeatScreen());
+                }
+            }
 
             private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
             {
@@ -106,33 +133,12 @@ namespace _Main.Scripts.MyTest.Defeat
                     else
                     {
                         GameScreenEventCaller.DisableScreen(ScreenType.Defeat, EventRequestType.Requested);
-                        EarthEventCaller.RestartFinished();
                         _canReload = true;
                     }
                 }
             }
 
             #endregion
-        }
-        
-        [CustomEditor(typeof(DefeatScreenTester))]
-        public class ComponentsNameChangeEditor : Editor
-        {
-            public override void OnInspectorGUI()
-            {
-                // Dibuja el inspector normal
-                DrawDefaultInspector();
-
-                // Agrega el botón
-                DefeatScreenTester script = (DefeatScreenTester)target;
-                
-                if (GUILayout.Button("Load Screen"))
-                {
-                    // Llama al método normalmente
-                    script.LoadScreen();
-                }
-                
-            }
         }
 #endif
 }

@@ -74,7 +74,14 @@ namespace _Main.Scripts.Gameplay.Abilies
         public void SetEnableUI(bool isEnable)
         {
             _isUIEnable = isEnable;
-            NotifyAll(AbilityObserverMessage.SetEnableUI, _isUIEnable);
+            if (_isUIEnable)
+            {
+                NotifyAll(AbilityObserverMessage.EnableUI, true);
+            }
+            else
+            {
+                NotifyAll(AbilityObserverMessage.DisableUI, true);
+            }
         }
         
         public void RestartAbilities()
@@ -118,6 +125,11 @@ namespace _Main.Scripts.Gameplay.Abilies
             if(_hasAbilityRunning == false) return;
             
             NotifyAll(AbilityObserverMessage.ForceFinish);
+        }
+
+        public void InitializeData()
+        {
+            NotifyAll(AbilityObserverMessage.Initialize);
         }
     }
 }

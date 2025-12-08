@@ -51,8 +51,10 @@ namespace _Main.Scripts.Gameplay.GameMode
 
         #region IGameModeSounds
 
+#pragma warning disable CS0067 // Event is never used
         public event Action OnGameModeFinished;
         public event Action OnCountdownUpdatedFinished;
+#pragma warning restore CS0067 // Event is never used
         public event Action OnStopMusic;
         public event Action OnPlayMusic;
 
