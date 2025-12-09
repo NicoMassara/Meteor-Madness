@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.CustomId;
 using _Main.Scripts.FiniteStateMachine;
-using UnityEngine;
+
 
 namespace _Main.Scripts.Defeat
 {

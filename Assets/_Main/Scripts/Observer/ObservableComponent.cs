@@ -32,7 +32,7 @@ namespace _Main.Scripts.Observer
             
             foreach (var sus in Subscribers)
             {
-                sus.OnNotify(message, args);
+                sus?.OnNotify(message, args);
             }
         }
     }

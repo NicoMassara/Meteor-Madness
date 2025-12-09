@@ -1,19 +1,21 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using DG.Tweening;
+using UnityEngine;
 
 namespace _Main.Scripts.MyAnimations
 {
-    public abstract class SequenceUIAnimator<T> : IUIAnimator
+    public abstract class SequenceUIAnimator<T, TS> : IUIAnimator
     where T : IUiAnimationComponent
+    where TS : UiAnimationData
     {
         protected readonly T UIComponents;
+        protected readonly TS AnimationData;
         
-        protected SequenceUIAnimator(T components)
+        protected SequenceUIAnimator(T components, TS animationData)
         {
             UIComponents = components;
-            // ReSharper disable once VirtualMemberCallInConstructor
-            Initialize();
+            AnimationData = animationData;
         }
 
 
@@ -26,11 +28,17 @@ namespace _Main.Scripts.MyAnimations
         
         public void Play(Action onFinished)
         {
+            Initialize();
+            
             CreateAnimation()
                 .AppendCallback(() => onFinished?.Invoke())
                 .AppendCallback(RestartValues);
         }
     }
+    
+
+    [System.Serializable]
+    public abstract class UiAnimationData { }
 
     /// <summary>
     /// This is used to set Initial Positions and Values to UI Components or restart them
@@ -50,12 +58,12 @@ namespace _Main.Scripts.MyAnimations
 
         protected abstract void Initialize();
         
-        public void RestartValues() => Initialize();
+        public void InitializeValues() => Initialize();
     }
 
     public interface IUIComponentsInitializer
     {
-        public void RestartValues();
+        public void InitializeValues();
     }
 
     public interface IUIAnimator

@@ -3,6 +3,7 @@ using _Main.Scripts.Interfaces;
 using _Main.Scripts.Localization;
 using _Main.Scripts.MySettings;
 using TMPro;
+using _Main.Scripts.GlobalEvents;
 using UnityEngine;
 using UnityEngine.UI;
 

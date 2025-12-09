@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using _Main.Scripts.MyComponents;
 using UnityEngine;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.MySettings;
 
 namespace _Main.Scripts.Localization

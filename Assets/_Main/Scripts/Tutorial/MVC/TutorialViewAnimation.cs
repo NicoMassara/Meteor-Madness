@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.MyAnimations;
+﻿using System;
+using _Main.Scripts.MyAnimations;
 using _Main.Scripts.Observer;
 using DG.Tweening;
 using UnityEngine;
@@ -7,10 +8,34 @@ namespace _Main.Scripts.Tutorial.MVC
 {
     public class TutorialViewAnimation : BaseViewAnimation<TutorialUiAnimationSelector,TutorialUiAnimationComponents>
     {
-        #region Animators
-        private class Animation_HintPanel_Open : SequenceUIAnimator<TutorialUiAnimationComponents.IHintPanel>
+        #region Animation Data
+
+        [Serializable]
+        private class PanelOpenData : UiAnimationData
         {
-            public Animation_HintPanel_Open(TutorialUiAnimationComponents.IHintPanel uiComponents) : base(uiComponents) { }
+            
+        }
+        
+        [SerializeField] private PanelOpenData panelOpenData;
+        
+        [Serializable]
+        private class PanelCloseData : UiAnimationData
+        {
+            
+        }
+        
+        [SerializeField] private PanelCloseData panelCloseData;
+
+        #endregion
+        
+        #region Animators
+        private class Animation_HintPanel_Open : SequenceUIAnimator<TutorialUiAnimationComponents.IHintPanel,PanelOpenData>
+        {
+            public Animation_HintPanel_Open(TutorialUiAnimationComponents.IHintPanel components, PanelOpenData animationData) 
+                : base(components, animationData)
+            {
+            }
+            
             private const float FadeTime = 0.3f;
             private Vector2 _panelOriginalPos;
             private Vector2 _offscreenPos;
@@ -32,9 +57,14 @@ namespace _Main.Scripts.Tutorial.MVC
                     .Append(UIComponents.HintPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
             }
         }
-        private class Animation_HintPanel_Close : SequenceUIAnimator<TutorialUiAnimationComponents.IHintPanel>
+        private class Animation_HintPanel_Close : SequenceUIAnimator<TutorialUiAnimationComponents.IHintPanel,PanelCloseData>
         {
-            public Animation_HintPanel_Close(TutorialUiAnimationComponents.IHintPanel uiComponents) : base(uiComponents) { }
+            public Animation_HintPanel_Close(TutorialUiAnimationComponents.IHintPanel components, PanelCloseData animationData)
+                : base(components, animationData)
+            {
+            }
+
+
             private const float FadeTime = 0.3f;
             private Vector2 _offscreenPos;
             
@@ -59,8 +89,8 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void Start()
         {
-            _animationPanelOpen = new Animation_HintPanel_Open(UIComponents);
-            _animationPanelClose = new Animation_HintPanel_Close(UIComponents);
+            _animationPanelOpen = new Animation_HintPanel_Open(UIComponents, panelOpenData);
+            _animationPanelClose = new Animation_HintPanel_Close(UIComponents, panelCloseData);
         }
         
         public override void OnNotify(ulong message, params object[] args)

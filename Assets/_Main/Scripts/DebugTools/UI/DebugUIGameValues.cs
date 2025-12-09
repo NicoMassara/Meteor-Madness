@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Managers;
+using _Main.Scripts.GameConfig;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;

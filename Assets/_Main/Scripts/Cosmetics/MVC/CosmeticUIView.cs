@@ -1,11 +1,12 @@
 ﻿using System;
 using _Main.Scripts.Interfaces.Sounds;
+using _Main.Scripts.Interfaces.Vibration;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.MVC
 {
-    public class CosmeticUIView : ManagedBehavior, ICosmeticUISounds
+    public class CosmeticUIView : ManagedBehavior, ICosmeticUISounds, ICosmeticUIVibration
     {
         [SerializeField] private CosmeticUIPanelSelector uiSelector;
         

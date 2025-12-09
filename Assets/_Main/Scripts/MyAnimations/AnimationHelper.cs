@@ -4,6 +4,24 @@ namespace _Main.Scripts.MyAnimations
 {
     public static class AnimationHelper
     {
+        public class PanelPosition
+        {
+            public PanelPosition(RectTransform panel, Direction position)
+            {
+                StartPos = panel.anchoredPosition;
+                OffScreenPos = GetOffscreenPos(panel, position);
+            }
+            
+            public PanelPosition(RectTransform panel, Direction position, Vector2 offset)
+            {
+                StartPos = panel.anchoredPosition;
+                OffScreenPos = GetOffscreenPos(panel, position) + offset;
+            }
+
+            public readonly Vector2 StartPos;
+            public readonly Vector2 OffScreenPos;
+        }
+        
         public static float GetCanvasWidth(RectTransform target)
         {
             return target.rect.width;

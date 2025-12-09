@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.MyComponents;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.MySettings;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
