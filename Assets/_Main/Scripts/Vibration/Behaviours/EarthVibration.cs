@@ -1,11 +1,9 @@
-﻿using System;
-using _Main.Scripts.ScriptableObjects;
-using _Main.Scripts.Vibration;
+﻿using _Main.Scripts.Interfaces.Vibration;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.Earth
+namespace _Main.Scripts.Vibration.Behaviours
 {
-    public class EarthVibration : VibrationBehavior<EarthView>
+    public class EarthVibration : VibrationBehavior<IEarthVibration>
     {
 #if UNITY_ANDROID 
         [SerializeField] private VibrationDataSo collisionData;

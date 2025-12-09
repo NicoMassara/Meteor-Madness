@@ -1,10 +1,9 @@
-﻿using _Main.Scripts.MySettings.MVC;
-using _Main.Scripts.Vibration;
+﻿using _Main.Scripts.Interfaces.Vibration;
 using UnityEngine;
 
-namespace _Main.Scripts.MySettings.Components
+namespace _Main.Scripts.Vibration.Behaviours.UI
 {
-    public class SettingsVibration : VibrationBehavior<SettingsUiView>
+    public class SettingsUiVibration : VibrationBehavior<ISettingsUiVibration>
     {
 #if UNITY_ANDROID 
         protected override void Start()

@@ -1,10 +1,8 @@
-﻿using System;
-using _Main.Scripts.Cosmetics.MVC;
-using _Main.Scripts.Vibration;
+﻿using _Main.Scripts.Interfaces.Vibration;
 
-namespace _Main.Scripts.Cosmetics.Components
+namespace _Main.Scripts.Vibration.Behaviours.UI
 {
-    public class CosmeticVibration : VibrationBehavior<CosmeticUIView>
+    public class CosmeticUiVibration : VibrationBehavior<ICosmeticUIVibration>
     {
 #if UNITY_ANDROID 
         protected override void Start()

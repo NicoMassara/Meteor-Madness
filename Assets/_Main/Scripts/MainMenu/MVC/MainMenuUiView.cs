@@ -1,12 +1,13 @@
 ﻿using System;
 using _Main.Scripts.Interfaces.Sounds;
+using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Menu;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
-    public class MainMenuUiView : ManagedBehavior, IMainMenuUISounds
+    public class MainMenuUiView : ManagedBehavior, IMainMenuUISounds, IMainMenuUiVibration
     {
         [SerializeField] private MainMenuUiPanelComponents uiPanelSelector;
         

@@ -1,10 +1,8 @@
-﻿using System;
-using _Main.Scripts.MainMenu.MVC;
-using _Main.Scripts.Vibration;
+﻿using _Main.Scripts.Interfaces.Vibration;
 
-namespace _Main.Scripts.Menu
+namespace _Main.Scripts.Vibration.Behaviours.UI
 {
-    public class MainMenuVibration : VibrationBehavior<MainMenuUiView>
+    public class MainMenuUiVibration : VibrationBehavior<IMainMenuUiVibration>
     {
 #if UNITY_ANDROID 
         protected override void Start()

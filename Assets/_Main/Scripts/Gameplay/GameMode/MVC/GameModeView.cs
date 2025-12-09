@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces.Sounds;
+using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.SecurityData;
@@ -11,7 +12,7 @@ using UnityEngine;
 namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeView : ManagedBehavior, IObserver,IGameModeSounds,
-        GameModeView.IGameModeView
+        GameModeView.IGameModeView, IGameModeVibration
     {
         public interface IGameModeView
         {
@@ -40,7 +41,6 @@ namespace _Main.Scripts.Gameplay.GameMode
         public event Action OnInitialized;
         public event Action OnCountDownStarted;
         public event Action OnCountDownFinished;
-            
         public event Action OnGameStarted;
         public event Action OnGameStopped;
         public event Action OnScoreSaved;
