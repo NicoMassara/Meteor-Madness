@@ -1,9 +1,8 @@
-﻿using System;
-using _Main.Scripts.Vibration;
+﻿using _Main.Scripts.Interfaces.Vibration;
 
-namespace _Main.Scripts.MultiPage.Components
+namespace _Main.Scripts.Vibration.Behaviours.UI
 {
-    public class MultiPageVibration : VibrationBehavior<MultiPageViewUI>
+    public class MultiPageUiVibration : VibrationBehavior<IMultiPageUIVibration>
     {
 #if UNITY_ANDROID 
         protected override void Start()

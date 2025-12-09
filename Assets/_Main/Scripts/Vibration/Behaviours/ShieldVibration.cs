@@ -1,11 +1,9 @@
-﻿using System;
-using _Main.Scripts.ScriptableObjects;
-using _Main.Scripts.Vibration;
+﻿using _Main.Scripts.Interfaces.Vibration;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.Shield
+namespace _Main.Scripts.Vibration.Behaviours
 {
-    public class ShieldVibration : VibrationBehavior<ShieldView>
+    public class ShieldVibration : VibrationBehavior<IShieldVibration>
     {
 #if UNITY_ANDROID 
         [SerializeField] private VibrationDataSo rotateData;

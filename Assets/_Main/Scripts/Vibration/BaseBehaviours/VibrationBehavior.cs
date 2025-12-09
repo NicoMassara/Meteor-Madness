@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.MySettings;
+﻿using _Main.Scripts.Interfaces.Vibration;
+using _Main.Scripts.MySettings;
 using _Main.Scripts.ScriptableObjects;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace _Main.Scripts.Vibration
 {
     
     public abstract class VibrationBehavior<T> : MonoBehaviour
+    where T : IVibrationComponent
     {
 #if UNITY_ANDROID 
         private VibrationManager _vibration;

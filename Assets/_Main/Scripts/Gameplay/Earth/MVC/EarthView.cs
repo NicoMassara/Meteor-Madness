@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Interfaces.Sounds;
+using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ScriptableObjects;
@@ -11,7 +12,8 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Earth
 {
-    public class EarthView : ManagedBehavior, IObserver, IUpdatable, IEarthSounds, IEarthSkin
+    public class EarthView : ManagedBehavior, IObserver, IUpdatable, 
+        IEarthSounds, IEarthSkin, IEarthVibration
     {
         [Header("Model Components")]
         [SerializeField] private GameObject planeMeshContainer;

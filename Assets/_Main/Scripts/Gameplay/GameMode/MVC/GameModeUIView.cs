@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces.Sounds;
+using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
@@ -10,7 +11,7 @@ using UnityEngine;
 namespace _Main.Scripts.Gameplay.GameMode
 {
     public class GameModeUIView : BaseViewUI<GameModeUiPanelSelector,GameModeUIComponents>,IUpdatable, IObserver, IGameModeUISounds,
-        GameModeUIView.IGameModeUIView
+        GameModeUIView.IGameModeUIView, IGameModeUIVibration
     {
         public interface IGameModeUIView
         {
@@ -23,6 +24,12 @@ namespace _Main.Scripts.Gameplay.GameMode
         private float _highScore;
         private string _scoreTextValue;
         private uint _storedPoints = 0;
+
+        #region IGameModeUIVibration
+
+        public event Action OnPointsAdded;
+
+        #endregion
         
         public event Action OnPauseButtonPressed;
         public event Action OnFinishAddingPoints;
@@ -42,7 +49,7 @@ namespace _Main.Scripts.Gameplay.GameMode
             Localization_OnLanguageChangedHandler();
             LocalizationEvents.OnLanguageChanged += Localization_OnLanguageChangedHandler;
             
-            _numberIncrementer = new NumberIncrementer(HandleUpdatePointsText,OnFinishAddingPoints);
+            _numberIncrementer = new NumberIncrementer(HandleUpdatePointsText,OnPointsAdded,OnFinishAddingPoints);
             
             BootEvents.SubSystemInitialized();
         }

@@ -1,12 +1,13 @@
 ﻿using System;
 using _Main.Scripts.Interfaces.Sounds;
+using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Localization;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MultiPage
 {
-    public class MultiPageViewUI : ManagedBehavior, IMultiPageUISounds
+    public class MultiPageViewUI : ManagedBehavior, IMultiPageUISounds, IMultiPageUIVibration
     {
         [SerializeField] private MultiPageUiSelector uiSelector;
 

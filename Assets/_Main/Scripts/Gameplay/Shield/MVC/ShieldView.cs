@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.Interfaces.Sounds;
+using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.ScriptableObjects;
@@ -11,7 +12,7 @@ using UnityEngine;
 namespace _Main.Scripts.Gameplay.Shield
 {
     [RequireComponent(typeof(ShieldMovement))]
-    public class ShieldView : ManagedBehavior, IObserver, IShieldSounds, IAbilityShield
+    public class ShieldView : ManagedBehavior, IObserver, IShieldSounds, IAbilityShield, IShieldVibration
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;

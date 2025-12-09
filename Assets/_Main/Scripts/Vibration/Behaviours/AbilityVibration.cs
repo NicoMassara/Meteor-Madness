@@ -1,11 +1,9 @@
-﻿using _Main.Scripts.Gameplay.Abilies;
-using _Main.Scripts.ScriptableObjects;
-using _Main.Scripts.Vibration;
+﻿using _Main.Scripts.Interfaces.Vibration;
 using UnityEngine;
 
-namespace _Main.Scripts.Gameplay.Abilities.Components
+namespace _Main.Scripts.Vibration.Behaviours
 {
-    public class AbilityVibration : VibrationBehavior<AbilityView>
+    public class AbilityVibration : VibrationBehavior<IAbilityVibration>
     {
 #if UNITY_ANDROID 
         [Header("Vibration Data")]

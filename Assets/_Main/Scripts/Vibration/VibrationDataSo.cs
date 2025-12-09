@@ -2,7 +2,7 @@
 using _Main.Scripts.Vibration;
 using UnityEngine;
 
-namespace _Main.Scripts.ScriptableObjects
+namespace _Main.Scripts.Vibration
 {
 #if UNITY_ANDROID 
     [CreateAssetMenu(fileName = "SO_VibrationData_Name", menuName = "Scriptable Objects/Vibration/Data", order = 0)]

@@ -1,9 +1,8 @@
-﻿using System;
-using _Main.Scripts.Vibration;
+﻿using _Main.Scripts.Interfaces.Vibration;
 
-namespace _Main.Scripts.Gameplay.GameMode
+namespace _Main.Scripts.Vibration.Behaviours.UI
 {
-    public class GameModeUIVibration : VibrationBehavior<GameModeUIView>
+    public class GameModeUIVibration : VibrationBehavior<IGameModeUIVibration>
     {
 #if UNITY_ANDROID 
         protected override void Start()

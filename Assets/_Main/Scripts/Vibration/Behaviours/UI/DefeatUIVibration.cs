@@ -1,10 +1,8 @@
-﻿using System;
-using _Main.Scripts.Gameplay.GameMode;
-using _Main.Scripts.Vibration;
+﻿using _Main.Scripts.Interfaces.Vibration;
 
-namespace _Main.Scripts.Defeat
+namespace _Main.Scripts.Vibration.Behaviours.UI
 {
-    public class DefeatVibration : VibrationBehavior<DefeatUIView>
+    public class DefeatUIVibration : VibrationBehavior<IDefeatUIVibration>
     {
 #if UNITY_ANDROID 
         protected override void Start()
