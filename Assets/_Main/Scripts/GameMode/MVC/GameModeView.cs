@@ -95,7 +95,6 @@ namespace _Main.Scripts.GameMode
                     break;
                 
                 
-                
                 //=== Pause ===//
                 case GameModeObserverMessage.GamePaused:
                     HandleGamePaused();
@@ -117,6 +116,10 @@ namespace _Main.Scripts.GameMode
                 case GameModeObserverMessage.SaveScore:
                     HandleSaveScore((GeneratedId)args[0]);
                     break;
+                case GameModeObserverMessage.SaveStats:
+                    HandleSaveStats((GeneratedId)args[0],(GeneratedId)args[1],(GeneratedId)args[2]);
+                    break;
+                
                 
                 //=== Meteor ===//
                 case GameModeObserverMessage.PointsGained:
@@ -164,7 +167,9 @@ namespace _Main.Scripts.GameMode
                     break;
             }
         }
-        
+
+
+
         #region Finish
 
         private void HandleStartFinish()
@@ -343,6 +348,16 @@ namespace _Main.Scripts.GameMode
                 //Debug.LogWarning($"Current Score: {currentScore}");
             }
             OnScoreSaved?.Invoke();
+        }
+        
+        private void HandleSaveStats(
+            GeneratedId collisionCount, 
+            GeneratedId abilityUseCount, 
+            GeneratedId deflectCount)
+        {
+            GameManager.Instance.CollisionCountId = collisionCount;
+            GameManager.Instance.AbilityUseCountId = abilityUseCount;
+            GameManager.Instance.DeflectCountId = deflectCount;
         }
 
         #endregion

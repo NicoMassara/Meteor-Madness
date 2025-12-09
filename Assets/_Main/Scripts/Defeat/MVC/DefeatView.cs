@@ -61,6 +61,7 @@ namespace _Main.Scripts.Defeat
         private void HandleSaveHighScore()
         {
             GameManager.Instance.SaveHighScore(GameManager.Instance.GetHighScoreSecuredId());
+            GameManager.Instance.SaveStats();
         }
         
         private void HandleExecuteDisable()

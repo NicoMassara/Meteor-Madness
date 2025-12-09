@@ -326,9 +326,9 @@ namespace _Main.Scripts.Save
         public class StatsSaveData : SaveDataBase
         {
             public override SaveDataType Type => SaveDataType.Stats;
-            public int DeflectAmount;
-            public int CollisionAmount;
-            public int AbilityUseAmount;
+            public uint DeflectAmount;
+            public uint CollisionAmount;
+            public uint AbilityUseAmount;
         }
     
         [System.Serializable]

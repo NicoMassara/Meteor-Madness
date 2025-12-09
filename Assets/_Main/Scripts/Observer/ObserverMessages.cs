@@ -55,6 +55,7 @@
         public const ulong OpenPauseMenu = 0xA2022;
         public const ulong StartFinish = 0xA2023;
         public const ulong FinishAddingPoints = 0xA2024;
+        public const ulong SaveStats = 0xA2025;
 
         //
         public const ulong Debug_MeteorDeflect = 0xB2001;

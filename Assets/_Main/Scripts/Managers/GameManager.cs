@@ -20,12 +20,14 @@ namespace _Main.Scripts.Managers
         
         // Game Stored Data
         
+        private GeneratedId _highScoreSecuredId;
         public uint VisualPoints { get;  set; }
 
-        public GeneratedId CurrentScoreSecuredId { get; set; }
         public bool AntiEpileptic { get; set; } = true;
-
-        private GeneratedId _highScoreSecuredId;
+        public GeneratedId CurrentScoreSecuredId { get; set; }
+        public GeneratedId CollisionCountId { get; set; }
+        public GeneratedId AbilityUseCountId { get; set; }
+        public GeneratedId DeflectCountId { get; set; }
 
         private void Awake()
         {
@@ -123,6 +125,9 @@ namespace _Main.Scripts.Managers
         public void ClearScoreData()
         {
             CurrentScoreSecuredId = null;
+            CollisionCountId = null;
+            AbilityUseCountId = null;
+            DeflectCountId = null;
         }
 
         public bool GetHasNewHighScore()
@@ -180,6 +185,29 @@ namespace _Main.Scripts.Managers
             }
             
             SecureValueManager.ModifyValue(highScoreId,currentScore);
+        }
+
+        public void SaveStats()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+
+            if (SecureValueManager.GetDoesContainValue<uint>(CollisionCountId, out var collisionCount))
+            {
+                saveData.CollisionAmount = collisionCount;
+            }
+            
+            if (SecureValueManager.GetDoesContainValue<uint>(AbilityUseCountId, out var abilityCount))
+            {
+                saveData.AbilityUseAmount = abilityCount;
+            }
+            
+            if (SecureValueManager.GetDoesContainValue<uint>(DeflectCountId, out var deflectCount))
+            {
+                saveData.DeflectAmount = deflectCount;
+            }
+            
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
         }
 
         #endregion
