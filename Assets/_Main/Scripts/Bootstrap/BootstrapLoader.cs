@@ -4,7 +4,7 @@ using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Save;
-using _Main.Scripts.Sounds;
+using _Main.Scripts.GlobalEvents;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;

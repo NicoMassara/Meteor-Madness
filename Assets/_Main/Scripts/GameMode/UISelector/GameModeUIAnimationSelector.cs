@@ -2,9 +2,7 @@
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyAnimations;
 using _Main.Scripts.Utilities;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Main.Scripts.GameMode
 {

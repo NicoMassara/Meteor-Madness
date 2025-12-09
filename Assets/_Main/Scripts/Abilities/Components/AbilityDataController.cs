@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Main.Scripts.GameConfig;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.Abilities
 {

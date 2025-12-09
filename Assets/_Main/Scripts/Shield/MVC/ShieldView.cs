@@ -3,8 +3,9 @@ using System.Collections;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Observer;
+using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
-using _Main.Scripts.ScriptableObjects;
+using _Main.Scripts.GameConfig.Game;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -30,7 +31,7 @@ namespace _Main.Scripts.Shield
         [SerializeField] private ShieldMovementDataSo movementData;
         
         private ShieldMovement _movement;
-        private ShakerController _shakerController;
+        private ComponentShaker _shakerController;
         private ShieldColliderExtender _colliderExtender;
         public event Action<bool> OnShieldActivated;
         public event Action OnRotate;
@@ -59,7 +60,7 @@ namespace _Main.Scripts.Shield
 #endif
             superShieldCollider.enabled = false;
             _movement = GetComponent<ShieldMovement>();
-            _shakerController = new ShakerController(normalShieldSprite.transform,hitShakeData);
+            _shakerController = new ComponentShaker(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
         }
 

@@ -1,6 +1,6 @@
 ﻿using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.MySettings;
-using _Main.Scripts.ScriptableObjects;
+using _Main.Scripts.GameConfig.Game;
 using UnityEngine;
 
 namespace _Main.Scripts.Vibration

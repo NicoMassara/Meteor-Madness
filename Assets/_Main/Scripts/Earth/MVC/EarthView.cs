@@ -2,9 +2,10 @@
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Interfaces.Vibration;
-using _Main.Scripts.Managers;
+using _Main.Scripts.GameConfig;
 using _Main.Scripts.Observer;
-using _Main.Scripts.ScriptableObjects;
+using _Main.Scripts.Particles;
+using _Main.Scripts.GameConfig.Game;
 using _Main.Scripts.Shaker;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
@@ -32,7 +33,7 @@ namespace _Main.Scripts.Earth
         [SerializeField] private ParticleDataSo collisionParticleData;
         
         private EarthSlicer _slicer;
-        private ShakerController _shakerController;
+        private ComponentShaker _shakerController;
         private Rotator _planeRotator;
         private IEarthRestart _restartTimeValues;
         private bool _isDead;
@@ -67,7 +68,7 @@ namespace _Main.Scripts.Earth
         {
             _slicer = GetComponent<EarthSlicer>();
             _planeRotator = new Rotator(destroyedEarthContainer.transform, Vector3.forward, rotationSpeed/2);
-            _shakerController = new ShakerController(planeMeshContainer.transform);
+            _shakerController = new ComponentShaker(planeMeshContainer.transform);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData = new EarthDebugData();

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using _Main.Scripts.GlobalEvents;
 using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.SkinControllers

@@ -1,6 +1,7 @@
 ﻿using _Main.Scripts.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
+using _Main.Scripts.GameConfig;
 
 namespace _Main.Scripts.Earth
 {

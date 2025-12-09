@@ -1,8 +1,9 @@
 ﻿using System;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
+using _Main.Scripts.MultiPage;
 using _Main.Scripts.Observer;
-using _Main.Scripts.ScriptableObjects;
+using _Main.Scripts.GameConfig;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 

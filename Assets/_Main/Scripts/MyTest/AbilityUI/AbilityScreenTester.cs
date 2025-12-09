@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using _Main.Scripts.GlobalEvents;
 
 namespace _Main.Scripts.MyTest.AbilityUI
 {

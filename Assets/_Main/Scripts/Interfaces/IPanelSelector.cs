@@ -1,7 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Menu;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace _Main.Scripts.Interfaces
 {

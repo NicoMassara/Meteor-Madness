@@ -2,7 +2,7 @@
 using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Localization;
-using _Main.Scripts.Managers;
+using _Main.Scripts.GameConfig;
 using _Main.Scripts.MyAnimations;
 using _Main.Scripts.Observer;
 using _Main.Scripts.SecurityData;

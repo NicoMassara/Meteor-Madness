@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Interfaces.Sounds;
 using UnityEditor;
+using _Main.Scripts.GlobalEvents;
 using UnityEngine;
 
 namespace _Main.Scripts.MyTest.Sounds

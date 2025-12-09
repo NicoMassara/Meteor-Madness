@@ -1,5 +1,6 @@
 ﻿using NicolasMassara.CustomUpdateManager;
 using TMPro;
+using _Main.Scripts.GlobalEvents;
 using UnityEngine;
 
 namespace _Main.Scripts.Localization

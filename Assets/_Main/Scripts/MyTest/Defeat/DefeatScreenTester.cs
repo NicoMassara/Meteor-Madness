@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using _Main.Scripts.Defeat;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.MySettings;

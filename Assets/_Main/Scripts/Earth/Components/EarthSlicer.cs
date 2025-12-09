@@ -1,6 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers;
+using _Main.Scripts.GameConfig;
 using _Main.Slicer;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;

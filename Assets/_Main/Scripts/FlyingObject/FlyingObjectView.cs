@@ -3,7 +3,7 @@ using _Main.Scripts.Interfaces;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
-using _Main.Scripts.ScriptableObjects;
+using _Main.Scripts.Particles;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using Random = UnityEngine.Random;

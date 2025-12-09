@@ -1,6 +1,8 @@
 ﻿using _Main.Scripts.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
+using _Main.Scripts.GameConfig;
+using _Main.Scripts.GlobalEvents;
 
 namespace _Main.Scripts.GameMode
 {

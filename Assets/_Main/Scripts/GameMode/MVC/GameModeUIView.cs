@@ -3,10 +3,11 @@ using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
+using _Main.Scripts.GameConfig;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ViewUI;
 using NicolasMassara.CustomUpdateManager;
-using UnityEngine;
+using _Main.Scripts.GlobalEvents;
 
 namespace _Main.Scripts.GameMode
 {

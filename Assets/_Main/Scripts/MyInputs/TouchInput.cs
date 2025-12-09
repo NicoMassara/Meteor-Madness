@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using _Main.Scripts.GameConfig;
 using _Main.Scripts.Interfaces;
-using _Main.Scripts.Managers;
 using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 using UnityEngine.EventSystems;

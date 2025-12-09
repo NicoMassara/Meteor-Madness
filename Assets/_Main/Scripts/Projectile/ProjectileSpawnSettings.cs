@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Utilities;
+using _Main.Scripts.GameConfig;
 using _Main.Scripts.Managers;
 using UnityEngine;
 

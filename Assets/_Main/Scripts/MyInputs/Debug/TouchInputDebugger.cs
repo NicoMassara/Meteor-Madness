@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.GameConfig;
 using UnityEngine;
 
 namespace _Main.Scripts.MyInputs

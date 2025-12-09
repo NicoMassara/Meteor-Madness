@@ -1,7 +1,7 @@
-﻿using System;
-using _Main.Scripts.Earth;
+﻿using _Main.Scripts.Earth;
 using _Main.Scripts.Interfaces;
 using UnityEngine;
+using _Main.Scripts.GlobalEvents;
 
 namespace _Main.Scripts.Cosmetics.SkinControllers
 {

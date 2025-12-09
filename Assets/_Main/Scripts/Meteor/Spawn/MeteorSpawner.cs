@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using _Main.Scripts.Projectile;
 using _Main.Scripts.Managers;
+using _Main.Scripts.GameConfig;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 

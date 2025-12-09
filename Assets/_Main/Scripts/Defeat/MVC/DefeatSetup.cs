@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.Managers;
 using UnityEngine;
+using _Main.Scripts.GlobalEvents;
 
 namespace _Main.Scripts.Defeat
 {

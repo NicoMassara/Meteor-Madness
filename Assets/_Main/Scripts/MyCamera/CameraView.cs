@@ -20,7 +20,7 @@ namespace _Main.Scripts.MyCamera
         [SerializeField] 
         private float verticalLookOffset = 0.3f;
         
-        private ShakerController _shakerController;
+        private ComponentShaker _shakerController;
         private const float ZoomOutSize = 11;
         private const float ZoomInSize = 6;
         
@@ -31,7 +31,7 @@ namespace _Main.Scripts.MyCamera
         
         private void Start()
         {
-            _shakerController = new ShakerController(mainCamera.transform);
+            _shakerController = new ComponentShaker(mainCamera.transform);
         }
         
         public void ExecuteLateUpdate(float deltaTime)
