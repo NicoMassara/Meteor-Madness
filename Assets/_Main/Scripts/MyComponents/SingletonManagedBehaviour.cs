@@ -11,7 +11,7 @@ namespace _Main.Scripts.MyComponents
         
         private static T CreateInstance()
         {
-            var gameObject = new GameObject(nameof(T))
+            var gameObject = new GameObject(typeof(T).ToString())
             {
                 hideFlags = HideFlags.DontSave,
             };

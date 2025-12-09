@@ -1,647 +1,577 @@
 ﻿using System;
 using System.Collections.Generic;
-using _Main.Scripts.FiniteStateMachine;
-using NicolasMassara.CustomActionManager;
-using NicolasMassara.CustomTimerManager;
 using UnityEngine;
+using _Main.Scripts.FiniteStateMachine;
+using _Main.Scripts.Interfaces;
 
 namespace _Main.Scripts.Gameplay.GameMode
 {
-    public class GameModeController 
+    public class GameModeController : 
+        GameModeController.IGameModeController,
+        GameModeController.IController
     {
-        private readonly GameModeMotor _motor;
-        private FSM<States> _fsm;
-        
-        private enum States
+        public interface IGameModeController
         {
-            None,
-            Enable,
-            Start,
-            Gameplay,
-            Finish,
-            Death,
-            Restart,
-            Pause,
-            Leaving,
-            Disable,
-            Countdown,
-            // Asleep -> Is used when is in Pause to change screens and return to Pause without going to Disable
-            Asleep 
-        }
-
-        private class GameModeActionGate : FsmActionGate<States>
-        {
-            public GameModeActionGate(FSM<States> fsm) : base(fsm) { }
+            public void TransitionToInitialize();
+            public void TransitionToCountDown();
+            public void TransitionToPlaying();
+            public void TransitionToPaused();
+            public void TransitionToFinished();
+            public void TransitionToDisable();
+            //
+            public void InitializeController(IGameTimeData gameTimeData);
+            public void ExecuteDisable();
+            public void EnablePause();
+            public void DisablePause();
+            public void HandleMeteorDeflect(Vector2 position, byte projectileValue);
+            public void GrantProjectileSpawn(int projectileTypeIndex);
+            public void SetDoublePoints(bool isActive);
+            public void IncreaseCollisionCount();
+            public void IncreaseAbilityUseCount();
+            public void IncreaseDeflectCount();
+            public void DisableGameplayUI();
+            public void EnableGameplayUI();
             
-            public bool IsInGameplay { get; private set; }
-            public bool CanPause { get; private set; }
-            public bool CanDisableSpawn { get; private set; }
-            public bool CanEnableSpawn { get; private set; }
-            public bool IsAsleep { get; private set; }
-            public bool IsGoingToSleep { get; set; }
-
-            public bool WasAsleep { get; private set; }
-            public bool DoesResume { get; private set; }
-
-            protected override void OnNewState(States state)
-            {
-                //
-                CanPause = state is States.Pause 
-                           && CurrentState is States.Gameplay;
-                //
-                CanDisableSpawn = state is States.Leaving or States.Finish &&
-                                  (CurrentState is States.Gameplay or States.Pause);
-                //
-                WasAsleep = LastState is States.Asleep;
-            }
-
-            protected override void OnEnterState(States state)
-            {
-                IsInGameplay = state is States.Gameplay;
-                //
-                CanEnableSpawn = state is States.Enable || LastState is States.Restart;
-                //
-                IsAsleep = state is States.Asleep;
-                //
-                DoesResume = state is States.Countdown 
-                             && LastState is States.Pause;
-
-            }
-
-            protected override void OnExitState(States state)
-            {
-                WasAsleep = state is States.Asleep;
-            }
+            public void Execute(float deltaTime);
+            public void TransitionToSaveScore();
+            public void TriggerFinishAddingPoints();
+            public void TriggerPauseMenu();
         }
         
-        private GameModeActionGate _actionGate;
+        #region Private Classes
+        
+        private interface IController
+        {
+            public void StartDisable();
+            public void PauseGame();
+            public void InitializeData();
+            public void SaveHighScoreValues();
+            public void FinishCountdown();
+            public void StartCountdown();
+            public void StartGameplay();
+            public void StopGameplay();
+            public void UpdateCountdown(float remainingTime);
+            public void DisableProjectileSpawn();
+            public void FinishGame();
+            public void StartFinish();
+        }
 
+        private class MainController
+        {
+            #region States
+            
+            private enum States
+            {
+                None,
+                Initialize,
+                Countdown,
+                Playing,
+                Paused,
+                Finished,
+                SaveScore,
+                Disable
+            }
+            
+            private class BaseState<T> : State<T>
+            {
+                protected IController Controller { get; private set; }
+
+                public void Initialize(IController controller)
+                {
+                    this.Controller = controller;
+                }
+            }
+            private class InitializeState<T> : BaseState<T>
+            {
+                public override void Awake()
+                {
+                    Controller.InitializeData();
+                }
+            }
+            private class CountdownState<T> : BaseState<T>
+            {
+                private readonly float _countdownTime;
+
+                public CountdownState(float countdownTime)
+                {
+                    _countdownTime = countdownTime + 1;
+                }
+
+                private float _startTimer;
+                private float _lastDisplayedTimer;
+                
+                public override void Awake()
+                {
+                    _startTimer = _countdownTime;
+                    Controller.StartCountdown();
+                }
+
+                public override void Execute(float deltaTime)
+                {
+                    _startTimer -= deltaTime;
+                    int seconds = Mathf.CeilToInt(_startTimer);
+                    
+                    if (seconds != _lastDisplayedTimer)
+                    {
+                        _lastDisplayedTimer = seconds;
+                        
+                        Controller.UpdateCountdown(_startTimer);
+
+                        if (_startTimer <= 0)
+                        {
+                            Controller.FinishCountdown();
+                        }
+                    }
+                }
+            }
+            private class PlayingState<T> : BaseState<T>
+            {
+                public override void Awake()
+                {
+                    Controller.StartGameplay();
+                }
+
+                public override void Sleep()
+                {
+                    Controller.StopGameplay();
+                }
+            }
+            private class PausedState<T> : BaseState<T>
+            {
+                public override void Awake()
+                {
+                    Controller.PauseGame();
+                }
+            }
+            private class FinishedState<T> : BaseState<T>
+            {
+                public override void Awake()
+                {
+                    Controller.DisableProjectileSpawn();
+                    Controller.StartFinish();
+                }
+
+                public override void Sleep()
+                {
+                    Controller.FinishGame();
+                }
+            }
+            
+            private class SaveScoreState<T> : BaseState<T>
+            {
+                public override void Awake()
+                {
+                    Controller.DisableProjectileSpawn();
+                    Controller.SaveHighScoreValues();
+                    
+                }
+            }
+            private class DisableState<T> : BaseState<T>
+            {
+                public override void Awake()
+                {
+                    Controller.StartDisable();
+                }
+            }
+
+            #endregion
+            
+            private FSM<States> _fsm;
+            
+            private GameModeActionGate _actionGate;
+            private class GameModeActionGate : FsmActionGate<States>
+            {
+                public bool WasPaused { get; private set; }
+                public bool IsPaused { get; private set; }
+                public bool IsPlaying { get; private set; }
+                public bool HasSavedScore { get; private set; }
+
+                public GameModeActionGate(FSM<States> fsm) : base(fsm) { }
+                
+                protected override void OnEnterState(States state)
+                {
+                    IsPlaying = state == States.Playing;
+                    IsPaused = state == States.Paused;
+                }
+
+                protected override void OnExitState(States state)
+                {
+                    WasPaused = state == States.Paused;
+                    HasSavedScore = state == States.SaveScore;
+                }
+            }
+
+            public MainController(IController controller, IGameTimeData gameTimeData)
+            {
+                InitializeFsm(controller,gameTimeData);
+            }
+
+            public void Execute(float deltaTime)
+            {
+                _fsm?.Execute(deltaTime);
+            }
+
+            #region FSM
+            
+            private void InitializeFsm(IController controller, IGameTimeData gameTimeData)
+            {
+                var temp = new List<BaseState<States>>();
+                _fsm = new FSM<States>("GameMode");
+                _actionGate = new GameModeActionGate(_fsm);
+                
+    #if UNITY_EDITOR || DEVELOPMENT_BUILD
+                _fsm.CreateDebugGUI(1);
+    #endif
+
+                #region Variables
+
+                var none = new BaseState<States>();
+                var initialize = new InitializeState<States>();
+                var countdown = new CountdownState<States>(gameTimeData.StartGameCount);
+                var playing = new PlayingState<States>();
+                var paused = new PausedState<States>();
+                var finished = new FinishedState<States>();
+                var saveScore = new SaveScoreState<States>();
+                var disable = new DisableState<States>();
+                
+                temp.Add(none);
+                temp.Add(initialize);
+                temp.Add(countdown);
+                temp.Add(playing);
+                temp.Add(paused);
+                temp.Add(finished);
+                temp.Add(saveScore);
+                temp.Add(disable);
+                
+                #endregion
+
+                #region Transitions
+                
+                none.AddTransition(States.Initialize, initialize);
+                //
+                initialize.AddTransition(States.Countdown, countdown);
+                //
+                countdown.AddTransition(States.Playing, playing);
+                //
+                playing.AddTransition(States.Paused, paused);
+                playing.AddTransition(States.SaveScore, saveScore);
+                //
+                paused.AddTransition(States.Countdown, countdown);  
+                paused.AddTransition(States.Finished, finished);  
+                //
+                finished.AddTransition(States.Disable, disable);
+                //
+                saveScore.AddTransition(States.Disable, disable);
+                //
+                disable.AddTransition(States.Initialize, initialize);
+
+                #endregion
+
+                foreach (var state in temp)
+                {
+                    state.Initialize(controller);
+                }
+                
+                _fsm.SetInit(none);
+            }
+
+            #region Transitions
+
+            private void SetTransition(States state)
+            {
+                _fsm?.Transitions(state);
+            }
+            
+            public void TransitionToInitialize()
+            {
+                SetTransition(States.Initialize);
+            }
+
+            public void TransitionToCountDown()
+            {
+                SetTransition(States.Countdown);
+            }
+
+            public void TransitionToPlaying()
+            {
+                SetTransition(States.Playing);
+            }
+            
+            public void TransitionToPaused()
+            {
+                SetTransition(States.Paused);
+            }
+            
+            public void TransitionToFinished()
+            {
+                SetTransition(States.Finished);
+            }
+            
+            public void TransitionToDisable()
+            {
+                SetTransition(States.Disable);
+            }
+            
+            public void TransitionToSaveScore()
+            {
+                SetTransition(States.SaveScore);
+            }
+            
+            #endregion
+
+            #endregion
+
+            #region Public Getters
+
+            public bool GetWasPaused() => _actionGate.WasPaused;
+            public bool GetIsInGameplay() => _actionGate.IsPlaying;
+            public bool GetIsPaused() => _actionGate.IsPaused;
+
+            #endregion
+
+
+            public bool GetWasFinished() => _actionGate.HasSavedScore;
+        }
+        
+        #endregion
+        
+        private readonly GameModeMotor _motor;
+        private MainController _mainController;
+        
+        
         public GameModeController(GameModeMotor motor)
         {
             _motor = motor;
         }
 
-        public void Initialize()
+        public void InitializeController(IGameTimeData gameTimeData)
         {
-            InitializeFsm();
-            InitializeValues();
+            _mainController = new MainController(this,gameTimeData);
         }
 
         public void Execute(float deltaTime)
         {
-            _fsm?.Execute(deltaTime);
-        }
-
-        #region FSM
-
-        private void InitializeFsm()
-        {
-            var temp = new List<BaseState<States>>();
-            _fsm = new FSM<States>("GameMode");
-            _actionGate = new GameModeActionGate(_fsm);
-            
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _fsm.CreateDebugGUI(1);
-#endif
-
-            #region Variables
-
-            var none = new BaseState<States>();
-            var enable = new EnableState<States>();
-            var start = new StartState<States>();
-            var gameplay = new GameplayState<States>();
-            var finish = new FinishState<States>();
-            var death = new DeathState<States>();
-            var restart = new RestartState<States>();
-            var leaving = new LeavingState<States>();
-            var pause = new PauseState<States>(()=> _actionGate.WasAsleep);
-            var disable = new DisableState<States>();
-            var asleep = new AsleepState<States>();
-            var countDown = new CountdownState<States>();
-            
-            temp.Add(none);
-            temp.Add(enable);
-            temp.Add(start);
-            temp.Add(gameplay);
-            temp.Add(finish);
-            temp.Add(death);
-            temp.Add(restart);
-            temp.Add(leaving);
-            temp.Add(disable);
-            temp.Add(pause);
-            temp.Add(asleep);
-            temp.Add(countDown);
-
-            #endregion
-
-            #region Transitions
-            
-            none.AddTransition(States.Enable, enable);
-            //
-            enable.AddTransition(States.Start, start);
-            
-            start.AddTransition(States.Countdown, countDown);
-            
-            countDown.AddTransition(States.Gameplay, gameplay);
-            
-            gameplay.AddTransition(States.Finish, finish);
-            gameplay.AddTransition(States.Pause, pause);
-            
-            pause.AddTransition(States.Countdown, countDown);
-            pause.AddTransition(States.Leaving, leaving);
-            pause.AddTransition(States.Asleep, asleep);
-            asleep.AddTransition(States.Pause, pause);
-            
-            finish.AddTransition(States.Death, death);
-            
-            death.AddTransition(States.Restart, restart);
-            death.AddTransition(States.Disable, disable);
-            death.AddTransition(States.Leaving, leaving);
-            
-            restart.AddTransition(States.Start, start);
-            
-            leaving.AddTransition(States.Disable, disable);
-            
-            disable.AddTransition(States.Enable, enable);
-
-            #endregion
-
-            foreach (var state in temp)
-            {
-                state.Initialize(this);
-            }
-            
-            _fsm.SetInit(none);
-        }
-
-        #region Transitions
-
-        private void SetTransition(States state)
-        {
-            _fsm?.Transitions(state);
+            _mainController?.Execute(deltaTime);
         }
         
-        public void TransitionToEnable()
+        #region IController
+
+        public void StartDisable()
         {
-            if (_actionGate.IsAsleep)
+            _motor.StartDisable();
+        }
+
+        public void PauseGame()
+        {
+            _motor.PauseGame();
+        }
+        
+        public void InitializeData()
+        {
+            _motor.InitializeData();
+        }
+        
+        public void SaveHighScoreValues()
+        {
+            _motor.SaveScore();   
+        }
+        
+        public void FinishCountdown()
+        {
+            if (_mainController.GetWasPaused())
             {
-                SetTransition(States.Pause);
+                _motor.UnPauseGame();
             }
             else
             {
-                SetTransition(States.Enable);
+                _motor.EnableProjectileSpawn();
             }
-        }
-        
-        public void TransitionToDisable()
-        {
-            if (_actionGate.IsGoingToSleep)
-            {
-                SetTransition(States.Asleep);
-            }
-            else
-            {
-                SetTransition(States.Disable);
-            }
-        }
-
-        public void TransitionToStart()
-        {
-            SetTransition(States.Start);
-        }
-
-        public void TransitionToGameplay()
-        {
-            SetTransition(States.Gameplay);
-        }
-        
-        public void TransitionToFinish()
-        {
-            SetTransition(States.Finish);
-        }
-        
-        public void TransitionToDeath()
-        {
-            SetTransition(States.Death);
-        }
-        
-        public void TransitionToCountDown()
-        {
-            SetTransition(States.Countdown);
-        }
-        
-        public void TransitionToRestart()
-        {
-            SetTransition(States.Restart);
-        }
-        
-        public void TransitionToLeaving()
-        {
-            SetTransition(States.Leaving);
-        }
-        
-        public void TransitionToPause()
-        {
-            SetTransition(States.Pause);
-        }
-
-        #endregion
-
-        #endregion
-        
-        #region Motor
-        
-        #region Level 
-        
-        public void SetDoesRestartGameMode(bool doesRestart)
-        {
-            _motor.SetDoesRestartGameMode(doesRestart);
-        }
-
-        public void SetDoublePoints(bool isEnable)
-        {
-            if(_actionGate.IsInGameplay == false) return;
             
-            _motor.SetDoublePoints(isEnable);
+            _motor.FinishCountdown();
         }
         
-        public void SetEnable()
+        public void DisableProjectileSpawn()
         {
-            _motor.Enable();
+            _motor.DisableProjectileSpawn();
         }
-
-        public void SetCanPause(bool canPause)
-        {
-            _motor.SetCanPause(canPause);
-        }
-
+        
         public void StartCountdown()
         {
             _motor.StartCountdown();
         }
-
+        
         public void StartGameplay()
         {
-            if (_actionGate.DoesResume == false)
-            {
-                _motor.StartGameplay();
-            }
-        }
-
-        public void RestartValues()
-        {
-            _motor.RestartValues();
-        }
-
-        public void SetHighScore(float highScore)
-        {
-            _motor.SetHighScore(highScore);
+            _motor.StartGameplay();
         }
         
-        public void HandleGameFinish()
+        public void StopGameplay()
         {
-            _motor.HandleGameFinish();
+            _motor.StopGameplay();
         }
 
-        public void HandleCountdownTimer(float deltaTime)
+        public void FinishGame()
         {
-            _motor.HandleCountdownTimer(deltaTime);
+            _motor.FinishGame();
         }
 
-        public void GameRestart()
+        public void StartFinish()
         {
-            _motor.GameRestart();
+            _motor.StartFinish();
         }
 
-        public void Pause()
+        public void UpdateCountdown(float remainingTime)
         {
-            if (_actionGate.CanPause == false)
-            {
-                //Debug.Log("Cannot pause game");
-                return;
-            }
-            
-            _motor.PauseGame();
-        }
-        
-        public void UnPauseGame()
-        {
-            if(_actionGate.DoesResume == false)
-            {
-                //Debug.Log("Cannot unpause game");
-                return;
-            }
-            
-            _motor.UnPauseGame();
-        }
-        
-        public void DisableGameMode()
-        {
-            _motor.DisableGameMode();
-        }
-
-        private void InitializeValues()
-        {
-            _motor.InitializeValues();
-        }
-
-
-        #endregion
-
-        #region Earth
-
-        public void HandleEarthStartDestruction()
-        {
-            _motor.HandleEarthStartDestruction();
-        }
-
-        public void HandleEarthEndDestruction()
-        {
-            _motor.HandleEarthEndDestruction();
-        }
-        
-        public void HandleEarthShake()
-        {
-            _motor.HandleEarthShake();
-        }
-        
-        public void EarthRestartFinish()
-        {
-            _motor.EarthRestartFinish();
+            _motor.UpdateCountdown(remainingTime);
         }
 
         #endregion
 
-        #region Projectile
+        #region IGameModeController
+
+        #region Trantiions
+        public void TransitionToInitialize()
+        {
+            if (_mainController.GetIsPaused())
+            {
+                _mainController.TransitionToCountDown();
+
+            }
+            else
+            {
+                _mainController.TransitionToInitialize();
+            }
+        }
+
+        public void TransitionToCountDown()
+        {
+            _mainController.TransitionToCountDown();
+        }
+
+        public void TransitionToPlaying()
+        {
+            _mainController.TransitionToPlaying();
+        }
+
+        public void TransitionToPaused()
+        {
+            _mainController.TransitionToPaused();
+        }
+
+        public void TransitionToFinished()
+        {
+            _mainController.TransitionToFinished();
+        }
+
+        public void TransitionToDisable()
+        {
+            if (_mainController.GetIsPaused())
+            {
+                _motor.TriggerPause();
+
+            }
+            else
+            {
+                _mainController.TransitionToDisable();
+            }
+        }
         
+        public void TransitionToSaveScore()
+        {
+            _mainController.TransitionToSaveScore();
+        }
+
+        public void TriggerFinishAddingPoints()
+        {
+            if(_mainController.GetIsInGameplay())
+                _motor.TriggerFinishAddingPoints();
+        }
+
+        public void TriggerPauseMenu()
+        {
+            if(_mainController.GetIsPaused())
+                _motor.TriggerPauseMenu();
+        }
+
+        #endregion
+
+        public void ExecuteDisable()
+        {
+            if (_mainController.GetWasFinished())
+            {
+                _motor.TriggerEarthDestruction();
+            }
+
+            _motor.ExecuteDisable();
+        }
+
+        public void EnablePause()
+        {
+            _motor.EnablePause();
+        }
+
+        public void DisablePause()
+        {
+            _motor.DisablePause();
+        }
+
+        public void HandleMeteorDeflect(Vector2 position, byte projectileValue)
+        {
+            if(_mainController.GetIsInGameplay())
+                _motor.HandleMeteorDeflect(position, projectileValue);
+        }
+
         public void GrantProjectileSpawn(int projectileTypeIndex)
         {
-            if(_actionGate.IsInGameplay == false) return;
-            
-            _motor.GrantSpawnMeteor(projectileTypeIndex);
+            if(_mainController.GetIsInGameplay())
+                _motor.GrantProjectileSpawn(projectileTypeIndex);
         }
 
-        public void HandleProjectileDeflect(Vector2 position, float meteorDeflectValue)
+        public void SetDoublePoints(bool isActive)
         {
-            if(_actionGate.IsInGameplay == false) 
-                return;
-            
-            _motor.HandleMeteorDeflect(position, meteorDeflectValue);
+            _motor.SetDoublePoints(isActive);
         }
 
-        public void EnableMeteorSpawn()
-        {
-            if(_actionGate.CanEnableSpawn == false)
-            {
-                Debug.Log("Cannot enable spawn");
-                return;
-            }
+        #region Stats
 
-            _motor.SetEnableMeteorSpawn(true);
+        public void IncreaseCollisionCount()
+        {
+            if(_mainController.GetIsInGameplay())
+                return;
+            _motor.IncreaseCollisionCount();
         }
 
-        public void DisableMeteorSpawn()
+        public void IncreaseAbilityUseCount()
         {
-            if(_actionGate.CanDisableSpawn == false)
-            {
+            if(_mainController.GetIsInGameplay())
                 return;
-            }
-
-            _motor.SetEnableMeteorSpawn(false);
+            _motor.IncreaseAbilityUseCount();
+        }
+        
+        public void IncreaseDeflectCount()
+        {
+            if(_mainController.GetIsInGameplay())
+                return;
+            _motor.IncreaseDeflectCount();
         }
 
         #endregion
-        
-        #region Camera
 
-        public void HandleCameraZoomOut()
+        #region UI
+
+        public void DisableGameplayUI()
         {
-            if(_actionGate.IsInGameplay == false) 
-                return;
-            
-            _motor.HandleCameraZoomOut();
+            _motor.DisableGameplayUI();
         }
 
-        public void HandleCameraZoomIn()
+        public void EnableGameplayUI()
         {
-            if(_actionGate.IsInGameplay == false) 
-                return;
-            
-            _motor.HandleCameraZoomIn();
+            if(_mainController.GetIsInGameplay())
+                _motor.EnableGameplayUI();
         }
 
         #endregion
 
         #endregion
-
-        #region Screens
-
-        public void TriggerMainMenu()
-        {
-            _motor.TriggerMainMenu();
-        }
-        
-        public void SetGameplayPanel(bool isActive)
-        {
-            _motor.SetGameplayPanel(isActive);
-        }
-
-        public void SetPausePanel(bool isActive)
-        {
-            _motor.SetPausePanel(isActive);
-        }
-        
-        public void TriggerOptions()
-        {
-            _motor.TriggerOptions();
-        }
-
-        #endregion
-
-        public void Asleep()
-        {
-            _motor.Asleep();
-        }
-
-        public void Leaving()
-        {
-            _motor.Leaving();
-        }
-
-        public void SetToSleep()
-        {
-            _actionGate.IsGoingToSleep = true;
-        }
-
-        public void WakeUp()
-        {
-            _actionGate.IsGoingToSleep = false;
-        }
     }
-
-    #region States
-
-    public class BaseState<T> : State<T>
-    {
-        protected GameModeController Controller { get; private set; }
-
-        public void Initialize(GameModeController controller)
-        {
-            this.Controller = controller;
-        }
-    }
-    
-    public class EnableState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.SetEnable();
-        }
-    }
-    
-    public class DisableState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.DisableGameMode();
-        }
-    }
-    
-    public class DeathState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.HandleEarthEndDestruction();
-        }
-    }
-    
-    public class FinishState<T> : BaseState<T>
-    {
-        
-        public override void Awake()
-        {
-            Controller.HandleGameFinish();
-            Controller.HandleEarthStartDestruction();
-        }
-        
-    }
-    
-    public class GameplayState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.EnableMeteorSpawn();
-            Controller.SetGameplayPanel(true);
-        }
-
-        public override void Sleep()
-        {
-            Controller.SetGameplayPanel(false);
-            Controller.DisableMeteorSpawn();
-        }
-    }
-    
-    public class RestartState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.GameRestart();
-        }
-    }
-    
-    public class PauseState<T> : BaseState<T>
-    {
-        private IQueueAction _actionQueue;
-        private readonly Func<bool> _getWasAsleep;
-
-        public PauseState(Func<bool> getWasAsleep)
-        {
-            _getWasAsleep = getWasAsleep;
-        }
-
-        public override void Awake()
-        {
-            var actions = ActionBuilder.Start()
-                .Do(new InstantAction(() =>
-                {
-                    Controller.Pause();
-                    Controller.WakeUp();
-                }))
-                .Then(new WaitSecondsAction(0.25f))
-                .WrapLast(a=> new ConditionalWrapperAction(a,
-                    () => _getWasAsleep?.Invoke() == false))
-                .Then(new SetBoolAction(true,Controller.SetPausePanel))
-                .Build();
-
-            _actionQueue = actions;
-        }
-
-        public override void Execute(float deltaTime)
-        {
-            if (_actionQueue.CurrentStatus == ActionStatus.Running)
-            {
-                _actionQueue?.OnUpdate(deltaTime);
-            }
-        }
-
-        public override void Sleep()
-        {
-            Controller.SetPausePanel(false);
-        }
-    }
-    
-    public class LeavingState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.DisableMeteorSpawn();
-            Controller.Leaving();
-        }
-    }
-    
-    public class StartState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.RestartValues();
-            Controller.TransitionToCountDown();
-        }
-    }
-    
-    public class CountdownState<T> : BaseState<T>
-    {
-        private bool _enableCountdown;
-        
-        public override void Awake()
-        {
-            TimerManager.Add(new TimerData(0.25f, 
-                ()=> _enableCountdown = false,
-                ()=> _enableCountdown = true));
-            
-            Controller.StartCountdown();
-        }
-        
-        public override void Execute(float deltaTime)
-        {
-            if (_enableCountdown == false) return;
-            
-            Controller.HandleCountdownTimer(deltaTime);
-        }
-        
-        public override void Sleep()
-        {
-            Controller.StartGameplay();
-            Controller.UnPauseGame();
-        }
-    }
-    
-    public class AsleepState<T> : BaseState<T>
-    {
-        public override void Awake()
-        {
-            Controller.Asleep();
-        }
-    }
-
-    #endregion
 }

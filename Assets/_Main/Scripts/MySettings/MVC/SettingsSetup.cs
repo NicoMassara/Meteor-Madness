@@ -5,10 +5,12 @@ namespace _Main.Scripts.MySettings.MVC
 {
     [RequireComponent(typeof(SettingsView))]
     [RequireComponent(typeof(SettingsUiView))]
+    [RequireComponent(typeof(SettingsViewAnimation))]
     public class SettingsSetup : MonoBehaviour
     {
         private SettingsView _view;
         private SettingsUiView _ui;
+        private SettingsViewAnimation _animator;
         private SettingsMotor _motor;
 
         private void Awake()
@@ -17,54 +19,30 @@ namespace _Main.Scripts.MySettings.MVC
             
             _view = GetComponent<SettingsView>();
             _ui = GetComponent<SettingsUiView>();
+            _animator = GetComponent<SettingsViewAnimation>();
             
             _motor.Subscribe(_view);
             _motor.Subscribe(_ui);
+            _motor.Subscribe(_animator);
             
+            SetViewHandlers();
             
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
-        
-        private void Start()
-        {
-            SetViewHandlers();
-            SetUIHandlers();
-        }
 
         private void SetViewHandlers()
         {
-            _view.OnEnable += () =>
-            {
-                _motor.Initial();
-            };
+            _view.OnEnable += () => _motor.Initial();
+            //
+            _ui.OnVolumeChanged += (value) => _motor.Volume(value);
+            _ui.OnLanguageChanged += (value) => _motor.Language(value);
+            _ui.OnVibrationChanged += (value) => _motor.Vibration(value);
+            _ui.OnBackButtonPressed += () => _motor.Close();
+            //
+            _animator.OnPanelClosed += () => _motor.ExecuteDisable();
         }
-
-        private void SetUIHandlers()
-        {
-            _ui.OnVolumeChanged += (value) =>
-            {
-                _motor.Volume(value);
-            };
-            
-            _ui.OnLanguageChanged += (value) =>
-            {
-                _motor.Language(value);
-            };
-            
-            _ui.OnVibrationChanged += (value) =>
-            {
-                _motor.Vibration(value);
-            };
-            
-            _ui.OnBackButtonPressed += () =>
-            {
-                _motor.Close();
-            };
-        }
-
-
-
+        
         #region Event Bus
 
         #region GameScreen
@@ -75,7 +53,7 @@ namespace _Main.Scripts.MySettings.MVC
             
             if (input.RequestType == EventRequestType.Requested)
             {
-                _motor.Disable();
+                _motor.StartDisable();
             }
         }
 

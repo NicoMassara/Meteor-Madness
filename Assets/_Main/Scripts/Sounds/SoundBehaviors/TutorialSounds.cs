@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Sounds.Components
 {
-    public class TutorialSounds : SoundBehaviour<ITutorialSounds>
+    public class TutorialSounds : MusicBehavior<ITutorialSounds>
     {
         [SerializeField] private SoundClassSo music;
 
@@ -12,14 +12,15 @@ namespace _Main.Scripts.Sounds.Components
 
         private void Start()
         {
-            GetComponentToSound.OnTutorialEnable += () =>
+            ComponentToSound.OnTutorialEnable += () =>
             {
+                StopAllMusic();
                 _musicId = PlaySound(music);
             };
             
-            GetComponentToSound.OnTutorialFinished += () =>
+            ComponentToSound.OnTutorialFinished += () =>
             {
-                StopSound(_musicId);
+                StopAllMusic();
             };
         }
     }

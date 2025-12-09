@@ -4,7 +4,6 @@ using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyComponents;
 using _Main.Scripts.MySettings;
-using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -20,7 +19,7 @@ namespace _Main.Scripts.Sounds
         UI
     }
     
-    public class SoundManager : SingletonManagedBehaviour<SoundManager>, IUpdatable
+    public class SoundManager : ManagedBehavior, IUpdatable
     {
         #region Tools
         private class MusicController
@@ -205,7 +204,7 @@ namespace _Main.Scripts.Sounds
             public SoundGenerator(SoundSource prefab)
             {
                 _factory = new SoundBehaviourFactory(prefab);
-                _idGenerator = new CustomIdGenerator();
+                _idGenerator = new CustomIdGenerator(50);
             }
 
             public Tuple<GeneratedId,ITrackedAudio> Create(ISoundData soundData, Transform transform)
@@ -237,8 +236,8 @@ namespace _Main.Scripts.Sounds
             
                 sound.OnFinished -= Return;
             
-                _idGenerator.Release(id);
                 _soundsDic.Remove(id);
+                id.Reset();
                 _idsDic.Remove(sound);
             }
         }
@@ -388,9 +387,15 @@ namespace _Main.Scripts.Sounds
         private UIDefaultSounds _uiDefaultSounds;
         private SoundGenerator _soundGenerator;
         private MusicController _musicController;
+        private bool _hasInitialized;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         public TickGroup SelfTickGroup { get; } = TickGroup.QuarterTarget;
+
+
+        public static SoundManager Instance => _instance;
+        protected static SoundManager _instance;
+        
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -398,10 +403,41 @@ namespace _Main.Scripts.Sounds
         
 #endif
         
-        private void Start()
+        private void MakeSingleton()
         {
+            if (_instance == null)
+            {
+                _instance = this;
+                DontDestroyOnLoad(this);
+            }
+            else
+            {
+                Destroy(_instance);
+            }
+        }
+
+        protected void Awake()
+        {
+            MakeSingleton();
+            
+            BootEvents.OnMainSystemRequestInitialize += Initialize;
+        }
+
+        private void Initialize()
+        {
+            BootEvents.OnMainSystemRequestInitialize -= Initialize;
+            //
             _uiDefaultSounds = new UIDefaultSounds();
-            _soundGenerator = new SoundGenerator(soundPrefab);
+
+            if (soundPrefab == null)
+            {
+                Debug.Log("Prefab Reference is null");
+            }
+            else
+            {
+                _soundGenerator = new SoundGenerator(soundPrefab);
+            }
+            
             _musicController = new MusicController();
 
             SetMainVolume(SettingsManager.Instance.GetMasterVolume());
@@ -417,10 +453,15 @@ namespace _Main.Scripts.Sounds
             };
             
 #endif
+
+            BootEvents.MainSystemInitialized();
+            _hasInitialized = true;
         }
         
         public void ExecuteUpdate(float deltaTime)
         {
+            if(_hasInitialized == false) return;
+            
             _playbackTracker.Execute();
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

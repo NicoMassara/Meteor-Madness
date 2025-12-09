@@ -10,6 +10,7 @@ namespace _Main.Scripts.FiniteStateMachine
         public T CurrentState { get; set; }
         public T LastState { get; set; }
         public string FSMName { get; private set; }
+
         public event Action<T> OnEnterState;
         public event Action<T> OnExitState;
         public event Action<T> OnNewState;
@@ -80,12 +81,9 @@ namespace _Main.Scripts.FiniteStateMachine
             
             _current.Sleep();
             _current = newState;
-            _current.Awake();
             CurrentState = input;
-            /*Debug.Log($"{FSMName} Curren State->{CurrentState} : " +
-                      $"Last State->{LastState} : " +
-                      $"At->{Time.realtimeSinceStartup}");*/
             OnEnterState?.Invoke(CurrentState);
+            _current.Awake();
         }
     }
     

@@ -11,7 +11,7 @@ namespace _Main.Scripts.MainMenu.MVC
         IMainMenuSounds
     {
         public event Action OnMainMenuEnable;
-        
+
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -44,6 +44,7 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             OnMainMenuEnable?.Invoke();
             CameraEventCaller.ZoomIn(0.5f);
+            EarthEventCaller.DisableDamage();
         }
         
         private void HandleDisable()

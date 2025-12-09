@@ -26,5 +26,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Main/Scenes/Modules/OptionsModule.unity
     guid: 74b1b077df17b904ab06c6e532c24b68
+  - enabled: 1
+    path: Assets/_Main/Scenes/Modules/MultiPageModule.unity
+    guid: 8f44e7350862e36458c82d58db9870ae
+  - enabled: 1
+    path: Assets/_Main/Scenes/Modules/DefeatModule.unity
+    guid: 3db65bab40138df46848a258065ebffc
+  - enabled: 1
+    path: Assets/_Main/Scenes/Modules/PauseModule.unity
+    guid: 77b886123216641499e14b11e68975f1
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

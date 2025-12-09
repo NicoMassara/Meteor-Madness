@@ -3,6 +3,7 @@
     public interface IGameUIConfig
     {
         public float GameplayPointsTimeToIncrease { get; }
+        public float GameplayPointsIncreaseDelay { get; }
         public float ClosePauseMenu { get; }
         public IDeathUITime DeathUITimeData { get; }
     }

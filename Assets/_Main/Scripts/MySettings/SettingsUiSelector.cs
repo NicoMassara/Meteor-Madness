@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.MySettings
 {
-    public class SettingsUiSelector :  UiPanelSelector<SettingsUiComponents> { }
+    public class SettingsUiSelector :  UiComponentsSelector<SettingsUiComponents> { }
     
     [Serializable]
     public class SettingsUiComponents : UiComponentsData

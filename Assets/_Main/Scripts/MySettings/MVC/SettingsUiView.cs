@@ -35,8 +35,6 @@ namespace _Main.Scripts.MySettings.MVC
 
         private void HandleEnable()
         {
-            GetUiComponents().MainPanel.SetActive(true);
-            //
             GetUiComponents().BackButton.onClick.AddListener(() => OnBackButtonPressed?.Invoke());
             GetUiComponents().VolumeSlider.OnChanged += OnVolumeChanged;
 #if UNITY_ANDROID
@@ -54,8 +52,6 @@ namespace _Main.Scripts.MySettings.MVC
             GetUiComponents().VibrationToggle.OnChanged -= OnVibrationChanged;
 #endif
             GetUiComponents().LanguageSelector.OnChanged -= OnLanguageChanged;
-            //
-            GetUiComponents().MainPanel.SetActive(false);
         }
         
         private SettingsUiComponents GetUiComponents()

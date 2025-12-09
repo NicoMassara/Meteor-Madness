@@ -15,16 +15,14 @@ namespace _Main.Scripts.Tutorial.MVC
         private const string ShieldHintCode = "Tutorial.Hint.Shield";
         private TutorialUiComponents _uiComponents;
 
-        private GameObject _currentActivePanel;
-        public event Action OnStartButtonPressed;
+        public event Action OnHintTextEnable;
+        public event Action OnHintTextDisable;
+        
         
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
-                case TutorialObserverMessage.Start:
-                    HandleStart();
-                    break;
                 case TutorialObserverMessage.Movement:
                     HandleMovement();
                     break;
@@ -40,12 +38,6 @@ namespace _Main.Scripts.Tutorial.MVC
                 case TutorialObserverMessage.AbilityRunning:
                     HandleAbilityRunning();
                     break;
-                case TutorialObserverMessage.Disable:
-                    HandleDisable();
-                    break;
-                case TutorialObserverMessage.Enable:
-                    HandleEnable();
-                    break;
             }
         }
         
@@ -55,8 +47,8 @@ namespace _Main.Scripts.Tutorial.MVC
         }
 
         private void HandleAbilityRunning()
-        {
-            DisableActivePanel();
+        { 
+            OnHintTextDisable?.Invoke();
         }
 
         private void HandleSphereDeflected()
@@ -64,22 +56,9 @@ namespace _Main.Scripts.Tutorial.MVC
             SetHintText(GetLocalizedText(ShieldHintCode));
         }
 
-        private void HandleStart()
-        {
-            // Structure has changed, easiest and fastest way to do it
-            // This works to auto start tutorial without changing to much code
-            // and breaking anything
-            OnStartButtonPressed?.Invoke();
-        }
-
         private void HandleMultiPage()
         {
-            DisableActivePanel();
-        }
-
-        private void HandleEnable()
-        {
-            GetUiComponents().MainPanel.SetActive(true);
+            OnHintTextDisable?.Invoke();
         }
         
         private void HandleMovement()
@@ -91,30 +70,11 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             SetHintText(GetLocalizedText(AbilityHintCode));
         }
-        
-        private void HandleDisable()
-        {
-            DisableActivePanel();
-            GetUiComponents().MainPanel.SetActive(false);
-        }
 
         private void SetHintText(string text)
         {
             GetUiComponents().HintText.text = text;
-            SetActivePanel(GetUiComponents().HintPanel);
-        }
-
-        private void SetActivePanel(GameObject input)
-        {
-            _currentActivePanel?.SetActive(false);
-            _currentActivePanel = input;
-            _currentActivePanel?.SetActive(true);
-        }
-
-        private void DisableActivePanel()
-        {
-            _currentActivePanel?.SetActive(false);
-            _currentActivePanel = null;
+            OnHintTextEnable?.Invoke();
         }
 
         private string GetLocalizedText(string key)

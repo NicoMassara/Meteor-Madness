@@ -45,7 +45,7 @@ namespace _Main.Scripts
 
         private void Deflect()
         {
-            ProjectileEventCaller.Deflected(new DeflectData{Value = 1f});
+            ProjectileEventCaller.Deflected(new DeflectData{Value = 100});
         }
 
         private void ChangeTimeScale()
@@ -54,6 +54,20 @@ namespace _Main.Scripts
             
             CustomTime.GlobalTimeScale = _timeScaleHalved ? 1f : 0.1f;
             CustomTime.GlobalFixedTimeScale = _timeScaleHalved ? 1f : 0.1f;
+        }
+
+        private void DisableShieldType()
+        {
+            ShieldEventSubscriber.NotifyShieldTypeDisabled((value) =>
+            {
+                ShieldEventCaller.Disable();
+            });
+            ShieldEventCaller.RequestDisableShieldType(ShieldType.None);
+        }
+
+        private void DisableAbility()
+        {
+            AbilitiesEventCaller.Disable();
         }
         
     }

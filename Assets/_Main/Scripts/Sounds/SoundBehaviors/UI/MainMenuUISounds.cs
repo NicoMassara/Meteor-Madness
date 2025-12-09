@@ -8,15 +8,15 @@ namespace _Main.Scripts.Sounds.Components
         
         private void Start()
         {
-            GetComponentToSound.OnConfirmButtonClicked += () =>
+            ComponentToSound.OnConfirmButtonClicked += () =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
-            GetComponentToSound.OnCancelButtonClicked += () =>
+            ComponentToSound.OnCancelButtonClicked += () =>
             {
                 PlayUISound(UISoundType.Default);
             };
-            GetComponentToSound.OnBackButtonClicked += () =>
+            ComponentToSound.OnBackButtonClicked += () =>
             {
                 PlayUISound(UISoundType.Back);
             };

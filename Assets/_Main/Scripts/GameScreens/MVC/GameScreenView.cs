@@ -1,4 +1,6 @@
-﻿using _Main.Scripts.Observer;
+﻿using System;
+using _Main.Scripts.Managers;
+using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -22,10 +24,21 @@ namespace _Main.Scripts.GameScreens
 #endif
         }
 
+        private void Start()
+        {
+            if (GameManager.Instance.HadCorruptedSaveData)
+            {
+                Debug.LogWarning("Save data was corrupted, new save files were created!");
+            }
+        }
+
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
+                case GameScreenObserverMessage.ZoomIn:
+                    HandleZoomIn();
+                    break;
                 case GameScreenObserverMessage.DisableScreen:
                     HandleDisableScreen((int)args[0]);
                     break;
@@ -34,7 +47,12 @@ namespace _Main.Scripts.GameScreens
                     break;
             }
         }
-        
+
+        private void HandleZoomIn()
+        {
+            CameraEventCaller.ZoomIn(1f);
+        }
+
         private void HandleDisableScreen(int currentScreenIndex)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

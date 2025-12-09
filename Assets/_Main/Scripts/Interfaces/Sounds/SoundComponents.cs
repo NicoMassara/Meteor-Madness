@@ -94,23 +94,17 @@ namespace _Main.Scripts.Interfaces.Sounds
     
     public interface IGameModeSounds : ISoundComponent
     {
-        public event Action OnGameModeFinished;
+        public event Action OnInitialized;
         public event Action OnCountDownStarted;
-        public event Action OnCountdownFinished;
-        public event Action OnCountdownUpdated;
+        public event Action<float> OnCountdownUpdated;
         public event Action OnCountdownUpdatedFinished;
-        public event Action<bool> OnGameModePaused;
         public event Action OnStopMusic;
+        public event Action OnPlayMusic;
     }
 
     public interface IGameModeUISounds : ISoundComponent
     {
-        public event Action OnMainMenuButtonPressed;
-        public event Action OnRestartButtonPressed;
         public event Action OnPauseButtonPressed;
-        public event Action OnResumeButtonPressed;
-        public event Action OnOptionsButtonPressed;
-        public event Action OnPointsAdded;
     }
     
     // Cosmetics
@@ -118,5 +112,19 @@ namespace _Main.Scripts.Interfaces.Sounds
     public interface ICosmeticUISounds : ISoundComponent
     {
         public event Action OnMainMenuButtonPressed;
+    }
+    
+    // Defeat
+    
+    public interface IDefeatAnimationSounds : ISoundComponent
+    {
+        public event Action OnPlayMusic;
+        public event Action OnStopMusic;
+    }
+
+    public interface IDefeatUiSounds : ISoundComponent
+    {
+        public event Action OnMainMenuButtonPressed;
+        public event Action OnRestartButtonPressed;
     }
 }

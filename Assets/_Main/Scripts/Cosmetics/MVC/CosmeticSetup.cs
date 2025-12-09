@@ -7,10 +7,12 @@ namespace _Main.Scripts.Cosmetics.MVC
 {
     [RequireComponent(typeof(CosmeticView))]
     [RequireComponent(typeof(CosmeticUIView))]
+    [RequireComponent(typeof(CosmeticViewAnimation))]
     public class CosmeticSetup : ManagedBehavior
     {
         private CosmeticView _view;
         private CosmeticUIView _ui;
+        private CosmeticViewAnimation _animation;
         private CosmeticController _controller;
         private CosmeticMotor _motor;
 
@@ -22,14 +24,14 @@ namespace _Main.Scripts.Cosmetics.MVC
             
             _view = GetComponent<CosmeticView>();
             _ui = GetComponent<CosmeticUIView>();
+            _animation = GetComponent<CosmeticViewAnimation>();
             
             _motor.Subscribe(_view);
-            _motor.Subscribe(_ui);
+            _motor.Subscribe(_animation);
             
             _controller.InitializeValues();
             
             SetViewHandlers();
-            SetUIViewHandlers();
             
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
@@ -48,19 +50,19 @@ namespace _Main.Scripts.Cosmetics.MVC
         }
 
         #region View Handlers
+        
 
-        private void SetUIViewHandlers()
+        private void SetViewHandlers()
         {
+            _view.OnCosmeticEnable += ()=> _controller.TransitionToInitial();
+            //
             _ui.OnMainMenuButtonPressed += () => { _controller.TriggerMainMenu();};
             _ui.OnSkinSelected += (value) =>
             {
                 _motor.SelectAbility(value);
             };
-        }
-
-        private void SetViewHandlers()
-        {
-            _view.OnCosmeticEnable += ()=> _controller.TransitionToInitial();
+            //
+            _animation.OnPanelClosed += () => _controller.ExecuteDisable();
         }
 
         #endregion
