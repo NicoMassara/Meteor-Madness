@@ -229,7 +229,7 @@ namespace _Main.Scripts
         
         public static void DestructionFinished(Action<EarthEvents.DestructionFinished> action)
         {
-            GameEventCaller.Subscribe(action);
+            GameEventCaller.Unsubscribe(action);
         }
         
         public static void Death(Action<EarthEvents.Death> action)
@@ -247,7 +247,6 @@ namespace _Main.Scripts
     
     #region Shield
     
-
     public static class ShieldEventCaller
     {
         public static void RequestEnableShieldType(ShieldType type)
@@ -274,7 +273,6 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new ShieldEvents.Enable());
         }
-        
         public static void Disable()
         {
             GameEventCaller.Publish(new ShieldEvents.Disable());
@@ -659,12 +657,12 @@ namespace _Main.Scripts
     {
         public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
         {
-            ProjectileEventSubscriber.GrantSpawn(action);
+            ProjectileEventUnSubscriber.GrantSpawn(action);
         }
         
         public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
         {
-            ProjectileEventSubscriber.RequestSpawn(action);
+            ProjectileEventUnSubscriber.RequestSpawn(action);
         }
         
         public static void SpawnRing(Action<MeteorEvents.SpawnRing> action)
@@ -681,7 +679,6 @@ namespace _Main.Scripts
     #endregion
     
     #region Particle
-    
 
     public static class ParticleEventCaller
     {
@@ -720,7 +717,6 @@ namespace _Main.Scripts
     
     #region Camera
     
-
     public static class CameraEventCaller
     {
         public static void ZoomIn(float timeToZoom = 0.5f)
@@ -1209,6 +1205,4 @@ namespace _Main.Scripts
     }
     
     #endregion
-    
-    
 }
