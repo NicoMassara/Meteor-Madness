@@ -1,7 +1,6 @@
 ﻿using _Main.Scripts.FlyingObject;
 using _Main.Scripts.Managers;
 using UnityEngine;
-using NicolasMassara.CustomTimerManager.Tools;
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using Random = UnityEngine.Random;
@@ -20,13 +19,22 @@ namespace _Main.Scripts.Comet
         
         private GenericPool<CometView> _pool;
         private bool _isBottomSpawn;
-        private TimerGeneratedId _spawnTimerId;
+        private TimerManager.GeneratedId _spawnTimerId;
 
-        private void Start()
+        private void Awake()
         {
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
+        }
+
+        private void Initialize()
+        {            
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
+            //
             _pool = new GenericPool<CometView>(cometPrefab, 1, 5);
             
             SetTimer(GameConfigManager.Instance.GetGameplayData().GameTimeData.FirstCometSpawnDelay);
+            
+            BootEvents.SubSystemInitialized();
         }
 
         private void SetTimer(float spawnDelay)

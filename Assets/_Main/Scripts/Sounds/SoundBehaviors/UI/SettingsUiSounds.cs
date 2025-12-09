@@ -1,5 +1,4 @@
 ﻿using _Main.Scripts.Interfaces.Sounds;
-using _Main.Scripts.Sounds;
 
 namespace _Main.Scripts.Sounds.Components
 {
@@ -7,26 +6,26 @@ namespace _Main.Scripts.Sounds.Components
     {
         private void Start()
         {
-            GetComponentToSound.OnVolumeChanged += (value) =>
+            ComponentToSound.OnVolumeChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
             
-            GetComponentToSound.OnLanguageChanged += (value) =>
+            ComponentToSound.OnLanguageChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
             
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID
             
-            GetComponentToSound.OnVibrationChanged += (value) =>
+            ComponentToSound.OnVibrationChanged += (value) =>
             {
                 PlayUISound(UISoundType.Confirm);
             };
 
 #endif
             
-            GetComponentToSound.OnBackButtonPressed += () =>
+            ComponentToSound.OnBackButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Back);
             };

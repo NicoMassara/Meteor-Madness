@@ -1,15 +1,13 @@
-﻿using _Main.Scripts.Observer;
+﻿using System;
+using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Shield
 {
     public class ShieldMotor : ObservableComponent
     {
-        private float _lastDirection;
-        private bool _isTotalActive;
-        private bool _isGolden;
-        private bool _isAutomatic;
-        private bool _isSlow;
+        private float _lastDirection = Mathf.Infinity;
+        private ShieldType _currentShieldType;
 
         #region Movement
         public void Rotate(float direction = 1)
@@ -30,31 +28,22 @@ namespace _Main.Scripts.Gameplay.Shield
             NotifyAll(ShieldObserverMessage.StopRotate);
         }
         
-        public void SetActiveSuperShield(bool isActive)
-        {
-            _isTotalActive = isActive;
-            NotifyAll(ShieldObserverMessage.SetActiveSuperShield,_isTotalActive);
-        }
-
-        public void ForceRotate(float direction = 1)
-        {
-            NotifyAll(ShieldObserverMessage.Rotate, direction);
-        }
-
-        public void RestartPosition()
-        {
-            NotifyAll(ShieldObserverMessage.RestartPosition);
-        }
 
         #endregion
 
-        #region Sprites
-
-        public void SetActiveShield(bool isActive)
+        #region Enable/Disable
+        
+        public void EnableShield()
         {
-            NotifyAll(ShieldObserverMessage.SetActiveShield, isActive);
+            NotifyAll(ShieldObserverMessage.SetActiveShield, true);
         }
 
+        public void DisableShield()
+        {
+            NotifyAll(ShieldObserverMessage.SetActiveShield, false);
+            NotifyAll(ShieldObserverMessage.RestartPosition);
+        }
+        
         #endregion
 
         public void HandleHit(Vector3 position, Quaternion rotation, Vector2 direction)
@@ -62,22 +51,38 @@ namespace _Main.Scripts.Gameplay.Shield
             NotifyAll(ShieldObserverMessage.Deflect,position, rotation, direction);
         }
 
-        public void SetActiveGold(bool isActive)
+        #region Ability
+
+        public void SetAbility(ShieldType ability)
         {
-            _isGolden = isActive;
-            NotifyAll(ShieldObserverMessage.SetGold,_isGolden);
+            if(ability == ShieldType.None 
+               && _currentShieldType == ShieldType.None) return;
+            
+            if (ability == ShieldType.None)
+            {
+                NotifyAll(GetAbilityMessage(_currentShieldType), false);
+                _currentShieldType = ShieldType.None;
+            }
+            else
+            {
+                NotifyAll(GetAbilityMessage(ability), true);
+                _currentShieldType = ability;
+            }
         }
 
-        public void SetActiveAutomatic(bool isActive)
+        private ulong GetAbilityMessage(ShieldType ability)
         {
-            _isAutomatic = isActive;
-            NotifyAll(ShieldObserverMessage.SetAutomatic,_isAutomatic);
+#pragma warning disable CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
+            return ability switch
+#pragma warning restore CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
+            {
+                ShieldType.Super => ShieldObserverMessage.SetActiveSuperShield,
+                ShieldType.Gold => ShieldObserverMessage.SetGold,
+                ShieldType.Automatic => ShieldObserverMessage.SetAutomatic,
+                ShieldType.Slow => ShieldObserverMessage.SetSlow,
+            };
         }
-
-        public void SetActiveSlow(bool isActive)
-        {
-            _isSlow = isActive;
-            NotifyAll(ShieldObserverMessage.SetSlow,_isSlow);
-        }
+        
+        #endregion
     }
 }

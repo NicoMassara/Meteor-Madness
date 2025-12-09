@@ -11,29 +11,9 @@ namespace _Main.Scripts.Sounds.Components
         
         private void Start()
         {
-            GetComponentToSound.OnMainMenuButtonPressed += () =>
-            {
-                PlayUISound(UISoundType.Back);
-            };
-            GetComponentToSound.OnRestartButtonPressed += () =>
-            {
-                PlayUISound(UISoundType.Default);
-            };
-            GetComponentToSound.OnResumeButtonPressed += () =>
+            ComponentToSound.OnPauseButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Confirm);
-            };
-            GetComponentToSound.OnPauseButtonPressed += () =>
-            {
-                PlayUISound(UISoundType.Confirm);
-            };
-            GetComponentToSound.OnOptionsButtonPressed += () =>
-            {
-                PlayUISound(UISoundType.Confirm);
-            };
-            GetComponentToSound.OnPointsAdded += () =>
-            {
-                PlaySound(pointsAdded);
             };
         }
     }

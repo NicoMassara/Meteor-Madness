@@ -5,19 +5,25 @@ namespace _Main.Scripts.CustomId
 {
     public class GeneratedId
     {
-        internal ulong Id { get; private set; }
-        public bool IsValid { get; private set; } = true;
+        internal ushort Id { get; private set; }
+        public bool IsValid => Id > 0;
 
-        public GeneratedId(ulong value) => Id = value;
+        private event Action<GeneratedId> _onRelease;
 
-        internal void Invalidate()
+        public GeneratedId(ushort id, Action<GeneratedId> onRelease)
         {
-            IsValid = false;
+            Id = id;
+            _onRelease = onRelease;
         }
 
-        public ulong GetId()
+        public void Reset()
         {
-            return IsValid ? Id : 0;
+            Id = 0;
+        }
+
+        public ushort GetId()
+        {
+            return (ushort)(IsValid ? Id : 0);
         }
 
         public override string ToString() => IsValid ? Id.ToString() : "[INVALIDATED]";
@@ -25,54 +31,47 @@ namespace _Main.Scripts.CustomId
     
     public class CustomIdGenerator
     {
-        private const ulong NullId = 0;
-        private readonly HashSet<ulong> _inUseId = new HashSet<ulong>();
-        
-        private readonly System.Random random = new System.Random();
+        private const ushort NullId = 0; // Default ID used as null
 
+        private readonly HashSet<ushort> _inUseId;// IDs currently in use
+        private ushort _nextId = 1; // Start from 1 (0 = NullId)
+        
+        public CustomIdGenerator(int initialSize = 10)
+        {
+            initialSize = Math.Clamp(initialSize, 0, ushort.MaxValue);
+            _inUseId = new HashSet<ushort>(initialSize);
+        }
+
+        /// <summary>
+        /// Generates an incremental GeneratedId
+        /// </summary>
         public GeneratedId Generate()
         {
-            ulong value;
-            int attempts = 0;
+            if (_inUseId.Count >= ushort.MaxValue - 1)
+                throw new InvalidOperationException("All available IDs are in use.");
 
-            do
+            // Find the next free ID
+            while (_inUseId.Contains(_nextId) || _nextId == NullId)
             {
-                value = NextUlong();
-                attempts++;
+                _nextId++;
 
-                if (attempts > 100)
-                {
-                    break;
-                }
+                if (_nextId == ushort.MaxValue)
+                    _nextId = 1; // Wrap around if overflow
+            }
 
-            } while (_inUseId.Contains(value));
-
+            ushort value = _nextId;
             _inUseId.Add(value);
-            
-            return new GeneratedId(value);
+            _nextId++;
+
+            return new GeneratedId(value, Release);
+        }
+
+        private void Release(GeneratedId idData)
+        {
+            _inUseId.Remove(idData.Id);
+            idData.Reset();
         }
         
-        private ulong NextUlong()
-        {
-            ulong value;
-
-            do
-            {
-                byte[] bytes = new byte[8];
-                random.NextBytes(bytes);
-                value = BitConverter.ToUInt64(bytes, 0);
-
-            } while (value == NullId);
-
-            return value;
-        }
-        
-        public void Release(GeneratedId generatedId)
-        {
-            if (generatedId == null) return;
-    
-            generatedId.Invalidate();
-            _inUseId.Remove(generatedId.Id);
-        }
     }
+    
 }

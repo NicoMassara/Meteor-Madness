@@ -11,7 +11,7 @@ namespace _Main.Scripts.InspectorTools
     {
         [SerializeField] private TestSaveData saveData;
         [SerializeField] private TestSaveData loadedSaveData;
-        [SerializeField] private SaveDataType saveDataToClear;
+        [SerializeField] private DataManager.SaveDataType saveDataToClear;
         
         public void Save()
         {
@@ -26,20 +26,20 @@ namespace _Main.Scripts.InspectorTools
         
         public void Load()
         {
-            loadedSaveData = DataManager.Instance.GetData<TestSaveData>(SaveDataType.Test);
+            loadedSaveData = DataManager.Instance.GetData<TestSaveData>(DataManager.SaveDataType.Test);
         }
 
         public void Clear()
         {
             loadedSaveData = null;
-            DataManager.Instance.ClearSaveData<TestSaveData>(saveDataToClear);
+            DataManager.Instance.ClearSaveData();
         }
     }
 
     [System.Serializable]
-    public class TestSaveData : SaveDataBase
+    public class TestSaveData : DataManager.SaveDataBase
     {
-        public override SaveDataType Type => SaveDataType.Test;
+        public override DataManager.SaveDataType Type => DataManager.SaveDataType.Test;
         public int Score;
         public int HighScore;
         public string PlayerName;

@@ -23,15 +23,17 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         private void Awake()
         {
 #if !UNITY_ANDROID || !UNITY_IOS
-            SetActiveImage(clockwiseImage, false);
-            SetActiveImage(counterClockwiseImage, false);
+            
+            SetEnablePanel(false);
+            
+            SetEnableImage(clockwiseImage, false);
+            SetEnableImage(counterClockwiseImage, false);
 #endif
         }
 
         public void OnNotify(ulong message, params object[] args)
         {
 #if UNITY_ANDROID
-            
 
             switch (message)
             {
@@ -59,17 +61,17 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         
         private void HandleEnableClock(bool isActive)
         {
-            SetActiveImage(clockwiseImage, isActive);
+            SetEnableImage(clockwiseImage, isActive);
         }
 
         private void HandleEnableCounterClock(bool isActive)
         {
-            SetActiveImage(counterClockwiseImage, isActive);
+            SetEnableImage(counterClockwiseImage, isActive);
         }
         
         private void HandleSetEnableUI(bool isEnable)
         {
-            imageContainer.SetActive(isEnable);
+            SetEnablePanel(isEnable);
         }
         private void HandleInitialize(ITouchInputData touchInputData)
         {
@@ -123,7 +125,12 @@ namespace _Main.Scripts.Gameplay.MyInputs.MVC
         }
 #endif
 
-        private void SetActiveImage(Image image, bool isActive)
+        private void SetEnablePanel(bool isActive)
+        {
+            imageContainer.SetActive(isActive);
+        }
+
+        private void SetEnableImage(Image image, bool isActive)
         {
             if (image == null) return;
             

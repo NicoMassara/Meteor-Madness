@@ -6,7 +6,7 @@ namespace _Main.Scripts.Sounds.Components
     {
         private void Start()
         {
-            GetComponentToSound.OnMainMenuButtonPressed += () =>
+            ComponentToSound.OnMainMenuButtonPressed += () =>
             {
                 PlayUISound(UISoundType.Back);
             };

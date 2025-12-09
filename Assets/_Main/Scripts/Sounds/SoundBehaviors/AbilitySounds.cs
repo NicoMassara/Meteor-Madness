@@ -14,19 +14,19 @@ namespace _Main.Scripts.Sounds.Components
         
         private void Start()
         {
-            GetComponentToSound.OnAbilityAdded += () =>
+            ComponentToSound.OnAbilityAdded += () =>
             {
                 PlaySound(added);
             };
-            GetComponentToSound.OnAbilityTriggered += () =>
+            ComponentToSound.OnAbilityTriggered += () =>
             {
                 PlaySound(triggered);
             };
-            GetComponentToSound.OnTimeSpeedUp += () =>
+            ComponentToSound.OnTimeSpeedUp += () =>
             {
                 PlaySound(speedUp);
             };
-            GetComponentToSound.OnTimeSlowDown += () =>
+            ComponentToSound.OnTimeSlowDown += () =>
             {
                 PlaySound(slowDown);
             };

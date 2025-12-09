@@ -8,7 +8,7 @@ namespace _Main.Scripts.Gameplay.Earth
     public class EarthSetup : ManagedBehavior, IUpdatable
     {
         private EarthMotor _motor;
-        private EarthController _controller;
+        private EarthController.IEarthController _controller;
         private EarthView _view;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
@@ -40,12 +40,7 @@ namespace _Main.Scripts.Gameplay.Earth
 
         private void SetViewHandlers()
         {
-            _view.OnHealed += View_OnHealedHandler;
-        }
-
-        private void View_OnHealedHandler()
-        {
-            _controller.TransitionToDefault();
+            _view.OnHealed += _controller.FinishHealing;
         }
 
         #endregion
@@ -57,52 +52,57 @@ namespace _Main.Scripts.Gameplay.Earth
             EarthEventSubscriber.Restart(EventBus_Earth_Restart);
             EarthEventSubscriber.DestructionStart(EventBus_Earth_DestructionStart);
             EarthEventSubscriber.Heal(EventBus_Earth_Heal);
-            EarthEventSubscriber.SetEnableDamage(EventBus_Earth_SetEnableDamage);
-            EarthEventSubscriber.SetToDefault(EventBus_Earth_Default);
+            EarthEventSubscriber.EnableDamage(EventBus_Earth_Damage_Enable);
+            EarthEventSubscriber.DisableDamage(EventBus_Earth_Damage_Disable);
+            EarthEventSubscriber.PreSlice(EventBus_Earth_PreSlice);
             //
             ProjectileEventSubscriber.Collision(EventBus_Meteor_Collision);
         }
 
+
+
         #region Earth
 
-        private void EventBus_Earth_SetEnableDamage(EarthEvents.SetEnableDamage input)
+        private void EventBus_Earth_PreSlice(EarthEvents.PreSlice input)
         {
-            _controller.SetEnableDamage(input.DamageEnable);
+            _controller.TryPreSlice();
+        }
+        
+        private void EventBus_Earth_Damage_Enable(EarthEvents.EnableDamage input)
+        {
+            _controller.EnableDamage();
+        }
+        
+        private void EventBus_Earth_Damage_Disable(EarthEvents.DisableDamage input)
+        {
+            _controller.DisableDamage();
         }
         
         private void EventBus_Earth_Heal(EarthEvents.Heal input)
         {
-            _controller.Heal(1f);
+            _controller.TryHeal(1f);
         }
         
         private void EventBus_Earth_Restart(EarthEvents.Restart input)
         {
-            _controller.TransitionToHeal();
+            _controller.TryRestart();
         }
 
         private void EventBus_Earth_DestructionStart(EarthEvents.DestructionStart input)
         {
-            _controller.TransitionToShaking();
+            _controller.TryShake();
         }
-        
-        private void EventBus_Earth_Default(EarthEvents.SetToDefault input)
-        {
-            _controller.TransitionToDefault();
-        }
-
         #endregion
 
         #region Meteor
 
         private void EventBus_Meteor_Collision(ProjectileEvents.Collision input)
         {
-            _controller.HandleCollision(GameConfigManager.Instance.GetDamageValue(), 
+            _controller.TryCollision(GameConfigManager.Instance.GetDamageValue(), 
                 input.Position, input.Rotation, input.Direction);
         }
 
         #endregion
-        
-
         
         #endregion
     }

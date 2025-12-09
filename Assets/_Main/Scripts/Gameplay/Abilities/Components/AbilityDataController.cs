@@ -37,34 +37,6 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return new TriggerAbilitySequenceState(_ability, _abilityEvent);
             }
         }
-        private class SetBoolAction : IQueueAction
-        {
-            private readonly Action<bool> _boolAction;
-            private readonly bool _boolValue;
-            public ActionStatus CurrentStatus { get;} = ActionStatus.Success;
-
-            public SetBoolAction(bool actionBool, Action<bool> boolAction)
-            {
-                _boolValue = actionBool;
-                _boolAction = boolAction;
-            }
-
-            public void OnStart()
-            {
-                _boolAction?.Invoke(_boolValue);
-            }
-
-            public ActionStatus OnUpdate(float deltaTime)
-            {
-                return ActionStatus.Success;
-            }
-
-            public void OnInterrupt() { }
-            public IQueueAction Copy()
-            {
-                return new SetBoolAction(_boolValue, _boolAction);
-            }
-        }
         private class SetChannelTimeScaleAction : IQueueAction
         {
             private readonly float targetTimeScale;
@@ -219,7 +191,61 @@ namespace _Main.Scripts.Gameplay.Abilies
                 return new TimedTimeScaleUpdateAction(_targetTimeScale,_startTimeScale, _duration, _updateGroup);
             }
         }
-        
+        private class EnableShieldTypeAction : IQueueAction
+        {
+            private readonly ShieldType _shieldType;
+            public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
+
+            public EnableShieldTypeAction(ShieldType shieldType)
+            {
+                _shieldType = shieldType;
+            }
+
+            public void OnStart()
+            {
+                ShieldEventCaller.RequestEnableShieldType(_shieldType);
+            }
+
+            public ActionStatus OnUpdate(float deltaTime)
+            {
+                return CurrentStatus;
+            }
+
+            public void OnInterrupt() { }
+
+            public IQueueAction Copy()
+            {
+                return new EnableShieldTypeAction(_shieldType);
+            }
+        }
+        private class DisableShieldTypeAction : IQueueAction
+        {
+            private readonly ShieldType _shieldType;
+            public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
+
+            public DisableShieldTypeAction(ShieldType shieldType)
+            {
+                _shieldType = shieldType;
+            }
+
+            public void OnStart()
+            {
+                ShieldEventCaller.RequestDisableShieldType(_shieldType);
+            }
+
+            public ActionStatus OnUpdate(float deltaTime)
+            {
+                return CurrentStatus;
+            }
+
+            public void OnInterrupt() { }
+
+            public IQueueAction Copy()
+            {
+                return new DisableShieldTypeAction(_shieldType);
+            }
+        }
+
         #endregion
         
         private readonly Dictionary<AbilityType, AbilityStoredData> _abilities = new Dictionary<AbilityType, AbilityStoredData>();
@@ -324,7 +350,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new WaitSecondsAction(timeData.ZoomIn))
                 .Then(_cameraZoomIn)
                 .Then(new WaitSecondsAction(timeData.StartAction))
-                .Then(new InstantAction(ShieldEventCaller.EnableSuperShield))
+                .Then(new EnableShieldTypeAction(ShieldType.Super))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(new InstantAction(MeteorEventCaller.SpawnRing))
                 .Then(_cameraZoomOut)
@@ -357,7 +383,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new ParallelAction(new []{slowDownGameplay,slowDownEffects}))
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StopAction))
-                .Then(new InstantAction(ShieldEventCaller.EnableNormalShield))
+                .Then(new DisableShieldTypeAction(ShieldType.Super))
                 .Then(new ParallelAction(new []{speedUpGameplay,speedUpEffects}))
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(_enableInputs)
@@ -376,8 +402,8 @@ namespace _Main.Scripts.Gameplay.Abilies
             var endSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueFinished);
             
             
-            var disableEarthDamage = new SetBoolAction(false, EarthEventCaller.SetEnableDamage);
-            var enableEarthDamage = new SetBoolAction(true, EarthEventCaller.SetEnableDamage);
+            var disableEarthDamage = new InstantAction(EarthEventCaller.EnableDamage);
+            var enableEarthDamage = new InstantAction(EarthEventCaller.DisableDamage);
             
             // SlowDown
             var setShieldTimeScale = new SetChannelTimeScaleAction(shieldMinTimeScale, new[]{UpdateGroup.Shield});
@@ -496,7 +522,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_cameraZoomIn)
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.SlowDown))
-                .Then(new SetBoolAction(true, ShieldEventCaller.SetSlow))
+                .Then(new EnableShieldTypeAction(ShieldType.Slow))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_enableInputs)
                 .Then(_cameraZoomOut)
@@ -538,7 +564,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 }))
                 .Then(_playSpeedTimeSound)
                 .Then(new WaitSecondsAction(timeData.SlowDown))
-                .Then(new SetBoolAction(false, ShieldEventCaller.SetSlow))
+                .Then(new DisableShieldTypeAction(ShieldType.Slow))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_cameraZoomOut)
                 .Then(_enableAbilityUI)
@@ -597,7 +623,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(new ParallelAction(new [] { slowDownGameplay,slowDownEffects }))
                 .Then(new WaitSecondsAction(timeData.SlowDown))
                 .Then(_playSlowTimeSound)
-                .Then(new SetBoolAction(true,ShieldEventCaller.SetGold))
+                .Then(new EnableShieldTypeAction(ShieldType.Gold))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_enableAbilityUI)
                 .Then(_enableInputs)
@@ -617,7 +643,7 @@ namespace _Main.Scripts.Gameplay.Abilies
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
-                .Then(new SetBoolAction(false,ShieldEventCaller.SetGold))
+                .Then(new DisableShieldTypeAction(ShieldType.Slow))
                 .Then(new PublishAbilityActiveAction(AbilityType.DoublePoints, false))
                 .Then(new SimpleCommandAction(endSequence))
                 .Build();
@@ -671,7 +697,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_disableAbilityUI)
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StartAction))
-                .Then(new SetBoolAction(true,ShieldEventCaller.SetAutomatic))
+                .Then(new EnableShieldTypeAction(ShieldType.Automatic))
                 .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
                 .Then(_cameraZoomOut)
                 .Then(_playSpeedTimeSound)
@@ -711,7 +737,7 @@ namespace _Main.Scripts.Gameplay.Abilies
                 .Then(_cameraZoomOut)
                 .Then(_enableInputs)
                 .Then(_enableAbilityUI)
-                .Then(new SetBoolAction(false,ShieldEventCaller.SetAutomatic))
+                .Then(new DisableShieldTypeAction(ShieldType.Automatic))
                 .Then(new SimpleCommandAction(endSequence))
                 .Build();
         }
@@ -738,7 +764,6 @@ namespace _Main.Scripts.Gameplay.Abilies
         
         #endregion
         
-        
         private void SetInputsEnable(bool isEnable)
         {
             InputsEventCaller.SetEnable(isEnable);
@@ -749,7 +774,14 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void SetEnableAbilityUI(bool isEnable)
         {
-            AbilitiesEventCaller.SetEnableUI(isEnable);
+            if (isEnable)
+            {
+                AbilitiesEventCaller.EnableUI();
+            }
+            else
+            {
+                AbilitiesEventCaller.DisableUI();
+            }
         }
 
         public bool HasAbilityData(AbilityType abilityType)
@@ -777,14 +809,6 @@ namespace _Main.Scripts.Gameplay.Abilies
             var activeTime = _abilities[abilityType].ActiveTime;
             OnAbilityStarted?.Invoke(activeTime);
         }
-    }
-
-    public struct TimeScaleData
-    {
-        public UpdateGroup[] UpdateGroups;
-        public float TargetTimeScale;
-        public float CurrentTimeScale;
-        public float TimeToUpdate;
     }
 
     public class AbilityStoredData

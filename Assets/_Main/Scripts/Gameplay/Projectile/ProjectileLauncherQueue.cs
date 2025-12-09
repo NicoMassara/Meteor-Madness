@@ -3,7 +3,6 @@ using _Main.Scripts.InspectorTools;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
 using NicolasMassara.CustomTimerManager;
-using NicolasMassara.CustomTimerManager.Tools;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 namespace _Main.Scripts.Gameplay.Projectile
@@ -13,7 +12,7 @@ namespace _Main.Scripts.Gameplay.Projectile
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
         private readonly ProjectileDistanceTracker _distanceTracker = new ProjectileDistanceTracker();
         private readonly Queue<IProjectile> _projectileQueue = new Queue<IProjectile>();
-        private TimerGeneratedId _firstSpawnTimerId;
+        private TimerManager.GeneratedId _firstSpawnTimerId;
         private bool _canLaunch = false;
         private bool _gameplayActive;
         [SerializeField] [ReadOnly] private int projectileCount;

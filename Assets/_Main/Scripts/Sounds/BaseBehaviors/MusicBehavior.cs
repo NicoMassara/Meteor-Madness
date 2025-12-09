@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces.Sounds;
+using UnityEngine;
 
 namespace _Main.Scripts.Sounds
 {
@@ -8,7 +9,11 @@ namespace _Main.Scripts.Sounds
     {
         protected GeneratedId PlayMusic(SoundClassSo soundClass, GeneratedId musicId, bool isIsolated = false)
         {
-            if(IsIdValid(musicId)) return musicId;
+            if (IsIdValid(musicId))
+            {
+                Debug.LogWarning("Id is in USE");
+                return musicId;
+            }
             
             return SoundManager.PlayMusic(soundClass,isIsolated,musicId);
         }

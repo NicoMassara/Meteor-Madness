@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_GameConfig_Default
   m_EditorClassIdentifier: 
   levelAmount: 10
-  pointsMultiplier: 500
+  pointsMultiplier: 1
   levelData: {fileID: 11400000, guid: 1aa0fbf8cccb4424eba34fb8936e9611, type: 2}
   abilitySelectorData: {fileID: 11400000, guid: 4ecea22b7640c414dace2b0e8ec03413, type: 2}
   projectileData: {fileID: 11400000, guid: 752c1653bde0af54883e0de5e868c228, type: 2}

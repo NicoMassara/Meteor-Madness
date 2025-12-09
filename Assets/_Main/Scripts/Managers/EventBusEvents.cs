@@ -10,51 +10,42 @@ namespace _Main.Scripts.Managers
         public struct RestartFinished { }
         public struct ShakeStart { }
         public struct Heal { }
-        public struct SetEnableDamage
-        {
-            public bool DamageEnable;
-        }
-        
-        public struct SetToDefault { }
-        
+        public struct EnableDamage { }
+        public struct DisableDamage { }
         public struct DestructionStart {}
         public struct DestructionFinished {}
         public struct Death {}
+
+        public struct PreSlice
+        {
+        }
     }
 
     public struct ShieldEvents
     {
+        public struct RequestEnableShieldType
+        {
+            public ShieldType Type;
+        }
+        public struct RequestDisableShieldType
+        {
+            public ShieldType Type;
+        }
+        public struct NotifyShieldTypeEnabled
+        {
+            public ShieldType Type;
+        }
+        public struct NotifyShieldTypeDisabled
+        {
+            public ShieldType Type;
+        }
         
-        public struct SetGold
-        {
-            public bool IsActive;
-        }
-
-        public struct SetSlow
-        {
-            public bool IsActive;
-        }
-
-        public struct SetAutomatic
-        {
-            public bool IsActive;
-        }
-        public struct EnableSuperShield { }
-        public struct EnableNormalShield { }
-        
-        public struct RestartPosition { }
         public struct Enable { }
         public struct Disable { }
     }
 
     public struct GameScreenEvents
     {
-        public struct SetScreen
-        {
-            public ScreenType ScreenType;
-            public bool IsEnable;
-        }
-        
         public struct EnableScreen
         {
             public ScreenType ScreenType;
@@ -102,7 +93,7 @@ namespace _Main.Scripts.Managers
             public Vector3 Position;
             public Quaternion Rotation;
             public Vector2 Direction;
-            public float Value;
+            public byte Value;
             public ProjectileType Type;
         }
         
@@ -241,11 +232,8 @@ namespace _Main.Scripts.Managers
         {
             public AbilityType AbilityType;
         }
-        
-        public struct SetEnableUI
-        {
-            public bool IsEnable;
-        }
+        public struct EnableUI { }
+        public struct DisableUI { }
         
         public struct Enable { }
         public struct Disable { }

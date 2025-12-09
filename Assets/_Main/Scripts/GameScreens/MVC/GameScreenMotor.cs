@@ -1,6 +1,4 @@
-﻿using System;
-using _Main.Scripts.Observer;
-using UnityEngine;
+﻿using _Main.Scripts.Observer;
 
 namespace _Main.Scripts.GameScreens
 {
@@ -23,6 +21,8 @@ namespace _Main.Scripts.GameScreens
 
         public void LoadScreenByIndex(int screenIndex)
         {
+            if(screenIndex == 0) return;
+            
             _currentScreenIndex = screenIndex;
             NotifyAll(GameScreenObserverMessage.LoadScreen, _currentScreenIndex);
         }
@@ -45,6 +45,11 @@ namespace _Main.Scripts.GameScreens
                 _newScreenIndex = screenIndex;
                 DisableCurrentScreen();
             }
+        }
+
+        public void ZoomIn()
+        {
+            NotifyAll(GameScreenObserverMessage.ZoomIn);
         }
     }
 }

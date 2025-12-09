@@ -11,13 +11,8 @@ namespace _Main.Scripts.Gameplay.Abilies
         [SerializeField] private AbilityUiPanelSelector uiSelector;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
-
-        private void Start()
-        {
-            GetAbilityUIComponents().MainPanel.SetActive(false);
-        }
         
-        private AbilityUIComponents GetAbilityUIComponents()
+        private AbilityUIComponents GetUIComponents()
         {
             return uiSelector.GetPanelData();
         }
@@ -44,7 +39,15 @@ namespace _Main.Scripts.Gameplay.Abilies
 
         private void HandleSetEnableUI(bool isEnable)
         {
-            GetAbilityUIComponents().MainPanel.SetActive(isEnable);
+            if (isEnable)
+            {
+                GetUIComponents().SetActivePanel(GetUIComponents().MainPanel);
+            }
+            else
+            {
+                GetUIComponents().DisableActivePanel();
+            }
+
         }
 
         private void HandleRestartAbilities()
