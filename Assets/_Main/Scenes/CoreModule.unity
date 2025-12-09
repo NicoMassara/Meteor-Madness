@@ -457,6 +457,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23df50d13ef44a1918ac581ae274b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotateData: {fileID: 0}
+  deflectData: {fileID: 0}
 --- !u!114 &168416682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -681,6 +683,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3917780fb8e642179c0e88966d96a8c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggeredData: {fileID: 0}
+  finishedData: {fileID: 0}
+  addedData: {fileID: 0}
 --- !u!114 &234428184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1767,6 +1772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65107d1653634bd08614a35e7790b571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collisionData: {fileID: 0}
 --- !u!114 &593039196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3557,7 +3563,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1294975347}
-  - component: {fileID: 1294975349}
   - component: {fileID: 1294975350}
   m_Layer: 0
   m_Name: UISelector
@@ -3581,19 +3586,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1294975349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1294975345}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbf3cbc576c84ea782a0d942d2146919, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panelName: Core
 --- !u!114 &1294975350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3609,9 +3601,7 @@ MonoBehaviour:
   mobileCanvas:
   - {fileID: 1356343176}
   - {fileID: 276659171}
-  - {fileID: 244942275}
-  desktopCanvas:
-  - {fileID: 385104970}
+  desktopCanvas: []
 --- !u!1 &1356343176
 GameObject:
   m_ObjectHideFlags: 0

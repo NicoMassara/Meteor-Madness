@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Gameplay.GameMode;
+using _Main.Scripts.GameMode;
 using _Main.Scripts.Interfaces.UI;
 using NicolasMassara.CustomTimerManager;
 using UnityEngine;

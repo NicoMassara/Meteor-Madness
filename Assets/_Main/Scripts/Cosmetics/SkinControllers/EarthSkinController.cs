@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Gameplay.Earth;
+using _Main.Scripts.Earth;
 using _Main.Scripts.Interfaces;
 using UnityEngine;
 
