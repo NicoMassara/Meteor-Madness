@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.Gameplay.GameMode;
+using _Main.Scripts.GameMode;
 using _Main.Scripts.Interfaces.UI;
 using NicolasMassara.CustomTimerManager;
 using UnityEngine;
@@ -9,6 +9,7 @@ namespace _Main.Scripts
     public class NumberIncrementer
     {
         private readonly Action<uint> _increaseAction;
+        private readonly Action _actionOnStart;
         private readonly Action _actionOnFinish;
         private uint _targetValue;
         private uint _currentValue;
@@ -20,10 +21,10 @@ namespace _Main.Scripts
         public uint CurrentValue => _currentValue;
         public bool IsFinished => _currentValue >= _targetValue;
 
-        public NumberIncrementer(Action<uint> increaseAction, Action actionOnFinish)
+        public NumberIncrementer(Action<uint> increaseAction, Action actionOnStart ,Action actionOnFinish)
         {
-
             _increaseAction = increaseAction;
+            _actionOnStart = actionOnStart;
             _actionOnFinish = actionOnFinish;
         }
 
@@ -59,6 +60,7 @@ namespace _Main.Scripts
             {
                 _targetValue += value;
                 _elapsedTime = 0;
+                _actionOnStart?.Invoke();
             }
             else
             {
@@ -66,10 +68,9 @@ namespace _Main.Scripts
                 {
                     _targetValue += value;
                     _elapsedTime = 0;
+                    _actionOnStart?.Invoke();
                 }));
             }
         }
-        
-        
     }
 }

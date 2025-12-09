@@ -1,17 +1,17 @@
 ﻿using System;
-using _Main.Scripts.Interfaces;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Interfaces.Sounds;
+using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ViewUI;
-using UnityEngine;
 
 namespace _Main.Scripts.Pause
 {
     public class PauseUIView : BaseViewUI<PauseUIComponentsSelector,PauseUIComponents>,
         PauseUIView.IPauseViewUI,
-        IPausePanelUISounds
+        IPausePanelUISounds, IPauseUIVibration
     {
         public interface IPauseViewUI
         {

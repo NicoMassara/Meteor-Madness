@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.Gameplay.Meteor;
+﻿using _Main.Scripts.Meteor;
 using UnityEngine;
 using UnityEngine.Events;
 

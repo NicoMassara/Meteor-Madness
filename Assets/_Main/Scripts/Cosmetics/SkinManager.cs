@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Main.Scripts.MyComponents;
-using _Main.Scripts.MyTools;
 using _Main.Scripts.Save;
 using UnityEngine;
+using _Main.Scripts.GlobalEvents;
 
 namespace _Main.Scripts.Cosmetics
 {

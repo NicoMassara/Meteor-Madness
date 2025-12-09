@@ -1,9 +1,11 @@
 ﻿using _Main.Scripts.FlyingObject;
 using _Main.Scripts.Managers;
 using UnityEngine;
+using _Main.Scripts.GameConfig;
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using Random = UnityEngine.Random;
+using _Main.Scripts.GlobalEvents;
 
 namespace _Main.Scripts.Comet
 {

@@ -2,6 +2,7 @@
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
+using _Main.Scripts.GameConfig;
 using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts.DebugTools

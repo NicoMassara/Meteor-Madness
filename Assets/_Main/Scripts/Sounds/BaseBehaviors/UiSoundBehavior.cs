@@ -7,7 +7,7 @@ namespace _Main.Scripts.Sounds
     {
         protected void PlayUISound(UISoundType soundType)
         {
-            SoundManager.PlayUISound(soundType);
+            SoundManager?.PlayUISound(soundType);
         }
     }
 }

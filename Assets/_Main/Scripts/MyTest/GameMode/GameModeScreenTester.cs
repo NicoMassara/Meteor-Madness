@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
+using _Main.Scripts.MySettings;
 using _Main.Scripts.Save;
+using _Main.Scripts.GlobalEvents;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,7 +14,9 @@ namespace _Main.Scripts.MyTest.GameMode
     [AddComponentMenu("_Main/ModuleTester/GameModeScreenTester")]
     public class GameModeScreenTester: MonoBehaviour
     {
-        private bool _canReload;
+        [Range(0, 1)]
+        [SerializeField] private float volume;
+        private float _lastVolume;
         
         private void Awake()
         {
@@ -22,20 +26,46 @@ namespace _Main.Scripts.MyTest.GameMode
             };
 
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
+            GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
-        
+
         private void Start()
         {
             var localization = LocalizationManager.Instance;
             var dataManager = DataManager.Instance;
+            var settings = SettingsManager.Instance;
+        }
+
+        private void Update()
+        {
+            if (_lastVolume != volume)
+            {
+                SettingsManager.Instance.SetMasterVolume(volume);
+                _lastVolume = volume;
+            }
+        }
+
+        public void Reload()
+        {
+            StartCoroutine(Coroutine_ReloadScreen());
+        }
+        
+        public IEnumerator Coroutine_ReloadScreen()
+        {
+            yield return new WaitForEndOfFrame();
             
+            EarthEventCaller.Death();
+            
+            yield return new WaitForEndOfFrame();
+            
+            GameManager.Instance.LoadGameMode();
         }
 
         private IEnumerator Coroutine_LoadScreen()
         {
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("GameplayModule", LoadSceneMode.Additive);
+            AsyncOperation asyncLoadGameplay = SceneManager.LoadSceneAsync("GameplayModule", LoadSceneMode.Additive);
                 
-            while (!asyncLoad.isDone)
+            while (!asyncLoadGameplay.isDone)
             {
                 yield return null;
             }
@@ -54,21 +84,13 @@ namespace _Main.Scripts.MyTest.GameMode
 
             yield return new WaitForEndOfFrame();
         }
-
-
-        public void LoadScreen()
-        {
-            if (_canReload)
-            {
-                
-            }
-        }
+        
 
         public void GivePoints()
         {
             ProjectileEventCaller.Deflected(new DeflectData
             {
-                Value = 1,
+                Value = 100,
                 Type = ProjectileType.Meteor
                 
             });
@@ -84,12 +106,20 @@ namespace _Main.Scripts.MyTest.GameMode
                 {
                     GameScreenEventCaller.EnableScreen(ScreenType.GameMode, EventRequestType.Granted);
                 }
+                else if (input.ScreenType == ScreenType.Pause)
+                {
+                    GameManager.Instance.LoadGameMode();
+                }
                 else
                 {
                     GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Requested);
-                    _canReload = true;
                 }
             }
+        }
+        
+        private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
+        {
+            GameManager.Instance.LoadGameMode();
         }
 
         #endregion
@@ -110,6 +140,12 @@ namespace _Main.Scripts.MyTest.GameMode
             {
                 // Llama al método normalmente
                 script.GivePoints();
+            }
+            
+            if (GUILayout.Button("Reload"))
+            {
+                // Llama al método normalmente
+                script.Reload();
             }
                 
         }
