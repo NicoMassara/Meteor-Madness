@@ -40,7 +40,6 @@ namespace _Main.Scripts.Pause
             
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
-            EarthEventSubscriber.Restart(EventsBus_Earth_Restart);
             
             SetViewHandlers();
             
@@ -94,11 +93,6 @@ namespace _Main.Scripts.Pause
 
 
         #region GameScreens
-        
-        private void EventsBus_Earth_Restart(EarthEvents.Restart input)
-        {
-            TimerManager.Add(new TimerData(0.5f, EarthEventCaller.RestartFinished));
-        }
         
         private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
         {

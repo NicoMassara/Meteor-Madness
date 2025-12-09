@@ -38,6 +38,7 @@ namespace _Main.Scripts.MyTest.Defeat
 
                 DebugDefeatEvents.OnDefeatScreenClosed += () =>
                 {
+                    Debug.Log("Defeat Screen Closed");
                     EarthEventCaller.RestartFinished();
                 };
 

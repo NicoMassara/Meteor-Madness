@@ -63,6 +63,7 @@ namespace _Main.Scripts.MyCommands
         [ConsoleMethod("earth_restart_done", "Finishes Earth's restart")]
         public static void EarthRestartDone()
         {
+            Debug.Log("Restart Command");
             EarthEventCaller.RestartFinished();
         }
 

@@ -104,10 +104,6 @@ namespace _Main.Scripts.Defeat
                 DebugDefeatEvents.TriggerDefeatScreenAnimationFinished();
 #endif
             };
-
-            
-            
-
         }
 
         #region Enable / Disable

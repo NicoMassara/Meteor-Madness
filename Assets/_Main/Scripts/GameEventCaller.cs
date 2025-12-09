@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.Managers;
+using UnityEngine;
 
 namespace _Main.Scripts
 {
@@ -93,6 +94,7 @@ namespace _Main.Scripts
         
         public static void RestartFinished()
         {
+            Debug.Log("Here");
             GameEventCaller.Publish(new EarthEvents.RestartFinished());
         }
         
