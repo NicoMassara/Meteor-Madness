@@ -104,8 +104,6 @@ namespace _Main.Scripts.MyTest.Sounds
                     script.ResumeSound();
                 }
             }
-
-            
         }
     }
 #endif

@@ -89,7 +89,8 @@ namespace _Main.Scripts.Sounds
             }
 
         }
-        
+
+        private bool _doesLoop;
         private bool _isPlaying;
         private bool _isPaused;
         private bool _hasSoundClass;
@@ -134,6 +135,8 @@ namespace _Main.Scripts.Sounds
         
         public void ExecuteUpdate(float deltaTime)
         {
+            if(_doesLoop) return;
+            
             if (_isPlaying && !_isPaused)
             {
                 if (GetFadeOutRatio() >= 0.999f)
@@ -149,7 +152,7 @@ namespace _Main.Scripts.Sounds
             {
                 _hasSoundClass = true;
                 SoundClass = soundClass;
-#if UNITY_EDITOR_WIN
+#if UNITY_EDITOR
                 gameObject.name = $"Sound_{SoundClass.ClassName}";
 #endif
                 SetAudioData(SoundClass.SourceData);
@@ -168,6 +171,8 @@ namespace _Main.Scripts.Sounds
 
         private void SetAudioData(AudioSourceData sourceData)
         {
+            _doesLoop = sourceData.loop;
+            
             _isUniqueClip = SoundClass.IsUniqueClip;
             _hasRandomPitch = SoundClass.HasRandomPitch;
             _audioSource.clip = SoundClass.GetAudioClip();
