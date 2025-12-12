@@ -590,6 +590,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 604189449}
+  animData: {fileID: 11400000, guid: 94def8c273479f54498dbfe8ed9fce7e, type: 2}
 --- !u!222 &54794169050016389
 CanvasRenderer:
   m_ObjectHideFlags: 0

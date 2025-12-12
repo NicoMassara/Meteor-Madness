@@ -7,7 +7,7 @@ namespace _Main.Scripts.MyAnimations
 {
     public abstract class SequenceUIAnimator<T, TS> : IUIAnimator
     where T : IUiAnimationComponent
-    where TS : UiAnimationData
+    where TS : IUiAnimationData
     {
         protected readonly T UIComponents;
         protected readonly TS AnimationData;
@@ -36,9 +36,8 @@ namespace _Main.Scripts.MyAnimations
         }
     }
     
-
-    [System.Serializable]
-    public abstract class UiAnimationData { }
+    
+    public interface IUiAnimationData {}
 
     /// <summary>
     /// This is used to set Initial Positions and Values to UI Components or restart them

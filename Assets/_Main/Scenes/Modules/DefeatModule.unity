@@ -1726,7 +1726,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 230.3
+  m_fontSize: 232
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2826,7 +2826,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 92.1
+  m_fontSize: 92.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3353,6 +3353,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0ac9313c13d4a889a24068aa6eefa2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  openAdDelay: 0.5
+  finishAdDelay: 0.5
 --- !u!114 &1476604042003610484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3378,50 +3380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 604189449}
-  panelOpenData:
-    fadeInDelay: 0.5
-    fadeIntensity: 0.5
-    fadeInDuration: 1.5
-    scaleDelay: 0.5
-    scaleDuration: 0.75
-    bounceDelay: 0.05
-    bounceScale: 1.25
-    bounceDuration: 0.1
-    bounceReturnTime: 0.32
-    finishDelay: 0.75
-  panelCloseData:
-    movementDelay: 0.5
-    movementDuration: 0.25
-    currentScoreOffscreenPosition: 5
-    highScoreOffscreenPosition: 4
-    titleOffscreenPosition: 2
-    buttonsOffscreenPosition: 3
-    fadeDelay: 0.25
-    backgroundFadeDuration: 0.5
-    buttonsOffScreenOffset: {x: 0, y: -100}
-    titleOffScreenOffset: {x: 0, y: 100}
-  currentScoreData:
-    offscreenPosition: 5
-    moveDuration: 0.3
-    finishDelay: 0.75
-  highScoreData:
-    offscreenPosition: 4
-    moveDuration: 0.3
-    finishDelay: 0.75
-    scaleDuration: 0.75
-    bounceDelay: 0.05
-    bounceScale: 1.25
-    bounceDuration: 0.1
-    bounceReturnTime: 0.35
-    newScoreTextDelay: 0.25
-    newScoreBounceScale: 2
-    newScoreBounceDuration: 0.75
-    newScoreBounceReturnTime: 0.25
-  buttonsOpenData:
-    offscreenPosition: 3
-    offscreenOffset: {x: 0, y: 0}
-    moveDuration: 0.3
-    finishDelay: 0.5
+  animationData: {fileID: 11400000, guid: ff3208e40d5aa00428ecae925102047f, type: 2}
 --- !u!4 &2820090039296907483
 Transform:
   m_ObjectHideFlags: 0

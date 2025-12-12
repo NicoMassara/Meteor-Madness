@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.AdsSystem;
 using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
@@ -27,6 +28,7 @@ namespace _Main.Scripts.Bootstrap
         private bool _hasLocalizationLoaded;
         private bool _hasLoadedData;
         private bool _hasLoadedSkins;
+        private bool _hasLoadedAds;
 
         private int _mainSystemCount;
         private int _subSystemCount;
@@ -65,10 +67,13 @@ namespace _Main.Scripts.Bootstrap
                 _mainSystemCount++;
             };
 
+            AdsEvents.OnAdsInitialized += () =>
+            {
+                _hasLoadedAds = true;
+            };
 
-            var localization = LocalizationManager.Instance;
-            var dataManager = DataManager.Instance;
-            var skinManager = SkinManager.Instance;
+            LocalizationManager.LoadInstance();
+            
         }
 
         private void Start()
@@ -84,20 +89,28 @@ namespace _Main.Scripts.Bootstrap
             
             // Save Data
             OnLoadingAsset?.Invoke("Loading Saves");
+            DataManager.LoadInstance();
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedData);
             
             // Localization
             OnLoadingAsset?.Invoke("Loading Texts");
+
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLocalizationLoaded);
             
             // Skins
             OnLoadingAsset?.Invoke("Loading Skins");
+            SkinManager.LoadInstance();
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedSkins);
             
+            //Ads
+            OnLoadingAsset?.Invoke("Loading Ads");
+            AdManager.LoadInstance();
+            AdsEvents.InitializeAds();
             yield return new WaitForSeconds(delayBeforeLoad);
+            yield return new WaitUntil(()=> _hasLoadedAds);
             
             OnLoadingAsset?.Invoke("Loading Main Scene");
             yield return new WaitForSeconds(delayBeforeLoad);
@@ -168,7 +181,7 @@ namespace _Main.Scripts.Bootstrap
 
         private bool GetHasLoadedMainSystems()
         {
-            return _mainSystemCount >= 2;
+            return _mainSystemCount >= 3;
         }
 
         private bool GetHasLoadedSubsystems()

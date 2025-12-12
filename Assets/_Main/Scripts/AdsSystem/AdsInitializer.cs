@@ -18,12 +18,14 @@ namespace _Main.Scripts.AdsSystem
         {
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
 
+#pragma warning disable CS0162 // Unreachable code detected
             if (GameParameters.GameplayValues.AdsEnable == false)
             {
                 AdsEvents.TriggerAdsInitialized();
                 AdsEvents.OnInitializeAds -= InitializeAds;
                 return;
             }
+#pragma warning restore CS0162 // Unreachable code detected
 #endif
             
             

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using _Main.Scripts.FiniteStateMachine;
 using _Main.Scripts.Menu;
+using _Main.Scripts.Menu.So;
 using _Main.Scripts.MyAnimations;
 using _Main.Scripts.Observer;
 using DG.Tweening;
@@ -14,6 +15,7 @@ namespace _Main.Scripts.MainMenu.MVC
     {
         private interface IAnimator
         {
+            public void PlayFirstOpenAnimation();
             public void PlayOpenAnimation(ScreenType screenType);
             public void PlayCloseAnimation(ScreenType screenType);
             public void TriggerClose();
@@ -26,90 +28,9 @@ namespace _Main.Scripts.MainMenu.MVC
             Tutorial,
             Credits
         }
-        
-        #region Animation Data
 
-        #region Menu
 
-        [Serializable]
-        private class MenuOpenData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private MenuOpenData menuOpenData;
-        
-        [Serializable]
-        private class MenuCloseData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private MenuCloseData menuCloseData;
-
-        #endregion
-        
-        #region Lore
-
-        [Serializable]
-        private class LoreOpenData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private LoreOpenData loreOpenData;
-        
-        [Serializable]
-        private class LoreCloseData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private LoreCloseData loreCloseData;
-
-        #endregion
-        
-        #region Tutorial
-
-        [Serializable]
-        private class TutorialOpenData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private TutorialOpenData tutorialOpenData;
-        
-        [Serializable]
-        private class TutorialCloseData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private TutorialCloseData tutorialCloseData;
-
-        #endregion
-        
-        #region Credits
-
-        [Serializable]
-        private class CreditsOpenData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private CreditsOpenData creditsOpenData;
-        
-        [Serializable]
-        private class CreditsCloseData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private CreditsCloseData creditsCloseData;
-
-        #endregion
-
-        #endregion
+        [SerializeField] private MenuUiAnimationData animData;
         
         #region Animator
 
@@ -145,10 +66,33 @@ namespace _Main.Scripts.MainMenu.MVC
                 }
             }
 
+            private class MenuState<T> : BaseState<T>
+            {
+                private bool _isFirstOpen = true;
+                
+                public override void Awake()
+                {
+                    if (_isFirstOpen == false)
+                    {
+                        Controller.PlayOpenAnimation(ScreenType.MainMenu);
+                    }
+                    else
+                    {
+                        Controller.PlayFirstOpenAnimation();
+                        _isFirstOpen = false;
+                    }
+                }
+
+                public override void Sleep()
+                {
+                    Controller.PlayCloseAnimation(ScreenType.MainMenu);
+                }
+            }
+
             private class DefaultState<T> : BaseState<T>
             {
                 private readonly ScreenType _screenType;
-
+                
                 public DefaultState(ScreenType screenType)
                 {
                     _screenType = screenType;
@@ -188,7 +132,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 #region Variables
 
                 var none = new BaseState<States>();
-                var mainMenu = new DefaultState<States>(ScreenType.MainMenu);
+                var mainMenu = new MenuState<States>();
                 var lore = new DefaultState<States>(ScreenType.Lore);
                 var tutorial = new DefaultState<States>(ScreenType.Tutorial);
                 var credits = new DefaultState<States>(ScreenType.Credits);
@@ -268,97 +212,118 @@ namespace _Main.Scripts.MainMenu.MVC
             #endregion
         }
 
-
         #region Animations
 
         #region Menu
-
-        private class Animation_Menu_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel,MenuOpenData>
+        
+        private class Animation_Menu_First_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel, IManuFirstOpenData>
         {
-            private const float TitlePos = 500;
-            private const float LeftButtonsPos = -1000;
-            private const float RightButtonsPos = 500;
-            //
-            private const float FadeOutTime = 0.25f; 
-            
-            private bool _hasPlayedFirstAnimation = false;
+            private readonly AnimationHelper.PanelPosition _titlePanel;
+            private readonly AnimationHelper.PanelPosition _rightButtonsPanel;
+            private readonly AnimationHelper.PanelPosition _leftButtonsPanel;
 
-            public Animation_Menu_Open(MainMenuUiAnimationComponents.IMainMenuPanel components, MenuOpenData animationData)
+            public Animation_Menu_First_Open(MainMenuUiAnimationComponents.IMainMenuPanel components,
+                IManuFirstOpenData animationData)
                 : base(components, animationData)
             {
+                _titlePanel = new AnimationHelper.PanelPosition(UIComponents.GameTitle.rectTransform,
+                    AnimationData.GameTitleOffscreenPos, AnimationData.TitleOffset);
+                _rightButtonsPanel = new AnimationHelper.PanelPosition(UIComponents.RightButtonsPanel, 
+                    AnimationData.RightButtonsOffscreenPos, AnimationData.RightButtonsOffset);
+                _leftButtonsPanel = new AnimationHelper.PanelPosition(UIComponents.LeftButtonsPanel,
+                    AnimationData.LeftButtonsOffscreenPos, AnimationData.LeftButtonsOffset);
             }
 
             protected override void Initialize()
             {
                 UIComponents.MenuPanel.gameObject.SetActive(false);
-            }
 
-            private Sequence CreateFirstAnimation()
+                UIComponents.GameTitle.rectTransform.anchoredPosition = _titlePanel.OffScreenPos;
+                UIComponents.RightButtonsPanel.anchoredPosition = _rightButtonsPanel.OffScreenPos;
+                UIComponents.LeftButtonsPanel.anchoredPosition = _leftButtonsPanel.OffScreenPos;
+            }
+            
+
+            protected override Sequence CreateAnimation()
             {
-                _hasPlayedFirstAnimation = true;
-                
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.MenuPanel.gameObject.SetActive(true))
                     .AppendCallback(() => UIComponents.QuitButton.gameObject.SetActive(false))
-                    .AppendInterval(0.25f)
-                    .Append(UIComponents.GameTitle.rectTransform.DOAnchorPosY(TitlePos, 0.5f).From())
-                    .AppendInterval(0.5f)
-                    .Append(UIComponents.LeftButtonsPanel.DOAnchorPosX(LeftButtonsPos, 0.25f).From())
-                    .Join(UIComponents.RightButtonsPanel.DOAnchorPosX(RightButtonsPos, 0.25f).From())
-                    .AppendInterval(0.5f)
+                    .AppendInterval(AnimationData.ShowTitleDelay)
+                    .Append(UIComponents.GameTitle.rectTransform.DOAnchorPos(_titlePanel.StartPos, AnimationData.TitleMovementDuration))
+                    .AppendInterval(AnimationData.ShowButtonsDelay)
+                    .Append(UIComponents.LeftButtonsPanel.DOAnchorPos(_leftButtonsPanel.StartPos, AnimationData.ButtonsMovementDuration))
+                    .Join(UIComponents.RightButtonsPanel.DOAnchorPos(_rightButtonsPanel.StartPos, AnimationData.ButtonsMovementDuration))
+                    .AppendInterval(AnimationData.FinishDelay)
                     .AppendCallback(() => UIComponents.QuitButton.gameObject.SetActive(true));
             }
-            
-            private Sequence CreateNormalAnimation()
-            {
-                return DOTween.Sequence()
-                    .AppendCallback(() => UIComponents.MenuPanel.gameObject.SetActive(true))
-                    .Append(UIComponents.GameTitle.rectTransform.DOAnchorPosY(TitlePos, FadeOutTime).From())
-                    .Join(UIComponents.LeftButtonsPanel.DOAnchorPosX(LeftButtonsPos, FadeOutTime).From())
-                    .Join(UIComponents.RightButtonsPanel.DOAnchorPosX(RightButtonsPos, FadeOutTime).From())
-                    .AppendCallback(() => UIComponents.QuitButton.gameObject.SetActive(true))
-                    .AppendInterval(0.1f);
-            }
-            
-            protected override Sequence CreateAnimation()
-            {
-                return _hasPlayedFirstAnimation ? CreateNormalAnimation() : CreateFirstAnimation();
-            }
-            
         }
-        private class Animation_Menu_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel,MenuCloseData>
+
+        private class Animation_Menu_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel, IMenuPanelData>
         {
-            private const float TitlePos = 500;
-            private const float LeftButtonsPos = -1000;
-            private const float RightButtonsPos = 500;
-            //
-            private const float FadeOutTime = 0.25f; 
-            
-            public Animation_Menu_Close(MainMenuUiAnimationComponents.IMainMenuPanel components, MenuCloseData animationData)
+            private readonly AnimationHelper.PanelPosition _titlePanel;
+            private readonly AnimationHelper.PanelPosition _rightButtonsPanel;
+            private readonly AnimationHelper.PanelPosition _leftButtonsPanel;
+
+            public Animation_Menu_Open(MainMenuUiAnimationComponents.IMainMenuPanel components,
+                IMenuPanelData animationData)
                 : base(components, animationData)
             {
+                _titlePanel = new AnimationHelper.PanelPosition(UIComponents.GameTitle.rectTransform,
+                    AnimationData.GameTitleOffscreenPos, AnimationData.TitleOffset);
+                _rightButtonsPanel = new AnimationHelper.PanelPosition(UIComponents.RightButtonsPanel, 
+                    AnimationData.RightButtonsOffscreenPos, AnimationData.RightButtonsOffset);
+                _leftButtonsPanel = new AnimationHelper.PanelPosition(UIComponents.LeftButtonsPanel,
+                    AnimationData.LeftButtonsOffscreenPos, AnimationData.LeftButtonsOffset);
             }
 
             protected override void Initialize()
             {
                 UIComponents.MenuPanel.gameObject.SetActive(false);
+
+                UIComponents.GameTitle.rectTransform.anchoredPosition = _titlePanel.OffScreenPos;
+                UIComponents.RightButtonsPanel.anchoredPosition = _rightButtonsPanel.OffScreenPos;
+                UIComponents.LeftButtonsPanel.anchoredPosition = _leftButtonsPanel.OffScreenPos;
             }
 
-            protected override void RestartValues()
+            protected override Sequence CreateAnimation()
             {
-                DOTween.Sequence()
-                    .Join(UIComponents.GameTitle.rectTransform.DOAnchorPosY(0, 0))
-                    .Join(UIComponents.LeftButtonsPanel.DOAnchorPosX(0,0))
-                    .Join(UIComponents.RightButtonsPanel.DOAnchorPosX(0, 0));
+                return DOTween.Sequence()
+                    .AppendCallback(() => UIComponents.MenuPanel.gameObject.SetActive(true))
+                    .Append(UIComponents.GameTitle.rectTransform.DOAnchorPos(_titlePanel.StartPos, AnimationData.MovementDuration))
+                    .Join(UIComponents.LeftButtonsPanel.DOAnchorPos(_leftButtonsPanel.StartPos, AnimationData.MovementDuration))
+                    .Join(UIComponents.RightButtonsPanel.DOAnchorPos(_rightButtonsPanel.StartPos, AnimationData.MovementDuration))
+                    .AppendCallback(() => UIComponents.QuitButton.gameObject.SetActive(true))
+                    .AppendInterval(AnimationData.FinishDelay);
+            }
+        }
+
+        private class Animation_Menu_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel, IMenuPanelData>
+        {
+            private readonly AnimationHelper.PanelPosition _titlePanel;
+            private readonly AnimationHelper.PanelPosition _rightButtonsPanel;
+            private readonly AnimationHelper.PanelPosition _leftButtonsPanel;
+
+            public Animation_Menu_Close(MainMenuUiAnimationComponents.IMainMenuPanel components,
+                IMenuPanelData animationData)
+                : base(components, animationData)
+            {
+                _titlePanel = new AnimationHelper.PanelPosition(UIComponents.GameTitle.rectTransform,
+                    AnimationData.GameTitleOffscreenPos, AnimationData.TitleOffset);
+                _rightButtonsPanel = new AnimationHelper.PanelPosition(UIComponents.RightButtonsPanel, 
+                    AnimationData.RightButtonsOffscreenPos, AnimationData.RightButtonsOffset);
+                _leftButtonsPanel = new AnimationHelper.PanelPosition(UIComponents.LeftButtonsPanel,
+                    AnimationData.LeftButtonsOffscreenPos, AnimationData.LeftButtonsOffset);
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.QuitButton.gameObject.SetActive(false))
-                    .Join(UIComponents.GameTitle.rectTransform.DOAnchorPosY(TitlePos, FadeOutTime))
-                    .Join(UIComponents.LeftButtonsPanel.DOAnchorPosX(LeftButtonsPos, FadeOutTime))
-                    .Join(UIComponents.RightButtonsPanel.DOAnchorPosX(RightButtonsPos, FadeOutTime))
+                    .Join(UIComponents.GameTitle.rectTransform.DOAnchorPos(_titlePanel.OffScreenPos, AnimationData.MovementDuration))
+                    .Join(UIComponents.LeftButtonsPanel.DOAnchorPos(_leftButtonsPanel.OffScreenPos, AnimationData.MovementDuration))
+                    .Join(UIComponents.RightButtonsPanel.DOAnchorPos(_rightButtonsPanel.OffScreenPos, AnimationData.MovementDuration))
+                    .AppendInterval(AnimationData.FinishDelay)
                     .AppendCallback(() => UIComponents.MenuPanel.gameObject.SetActive(false));
             }
         }
@@ -367,56 +332,48 @@ namespace _Main.Scripts.MainMenu.MVC
 
         #region Lore
 
-        private class Animation_Lore_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel,LoreOpenData>
+        private class Animation_Lore_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel, IBasePanelData>
         {
-            public Animation_Lore_Open(MainMenuUiAnimationComponents.ILorePanel components, LoreOpenData animationData)
+            private readonly AnimationHelper.PanelPosition _panel;
+
+            public Animation_Lore_Open(MainMenuUiAnimationComponents.ILorePanel components, IBasePanelData animationData)
                 : base(components, animationData)
             {
+                _panel = new AnimationHelper.PanelPosition(UIComponents.LorePanel,
+                    AnimationData.OffscreenDirection, AnimationData.Offset);
             }
-            
-            private const float FadeTime = 0.3f;
-            private Vector2 _panelOriginalPos;
-            private Vector2 _offscreenPos;
-            
+
             protected override void Initialize()
             {
                 UIComponents.LorePanel.gameObject.SetActive(false);
-                
-                _panelOriginalPos = UIComponents.LorePanel.anchoredPosition;
-                
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.LorePanel, AnimationHelper.Direction.Down);
-                UIComponents.LorePanel.anchoredPosition = _offscreenPos;
+                UIComponents.LorePanel.anchoredPosition = _panel.OffScreenPos;
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.LorePanel.gameObject.SetActive(true))
-                    .Append(UIComponents.LorePanel.DOAnchorPos(_panelOriginalPos, FadeTime));
+                    .Append(UIComponents.LorePanel.DOAnchorPos(_panel.StartPos, AnimationData.MovementDuration));
             }
         }
-        private class Animation_Lore_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel,LoreCloseData>
+
+        private class Animation_Lore_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel, IBasePanelData>
         {
-            public Animation_Lore_Close(MainMenuUiAnimationComponents.ILorePanel components, LoreCloseData animationData)
-                : base(components, animationData)
-            {
-            }
-
-
-            private const float FadeTime = 0.3f;
             private Vector2 _offscreenPos;
-            
+
+            public Animation_Lore_Close(MainMenuUiAnimationComponents.ILorePanel components, IBasePanelData animationData)
+                : base(components, animationData) { }
+
             protected override void Initialize()
             {
                 UIComponents.LorePanel.gameObject.SetActive(false);
-                
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.LorePanel, AnimationHelper.Direction.Down);
+                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.LorePanel, AnimationData.OffscreenDirection);
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.LorePanel.DOAnchorPos(_offscreenPos, FadeTime/2))
+                    .Append(UIComponents.LorePanel.DOAnchorPos(_offscreenPos, AnimationData.MovementDuration / 2))
                     .AppendCallback(() => UIComponents.LorePanel.gameObject.SetActive(false));
             }
         }
@@ -424,55 +381,50 @@ namespace _Main.Scripts.MainMenu.MVC
         #endregion
 
         #region Tutorial
-        private class Animation_Tutorial_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel,TutorialOpenData>
+
+        private class Animation_Tutorial_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel, IBasePanelData>
         {
-            public Animation_Tutorial_Open(MainMenuUiAnimationComponents.ITutorialPanel components, TutorialOpenData animationData)
+            private readonly AnimationHelper.PanelPosition _panel;
+
+            public Animation_Tutorial_Open(MainMenuUiAnimationComponents.ITutorialPanel components,
+                IBasePanelData animationData)
                 : base(components, animationData)
             {
+                _panel = new AnimationHelper.PanelPosition(UIComponents.TutorialPanel,
+                    AnimationData.OffscreenDirection, AnimationData.Offset);
             }
 
-            private const float FadeTime = 0.3f;
-            private Vector2 _panelOriginalPos;
-            private Vector2 _offscreenPos;
-            
             protected override void Initialize()
             {
                 UIComponents.TutorialPanel.gameObject.SetActive(false);
-                
-                _panelOriginalPos = UIComponents.TutorialPanel.anchoredPosition;
-                
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.TutorialPanel, AnimationHelper.Direction.Left);
-                UIComponents.TutorialPanel.anchoredPosition = _offscreenPos;
+                UIComponents.TutorialPanel.anchoredPosition = _panel.OffScreenPos;
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.TutorialPanel.gameObject.SetActive(true))
-                    .Append(UIComponents.TutorialPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
+                    .Append(UIComponents.TutorialPanel.DOAnchorPos(_panel.StartPos, AnimationData.MovementDuration));
             }
         }
-        private class Animation_Tutorial_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel,TutorialCloseData>
+
+        private class Animation_Tutorial_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel, IBasePanelData>
         {
-            public Animation_Tutorial_Close(MainMenuUiAnimationComponents.ITutorialPanel components, TutorialCloseData animationData)
+            private readonly AnimationHelper.PanelPosition _panel;
+
+            public Animation_Tutorial_Close(MainMenuUiAnimationComponents.ITutorialPanel components,
+                IBasePanelData animationData)
                 : base(components, animationData)
             {
+                _panel = new AnimationHelper.PanelPosition(UIComponents.TutorialPanel,
+                    AnimationData.OffscreenDirection, AnimationData.Offset);
             }
             
-            private const float FadeTime = 0.3f;
-            private Vector2 _offscreenPos;
-            
-            protected override void Initialize()
-            {
-                UIComponents.TutorialPanel.gameObject.SetActive(false);
-                
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.TutorialPanel, AnimationHelper.Direction.Left);
-            }
-            
+
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.TutorialPanel.DOAnchorPos(_offscreenPos, FadeTime/2))
+                    .Append(UIComponents.TutorialPanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.MovementDuration / 2))
                     .AppendCallback(() => UIComponents.TutorialPanel.gameObject.SetActive(false));
             }
         }
@@ -480,68 +432,62 @@ namespace _Main.Scripts.MainMenu.MVC
         #endregion
 
         #region Credits
-        private class Animation_Credtis_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel,CreditsOpenData>
+
+        private class Animation_Credits_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel, IBasePanelData>
         {
-            public Animation_Credtis_Open(MainMenuUiAnimationComponents.ICreditsPanel components, CreditsOpenData animationData)
+            private readonly AnimationHelper.PanelPosition _panel;
+
+            public Animation_Credits_Open(MainMenuUiAnimationComponents.ICreditsPanel components,
+                IBasePanelData animationData)
                 : base(components, animationData)
             {
+                _panel = new AnimationHelper.PanelPosition(UIComponents.CreditsPanel,
+                    AnimationData.OffscreenDirection, AnimationData.Offset);
             }
 
-            private const float FadeTime = 0.3f;
-            private Vector2 _panelOriginalPos;
-            private Vector2 _offscreenPos;
-            
             protected override void Initialize()
             {
                 UIComponents.CreditsPanel.gameObject.SetActive(false);
-                
-                _panelOriginalPos = UIComponents.CreditsPanel.anchoredPosition;
-                
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.CreditsPanel, AnimationHelper.Direction.Right);
-                UIComponents.CreditsPanel.anchoredPosition = _offscreenPos;
+                UIComponents.CreditsPanel.anchoredPosition = _panel.OffScreenPos;
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.CreditsPanel.gameObject.SetActive(true))
-                    .Append(UIComponents.CreditsPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
+                    .Append(UIComponents.CreditsPanel.DOAnchorPos(_panel.StartPos, AnimationData.MovementDuration));
             }
         }
-        private class Animation_Credits_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel,CreditsCloseData>
+
+        private class Animation_Credits_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel, IBasePanelData>
         {
-            public Animation_Credits_Close(MainMenuUiAnimationComponents.ICreditsPanel components, CreditsCloseData animationData) 
+            private readonly AnimationHelper.PanelPosition _panel;
+
+            public Animation_Credits_Close(MainMenuUiAnimationComponents.ICreditsPanel components,
+                IBasePanelData animationData)
                 : base(components, animationData)
             {
+                _panel = new AnimationHelper.PanelPosition(UIComponents.CreditsPanel,
+                    AnimationData.OffscreenDirection, AnimationData.Offset);
             }
-
-            private const float FadeTime = 0.3f;
-            private Vector2 _offscreenPos;
-            
-            protected override void Initialize()
-            {
-                UIComponents.CreditsPanel.gameObject.SetActive(false);
-                
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.CreditsPanel, AnimationHelper.Direction.Right);
-            }
-            
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.CreditsPanel.DOAnchorPos(_offscreenPos, FadeTime/2))
+                    .Append(UIComponents.CreditsPanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.MovementDuration))
                     .AppendCallback(() => UIComponents.CreditsPanel.gameObject.SetActive(false));
             }
         }
 
         #endregion
-        
+
         #endregion
         
         #endregion
         
         private MenuAnimator _animator;
         
+        private IUIAnimator _animationMenuFirstOpen;
         private IUIAnimator _animationMenuOpen;
         private IUIAnimator _animationMenuClose;
         //
@@ -561,17 +507,18 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void Start()
         {
-            _animationMenuOpen = new Animation_Menu_Open(UIComponents,menuOpenData);
-            _animationMenuClose = new Animation_Menu_Close(UIComponents, menuCloseData);
+            _animationMenuFirstOpen = new Animation_Menu_First_Open(UIComponents,animData.MenuFirstOpenData);
+            _animationMenuOpen = new Animation_Menu_Open(UIComponents,animData.MenuOpenData);
+            _animationMenuClose = new Animation_Menu_Close(UIComponents, animData.MenuCloseData);
             //
-            _animationLoreOpen = new Animation_Lore_Open(UIComponents, loreOpenData);
-            _animationLoreClose = new Animation_Lore_Close(UIComponents, loreCloseData);
+            _animationLoreOpen = new Animation_Lore_Open(UIComponents, animData.LoreOpenData);
+            _animationLoreClose = new Animation_Lore_Close(UIComponents, animData.LoreCloseData);
             //
-            _animationTutorialOpen = new Animation_Tutorial_Open(UIComponents, tutorialOpenData);
-            _animationTutorialClose = new Animation_Tutorial_Close(UIComponents, tutorialCloseData);
+            _animationTutorialOpen = new Animation_Tutorial_Open(UIComponents, animData.TutorialOpenData);
+            _animationTutorialClose = new Animation_Tutorial_Close(UIComponents, animData.TutorialCloseData);
             //
-            _animationCreditsOpen = new Animation_Credtis_Open(UIComponents, creditsOpenData);
-            _animationCreditsClose = new Animation_Credits_Close(UIComponents, creditsCloseData);
+            _animationCreditsOpen = new Animation_Credits_Open(UIComponents, animData.CreditsOpenData);
+            _animationCreditsClose = new Animation_Credits_Close(UIComponents, animData.CreditsCloseData);
         }
 
         #region Observer
@@ -625,7 +572,7 @@ namespace _Main.Scripts.MainMenu.MVC
         #endregion
         
         #region IAnimator
-
+        
         public void PlayOpenAnimation(ScreenType screenType)
         {
             switch (screenType)
@@ -662,6 +609,11 @@ namespace _Main.Scripts.MainMenu.MVC
                     PlayAnimation(_animationCreditsClose);
                     break;
             }
+        }
+        
+        public void PlayFirstOpenAnimation()
+        {
+            PlayAnimation(_animationMenuFirstOpen);
         }
         
         public void TriggerClose()
