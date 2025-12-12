@@ -63,7 +63,7 @@ namespace _Main.Scripts.Defeat
         
         private void HandleSendAds()
         {
-            if (AdManager.GetInterstitial() == null)
+            if (AdManager.GetRewarded() == null)
             {
                 OnAdsFinished?.Invoke();
                 return;
@@ -71,7 +71,7 @@ namespace _Main.Scripts.Defeat
 
             TimerManager.Add(new TimerData(openAdDelay, () =>
             {
-                AdManager.GetInterstitial().TryLoad(ShowAd, OnAdsFailedLoad);
+                AdManager.GetRewarded().TryLoad(ShowAd, OnAdsFailedLoad);
             }));
         }
 

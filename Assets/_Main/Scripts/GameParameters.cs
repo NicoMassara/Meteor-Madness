@@ -9,7 +9,7 @@ namespace _Main.Scripts
             public const int AngleSlots = 32;
             public const int MaxAbilityCount = 3;
             public const SystemLanguage DefaultLanguage = SystemLanguage.English;
-            public const bool AdsEnable = false;
+            public const bool AdsEnable = true;
         }
     }
 
