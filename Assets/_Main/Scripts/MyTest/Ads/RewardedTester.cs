@@ -7,7 +7,10 @@ namespace _Main.Scripts.MyTest.Ads
     {
         protected override void Button_OnClick()
         {
-            AdManager.Rewarded.TryLoad(Loaded,
+            if(AdManager.GetRewarded() == null)
+                return;
+            
+            AdManager.GetRewarded().TryLoad(Loaded,
                 onFailed: error =>
                 {
                     EnableButton();
@@ -20,7 +23,10 @@ namespace _Main.Scripts.MyTest.Ads
         
         private void Loaded(string input)
         {
-            AdManager.Rewarded.TryShow(onShowed: null, 
+            if(AdManager.GetRewarded() == null)
+                return;
+            
+            AdManager.GetRewarded().TryShow(onShowed: null, 
                 ShowClick,
                 ShowFailed, ShowComplete, ShowSkipped);
         }

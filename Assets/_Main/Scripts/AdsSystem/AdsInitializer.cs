@@ -16,6 +16,17 @@ namespace _Main.Scripts.AdsSystem
 
         private void InitializeAds()
         {
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+
+            if (GameParameters.GameplayValues.AdsEnable == false)
+            {
+                AdsEvents.TriggerAdsInitialized();
+                AdsEvents.OnInitializeAds -= InitializeAds;
+                return;
+            }
+#endif
+            
+            
 #if UNITY_IOS
             _gameId = 6001500;
 #elif UNITY_ANDROID

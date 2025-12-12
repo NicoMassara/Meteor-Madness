@@ -20,13 +20,16 @@ namespace _Main.Scripts.MyTest.Ads
 
         protected override void Button_OnClick()
         {
-            if (AdManager.Banner.IsActive)
+            if(AdManager.GetBanner() == null)
+                return;
+            
+            if (AdManager.GetBanner().IsActive)
             {
-                AdManager.Banner.TryHide();
+                AdManager.GetBanner().TryHide();
             }
             else
             {
-                AdManager.Banner.TryLoad(bannerPosition, 
+                AdManager.GetBanner().TryLoad(bannerPosition, 
                     onLoaded: OnLoaded,
                     onFailed: (error) =>
                     {
@@ -54,7 +57,7 @@ namespace _Main.Scripts.MyTest.Ads
         private void OnLoaded()
         {
             Debug.Log("Banner Loaded");
-            AdManager.Banner.TryShow(
+            AdManager.GetBanner().TryShow(
                 
                 onShown: () =>
                 {

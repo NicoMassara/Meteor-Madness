@@ -7,7 +7,10 @@ namespace _Main.Scripts.MyTest.Ads
     {
         protected override void Button_OnClick()
         {
-            AdManager.Interstitial.TryLoad(Loaded,
+            if(AdManager.GetInterstitial() == null)
+                return;
+            
+            AdManager.GetInterstitial().TryLoad(Loaded,
                 onFailed: error =>
                 {
                     EnableButton();
@@ -20,7 +23,10 @@ namespace _Main.Scripts.MyTest.Ads
         
         private void Loaded(string input)
         {
-            AdManager.Interstitial.TryShow(onShowed: null, 
+            if(AdManager.GetInterstitial() == null)
+                return;
+            
+            AdManager.GetInterstitial().TryShow(onShowed: null, 
                     ShowClick,
                     ShowFailed, ShowComplete, ShowSkipped);
         }

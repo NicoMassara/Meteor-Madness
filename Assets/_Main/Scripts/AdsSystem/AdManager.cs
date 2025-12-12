@@ -290,10 +290,35 @@ namespace _Main.Scripts.AdsSystem
         private IUnityAd _rewarded;
         private IBannerAd _banner;
         
-        public static IUnityAd Interstitial => _instance._interstitial;
-        public static IUnityAd Rewarded => _instance._rewarded;
-        public static IBannerAd Banner => _instance._banner;
-        
+        public static IUnityAd GetInterstitial()
+        {
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+
+            return GameParameters.GameplayValues.AdsEnable ?  _instance._interstitial : null;
+#endif
+            return _instance._interstitial;   
+            
+        }
+
+        public static IUnityAd GetRewarded()
+        {
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+
+            return GameParameters.GameplayValues.AdsEnable ?  _instance._rewarded : null;
+#endif
+            return _instance._rewarded; 
+        }
+
+        public static IBannerAd GetBanner()
+        {
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+
+            return GameParameters.GameplayValues.AdsEnable ?  _instance._banner : null;
+#endif
+            return _instance._banner; 
+            
+        }
+
         private void Awake()
         {
             BootEvents.OnMainSystemRequestInitialize += Initialize;
@@ -301,6 +326,16 @@ namespace _Main.Scripts.AdsSystem
 
         private void Initialize()
         {
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+
+            if (GameParameters.GameplayValues.AdsEnable == false)
+            {
+                BootEvents.OnMainSystemRequestInitialize -= Initialize;
+                BootEvents.MainSystemInitialized();
+                return;
+            }
+#endif
+            
             BootEvents.OnMainSystemRequestInitialize -= Initialize;
             //
 
