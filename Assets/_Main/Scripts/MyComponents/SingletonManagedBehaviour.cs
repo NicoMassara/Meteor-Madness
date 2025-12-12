@@ -23,5 +23,9 @@ namespace _Main.Scripts.MyComponents
         {
             _instance = this as T;
         }
+        
+        public static void LoadInstance() => Instance.Internal_LoadInstance();
+
+        private void Internal_LoadInstance(){ }
     }
 }
