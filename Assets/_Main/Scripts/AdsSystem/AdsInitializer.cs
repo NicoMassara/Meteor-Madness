@@ -14,23 +14,22 @@ namespace _Main.Scripts.AdsSystem
             AdsEvents.OnInitializeAds += InitializeAds;
         }
 
+#pragma warning disable CS0162 // Unreachable code detected
         private void InitializeAds()
         {
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
 
-#pragma warning disable CS0162 // Unreachable code detected
             if (GameParameters.GameplayValues.AdsEnable == false)
             {
                 AdsEvents.TriggerAdsInitialized();
                 AdsEvents.OnInitializeAds -= InitializeAds;
                 return;
             }
-#pragma warning restore CS0162 // Unreachable code detected
 #endif
             
             
 #if UNITY_IOS
-            _gameId = 6001500;
+            _gameId = "6001500";
 #elif UNITY_ANDROID
             _gameId = "6001501";
 #elif UNITY_EDITOR
@@ -48,6 +47,7 @@ namespace _Main.Scripts.AdsSystem
             
             AdsEvents.OnInitializeAds -= InitializeAds;
         }
+#pragma warning restore CS0162 // Unreachable code detected
 
         public void OnInitializationComplete()
         {

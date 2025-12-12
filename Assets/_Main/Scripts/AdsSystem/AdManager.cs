@@ -31,6 +31,7 @@ namespace _Main.Scripts.AdsSystem
         private class BaseAd : IUnityAdsLoadListener, IUnityAdsShowListener, IUnityAd
         {
             private readonly string _adUnitId;
+            private const int TimeOutDelay = 15;
             private TimerManager.GeneratedId _loadTimeOutId;
             private TimerManager.GeneratedId _showTimeOutId;
             
@@ -52,11 +53,6 @@ namespace _Main.Scripts.AdsSystem
                 _adUnitId = adUnitId;
             }
 
-            // ================================================================
-            // TRY LOAD (OneShot)
-            // ================================================================
-
-
             #region Load
 
             public void TryLoad(
@@ -69,7 +65,7 @@ namespace _Main.Scripts.AdsSystem
                     return;
                 }
                 
-                _loadTimeOutId = TimerManager.Add(new TimerData(5f, onEndAction: () =>
+                _loadTimeOutId = TimerManager.Add(new TimerData(TimeOutDelay, onEndAction: () =>
                 {
                     Debug.LogWarning($"Load Timeout: {_adUnitId} did not respond.");
                     FailLoad(_adUnitId);
@@ -87,6 +83,7 @@ namespace _Main.Scripts.AdsSystem
             {
                 TimerManager.Remove(_loadTimeOutId);
                 //
+                Debug.Log($"Ad {adUnitId} was loaded.");
                 _onLoadSuccessOneShot?.Invoke(adUnitId);
                 ClearLoadOneShot();
             }
@@ -130,10 +127,9 @@ namespace _Main.Scripts.AdsSystem
                 _onShowCompletedOneShot = onCompleted;
                 _onShowSkippedOneShot = onSkipped;
 
-                _showTimeOutId = TimerManager.Add(new TimerData(5f, onEndAction: () =>
+                _showTimeOutId = TimerManager.Add(new TimerData(TimeOutDelay, onEndAction: () =>
                 {
-                    
-                    FailLoad(_adUnitId);
+                    FailShow(_adUnitId);
                     
                 }));
 
@@ -145,6 +141,7 @@ namespace _Main.Scripts.AdsSystem
                 IsActive = true;
                 TimerManager.Remove(_showTimeOutId);
                 _onShowSuccessOneShot?.Invoke(adUnitId);
+                Debug.Log($"Ad {_adUnitId} is now active.");
             }
 
             public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
@@ -156,6 +153,7 @@ namespace _Main.Scripts.AdsSystem
 
             public void OnUnityAdsShowClick(string adUnitId)
             {
+                Debug.Log($"Ad {adUnitId} was clicked.");
                 _onShowClickedOneShot?.Invoke(adUnitId);
             }
 
@@ -165,13 +163,16 @@ namespace _Main.Scripts.AdsSystem
                 {
                     case UnityAdsShowCompletionState.COMPLETED:
                         _onShowCompletedOneShot?.Invoke(adUnitId);
+                        Debug.Log($"Ad {adUnitId} was completed.");
                         break;
 
                     case UnityAdsShowCompletionState.SKIPPED:
                         _onShowSkippedOneShot?.Invoke(adUnitId);
+                        Debug.Log($"Ad {adUnitId} was skipped.");
                         break;
 
                     case UnityAdsShowCompletionState.UNKNOWN:
+                        Debug.Log($"Ad {adUnitId} has failed by an unkown reason.");
                         FailShow(adUnitId);
                         break;
                 }
@@ -326,18 +327,17 @@ namespace _Main.Scripts.AdsSystem
             BootEvents.OnMainSystemRequestInitialize += Initialize;
         }
 
+#pragma warning disable CS0162 // Unreachable code detected
         private void Initialize()
         {
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
 
-#pragma warning disable CS0162 // Unreachable code detected
             if (GameParameters.GameplayValues.AdsEnable == false)
             {
                 BootEvents.OnMainSystemRequestInitialize -= Initialize;
                 BootEvents.MainSystemInitialized();
                 return;
             }
-#pragma warning restore CS0162 // Unreachable code detected
 #endif
             
             BootEvents.OnMainSystemRequestInitialize -= Initialize;
@@ -367,5 +367,6 @@ namespace _Main.Scripts.AdsSystem
             //
             BootEvents.MainSystemInitialized();
         }
+#pragma warning restore CS0162 // Unreachable code detected
     }
 }
