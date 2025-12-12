@@ -5,35 +5,38 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/BootstrapScene.unity
     guid: 29137257fb8b7fc41939ced973fa4013
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/CoreModule.unity
     guid: 65b4c990bf2792042ae26eb058c49939
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/Modules/GameplayModule.unity
     guid: 9748bd06dc4befa429bf7ea53fb0ddcf
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/Modules/MainMenuModule.unity
     guid: df3acdcdd0f79994aa8e3e15870750db
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/Modules/TutorialModule.unity
     guid: fef01ff12eee97f4f9e4e68b1c35c06a
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/Modules/CosmeticsModule.unity
     guid: fdbbb6ab0f6bd04458b046364eadb3b2
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/Modules/OptionsModule.unity
     guid: 74b1b077df17b904ab06c6e532c24b68
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/Modules/MultiPageModule.unity
     guid: 8f44e7350862e36458c82d58db9870ae
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/Modules/DefeatModule.unity
     guid: 3db65bab40138df46848a258065ebffc
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Main/Scenes/Modules/PauseModule.unity
     guid: 77b886123216641499e14b11e68975f1
+  - enabled: 1
+    path: Assets/_Main/Scenes/TestScene/Test_Ads.unity
+    guid: 84926e85efb302644ae4cde82a2a7d2d
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
