@@ -44,7 +44,7 @@ namespace _Main.Scripts.Localization
                 SystemLanguage.Portuguese => "pt",
                 SystemLanguage.Italian => "it",
                 SystemLanguage.German => "de",
-                _ => "en"
+                _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
             };
         }
         
@@ -58,7 +58,7 @@ namespace _Main.Scripts.Localization
                 SystemLanguage.Portuguese => 3,
                 SystemLanguage.Italian => 4,
                 SystemLanguage.German => 5,
-                _ => 0
+                _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
             };
         }
 
@@ -72,7 +72,7 @@ namespace _Main.Scripts.Localization
                 3 => SystemLanguage.Portuguese,
                 4 => SystemLanguage.Italian,
                 5 => SystemLanguage.German,
-                _ => SystemLanguage.English
+                _ => throw new ArgumentOutOfRangeException(nameof(index), index, null)
             };
         }
 
@@ -86,7 +86,7 @@ namespace _Main.Scripts.Localization
                 3 => "Português",
                 4 => "Italiano",
                 5 => "Deutsch",
-                _ => "English"
+                _ => throw new ArgumentOutOfRangeException(nameof(index), index, null)
             };
         }
         

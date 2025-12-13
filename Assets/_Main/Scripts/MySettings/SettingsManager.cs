@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Localization;
 using _Main.Scripts.MyComponents;
 using _Main.Scripts.Save;
 using UnityEngine;
@@ -30,7 +31,7 @@ namespace _Main.Scripts.MySettings
         
         public void SetLanguageIndex(int index)
         {
-            _settingsData.LanguageIndex = Math.Min(index,0);
+            _settingsData.LanguageIndex = Math.Clamp(index, 0, LocalizationTools.LanguageCount);
             OnLanguageChanged?.Invoke(_settingsData.LanguageIndex);
         }
 

@@ -172,7 +172,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 mainMenu.AddTransition(States.Closed, close);
                 mainMenu.AddTransition(States.FirstGame, first);
                 //
-                first.AddTransition(States.MainMenu, close);
+                first.AddTransition(States.MainMenu, mainMenu);
                 first.AddTransition(States.Tutorial, tutorial);
                 first.AddTransition(States.Closed, close);
                 //

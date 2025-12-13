@@ -27,6 +27,7 @@ namespace _Main.Scripts.MainMenu.MVC
             
             _motor.Subscribe(_animation);
             _motor.Subscribe(_view);
+            _motor.Subscribe(_ui);
             
             SetViewHandlers();
             

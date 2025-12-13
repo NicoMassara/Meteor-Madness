@@ -225,7 +225,6 @@ namespace _Main.Scripts.AdsSystem
 
             #endregion
         }
-        
         private class BannerAdClass : IBannerAd
         {
             private readonly LevelPlayBannerAd _bannerAd;
@@ -406,7 +405,6 @@ namespace _Main.Scripts.AdsSystem
 
             #endregion
         }
-
         private class RewardedAdClass : IRewardedAd
         {
             private readonly LevelPlayRewardedAd _rewardedVideoAd;
@@ -562,18 +560,39 @@ namespace _Main.Scripts.AdsSystem
 
             if (GameParameters.GameplayValues.AdsEnable)
             {
-                _rewardedAd = new RewardedAdClass(AdConfig.RewardedVideoAdUnitId);
-                _bannerAd = new BannerAdClass(AdConfig.BannerAdUnitId);
-                _interstitialAd = new InterstitialAdClass(AdConfig.InterstitalAdUnitId);
+                _rewardedAd = new RewardedAdClass(AdConfig.RewardedVideoAdUnitId,GetRewardedConfig());
+                _bannerAd = new BannerAdClass(AdConfig.BannerAdUnitId, GetBannerConfig());
+                _interstitialAd = new InterstitialAdClass(AdConfig.InterstitalAdUnitId,GetInterstitialConfig());
             }
 
 #else
-            _rewardedAd = new RewardedAdClass(AdConfig.RewardedVideoAdUnitId);
-            _bannerAd = new BannerAdClass(AdConfig.BannerAdUnitId);
-            _interstitialAd = new InterstitialAdClass(AdConfig.InterstitalAdUnitId);
+            _rewardedAd = new RewardedAdClass(AdConfig.RewardedVideoAdUnitId,GetRewardedConfig());
+            _bannerAd = new BannerAdClass(AdConfig.BannerAdUnitId,GetBannerConfig());
+            _interstitialAd = new InterstitialAdClass(AdConfig.InterstitalAdUnitId,GetInterstitialConfig());
 #endif
             //
             BootEvents.MainSystemInitialized();
+        }
+
+        private LevelPlayRewardedAd.Config GetRewardedConfig()
+        {
+            return new LevelPlayRewardedAd.Config.Builder()
+                .Build();
+        }
+        
+        private LevelPlayBannerAd.Config GetBannerConfig()
+        {
+            return new LevelPlayBannerAd.Config.Builder()
+                .SetPosition(LevelPlayBannerPosition.BottomCenter)
+                .SetSize(LevelPlayAdSize.BANNER)
+                .SetRespectSafeArea(true)
+                .Build();
+        }
+        
+        private LevelPlayInterstitialAd.Config GetInterstitialConfig()
+        {
+            return new LevelPlayInterstitialAd.Config.Builder()
+                .Build();
         }
 
         public void PauseGame(bool pause)

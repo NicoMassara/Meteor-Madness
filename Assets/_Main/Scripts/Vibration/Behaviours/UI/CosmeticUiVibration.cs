@@ -12,6 +12,10 @@ namespace _Main.Scripts.Vibration.Behaviours.UI
             {
                 Vibrate(VibrationType.UIButtonCancel);
             };
+            ComponentToVibrate.OnSkinSelected += (value) =>
+            {
+                Vibrate(VibrationType.UIButtonAccept);
+            };
         }
 #endif
     }

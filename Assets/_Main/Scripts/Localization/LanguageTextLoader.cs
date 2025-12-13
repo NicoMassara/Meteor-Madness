@@ -35,7 +35,7 @@ namespace _Main.Scripts.Localization
         public void SelectLanguageToLoad(SystemLanguage language)
         {
             _loadedText.Clear();
-
+            
             string langCode = LocalizationTools.GetLanguageCode(language).ToLower();
             string path = Path.Combine(Application.streamingAssetsPath, "Localization", $"{langCode}.json");
 
