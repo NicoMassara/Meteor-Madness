@@ -4568,9 +4568,9 @@ MonoBehaviour:
     rightButtonsPanel: {fileID: 284876886}
     quitButton: {fileID: 240161013}
     gameTitle: {fileID: 1811351759}
-    lorePanel: {fileID: 0}
-    tutorialPanel: {fileID: 0}
-    creditsPanel: {fileID: 0}
+    lorePanel: {fileID: 2103393672}
+    tutorialPanel: {fileID: 379506756}
+    creditsPanel: {fileID: 566992571}
   desktopData:
     menuPanel: {fileID: 1836026038}
     leftButtonsPanel: {fileID: 1885841661}

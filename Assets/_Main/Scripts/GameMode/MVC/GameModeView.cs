@@ -180,7 +180,7 @@ namespace _Main.Scripts.GameMode
         
         private void HandleGameFinish()
         {
-            GameManager.Instance.UnpauseGame();
+            GameManager.Instance.ResumeGame();
             GameManager.Instance.CanPlay = false;
             ShieldEventCaller.Disable();
             OnGameFinished?.Invoke();
@@ -298,7 +298,7 @@ namespace _Main.Scripts.GameMode
             SetEnableInputs(true);
             AbilitiesEventCaller.EnableUI();
             GameModeEventCaller.SetPause(false);
-            GameManager.Instance.UnpauseGame();
+            GameManager.Instance.ResumeGame();
             
 #if UNITY_ANDROID || UNITY_IOS
 

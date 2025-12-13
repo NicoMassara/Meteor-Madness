@@ -1,32 +1,35 @@
 ﻿using System;
-using _Main.Scripts.AdsSystem;
 using _Main.Scripts.CustomId;
+using _Main.Scripts.Interfaces.Ads;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
-using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Defeat
 {
-    public class DefeatView : MonoBehaviour, IObserver,
+    public class DefeatView : MonoBehaviour, IObserver,  IDefeatAdComponent,
         DefeatView.IDefeatView
     {
         public interface IDefeatView
         {
             public event Action<GeneratedId, GeneratedId, bool> OnDataLoaded;
             public event Action OnDataInitialized;
-            public event Action OnAdsFinished;
+            public event Action OnGameSaved;
         }
-
-        [SerializeField] private float openAdDelay = 0.5f;
-        [SerializeField] private float finishAdDelay = 0.5f;
         
         #region IDefeatView
 
         public event Action<GeneratedId, GeneratedId, bool> OnDataLoaded;
         public event Action OnDataInitialized;
-        public event Action OnAdsFinished;
+        public event Action OnGameSaved;
 
+        #endregion
+        
+        #region IDefeatAdComponent
+
+        public event Action OnLoadAd;
+        public event Action OnShowAd;
+        
         #endregion
         
         public void OnNotify(ulong message, params object[] args)
@@ -48,9 +51,6 @@ namespace _Main.Scripts.Defeat
                 case DefeatObserverMessage.InitializeData:
                     HandleInitializeData((GeneratedId)args[0],(GeneratedId)args[1],(bool)args[2]);
                     break;
-                /*case DefeatObserverMessage.SaveHighScore:
-                    HandleSaveHighScore();
-                    break;*/
                 
                 //=== Ads ===//
                 case DefeatObserverMessage.SendAds:
@@ -63,62 +63,13 @@ namespace _Main.Scripts.Defeat
         
         private void HandleSendAds()
         {
-            if (AdManager.GetRewarded() == null)
-            {
-                OnAdsFinished?.Invoke();
-                return;
-            }
-
-            TimerManager.Add(new TimerData(openAdDelay, () =>
-            {
-                AdManager.GetRewarded().TryLoad(ShowAd, OnAdsFailedLoad);
-            }));
+#if UNITY_ANDROID || UNITY_IOS
+            OnShowAd?.Invoke();
+#else
+            TriggerReward();
+#endif
         }
 
-        #region Load
-
-        private void ShowAd(string input = "")
-        {
-            AdManager.GetRewarded().TryShow(
-                onShowed: null, 
-                onFailed: OnAdsShowFailed, 
-                onClicked: null, 
-                onCompleted: AdCompleted, 
-                onSkipped: OnSkipped);
-        }
-
-        private void OnSkipped(string input)
-        {
-            
-        }
-
-        private void OnAdsFailedLoad(string input)
-        {
-            HandleSendAds();
-        }
-
-        #endregion
-
-        #region Show
-        
-        private void OnAdsShowFailed(string obj)
-        {
-            ShowAd();
-        }
-        
-        private void AdCompleted(string input)
-        {
-            HandleSaveHighScore();
-            
-            TimerManager.Add(new TimerData(finishAdDelay, () =>
-            {
-                OnAdsFinished?.Invoke();
-            }));
-
-        }
-
-        #endregion
-        
         #endregion
 
         private void HandleInitializeData(GeneratedId highScoreId, GeneratedId currentScoreId, bool hasNewHighScore)
@@ -128,13 +79,15 @@ namespace _Main.Scripts.Defeat
                 GameManager.Instance.SaveRuntimeHighScore(highScoreId, currentScoreId);
             }
             
+            OnLoadAd?.Invoke();
             OnDataInitialized?.Invoke();
         }
 
-        private void HandleSaveHighScore()
+        private void SaveGameData()
         {
             GameManager.Instance.SaveHighScore(GameManager.Instance.GetHighScoreSecuredId());
             GameManager.Instance.SaveStats();
+            OnGameSaved?.Invoke();
         }
         
         private void HandleExecuteDisable()
@@ -155,5 +108,14 @@ namespace _Main.Scripts.Defeat
                 GameManager.Instance.GetHasNewHighScore());
 
         }
+        
+        #region IDefeatAdComponent
+
+        public void TriggerReward()
+        {
+            SaveGameData();
+        }
+        
+        #endregion
     }
 }

@@ -79,7 +79,7 @@ namespace _Main.Scripts.Defeat
                 _controller.LoadScoreData(score,highScore,hasNewHigh);
             };
             _view.OnDataInitialized += _controller.SetDataIsLoaded;
-            _view.OnAdsFinished += _controller.SendButtons;
+            _view.OnGameSaved += _controller.SendButtons;
             //
             _ui.OnRestartButtonPressed += GameManager.Instance.LoadGameMode;
             _ui.OnMainMenuButtonPressed += GameManager.Instance.LoadMainMenu;

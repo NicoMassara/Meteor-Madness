@@ -12,10 +12,10 @@ using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts.MyTest.Defeat
 {
-#if UNITY_EDITOR   
         [AddComponentMenu("_Main/ModuleTester/Defeat Screen Tester")]
         public class DefeatScreenTester : MonoBehaviour
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD 
             [Range(0,1000)]
             [SerializeField] private uint scoreAmount;
             [Range(0,1000)]
@@ -62,9 +62,9 @@ namespace _Main.Scripts.MyTest.Defeat
             
             private void Start()
             {
-                var settings = SettingsManager.Instance;
-                var localization = LocalizationManager.Instance;
-                var dataManager = DataManager.Instance;
+                LocalizationManager.LoadInstance();
+                DataManager.LoadInstance();
+                SettingsManager.LoadInstance();
             }
             
             private void SetScoreValue()
@@ -86,6 +86,10 @@ namespace _Main.Scripts.MyTest.Defeat
 
             private IEnumerator LoadDefeatScreen()
             {
+                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(0.25f);
+                
                 AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("DefeatModule", LoadSceneMode.Additive);
                 
                 while (!asyncLoad.isDone)
@@ -167,6 +171,6 @@ namespace _Main.Scripts.MyTest.Defeat
             }
 
             #endregion
-        }
 #endif
+        }
 }
