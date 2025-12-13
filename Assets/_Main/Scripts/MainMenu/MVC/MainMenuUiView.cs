@@ -12,11 +12,13 @@ namespace _Main.Scripts.MainMenu.MVC
         [SerializeField] private MainMenuUiPanelComponents uiPanelSelector;
         
         private MainMenuUiComponents _uiComponents;
-        
+
+
         // Buttons Actions
         public event Action OnConfirmButtonClicked;
         public event Action OnCancelButtonClicked;
         public event Action OnBackButtonClicked;
+        public event Action OnFirstPlayScreenPlay;
 
         // Screens Actions
         public event Action OnGameModeTriggered;
@@ -90,6 +92,22 @@ namespace _Main.Scripts.MainMenu.MVC
                 OnCancelButtonClicked?.Invoke();
                 OnExit?.Invoke();
             });
+            
+            GetUiComponents().FirstGame_Play.onClick.AddListener(() =>
+            {
+                OnFirstPlayScreenPlay?.Invoke();
+            });
+            
+            GetUiComponents().FirstGame_Tutorial.onClick.AddListener(() =>
+            {
+                OnTutorialOpen?.Invoke();
+            });
+            
+            GetUiComponents().FirstGame_Close.onClick.AddListener(() =>
+            {
+                OnBackToMenu?.Invoke();
+            });
+            
             #endregion
             
         }

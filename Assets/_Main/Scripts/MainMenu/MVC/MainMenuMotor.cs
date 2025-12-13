@@ -69,5 +69,10 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             NotifyAll(MainMenuObserverMessage.MainPanelOpened);
         }
+
+        public void FirstGame()
+        {
+            NotifyAll(MainMenuObserverMessage.FirstGame);
+        }
     }
 }

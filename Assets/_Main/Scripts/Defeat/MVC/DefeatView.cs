@@ -109,7 +109,17 @@ namespace _Main.Scripts.Defeat
         
         public void TriggerReward()
         {
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (GameParameters.GameplayValues.DoesSaveProgress)
+            {
+                SaveGameData();
+            }
+#else
             SaveGameData();
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+
         }
     }
 }

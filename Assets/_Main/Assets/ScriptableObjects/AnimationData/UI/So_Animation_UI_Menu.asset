@@ -66,3 +66,11 @@ MonoBehaviour:
     offscreenDirection: 1
     movementDuration: 0.3
     offset: {x: 0, y: 0}
+  firstGameOpenData:
+    offscreenDirection: 2
+    movementDuration: 0.3
+    offset: {x: 0, y: 250}
+  firstGameCloseData:
+    offscreenDirection: 2
+    movementDuration: 0.15
+    offset: {x: 0, y: 250}

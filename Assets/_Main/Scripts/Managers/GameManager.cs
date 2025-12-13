@@ -147,6 +147,31 @@ namespace _Main.Scripts.Managers
             return currentScore > highScore;
         }
 
+        public bool GetHasPlayed()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+            var value = saveData.HasPlayed;
+            
+            if(value)
+                return true;
+            
+            saveData.HasPlayed = true;
+            
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (GameParameters.GameplayValues.DoesSaveProgress)
+            {
+                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+            }
+#else
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+            
+            return false;
+        }
+
         public GeneratedId GetHighScoreSecuredId()
         {
             if (_highScoreSecuredId == null)

@@ -51,8 +51,35 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void SetViewHandlers()
         {
-            _view.OnMainMenuEnable += () => _controller.TransitionToMenu();
+            _view.OnMainMenuEnable += () =>
+            {
+                _controller.TransitionToMenu();
+                var hasPlayed = GameManager.Instance.GetHasPlayed();
+
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                
+                if (GameParameters.GameplayValues.AlwaysFirstGame)
+                {
+                    _controller.SetHasPlayed(false);
+                }
+                else
+                {
+                    Debug.Log($"Is First Game: {!hasPlayed}");
+                }
+#else
+                _controller.SetHasPlayed(hasPlayed);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+                
+
+            };
             //
+            _ui.OnFirstPlayScreenPlay += () =>
+            {
+                _controller.SetHasPlayed(true);
+                _controller.TriggerGameMode();
+            };
             _ui.OnGameModeTriggered += () => _controller.TriggerGameMode();
             _ui.OnTutorialTriggered += () => _controller.TriggerTutorial();
             _ui.OnLoreOpen += () => _controller.TransitionToLore();

@@ -31,7 +31,8 @@ namespace _Main.Scripts.MainMenu.MVC
             MainMenu,
             Lore,
             Tutorial,
-            Credits
+            Credits,
+            FirstGame,
         }
 
         #region IMainMenuViewAnimation
@@ -56,6 +57,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 Lore,
                 Tutorial,
                 Credits,
+                FirstGame,
                 Closed
             }
             
@@ -147,6 +149,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 var lore = new DefaultState<States>(ScreenType.Lore);
                 var tutorial = new DefaultState<States>(ScreenType.Tutorial);
                 var credits = new DefaultState<States>(ScreenType.Credits);
+                var first = new DefaultState<States>(ScreenType.FirstGame);
                 var close = new CloseState<States>();
                 
                 temp.Add(none);
@@ -154,6 +157,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 temp.Add(lore);
                 temp.Add(tutorial);
                 temp.Add(credits);
+                temp.Add(first);
                 temp.Add(close);
 
                 #endregion
@@ -166,6 +170,11 @@ namespace _Main.Scripts.MainMenu.MVC
                 mainMenu.AddTransition(States.Tutorial, tutorial);
                 mainMenu.AddTransition(States.Credits, credits);
                 mainMenu.AddTransition(States.Closed, close);
+                mainMenu.AddTransition(States.FirstGame, first);
+                //
+                first.AddTransition(States.MainMenu, close);
+                first.AddTransition(States.Tutorial, tutorial);
+                first.AddTransition(States.Closed, close);
                 //
                 tutorial.AddTransition(States.MainMenu, mainMenu);
                 tutorial.AddTransition(States.Closed, close);
@@ -191,6 +200,11 @@ namespace _Main.Scripts.MainMenu.MVC
             private void SetTransition(States state)
             {
                 _fsm?.Transitions(state);
+            }
+            
+            public void TransitionToFirstGame()
+            {
+                SetTransition(States.FirstGame);
             }
             
             public void TransitionToClose()
@@ -221,6 +235,8 @@ namespace _Main.Scripts.MainMenu.MVC
             #endregion
 
             #endregion
+
+
         }
 
         #region Animations
@@ -491,6 +507,56 @@ namespace _Main.Scripts.MainMenu.MVC
         }
 
         #endregion
+        
+        #region FirstGame
+
+        private class Animation_FirstGame_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.IFirstGamePanel, IBasePanelData>
+        {
+            private readonly AnimationHelper.PanelPosition _panel;
+
+            public Animation_FirstGame_Open(MainMenuUiAnimationComponents.IFirstGamePanel components,
+                IBasePanelData animationData)
+                : base(components, animationData)
+            {
+                _panel = new AnimationHelper.PanelPosition(UIComponents.FirstGamePanel,
+                    AnimationData.OffscreenDirection, AnimationData.Offset);
+            }
+
+            protected override void Initialize()
+            {
+                UIComponents.FirstGamePanel.gameObject.SetActive(false);
+                UIComponents.FirstGamePanel.anchoredPosition = _panel.OffScreenPos;
+            }
+
+            protected override Sequence CreateAnimation()
+            {
+                return DOTween.Sequence()
+                    .AppendCallback(() => UIComponents.FirstGamePanel.gameObject.SetActive(true))
+                    .Append(UIComponents.FirstGamePanel.DOAnchorPos(_panel.StartPos, AnimationData.MovementDuration));
+            }
+        }
+
+        private class Animation_FirstGame_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.IFirstGamePanel, IBasePanelData>
+        {
+            private readonly AnimationHelper.PanelPosition _panel;
+
+            public Animation_FirstGame_Close(MainMenuUiAnimationComponents.IFirstGamePanel components,
+                IBasePanelData animationData)
+                : base(components, animationData)
+            {
+                _panel = new AnimationHelper.PanelPosition(UIComponents.FirstGamePanel,
+                    AnimationData.OffscreenDirection, AnimationData.Offset);
+            }
+
+            protected override Sequence CreateAnimation()
+            {
+                return DOTween.Sequence()
+                    .Append(UIComponents.FirstGamePanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.MovementDuration))
+                    .AppendCallback(() => UIComponents.FirstGamePanel.gameObject.SetActive(false));
+            }
+        }
+
+        #endregion
 
         #endregion
         
@@ -510,6 +576,9 @@ namespace _Main.Scripts.MainMenu.MVC
         //
         private IUIAnimator _animationCreditsOpen;
         private IUIAnimator _animationCreditsClose;
+        //
+        private IUIAnimator _animationFirstGameOpen;
+        private IUIAnimator _animationFirstGameClose;
 
         private void Awake()
         {
@@ -530,6 +599,9 @@ namespace _Main.Scripts.MainMenu.MVC
             //
             _animationCreditsOpen = new Animation_Credits_Open(UIComponents, animData.CreditsOpenData);
             _animationCreditsClose = new Animation_Credits_Close(UIComponents, animData.CreditsCloseData);
+            //
+            _animationFirstGameOpen = new Animation_FirstGame_Open(UIComponents, animData.FirstGameOpenData);
+            _animationFirstGameClose = new Animation_FirstGame_Close(UIComponents, animData.FirstGameCloseData);
         }
 
         #region Observer
@@ -550,12 +622,20 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.CreditsMenu:
                     HandleCreditsMenu();
                     break;
+                case MainMenuObserverMessage.FirstGame:
+                    HandleFirstGame();
+                    break;
                 case MainMenuObserverMessage.StartDisable:
                     HandleDisable();
                     break;
             }
         }
-        
+
+        private void HandleFirstGame()
+        {
+            _animator.TransitionToFirstGame();
+        }
+
         private void HandleMainMenu()
         {
             _animator.TransitionToMainMenu();
@@ -600,6 +680,9 @@ namespace _Main.Scripts.MainMenu.MVC
                 case ScreenType.Credits:
                     PlayAnimation(_animationCreditsOpen);
                     break;
+                case ScreenType.FirstGame:
+                    PlayAnimation(_animationFirstGameOpen);
+                    break;
             }
         }
 
@@ -618,6 +701,9 @@ namespace _Main.Scripts.MainMenu.MVC
                     break;
                 case ScreenType.Credits:
                     PlayAnimation(_animationCreditsClose);
+                    break;
+                case ScreenType.FirstGame:
+                    PlayAnimation(_animationFirstGameClose);
                     break;
             }
         }

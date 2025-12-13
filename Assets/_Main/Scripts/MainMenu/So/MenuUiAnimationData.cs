@@ -30,6 +30,10 @@ namespace _Main.Scripts.Menu.So
         [SerializeField] private BaseAnimData creditsOpenData;
         [Space]
         [SerializeField] private BaseAnimData creditsCloseData;
+        [Header("First Game")]
+        [SerializeField] private BaseAnimData firstGameOpenData;
+        [Space]
+        [SerializeField] private BaseAnimData firstGameCloseData;
 
         #region Private Classes
 
@@ -129,6 +133,8 @@ namespace _Main.Scripts.Menu.So
         public IBasePanelData TutorialCloseData => tutorialCloseData;
         public IBasePanelData CreditsOpenData => creditsOpenData;
         public IBasePanelData CreditsCloseData => creditsCloseData;
+        public BaseAnimData FirstGameOpenData => firstGameOpenData;
+        public BaseAnimData FirstGameCloseData => firstGameCloseData;
     }
 
 }

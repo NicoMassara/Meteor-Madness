@@ -27,6 +27,9 @@ namespace _Main.Scripts.Menu
         public Button OptionsButton;
         public Button CreditsButton;
         public Button QuitButton;
+        public Button FirstGame_Play;
+        public Button FirstGame_Tutorial;
+        public Button FirstGame_Close;
         [Space(1)]
         [Header("Tutorial Panel")]
         public Button OpenTutorialButton;

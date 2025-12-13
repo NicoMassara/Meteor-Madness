@@ -51,7 +51,7 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void HandleEnable()
         {
-            AdsEvents.Banner_TriggerLoad();
+
             OnMainMenuEnable?.Invoke();
             CameraEventCaller.ZoomIn(0.5f);
             EarthEventCaller.DisableDamage();
@@ -64,6 +64,7 @@ namespace _Main.Scripts.MainMenu.MVC
         
         private void HandleGameMode()
         {
+            AdsEvents.Banner_TriggerHide();
             GameManager.Instance.LoadGameMode();
         }
         

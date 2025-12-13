@@ -38,6 +38,10 @@
       "Button" : "Creditos",
       "Title" : "Creditos",
       "Text" : "Desarrollado por"
+    },
+    "FirstPlay": {
+      "Title" : "Atención!",
+      "Text" : "Esta es tu primera vez jugando Meteor Madness\n¿Estás seguro de que quieres jugar de inmediato?\n¡Quizás quieras revisar el tutorial primero!"
     }
   },
 
@@ -75,6 +79,7 @@
     "CountdownFinish" : "Defender!",
     "Score" : "Puntos",
     "HighScore" : "Record",
+    "NewHighScore" : "Nuevo Record!",
     "Death": {
       "Title" : "La Humanidad se acabo!",
       "Score" : "Tus Puntos"

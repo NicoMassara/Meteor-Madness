@@ -156,6 +156,11 @@ namespace _Main.Scripts.AdsSystem
                 Debug.LogWarning("Ad Manager - Banner Ad is null");
                 return;
             }
+            
+            if (_hideId != null && _hideId.IsActive)
+            {
+                return;
+            }
 
             _hideId = TimerManager.Add(new TimerData(hideDelay, ()=> AdManager.BannerAd.TryHide()));
         }
