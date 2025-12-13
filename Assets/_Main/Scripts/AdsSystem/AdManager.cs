@@ -2,9 +2,12 @@
 using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.MyComponents;
 using Unity.Services.LevelPlay;
+using UnityEngine;
 
 namespace _Main.Scripts.AdsSystem
 {
+    [RequireComponent(typeof(AdBannerController))]
+    [RequireComponent(typeof(AdRewardedController))]
     public class AdManager : SingletonBehaviour<AdManager>
     {
 #if UNITY_ANDROID || UNITY_IOS

@@ -4,6 +4,7 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.MultiPage;
 using _Main.Scripts.Observer;
 using _Main.Scripts.GameConfig;
+using _Main.Scripts.GlobalEvents;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -55,6 +56,7 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleEnable()
         {
+            AdsEvents.Banner_TriggerHide();
             _currentMultiPageIndex = 0;
             OnTutorialEnable?.Invoke();
         }

@@ -1,13 +1,11 @@
-﻿using System;
-using _Main.Scripts.Interfaces.Ads;
+﻿using _Main.Scripts.GlobalEvents;
 using NicolasMassara.CustomTimerManager;
 using Unity.Services.LevelPlay;
 using UnityEngine;
 
-namespace _Main.Scripts.AdsSystem.AdsComponents.Base
+namespace _Main.Scripts.AdsSystem
 {
-    public abstract class BaseRewardedComponent<T> : MonoBehaviour
-    where T : IRewardedComponent
+    public class AdRewardedController : MonoBehaviour
     {
 #if UNITY_ANDROID || UNITY_IOS
         [Header("Delay")]
@@ -15,23 +13,18 @@ namespace _Main.Scripts.AdsSystem.AdsComponents.Base
         [SerializeField] private float openDelay = 0.5f;
         [Range(0,5)]
         [SerializeField] private float finishDelay = 0.5f;
-        protected T ComponentToReward { get;  private set; }
 
         private int _retryCount = 0;
         private const int MaxRetryCount = 5;
         
         private bool _failedToLoad = false;
         private bool _hasRewarded = false;
-
-        private void Awake()
-        {
-            ComponentToReward = GetComponent<T>();
-        }
+        
         
         protected virtual void Start()
         {
-            ComponentToReward.OnLoadAd += TryLoadAd;
-            ComponentToReward.OnShowAd += TryShowAd;
+            AdsEvents.Rewarded_OnLoad += TryLoadAd;
+            AdsEvents.Rewarded_OnShow += TryShowAd;
         }
 
         protected void TryLoadAd()
@@ -86,7 +79,7 @@ namespace _Main.Scripts.AdsSystem.AdsComponents.Base
             
             _hasRewarded = true;
             
-            TimerManager.Add(new TimerData(finishDelay, ComponentToReward.TriggerReward));
+            TimerManager.Add(new TimerData(finishDelay, AdsEvents.Rewarded_TriggerReward));
         }
 
         #region Load

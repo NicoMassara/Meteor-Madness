@@ -2,6 +2,7 @@
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Localization;
+using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -51,6 +52,16 @@ namespace _Main.Scripts.MultiPage
         private string GetLocalizedString(string key)
         {
             return LocalizationManager.Instance.GetText(key);
+        }
+
+        public void DisableNextButton()
+        {
+            GetUiComponents().NextButton.interactable = false;
+            
+            TimerManager.Add(new TimerData(1.5f, () =>
+            {
+                GetUiComponents().NextButton.interactable = true;
+            }));
         }
     }
 }

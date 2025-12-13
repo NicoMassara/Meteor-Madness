@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Managers;
+﻿using _Main.Scripts.GlobalEvents;
+using _Main.Scripts.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.MySettings.MVC
@@ -40,6 +41,7 @@ namespace _Main.Scripts.MySettings.MVC
             _ui.OnVibrationChanged += (value) => _motor.Vibration(value);
             _ui.OnBackButtonPressed += () => _motor.Close();
             //
+            _animator.OnPanelOpened += () => AdsEvents.Banner_TriggerShow();;
             _animator.OnPanelClosed += () => _motor.ExecuteDisable();
         }
         

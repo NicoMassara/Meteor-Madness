@@ -1,36 +1,30 @@
-﻿using _Main.Scripts.Interfaces.Ads;
+﻿using _Main.Scripts.GlobalEvents;
 using NicolasMassara.CustomTimerManager;
 using Unity.Services.LevelPlay;
 using UnityEngine;
 
-namespace _Main.Scripts.AdsSystem.AdsComponents.Base
+namespace _Main.Scripts.AdsSystem
 {
-    public abstract class BaseBannerComponent <T> : MonoBehaviour
-        where T : IBannerComponent
+    public class AdBannerController : MonoBehaviour
     {
 #if UNITY_ANDROID || UNITY_IOS
         [Header("Delay")]
         [Range(0,5)]
-        [SerializeField] private float openDelay = 0.5f;
+        [SerializeField] private float openDelay = 0.25f;
         [Range(0,5)]
         [SerializeField] private float hideDelay = 0.5f;   
-        
-        protected T ComponentToBanner { get;  private set; }
 
         private int _retryCount = 0;
         private const int MaxRetryCount = 5;
-        
-        private void Awake()
-        {
-            ComponentToBanner = GetComponent<T>();
-        }
+
+        private TimerManager.GeneratedId _hideId;
         
         protected virtual void Start()
         {
-            ComponentToBanner.OnLoadAd += TryLoadAd;
-            ComponentToBanner.OnShowAd += TryShowAd;
-            ComponentToBanner.OnHideAd += TryHideAd;
-            ComponentToBanner.OnDestroyAd += TryDestroyAd;
+            AdsEvents.Banner_OnLoad += TryLoadAd;
+            AdsEvents.Banner_OnShow += TryShowAd;
+            AdsEvents.Banner_OnHide += TryHideAd;
+            AdsEvents.Banner_OnDestroy += TryDestroyAd;
         }
         
         private void TryLoadAd()
@@ -81,11 +75,23 @@ namespace _Main.Scripts.AdsSystem.AdsComponents.Base
                 return;
             }
 
+            // Checks if the Banner is being hidden, if it is, stops it
+            
+            if (_hideId != null && _hideId.IsActive)
+            {
+                TimerManager.Remove(_hideId);
+                return;
+            }
+            
+            // Checks if banner is already displaying
+            
             if (AdManager.BannerAd.IsDisplaying)
             {
                 Debug.LogWarning("Ad Manager - Banner Ad is already displaying");
                 return;
             }
+            
+            // Displays banner
 
             TimerManager.Add(new TimerData(openDelay, () =>
             {
@@ -151,7 +157,7 @@ namespace _Main.Scripts.AdsSystem.AdsComponents.Base
                 return;
             }
 
-            TimerManager.Add(new TimerData(hideDelay, ()=> AdManager.BannerAd.TryHide()));
+            _hideId = TimerManager.Add(new TimerData(hideDelay, ()=> AdManager.BannerAd.TryHide()));
         }
 
         private void TryDestroyAd()

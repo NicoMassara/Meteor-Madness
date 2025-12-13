@@ -4,6 +4,7 @@ using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Managers;
 using _Main.Scripts.GameConfig;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Observer;
 using _Main.Scripts.SecurityData;
 using NicolasMassara.CustomTimerManager;
@@ -387,6 +388,7 @@ namespace _Main.Scripts.GameMode
 
         private void HandleStartCountdown(int countdown)
         {
+            AdsEvents.Banner_TriggerHide();
             CameraEventCaller.ZoomOut(0.5f);
             OnCountDownStarted?.Invoke();
         }

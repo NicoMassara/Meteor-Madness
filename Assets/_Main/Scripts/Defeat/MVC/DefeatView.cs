@@ -1,13 +1,13 @@
 ﻿using System;
 using _Main.Scripts.CustomId;
-using _Main.Scripts.Interfaces.Ads;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Defeat
 {
-    public class DefeatView : MonoBehaviour, IObserver,  IDefeatAdComponent,
+    public class DefeatView : MonoBehaviour, IObserver,
         DefeatView.IDefeatView
     {
         public interface IDefeatView
@@ -24,14 +24,12 @@ namespace _Main.Scripts.Defeat
         public event Action OnGameSaved;
 
         #endregion
-        
-        #region IDefeatAdComponent
 
-        public event Action OnLoadAd;
-        public event Action OnShowAd;
-        
-        #endregion
-        
+        private void Start()
+        {
+            AdsEvents.Rewarded_Reward += TriggerReward;
+        }
+
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -64,7 +62,7 @@ namespace _Main.Scripts.Defeat
         private void HandleSendAds()
         {
 #if UNITY_ANDROID || UNITY_IOS
-            OnShowAd?.Invoke();
+            AdsEvents.Rewarded_TriggerShow();
 #else
             TriggerReward();
 #endif
@@ -79,7 +77,7 @@ namespace _Main.Scripts.Defeat
                 GameManager.Instance.SaveRuntimeHighScore(highScoreId, currentScoreId);
             }
             
-            OnLoadAd?.Invoke();
+            AdsEvents.Rewarded_TriggerLoad();
             OnDataInitialized?.Invoke();
         }
 
@@ -109,13 +107,9 @@ namespace _Main.Scripts.Defeat
 
         }
         
-        #region IDefeatAdComponent
-
         public void TriggerReward()
         {
             SaveGameData();
         }
-        
-        #endregion
     }
 }
