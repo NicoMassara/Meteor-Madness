@@ -292,34 +292,43 @@ namespace _Main.Scripts.AdsSystem
         private IBannerAd _banner;
         
 #pragma warning disable CS0162 // Unreachable code detected
+        
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
         public static IUnityAd GetInterstitial()
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-
             return GameParameters.GameplayValues.AdsEnable ?  _instance._interstitial : null;
-#endif
-            return _instance._interstitial;   
-
-            
         }
 
         public static IUnityAd GetRewarded()
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
 
             return GameParameters.GameplayValues.AdsEnable ?  _instance._rewarded : null;
-#endif
+        }
+
+        public static IBannerAd GetBanner()
+        {
+            return GameParameters.GameplayValues.AdsEnable ?  _instance._banner : null;
+
+        }
+#else
+
+        public static IUnityAd GetInterstitial()
+        {
+            return _instance._interstitial;   
+        }
+
+        public static IUnityAd GetRewarded()
+        {
             return _instance._rewarded; 
         }
 
         public static IBannerAd GetBanner()
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-
-            return GameParameters.GameplayValues.AdsEnable ?  _instance._banner : null;
-#endif
             return _instance._banner; 
         }
+
+
+#endif
 #pragma warning restore CS0162 // Unreachable code detected
 
         private void Awake()
