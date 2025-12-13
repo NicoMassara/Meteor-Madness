@@ -11,8 +11,13 @@ using UnityEngine;
 namespace _Main.Scripts.MainMenu.MVC
 {
     public class MainMenuViewAnimation : BaseViewAnimation<MainMenuUiAnimationSelector,MainMenuUiAnimationComponents>,
-    MainMenuViewAnimation.IAnimator
+    MainMenuViewAnimation.IAnimator, MainMenuViewAnimation.IMainMenuViewAnimation
     {
+        public interface IMainMenuViewAnimation : BaseViewAnimation<MainMenuUiAnimationSelector,MainMenuUiAnimationComponents>.IBaseViewAnimation
+        {
+            public event Action OnMainPanelOpened;
+        }
+        
         private interface IAnimator
         {
             public void PlayFirstOpenAnimation();
@@ -29,6 +34,12 @@ namespace _Main.Scripts.MainMenu.MVC
             Credits
         }
 
+        #region IMainMenuViewAnimation
+
+        public event Action OnMainPanelOpened;
+
+        #endregion
+        
 
         [SerializeField] private MenuUiAnimationData animData;
         
@@ -578,7 +589,7 @@ namespace _Main.Scripts.MainMenu.MVC
             switch (screenType)
             {
                 case ScreenType.MainMenu:
-                    PlayAnimation(_animationMenuOpen);
+                    PlayAnimation(_animationMenuOpen,OnMainPanelOpened);
                     break;
                 case ScreenType.Lore:
                     PlayAnimation(_animationLoreOpen);
@@ -613,7 +624,7 @@ namespace _Main.Scripts.MainMenu.MVC
         
         public void PlayFirstOpenAnimation()
         {
-            PlayAnimation(_animationMenuFirstOpen);
+            PlayAnimation(_animationMenuFirstOpen, OnMainPanelOpened);
         }
         
         public void TriggerClose()
