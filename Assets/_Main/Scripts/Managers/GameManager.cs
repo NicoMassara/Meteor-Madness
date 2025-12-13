@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Interfaces;
+﻿using System;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyComponents;
 using _Main.Scripts.MyTools;
 using _Main.Scripts.CustomId;
@@ -13,6 +14,9 @@ namespace _Main.Scripts.Managers
     {
         public bool CanPlay { get; set; }
         public bool IsPaused { get; private set; }
+
+        public event Action OnPaused;
+        public event Action OnResumed;
         public bool HadCorruptedSaveData { get; set; }
 
         public EventBusManager EventManager { get; private set; }
@@ -94,12 +98,14 @@ namespace _Main.Scripts.Managers
         {
             SetPauseChannels(true);
             IsPaused = true;
+            OnPaused?.Invoke();
         }
 
-        public void UnpauseGame()
+        public void ResumeGame()
         {
             SetPauseChannels(false);
             IsPaused = false;
+            OnResumed?.Invoke();
         }
 
         private void SetPauseChannels(bool isPaused)

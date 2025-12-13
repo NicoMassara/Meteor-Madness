@@ -104,13 +104,18 @@ namespace _Main.Scripts.Bootstrap
             SkinManager.LoadInstance();
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedSkins);
-            
+
             //Ads
+#if UNITY_ANDROID || UNITY_IOS
+
             OnLoadingAsset?.Invoke("Loading Ads");
             AdManager.LoadInstance();
             AdsEvents.InitializeAds();
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedAds);
+#else
+            _mainSystemCount++;
+#endif
             
             OnLoadingAsset?.Invoke("Loading Main Scene");
             yield return new WaitForSeconds(delayBeforeLoad);
