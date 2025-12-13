@@ -64,6 +64,7 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
             //
             _animation.OnPanelClosed += () => _controller.ExecuteDisable();
+            _animation.OnMainPanelOpened += () => _controller.MainPanelOpened();
         }
 
         #endregion

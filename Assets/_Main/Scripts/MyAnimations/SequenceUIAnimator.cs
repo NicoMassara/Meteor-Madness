@@ -12,6 +12,9 @@ namespace _Main.Scripts.MyAnimations
         protected readonly T UIComponents;
         protected readonly TS AnimationData;
         
+        private Sequence _sequence;
+        
+        
         protected SequenceUIAnimator(T components, TS animationData)
         {
             UIComponents = components;
@@ -34,6 +37,10 @@ namespace _Main.Scripts.MyAnimations
                 .AppendCallback(() => onFinished?.Invoke())
                 .AppendCallback(RestartValues);
         }
+
+        public void Pause() => _sequence?.Pause();
+        public void Resume() => _sequence?.Play();
+        public void Kill() => _sequence?.Kill();
     }
     
     
@@ -68,6 +75,11 @@ namespace _Main.Scripts.MyAnimations
     public interface IUIAnimator
     {
         public void Play(Action onFinished);
+
+        public void Pause();
+        public void Resume();
+
+        public void Kill();
     }
     
     public interface IUiAnimationComponent {}

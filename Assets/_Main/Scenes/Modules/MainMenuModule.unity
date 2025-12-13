@@ -4768,6 +4768,7 @@ GameObject:
   - component: {fileID: 1065275442}
   - component: {fileID: 1065275444}
   - component: {fileID: 1065275445}
+  - component: {fileID: 1065275447}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -4878,6 +4879,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 1014773038}
   animData: {fileID: 11400000, guid: dc7ed975c07bba14f83e95c7ff0f3aaa, type: 2}
+--- !u!114 &1065275447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065275437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cecd510cf2c4311a0ad4987081e4620, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openDelay: 0.5
+  hideDelay: 0
 --- !u!1 &1077354734
 GameObject:
   m_ObjectHideFlags: 0

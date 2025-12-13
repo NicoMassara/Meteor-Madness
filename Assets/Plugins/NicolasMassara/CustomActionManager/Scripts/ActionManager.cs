@@ -412,6 +412,8 @@ namespace NicolasMassara.CustomActionManager
         
         private readonly Dictionary<ushort, UpdateType> _updateById = new Dictionary<ushort, UpdateType>();
         
+        public bool IsPaused { get; set; }
+        
         private class ActionQueueData
         {
             public ActionQueueRunner ActionQueue { get; private set; }
@@ -455,6 +457,16 @@ namespace NicolasMassara.CustomActionManager
         private void LateUpdate()
         {
             _lateUpdateRunner?.Execute(Time.deltaTime, Time.unscaledDeltaTime);
+        }
+        
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            IsPaused = !hasFocus;
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            IsPaused = pauseStatus;
         }
         
 

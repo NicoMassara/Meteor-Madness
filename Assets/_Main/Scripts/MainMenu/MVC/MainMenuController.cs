@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.DebugGUI;
 using _Main.Scripts.FiniteStateMachine;
+using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
@@ -21,6 +22,7 @@ namespace _Main.Scripts.MainMenu.MVC
             public void TriggerOptions();
             public void TriggerCosmetic();
             public void ExecuteDisable();
+            public void MainPanelOpened();
         }
         
         private readonly MainMenuMotor _motor;
@@ -229,6 +231,11 @@ namespace _Main.Scripts.MainMenu.MVC
             {
                 _motor.Disable();
             }
+        }
+
+        public void MainPanelOpened()
+        {
+            _motor.TriggerMainPanelOpen();
         }
 
         public void Lore()

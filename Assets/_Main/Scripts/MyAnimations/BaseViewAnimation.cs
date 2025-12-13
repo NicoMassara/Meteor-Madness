@@ -41,9 +41,44 @@ namespace _Main.Scripts.MyAnimations
         
         protected void PlayAnimation(IUIAnimator animator, Action onFinished = null)
         {
-            animator.Play(onFinished);
+            _currentAnimator = animator;
+            
+            _currentAnimator.Play(() =>
+            {
+                onFinished?.Invoke();
+                ClearAnimation();
+            });
+        }
+
+        private void ClearAnimation()
+        {
+            _currentAnimator = null;
         }
 
         #endregion
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (hasFocus)
+            {
+                _currentAnimator?.Resume();
+            }
+            else
+            {
+                _currentAnimator?.Pause();
+            }
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            if (pauseStatus == false)
+            {
+                _currentAnimator?.Resume();
+            }
+            else
+            {
+                _currentAnimator?.Pause();
+            }
+        }
     }
 }

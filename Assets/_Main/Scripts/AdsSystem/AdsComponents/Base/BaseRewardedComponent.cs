@@ -128,6 +128,7 @@ namespace _Main.Scripts.AdsSystem.AdsComponents.Base
             {
                 _retryCount = 0;
                 Reward();
+                return;
             }
             
             TryLoadAd();

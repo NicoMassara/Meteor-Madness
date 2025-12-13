@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Interfaces.Ads;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
@@ -8,8 +9,18 @@ using UnityEngine;
 namespace _Main.Scripts.MainMenu.MVC
 {
     public class MainMenuView : ManagedBehavior, IObserver,
-        IMainMenuSounds
+        IMainMenuSounds,
+        IMainMenuBannerComponent
     {
+        #region IMainMenuBannerComponent
+
+        public event Action OnLoadAd;
+        public event Action OnShowAd;
+        public event Action OnHideAd;
+        public event Action OnDestroyAd;
+
+        #endregion
+        
         public event Action OnMainMenuEnable;
 
         public void OnNotify(ulong message, params object[] args)
@@ -37,11 +48,20 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.TriggerOptions:
                     HandleTriggerOptions();
                     break;
+                case MainMenuObserverMessage.MainPanelOpened:
+                    HandleMainPanelOpened();
+                    break;
             }
+        }
+
+        private void HandleMainPanelOpened()
+        {
+            OnShowAd?.Invoke();
         }
 
         private void HandleEnable()
         {
+            OnLoadAd?.Invoke();
             OnMainMenuEnable?.Invoke();
             CameraEventCaller.ZoomIn(0.5f);
             EarthEventCaller.DisableDamage();
@@ -49,6 +69,7 @@ namespace _Main.Scripts.MainMenu.MVC
         
         private void HandleDisable()
         {
+            OnHideAd?.Invoke();
             GameScreenEventCaller.DisableScreen(ScreenType.MainMenu, EventRequestType.Granted);
         }
         
@@ -75,6 +96,16 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleTriggerOptions()
         {
             GameManager.Instance.LoadOptionsMenu();
+        }
+
+        private void OnDestroy()
+        {
+            OnDestroyAd?.Invoke();
+        }
+
+        private void OnApplicationQuit()
+        {
+            OnDestroyAd?.Invoke();
         }
     }
 }

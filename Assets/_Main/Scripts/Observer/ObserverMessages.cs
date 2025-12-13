@@ -148,7 +148,7 @@
         public const ulong CreditsMenu = 0xA7010;
         public const ulong TriggerOptions = 0xA7011;
         public const ulong StartDisable = 0xA7012;
-        public const ulong Empty1 = 0xA7013;
+        public const ulong MainPanelOpened = 0xA7013;
         public const ulong Empty2 = 0xA7014;
         public const ulong Empty3 = 0xA7015;
         public const ulong Empty4 = 0xA7016;

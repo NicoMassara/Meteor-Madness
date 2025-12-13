@@ -336,6 +336,8 @@ namespace NicolasMassara.CustomTimerManager
         private readonly List<TimerManagerData> _toAdd = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toRemove = new List<TimerManagerData>();
         private readonly Dictionary<ushort, TimerManagerData> _timerDic = new Dictionary<ushort, TimerManagerData>();
+        
+        public bool IsPaused { get; set; }
 
         //====================================================
         //                       COUNTERS
@@ -363,12 +365,24 @@ namespace NicolasMassara.CustomTimerManager
         //====================================================
         private void Update()
         {
+            if(IsPaused) return;
             if (_running.Count == 0) return;
 
             RunTimers();
         }
 
         private void LateUpdate() => ApplyPending();
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            IsPaused = !hasFocus;
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            IsPaused = pauseStatus;
+        }
+
 
         #region Timer Logic
 
