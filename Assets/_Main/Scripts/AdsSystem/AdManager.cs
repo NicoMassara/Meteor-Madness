@@ -1,102 +1,518 @@
 ﻿using System;
 using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.MyComponents;
-using NicolasMassara.CustomTimerManager;
-using UnityEngine;
-using UnityEngine.Advertisements;
+using Unity.Services.LevelPlay;
 
 namespace _Main.Scripts.AdsSystem
 {
     public class AdManager : SingletonBehaviour<AdManager>
     {
-        #region Private Clases
+#if UNITY_ANDROID || UNITY_IOS
         
-        public interface IUnityAd
+        #region Public Interfaces
+        
+        public interface IInterstitialAd
         {
-            public bool IsActive { get; }
+            public bool IsReady { get; }
             
-            void TryLoad(
-                Action<string> onLoaded = null,
-                Action<string> onFailed = null
+            public bool TryLoad(
+                Action<LevelPlayAdInfo> onLoaded = null,
+                Action<LevelPlayAdError> onFailed = null
             );
 
-            void TryShow(
-                Action<string> onShowed = null,
-                Action<string> onClicked = null,
-                Action<string> onFailed = null,
-                Action<string> onCompleted = null,
-                Action<string> onSkipped = null
+            public bool TryShow(
+                Action<LevelPlayAdInfo> onDisplayed = null,
+                Action<LevelPlayAdInfo, LevelPlayAdError> onDisplayFailed = null,
+                Action<LevelPlayAdInfo> onClicked = null,
+                Action<LevelPlayAdInfo> onClose = null,
+                Action<LevelPlayAdInfo> onInfoChanged = null
             );
         }
-        private class BaseAd : IUnityAdsLoadListener, IUnityAdsShowListener, IUnityAd
+
+        public interface IBannerAd
         {
-            private readonly string _adUnitId;
-            private TimerManager.GeneratedId _loadTimeOutId;
-            private TimerManager.GeneratedId _showTimeOutId;
-            
-            public bool IsActive { get; private set; }
+            public bool HasLoaded { get; }
+            public bool IsDisplaying { get; }
+
+            public bool TryLoad(
+                Action<LevelPlayAdInfo> onLoaded = null,
+                Action<LevelPlayAdError> onFailed = null
+            );
+
+            public bool TryShow(
+                Action<LevelPlayAdInfo> onDisplayed = null,
+                Action<LevelPlayAdInfo, LevelPlayAdError> onDisplayFailed = null,
+                Action<LevelPlayAdInfo, LevelPlayReward> onRewarded = null,
+                Action<LevelPlayAdInfo> onClicked = null,
+                Action<LevelPlayAdInfo> onCollapsed = null,
+                Action<LevelPlayAdInfo> onLeftApplication = null,
+                Action<LevelPlayAdInfo> onExpanded = null
+            );
+
+            public bool TryHide();
+            public bool TryDestroy();
+        }
+        
+        public interface IRewardedAd
+        {
+            public bool IsReady { get; }
+
+            public bool TryLoad(
+                Action<LevelPlayAdInfo> onLoaded = null,
+                Action<LevelPlayAdError> onFailed = null
+            );
+
+            public bool TryShow(
+                Action<LevelPlayAdInfo> onDisplayed = null,
+                Action<LevelPlayAdInfo, LevelPlayAdError> onDisplayFailed = null,
+                Action<LevelPlayAdInfo, LevelPlayReward> onRewarded = null,
+                Action<LevelPlayAdInfo> onClicked = null,
+                Action<LevelPlayAdInfo> onClose = null,
+                Action<LevelPlayAdInfo> onInfoChanged = null
+            );
+        }
+        
+        #endregion
+        
+        #region Private Classes
+
+        private class InterstitialAdClass : IInterstitialAd
+        {
+            private readonly LevelPlayInterstitialAd _interstitialAd;
 
             // OneShot LOAD
-            private Action<string> _onLoadSuccessOneShot;
-            private Action<string> _onLoadFailedOneShot;
+            private Action<LevelPlayAdInfo> _onLoadSuccessOneShot;
+            private Action<LevelPlayAdError> _onLoadFailedOneShot;
 
             // OneShot SHOW
-            private Action<string> _onShowSuccessOneShot;
-            private Action<string> _onShowClickedOneShot;
-            private Action<string> _onShowFailedOneShot;
-            private Action<string> _onShowCompletedOneShot;
-            private Action<string> _onShowSkippedOneShot;
+            private Action<LevelPlayAdInfo> _onDisplayedOneShot;
+            private Action<LevelPlayAdInfo, LevelPlayAdError> _onDisplayFailedOneShot;
+            private Action<LevelPlayAdInfo> _onClickedOneShot;
+            private Action<LevelPlayAdInfo> _onCloseOneShot;
+            private Action<LevelPlayAdInfo> _onInfoChangedOneShot;
 
-            public BaseAd(string adUnitId)
+            public bool IsReady => _interstitialAd.IsAdReady();
+
+            public InterstitialAdClass(string adUnitId, LevelPlayInterstitialAd.Config config = null)
             {
-                _adUnitId = adUnitId;
+                _interstitialAd = new LevelPlayInterstitialAd(adUnitId, config);
+
+                _interstitialAd.OnAdLoaded += OnLoadedEvent;
+                _interstitialAd.OnAdLoadFailed += OnLoadFailedEvent;
+                _interstitialAd.OnAdDisplayed += OnDisplayedEvent;
+                _interstitialAd.OnAdDisplayFailed += OnDisplayFailedEvent;
+                _interstitialAd.OnAdClicked += OnClickedEvent;
+                _interstitialAd.OnAdClosed += OnClosedEvent;
+                _interstitialAd.OnAdInfoChanged += OnInfoChangedEvent;
             }
 
-            // ================================================================
-            // TRY LOAD (OneShot)
-            // ================================================================
+            #region Handlers
 
+            // === Load ===
 
-            #region Load
-
-            public void TryLoad(
-                Action<string> onLoaded = null,
-                Action<string> onFailed = null)
+            private void OnLoadedEvent(LevelPlayAdInfo adInfo)
             {
-                if (IsActive)
-                {
-                    Debug.Log($"Ad {_adUnitId} is already active.");
-                    return;
-                }
-                
-                _loadTimeOutId = TimerManager.Add(new TimerData(5f, onEndAction: () =>
-                {
-                    Debug.LogWarning($"Load Timeout: {_adUnitId} did not respond.");
-                    FailLoad(_adUnitId);
-                }));
-                
+                var cb = _onLoadSuccessOneShot;
                 ClearLoadOneShot();
-                
+                cb?.Invoke(adInfo);
+            }
+
+            private void OnLoadFailedEvent(LevelPlayAdError error)
+            {
+                var cb = _onLoadFailedOneShot;
+                ClearLoadOneShot();
+                cb?.Invoke(error);
+            }
+
+            // === Show ===
+
+            private void OnDisplayedEvent(LevelPlayAdInfo adInfo)
+            {
+                _onDisplayedOneShot?.Invoke(adInfo);
+            }
+
+            private void OnDisplayFailedEvent(LevelPlayAdInfo adInfo, LevelPlayAdError error)
+            {
+                var cb = _onDisplayFailedOneShot;
+                ClearShowOneShot();
+                cb?.Invoke(adInfo, error);
+            }
+
+            private void OnClickedEvent(LevelPlayAdInfo adInfo)
+            {
+                _onClickedOneShot?.Invoke(adInfo);
+            }
+
+            private void OnClosedEvent(LevelPlayAdInfo adInfo)
+            {
+                var cb = _onCloseOneShot;
+                ClearShowOneShot();
+                cb?.Invoke(adInfo);
+            }
+
+            private void OnInfoChangedEvent(LevelPlayAdInfo adInfo)
+            {
+                _onInfoChangedOneShot?.Invoke(adInfo);
+            }
+
+            #endregion
+
+            #region Public API
+
+            public bool TryLoad(
+                Action<LevelPlayAdInfo> onLoaded = null,
+                Action<LevelPlayAdError> onFailed = null)
+            {
+                ClearLoadOneShot();
+
+                if (IsReady)
+                {
+                    return false;
+                }
+
                 _onLoadSuccessOneShot = onLoaded;
                 _onLoadFailedOneShot = onFailed;
 
-                Advertisement.Load(_adUnitId, this);
+                _interstitialAd.LoadAd();
+                return true;
+            }
+
+            public bool TryShow(
+                Action<LevelPlayAdInfo> onDisplayed = null,
+                Action<LevelPlayAdInfo, LevelPlayAdError> onDisplayFailed = null,
+                Action<LevelPlayAdInfo> onClicked = null,
+                Action<LevelPlayAdInfo> onClose = null,
+                Action<LevelPlayAdInfo> onInfoChanged = null)
+            {
+                ClearShowOneShot();
+
+                if (!IsReady)
+                {
+                    return false;
+                }
+
+                _onDisplayedOneShot = onDisplayed;
+                _onDisplayFailedOneShot = onDisplayFailed;
+                _onClickedOneShot = onClicked;
+                _onCloseOneShot = onClose;
+                _onInfoChangedOneShot = onInfoChanged;
+
+                _interstitialAd.ShowAd();
+                return true;
+            }
+
+            #endregion
+
+            #region Cleaners
+
+            private void ClearLoadOneShot()
+            {
+                _onLoadSuccessOneShot = null;
+                _onLoadFailedOneShot = null;
+            }
+
+            private void ClearShowOneShot()
+            {
+                _onDisplayedOneShot = null;
+                _onDisplayFailedOneShot = null;
+                _onClickedOneShot = null;
+                _onCloseOneShot = null;
+                _onInfoChangedOneShot = null;
+            }
+
+            #endregion
+        }
+        
+        private class BannerAdClass : IBannerAd
+        {
+            private readonly LevelPlayBannerAd _bannerAd;
+            
+            public bool HasLoaded { get; private set; }
+            public bool IsDisplaying { get; private set; }
+            
+            
+            // OneShot LOAD
+            private Action<LevelPlayAdInfo> _onLoadSuccessOneShot;
+            private Action<LevelPlayAdError> _onLoadFailedOneShot;
+
+            // OneShot SHOW
+            private Action<LevelPlayAdInfo> _onDisplayedOneShot;
+            private Action<LevelPlayAdInfo, LevelPlayAdError> _onDisplayFailedOneShot;
+            private Action<LevelPlayAdInfo> _onClickedOneShot;
+            private Action<LevelPlayAdInfo> _onCollapsedOneShot;
+            private Action<LevelPlayAdInfo> _onLeftApplicationOneShot;
+            private Action<LevelPlayAdInfo> _onExpandedOneShot;
+            
+            public BannerAdClass(string adUnitId, LevelPlayBannerAd.Config config = null)
+            {
+                _bannerAd = new LevelPlayBannerAd(adUnitId, config);
+
+                _bannerAd.OnAdLoaded += OnLoadedEvent;
+                _bannerAd.OnAdLoadFailed += OnLoadFailedEvent;
+                _bannerAd.OnAdDisplayed += OnDisplayedEvent;
+                _bannerAd.OnAdDisplayFailed += OnDisplayFailedEvent;
+                _bannerAd.OnAdClicked += OnClickedEvent;
+                _bannerAd.OnAdCollapsed += OnCollapsedEvent;
+                _bannerAd.OnAdLeftApplication += OnLeftApplicationEvent;
+                _bannerAd.OnAdExpanded += OnExpandedEvent;
             }
             
-            public void OnUnityAdsAdLoaded(string adUnitId)
+            #region Handlers
+
+            // === Load ===
+
+            private void OnLoadedEvent(LevelPlayAdInfo adInfo)
             {
-                TimerManager.Remove(_loadTimeOutId);
-                //
-                _onLoadSuccessOneShot?.Invoke(adUnitId);
+                var cb = _onLoadSuccessOneShot;
                 ClearLoadOneShot();
+                HasLoaded = true;
+                cb?.Invoke(adInfo);
             }
 
-            public void OnUnityAdsFailedToLoad(string adUnitId, UnityAdsLoadError error, string message)
+            private void OnLoadFailedEvent(LevelPlayAdError error)
             {
-                Debug.Log($"Error loading {adUnitId}: {error} - {message}");
-
-                FailLoad(adUnitId);
+                var cb = _onLoadFailedOneShot;
+                ClearLoadOneShot();
+                cb?.Invoke(error);
             }
+
+            // === Show ===
+
+            private void OnDisplayedEvent(LevelPlayAdInfo adInfo)
+            {
+                IsDisplaying = true;
+                _onDisplayedOneShot?.Invoke(adInfo);
+            }
+
+            private void OnDisplayFailedEvent(LevelPlayAdInfo adInfo, LevelPlayAdError error)
+            {
+                var cb = _onDisplayFailedOneShot;
+                ClearShowOneShot();
+                cb?.Invoke(adInfo, error);
+            }
+
+            private void OnClickedEvent(LevelPlayAdInfo adInfo)
+            {
+                _onClickedOneShot?.Invoke(adInfo);
+            }
+
+            private void OnCollapsedEvent(LevelPlayAdInfo adInfo)
+            {
+                _onCollapsedOneShot?.Invoke(adInfo);
+            }
+
+            private void OnLeftApplicationEvent(LevelPlayAdInfo adInfo)
+            {
+                _onLeftApplicationOneShot?.Invoke(adInfo);
+            }
+
+            private void OnExpandedEvent(LevelPlayAdInfo error)
+            {
+                _onExpandedOneShot?.Invoke(error);
+            }
+
+            #endregion
+
+            #region Public API
+
+            public bool TryLoad(
+                Action<LevelPlayAdInfo> onLoaded = null,
+                Action<LevelPlayAdError> onFailed = null)
+            {
+                if (HasLoaded)
+                {
+                    return false;
+                }
+
+                ClearLoadOneShot();
+
+                _onLoadSuccessOneShot = onLoaded;
+                _onLoadFailedOneShot = onFailed;
+
+                _bannerAd.LoadAd();
+                return true;
+            }
+
+            public bool TryShow(
+                Action<LevelPlayAdInfo> onDisplayed = null,
+                Action<LevelPlayAdInfo, LevelPlayAdError> onDisplayFailed = null,
+                Action<LevelPlayAdInfo, LevelPlayReward> onRewarded = null,
+                Action<LevelPlayAdInfo> onClicked = null,
+                Action<LevelPlayAdInfo> onCollapsed = null,
+                Action<LevelPlayAdInfo> onLeftApplication = null,
+                Action<LevelPlayAdInfo> onExpanded = null
+            )
+            {
+                if (IsDisplaying)
+                {
+                    return false;
+                }
+
+                ClearShowOneShot();
+
+                _onDisplayedOneShot = onDisplayed;
+                _onDisplayFailedOneShot = onDisplayFailed;
+                _onClickedOneShot = onClicked;
+                _onCollapsedOneShot = onCollapsed;
+                _onLeftApplicationOneShot = onLeftApplication;
+                _onExpandedOneShot = onExpanded;
+                
+                _bannerAd.ShowAd();
+                return true;
+            }
+
+            public bool TryHide()
+            {
+                IsDisplaying = false;
+                _bannerAd.HideAd();
+                ClearShowOneShot();
+                return true;
+            }
+
+            public bool TryDestroy()
+            {
+                if (HasLoaded == false)
+                {
+                    return false;
+                }
+
+                HasLoaded = false;
+                _bannerAd.DestroyAd();
+                return false;
+            }
+
+            #endregion
+            
+            #region Cleaners
+
+            private void ClearLoadOneShot()
+            {
+                _onLoadSuccessOneShot = null;
+                _onLoadFailedOneShot = null;
+            }
+
+            private void ClearShowOneShot()
+            {
+                _onDisplayedOneShot = null;
+                _onDisplayFailedOneShot = null;
+                _onClickedOneShot = null;
+                _onCollapsedOneShot = null;
+                _onLeftApplicationOneShot = null;
+                _onExpandedOneShot = null;
+            }
+
+            #endregion
+        }
+
+        private class RewardedAdClass : IRewardedAd
+        {
+            private readonly LevelPlayRewardedAd _rewardedVideoAd;
+
+            // OneShot LOAD
+            private Action<LevelPlayAdInfo> _onLoadSuccessOneShot;
+            private Action<LevelPlayAdError> _onLoadFailedOneShot;
+
+            // OneShot SHOW
+            private Action<LevelPlayAdInfo> _onDisplayedOneShot;
+            private Action<LevelPlayAdInfo,LevelPlayAdError> _onDisplayFailedOneShot;
+            private Action<LevelPlayAdInfo,LevelPlayReward> _onRewardedOneShot;
+            private Action<LevelPlayAdInfo> _onClickedOneShot;
+            private Action<LevelPlayAdInfo> _onCloseOneShot;
+            private Action<LevelPlayAdInfo> _onInfoChangedOneShot;
+            
+            public bool IsReady => _rewardedVideoAd.IsAdReady();
+            
+            
+            public RewardedAdClass(string adUnitId, LevelPlayRewardedAd.Config config = null)
+            {
+                _rewardedVideoAd = new LevelPlayRewardedAd(adUnitId,config);
+                
+                _rewardedVideoAd.OnAdLoaded += OnLoadedEvent;
+                _rewardedVideoAd.OnAdLoadFailed += OnLoadFailedEvent;
+                _rewardedVideoAd.OnAdDisplayed += OnDisplayedEvent;
+                _rewardedVideoAd.OnAdDisplayFailed += OnDisplayedFailedEvent;
+                _rewardedVideoAd.OnAdRewarded += OnRewardedEvent;
+                _rewardedVideoAd.OnAdClicked += OnClickedEvent;
+                _rewardedVideoAd.OnAdClosed += OnClosedEvent;
+                _rewardedVideoAd.OnAdInfoChanged += OnInfoChangedEvent;
+            }
+
+            #region Handlers
+            
+            // === Load === ///
+            
+            private void OnLoadedEvent(LevelPlayAdInfo input) => _onLoadSuccessOneShot?.Invoke(input);
+
+            private void OnLoadFailedEvent(LevelPlayAdError input) => _onLoadFailedOneShot?.Invoke(input);
+
+            // === Show === ///
+            private void OnDisplayedEvent(LevelPlayAdInfo input) => _onDisplayedOneShot?.Invoke(input);
+
+            private void OnDisplayedFailedEvent(LevelPlayAdInfo adInfo, LevelPlayAdError adError) => _onDisplayFailedOneShot?.Invoke(adInfo, adError);
+
+            private void OnRewardedEvent(LevelPlayAdInfo adInfo, LevelPlayReward reward) => _onRewardedOneShot?.Invoke(adInfo, reward);
+
+            private void OnClickedEvent(LevelPlayAdInfo input) => _onClickedOneShot?.Invoke(input);
+
+            private void OnClosedEvent(LevelPlayAdInfo input) => _onCloseOneShot?.Invoke(input);
+
+            private void OnInfoChangedEvent(LevelPlayAdInfo input) => _onInfoChangedOneShot?.Invoke(input);
+
+            #endregion
+
+            #region Loaders
+
+            public bool TryLoad(
+                Action<LevelPlayAdInfo> onLoaded = null, 
+                Action<LevelPlayAdError> onFailed = null)
+            {
+                ClearLoadOneShot();
+                
+                if (IsReady)
+                {
+                    return false;
+                }
+                
+                _onLoadSuccessOneShot = onLoaded;
+                _onLoadFailedOneShot = onFailed;
+                
+                _rewardedVideoAd.LoadAd();
+                
+                return true;
+            }
+
+            public bool TryShow(
+                Action<LevelPlayAdInfo> onDisplayed = null, 
+                Action<LevelPlayAdInfo,LevelPlayAdError> onDisplayFailed = null, 
+                Action<LevelPlayAdInfo, LevelPlayReward> onRewarded = null,
+                Action<LevelPlayAdInfo> onClicked = null, 
+                Action<LevelPlayAdInfo> onClose = null, 
+                Action<LevelPlayAdInfo> onInfoChanged = null)
+            {
+                ClearShowOneShot();
+
+                if (IsReady == false)
+                {
+                    return false;
+                }
+                
+                _onDisplayedOneShot = onDisplayed;
+                _onDisplayFailedOneShot = onDisplayFailed;
+                _onRewardedOneShot = onRewarded;
+                _onClickedOneShot = onClicked;
+                _onCloseOneShot = onClose;
+                _onInfoChangedOneShot = onInfoChanged;
+                
+                
+                _rewardedVideoAd.ShowAd();
+                
+                return true;
+            }
+            
+            
+            #endregion
+
+            #region Cleaners
 
             private void ClearLoadOneShot()
             {
@@ -104,221 +520,31 @@ namespace _Main.Scripts.AdsSystem
                 _onLoadFailedOneShot = null;
             }
             
-            private void FailLoad(string adUnitId)
-            {
-                TimerManager.Remove(_loadTimeOutId);
-                _onLoadFailedOneShot?.Invoke(adUnitId);
-                ClearLoadOneShot();
-            }
-
-            #endregion
-            
-            #region Show
-
-            public void TryShow(
-                Action<string> onShowed = null,
-                Action<string> onClicked = null,
-                Action<string> onFailed = null,
-                Action<string> onCompleted = null,
-                Action<string> onSkipped = null)
-            {
-                ClearShowOneShot();
-                
-                _onShowSuccessOneShot = onShowed;
-                _onShowClickedOneShot = onClicked;
-                _onShowFailedOneShot = onFailed;
-                _onShowCompletedOneShot = onCompleted;
-                _onShowSkippedOneShot = onSkipped;
-
-                _showTimeOutId = TimerManager.Add(new TimerData(5f, onEndAction: () =>
-                {
-                    
-                    FailLoad(_adUnitId);
-                    
-                }));
-
-                Advertisement.Show(_adUnitId, this);
-            }
-            
-            public void OnUnityAdsShowStart(string adUnitId)
-            {
-                IsActive = true;
-                TimerManager.Remove(_showTimeOutId);
-                _onShowSuccessOneShot?.Invoke(adUnitId);
-            }
-
-            public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
-            {
-                Debug.Log($"Error showing {adUnitId}: {error} - {message}");
-
-                FailShow(adUnitId);
-            }
-
-            public void OnUnityAdsShowClick(string adUnitId)
-            {
-                _onShowClickedOneShot?.Invoke(adUnitId);
-            }
-
-            public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState completion)
-            {
-                switch (completion)
-                {
-                    case UnityAdsShowCompletionState.COMPLETED:
-                        _onShowCompletedOneShot?.Invoke(adUnitId);
-                        break;
-
-                    case UnityAdsShowCompletionState.SKIPPED:
-                        _onShowSkippedOneShot?.Invoke(adUnitId);
-                        break;
-
-                    case UnityAdsShowCompletionState.UNKNOWN:
-                        FailShow(adUnitId);
-                        break;
-                }
-
-                IsActive = false;
-
-                ClearShowOneShot();
-            }
-            
-            private void FailShow(string adUnitId)
-            {
-                TimerManager.Remove(_showTimeOutId);
-                _onShowFailedOneShot?.Invoke(adUnitId);
-                IsActive = false;
-                ClearShowOneShot();
-            }
-
             private void ClearShowOneShot()
             {
-                _onShowSuccessOneShot = null;
-                _onShowFailedOneShot = null;
-                _onShowCompletedOneShot = null;
-                _onShowSkippedOneShot = null;
-                _onShowClickedOneShot = null;
+                _onDisplayedOneShot = null;
+                _onDisplayFailedOneShot = null;
+                _onRewardedOneShot = null;
+                _onClickedOneShot = null;
+                _onCloseOneShot = null;
+                _onInfoChangedOneShot = null;
             }
 
             #endregion
-        }
-        
-        public interface IBannerAd
-        {
-            public bool IsActive { get; }
-            
-            public void TryLoad(BannerPosition position = BannerPosition.CENTER, 
-                Action onLoaded = null,
-                Action<string> onFailed = null);
-
-            public void TryShow(
-                Action onShown = null,
-                Action onClicked = null,
-                Action onHidden = null
-            );
-            public void TryHide();
-        }
-
-        private class BannerAd : IBannerAd
-        {
-            private readonly string _adUnitId;
-            public bool IsActive { get; private set; }
-            
-            public BannerAd(string addUnit)
-            {
-                _adUnitId = addUnit;
-            }
-            
-            public void TryLoad(BannerPosition position = BannerPosition.CENTER, 
-                Action onLoaded = null, 
-                Action<string> onFailed = null)
-            {
-                if (IsActive)
-                {
-                    Debug.Log($"Ad {_adUnitId} is already active.");
-                    return;
-                }
-                
-                Advertisement.Banner.SetPosition(position);
-                
-                BannerLoadOptions options = new BannerLoadOptions
-                {
-                    loadCallback = ()=> onLoaded?.Invoke(),
-                    errorCallback = (value)=> onFailed?.Invoke(value),
-                };
-
-                // Load the Ad Unit with banner content:
-                Advertisement.Banner.Load(_adUnitId, options);
-            }
-
-            public void TryShow(
-                Action onShown = null,
-                Action onClicked = null,
-                Action onHidden = null
-                )
-            {
-                // Set up options to notify the SDK of show events:
-                BannerOptions options = new BannerOptions
-                {
-                    clickCallback = ()=> onClicked?.Invoke(),
-                    hideCallback = () =>
-                    {
-                        IsActive = false;
-                        onHidden?.Invoke();
-                    },
-                    showCallback = () =>
-                    {
-                        IsActive = true;
-                        onShown?.Invoke();
-                    },
-                };
-
-                // Show the loaded Banner Ad Unit:
-                Advertisement.Banner.Show(_adUnitId, options);
-            }
-
-            public void TryHide()
-            {
-                Advertisement.Banner.Hide();
-            }
         }
 
 
         #endregion
+
+        // ======================================= //
         
-        // ============================================== //
-
-        private IUnityAd _interstitial;
-        private IUnityAd _rewarded;
-        private IBannerAd _banner;
+        private IRewardedAd _rewardedAd;
+        private IBannerAd _bannerAd;
+        private IInterstitialAd _interstitialAd;
+        public static IRewardedAd RewardedAd => Instance._rewardedAd;
+        public static IBannerAd BannerAd => Instance._bannerAd;
+        public static IInterstitialAd InterstitialAd => Instance._interstitialAd;
         
-        public static IUnityAd GetInterstitial()
-        {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-
-            return GameParameters.GameplayValues.AdsEnable ?  _instance._interstitial : null;
-#endif
-            return _instance._interstitial;   
-            
-        }
-
-        public static IUnityAd GetRewarded()
-        {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-
-            return GameParameters.GameplayValues.AdsEnable ?  _instance._rewarded : null;
-#endif
-            return _instance._rewarded; 
-        }
-
-        public static IBannerAd GetBanner()
-        {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-
-            return GameParameters.GameplayValues.AdsEnable ?  _instance._banner : null;
-#endif
-            return _instance._banner; 
-            
-        }
-
         private void Awake()
         {
             BootEvents.OnMainSystemRequestInitialize += Initialize;
@@ -326,42 +552,32 @@ namespace _Main.Scripts.AdsSystem
 
         private void Initialize()
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-
-            if (GameParameters.GameplayValues.AdsEnable == false)
-            {
-                BootEvents.OnMainSystemRequestInitialize -= Initialize;
-                BootEvents.MainSystemInitialized();
-                return;
-            }
-#endif
-            
             BootEvents.OnMainSystemRequestInitialize -= Initialize;
             //
 
-#if UNITY_IOS
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 
-            _interstitial = new BaseAd("Interstitial_iOS");
-            _rewarded = new BaseAd("Rewarded_iOS");
-            _banner = new BannerAd("Banner_iOS");
-            
-#elif UNITY_ANDROID
-            
-            _interstitial = new BaseAd("Interstitial_Android");
-            _rewarded = new BaseAd("Rewarded_Android");
-            _banner = new BannerAd("Banner_Android");
-            
-#elif UNITY_EDITOR
+            if (GameParameters.GameplayValues.AdsEnable)
+            {
+                _rewardedAd = new RewardedAdClass(AdConfig.RewardedVideoAdUnitId);
+                _bannerAd = new BannerAdClass(AdConfig.BannerAdUnitId);
+                _interstitialAd = new InterstitialAdClass(AdConfig.InterstitalAdUnitId);
+            }
 
-            _interstitial = new BaseAd("Interstitial_Android");
-            _rewarded = new BaseAd("Rewarded_Android");
-            _banner = new BannerAd("Banner_Android");
-            
+#else
+            _rewardedAd = new RewardedAdClass(AdConfig.RewardedVideoAdUnitId);
+            _bannerAd = new BannerAdClass(AdConfig.BannerAdUnitId);
+            _interstitialAd = new InterstitialAdClass(AdConfig.InterstitalAdUnitId);
 #endif
-            
-            
             //
             BootEvents.MainSystemInitialized();
         }
+
+        public void PauseGame(bool pause)
+        {
+            LevelPlay.SetPauseGame(pause);
+        }
+
+#endif
     }
 }

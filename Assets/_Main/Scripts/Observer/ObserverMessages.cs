@@ -219,6 +219,7 @@
         public const ulong SendButtons  = 0xA1208;
         public const ulong EnableButtons  = 0xA1209;
         public const ulong SaveHighScore = 0xA120A;
+        public const ulong SendAds = 0xA120B;
     }
     
     public struct PauseObserverMessage

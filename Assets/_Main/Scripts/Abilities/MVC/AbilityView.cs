@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces.Sounds;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.Sounds;
 using NicolasMassara.CustomActionManager;
@@ -31,9 +32,6 @@ namespace _Main.Scripts.Abilities
         private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
         
-
-        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Ability;
-        
         public event Action OnAbilitySelected;
         public event Action OnAbilityFinished;
         
@@ -60,6 +58,9 @@ namespace _Main.Scripts.Abilities
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
             abilityDataController.Initialize();
+
+            GameManager.Instance.OnPaused += GM_OnPausedHandler;
+            GameManager.Instance.OnResumed += GM_OnResumedHandler;
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -196,6 +197,16 @@ namespace _Main.Scripts.Abilities
         private void AbilitiesData_OnEndQueueFinished(AbilityType abilityType)
         {
             GameModeEventCaller.SetEnablePause(true);
+        }
+        
+        private void GM_OnResumedHandler()
+        {
+            TimerManager.Resume(_finishAbilityTimerId);
+        }
+
+        private void GM_OnPausedHandler()
+        {
+            TimerManager.Pause(_finishAbilityTimerId);
         }
 
         #endregion

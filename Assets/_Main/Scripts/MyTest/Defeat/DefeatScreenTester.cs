@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using _Main.Scripts.AdsSystem;
 using _Main.Scripts.Defeat;
 using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Localization;
@@ -11,14 +12,17 @@ using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts.MyTest.Defeat
 {
-#if UNITY_EDITOR   
         [AddComponentMenu("_Main/ModuleTester/Defeat Screen Tester")]
         public class DefeatScreenTester : MonoBehaviour
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD 
             [Range(0,1000)]
             [SerializeField] private uint scoreAmount;
             [Range(0,1000)]
             [SerializeField] private uint highScore;
+            
+            private bool _hasInitializedAds;
+            private bool _hasInitializedManager;
             
 #pragma warning disable CS0414 // Field is assigned but its value is never used
             private bool _canReload;
@@ -41,6 +45,16 @@ namespace _Main.Scripts.MyTest.Defeat
                     Debug.Log("Defeat Screen Closed");
                     EarthEventCaller.RestartFinished();
                 };
+                
+                AdsEvents.OnAdsInitialized += () =>
+                {
+                    _hasInitializedAds = true;
+                };
+            
+                BootEvents.OnMainSystemInitialized += () =>
+                {
+                    _hasInitializedManager = true;
+                };
 
                 GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
                 GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
@@ -48,9 +62,9 @@ namespace _Main.Scripts.MyTest.Defeat
             
             private void Start()
             {
-                var settings = SettingsManager.Instance;
-                var localization = LocalizationManager.Instance;
-                var dataManager = DataManager.Instance;
+                LocalizationManager.LoadInstance();
+                DataManager.LoadInstance();
+                SettingsManager.LoadInstance();
             }
             
             private void SetScoreValue()
@@ -72,6 +86,10 @@ namespace _Main.Scripts.MyTest.Defeat
 
             private IEnumerator LoadDefeatScreen()
             {
+                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(0.25f);
+                
                 AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("DefeatModule", LoadSceneMode.Additive);
                 
                 while (!asyncLoad.isDone)
@@ -81,9 +99,19 @@ namespace _Main.Scripts.MyTest.Defeat
                 
                 yield return new WaitForEndOfFrame();
                 
+                AdManager.LoadInstance();
+                
+                yield return new WaitForEndOfFrame();
+                
+                AdsEvents.InitializeAds();
+                
+                yield return new WaitForEndOfFrame();
+                yield return new WaitUntil(()=> _hasInitializedAds == true);
+                
                 BootEvents.InitializeMainSystem();
 
                 yield return new WaitForSeconds(1);
+                yield return new WaitUntil(()=> _hasInitializedManager == true);
                 
                 BootEvents.InitializeSubSystems();
 
@@ -143,6 +171,6 @@ namespace _Main.Scripts.MyTest.Defeat
             }
 
             #endregion
-        }
 #endif
+        }
 }

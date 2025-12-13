@@ -1495,9 +1495,9 @@ RectTransform:
   - {fileID: 277481519}
   m_Father: {fileID: 699478778}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -217.9}
   m_SizeDelta: {x: 334.7, y: 106}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1286011491
@@ -2082,7 +2082,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1553703501
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2277,9 +2277,9 @@ RectTransform:
   - {fileID: 1537006263}
   m_Father: {fileID: 699478778}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -75}
   m_SizeDelta: {x: 400, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1773833370
@@ -3378,50 +3378,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 604189449}
-  panelOpenData:
-    fadeInDelay: 0.5
-    fadeIntensity: 0.5
-    fadeInDuration: 1.5
-    scaleDelay: 0.5
-    scaleDuration: 0.75
-    bounceDelay: 0.05
-    bounceScale: 1.25
-    bounceDuration: 0.1
-    bounceReturnTime: 0.32
-    finishDelay: 0.75
-  panelCloseData:
-    movementDelay: 0.5
-    movementDuration: 0.25
-    currentScoreOffscreenPosition: 5
-    highScoreOffscreenPosition: 4
-    titleOffscreenPosition: 2
-    buttonsOffscreenPosition: 3
-    fadeDelay: 0.25
-    backgroundFadeDuration: 0.5
-    buttonsOffScreenOffset: {x: 0, y: -100}
-    titleOffScreenOffset: {x: 0, y: 100}
-  currentScoreData:
-    offscreenPosition: 5
-    moveDuration: 0.3
-    finishDelay: 0.75
-  highScoreData:
-    offscreenPosition: 4
-    moveDuration: 0.3
-    finishDelay: 0.75
-    scaleDuration: 0.75
-    bounceDelay: 0.05
-    bounceScale: 1.25
-    bounceDuration: 0.1
-    bounceReturnTime: 0.35
-    newScoreTextDelay: 0.25
-    newScoreBounceScale: 2
-    newScoreBounceDuration: 0.75
-    newScoreBounceReturnTime: 0.25
-  buttonsOpenData:
-    offscreenPosition: 3
-    offscreenOffset: {x: 0, y: 0}
-    moveDuration: 0.3
-    finishDelay: 0.5
+  animationData: {fileID: 11400000, guid: ff3208e40d5aa00428ecae925102047f, type: 2}
 --- !u!4 &2820090039296907483
 Transform:
   m_ObjectHideFlags: 0
@@ -3503,6 +3460,7 @@ GameObject:
   - component: {fileID: 6974436236577745424}
   - component: {fileID: 6045373197017022994}
   - component: {fileID: 1476604042003610484}
+  - component: {fileID: 8935343908902992295}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -3510,6 +3468,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8935343908902992295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8935343908902992294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ef84f26d5984d8491162ea1be4372fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openDelay: 0.5
+  finishDelay: 0.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

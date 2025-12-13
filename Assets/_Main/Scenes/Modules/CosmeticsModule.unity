@@ -2416,6 +2416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 604189449}
+  animData: {fileID: 11400000, guid: 9573b7c8d3a26cb4eb71f24c4246f1cc, type: 2}
 --- !u!1 &2095163020
 GameObject:
   m_ObjectHideFlags: 0

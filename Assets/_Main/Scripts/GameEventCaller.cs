@@ -94,7 +94,6 @@ namespace _Main.Scripts
         
         public static void RestartFinished()
         {
-            Debug.Log("Here");
             GameEventCaller.Publish(new EarthEvents.RestartFinished());
         }
         

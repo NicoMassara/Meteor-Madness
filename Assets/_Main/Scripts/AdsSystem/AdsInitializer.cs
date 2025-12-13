@@ -1,21 +1,26 @@
 ﻿using _Main.Scripts.GlobalEvents;
+using Unity.Services.LevelPlay;
 using UnityEngine;
 using UnityEngine.Advertisements;
 
 namespace _Main.Scripts.AdsSystem
 {
-    public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
+    public class AdsInitializer : MonoBehaviour
     {
+#if UNITY_ANDROID || UNITY_IOS
+        
         private const bool TestMode = true;
-        private string _gameId;
 
         private void Awake()
         {
             AdsEvents.OnInitializeAds += InitializeAds;
         }
 
+#pragma warning disable CS0162 // Unreachable code detected
         private void InitializeAds()
         {
+            AdsEvents.OnInitializeAds -= InitializeAds;
+            //
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
 
             if (GameParameters.GameplayValues.AdsEnable == false)
@@ -26,36 +31,27 @@ namespace _Main.Scripts.AdsSystem
             }
 #endif
             
+            LevelPlay.ValidateIntegration();
             
-#if UNITY_IOS
-            _gameId = 6001500;
-#elif UNITY_ANDROID
-            _gameId = "6001501";
-#elif UNITY_EDITOR
-            _gameId = "6001501"; //Only for testing the functionality in the Editor
-#endif
+            LevelPlay.OnInitSuccess += SdkInitializationCompletedEvent;
+            LevelPlay.OnInitFailed += SdkInitializationFailedEvent;
             
-            if (!Advertisement.isInitialized && Advertisement.isSupported)
-            {
-                Advertisement.Initialize(_gameId, TestMode, this);
-            }
-            else if(!Advertisement.isSupported)
-            {
-                Debug.LogError($"Advertisement is not supported: {_gameId}");
-            }
-            
-            AdsEvents.OnInitializeAds -= InitializeAds;
+            LevelPlay.Init(AdConfig.AppKey);
         }
 
-        public void OnInitializationComplete()
+        private void SdkInitializationFailedEvent(LevelPlayInitError input)
         {
-            Debug.Log("Unity Ads initialization complete.");
+            Debug.LogError($"Ad Initialization failed: {input}");
+        }
+
+        private void SdkInitializationCompletedEvent(LevelPlayConfiguration input)
+        {
+            Debug.Log("Ad Initialization Completed");
             AdsEvents.TriggerAdsInitialized();
         }
+#pragma warning restore CS0162 // Unreachable code detected
 
-        public void OnInitializationFailed(UnityAdsInitializationError error, string message)
-        {
-            Debug.Log($"Unity Ads Initialization Failed: {error.ToString()} - {message}");
-        }
+#endif
     }
+    
 }

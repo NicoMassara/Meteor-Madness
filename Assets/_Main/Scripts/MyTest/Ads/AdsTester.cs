@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using _Main.Scripts.AdsSystem;
 using _Main.Scripts.GlobalEvents;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Main.Scripts.MyTest.Ads
 {
     public class AdsTester : MonoBehaviour
     {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        
+        [SerializeField] private TMP_Text debugText;
+        
         private bool _hasInitializedAds;
         private bool _hasInitializedManager;
-        
-        [SerializeField]
-        public UnityEvent OnInitialized;
         
         private void Awake()
         {
@@ -26,6 +26,8 @@ namespace _Main.Scripts.MyTest.Ads
             {
                 _hasInitializedManager = true;
             };
+            
+            debugText.text = "Initializing...";
         }
         
         private void Start()
@@ -37,24 +39,28 @@ namespace _Main.Scripts.MyTest.Ads
         {
             AdManager.LoadInstance();
             
+            debugText.text = "Loading Ad Services...";
+            
             yield return new WaitForSeconds(0.25f);
             
             AdsEvents.InitializeAds();
 
+            debugText.text = "Initializing Ad Manager...";
+            
             yield return new WaitUntil(()=> _hasInitializedAds == true);
             
             BootEvents.InitializeMainSystem();
             
             yield return new WaitUntil(()=> _hasInitializedManager == true);
             
-            Debug.Log("Ad Manager initialized");
+            debugText.text = "Ad Manager initialized!";
 
             yield return new WaitForSeconds(0.25f);
-
-            OnInitialized?.Invoke();
+            
+            debugText.text = "All Loaded!";
 
             yield return null;
         }
-
+#endif
     }
 }

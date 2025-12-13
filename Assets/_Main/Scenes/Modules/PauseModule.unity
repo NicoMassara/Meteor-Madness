@@ -1151,28 +1151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 1059927933}
-  panelOpenData:
-    titleOffscreenPos: 2
-    leftButtonsPanelOffscreenPos: 0
-    pointsTextPanelOffscreenPos: 1
-    titleOffset: {x: 0, y: 125}
-    leftButtonsOffset: {x: -125, y: 0}
-    pointsTextOffset: {x: 125, y: 0}
-    backgroundFadeDuration: 0.75
-    backgroundFadeIntensity: 0.5
-    movementDuration: 0.5
-    finishDelay: 0.15
-  panelCloseData:
-    titleOffscreenPos: 2
-    leftButtonsPanelOffscreenPos: 0
-    pointsTextPanelOffscreenPos: 1
-    titleOffset: {x: 0, y: 125}
-    leftButtonsOffset: {x: -125, y: 0}
-    pointsTextOffset: {x: 125, y: 0}
-    backgroundFadeDuration: 0.5
-    backgroundFadeIntensity: 0.25
-    movementDuration: 0.25
-    finishDelay: 0.15
+  animData: {fileID: 11400000, guid: 5f96c346b958bab4694f673e978d5d54, type: 2}
 --- !u!114 &883773021
 MonoBehaviour:
   m_ObjectHideFlags: 0
