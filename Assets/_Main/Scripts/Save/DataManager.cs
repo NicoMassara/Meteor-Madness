@@ -71,7 +71,6 @@ namespace _Main.Scripts.Save
                 
                 return folderPath;
             }
-
             public static void Save(MainSaveData data)
             {
                 string path = GetSavePath();
@@ -190,18 +189,20 @@ namespace _Main.Scripts.Save
                     return false;
                 }
             }
-
             public static void ClearSaveFile()
             {
-                if (GetDoesSaveExist())
+                if (GetDoesSaveExist() == false)
                 {
-                    Save(new MainSaveData());
-                    //Debug.Log($"Save File Cleared at: {path}");
+                    Debug.LogWarning($"No save file found at");
+                    return;
                 }
-                else
-                {
-                    //Debug.LogWarning($"No save file found at: {path}");
-                }
+                
+                string path = GetSavePath();
+                string backupPath = GetBackupPath();
+                File.Delete(path);
+                File.Delete(backupPath);
+                
+                Debug.Log($"Save file cleared");
             }
         }
         private static class KeyEncryptor
@@ -419,6 +420,7 @@ namespace _Main.Scripts.Save
         
         public void ClearSaveData()
         {
+            Debug.Log("Save data cleared");
             SaveSystem.ClearSaveFile();
         }
 

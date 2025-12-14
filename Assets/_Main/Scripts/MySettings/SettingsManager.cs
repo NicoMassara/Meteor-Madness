@@ -9,6 +9,8 @@ namespace _Main.Scripts.MySettings
     public class SettingsManager : SingletonBehaviour<SettingsManager>
     {
         private DataManager.SettingsSaveData _settingsData;
+
+        private bool _hasChanged;
         
         public event Action<int> OnLanguageChanged;
         public event Action<float> OnMasterVolumeChanged;
@@ -33,23 +35,31 @@ namespace _Main.Scripts.MySettings
         {
             _settingsData.LanguageIndex = Math.Clamp(index, 0, LocalizationTools.LanguageCount);
             OnLanguageChanged?.Invoke(_settingsData.LanguageIndex);
+            _hasChanged = true;
         }
 
         public void SetMasterVolume(float volume)
         {
             _settingsData.MasterVolume = volume;
             OnMasterVolumeChanged?.Invoke(volume);
+            _hasChanged = true;
         }
 
         public void SetVibration(bool enable)
         {
             _settingsData.VibrationEnable = enable;
             OnVibrationChanged?.Invoke(enable);
+            _hasChanged = true;
         }
 
         public void SaveSettings()
         {
-            DataManager.Instance.SaveGameData(_settingsData, DataManager.SaveDataType.Settings);
+            if (_hasChanged)
+            {
+                DataManager.Instance.SaveGameData(_settingsData, DataManager.SaveDataType.Settings);
+            }
+            
+            _hasChanged = false;
         }
 
         #endregion

@@ -23,7 +23,10 @@ namespace _Main.Scripts.Cosmetics.MVC
                 OnMainMenuButtonPressed?.Invoke();
             });
             
-            GetUiComponents().ButtonSelector.OnSkinSelected += OnSkinSelected;
+            GetUiComponents().ButtonSelector.OnSkinSelected += (value) =>
+            {
+                OnSkinSelected?.Invoke(value);
+            };
         }
         
         private CosmeticUIComponents GetUiComponents()

@@ -19,19 +19,26 @@ namespace _Main.Scripts.Bootstrap
 
     public class BootstrapLoader : MonoBehaviour, IBoostrap
     {
-        [SerializeField] private string coreScene = "MainMenu"; // o el nombre de tu primera escena real
+        [SerializeField] private string coreScene = "MainMenu";
         [SerializeField] private string[] additiveScenes;
-        [SerializeField] private float delayBeforeLoad = 0.1f;    // opcional, da tiempo al splash
+        [SerializeField] private float delayBeforeLoad = 0.1f;
         [SerializeField] private Image progressBar;
         
         public const bool DebugDisabled = true;
         private bool _hasLocalizationLoaded;
         private bool _hasLoadedData;
         private bool _hasLoadedSkins;
-        private bool _hasLoadedAds;
-
+        
         private int _mainSystemCount;
         private int _subSystemCount;
+        
+        // === Mobile Only === //
+        
+#if UNITY_ANDROID || UNITY_IOS
+        
+        private bool _hasLoadedAds;
+
+#endif
         
         public event Action<string> OnLoadingAsset;
         
@@ -67,10 +74,13 @@ namespace _Main.Scripts.Bootstrap
                 _mainSystemCount++;
             };
 
+#if UNITY_ANDROID || UNITY_IOS
+
             AdsEvents.OnAdsInitialized += () =>
             {
                 _hasLoadedAds = true;
             };
+#endif
 
             LocalizationManager.LoadInstance();
             

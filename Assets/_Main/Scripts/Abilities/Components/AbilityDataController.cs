@@ -400,9 +400,7 @@ namespace _Main.Scripts.Abilities
             var startSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueStarted);  
             var endSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueFinished);
             
-            
-            var disableEarthDamage = new InstantAction(EarthEventCaller.EnableDamage);
-            var enableEarthDamage = new InstantAction(EarthEventCaller.DisableDamage);
+            var disableEarthDamage = new InstantAction(EarthEventCaller.DisableDamage);
             
             // SlowDown
             var setShieldTimeScale = new SetChannelTimeScaleAction(shieldMinTimeScale, new[]{UpdateGroup.Shield});
@@ -446,7 +444,6 @@ namespace _Main.Scripts.Abilities
                 .Then(_enableInputs)
                 .Then(_enableAbilityUI)
                 .Then(runAbilityTimer)
-                .Then(enableEarthDamage)
                 .Then(new SimpleCommandAction(endSequence))
                 .Build();
         }
@@ -456,8 +453,11 @@ namespace _Main.Scripts.Abilities
             var start = new TriggerAbilitySequenceState(AbilityType.Health, OnEndQueueStart);  
             var end = new TriggerAbilitySequenceState(AbilityType.Health, OnEndQueueFinished); 
             
+            var enableEarthDamage = new InstantAction(EarthEventCaller.EnableDamage);
+            
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(start))
+                .Then(enableEarthDamage)
                 .Then(new SimpleCommandAction(end))
                 .Then(new PublishAbilityActiveAction(AbilityType.Health, false))
                 .Build();

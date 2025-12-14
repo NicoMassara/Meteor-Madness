@@ -3323,7 +3323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textKey: Menu.FristPlay.Title
+  textKey: Menu.FirstPlay.Title
 --- !u!114 &492391705
 MonoBehaviour:
   m_ObjectHideFlags: 0

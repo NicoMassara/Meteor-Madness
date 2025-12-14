@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.Cosmetics;
 using _Main.Scripts.MySettings;
+using _Main.Scripts.Save;
 using IngameDebugConsole;
 using UnityEngine;
 
@@ -35,7 +36,6 @@ namespace _Main.Scripts.MyCommands
             GameModeEventCaller.SetEnablePause(value);
         }
     }
-
     public static class EarthCommands
     {
         [ConsoleMethod("earth_help", "List of Earth commands")]
@@ -106,7 +106,6 @@ namespace _Main.Scripts.MyCommands
             EarthEventCaller.PreSlice();
         }
     }
-
     public static class ShieldCommands
     {
         [ConsoleMethod("shield_cmd_help", "List of Shield commands")]
@@ -156,7 +155,6 @@ namespace _Main.Scripts.MyCommands
             ShieldEventCaller.RequestDisableShieldType(type);
         }
     }
-
     public static class CameraCommands
     {
         [ConsoleMethod("cam_help", "List of Camera commands")]
@@ -216,7 +214,6 @@ namespace _Main.Scripts.MyCommands
             CameraEventCaller.LookDown(time);
         }
     }
-
     public static class InputCommands
     {
         [ConsoleMethod("input_help", "List of Input commands")]
@@ -241,7 +238,6 @@ namespace _Main.Scripts.MyCommands
             InputsEventCaller.SetUIEnable(value);
         }
     }
-
     public static class AbilitiesCommands
     {
         [ConsoleMethod("ability_cmd_help", "List of Ability commands")]
@@ -253,7 +249,8 @@ namespace _Main.Scripts.MyCommands
                 "ability_enable\n" +
                 "ability_disable\n" +
                 "ability_timer\n" +
-                "ability_next <AbilityType>"
+                "ability_next <AbilityType>\n" +
+                "ability_send <AbilityType>"
             );
         }
         
@@ -297,6 +294,13 @@ namespace _Main.Scripts.MyCommands
         public static void AbilityNext(AbilityType type)
         {
             AbilitiesEventCaller.SetNextSpawn(type);
+        }
+
+        [ConsoleMethod("ability_send", "Spawns an Ability Sphere")]
+        public static void SendAbility(AbilityType type)
+        {
+            AbilitiesEventCaller.SetNextSpawn(type);
+            ProjectileEventCaller.GrantSpawn(ProjectileType.AbilitySphere);
         }
 
     }
@@ -365,7 +369,6 @@ namespace _Main.Scripts.MyCommands
             ProjectileEventCaller.UpdateLevel(level);
         }
     }
-
     public static class MeteorCommand
     {
         [ConsoleMethod("meteor_help", "List of Meteor commands")]
@@ -391,7 +394,6 @@ namespace _Main.Scripts.MyCommands
             MeteorEventCaller.SpawnRing();
         }
     }
-
     public static class GameScreenCommand
     {
         [ConsoleMethod("screen_cmd_help", "List of Screen commands")]
@@ -430,7 +432,6 @@ namespace _Main.Scripts.MyCommands
             GameScreenEventCaller.LoadLastScreen();
         }
     }
-    
     public static class SkinCommands
     {
         [ConsoleMethod("skin_cmd_help", "List of Shield commands")]
@@ -459,7 +460,6 @@ namespace _Main.Scripts.MyCommands
             SkinManager.Instance.SelectSkin(type);
         }
     }
-
     public static class SettingsCommands
     {
         [ConsoleMethod("settings_cmd_help", "List of Settings commands")]
@@ -507,6 +507,25 @@ namespace _Main.Scripts.MyCommands
         }
     }
 
+    public static class SaveCommands
+    {
+        [ConsoleMethod("save_cmd_help", "List of Settings commands")]
+        public static void SettingsCommandHelp()
+        {
+            Debug.Log(
+                "=== Save COMMANDS ===\n" +
+                "save_erase <SystemLanguage>\n"
+            );
+        }
+        
+        [ConsoleMethod("save_erase", "Clear Save Data")]
+        public static void EraseSave()
+        {
+            DataManager.Instance.ClearSaveData();
+        }
+    }
+
+    // ========================= //
     public static class CommandGlobal
     {
         [ConsoleMethod("help", "List of all command groups")]
@@ -527,7 +546,8 @@ namespace _Main.Scripts.MyCommands
                 "screen_cmd_help\n" +
                 "screen_cmd_help\n" +
                 "skin_cmd_help\n" +
-                "settings_cmd_help"
+                "settings_cmd_help\n" +
+                "save_cmd_help\n"
             );
         }
     }

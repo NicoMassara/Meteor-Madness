@@ -64,6 +64,7 @@ namespace _Main.Scripts.Defeat
 #if UNITY_ANDROID || UNITY_IOS
             AdsEvents.Rewarded_TriggerShow();
 #else
+            // Skips all Ads system, only for Desktop or Paid Mobile Version
             TriggerReward();
 #endif
         }
@@ -85,7 +86,7 @@ namespace _Main.Scripts.Defeat
         {
             GameManager.Instance.SaveHighScore(GameManager.Instance.GetHighScoreSecuredId());
             GameManager.Instance.SaveStats();
-            OnGameSaved?.Invoke();
+ 
         }
         
         private void HandleExecuteDisable()
@@ -107,7 +108,7 @@ namespace _Main.Scripts.Defeat
 
         }
         
-        public void TriggerReward()
+        private void TriggerReward()
         {
 #pragma warning disable CS0162 // Unreachable code detected
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -118,6 +119,8 @@ namespace _Main.Scripts.Defeat
 #else
             SaveGameData();
 #endif
+            
+            OnGameSaved?.Invoke();
 #pragma warning restore CS0162 // Unreachable code detected
 
         }

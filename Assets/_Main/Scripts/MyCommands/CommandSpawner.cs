@@ -10,13 +10,11 @@ namespace _Main.Scripts.MyCommands
         
         private void Awake()
         {
-            
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             
             Instantiate(debugLogManager);
             
 #endif
-            
         }
     }
 }

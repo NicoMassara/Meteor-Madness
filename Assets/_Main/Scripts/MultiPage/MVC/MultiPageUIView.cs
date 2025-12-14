@@ -58,7 +58,7 @@ namespace _Main.Scripts.MultiPage
         {
             GetUiComponents().NextButton.interactable = false;
             
-            TimerManager.Add(new TimerData(1.5f, () =>
+            TimerManager.Add(new TimerData(1.25f, () =>
             {
                 GetUiComponents().NextButton.interactable = true;
             }));

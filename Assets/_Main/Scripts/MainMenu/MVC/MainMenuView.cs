@@ -51,7 +51,6 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void HandleEnable()
         {
-
             OnMainMenuEnable?.Invoke();
             CameraEventCaller.ZoomIn(0.5f);
             EarthEventCaller.DisableDamage();

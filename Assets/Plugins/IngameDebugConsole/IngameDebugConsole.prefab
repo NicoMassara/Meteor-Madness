@@ -780,13 +780,13 @@ MonoBehaviour:
   toggleKey: 96
   enableSearchbar: 1
   topSearchbarMinWidth: 360
-  copyAllLogsOnResizeButtonClick: 0
+  copyAllLogsOnResizeButtonClick: 1
   receiveLogsWhileInactive: 0
-  receiveInfoLogs: 0
+  receiveInfoLogs: 1
   receiveWarningLogs: 0
   receiveErrorLogs: 0
   receiveExceptionLogs: 0
-  captureLogTimestamps: 0
+  captureLogTimestamps: 1
   alwaysDisplayTimestamps: 0
   maxLogCount: 2147483647
   logsToRemoveAfterMaxLogCount: 16
