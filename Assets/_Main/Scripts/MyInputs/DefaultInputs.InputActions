@@ -101,39 +101,6 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "MouseButtons",
-                    "id": "b8f37934-f741-4583-8ccd-ad7518dc5cff",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotateDirection",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "2e4a76f0-f7ca-4b0d-bb67-6ccc4e627184",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotateDirection",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "6662651d-2f18-459a-b9eb-f705a7baaabc",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotateDirection",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "",
                     "id": "7767b868-0ef3-49d4-831e-968b1fad4405",
                     "path": "<Keyboard>/s",
@@ -156,39 +123,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "DoubleMouse",
-                    "id": "dfcaaadd-d1e3-4512-aa7f-ffa37d6d8421",
-                    "path": "OneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TriggerAbility",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "3c1a1f73-d32e-4e65-bf9d-5290889531df",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TriggerAbility",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "binding",
-                    "id": "3f8b1672-de98-4c4d-b0f7-c2c0aee3ac91",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TriggerAbility",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "",
                     "id": "856ec092-fbcd-4fbe-b553-8a8f6ba6be8e",
                     "path": "<Keyboard>/p",
@@ -209,6 +143,11 @@
             "devices": [
                 {
                     "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
                     "isOptional": false,
                     "isOR": false
                 }
