@@ -7,10 +7,13 @@ namespace _Main.Scripts.MyAnimations
 {
     public abstract class SequenceUIAnimator<T, TS> : IUIAnimator
     where T : IUiAnimationComponent
-    where TS : UiAnimationData
+    where TS : IUiAnimationData
     {
         protected readonly T UIComponents;
         protected readonly TS AnimationData;
+        
+        private Sequence _sequence;
+        
         
         protected SequenceUIAnimator(T components, TS animationData)
         {
@@ -34,11 +37,14 @@ namespace _Main.Scripts.MyAnimations
                 .AppendCallback(() => onFinished?.Invoke())
                 .AppendCallback(RestartValues);
         }
+
+        public void Pause() => _sequence?.Pause();
+        public void Resume() => _sequence?.Play();
+        public void Kill() => _sequence?.Kill();
     }
     
-
-    [System.Serializable]
-    public abstract class UiAnimationData { }
+    
+    public interface IUiAnimationData {}
 
     /// <summary>
     /// This is used to set Initial Positions and Values to UI Components or restart them
@@ -69,6 +75,11 @@ namespace _Main.Scripts.MyAnimations
     public interface IUIAnimator
     {
         public void Play(Action onFinished);
+
+        public void Pause();
+        public void Resume();
+
+        public void Kill();
     }
     
     public interface IUiAnimationComponent {}

@@ -328,6 +328,8 @@ namespace _Main.Scripts.Sounds
 
                 _activeByChannel[channel]++;
                 
+                //Debug.Log($"Sound Added To {channel} Channel");
+                
                 OnChannelUpdated?.Invoke(channel, _activeByChannel[channel]);
                 
             }
@@ -337,8 +339,10 @@ namespace _Main.Scripts.Sounds
                 _activeByChannel ??= new Dictionary<SoundChannel, int>();
                 
                 if(_activeByChannel.ContainsKey(channel) == false) return;
-
+                
                 _activeByChannel[channel]--;
+                
+                //Debug.Log($"Sound Removed from {channel} Channel");
                 
                 OnChannelUpdated?.Invoke(channel, _activeByChannel[channel]);
             }
@@ -668,12 +672,4 @@ namespace _Main.Scripts.Sounds
 
         #endregion
     }
-
-    #region Extra Clases
-    
-
-
-
-    
-    #endregion
 }

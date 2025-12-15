@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71c87b806985474ba85889f5e9b0986f, type: 3}
+  m_Name: So_Animation_UI_Menu
+  m_EditorClassIdentifier: 
+  menuFirstOpenData:
+    gameTitleOffscreenPos: 2
+    leftButtonsOffscreenPos: 0
+    rightButtonsOffscreenPos: 1
+    showTitleDelay: 1
+    titleMovementDuration: 1
+    buttonsMovementDuration: 0.5
+    showButtonsDelay: 0.5
+    finishDelay: 0.5
+    titleOffset: {x: 0, y: 250}
+    leftButtonsOffset: {x: -250, y: 0}
+    rightButtonsOffset: {x: 250, y: 0}
+  menuOpenData:
+    gameTitleOffscreenPos: 2
+    leftButtonsOffscreenPos: 0
+    rightButtonsOffscreenPos: 1
+    movementDuration: 0.25
+    finishDelay: 0.25
+    titleOffset: {x: 0, y: 250}
+    leftButtonsOffset: {x: -250, y: 0}
+    rightButtonsOffset: {x: 250, y: 0}
+  menuCloseData:
+    gameTitleOffscreenPos: 2
+    leftButtonsOffscreenPos: 0
+    rightButtonsOffscreenPos: 1
+    movementDuration: 0.25
+    finishDelay: 0.25
+    titleOffset: {x: 0, y: 250}
+    leftButtonsOffset: {x: -250, y: 0}
+    rightButtonsOffset: {x: 250, y: 0}
+  loreOpenData:
+    offscreenDirection: 3
+    movementDuration: 0.3
+    offset: {x: 0, y: 0}
+  loreCloseData:
+    offscreenDirection: 3
+    movementDuration: 0.3
+    offset: {x: 0, y: 0}
+  tutorialOpenData:
+    offscreenDirection: 0
+    movementDuration: 0.3
+    offset: {x: 0, y: 0}
+  tutorialCloseData:
+    offscreenDirection: 0
+    movementDuration: 0.3
+    offset: {x: 0, y: 0}
+  creditsOpenData:
+    offscreenDirection: 1
+    movementDuration: 0.3
+    offset: {x: 0, y: 0}
+  creditsCloseData:
+    offscreenDirection: 1
+    movementDuration: 0.3
+    offset: {x: 0, y: 0}
+  firstGameOpenData:
+    offscreenDirection: 2
+    movementDuration: 0.3
+    offset: {x: 0, y: 250}
+  firstGameCloseData:
+    offscreenDirection: 2
+    movementDuration: 0.15
+    offset: {x: 0, y: 250}

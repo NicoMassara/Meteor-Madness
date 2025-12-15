@@ -457,8 +457,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23df50d13ef44a1918ac581ae274b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotateData: {fileID: 0}
-  deflectData: {fileID: 0}
+  rotateData: {fileID: 11400000, guid: b3744b85e9a766c4a9a34fe797647366, type: 2}
+  deflectData: {fileID: 11400000, guid: ae79670803633ad4d9f64ba9e8361eef, type: 2}
 --- !u!114 &168416682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -683,9 +683,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3917780fb8e642179c0e88966d96a8c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggeredData: {fileID: 0}
-  finishedData: {fileID: 0}
-  addedData: {fileID: 0}
+  triggeredData: {fileID: 11400000, guid: d6035c170909d2d438bfcd7e37aa27a4, type: 2}
+  finishedData: {fileID: 11400000, guid: 39b5a31266529be409a3ce33e42474dc, type: 2}
+  addedData: {fileID: 11400000, guid: 0c0bd153906d55247a1e46196c1c8009, type: 2}
 --- !u!114 &234428184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -715,12 +715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 1222781333}
-  panelOpenData:
-    offscreenPosition: 3
-    movementDuration: 0.3
-  panelCloseData:
-    offscreenPosition: 3
-    movementDuration: 0.3
+  animData: {fileID: 11400000, guid: bdfa1edf11cafcc46bd49151500f4d94, type: 2}
 --- !u!1 &244942275
 GameObject:
   m_ObjectHideFlags: 0
@@ -1500,7 +1495,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1772,7 +1767,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65107d1653634bd08614a35e7790b571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionData: {fileID: 0}
+  collisionData: {fileID: 11400000, guid: 9db3fd3fc0c071346a3c4ebf978de66f, type: 2}
 --- !u!114 &593039196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3834,7 +3829,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1482222718}
   - component: {fileID: 1482222717}
-  - component: {fileID: 1482222719}
   m_Layer: 0
   m_Name: Inputs
   m_TagString: Untagged
@@ -3869,19 +3863,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1482222719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1482222716}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36b98cb3ff5a44ca98c4150c8d1b43f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  abilityToAdd: 1
 --- !u!1 &1514094674
 GameObject:
   m_ObjectHideFlags: 0

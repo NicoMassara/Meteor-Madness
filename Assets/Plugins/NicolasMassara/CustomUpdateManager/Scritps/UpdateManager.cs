@@ -397,5 +397,15 @@ namespace NicolasMassara.CustomUpdateManager
         }
         
         #endregion
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            IsGlobalPaused = !hasFocus;
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            IsGlobalPaused = pauseStatus;
+        }
     }
 }

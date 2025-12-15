@@ -99,6 +99,9 @@ namespace _Main.Scripts.GameMode
         public void InitializeData()
         {
             UpdateCurrentScore(0);
+            UpdateCollisionCount(0);
+            UpdateAbilityCount(0);
+            UpdateDeflectCount(0);
             NotifyAll(GameModeObserverMessage.InitializeData);
         }
 
@@ -331,6 +334,7 @@ namespace _Main.Scripts.GameMode
         public void StartFinish()
         {
             NotifyAll(GameModeObserverMessage.StartFinish);
+            NotifyAll(GameModeObserverMessage.SaveStats, _collisionId,_abilityUseId,_deflectId);
         }
 
         public void TriggerPauseMenu()

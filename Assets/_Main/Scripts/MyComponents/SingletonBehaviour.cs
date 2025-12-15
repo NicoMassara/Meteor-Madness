@@ -19,5 +19,9 @@ namespace _Main.Scripts.MyComponents
             DontDestroyOnLoad(gameObject);
             return gameObject.AddComponent<T>();
         }
+
+        public static void LoadInstance() => Instance.Internal_LoadInstance();
+
+        private void Internal_LoadInstance(){ }
     }
 }

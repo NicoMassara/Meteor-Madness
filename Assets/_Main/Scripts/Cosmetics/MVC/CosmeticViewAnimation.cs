@@ -9,70 +9,50 @@ namespace _Main.Scripts.Cosmetics.MVC
     public class CosmeticViewAnimation : BaseViewAnimation<CosmeticUiAnimationSelector,CosmeticUiAnimationComponents>
     {
         
-        #region Animation Data
-
-        [Serializable]
-        private class PanelOpenData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private PanelOpenData panelOpenData;
-        
-        [Serializable]
-        private class PanelCloseData : UiAnimationData
-        {
-            
-        }
-        
-        [SerializeField] private PanelCloseData panelCloseData;
-
-        #endregion
+        [SerializeField] private CosmeticUiAnimationData animData;
         
         #region Animators
-        private class Animation_MainPanel_Open : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel,PanelOpenData>
+        private class Animation_MainPanel_Open : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel,IPanelData>
         {
-            public Animation_MainPanel_Open(CosmeticUiAnimationComponents.IMainPanel components, PanelOpenData animationData) 
-                : base(components, animationData) { }
-            private const float FadeTime = 0.3f;
-            private Vector2 _panelOriginalPos;
-            private Vector2 _offscreenPos;
+            private AnimationHelper.PanelPosition _panel;
+            
+            public Animation_MainPanel_Open(CosmeticUiAnimationComponents.IMainPanel components,
+                IPanelData animationData)
+                : base(components, animationData)
+            {
+                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel, AnimationData.OffScreenPos);
+                UIComponents.MainPanel.anchoredPosition = _panel.OffScreenPos;
+            }
+            
             
             protected override void Initialize()
             {
                 UIComponents.MainPanel.gameObject.SetActive(false);
-                
-                _panelOriginalPos = UIComponents.MainPanel.anchoredPosition;
-                
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.MainPanel, AnimationHelper.Direction.Left);
-                UIComponents.MainPanel.anchoredPosition = _offscreenPos;
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(true))
-                    .Append(UIComponents.MainPanel.DOAnchorPos(_panelOriginalPos, FadeTime));
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.StartPos, AnimationData.MovementDuration));
             }
         }
         
-        private class Animation_MainPanel_Close : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel,PanelCloseData>
+        private class Animation_MainPanel_Close : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel,IPanelData>
         {
-            public Animation_MainPanel_Close(CosmeticUiAnimationComponents.IMainPanel components, PanelCloseData animationData) 
-                : base(components, animationData) { }
-
-            private const float FadeTime = 0.3f;
-            private Vector2 _offscreenPos;
-            
-            protected override void Initialize()
+            public Animation_MainPanel_Close(CosmeticUiAnimationComponents.IMainPanel components,
+                IPanelData animationData)
+                : base(components, animationData)
             {
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.MainPanel, AnimationHelper.Direction.Left);
+                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel, AnimationData.OffScreenPos);
             }
 
+            private AnimationHelper.PanelPosition _panel;
+            
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.MainPanel.DOAnchorPos(_offscreenPos, FadeTime/2))
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.MovementDuration))
                     .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(false));
             }
             
@@ -85,8 +65,8 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         private void Start()
         {
-            _animationOpen = new Animation_MainPanel_Open(UIComponents, panelOpenData);
-            _animationClose = new Animation_MainPanel_Close(UIComponents, panelCloseData);
+            _animationOpen = new Animation_MainPanel_Open(UIComponents, animData.PanelOpenData);
+            _animationClose = new Animation_MainPanel_Close(UIComponents, animData.PanelCloseData);
         }
 
         public override void OnNotify(ulong message, params object[] args)

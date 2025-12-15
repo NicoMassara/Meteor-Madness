@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Interfaces;
+﻿using System;
+using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyComponents;
 using _Main.Scripts.MyTools;
 using _Main.Scripts.CustomId;
@@ -13,6 +14,9 @@ namespace _Main.Scripts.Managers
     {
         public bool CanPlay { get; set; }
         public bool IsPaused { get; private set; }
+
+        public event Action OnPaused;
+        public event Action OnResumed;
         public bool HadCorruptedSaveData { get; set; }
 
         public EventBusManager EventManager { get; private set; }
@@ -20,12 +24,14 @@ namespace _Main.Scripts.Managers
         
         // Game Stored Data
         
+        private GeneratedId _highScoreSecuredId;
         public uint VisualPoints { get;  set; }
 
-        public GeneratedId CurrentScoreSecuredId { get; set; }
         public bool AntiEpileptic { get; set; } = true;
-
-        private GeneratedId _highScoreSecuredId;
+        public GeneratedId CurrentScoreSecuredId { get; set; }
+        public GeneratedId CollisionCountId { get; set; }
+        public GeneratedId AbilityUseCountId { get; set; }
+        public GeneratedId DeflectCountId { get; set; }
 
         private void Awake()
         {
@@ -92,12 +98,14 @@ namespace _Main.Scripts.Managers
         {
             SetPauseChannels(true);
             IsPaused = true;
+            OnPaused?.Invoke();
         }
 
-        public void UnpauseGame()
+        public void ResumeGame()
         {
             SetPauseChannels(false);
             IsPaused = false;
+            OnResumed?.Invoke();
         }
 
         private void SetPauseChannels(bool isPaused)
@@ -123,6 +131,9 @@ namespace _Main.Scripts.Managers
         public void ClearScoreData()
         {
             CurrentScoreSecuredId = null;
+            CollisionCountId = null;
+            AbilityUseCountId = null;
+            DeflectCountId = null;
         }
 
         public bool GetHasNewHighScore()
@@ -134,6 +145,31 @@ namespace _Main.Scripts.Managers
                 return true;
             
             return currentScore > highScore;
+        }
+
+        public bool GetHasPlayed()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+            var value = saveData.HasPlayed;
+            
+            if(value)
+                return true;
+            
+            saveData.HasPlayed = true;
+            
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (GameParameters.GameplayValues.DoesSaveProgress)
+            {
+                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+            }
+#else
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+            
+            return false;
         }
 
         public GeneratedId GetHighScoreSecuredId()
@@ -180,6 +216,29 @@ namespace _Main.Scripts.Managers
             }
             
             SecureValueManager.ModifyValue(highScoreId,currentScore);
+        }
+
+        public void SaveStats()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+
+            if (SecureValueManager.GetDoesContainValue<uint>(CollisionCountId, out var collisionCount))
+            {
+                saveData.CollisionAmount = collisionCount;
+            }
+            
+            if (SecureValueManager.GetDoesContainValue<uint>(AbilityUseCountId, out var abilityCount))
+            {
+                saveData.AbilityUseAmount = abilityCount;
+            }
+            
+            if (SecureValueManager.GetDoesContainValue<uint>(DeflectCountId, out var deflectCount))
+            {
+                saveData.DeflectAmount = deflectCount;
+            }
+            
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
         }
 
         #endregion

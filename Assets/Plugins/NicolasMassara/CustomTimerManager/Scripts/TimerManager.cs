@@ -10,11 +10,11 @@ namespace NicolasMassara.CustomTimerManager
     public enum UpdateFrequency
     {
         EveryFrame,     // Executes every frame
-        HalfOfTarget,      // Executes every 1/2 frame
-        ThirdTarget,     // Executes every 1/3 frame
-        QuarterOfTarget,   // Executes every 1/4 frame
-        EightOfTarget,     // Executes every 1/8 frame
-        SixteenthOfTarget, // Executes every 1/16 frame
+        HalfOfTarget,      // Executes every 1/2 of target frame
+        ThirdTarget,     // Executes every 1/3 of target frame
+        QuarterOfTarget,   // Executes every 1/4 of target frame
+        EightOfTarget,     // Executes every 1/8 of target frame
+        SixteenthOfTarget, // Executes every 1/16 of target frame
         EverySecond,    // Executes every 1 second
     }
 
@@ -163,6 +163,7 @@ namespace NicolasMassara.CustomTimerManager
                     {
                         UpdateFrequency.EveryFrame => frameTime,
                         UpdateFrequency.HalfOfTarget => baseFrameTime * 2f,
+                        UpdateFrequency.ThirdTarget => baseFrameTime * 3f,
                         UpdateFrequency.QuarterOfTarget => baseFrameTime * 4f,
                         UpdateFrequency.EightOfTarget => baseFrameTime * 8f,
                         UpdateFrequency.SixteenthOfTarget => baseFrameTime * 16f,
@@ -335,6 +336,8 @@ namespace NicolasMassara.CustomTimerManager
         private readonly List<TimerManagerData> _toAdd = new List<TimerManagerData>();
         private readonly List<TimerManagerData> _toRemove = new List<TimerManagerData>();
         private readonly Dictionary<ushort, TimerManagerData> _timerDic = new Dictionary<ushort, TimerManagerData>();
+        
+        public bool IsPaused { get; set; }
 
         //====================================================
         //                       COUNTERS
@@ -362,12 +365,24 @@ namespace NicolasMassara.CustomTimerManager
         //====================================================
         private void Update()
         {
+            if(IsPaused) return;
             if (_running.Count == 0) return;
 
             RunTimers();
         }
 
         private void LateUpdate() => ApplyPending();
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            IsPaused = !hasFocus;
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            IsPaused = pauseStatus;
+        }
+
 
         #region Timer Logic
 
@@ -461,15 +476,18 @@ namespace NicolasMassara.CustomTimerManager
 
         private bool RemoveInternal(GeneratedId generatedId)
         {
-            if(generatedId == null) return false;
-            
+            if (generatedId == null)
+            {
+                return false;
+            }
+
             if (_timerDic.TryGetValue(generatedId.Id, out var value))
             {
                 _toRemove.Add(value);
                 return true;
             }
 
-            if (_cancelAddIds.Contains(generatedId.Id))
+            if (_cancelAddIds.Contains(generatedId.Id) == false)
             {
                 _cancelAddIds.Add(generatedId.Id);
                 return true;

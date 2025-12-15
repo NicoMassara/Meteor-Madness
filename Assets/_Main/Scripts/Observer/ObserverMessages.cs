@@ -55,6 +55,7 @@
         public const ulong OpenPauseMenu = 0xA2022;
         public const ulong StartFinish = 0xA2023;
         public const ulong FinishAddingPoints = 0xA2024;
+        public const ulong SaveStats = 0xA2025;
 
         //
         public const ulong Debug_MeteorDeflect = 0xB2001;
@@ -147,8 +148,8 @@
         public const ulong CreditsMenu = 0xA7010;
         public const ulong TriggerOptions = 0xA7011;
         public const ulong StartDisable = 0xA7012;
-        public const ulong Empty1 = 0xA7013;
-        public const ulong Empty2 = 0xA7014;
+        public const ulong MainPanelOpened = 0xA7013;
+        public const ulong FirstGame = 0xA7014;
         public const ulong Empty3 = 0xA7015;
         public const ulong Empty4 = 0xA7016;
     }
@@ -218,6 +219,7 @@
         public const ulong SendButtons  = 0xA1208;
         public const ulong EnableButtons  = 0xA1209;
         public const ulong SaveHighScore = 0xA120A;
+        public const ulong SendAds = 0xA120B;
     }
     
     public struct PauseObserverMessage

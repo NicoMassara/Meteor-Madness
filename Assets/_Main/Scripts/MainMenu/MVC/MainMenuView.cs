@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
@@ -37,7 +38,15 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.TriggerOptions:
                     HandleTriggerOptions();
                     break;
+                case MainMenuObserverMessage.MainPanelOpened:
+                    HandleMainPanelOpened();
+                    break;
             }
+        }
+
+        private void HandleMainPanelOpened()
+        {
+            AdsEvents.Banner_TriggerShow();
         }
 
         private void HandleEnable()
@@ -54,6 +63,7 @@ namespace _Main.Scripts.MainMenu.MVC
         
         private void HandleGameMode()
         {
+            AdsEvents.Banner_TriggerHide();
             GameManager.Instance.LoadGameMode();
         }
         
@@ -75,6 +85,16 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleTriggerOptions()
         {
             GameManager.Instance.LoadOptionsMenu();
+        }
+
+        private void OnDestroy()
+        {
+            AdsEvents.Banner_TriggerDestroy();
+        }
+
+        private void OnApplicationQuit()
+        {
+            AdsEvents.Banner_TriggerDestroy();
         }
     }
 }

@@ -64,5 +64,15 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             NotifyAll(MainMenuObserverMessage.StartDisable);
         }
+
+        public void TriggerMainPanelOpen()
+        {
+            NotifyAll(MainMenuObserverMessage.MainPanelOpened);
+        }
+
+        public void FirstGame()
+        {
+            NotifyAll(MainMenuObserverMessage.FirstGame);
+        }
     }
 }

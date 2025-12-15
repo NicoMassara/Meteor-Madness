@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -62,6 +63,7 @@ namespace _Main.Scripts.Cosmetics.MVC
                 _motor.SelectAbility(value);
             };
             //
+            _animation.OnPanelOpened += () => AdsEvents.Banner_TriggerShow();
             _animation.OnPanelClosed += () => _controller.ExecuteDisable();
         }
 

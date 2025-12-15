@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Abilities.So;
 using _Main.Scripts.MyAnimations;
 using _Main.Scripts.Observer;
 using DG.Tweening;
@@ -14,36 +15,13 @@ namespace _Main.Scripts.Abilities
             public event Action OnDataInitialized;
         }
 
-        #region Animation Data
-
-        
-        [Serializable]
-        private class PanelOpenData : UiAnimationData
-        {
-            public AnimationHelper.Direction offscreenPosition = AnimationHelper.Direction.Down;
-            public float movementDuration = 0.3f;
-        }
-        
-        [SerializeField] private PanelOpenData panelOpenData;
-        
-        [Serializable]
-        private class PanelCloseData : UiAnimationData
-        {
-            public AnimationHelper.Direction offscreenPosition = AnimationHelper.Direction.Down;
-            public float movementDuration = 0.3f;
-        }
-        
-        [SerializeField] private PanelCloseData panelCloseData;
-
-        #endregion
+        [SerializeField] private AbilityUiAnimationData animData;
         
         #region Animators
 
         private class Animation_Initialize : UIComponentsInitializer<AbilityUIAnimationComponents.IMainPanel>
         {
-            public Animation_Initialize(AbilityUIAnimationComponents.IMainPanel components) : base(components)
-            {
-            }
+            public Animation_Initialize(AbilityUIAnimationComponents.IMainPanel components) : base(components) { }
 
             protected override void Initialize()
             {
@@ -51,17 +29,16 @@ namespace _Main.Scripts.Abilities
             }
         }
 
-        private class Animation_MainPanel_Open : SequenceUIAnimator<AbilityUIAnimationComponents.IMainPanel,PanelOpenData>
+        private class Animation_MainPanel_Open : SequenceUIAnimator<AbilityUIAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
-            
-            public Animation_MainPanel_Open(AbilityUIAnimationComponents.IMainPanel components,
-                PanelOpenData animationData)
+
+            public Animation_MainPanel_Open(AbilityUIAnimationComponents.IMainPanel components, IPanelData animationData)
                 : base(components, animationData)
             {
-                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel,AnimationData.offscreenPosition);
+                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel, animationData.OffscreenPosition);
             }
-            
+
             protected override void Initialize()
             {
                 UIComponents.MainPanel.anchoredPosition = _panel.OffScreenPos;
@@ -71,33 +48,29 @@ namespace _Main.Scripts.Abilities
             {
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(true))
-                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.StartPos, AnimationData.movementDuration));
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.StartPos, AnimationData.MovementDuration));
             }
         }
-        
-        private class Animation_MainPanel_Close : SequenceUIAnimator<AbilityUIAnimationComponents.IMainPanel, PanelCloseData>
+
+        private class Animation_MainPanel_Close : SequenceUIAnimator<AbilityUIAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
-            public Animation_MainPanel_Close(AbilityUIAnimationComponents.IMainPanel components,
-                PanelCloseData animationData)
+            public Animation_MainPanel_Close(AbilityUIAnimationComponents.IMainPanel components, IPanelData animationData)
                 : base(components, animationData)
             {
-                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel,AnimationData.offscreenPosition);
+                _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel, animationData.OffscreenPosition);
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.movementDuration))
-                    .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(false))
-                    ;
+                    .Append(UIComponents.MainPanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.MovementDuration))
+                    .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(false));
             }
-            
         }
 
         #endregion
-
         
         private IUIAnimator _animationPanelOpen;
         private IUIAnimator _animationPanelClose;
@@ -106,8 +79,8 @@ namespace _Main.Scripts.Abilities
 
         private void Start()
         {
-            _animationPanelOpen = new Animation_MainPanel_Open(UIComponents, panelOpenData);
-            _animationPanelClose = new Animation_MainPanel_Close(UIComponents, panelCloseData);
+            _animationPanelOpen = new Animation_MainPanel_Open(UIComponents, animData.OpenData);
+            _animationPanelClose = new Animation_MainPanel_Close(UIComponents, animData.CloseData);
         }
 
         public override void OnNotify(ulong message, params object[] args)

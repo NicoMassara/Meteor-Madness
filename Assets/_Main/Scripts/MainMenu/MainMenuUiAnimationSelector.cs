@@ -14,7 +14,8 @@ namespace _Main.Scripts.Menu
         MainMenuUiAnimationComponents.IMainMenuPanel,
         MainMenuUiAnimationComponents.ILorePanel,
         MainMenuUiAnimationComponents.ITutorialPanel,
-        MainMenuUiAnimationComponents.ICreditsPanel
+        MainMenuUiAnimationComponents.ICreditsPanel,
+        MainMenuUiAnimationComponents.IFirstGamePanel
     {
         public interface IMainMenuPanel : IUiAnimationComponent
         {
@@ -40,6 +41,11 @@ namespace _Main.Scripts.Menu
             public RectTransform CreditsPanel { get; }
         }
         
+        public interface IFirstGamePanel : IUiAnimationComponent
+        {
+            public RectTransform FirstGamePanel { get; }
+        }
+        
         
         [Space(2)]
         [Header("Main Menu Panel")]
@@ -63,6 +69,10 @@ namespace _Main.Scripts.Menu
         [Space(2)]
         [Header("Credits Panel")]
         [SerializeField] private RectTransform creditsPanel;
+        
+        [Space(2)]
+        [Header("First Game Panel")]
+        [SerializeField] private RectTransform firstGamePanel;
 
         
         // Menu Panel
@@ -80,5 +90,9 @@ namespace _Main.Scripts.Menu
         
         // Credits Panel
         public RectTransform CreditsPanel => creditsPanel;
+        
+        // First Game Panel
+        
+        public RectTransform FirstGamePanel => firstGamePanel;
     }
 }

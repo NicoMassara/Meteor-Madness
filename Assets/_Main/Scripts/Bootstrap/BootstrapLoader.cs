@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.AdsSystem;
 using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
@@ -18,18 +19,26 @@ namespace _Main.Scripts.Bootstrap
 
     public class BootstrapLoader : MonoBehaviour, IBoostrap
     {
-        [SerializeField] private string coreScene = "MainMenu"; // o el nombre de tu primera escena real
+        [SerializeField] private string coreScene = "MainMenu";
         [SerializeField] private string[] additiveScenes;
-        [SerializeField] private float delayBeforeLoad = 0.1f;    // opcional, da tiempo al splash
+        [SerializeField] private float delayBeforeLoad = 0.1f;
         [SerializeField] private Image progressBar;
         
         public const bool DebugDisabled = true;
         private bool _hasLocalizationLoaded;
         private bool _hasLoadedData;
         private bool _hasLoadedSkins;
-
+        
         private int _mainSystemCount;
         private int _subSystemCount;
+        
+        // === Mobile Only === //
+        
+#if UNITY_ANDROID || UNITY_IOS
+        
+        private bool _hasLoadedAds;
+
+#endif
         
         public event Action<string> OnLoadingAsset;
         
@@ -65,10 +74,16 @@ namespace _Main.Scripts.Bootstrap
                 _mainSystemCount++;
             };
 
+#if UNITY_ANDROID || UNITY_IOS
 
-            var localization = LocalizationManager.Instance;
-            var dataManager = DataManager.Instance;
-            var skinManager = SkinManager.Instance;
+            AdsEvents.OnAdsInitialized += () =>
+            {
+                _hasLoadedAds = true;
+            };
+#endif
+
+            LocalizationManager.LoadInstance();
+            
         }
 
         private void Start()
@@ -84,20 +99,33 @@ namespace _Main.Scripts.Bootstrap
             
             // Save Data
             OnLoadingAsset?.Invoke("Loading Saves");
+            DataManager.LoadInstance();
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedData);
             
             // Localization
             OnLoadingAsset?.Invoke("Loading Texts");
+
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLocalizationLoaded);
             
             // Skins
             OnLoadingAsset?.Invoke("Loading Skins");
+            SkinManager.LoadInstance();
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedSkins);
-            
+
+            //Ads
+#if UNITY_ANDROID || UNITY_IOS
+
+            OnLoadingAsset?.Invoke("Loading Ads");
+            AdManager.LoadInstance();
+            AdsEvents.InitializeAds();
             yield return new WaitForSeconds(delayBeforeLoad);
+            yield return new WaitUntil(()=> _hasLoadedAds);
+#else
+            _mainSystemCount++;
+#endif
             
             OnLoadingAsset?.Invoke("Loading Main Scene");
             yield return new WaitForSeconds(delayBeforeLoad);
@@ -168,7 +196,7 @@ namespace _Main.Scripts.Bootstrap
 
         private bool GetHasLoadedMainSystems()
         {
-            return _mainSystemCount >= 2;
+            return _mainSystemCount >= 3;
         }
 
         private bool GetHasLoadedSubsystems()

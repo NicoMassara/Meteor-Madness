@@ -4,6 +4,7 @@ using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Managers;
 using _Main.Scripts.GameConfig;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Observer;
 using _Main.Scripts.SecurityData;
 using NicolasMassara.CustomTimerManager;
@@ -95,7 +96,6 @@ namespace _Main.Scripts.GameMode
                     break;
                 
                 
-                
                 //=== Pause ===//
                 case GameModeObserverMessage.GamePaused:
                     HandleGamePaused();
@@ -117,6 +117,10 @@ namespace _Main.Scripts.GameMode
                 case GameModeObserverMessage.SaveScore:
                     HandleSaveScore((GeneratedId)args[0]);
                     break;
+                case GameModeObserverMessage.SaveStats:
+                    HandleSaveStats((GeneratedId)args[0],(GeneratedId)args[1],(GeneratedId)args[2]);
+                    break;
+                
                 
                 //=== Meteor ===//
                 case GameModeObserverMessage.PointsGained:
@@ -164,7 +168,9 @@ namespace _Main.Scripts.GameMode
                     break;
             }
         }
-        
+
+
+
         #region Finish
 
         private void HandleStartFinish()
@@ -175,7 +181,7 @@ namespace _Main.Scripts.GameMode
         
         private void HandleGameFinish()
         {
-            GameManager.Instance.UnpauseGame();
+            GameManager.Instance.ResumeGame();
             GameManager.Instance.CanPlay = false;
             ShieldEventCaller.Disable();
             OnGameFinished?.Invoke();
@@ -293,7 +299,7 @@ namespace _Main.Scripts.GameMode
             SetEnableInputs(true);
             AbilitiesEventCaller.EnableUI();
             GameModeEventCaller.SetPause(false);
-            GameManager.Instance.UnpauseGame();
+            GameManager.Instance.ResumeGame();
             
 #if UNITY_ANDROID || UNITY_IOS
 
@@ -344,6 +350,16 @@ namespace _Main.Scripts.GameMode
             }
             OnScoreSaved?.Invoke();
         }
+        
+        private void HandleSaveStats(
+            GeneratedId collisionCount, 
+            GeneratedId abilityUseCount, 
+            GeneratedId deflectCount)
+        {
+            GameManager.Instance.CollisionCountId = collisionCount;
+            GameManager.Instance.AbilityUseCountId = abilityUseCount;
+            GameManager.Instance.DeflectCountId = deflectCount;
+        }
 
         #endregion
         
@@ -372,6 +388,7 @@ namespace _Main.Scripts.GameMode
 
         private void HandleStartCountdown(int countdown)
         {
+            AdsEvents.Banner_TriggerHide();
             CameraEventCaller.ZoomOut(0.5f);
             OnCountDownStarted?.Invoke();
         }

@@ -109,19 +109,7 @@ namespace _Main.Scripts.GameConfig.Ability
         
             return  new Tuple<int[], AbilityType[]>(tempItem1, tempItem2);
         }
-
-
-        private void LimitMaxLevel()
-        {
-            for (int i = 0; i < levelToUnlock.Length; i++)
-            {
-                var item = levelToUnlock[i];
-                if (item.levelToSet >= _maxLevel)
-                {
-                    item.levelToSet = _maxLevel-1;
-                }
-            }
-        }
+        
 
 
         private void OnValidate()
@@ -131,7 +119,6 @@ namespace _Main.Scripts.GameConfig.Ability
             int abilityCount = (int)AbilityType.Default_MAX-1;
             GameConfigUtilities.UpdateArray(ref rarityValues, abilityCount, SetRarityDefault);
             UpdateMinUnlockLevel();
-            LimitMaxLevel();
         }
 
         public void ValidateByLevelAmount(int levelAmount)

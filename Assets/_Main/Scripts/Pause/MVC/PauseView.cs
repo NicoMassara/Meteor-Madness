@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
@@ -18,6 +19,10 @@ namespace _Main.Scripts.Pause
         {
             switch (message)
             {
+                case PauseObserverMessage.Enable:
+                    HandleEnable();
+                    break;
+                
                 case PauseObserverMessage.ExecuteDisable:
                     HandleExecuteDisable();
                     break;
@@ -38,7 +43,14 @@ namespace _Main.Scripts.Pause
                 case PauseObserverMessage.GameMode:
                     HandleGameMode();
                     break;
+                
+
             }
+        }
+
+        private void HandleEnable()
+        {
+            AdsEvents.Banner_TriggerShow();
         }
 
         private void HandleRestartEarth()
