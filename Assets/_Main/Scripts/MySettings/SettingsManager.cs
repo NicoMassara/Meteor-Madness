@@ -2,6 +2,7 @@
 using _Main.Scripts.Localization;
 using _Main.Scripts.MyComponents;
 using _Main.Scripts.Save;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MySettings
@@ -42,6 +43,7 @@ namespace _Main.Scripts.MySettings
         {
             _settingsData.MasterVolume = volume;
             OnMasterVolumeChanged?.Invoke(volume);
+            AudioMixerTools.SetMixerChannelVolume(MixerChannels.Master, volume);
             _hasChanged = true;
         }
 

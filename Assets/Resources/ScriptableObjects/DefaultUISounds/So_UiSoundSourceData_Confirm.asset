@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e10b32daf7f48749b83238934b33944, type: 3}
+  m_Name: So_UiSoundSourceData_Confirm
+  m_EditorClassIdentifier: 
+  soundName: UI-Confirm
+  clipsData:
+    clips:
+    - {fileID: 8300000, guid: a64b7a73b3cc4404eb6a77a39ddbccaf, type: 3}
+    doesPlayMultipleInOrder: 0
+  channelSettings:
+    mixerGroup: {fileID: 6739041549257455507, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    channel: 6
+  audioFlags:
+    ignoreEffects: 0
+    ignoreListenerEffects: 0
+    ignoreReverbZones: 0
+  priorityData:
+    priority: 128
+  baseData:
+    stereoPan: 0
+    reverbZoneMix: 1
+  audioPlaybackData:
+    doesLoop: 0
+    intervalBetweenLoops: 1
+    volume: 1
+    pitch: 2.38
+    randomPitchRange: 0
+    fadeInDuration: 0.01
+    fadeOutDuration: 0.01
+  is3dSound: 0
+  spatialData:
+    spatialBlend: 1
+    rolloffMode: 0
+    minDistance: 1
+    maxDistance: 30
+    dopplerLevel: 0
+    spread: 0
+    spatialize: 0
+    doesMove: 0
+  uiSoundType: 1

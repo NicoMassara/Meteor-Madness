@@ -1,6 +1,5 @@
-﻿using System;
-using _Main.Scripts.CustomId;
-using _Main.Scripts.Interfaces.Sounds;
+﻿using _Main.Scripts.Interfaces.Sounds;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds
@@ -11,8 +10,6 @@ namespace _Main.Scripts.Sounds
         protected T ComponentToSound => _componentToSound != null ? _componentToSound : SetComponentToSound();
 
         private T _componentToSound;
-
-        protected SoundManager SoundManager => SoundManager.Instance;
 
         private void Awake()
         {
@@ -25,12 +22,12 @@ namespace _Main.Scripts.Sounds
             }
         }
 
-        protected GeneratedId PlaySound(SoundClassSo soundClass, GeneratedId soundId = null)
+        protected SoundManager.GeneratedId PlaySound(ISoundSourceData soundClass, SoundManager.GeneratedId soundId = null)
         {
             if (soundClass == null)
                 return null;
 
-            if (soundId != null && soundId.IsValid)
+            if (soundId != null && soundId.IsActive)
             {
                 ResumeSound(soundId);
                 return soundId;
@@ -38,19 +35,19 @@ namespace _Main.Scripts.Sounds
 
             return SoundManager.PlaySound(soundClass, transform);
         }
-        protected void StopSound(GeneratedId soundId)
+        protected void StopSound(SoundManager.GeneratedId soundId)
         {
             if(IsIdValid(soundId) == false) return;
             
             SoundManager.StopSound(soundId);
         }
-        protected void ResumeSound(GeneratedId soundId)
+        protected void ResumeSound(SoundManager.GeneratedId soundId)
         {
             if(IsIdValid(soundId) == false) return;
             
             SoundManager.ResumeSound(soundId);
         }
-        protected void PauseSound(GeneratedId soundId)
+        protected void PauseSound(SoundManager.GeneratedId soundId)
         {
             if(IsIdValid(soundId) == false) return;
             
@@ -58,7 +55,7 @@ namespace _Main.Scripts.Sounds
         }
 
         // If ID is valid it means that is already in use and playing
-        protected bool IsIdValid(GeneratedId soundId)
+        protected bool IsIdValid(SoundManager.GeneratedId soundId)
         {
             if (soundId == null)
             {
@@ -66,13 +63,20 @@ namespace _Main.Scripts.Sounds
                 return false;
             }
 
-            if (soundId.IsValid == false)
+            if (soundId.IsActive == false)
             {
                 //Debug.Log("Sound Id is not valid");
                 return false;
             }
 
             return true;
+        }
+
+        protected void DeathFromParent(SoundManager.GeneratedId soundId)
+        {
+            if(IsIdValid(soundId) == false) return;
+            
+            SoundManager.DetachSoundFromParent(soundId);
         }
 
         private T SetComponentToSound()
@@ -82,7 +86,5 @@ namespace _Main.Scripts.Sounds
             return _componentToSound;
         }
         
-        
-
     }
 }

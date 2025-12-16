@@ -6,6 +6,7 @@ using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Save;
 using _Main.Scripts.GlobalEvents;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -74,6 +75,11 @@ namespace _Main.Scripts.Bootstrap
                 _mainSystemCount++;
             };
 
+            SoundEvents.OnSoundManagerInitialized += () =>
+            {
+                _mainSystemCount++;
+            };
+
 #if UNITY_ANDROID || UNITY_IOS
 
             AdsEvents.OnAdsInitialized += () =>
@@ -83,7 +89,7 @@ namespace _Main.Scripts.Bootstrap
 #endif
 
             LocalizationManager.LoadInstance();
-            
+            SoundManager.LoadInstance();
         }
 
         private void Start()
@@ -170,6 +176,7 @@ namespace _Main.Scripts.Bootstrap
             yield return new WaitForSeconds(delayBeforeLoad);
             
             BootEvents.InitializeMainSystem();
+            SoundEvents.InitializeSoundManager();
             
             OnLoadingAsset?.Invoke("Initializing Main Systems");
             

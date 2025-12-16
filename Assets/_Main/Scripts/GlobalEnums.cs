@@ -64,13 +64,7 @@
         EndGame,
         Cosmetic
     }
-
-    public enum UISoundType
-    {
-        Default,
-        Confirm,
-        Back
-    }
+    
     
     public enum ShieldType
     {

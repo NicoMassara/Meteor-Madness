@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.FlyingObject;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Observer;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,7 +10,7 @@ namespace _Main.Scripts.Abilities.Sphere
 {
     public class AbilitySphereView : 
         FlyingObjectView<AbilitySphereMotor, AbilitySphereView, AbilitySphereValues>, 
-        IProjectile, ITargetable
+        IProjectile, ITargetable, IAbilitySphereSounds
     {
         public UnityAction<AbilitySphereCollisionData> OnEarthCollision { get; set; }
         public UnityAction<AbilitySphereCollisionData> OnDeflection { get; set; }
@@ -18,6 +19,8 @@ namespace _Main.Scripts.Abilities.Sphere
         public bool EnableMovement { get; set; }
 
         public event Action OnDeath;
+        public event Action OnStartSound;
+        public event Action OnStopSound;
         
         public void DisableTargetable()
         {
@@ -28,6 +31,7 @@ namespace _Main.Scripts.Abilities.Sphere
         {
             base.SetValues(data);
             CanBeTargeted = true;
+            OnStartSound?.Invoke();
         }
 
         public void SetEnableMovement(bool enable)
@@ -73,6 +77,7 @@ namespace _Main.Scripts.Abilities.Sphere
         private void HandleShieldDeflection(Vector2 position,Quaternion rotation, Vector2 direction, AbilityType ability)
         {
             OnDeath?.Invoke();
+            OnStopSound?.Invoke();
             
             OnDeflection?.Invoke(new AbilitySphereCollisionData
             {
@@ -85,6 +90,8 @@ namespace _Main.Scripts.Abilities.Sphere
             
             HandleCollision(false, position, direction,true);
         }
+
+
     }
     
     public struct AbilitySphereCollisionData

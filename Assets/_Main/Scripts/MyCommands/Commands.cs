@@ -1,7 +1,9 @@
-﻿using _Main.Scripts.Cosmetics;
+﻿using System;
+using _Main.Scripts.Cosmetics;
 using _Main.Scripts.MySettings;
 using _Main.Scripts.Save;
 using IngameDebugConsole;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MyCommands
@@ -525,6 +527,39 @@ namespace _Main.Scripts.MyCommands
         }
     }
 
+    public static class TimeScaleCommands
+    {
+        [ConsoleMethod("time_cmd_help", "List of Settings commands")]
+        public static void SettingsCommandHelp()
+        {
+            Debug.Log(
+                "=== Time COMMANDS ===\n" +
+                "time_scale <float>\n" +
+                "time_pause \n" +
+                "time_resume\n"
+            );
+        }
+        
+        [ConsoleMethod("time_scale", "Set Time Scale")]
+        public static void SetTimeScale(float timeScale)
+        {
+            timeScale = Mathf.Clamp01(timeScale);
+            CustomTime.GlobalTimeScale = timeScale;
+        }
+        
+        [ConsoleMethod("time_pause", "Pauses Global Time")]
+        public static void SetPause()
+        {
+            CustomTime.GlobalTimeScale = 0f;
+        }
+        
+        [ConsoleMethod("time_resume", "Resumes Global Time")]
+        public static void SetResume()
+        {
+            CustomTime.GlobalTimeScale = 1f;
+        }
+    }
+
     // ========================= //
     public static class CommandGlobal
     {
@@ -547,7 +582,8 @@ namespace _Main.Scripts.MyCommands
                 "screen_cmd_help\n" +
                 "skin_cmd_help\n" +
                 "settings_cmd_help\n" +
-                "save_cmd_help\n"
+                "save_cmd_help\n" +
+                "time_cmd_help\n"
             );
         }
     }

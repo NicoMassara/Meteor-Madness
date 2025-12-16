@@ -9,25 +9,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
+  m_Script: {fileID: 11500000, guid: 390d43bde0527344bbf306bdc758784e, type: 3}
   m_Name: SO_SoundData_Countdown_Start
   m_EditorClassIdentifier: 
-  className: Countdown-Start
-  channel: 0
-  is3dSound: 0
-  clips:
-  - {fileID: 8300000, guid: a64b7a73b3cc4404eb6a77a39ddbccaf, type: 3}
-  sourceData:
+  soundName: 'Countdown - '
+  clipsData:
+    clips:
+    - {fileID: 8300000, guid: a64b7a73b3cc4404eb6a77a39ddbccaf, type: 3}
+    doesPlayMultipleInOrder: 1
+  channelSettings:
     mixerGroup: {fileID: 8348584646018634054, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    channel: 5
+  audioFlags:
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0
-    loop: 0
+  priorityData:
     priority: 128
-    volume: 1
-    pitch: 1.5
+  baseData:
     stereoPan: 0
-    spatialBlend: 0
     reverbZoneMix: 1
+  audioPlaybackData:
+    doesLoop: 0
+    intervalBetweenLoops: 1
+    volume: 1
+    pitch: 2.06
+    randomPitchRange: 0
+    fadeInDuration: 0.1
+    fadeOutDuration: 0.1
+  is3dSound: 0
+  spatialData:
+    spatialBlend: 1
+    rolloffMode: 0
+    rolloffCustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    minDistance: 1
+    maxDistance: 30
     dopplerLevel: 0
-  randomPitchRange: 0
+    spread: 0
+    spatialize: 0
+    doesMove: 0

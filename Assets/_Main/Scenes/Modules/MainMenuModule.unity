@@ -6570,7 +6570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 751fb6940d1c432b92691e4aa7a0eaba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 11400000, guid: e1ad69c12b88bcd4d8e10173a029e54f, type: 2}
+  music: {fileID: 11400000, guid: 1eb4031a99aab0f4092483b2f6d0d731, type: 2}
 --- !u!114 &1065275445
 MonoBehaviour:
   m_ObjectHideFlags: 0
