@@ -1,12 +1,10 @@
-﻿using System;
-using _Main.Scripts.CustomId;
-using _Main.Scripts.Interfaces.Sounds;
+﻿using _Main.Scripts.Interfaces.Sounds;
 using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds.Components
 {
-    public class ProjectileSounds : SoundBehaviour<IProjectileSounds>
+    public class AbilitySphereSounds : SoundBehaviour<IAbilitySphereSounds>
     {
         [SerializeField] private SoundSourceDataSo movement;
 
@@ -14,14 +12,13 @@ namespace _Main.Scripts.Sounds.Components
 
         private void Start()
         {
-            ComponentToSound.OnStart += () =>
+            ComponentToSound.OnStartSound += () =>
             {
                 _movementSoundId = PlaySound(movement);
             };
 
-            ComponentToSound.OnStop += () =>
+            ComponentToSound.OnStopSound += () =>
             {
-                DeathFromParent(_movementSoundId);
                 StopSound(_movementSoundId);
             };
         }

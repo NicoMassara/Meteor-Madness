@@ -9,25 +9,41 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
+  m_Script: {fileID: 11500000, guid: 390d43bde0527344bbf306bdc758784e, type: 3}
   m_Name: SO_SoundClass_Shield_Automatic
   m_EditorClassIdentifier: 
-  className: Shield-Automatic
-  channel: 0
-  is3dSound: 0
-  clips:
-  - {fileID: 8300000, guid: 8b3836daf909c78469aaf3d586e55619, type: 3}
-  sourceData:
+  soundName: Shield - Automatic
+  clipsData:
+    clips:
+    - {fileID: 8300000, guid: d5859bdbef2da08448756eb4391736ab, type: 3}
+    doesPlayMultipleInOrder: 1
+  channelSettings:
     mixerGroup: {fileID: -7029012848971564562, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    channel: 5
+  audioFlags:
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0
-    loop: 1
+  priorityData:
     priority: 128
-    volume: 0.958
-    pitch: 2
+  baseData:
     stereoPan: 0
-    spatialBlend: 0
-    reverbZoneMix: 0
+    reverbZoneMix: 1
+  audioPlaybackData:
+    doesLoop: 1
+    intervalBetweenLoops: 1
+    volume: 1
+    pitch: 2.36
+    randomPitchRange: 0.062
+    fadeInDuration: 0.01
+    fadeOutDuration: 0.01
+  is3dSound: 0
+  spatialData:
+    spatialBlend: 1
+    rolloffMode: 0
+    minDistance: 1
+    maxDistance: 30
     dopplerLevel: 0
-  randomPitchRange: 0.05
+    spread: 0
+    spatialize: 0
+    doesMove: 0

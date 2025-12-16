@@ -4,6 +4,9 @@
     {
         None,
         Music,
+        Collision,
+        Meteor,
+        Deflection,
         Sfx,
         UI
     }
@@ -14,7 +17,11 @@
         Master,
         Music,
         Sfx,
-        UI
+        UI,
+        Gameplay,
+        Meteor,
+        Shield,
+        Earth
     }
     
     public enum SoundState

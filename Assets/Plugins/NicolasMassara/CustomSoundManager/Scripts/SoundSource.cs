@@ -53,13 +53,6 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             _contextVolume = 1;
         }
 
-        private void Update()
-        {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            SetAudioSourceValues();
-#endif
-        }
-
         private void SetAudioSourceValues()
         {
             if (_audioSource == null) return;
@@ -96,6 +89,17 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             _doesMove = spatialData.DoesMove;
             _audioSource.spatialBlend = spatialData.SpatialBlend;
             _audioSource.rolloffMode = spatialData.RolloffMode;
+
+            if (spatialData.RolloffMode == AudioRolloffMode.Custom)
+            {
+                if (spatialData.RolloffCustomCurve is { length: > 0 })
+                {
+                    _audioSource.SetCustomCurve(
+                        AudioSourceCurveType.CustomRolloff, 
+                        spatialData.RolloffCustomCurve);
+                }
+            }
+
             _audioSource.minDistance = spatialData.MinDistance;
             _audioSource.maxDistance = spatialData.MaxDistance;
             _audioSource.dopplerLevel = spatialData.DopplerLevel;
@@ -211,12 +215,28 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         public float GetVolume() => Mathf.Clamp01(_fadeVolume * _userVolume * _contextVolume);
         public bool GetShouldFadeOut()
         {
+            if(_audioSource == null) return false;
+            if(_audioSource.clip == null) return false;
+            
             return _doesFadeOut && _audioSource.time > (GetAudioLenght() - _soundSourceData.PlaybackData.FadeOutDuration);
         }
 
-        public float GetPlayRatio() => Mathf.Clamp01(_audioSource.time / GetAudioLenght());
-        public float GetAudioLenght() => _audioSource.clip.length;
-        
+        public float GetPlayRatio()
+        {
+            if(_audioSource == null) return 1f;
+            if(_audioSource.clip == null) return 1f;
+            
+            return Mathf.Clamp01(_audioSource.time / GetAudioLenght());
+        }
+
+        public float GetAudioLenght()
+        {
+            if(_audioSource == null) return Mathf.Infinity;
+            if(_audioSource.clip == null) return Mathf.Infinity;
+            
+            return _audioSource.clip.length;
+        }
+
         #endregion
         
         public void SetVolume(float volume)
@@ -390,6 +410,17 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             _state = SoundState.Stopped;
             OnFinished?.Invoke(this);
             ReleaseFromPool();
+        }
+
+        public void DetachFromParent()
+        {
+            if(_doesMove == false) return;
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            SoundTools.DebugSound($"Sound {SourceName} has been detached from its parent!");
+#endif
+            
+            transform.SetParent(null);
         }
 
         #endregion

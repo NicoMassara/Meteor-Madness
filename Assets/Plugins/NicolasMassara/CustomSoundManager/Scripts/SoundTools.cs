@@ -10,7 +10,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         private const string SoundPrefabPath = "Sounds/SoundSourcePrefab";
         private const string AudioMixerPath = "Sounds/MainAudioMixer";
 
-        private const bool DoesDebug = false;
+        private const bool DoesDebug = true;
 
         public static void DebugSound(string debugString)
         {
@@ -63,6 +63,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
                 SoundChannel.Music => 2,
                 SoundChannel.Sfx => 5,
                 SoundChannel.UI => 3,
+                SoundChannel.Collision => 3,
+                SoundChannel.Meteor => 2,
+                SoundChannel.Deflection => 2,
                 _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
             };
         }
@@ -86,6 +89,10 @@ namespace Plugins.NicolasMassara.CustomSoundManager
     {
         private const string MixerVolumeParameterName = "MasterVolume";
         private const string MusicVolumeParameterName = "MusicVolume";
+        private const string GameplayVolumeParameterName = "GameplayVolume";
+        private const string MeteorVolumeParameterName = "MeteorVolume";
+        private const string ShieldVolumeParameterName = "ShieldVolume";
+        private const string EarthVolumeParameterName = "EarthVolume";
         private const string SfxVolumeParameterName = "SfxVolume";
         private const string UIVolumeParameterName = "UIVolume";
         
@@ -97,9 +104,17 @@ namespace Plugins.NicolasMassara.CustomSoundManager
                 MixerChannels.Music => MusicVolumeParameterName,
                 MixerChannels.Sfx => SfxVolumeParameterName,
                 MixerChannels.UI => UIVolumeParameterName,
+                MixerChannels.Gameplay => GameplayVolumeParameterName,
+                MixerChannels.Meteor => MeteorVolumeParameterName,
+                MixerChannels.Shield => ShieldVolumeParameterName,
+                MixerChannels.Earth => EarthVolumeParameterName,
                 _ => throw new ArgumentOutOfRangeException(nameof(mixerChannel), mixerChannel, null)
             };
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log($"Set {mixerChannel} Mixer Channel Volume: {volume}");
+#endif
+            
             SoundManager.SetMainVolume(channelName, volume);
         }
     }

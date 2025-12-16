@@ -9,25 +9,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
+  m_Script: {fileID: 11500000, guid: 390d43bde0527344bbf306bdc758784e, type: 3}
   m_Name: SO_SoundClass_Meteor_Movement
   m_EditorClassIdentifier: 
-  className: MeteorMovement
-  channel: 0
-  is3dSound: 1
-  clips:
-  - {fileID: 8300000, guid: d5859bdbef2da08448756eb4391736ab, type: 3}
-  sourceData:
+  soundName: Meteor - Movement
+  clipsData:
+    clips:
+    - {fileID: 8300000, guid: d5859bdbef2da08448756eb4391736ab, type: 3}
+    doesPlayMultipleInOrder: 1
+  channelSettings:
     mixerGroup: {fileID: -260289917397533630, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    channel: 3
+  audioFlags:
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0
-    loop: 1
+  priorityData:
     priority: 128
-    volume: 0.25
-    pitch: 1.25
+  baseData:
     stereoPan: 0
-    spatialBlend: 0.5
     reverbZoneMix: 1
-    dopplerLevel: 1
-  randomPitchRange: 0.15
+  audioPlaybackData:
+    doesLoop: 1
+    intervalBetweenLoops: 1
+    volume: 1
+    pitch: 0.27
+    randomPitchRange: 0
+    fadeInDuration: 0.1
+    fadeOutDuration: 0.1
+  is3dSound: 1
+  spatialData:
+    spatialBlend: 1
+    rolloffMode: 1
+    rolloffCustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    minDistance: 1
+    maxDistance: 45
+    dopplerLevel: 5
+    spread: 0
+    spatialize: 0
+    doesMove: 1

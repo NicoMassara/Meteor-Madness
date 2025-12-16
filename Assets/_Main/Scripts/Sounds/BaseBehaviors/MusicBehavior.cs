@@ -1,25 +1,25 @@
-﻿using _Main.Scripts.CustomId;
-using _Main.Scripts.Interfaces.Sounds;
-using UnityEngine;
+﻿using _Main.Scripts.Interfaces.Sounds;
+using Plugins.NicolasMassara.CustomSoundManager;
+
 
 namespace _Main.Scripts.Sounds
 {
     public class MusicBehavior<T> : SoundBehaviour<T>
         where T : ISoundComponent
     {
-        protected GeneratedId PlayMusic(SoundClassSo soundClass, GeneratedId musicId, bool isIsolated = false)
+        protected SoundManager.GeneratedId PlayMusic(ISoundSourceData soundClass, SoundManager.GeneratedId musicId, bool isIsolated = false)
         {
             if (IsIdValid(musicId))
             {
                 return musicId;
             }
             
-            return SoundManager.PlayMusic(soundClass,isIsolated,musicId);
+            return SoundManager.PlayMusic(soundClass,null,isIsolated,musicId);
         }
         
         protected void StopAllMusic()
         {
-            SoundManager.StopAllMusic();
+            SoundManager.StopMusic();
         }
     }
 }

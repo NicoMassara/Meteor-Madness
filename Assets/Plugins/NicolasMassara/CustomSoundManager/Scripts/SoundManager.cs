@@ -440,7 +440,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
                 
                 public SoundFactory(SoundSource prefab, int defaultSize = 15, int maxSize = 100)
                 {
-                    _pool = new GenericPool<IPoolableSound>(() => Instantiate(prefab), 
+                    _pool = new GenericPool<IPoolableSound>(() => UnityEngine.Object.Instantiate(prefab), 
                         defaultSize, maxSize)
                     {
                         PoolName = "Sound Pool"
@@ -646,7 +646,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
 
         private void Awake()
         {
-            Initialize();
+            SoundEvents.OnInitializeSoundManager += Initialize;
         }
 
         private void Initialize()
@@ -657,6 +657,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             _uiDefaultSounds = new UIDefaultSounds();
             _mixer = SoundTools.GetAudioMixer();
             //
+            SoundEvents.SoundManagerInitialized();
             _hasInitialized = true;
         }
 
@@ -676,8 +677,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             => Instance.Internal_PlayUISound(uiSoundType, isIsolated);
         public static GeneratedId PlaySound(ISoundSourceData soundData, Transform parent = null, bool isIsolated = false) 
             => Instance.Internal_PlaySound(soundData, parent, isIsolated); 
-        public static GeneratedId PlayMusic(ISoundSourceData soundData, Transform parent = null, bool pauseCurrent = false)
-            => Instance.Internal_PlayMusic(soundData, parent, pauseCurrent); 
+        public static GeneratedId PlayMusic(ISoundSourceData soundData, Transform parent = null, bool pauseCurrent = false, 
+            GeneratedId soundId = null)
+            => Instance.Internal_PlayMusic(soundData, parent, pauseCurrent, soundId); 
         public static void StopSound(GeneratedId soundId) 
             => Instance.Internal_StopSound(soundId);
         public static void PauseSound(GeneratedId soundId)  
@@ -696,6 +698,11 @@ namespace Plugins.NicolasMassara.CustomSoundManager
 
         public static void ClearAllSounds() 
             => Instance.Internal_ClearAllSounds();
+        
+        public static void StopMusic() 
+            => Instance.Internal_StopMusic();
+        public static void DetachSoundFromParent(GeneratedId soundId)
+            => Instance.Internal_DetachSoundFromParent(soundId);
 
         #endregion
 
@@ -710,19 +717,29 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         {
             if (soundData == null)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
                 SoundTools.DebugSound("Sound data is null");
+
+#endif
                 return null;
             }
             
             if (_audioTracker.GetIsChannelFull(soundData.ChannelData.Channel))
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
                 SoundTools.DebugSound($"{soundData.ChannelData.Channel} channel is full, sound wont be played");
+
+#endif
                 return null;
             }
             
             var soundClass = _soundGenerator.GetSound(soundData, parent);
             
             _audioTracker.RegisterSound(soundClass.Source, isIsolated);
+            
+
             
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -733,7 +750,8 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             return soundClass.Id;
         }
 
-        private GeneratedId Internal_PlayMusic(ISoundSourceData soundData, Transform parent = null, bool pauseCurrent = false, GeneratedId soundId = null)
+        private GeneratedId Internal_PlayMusic(ISoundSourceData soundData, Transform parent = null, bool pauseCurrent = false, 
+            GeneratedId soundId = null)
         {
             if (soundId != null && soundId.IsActive)
             {
@@ -784,7 +802,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         {
             if(IsSoundValid(soundId, out var soundSource) == false)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 SoundTools.DebugSound("Sound is not valid, Id is null, is not active or SoundGenerator does not has it");
+#endif
                 return;
             }
             
@@ -815,7 +835,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         {
             if(IsSoundValid(soundId, out var soundSource) == false)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 SoundTools.DebugSound("Sound is not valid, Id is null, is not active or SoundGenerator does not has it");
+#endif
                 return;
             }
             
@@ -837,7 +859,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         {
             if(IsSoundValid(soundId, out var soundSource) == false)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 SoundTools.DebugSound("Sound is not valid, Id is null, is not active or SoundGenerator does not has it");
+#endif
                 return;
             }
             
@@ -866,7 +890,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             
             if(IsSoundValid(soundId, out var soundSource) == false)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 SoundTools.DebugSound("Sound is not valid, Id is null, is not active or SoundGenerator does not has it");
+#endif
                 return;
             }
             
@@ -889,7 +915,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         {
             if(IsSoundValid(soundId, out var soundSource) == false)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 SoundTools.DebugSound("Sound is not valid, Id is null, is not active or SoundGenerator does not has it");
+#endif
                 return;
             }
             
@@ -909,7 +937,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
 
         private void Internal_SetMainVolume(string paramName, float volume)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             SoundTools.DebugSound($"Volume set to {volume} in {paramName}");
+#endif
             _mixerVolume = SoundTools.GetDbFrom01Value(volume);
             GetAudioMixer().SetFloat(paramName, _mixerVolume);
         }
@@ -918,7 +948,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         {
             if(IsSoundValid(soundId, out var soundSource) == false)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 SoundTools.DebugSound("Sound is not valid, Id is null, is not active or SoundGenerator does not has it");
+#endif
                 return;
             }
             
@@ -938,7 +970,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         {
             if(IsSoundValid(soundId, out var soundSource) == false)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 SoundTools.DebugSound("Sound is not valid, Id is null, is not active or SoundGenerator does not has it");
+#endif
                 return;
             }
             
@@ -954,7 +988,42 @@ namespace Plugins.NicolasMassara.CustomSoundManager
 #endif
         }
 
+        private void Internal_StopMusic()
+        {
+            if (_musicController.HasMusicPlaying())
+            {
+                StopSound(_musicController.PlayingSoundId);
+                _musicController.ClearPlayingMusic();
+            }
+            if (_musicController.HasBackgroundMusicPlaying())
+            {
+                StopSound(_musicController.BackgroundSoundId);
+                _musicController.ClearBackgroundMusic();
+            }
+            if (_musicController.HasMusicPaused())
+            {
+                StopSound(_musicController.PausedSoundId);
+                _musicController.ClearPausedMusic();
+            }
+        }
+
+        private void Internal_DetachSoundFromParent(GeneratedId soundId)
+        {
+            if(IsSoundValid(soundId, out var soundSource) == false)
+            {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                SoundTools.DebugSound("Sound is not valid, Id is null, is not active or SoundGenerator does not has it");
+#endif
+                return;
+            }
+            
+            soundSource.DetachFromParent();
+            
+        }
+
         #endregion
+
+        #region Private Methods
         
         private void ClearOrPauseMusic(bool pauseCurrent)
         {
@@ -988,5 +1057,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             soundSource = _soundGenerator.GetSoundById(soundId);
             return true;
         }
+        
+        #endregion
     }
 }

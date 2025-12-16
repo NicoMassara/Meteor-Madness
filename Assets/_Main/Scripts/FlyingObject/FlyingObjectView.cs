@@ -117,7 +117,7 @@ namespace _Main.Scripts.FlyingObject
             switch (message)
             {
                 case FlyingObjectObserverMessage.SetValues:
-                    HandleSetValues((float)args[0], (Quaternion)args[1], (Vector2)args[2],(bool)args[3]);
+                    HandleSetValues((float)args[0], (Quaternion)args[1], (Vector2)args[2], (float)args[3],(Vector2)args[4],(bool)args[5]);
                     break;
                 case FlyingObjectObserverMessage.HandleCollision:
                     HandleCollision((bool)args[0], (Vector2)args[1], (Vector2)args[2],(bool)args[3]);
@@ -149,11 +149,12 @@ namespace _Main.Scripts.FlyingObject
             }
         }
 
-        private void HandleSetValues(float movementSpeed, Quaternion rotation, Vector2 position, bool canMove)
+        private void HandleSetValues(float movementSpeed, Quaternion rotation, Vector2 position, float depth, Vector2 scale,bool canMove)
         {
             Movement.MovementSpeed = movementSpeed;
             _rigidbody2D.transform.rotation = rotation;
-            _rigidbody2D.transform.position = position;
+            _rigidbody2D.transform.position = new Vector3(position.x,position.y, depth);
+            transform.localScale = scale; 
             Movement.CanMove = canMove;
         }
         

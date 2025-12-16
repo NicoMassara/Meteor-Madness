@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 390d43bde0527344bbf306bdc758784e, type: 3}
-  m_Name: SoundClass_Music_Death
+  m_Script: {fileID: 11500000, guid: 9e10b32daf7f48749b83238934b33944, type: 3}
+  m_Name: So_UiSoundSourceData_Back
   m_EditorClassIdentifier: 
-  soundName: Death Theme
+  soundName: UI-Back
   clipsData:
     clips:
-    - {fileID: 8300000, guid: 0ad9c31e27ec98246a3654a8b6048c37, type: 3}
-    doesPlayMultipleInOrder: 1
+    - {fileID: 8300000, guid: a64b7a73b3cc4404eb6a77a39ddbccaf, type: 3}
+    doesPlayMultipleInOrder: 0
   channelSettings:
-    mixerGroup: {fileID: 3634656711945720681, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
-    channel: 1
+    mixerGroup: {fileID: 6739041549257455507, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    channel: 6
   audioFlags:
     ignoreEffects: 0
     ignoreListenerEffects: 0
@@ -33,23 +33,18 @@ MonoBehaviour:
     doesLoop: 0
     intervalBetweenLoops: 1
     volume: 1
-    pitch: 1
+    pitch: -1.97
     randomPitchRange: 0
-    fadeInDuration: 1
-    fadeOutDuration: 1
+    fadeInDuration: 0.01
+    fadeOutDuration: 0.01
   is3dSound: 0
   spatialData:
     spatialBlend: 1
     rolloffMode: 0
-    rolloffCustomCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
     minDistance: 1
     maxDistance: 30
     dopplerLevel: 0
     spread: 0
     spatialize: 0
     doesMove: 0
+  uiSoundType: 2

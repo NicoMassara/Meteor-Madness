@@ -41,6 +41,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         public bool DoesMove { get; }
         public float SpatialBlend { get; }
         public AudioRolloffMode RolloffMode { get; }
+        public AnimationCurve RolloffCustomCurve { get; }
         public float MinDistance { get; }
         public float MaxDistance { get; }
         public float DopplerLevel { get; }
@@ -110,6 +111,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         public void SetAsBackground(float volumeTarget);
         public void SetAsForeground();
         public void FinishSound();
+        public void DetachFromParent();
     }
     
     #endregion

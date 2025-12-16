@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3055999195158413450}
   - component: {fileID: 1287793095020235778}
   m_Layer: 0
-  m_Name: SoundBehaviour
+  m_Name: SoundSourcePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

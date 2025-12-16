@@ -18,7 +18,9 @@ namespace _Main.Scripts.Comet
         [SerializeField] private float spawnOffset;
         [Header("Components")]
         [SerializeField] private Camera playerCamera;
-        
+
+        // Min - 10, Max 100
+        private const float SpawnDistance = 15;
         private GenericPool<CometView> _pool;
         private bool _isBottomSpawn;
         private TimerManager.GeneratedId _spawnTimerId;
@@ -83,11 +85,14 @@ namespace _Main.Scripts.Comet
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
             var tempComet = _pool.Get();
+            var scale = Vector2.one * Random.Range(0.45f, 1);
             tempComet.SetValues(new FlyingObjectValues
             {
                 MovementSpeed = movementSpeed,
                 Rotation = tempRot,
                 Position = spawnPosition,
+                Depth = SpawnDistance,
+                Scale = scale,
                 Direction = direction,
             });
             tempComet.OnRecycle += Comet_OnRecycleHandler;

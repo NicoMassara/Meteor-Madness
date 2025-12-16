@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -111,7 +112,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             [Header("Spatial")]
             [SerializeField, Range(0f, 1f)] private float spatialBlend = 1f;
 
+            [Header("Rolloff Curve")]
             [SerializeField] private AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic;
+            [SerializeField] private AnimationCurve rolloffCustomCurve;
 
             [Header("Distance")]
             [SerializeField, Min(0f)] private float minDistance = 1f;
@@ -129,6 +132,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
 
             public float SpatialBlend => spatialBlend;
             public AudioRolloffMode RolloffMode => rolloffMode;
+            public AnimationCurve RolloffCustomCurve => rolloffCustomCurve;
             public float MinDistance => minDistance;
             public float MaxDistance => maxDistance;
             public float DopplerLevel => dopplerLevel;
@@ -154,8 +158,8 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             [SerializeField] private float randomPitchRange;
             [Space()]
             [Header("Fade")]
-            [SerializeField] private float fadeInDuration = 1f;
-            [SerializeField] private float fadeOutDuration = 1f;
+            [SerializeField] private float fadeInDuration = 0f;
+            [SerializeField] private float fadeOutDuration = 0f;
 
             public bool DoesLoop => doesLoop;
             public float IntervalBetweenLoops => intervalBetweenLoops;
@@ -171,9 +175,8 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             public float FadeOutDuration => fadeOutDuration;
         }
         
-
         #endregion
-
+        
         #region Public Serializers
         
         [Header("Name")]
@@ -200,7 +203,6 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         [Header("Spatial Settings")]
         [SerializeField] private bool is3dSound;
         [SerializeField] private SpatialAudioSourceData spatialData;
-
         
         #endregion
 
@@ -223,6 +225,5 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         {
             channelSettings.ForceChannel(channel);
         }
-
     }
 }

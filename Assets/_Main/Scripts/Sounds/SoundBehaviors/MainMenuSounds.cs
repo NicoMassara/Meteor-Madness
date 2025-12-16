@@ -1,16 +1,13 @@
-﻿using System;
-using _Main.Scripts.CustomId;
-using _Main.Scripts.Interfaces.Sounds;
-using _Main.Scripts.MainMenu.MVC;
-using _Main.Scripts.Sounds;
+﻿using _Main.Scripts.Interfaces.Sounds;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds.Components
 {
     public class MainMenuSounds : MusicBehavior<IMainMenuSounds>
     {
-        [SerializeField] private SoundClassSo music;
-        private GeneratedId _musicId;
+        [SerializeField] private SoundSourceDataSo music;
+        private SoundManager.GeneratedId _musicId;
         
         private void Start()
         {

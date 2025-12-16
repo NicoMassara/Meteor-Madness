@@ -20,12 +20,6 @@ namespace _Main.Scripts.Abilities
 
         }
         
-        [Header("Sound Data")]
-        [SerializeField] private SoundClassSo abilityAdd;
-        [SerializeField] private SoundClassSo abilityTrigger;
-        [SerializeField] private SoundClassSo slowTime;
-        [SerializeField] private SoundClassSo speedTime;
-        
         private TimerManager.GeneratedId _finishAbilityTimerId;
         private ActionManager.GeneratedId _actionId;
         

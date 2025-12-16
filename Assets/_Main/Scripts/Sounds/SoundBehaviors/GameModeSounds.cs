@@ -1,6 +1,6 @@
 ﻿using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces.Sounds;
-using NicolasMassara.CustomTimerManager;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds.Components
@@ -8,13 +8,13 @@ namespace _Main.Scripts.Sounds.Components
     public class GameModeSounds : MusicBehavior<IGameModeSounds>
     {
         [Header("Music")]
-        [SerializeField] private SoundClassSo gameMusicData;
+        [SerializeField] private SoundSourceDataSo gameMusicData;
         [Space]
         [Header("Countdown")]
-        [SerializeField] private SoundClassSo countdownSound;
-        [SerializeField] private SoundClassSo countdownFinish;
+        [SerializeField] private SoundSourceDataSo countdownSound;
+        [SerializeField] private SoundSourceDataSo countdownFinish;
         
-        private GeneratedId _gameMusicId;
+        private SoundManager.GeneratedId _gameMusicId;
         
         private void Start()
         {
@@ -28,7 +28,7 @@ namespace _Main.Scripts.Sounds.Components
             ComponentToSound.OnPlayMusic += () =>
             {
                 // Adds a delay
-                _gameMusicId = PlayMusic(gameMusicData, _gameMusicId);
+                _gameMusicId = PlayMusic(gameMusicData, _gameMusicId, false);
             };
             
             ComponentToSound.OnStopMusic += () =>

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 390d43bde0527344bbf306bdc758784e, type: 3}
-  m_Name: SoundClass_Music_Death
+  m_Name: SoundClass_Music_Gameplay
   m_EditorClassIdentifier: 
-  soundName: Death Theme
+  soundName: Gameplay Theme
   clipsData:
     clips:
-    - {fileID: 8300000, guid: 0ad9c31e27ec98246a3654a8b6048c37, type: 3}
+    - {fileID: 8300000, guid: 1d1c6669b660cda4c9950ad6c7740ece, type: 3}
     doesPlayMultipleInOrder: 1
   channelSettings:
     mixerGroup: {fileID: 3634656711945720681, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
@@ -33,7 +33,7 @@ MonoBehaviour:
     doesLoop: 0
     intervalBetweenLoops: 1
     volume: 1
-    pitch: 1
+    pitch: 1.56
     randomPitchRange: 0
     fadeInDuration: 1
     fadeOutDuration: 1
