@@ -35,12 +35,18 @@ MonoBehaviour:
     volume: 1
     pitch: 2.06
     randomPitchRange: 0
-    fadeInDuration: 0.01
-    fadeOutDuration: 0.01
+    fadeInDuration: 0.1
+    fadeOutDuration: 0.1
   is3dSound: 0
   spatialData:
     spatialBlend: 1
     rolloffMode: 0
+    rolloffCustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     minDistance: 1
     maxDistance: 30
     dopplerLevel: 0

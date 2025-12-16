@@ -21,6 +21,14 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             private Dictionary<SoundChannel, int> _activeByChannel = new();
             public event Action<SoundChannel, int> OnChannelUpdated;
 
+            public AudioTracker()
+            {
+                for (int i = 1; i < (int)SoundChannel.UI+1; i++)
+                {
+                    _activeByChannel.Add((SoundChannel)i,0);
+                }
+            }
+
             public void Execute()
             {
                 ApplyPending();
@@ -37,7 +45,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
                         {
                             item.FinishLoop();
                         }
-                        else if (item.GetPlayRatio() >= 0.9999999f)
+                        else if (item.GetPlayRatio() >= 0.99f)
                         {
                             item.FinishLoop();
                         }
@@ -48,7 +56,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
                         {
                             item.Stop();
                         }
-                        else if (item.GetPlayRatio() >= 0.9999999f)
+                        else if (item.GetPlayRatio() >= 0.99f)
                         {
                             item.Stop();
                         }
@@ -140,7 +148,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
 
             #region Private API
 
-            private bool TryAddToChannel(SoundChannel channel)
+            private bool TryAddToChannel(SoundChannel channel, string itemSourceName)
             {
                 _activeByChannel ??= new Dictionary<SoundChannel, int>();
 
@@ -151,18 +159,18 @@ namespace Plugins.NicolasMassara.CustomSoundManager
                 
                 if (channelAmount >= SoundTools.GetSoundChannelLimit(channel))
                 {
-                    SoundTools.DebugSound($"{channel} Channel limit reached!");
+                    SoundTools.DebugSound($"{channel} Channel limit reached! Sound {itemSourceName} could not be added to channel!");
                     return false;
                 }
                 else
                 {
                     _activeByChannel[channel]++;
-                    SoundTools.DebugSound($"Sound Added to {channel} Channel");
+                    SoundTools.DebugSound($"Sound {itemSourceName}, Added to {channel} Channel");
                     OnChannelUpdated?.Invoke(channel, _activeByChannel[channel]);
                     return true;
                 }
             }
-            private void RemoveFromChannel(SoundChannel channel)
+            private void RemoveFromChannel(SoundChannel channel, string itemSourceName)
             {
                 _activeByChannel ??= new Dictionary<SoundChannel, int>();
 
@@ -174,7 +182,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
 
                 _activeByChannel[channel]--;
                     
-                SoundTools.DebugSound($"Sound Removed from {channel} Channel");
+                SoundTools.DebugSound($"Sound {itemSourceName} Removed from {channel} Channel");
                     
                 OnChannelUpdated?.Invoke(channel, _activeByChannel[channel]);
             }
@@ -190,7 +198,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
                             continue;
                         }
 
-                        if(TryAddToChannel(item.Channel) == false)
+                        if(TryAddToChannel(item.Channel,item.SourceName) == false)
                             continue;
                         
                         _playing.Add(item);
@@ -211,7 +219,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
                         if(item.DoesLoop)
                             item.OnLoopFinished -= Sound_OnLoopFinishedHandler;
                         item.OnStopped -= SoundSource_OnStoppedHandler;
-                        RemoveFromChannel(item.Channel);
+                        RemoveFromChannel(item.Channel, item.SourceName);
                         item.FinishSound();
                         _playing.Remove(item);
                     }
@@ -239,6 +247,50 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             #endregion
 
             #endregion
+            
+            private Rect _windowRect = new Rect(10, 10, 320, 420);
+            private GUIStyle _titleStyle;
+            private GUIStyle _labelStyle;
+            
+            public void ShowGUI()
+            {
+                InitStyles();
+                _windowRect = GUI.Window(1, _windowRect, DrawWindow, "Audio Debug");
+            }
+
+            private void DrawWindow(int id)
+            {
+                GUILayout.Space(6);
+
+                GUILayout.Label("Active Sounds by Channel", _titleStyle);
+                GUILayout.Space(10);
+
+                foreach (var kvp in _activeByChannel)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(kvp.Key.ToString(), _labelStyle, GUILayout.Width(180));
+                    GUILayout.Label(kvp.Value.ToString(), _labelStyle, GUILayout.Width(60));
+                    GUILayout.EndHorizontal();
+                }
+
+                GUI.DragWindow();
+            }
+
+            private void InitStyles()
+            {
+                if (_titleStyle != null) return;
+
+                _titleStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontStyle = FontStyle.Bold,
+                    fontSize = 18
+                };
+
+                _labelStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = 16
+                };
+            }
             
         }
         private class MusicController
@@ -1018,7 +1070,6 @@ namespace Plugins.NicolasMassara.CustomSoundManager
             }
             
             soundSource.DetachFromParent();
-            
         }
 
         #endregion
@@ -1059,5 +1110,18 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         }
         
         #endregion
+        
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+        private void OnGUI()
+        {
+            if(_hasInitialized == false) return;
+            
+            _audioTracker.ShowGUI();
+        }
+
+#endif
+        
     }
 }

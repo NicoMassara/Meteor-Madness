@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundName: Ability - Denied
   clipsData:
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 084b6ab717b1cef41a183fa3f1993f1c, type: 3}
     doesPlayMultipleInOrder: 1
   channelSettings:
     mixerGroup: {fileID: 2098195027529867182, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
@@ -34,12 +35,18 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     randomPitchRange: 0.092
-    fadeInDuration: 0.01
-    fadeOutDuration: 0.01
+    fadeInDuration: 0.1
+    fadeOutDuration: 0.1
   is3dSound: 0
   spatialData:
     spatialBlend: 1
     rolloffMode: 0
+    rolloffCustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     minDistance: 1
     maxDistance: 30
     dopplerLevel: 0
