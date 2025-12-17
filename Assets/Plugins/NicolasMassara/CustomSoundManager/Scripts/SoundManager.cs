@@ -1117,8 +1117,10 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         private void OnGUI()
         {
             if(_hasInitialized == false) return;
-            
-            _audioTracker.ShowGUI();
+            if (SoundTools.GetDoesDebug())
+            {
+                _audioTracker.ShowGUI();
+            }
         }
 
 #endif

@@ -328,6 +328,9 @@ namespace _Main.Scripts.Save
         {
             public override SaveDataType Type => SaveDataType.Stats;
             public bool HasPlayed;
+            public bool HasCompletedTutorial;
+            public bool HasOpenedCosmetics;
+            public bool HasOpenedLore;
             public uint DeflectAmount;
             public uint CollisionAmount;
             public uint AbilityUseAmount;

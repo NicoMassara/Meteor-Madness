@@ -60,7 +60,7 @@ namespace _Main.Scripts.Cosmetics.MVC
             _ui.OnMainMenuButtonPressed += () => { _controller.TriggerMainMenu();};
             _ui.OnSkinSelected += (value) =>
             {
-                _motor.SelectAbility(value);
+                _controller.SkinSelected(value);
             };
             //
             _animation.OnPanelOpened += () => AdsEvents.Banner_TriggerShow();

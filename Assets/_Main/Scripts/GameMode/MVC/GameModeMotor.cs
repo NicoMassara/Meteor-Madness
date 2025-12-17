@@ -45,18 +45,29 @@ namespace _Main.Scripts.GameMode
 
         public void StartDisable()
         {
-            RestartValues();
             NotifyAll(GameModeObserverMessage.StartDisable);
         }
         
         public void ExecuteDisable()
         {
+            if (_isPaused)
+            {
+                NotifyAll(GameModeObserverMessage.GameInterrupted);
+            }
+
             NotifyAll(GameModeObserverMessage.ExecuteDisable);
+            RestartValues();
         }
 
         public void TriggerEarthDestruction()
         {
             NotifyAll(GameModeObserverMessage.TriggerEarthDestruction);
+        }
+        
+        public void StartFinish()
+        {
+            NotifyAll(GameModeObserverMessage.StartFinish);
+            NotifyAll(GameModeObserverMessage.SaveStats, _collisionId,_abilityUseId,_deflectId);
         }
 
         #endregion
@@ -90,6 +101,11 @@ namespace _Main.Scripts.GameMode
         public void TriggerPause()
         {
             NotifyAll(GameModeObserverMessage.PauseGameModeScreen);
+        }
+        
+        public void TriggerPauseMenu()
+        {
+            NotifyAll(GameModeObserverMessage.OpenPauseMenu);
         }
 
         #endregion
@@ -331,15 +347,10 @@ namespace _Main.Scripts.GameMode
         
         #endregion
 
-        public void StartFinish()
+        
+        public void NotifyAbilityActive(AbilityType abilityType)
         {
-            NotifyAll(GameModeObserverMessage.StartFinish);
-            NotifyAll(GameModeObserverMessage.SaveStats, _collisionId,_abilityUseId,_deflectId);
-        }
-
-        public void TriggerPauseMenu()
-        {
-            NotifyAll(GameModeObserverMessage.OpenPauseMenu);
+            NotifyAll(GameModeObserverMessage.AbilityActive, abilityType);
         }
     }
 }

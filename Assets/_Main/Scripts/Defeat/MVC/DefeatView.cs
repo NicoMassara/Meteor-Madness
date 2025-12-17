@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.CustomId;
 using _Main.Scripts.GlobalEvents;
+using _Main.Scripts.Interfaces.Analytics;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using UnityEngine;
@@ -8,7 +9,8 @@ using UnityEngine;
 namespace _Main.Scripts.Defeat
 {
     public class DefeatView : MonoBehaviour, IObserver,
-        DefeatView.IDefeatView
+        DefeatView.IDefeatView,
+        IDefeatAnalytics
     {
         public interface IDefeatView
         {
@@ -22,6 +24,12 @@ namespace _Main.Scripts.Defeat
         public event Action<GeneratedId, GeneratedId, bool> OnDataLoaded;
         public event Action OnDataInitialized;
         public event Action OnGameSaved;
+
+        #endregion
+
+        #region IDefeatAnalytics
+        public event Action OnRestart;
+        public event Action OnMainMenu;
 
         #endregion
 
@@ -54,8 +62,32 @@ namespace _Main.Scripts.Defeat
                 case DefeatObserverMessage.SendAds:
                     HandleSendAds();
                     break;
+                
+                //=== Screens ===//
+                case DefeatObserverMessage.RestartGame:
+                    HandleRestartGame();
+                    break;
+                case DefeatObserverMessage.LoadMainMenu:
+                    HandleLoadMainMenu();
+                    break;
             }
         }
+
+        #region Screens
+        
+        private void HandleLoadMainMenu()
+        {
+            OnMainMenu?.Invoke();
+            GameManager.Instance.LoadMainMenu();
+        }
+
+        private void HandleRestartGame()
+        {
+            OnRestart?.Invoke();
+            GameManager.Instance.LoadGameMode();
+        }
+        
+        #endregion
 
         #region Ads
         

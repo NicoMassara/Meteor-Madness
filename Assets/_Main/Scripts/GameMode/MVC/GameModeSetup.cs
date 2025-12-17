@@ -88,7 +88,7 @@ namespace _Main.Scripts.GameMode
                 EarthEventSubscriber.Restart(EventBus_Earth_Restart_Started);
                 EarthEventSubscriber.RestartFinished(EventBus_Earth_Restart_Finished);
             };
-            _view.OnUnPaused += () =>
+            _view.OnResume += () =>
             {
                 EarthEventUnSubscriber.RestartFinished(EventBus_Earth_Restart_Finished);
                 EarthEventUnSubscriber.Restart(EventBus_Earth_Restart_Started);
@@ -118,7 +118,11 @@ namespace _Main.Scripts.GameMode
             CameraEventSubscriber.ZoomOut(EventBus_Camera_ZoomOut);
             //
             GameModeEventSubscriber.SetEnablePause(EventBus_GameMode_SetEnablePause);
+            //
+            AbilitiesEventSubscriber.NotifyIsActive(EventBus_Abilities_IsActive);
         }
+
+
 
         private void UnsubscribeToEventBus()
         {
@@ -133,6 +137,8 @@ namespace _Main.Scripts.GameMode
             CameraEventUnSubscriber.ZoomOut(EventBus_Camera_ZoomOut);
             //
             GameModeEventUnSubscriber.SetEnablePause(EventBus_GameMode_SetEnablePause);
+            //
+            AbilitiesEventUnSubscriber.NotifyIsActive(EventBus_Abilities_IsActive);
         }
         
         #region GameScreen
@@ -251,6 +257,18 @@ namespace _Main.Scripts.GameMode
             else
             {
                 _controller.DisablePause();
+            }
+        }
+
+        #endregion
+
+        #region Abilities
+
+        private void EventBus_Abilities_IsActive(AbilitiesEvents.NotifyIsActive input)
+        {
+            if (input.IsActive)
+            {
+                _controller.NotifyAbilityActive(input.AbilityType);
             }
         }
 

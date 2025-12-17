@@ -10,6 +10,8 @@ namespace _Main.Scripts
             public const int MaxAbilityCount = 3;
             public const SystemLanguage DefaultLanguage = SystemLanguage.English;
             public const bool AdsEnable = true;
+            public const bool AnalyticsDebugEnable = true;
+            public const bool DoesSendAnalytics = false;
             public const bool AlwaysFirstGame = true;
             public const bool DoesSaveProgress = false;
             public const bool DoesSaveSettings = false;

@@ -81,8 +81,8 @@ namespace _Main.Scripts.Defeat
             _view.OnDataInitialized += _controller.SetDataIsLoaded;
             _view.OnGameSaved += _controller.SendButtons;
             //
-            _ui.OnRestartButtonPressed += GameManager.Instance.LoadGameMode;
-            _ui.OnMainMenuButtonPressed += GameManager.Instance.LoadMainMenu;
+            _ui.OnRestartButtonPressed += _controller.RestartGame;
+            _ui.OnMainMenuButtonPressed += _controller.LoadMainMenu;
             //
             _animation.OnPanelOpened += _controller.SendScore;
             _animation.OnPanelClosed += () =>
