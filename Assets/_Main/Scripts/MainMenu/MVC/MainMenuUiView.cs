@@ -31,6 +31,7 @@ namespace _Main.Scripts.MainMenu.MVC
         public event Action OnOptionsOpen;
         public event Action OnLoreOpen;
         public event Action OnBackToMenu;
+        public event Action OnStatsOpen;
         public event Action OnExit;
 
         private void Start()
@@ -108,6 +109,11 @@ namespace _Main.Scripts.MainMenu.MVC
             GetUiComponents().FirstGame_Close.onClick.AddListener(() =>
             {
                 OnBackToMenu?.Invoke();
+            });
+            
+            GetUiComponents().StatsButton.onClick.AddListener(() =>
+            {
+                OnStatsOpen?.Invoke();
             });
             
             #endregion

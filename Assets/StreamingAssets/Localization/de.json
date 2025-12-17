@@ -40,8 +40,8 @@
       "Text" : "Entwickelt von"
     },
     "FirstPlay": {
-      "Title" : "Atention!",
-      "Text" : "This is your first time playing Meteor Madness\nAre you sure you want to play right away? \nYou might want  to check the tutorial first!"
+      "Title" : "Attention!",
+      "Text" : "@Texts/de/firstPlay.txt"
     }
   },
 
@@ -69,7 +69,11 @@
   },
 
   "Cosmetic": {
-    "Title": "Demnächst Verfügbar!"
+    "Title" : "Skin Selector",
+    "SkinType" : {
+      "Default" : "Default",
+      "Pizza" : "Pizza"
+    }
   },
 
   "Pause": {
@@ -86,5 +90,12 @@
       "Title": "Die Menschheit ist verloren!",
       "Score": "Dein Punktestand"
     }
+  },
+
+  "Stats" : {
+    "Title" : "Stats",
+    "Deflect" : "Deflected Meteors",
+    "Collision" : "Meteors Collisions",
+    "AbilityCount" : "Ability Used"
   }
 }

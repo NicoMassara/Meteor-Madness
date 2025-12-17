@@ -47,50 +47,16 @@ namespace _Main.Scripts.Managers
 
         #region Screen Loading
 
-        public void LoadTutorial()
-        {
-            LoadGameScreen(ScreenType.Tutorial);
-        }
-
-        public void LoadGameMode()
-        {
-            LoadGameScreen(ScreenType.GameMode);
-        }
-
-        public void LoadMainMenu()
-        {
-            LoadGameScreen(ScreenType.MainMenu);
-        }
-        
-        public void LoadCosmeticMenu()
-        {
-            LoadGameScreen(ScreenType.Cosmetic);
-        }
-        
-        public void LoadOptionsMenu()
-        {
-            LoadGameScreen(ScreenType.OptionsMenu);
-        }
-        
-        public void LoadDefeatScreen()
-        {
-            LoadGameScreen(ScreenType.Defeat);
-        }
-        
-        public void LoadPauseScreen()
-        {
-            LoadGameScreen(ScreenType.Pause);
-        }
-
-        public void LoadLastScreen()
-        {
-            GameScreenEventCaller.LoadLastScreen();
-        }
-
-        private void LoadGameScreen(ScreenType type)
-        {
-            GameScreenEventCaller.EnableScreen(type, EventRequestType.Requested);
-        }
+        public void LoadTutorial() => LoadGameScreen(ScreenType.Tutorial);
+        public void LoadGameMode() => LoadGameScreen(ScreenType.GameMode);
+        public void LoadMainMenu() => LoadGameScreen(ScreenType.MainMenu);
+        public void LoadStatsScreen() => LoadGameScreen(ScreenType.Stats);
+        public void LoadCosmeticMenu() => LoadGameScreen(ScreenType.Cosmetic);
+        public void LoadOptionsMenu() => LoadGameScreen(ScreenType.OptionsMenu);
+        public void LoadDefeatScreen() => LoadGameScreen(ScreenType.Defeat);
+        public void LoadPauseScreen() => LoadGameScreen(ScreenType.Pause);
+        public void LoadLastScreen() => GameScreenEventCaller.LoadLastScreen();
+        private void LoadGameScreen(ScreenType type) => GameScreenEventCaller.EnableScreen(type, EventRequestType.Requested);
 
         #endregion
 
@@ -305,6 +271,31 @@ namespace _Main.Scripts.Managers
                 return true;
             
             saveData.HasOpenedLore = true;
+            
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (GameParameters.GameplayValues.DoesSaveProgress)
+            {
+                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+            }
+#else
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+            
+            return false;
+        }
+        
+        public bool GetHasOpenedStats()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+            var value = saveData.HasOpenedStats;
+            
+            if(value)
+                return true;
+            
+            saveData.HasOpenedStats = true;
             
 #pragma warning disable CS0162 // Unreachable code detected
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

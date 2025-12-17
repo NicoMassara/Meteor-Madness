@@ -32,11 +32,17 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.Disable:
                     HandleDisable();
                     break;
-                case MainMenuObserverMessage.TriggerGameMode:
-                    HandleGameMode();
-                    break;
                 case MainMenuObserverMessage.Quit:
                     HandleQuit();
+                    break;
+
+                
+                // === Screens === // 
+                case MainMenuObserverMessage.LoreMenu:
+                    HandleLoreMenu();
+                    break;
+                case MainMenuObserverMessage.LoreClosed:
+                    HandleLoreClosed();
                     break;
                 case MainMenuObserverMessage.TriggerTutorial:
                     HandleTutorial();
@@ -50,20 +56,22 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.MainPanelOpened:
                     HandleMainPanelOpened();
                     break;
-                
-                // === Screens === // 
-                case MainMenuObserverMessage.LoreMenu:
-                    HandleLoreMenu();
+                case MainMenuObserverMessage.TriggerGameMode:
+                    HandleGameMode();
                     break;
-                case MainMenuObserverMessage.LoreClosed:
-                    HandleLoreClosed();
+                case MainMenuObserverMessage.Stats:
+                    HandleStats();
                     break;
             }
         }
 
-
-
+        
         #region Screens
+        
+        private void HandleStats()
+        {
+            GameManager.Instance.LoadStatsScreen();
+        }
         
         private void HandleLoreMenu()
         {
@@ -74,27 +82,6 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleLoreClosed()
         {
             OnLoreClosed?.Invoke();
-        }
-
-        #endregion
-        
-
-
-        private void HandleMainPanelOpened()
-        {
-            AdsEvents.Banner_TriggerShow();
-        }
-
-        private void HandleEnable()
-        {
-            OnMainMenuEnable?.Invoke();
-            CameraEventCaller.ZoomIn(0.5f);
-            EarthEventCaller.DisableDamage();
-        }
-        
-        private void HandleDisable()
-        {
-            GameScreenEventCaller.DisableScreen(ScreenType.MainMenu, EventRequestType.Granted);
         }
         
         private void HandleGameMode()
@@ -112,17 +99,30 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             GameManager.Instance.LoadCosmeticMenu();
         }
-
-        private void HandleQuit()
-        {
-            GameManager.Instance.QuitGame();
-        }
         
         private void HandleTriggerOptions()
         {
             GameManager.Instance.LoadOptionsMenu();
         }
 
+        #endregion
+        
+
+        private void HandleMainPanelOpened()
+        {
+            AdsEvents.Banner_TriggerShow();
+        }
+
+        
+        private void HandleDisable()
+        {
+            GameScreenEventCaller.DisableScreen(ScreenType.MainMenu, EventRequestType.Granted);
+        }
+        
+        private void HandleQuit()
+        {
+            GameManager.Instance.QuitGame();
+        }
         private void OnDestroy()
         {
             AdsEvents.Banner_TriggerDestroy();
@@ -131,6 +131,13 @@ namespace _Main.Scripts.MainMenu.MVC
         private void OnApplicationQuit()
         {
             AdsEvents.Banner_TriggerDestroy();
+        }
+        
+        private void HandleEnable()
+        {
+            OnMainMenuEnable?.Invoke();
+            CameraEventCaller.ZoomIn(0.5f);
+            EarthEventCaller.DisableDamage();
         }
     }
 }

@@ -5,7 +5,6 @@ using _Main.Scripts.MyAnimations;
 
 namespace _Main.Scripts.Tutorial.So
 {
-
     [CreateAssetMenu(fileName = "So_Animation_UI_Tutorial", menuName = "Scriptable Objects/Animation Data/UI/Tutorial", order = 0)]
     public class TutorialUiAnimationData : ScriptableObject
     {

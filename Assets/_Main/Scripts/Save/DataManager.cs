@@ -330,6 +330,7 @@ namespace _Main.Scripts.Save
             public bool HasPlayed;
             public bool HasCompletedTutorial;
             public bool HasOpenedCosmetics;
+            public bool HasOpenedStats;
             public bool HasOpenedLore;
             public uint DeflectAmount;
             public uint CollisionAmount;
