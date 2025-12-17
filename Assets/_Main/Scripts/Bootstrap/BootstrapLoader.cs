@@ -6,6 +6,7 @@ using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Save;
 using _Main.Scripts.GlobalEvents;
+using _Main.Scripts.MyAnalytics;
 using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,14 +25,17 @@ namespace _Main.Scripts.Bootstrap
         [SerializeField] private string[] additiveScenes;
         [SerializeField] private float delayBeforeLoad = 0.1f;
         [SerializeField] private Image progressBar;
+
+        private const int MainSystemsCount = 4;
+        private const int SubSystemsCount = 7;
         
         public const bool DebugDisabled = true;
         private bool _hasLocalizationLoaded;
         private bool _hasLoadedData;
         private bool _hasLoadedSkins;
         
-        private int _mainSystemCount;
-        private int _subSystemCount;
+        private int _mainSystemLoadedCount;
+        private int _subSystemLoadedCount;
         
         // === Mobile Only === //
         
@@ -67,17 +71,17 @@ namespace _Main.Scripts.Bootstrap
 
             BootEvents.OnSubSystemInitialized += () =>
             {
-                _subSystemCount++;
+                _subSystemLoadedCount++;
             };
             
             BootEvents.OnMainSystemInitialized += () =>
             {
-                _mainSystemCount++;
+                _mainSystemLoadedCount++;
             };
 
             SoundEvents.OnSoundManagerInitialized += () =>
             {
-                _mainSystemCount++;
+                _mainSystemLoadedCount++;
             };
 
 #if UNITY_ANDROID || UNITY_IOS
@@ -90,6 +94,7 @@ namespace _Main.Scripts.Bootstrap
 
             LocalizationManager.LoadInstance();
             SoundManager.LoadInstance();
+            AnalyticsManager.LoadInstance();
         }
 
         private void Start()
@@ -121,16 +126,25 @@ namespace _Main.Scripts.Bootstrap
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedSkins);
 
+            
             //Ads
 #if UNITY_ANDROID || UNITY_IOS
 
-            OnLoadingAsset?.Invoke("Loading Ads");
-            AdManager.LoadInstance();
-            AdsEvents.InitializeAds();
-            yield return new WaitForSeconds(delayBeforeLoad);
-            yield return new WaitUntil(()=> _hasLoadedAds);
+            if (GameParameters.GameplayValues.AdsEnable)
+            {
+                OnLoadingAsset?.Invoke("Loading Ads");
+                AdManager.LoadInstance();
+                AdsEvents.InitializeAds();
+                yield return new WaitForSeconds(delayBeforeLoad);
+                yield return new WaitUntil(()=> _hasLoadedAds);
+            }
+            else
+            {
+                _mainSystemLoadedCount++;
+            }
+
 #else
-            _mainSystemCount++;
+            _mainSystemLoadedCount++;
 #endif
             
             OnLoadingAsset?.Invoke("Loading Main Scene");
@@ -203,12 +217,12 @@ namespace _Main.Scripts.Bootstrap
 
         private bool GetHasLoadedMainSystems()
         {
-            return _mainSystemCount >= 3;
+            return _mainSystemLoadedCount >= MainSystemsCount;
         }
 
         private bool GetHasLoadedSubsystems()
         {
-            return _subSystemCount >= 6;
+            return _subSystemLoadedCount >= SubSystemsCount;
         }
     }
 }

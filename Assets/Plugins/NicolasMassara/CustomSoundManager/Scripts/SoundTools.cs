@@ -10,7 +10,9 @@ namespace Plugins.NicolasMassara.CustomSoundManager
         private const string SoundPrefabPath = "Sounds/SoundSourcePrefab";
         private const string AudioMixerPath = "Sounds/MainAudioMixer";
 
-        private const bool DoesDebug = true;
+        private const bool DoesDebug = false;
+        
+        public static bool GetDoesDebug() => DoesDebug;
 
         public static void DebugSound(string debugString)
         {

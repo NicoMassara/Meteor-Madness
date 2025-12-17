@@ -147,31 +147,6 @@ namespace _Main.Scripts.Managers
             return currentScore > highScore;
         }
 
-        public bool GetHasPlayed()
-        {
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-            var value = saveData.HasPlayed;
-            
-            if(value)
-                return true;
-            
-            saveData.HasPlayed = true;
-            
-#pragma warning disable CS0162 // Unreachable code detected
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (GameParameters.GameplayValues.DoesSaveProgress)
-            {
-                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-            }
-#else
-            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-#endif
-#pragma warning restore CS0162 // Unreachable code detected
-            
-            return false;
-        }
-
         public GeneratedId GetHighScoreSecuredId()
         {
             if (_highScoreSecuredId == null)
@@ -218,6 +193,8 @@ namespace _Main.Scripts.Managers
             SecureValueManager.ModifyValue(highScoreId,currentScore);
         }
 
+        #endregion
+        
         public void SaveStats()
         {
             var dataManager = DataManager.Instance;
@@ -240,7 +217,107 @@ namespace _Main.Scripts.Managers
             
             dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
         }
+        
+        public bool GetHasPlayed()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+            var value = saveData.HasPlayed;
+            
+            if(value)
+                return true;
+            
+            saveData.HasPlayed = true;
+            
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (GameParameters.GameplayValues.DoesSaveProgress)
+            {
+                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+            }
+#else
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+            
+            return false;
+        }
 
-        #endregion
+        public bool GetHasCompletedTutorial()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+            
+            return saveData.HasCompletedTutorial;
+        }
+
+        public void SetHasCompletedTutorial()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+            saveData.HasCompletedTutorial = true;
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (GameParameters.GameplayValues.DoesSaveProgress)
+            {
+                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+            }
+#else
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+            
+        }
+        
+        
+        public bool GetHasOpenedCosmetics()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+            var value = saveData.HasOpenedCosmetics;
+            
+            if(value)
+                return true;
+            
+            saveData.HasOpenedCosmetics = true;
+            
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (GameParameters.GameplayValues.DoesSaveProgress)
+            {
+                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+            }
+#else
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+            
+            return false;
+        }
+        
+        public bool GetHasOpenedLore()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
+            var value = saveData.HasOpenedLore;
+            
+            if(value)
+                return true;
+            
+            saveData.HasOpenedLore = true;
+            
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (GameParameters.GameplayValues.DoesSaveProgress)
+            {
+                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+            }
+#else
+            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+            
+            return false;
+        }
     }
 }

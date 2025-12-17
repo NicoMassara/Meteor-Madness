@@ -36,6 +36,7 @@ namespace _Main.Scripts.GameMode
             public void TransitionToSaveScore();
             public void TriggerFinishAddingPoints();
             public void TriggerPauseMenu();
+            public void NotifyAbilityActive(AbilityType abilityType);
         }
         
         #region Private Classes
@@ -491,6 +492,12 @@ namespace _Main.Scripts.GameMode
         {
             if(_mainController.GetIsPaused())
                 _motor.TriggerPauseMenu();
+        }
+
+        public void NotifyAbilityActive(AbilityType abilityType)
+        {
+            if (_mainController.GetIsInGameplay())
+                _motor.NotifyAbilityActive(abilityType);
         }
 
         #endregion

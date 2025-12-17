@@ -132,9 +132,9 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         #endregion
 
-        public void SelectAbility(int index)
+        public void SkinSelected(int index)
         {
-            _motor.SelectAbility(index);
+            _motor.SelectSkin(index);
         }
 
 

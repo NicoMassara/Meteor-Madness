@@ -56,6 +56,8 @@
         public const ulong StartFinish = 0xA2023;
         public const ulong FinishAddingPoints = 0xA2024;
         public const ulong SaveStats = 0xA2025;
+        public const ulong AbilityActive = 0xA2026;
+        public const ulong GameInterrupted = 0xA2027;
 
         //
         public const ulong Debug_MeteorDeflect = 0xB2001;
@@ -150,7 +152,7 @@
         public const ulong StartDisable = 0xA7012;
         public const ulong MainPanelOpened = 0xA7013;
         public const ulong FirstGame = 0xA7014;
-        public const ulong Empty3 = 0xA7015;
+        public const ulong LoreClosed = 0xA7015;
         public const ulong Empty4 = 0xA7016;
     }
 
@@ -160,7 +162,7 @@
         public const ulong Disable = 0xA8002;
         public const ulong Initial = 0xA8003;
         public const ulong TriggerMainMenu = 0xA8004;
-        public const ulong AbilitySelect = 0xA8005;
+        public const ulong SkinSelected = 0xA8005;
         public const ulong StartDisable = 0xA8006;
         public const ulong Empty5 = 0xA8007;
         public const ulong Empty6 = 0xA8008;
@@ -220,6 +222,8 @@
         public const ulong EnableButtons  = 0xA1209;
         public const ulong SaveHighScore = 0xA120A;
         public const ulong SendAds = 0xA120B;
+        public const ulong RestartGame = 0xA120C;
+        public const ulong LoadMainMenu = 0xA120D;
     }
     
     public struct PauseObserverMessage
