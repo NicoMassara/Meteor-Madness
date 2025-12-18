@@ -2,6 +2,7 @@
 using _Main.Scripts.Managers;
 using System;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.MyInputs
 {
@@ -11,6 +12,7 @@ namespace _Main.Scripts.MyInputs
 
         private int _rotateDirection;
         private bool _areInputsEnable;
+        private bool _wasDisabled;
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
@@ -60,27 +62,30 @@ namespace _Main.Scripts.MyInputs
 #else
             input = new KeyInput();
 #endif
+            input.Enable();
+            input.OnTriggerAbility += TriggerAbility;
+            input.OnUpdateDirection += UpdateDirection;
+            input.OnPaused += TriggerPause;
+            EnableInputs();
         }
 
         public void ExecuteUpdate(float deltaTime)
         {
-            if(_areInputsEnable == false) return;
-            
-            if (_rotateDirection != 0)
+            if (_areInputsEnable == false && _wasDisabled == false)
+            {
+                _wasDisabled = true;
+                OnMovementDirectionChanged?.Invoke(0);
+            }
+            else if (_areInputsEnable)
             {
                 OnMovementDirectionChanged?.Invoke(_rotateDirection);
             }
         }
 
-        private void EnableInputs()
+        public void EnableInputs()
         {
             if(_areInputsEnable == true) return;
-
-            input.Enable();
             
-            input.OnTriggerAbility += TriggerAbility;
-            input.OnUpdateDirection += UpdateDirection;
-            input.OnPaused += TriggerPause;
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -89,18 +94,11 @@ namespace _Main.Scripts.MyInputs
 #endif
 
             _areInputsEnable = true;
-    
         }
 
         private void DisableInputs()
         {
             if(_areInputsEnable == false) return;
-            
-            input.OnTriggerAbility -= TriggerAbility;
-            input.OnUpdateDirection -= UpdateDirection;
-            input.OnPaused -= TriggerPause;
-            
-            input.Disable();
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -109,7 +107,7 @@ namespace _Main.Scripts.MyInputs
 #endif
             
             _areInputsEnable = false;
-
+            _wasDisabled = false;
         }
 
         #region Actions
@@ -122,6 +120,8 @@ namespace _Main.Scripts.MyInputs
         
         private void TriggerAbility(bool isPressed)
         {
+            if(_areInputsEnable == false) return;
+            
             OnAbilityTriggered?.Invoke(isPressed);
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -134,11 +134,6 @@ namespace _Main.Scripts.MyInputs
         private void UpdateDirection(int direction)
         {
             _rotateDirection = direction;
-            
-            if (_rotateDirection == 0)
-            {
-                OnStopMovement?.Invoke();
-            }
             
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -158,7 +153,6 @@ namespace _Main.Scripts.MyInputs
             }
             else
             {
-                UpdateDirection(0);
                 DisableInputs();
             }
         }

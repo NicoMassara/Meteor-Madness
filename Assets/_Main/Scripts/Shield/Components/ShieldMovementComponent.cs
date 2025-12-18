@@ -128,11 +128,6 @@ namespace _Main.Scripts.Shield
             _speedMultiplier = Mathf.Clamp01(speedMultiplier);
         }
 
-        public float GetAngle()
-        {
-            return Mathf.Repeat(_shieldTransform.rotation.eulerAngles.z, 360f);
-        }
-
         public Vector2 GetPosition()
         {
             return new Vector2(_shieldTransform.position.x, _shieldTransform.position.y);
