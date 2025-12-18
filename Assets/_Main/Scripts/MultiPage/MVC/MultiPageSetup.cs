@@ -29,17 +29,17 @@ namespace _Main.Scripts.MultiPage
             _view.OnPreviousButtonSetEnable += (isEnable) => {_ui.SetEnablePreviousButton(isEnable);};
             _view.OnPageChanged += (panelText, index) => {_ui.SetPanelText(panelText, index);};
             //UI
-            _ui.OnNextButtonPressed += ()=> _view.TryIncreasePageIndex();
+            _ui.OnNextButtonPressed += () =>
+            {
+                _ui.DisableNextButton();
+                _view.TryIncreasePageIndex();
+            };
             _ui.OnPreviousButtonPressed += ()=> _view.TryDecreasePageIndex();
             //
-            _animation.OnPanelClosed += Anim_OnPanelCosedHandler;
+            _animation.OnPanelOpened += () => _ui.DisableNextButton();
+            _animation.OnPanelClosed += ()=> _view.TriggerFinish();
             
             SetupEventBus();
-        }
-
-        private void Anim_OnPanelCosedHandler()
-        {
-            _view.TriggerFinish();
         }
 
         private void Start()

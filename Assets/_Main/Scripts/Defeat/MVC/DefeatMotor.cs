@@ -65,5 +65,20 @@ namespace _Main.Scripts.Defeat
                 NotifyAll(DefeatObserverMessage.SaveHighScore);
             }
         }
+
+        public void SendAd()
+        {
+            NotifyAll(DefeatObserverMessage.SendAds);
+        }
+
+        public void RestartGame()
+        {
+            NotifyAll(DefeatObserverMessage.RestartGame);
+        }
+
+        public void LoadMainMenu()
+        {
+            NotifyAll(DefeatObserverMessage.LoadMainMenu);
+        }
     }
 }

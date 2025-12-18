@@ -9,25 +9,65 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
+  m_Script: {fileID: 11500000, guid: 390d43bde0527344bbf306bdc758784e, type: 3}
   m_Name: SO_SoundClass_Comet
   m_EditorClassIdentifier: 
-  className: Comet
-  channel: 0
-  is3dSound: 1
-  clips:
-  - {fileID: 8300000, guid: ab9f8ca25f4a19c4d8814f6ab7817fb1, type: 3}
-  sourceData:
+  soundName: Comet - Movement
+  clipsData:
+    clips:
+    - {fileID: 8300000, guid: d5859bdbef2da08448756eb4391736ab, type: 3}
+    doesPlayMultipleInOrder: 1
+  channelSettings:
     mixerGroup: {fileID: 8348584646018634054, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    channel: 2
+  audioFlags:
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0
-    loop: 0
+  priorityData:
     priority: 128
-    volume: 1
-    pitch: 1
+  baseData:
     stereoPan: 0
-    spatialBlend: 0.75
-    reverbZoneMix: 0
-    dopplerLevel: 0.7
-  randomPitchRange: 0
+    reverbZoneMix: 1
+  audioPlaybackData:
+    doesLoop: 0
+    intervalBetweenLoops: 1
+    volume: 1
+    pitch: 0.27
+    randomPitchRange: 0
+    fadeInDuration: 0.25
+    fadeOutDuration: 0.25
+  is3dSound: 1
+  spatialData:
+    spatialBlend: 0.8
+    rolloffMode: 0
+    rolloffCustomCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0.049060542
+        value: 0.08219177
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.926524
+        value: 0.29286832
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    minDistance: 2
+    maxDistance: 100
+    dopplerLevel: 0
+    spread: 180
+    spatialize: 0
+    doesMove: 1

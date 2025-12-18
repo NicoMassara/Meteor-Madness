@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.Interfaces.Sounds;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds.Components
@@ -6,11 +7,11 @@ namespace _Main.Scripts.Sounds.Components
     public class AbilitySounds : SoundBehaviour<IAbilitySounds>
     {
         [Header("Ability Sounds")]
-        [SerializeField] private SoundClassSo added;
-        [SerializeField] private SoundClassSo triggered;
+        [SerializeField] private SoundSourceDataSo added;
+        [SerializeField] private SoundSourceDataSo triggered;
         [Header("Time Sounds")]
-        [SerializeField] private SoundClassSo speedUp;
-        [SerializeField] private SoundClassSo slowDown;
+        [SerializeField] private SoundSourceDataSo speedUp;
+        [SerializeField] private SoundSourceDataSo slowDown;
         
         private void Start()
         {

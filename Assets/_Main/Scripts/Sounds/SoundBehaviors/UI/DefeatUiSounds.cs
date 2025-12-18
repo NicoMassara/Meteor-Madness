@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces.Sounds;
+using Plugins.NicolasMassara.CustomSoundManager;
 
 namespace _Main.Scripts.Sounds.Components
 {

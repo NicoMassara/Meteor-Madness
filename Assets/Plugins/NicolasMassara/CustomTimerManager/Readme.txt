@@ -17,13 +17,23 @@ TimerManager.Add(timerData);
 This requires a `TimerData` object, which holds all the information needed for the timer to run:
 
 * **Time**: Duration of the timer (in seconds).
-
-* **Frequency**: Update frequency. This is an enum (`UpdateFrequency`) that lets you choose how often the timer updates.
-  * Note: If you use `UpdateFrequency.EverySecond`, use a whole number for the time.
   
 * **OnStartAction**: Action to execute when the timer starts.
 
 * **OnEndAction**: Action to execute when the timer ends.
+
+* **Frequency**: Update frequency. This is an enum (`UpdateFrequency`) that lets you choose how often the timer updates.
+
+* UpdateFrequency: 
+        EveryFrame        ->  Executes every frame
+        HalfOfTarget      ->  Executes every 1/2 of target frame rate
+        ThirdTarget       ->  Executes every 1/3 of target frame rate
+        QuarterOfTarget   ->  Executes every 1/4 of target frame rate
+        EightOfTarget     -> Executes every 1/8 of target frame rate
+        SixteenthOfTarget ->  Executes every 1/16 of target frame rate
+        EverySecond       ->  Executes every 1 second
+        
+  * Note: If you use `UpdateFrequency.EverySecond`, use a whole number for the Time.
 
 ### TimerGeneratedId
 

@@ -11,6 +11,7 @@ namespace _Main.Scripts.Interfaces.Vibration
 
     public interface ICosmeticUIVibration : IVibrationComponent
     {
+        public event Action<int> OnSkinSelected;
         public event Action OnMainMenuButtonPressed;
     }
     
@@ -103,6 +104,13 @@ namespace _Main.Scripts.Interfaces.Vibration
     public interface ITutorialUIVibration : IVibrationComponent
     {
         
+    }
+    
+    //=== Stats ===//
+    
+    public interface IStatsUIVibration : IVibrationComponent
+    {
+        public event Action OnBackButtonPressed; 
     }
     
 }

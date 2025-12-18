@@ -40,6 +40,7 @@ namespace _Main.Scripts.GameMode
 
         private void Awake()
         {
+            UIComponents.CountdownText.text = "";
             BootEvents.OnSubSystemRequestInitialize += Initialize;
         }
 
@@ -146,7 +147,7 @@ namespace _Main.Scripts.GameMode
         private void SetStoredPoints(uint storedPoints)
         {
             _storedPoints = storedPoints;
-            GameManager.Instance.VisualPoints = _storedPoints;
+            GameManager.Instance.StatsController.VisualPoints = _storedPoints;
         }
         
 

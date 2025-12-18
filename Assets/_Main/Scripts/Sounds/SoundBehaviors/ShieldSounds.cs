@@ -1,26 +1,26 @@
-﻿using _Main.Scripts.CustomId;
-using _Main.Scripts.Interfaces.Sounds;
+﻿using _Main.Scripts.Interfaces.Sounds;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds.Components
 {
     public class ShieldSounds : SoundBehaviour<IShieldSounds>
     {
-        [SerializeField] private SoundClassSo deflect;
-        [SerializeField] private SoundClassSo rotate;
-        [SerializeField] private SoundClassSo shieldActivated;
+        [SerializeField] private SoundSourceDataSo deflect;
+        [SerializeField] private SoundSourceDataSo rotate;
+        [SerializeField] private SoundSourceDataSo shieldActivated;
         [Space]
         [Header("Abilities")]
         [Space]
         [Header("Start")]
-        [SerializeField] private SoundClassSo superShieldStart;
+        [SerializeField] private SoundSourceDataSo superShieldStart;
         [Space]
         [Header("Running")]
-        [SerializeField] private SoundClassSo doublePointsRunning;
-        [SerializeField] private SoundClassSo automaticRunning;
-        [SerializeField] private SoundClassSo superShieldRunning;
+        [SerializeField] private SoundSourceDataSo doublePointsRunning;
+        [SerializeField] private SoundSourceDataSo automaticRunning;
+        [SerializeField] private SoundSourceDataSo superShieldRunning;
 
-        private GeneratedId _abilityRunningSoundId;
+        private SoundManager.GeneratedId _abilityRunningSoundId;
 
         private void Start()
         {
@@ -58,7 +58,7 @@ namespace _Main.Scripts.Sounds.Components
             };
         }
         
-        private SoundClassSo GetAbilityStartSound(AbilityType abilityType)
+        private SoundSourceDataSo GetAbilityStartSound(AbilityType abilityType)
         {
             return abilityType switch
             {
@@ -67,7 +67,7 @@ namespace _Main.Scripts.Sounds.Components
             };
         }
         
-        private SoundClassSo GetAbilityRunningSound(AbilityType abilityType)
+        private SoundSourceDataSo GetAbilityRunningSound(AbilityType abilityType)
         {
             return abilityType switch
             {

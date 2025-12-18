@@ -67,14 +67,18 @@ namespace _Main.Scripts.Cosmetics
         
         private AssetsLoader _assetsLoader;
         private DataManager.SkinSaveData _skinData;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private CosmeticsDebugData _debugData;
+#endif
         
         public event Action<SkinType> OnSkinChanged;
         
         private void Awake()
         {
             _assetsLoader = new AssetsLoader();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData = new CosmeticsDebugData();
+#endif
             
             BootEvents.OnMainSystemRequestInitialize += Initialize;
         }
@@ -103,7 +107,9 @@ namespace _Main.Scripts.Cosmetics
             
             _skinData.SkinIndex = (int)skinType;
             
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData.CurrentSkin = GetCurrentSkinType();
+#endif
             Debug.Log($"Skin {GetCurrentSkinType()} is selected");
             OnSkinChanged?.Invoke(skinType);
         }

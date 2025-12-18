@@ -2,21 +2,25 @@
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Menu;
+using _Main.Scripts.Observer;
+using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
-    public class MainMenuUiView : ManagedBehavior, IMainMenuUISounds, IMainMenuUiVibration
+    public class MainMenuUiView : ManagedBehavior, IMainMenuUISounds, IMainMenuUiVibration, IObserver
     {
         [SerializeField] private MainMenuUiPanelComponents uiPanelSelector;
         
         private MainMenuUiComponents _uiComponents;
-        
+
+
         // Buttons Actions
         public event Action OnConfirmButtonClicked;
         public event Action OnCancelButtonClicked;
         public event Action OnBackButtonClicked;
+        public event Action OnFirstPlayScreenPlay;
 
         // Screens Actions
         public event Action OnGameModeTriggered;
@@ -27,6 +31,7 @@ namespace _Main.Scripts.MainMenu.MVC
         public event Action OnOptionsOpen;
         public event Action OnLoreOpen;
         public event Action OnBackToMenu;
+        public event Action OnStatsOpen;
         public event Action OnExit;
 
         private void Start()
@@ -90,13 +95,69 @@ namespace _Main.Scripts.MainMenu.MVC
                 OnCancelButtonClicked?.Invoke();
                 OnExit?.Invoke();
             });
+            
+            GetUiComponents().FirstGame_Play.onClick.AddListener(() =>
+            {
+                OnConfirmButtonClicked?.Invoke();
+                OnFirstPlayScreenPlay?.Invoke();
+            });
+            
+            GetUiComponents().FirstGame_Tutorial.onClick.AddListener(() =>
+            {
+                OnConfirmButtonClicked?.Invoke();
+                OnTutorialOpen?.Invoke();
+            });
+            
+            GetUiComponents().FirstGame_Close.onClick.AddListener(() =>
+            {
+                OnCancelButtonClicked?.Invoke();
+                OnBackToMenu?.Invoke();
+            });
+            
+            GetUiComponents().StatsButton.onClick.AddListener(() =>
+            {
+                OnConfirmButtonClicked?.Invoke();
+                OnStatsOpen?.Invoke();
+            });
+            
             #endregion
             
         }
         
+        public void OnNotify(ulong message, params object[] args)
+        {
+            switch (message)
+            {
+                case MainMenuObserverMessage.FirstGame:
+                    HandleFirstGame();
+                    break;
+            }
+        }
+
+        private void HandleFirstGame()
+        {
+            DisableFirstGameButtons();
+        }
+
         private MainMenuUiComponents GetUiComponents()
         {
             return _uiComponents ??= uiPanelSelector.GetPanelData();
         }
+        
+        private void DisableFirstGameButtons()
+        {
+            GetUiComponents().FirstGame_Play.interactable = false;
+            GetUiComponents().FirstGame_Tutorial.interactable = false;
+            GetUiComponents().FirstGame_Close.interactable = false;
+            
+            TimerManager.Add(new TimerData(1.5f, () =>
+            {
+                GetUiComponents().FirstGame_Play.interactable = true;
+                GetUiComponents().FirstGame_Tutorial.interactable = true;
+                GetUiComponents().FirstGame_Close.interactable = true;
+            }));
+        }
+
+
     }
 }

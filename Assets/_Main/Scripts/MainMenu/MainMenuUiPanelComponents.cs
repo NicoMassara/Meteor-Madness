@@ -24,9 +24,13 @@ namespace _Main.Scripts.Menu
         public Button TutorialButton;
         public Button CosmeticButton;
         public Button LoreButton;
+        public Button StatsButton;
         public Button OptionsButton;
         public Button CreditsButton;
         public Button QuitButton;
+        public Button FirstGame_Play;
+        public Button FirstGame_Tutorial;
+        public Button FirstGame_Close;
         [Space(1)]
         [Header("Tutorial Panel")]
         public Button OpenTutorialButton;

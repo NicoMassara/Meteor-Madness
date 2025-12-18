@@ -30,30 +30,6 @@ namespace _Main.Scripts.MyCamera
                 _controller.TransitionToIdle();
             };
         }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                CameraEventCaller.LookUp();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                CameraEventCaller.LookLeft();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                CameraEventCaller.LookCenter();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                CameraEventCaller.LookRight();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                CameraEventCaller.LookUp();
-            }
-        }
         
         #region Event Bus
 

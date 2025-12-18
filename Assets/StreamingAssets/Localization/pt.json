@@ -63,7 +63,11 @@
   },
 
   "Cosmetic": {
-    "Title": "Em Breve!"
+    "Title" : "Skin Selector",
+    "SkinType" : {
+      "Default" : "Default",
+      "Pizza" : "Pizza"
+    }
   },
 
   "Pause": {
@@ -75,9 +79,36 @@
     "CountdownFinish": "Defenda!",
     "Score": "Pontuação",
     "HighScore": "Recorde",
+    "NewHighScore" : "New High Score!",
     "Death": {
       "Title": "A Humanidade Acabou!",
       "Score": "Sua Pontuação"
+    }
+  },
+
+  "Stats" : {
+    "Title" : "Stats",
+    "Deflect" : "Deflected Meteors",
+    "Collision" : "Meteors Collisions",
+    "AbilityCount" : "Ability Used",
+    "GamesPlayed" : "Games Played"
+  },
+
+  "FirstOpen":
+  {
+    "Stats" : {
+      "Title" : "Stats",
+      "Text" : "@Texts/First/en/stats.txt"
+    },
+
+    "Play": {
+      "Title" : "Attention!",
+      "Text" : "@Texts/First/en/play.txt"
+    },
+
+    "Cosmetic": {
+      "Title" : "Skin Selector",
+      "Text" : "@Texts/First/en/cosmetic.txt"
     }
   }
 }

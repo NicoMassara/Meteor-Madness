@@ -27,6 +27,7 @@ namespace _Main.Scripts.MainMenu.MVC
             
             _motor.Subscribe(_animation);
             _motor.Subscribe(_view);
+            _motor.Subscribe(_ui);
             
             SetViewHandlers();
             
@@ -51,10 +52,43 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private void SetViewHandlers()
         {
-            _view.OnMainMenuEnable += () => _controller.TransitionToMenu();
+            _view.OnMainMenuEnable += () =>
+            {
+                _controller.TransitionToMenu();
+                var hasPlayed = GameManager.Instance.FlagsController.GetHasPlayed();
+
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                
+                if (GameParameters.GameplayValues.AlwaysFirstGame)
+                {
+                    _controller.SetHasPlayed(false);
+                }
+                else
+                {
+                    _controller.SetHasPlayed(hasPlayed);
+                    Debug.Log($"Is First Game: {!hasPlayed}");
+                }
+#else
+                _controller.SetHasPlayed(hasPlayed);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+                
+
+            };
             //
+            _ui.OnFirstPlayScreenPlay += () =>
+            {
+                _controller.SetHasPlayed(true);
+                _controller.TriggerGameMode();
+            };
             _ui.OnGameModeTriggered += () => _controller.TriggerGameMode();
-            _ui.OnTutorialTriggered += () => _controller.TriggerTutorial();
+            _ui.OnTutorialTriggered += () =>
+            {
+                // Flips HasPlayed
+                GameManager.Instance.FlagsController.GetHasPlayed();
+                _controller.TriggerTutorial();
+            };
             _ui.OnLoreOpen += () => _controller.TransitionToLore();
             _ui.OnBackToMenu += () => _controller.TransitionToMenu();
             _ui.OnExit += () => _controller.TriggerQuit();
@@ -62,8 +96,10 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
             _ui.OnOptionsOpen += () => _controller.TriggerOptions();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
+            _ui.OnStatsOpen += () => _controller.TriggerStats();
             //
             _animation.OnPanelClosed += () => _controller.ExecuteDisable();
+            _animation.OnMainPanelOpened += () => _controller.MainPanelOpened();
         }
 
         #endregion

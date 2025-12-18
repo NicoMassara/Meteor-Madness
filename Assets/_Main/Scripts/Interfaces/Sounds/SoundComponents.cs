@@ -54,7 +54,13 @@ namespace _Main.Scripts.Interfaces.Sounds
         public event Action OnTimeSlowDown;
         public event Action OnTimeSpeedUp;
     }
-    
+
+    public interface IAbilitySphereSounds : ISoundComponent
+    {
+        public event Action OnStartSound;
+        public event Action OnStopSound;
+    }
+
     // Shield
     
     public interface IShieldSounds : ISoundComponent

@@ -27,15 +27,39 @@ namespace _Main.Scripts.Save
     
     public class DataManager : SingletonBehaviour<DataManager>
     {
+        private const bool DoesDebug = false;
+
+        private enum DebugMode
+        {
+            Default, 
+            Warning,
+            Error,
+        }
+
+        private static void SaveDebug(DebugMode debugMode, string debugData)
+        {
+            if(DoesDebug == false) return;
+            
+#pragma warning disable CS0162 // Unreachable code detected
+            switch (debugMode)
+            {
+                case DebugMode.Default: Debug.Log(debugData); break;
+                case DebugMode.Warning: Debug.LogWarning(debugData); break;
+                case DebugMode.Error: Debug.LogError(debugData); break;
+            }
+#pragma warning restore CS0162 // Unreachable code detected
+
+        }
+
         #region Private Clases
 
         [System.Serializable]
         private class MainSaveData
         {
-            public ScoreSaveData Score = new(); 
             public StatsSaveData Stats = new(); 
             public SettingsSaveData Settings = new(); 
             public SkinSaveData Skin = new(); 
+            public FlagsSaveData Flags = new(); 
         }
         private static class SaveSystem
         {
@@ -71,7 +95,6 @@ namespace _Main.Scripts.Save
                 
                 return folderPath;
             }
-
             public static void Save(MainSaveData data)
             {
                 string path = GetSavePath();
@@ -92,19 +115,19 @@ namespace _Main.Scripts.Save
                     }
                     
                     File.Copy(path, backupPath, true);
-
-                    Debug.Log(isNewSave ? $"Save File Created" : $"Game saved");
+                    
+                    SaveDebug(DebugMode.Default,isNewSave ? $"Save File Created" : $"Game saved");
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError("Failed to save game: " + e.Message);
+                    SaveDebug(DebugMode.Error,"Failed to save game: " + e.Message);
                 }
             }
             public static void CreateSaveFile()
             {
                 if (GetDoesSaveExist())
                 {
-                    Debug.Log("Save file already exists!");
+                    SaveDebug(DebugMode.Default,"Save file already exists!");
                     return;
                 }
                 
@@ -125,12 +148,12 @@ namespace _Main.Scripts.Save
                     
                     File.Copy(path, backupPath, true);
                     
-                    Debug.Log($"Save File Created");
+                    SaveDebug(DebugMode.Default,$"Save File Created");
                     
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError("Failed to save game: " + e.Message);
+                    SaveDebug(DebugMode.Error,"Failed to save game: " + e.Message);
                 }
             }
             public static bool TryLoadSaveFileIfNotCorrupted(out MainSaveData saveData)
@@ -138,11 +161,11 @@ namespace _Main.Scripts.Save
                 if (TryLoadFromPath(GetSavePath(), out saveData))
                     return true;
 
-                Debug.LogWarning("Main save corrupted. Trying backup...");
+                SaveDebug(DebugMode.Warning,"Main save corrupted. Trying backup...");
 
                 if (TryLoadFromPath(GetBackupPath(), out saveData))
                 {
-                    Debug.LogWarning("Backup save loaded successfully. Restoring main save.");
+                    SaveDebug(DebugMode.Warning,"Backup save loaded successfully. Restoring main save.");
                     Save(saveData); // reescribimos el main save con backup
                     return true;
                 }
@@ -190,18 +213,20 @@ namespace _Main.Scripts.Save
                     return false;
                 }
             }
-
             public static void ClearSaveFile()
             {
-                if (GetDoesSaveExist())
+                if (GetDoesSaveExist() == false)
                 {
-                    Save(new MainSaveData());
-                    //Debug.Log($"Save File Cleared at: {path}");
+                    SaveDebug(DebugMode.Warning,$"No save file found at");
+                    return;
                 }
-                else
-                {
-                    //Debug.LogWarning($"No save file found at: {path}");
-                }
+                
+                string path = GetSavePath();
+                string backupPath = GetBackupPath();
+                File.Delete(path);
+                File.Delete(backupPath);
+                
+                SaveDebug(DebugMode.Default,$"Save file cleared");
             }
         }
         private static class KeyEncryptor
@@ -304,8 +329,8 @@ namespace _Main.Scripts.Save
         {
             Settings,
             Stats,
-            Score,
             Skin,
+            Flags,
             Test
         }
         
@@ -314,21 +339,20 @@ namespace _Main.Scripts.Save
         {
             public abstract SaveDataType Type { get;}
         }
-
-        [System.Serializable]
-        public class ScoreSaveData : SaveDataBase
-        {
-            public override SaveDataType Type => SaveDataType.Score;
-            public uint HighScore;
-        }
+        
     
         [System.Serializable]
         public class StatsSaveData : SaveDataBase
         {
             public override SaveDataType Type => SaveDataType.Stats;
-            public int DeflectAmount;
-            public int CollisionAmount;
-            public int AbilityUseAmount;
+            public uint HighScore;
+            public uint DeflectAmount;
+            public uint CollisionAmount;
+            public uint AbilityUseAmount;
+            public uint GamesPlayed;
+            public float LongestTime;
+            public uint LongestStreak;
+            public uint TotalScore;
         }
     
         [System.Serializable]
@@ -345,6 +369,17 @@ namespace _Main.Scripts.Save
         {
             public override SaveDataType Type => SaveDataType.Skin;
             public int SkinIndex = 0;
+        }
+
+        [System.Serializable]
+        public class FlagsSaveData : SaveDataBase
+        {
+            public override SaveDataType Type => SaveDataType.Flags;
+            public bool HasPlayed;
+            public bool HasCompletedTutorial;
+            public bool HasOpenedCosmetics;
+            public bool HasOpenedStats;
+            public bool HasOpenedLore;
         }
 
         #endregion
@@ -379,7 +414,7 @@ namespace _Main.Scripts.Save
                     }
                     else
                     {
-                        Debug.Log("Save file was corrupted, clearing data and creating new");
+                        SaveDebug(DebugMode.Warning,"Save file was corrupted, clearing data and creating new");
                         SaveSystem.ClearSaveFile();
                     }
                 }
@@ -418,6 +453,7 @@ namespace _Main.Scripts.Save
         
         public void ClearSaveData()
         {
+            SaveDebug(DebugMode.Default,"Save data cleared");
             SaveSystem.ClearSaveFile();
         }
 
@@ -427,8 +463,8 @@ namespace _Main.Scripts.Save
             {
                 SaveDataType.Settings => _mainSaveData.Settings as T,
                 SaveDataType.Stats => _mainSaveData.Stats as T,
-                SaveDataType.Score => _mainSaveData.Score as T,
                 SaveDataType.Skin => _mainSaveData.Skin as T,
+                SaveDataType.Flags => _mainSaveData.Flags as T,
                 _ => throw new ArgumentOutOfRangeException(nameof(saveType), saveType, null)
             };
         }
@@ -443,11 +479,11 @@ namespace _Main.Scripts.Save
                 case SaveDataType.Stats:
                     _mainSaveData.Stats = data as StatsSaveData;
                     break;
-                case SaveDataType.Score:
-                    _mainSaveData.Score = data as ScoreSaveData;
-                    break;
                 case SaveDataType.Skin:
                     _mainSaveData.Skin = data as SkinSaveData;
+                    break;
+                case SaveDataType.Flags:
+                    _mainSaveData.Flags = data as FlagsSaveData;
                     break;
             }
         }

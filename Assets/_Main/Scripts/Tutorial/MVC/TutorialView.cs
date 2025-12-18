@@ -4,12 +4,14 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.MultiPage;
 using _Main.Scripts.Observer;
 using _Main.Scripts.GameConfig;
+using _Main.Scripts.GlobalEvents;
+using _Main.Scripts.Interfaces.Analytics;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
-    public class TutorialView : ManagedBehavior, IObserver, ITutorialSounds
+    public class TutorialView : ManagedBehavior, IObserver, ITutorialSounds, ITutorialAnalytics
     {
         [SerializeField] private MultiPageTextDataSo[] mobileMultiPageData;
         [SerializeField] private MultiPageTextDataSo[] desktopMultiPageData;
@@ -18,6 +20,8 @@ namespace _Main.Scripts.Tutorial.MVC
         
         public event Action OnTutorialEnable;
         public event Action OnTutorialFinished;
+        
+        
         
         public void OnNotify(ulong message, params object[] args)
         {
@@ -55,6 +59,7 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleEnable()
         {
+            AdsEvents.Banner_TriggerHide();
             _currentMultiPageIndex = 0;
             OnTutorialEnable?.Invoke();
         }
@@ -151,6 +156,11 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleFinish()
         {
+            if (GameManager.Instance.FlagsController.GetHasCompletedTutorial() == false)
+            {
+                GameManager.Instance.FlagsController.SetHasCompletedTutorial();
+            }
+            
             GameManager.Instance.CanPlay = false;
             ProjectileEventCaller.DisableSpawn();
             ProjectileEventCaller.UpdateLevel(0);

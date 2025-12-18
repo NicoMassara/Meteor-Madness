@@ -63,7 +63,11 @@
   },
 
   "Cosmetic": {
-    "Title" : "Muy Pronto!"
+    "Title" : "Apariencia",
+    "SkinType" : {
+      "Default" : "Normal",
+      "Pizza" : "Pizza"
+    }
   },
 
   "Pause": {
@@ -75,9 +79,36 @@
     "CountdownFinish" : "Defender!",
     "Score" : "Puntos",
     "HighScore" : "Record",
+    "NewHighScore" : "Nuevo Record!",
     "Death": {
       "Title" : "La Humanidad se acabo!",
       "Score" : "Tus Puntos"
+    }
+  },
+
+  "Stats" : {
+    "Title" : "Estadisticas",
+    "Deflect" : "Meteoros Deflectados",
+    "Collision" : "Meteors Colisionados",
+    "AbilityCount" : "Habilidades Usadas",
+    "GamesPlayed" : "Partidas Jugadas"
+  },
+
+  "FirstOpen":
+  {
+    "Stats" : {
+      "Title" : "Stats",
+      "Text" : "@Texts/First/en/stats.txt"
+    },
+
+    "Play": {
+      "Title" : "Attention!",
+      "Text" : "@Texts/First/en/play.txt"
+    },
+
+    "Cosmetic": {
+      "Title" : "Skin Selector",
+      "Text" : "@Texts/First/en/cosmetic.txt"
     }
   }
 }

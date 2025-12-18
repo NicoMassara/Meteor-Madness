@@ -28,13 +28,18 @@ namespace _Main.Scripts.Abilities.Spawn
         private TimerManager.GeneratedId _spawnTimerId;
         private AbilitySphereFactory _factory;
         private AbilitySelector _selector;
-
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private AbilitySpawnDebugData _debugData;
+#endif
+        
         private void Awake()
         {
             SetEventBus();
 
             BootEvents.OnSubSystemRequestInitialize += Initialize;
         }
+        
         private void Initialize()
         {
             BootEvents.OnSubSystemRequestInitialize -= Initialize;
@@ -45,10 +50,21 @@ namespace _Main.Scripts.Abilities.Spawn
             _selector = new AbilitySelector(selectorData.GetRarityValues,selectorData.GetUnlockLevelValues);
             _factory = new AbilitySphereFactory(prefab);
             
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData = new AbilitySpawnDebugData
+            {
+                MinSpawnLevel = _minUnlockLevel
+            };
+#endif
+            
+            
             BootEvents.SubSystemInitialized();
         }
         private void SendAbility()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.HasSentAbility = true;
+#endif
             AbilitiesEventCaller.RequestSpawn();
         }
         private void CreateAbilitySphere(Vector2 position, Vector2 direction, float movementMultiplier)
@@ -59,20 +75,25 @@ namespace _Main.Scripts.Abilities.Spawn
             
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
-            var abi = GetAbilityToAdd();
+            var ability = GetAbilityToAdd();
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.LastAbilitySpawned = ability;
+#endif
+            
             tempSphere.SetValues(new AbilitySphereValues
             {
                 MovementSpeed = movementSpeed,
                 Rotation = tempRot,
                 Position = position,
                 Direction = direction.normalized,
-                AbilityType = abi
+                AbilityType = ability
             });
             tempSphere.OnDeflection += DeflectionHandler;
             tempSphere.OnEarthCollision += OnEarthCollisionHandler;
             tempSphere.EnableMovement = true;
             
-            Debug.LogWarning(abi);
+            Debug.LogWarning(ability);
             
             ProjectileEventCaller.Add(tempSphere);
         }
@@ -100,6 +121,10 @@ namespace _Main.Scripts.Abilities.Spawn
             var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
             temp = _isStorageFull ? temp/2 : temp;
             TryRunTimer(temp);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.HasSentAbility = false;
+#endif
         }
         private void OnEarthCollisionHandler(AbilitySphereCollisionData data)
         {
@@ -120,14 +145,28 @@ namespace _Main.Scripts.Abilities.Spawn
             var temp = UnityEngine.Random.Range(spawnDelay * 0.75f, spawnDelay);
             temp = _isStorageFull ? temp/2 : temp;
             TryRunTimer(temp);
+            
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.HasSentAbility = false;
+#endif
         }
         private void SetTimer(float time)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _debugData.IsRunningSpawnTimer = true;
+            _debugData.NextSpawnDelay = time;
+#endif
+            
             _isTimerRunning = true;
             _spawnTimerId = TimerManager.Add(new TimerData(time,() =>
             {
                 SendAbility();
                 _isTimerRunning = false;
+                
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                _debugData.NextSpawnDelay = 0;
+                _debugData.IsRunningSpawnTimer = false;
+#endif
             }));
         }
         private void RemoveTimer(TimerManager.GeneratedId timerId)
@@ -162,11 +201,11 @@ namespace _Main.Scripts.Abilities.Spawn
         {
             if (_isTimerRunning)
             {
-                //Debug.Log("Ability Timer already running");
+                Debug.Log("Ability Timer already running");
             }
             else
             {
-                //Debug.Log($"Ability Timer Set To: {time}");
+                Debug.Log($"Ability Timer Set To: {time}");
                 SetTimer(time);
             }
         }

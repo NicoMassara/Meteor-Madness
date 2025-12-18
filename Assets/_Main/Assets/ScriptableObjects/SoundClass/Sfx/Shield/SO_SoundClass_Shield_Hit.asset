@@ -9,33 +9,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 801cf8ef846945529fbeb8030077d812, type: 3}
+  m_Script: {fileID: 11500000, guid: 390d43bde0527344bbf306bdc758784e, type: 3}
   m_Name: SO_SoundClass_Shield_Hit
   m_EditorClassIdentifier: 
-  className: ShieldHit
-  channel: 3
-  is3dSound: 0
-  clips:
-  - {fileID: 8300000, guid: 8b3836daf909c78469aaf3d586e55619, type: 3}
-  sourceData:
+  soundName: Shield - Hit
+  clipsData:
+    clips:
+    - {fileID: 8300000, guid: 8b3836daf909c78469aaf3d586e55619, type: 3}
+    doesPlayMultipleInOrder: 1
+  channelSettings:
     mixerGroup: {fileID: -7029012848971564562, guid: bd6947a298737db49b1f7c7e95163f79, type: 2}
+    channel: 4
+  audioFlags:
     ignoreEffects: 0
     ignoreListenerEffects: 0
     ignoreReverbZones: 0
-    loop: 0
+  priorityData:
     priority: 128
-    volume: 0.323
-    pitch: 0
+  baseData:
     stereoPan: 0
-    spatialBlend: 0
     reverbZoneMix: 1
-    dopplerLevel: 1
-  fadeInData:
-    FadeTime: 0.05
-    ExpStrength: 5
-    FadeType: 0
-  fadeOutData:
-    FadeTime: 0.05
-    ExpStrength: 5
-    FadeType: 0
-  randomPitchRange: 0
+  audioPlaybackData:
+    doesLoop: 0
+    intervalBetweenLoops: 1
+    volume: 1
+    pitch: 1
+    randomPitchRange: 0.077
+    fadeInDuration: 0.1
+    fadeOutDuration: 0.1
+  is3dSound: 0
+  spatialData:
+    spatialBlend: 1
+    rolloffMode: 0
+    rolloffCustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    minDistance: 1
+    maxDistance: 30
+    dopplerLevel: 0
+    spread: 0
+    spatialize: 0
+    doesMove: 0

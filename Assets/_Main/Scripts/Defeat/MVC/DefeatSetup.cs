@@ -79,9 +79,10 @@ namespace _Main.Scripts.Defeat
                 _controller.LoadScoreData(score,highScore,hasNewHigh);
             };
             _view.OnDataInitialized += _controller.SetDataIsLoaded;
+            _view.OnGameSaved += _controller.SendButtons;
             //
-            _ui.OnRestartButtonPressed += GameManager.Instance.LoadGameMode;
-            _ui.OnMainMenuButtonPressed += GameManager.Instance.LoadMainMenu;
+            _ui.OnRestartButtonPressed += _controller.RestartGame;
+            _ui.OnMainMenuButtonPressed += _controller.LoadMainMenu;
             //
             _animation.OnPanelOpened += _controller.SendScore;
             _animation.OnPanelClosed += () =>
@@ -94,7 +95,7 @@ namespace _Main.Scripts.Defeat
 #endif
             };
             _animation.OnScoreFinished += _controller.SendHighScore;
-            _animation.OnHighScoreFinished += _controller.SendButtons;
+            _animation.OnHighScoreFinished += _controller.SendAd;
             _animation.OnButtonsFinished += () =>
             {
                 _controller.EnableButtons();
@@ -104,10 +105,6 @@ namespace _Main.Scripts.Defeat
                 DebugDefeatEvents.TriggerDefeatScreenAnimationFinished();
 #endif
             };
-
-            
-            
-
         }
 
         #region Enable / Disable

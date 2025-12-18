@@ -1480,6 +1480,7 @@ GameObject:
   - component: {fileID: 1253651375}
   - component: {fileID: 1253651374}
   - component: {fileID: 1253651376}
+  - component: {fileID: 1253651377}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -1552,41 +1553,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 1059927933}
-  gameplayUiOpenData:
-    scoreOffscreenPos: 4
-    pauseOffscreenPos: 5
-    scoreOffset: {x: 100, y: -100}
-    pauseOffset: {x: 100, y: 100}
-    movementDuration: 0.25
-  gameplayUiCloseData:
-    scoreOffscreenPos: 4
-    pauseOffscreenPos: 5
-    scoreOffset: {x: 100, y: -100}
-    pauseOffset: {x: 100, y: 100}
-    movementDuration: 0.25
-    finishDelay: 1
-  scoreFinishAddingData:
-    bounceScale: 1.25
-    bounceDuration: 0.25
-    bounceReturnTime: 0.1
-  countdownUpdateData:
-    fadeDuration: 0.4
-    bounceDuration: 0.4
-    fadeDelay: 0.15
-    finalFadeDuration: 0.45
-    aeScaleDuration: 0.4
-    aeFinishDelay: 0.45
-  countdownFinishData:
-    fadeDuration: 0.05
-    bounceDuration: 0.1
-    bounceScale: 1.5
-    fadeDelay: 0.6
-    finalFadeDuration: 0.25
-    aeScaleDuration: 0.4
-    aeBounceScale: 1.5
-    aeScaleDelay: 0.45
-    aeFinishScaleDuration: 0.45
-    finishDelay: 0.5
+  animData: {fileID: 11400000, guid: f49d28fae47a76b479bce8c92dd632b0, type: 2}
 --- !u!114 &1253651374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1624,9 +1591,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27cb7ef6b6d4404cbff738c552f32274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameMusicData: {fileID: 11400000, guid: 2e659106af03afc4c9382e8803fa99ec, type: 2}
+  gameMusicData: {fileID: 11400000, guid: 0c3e9bdd5f0204d4787c51615ff71221, type: 2}
   countdownSound: {fileID: 11400000, guid: 72349cb5a1b79094090034040d420787, type: 2}
   countdownFinish: {fileID: 11400000, guid: 53106164b81249c4bbf7a598ffde2cb3, type: 2}
+--- !u!114 &1253651377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253651362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 687314a1ec174d7b9878071ba0eb665b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minTimeToRegister: 3
 --- !u!1 &1273441777
 GameObject:
   m_ObjectHideFlags: 0

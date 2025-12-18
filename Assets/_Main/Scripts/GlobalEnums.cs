@@ -45,7 +45,7 @@
         OptionsMenu,
         Defeat,
         Pause,
-        Empty2,
+        Stats,
         Empty3,
         Empty4,
         Empty5,
@@ -64,13 +64,7 @@
         EndGame,
         Cosmetic
     }
-
-    public enum UISoundType
-    {
-        Default,
-        Confirm,
-        Back
-    }
+    
     
     public enum ShieldType
     {

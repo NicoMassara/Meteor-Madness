@@ -22,6 +22,9 @@ namespace _Main.Scripts.Defeat
             public void SendButtons();
             public void SetDataIsLoaded();
             public void EnableButtons();
+            public void SendAd();
+            public void RestartGame();
+            public void LoadMainMenu();
         }
 
         #region Private Classes
@@ -257,6 +260,21 @@ namespace _Main.Scripts.Defeat
         public void EnableButtons()
         {
             _motor.EnableButtons();
+        }
+
+        public void SendAd()
+        {
+            _motor.SendAd();
+        }
+
+        public void RestartGame()
+        {
+            _motor.RestartGame();
+        }
+
+        public void LoadMainMenu()
+        {
+            _motor.LoadMainMenu();
         }
 
         #endregion

@@ -7,9 +7,15 @@ namespace _Main.Scripts.FiniteStateMachine
     public class FSM<T>
     {
         IState<T> _current;
+        /// <summary>
+        /// If FALSE Needs a confirmation to sleep 
+        /// </summary>
+        private IState<T> _newState;
+        private T _newInput;
         public T CurrentState { get; set; }
         public T LastState { get; set; }
         public string FSMName { get; private set; }
+        
 
         public event Action<T> OnEnterState;
         public event Action<T> OnExitState;
@@ -17,11 +23,7 @@ namespace _Main.Scripts.FiniteStateMachine
 
         public FSM(string fsmName)
         {
-            FSMName = fsmName; 
-        }
-        public FSM(IState<T> init)
-        {
-            SetInit(init);
+            FSMName = fsmName;
         }
 
 
@@ -70,7 +72,7 @@ namespace _Main.Scripts.FiniteStateMachine
                 //Debug.Log($"Transition From {CurrentState.ToString()} to {input.ToString()} Not Found in {FSMName} FSM");
                 return;
             }
-            
+
             OnNewState?.Invoke(input);
 
             if (CurrentState != null)
@@ -79,9 +81,30 @@ namespace _Main.Scripts.FiniteStateMachine
                 OnExitState?.Invoke(CurrentState);
             }
             
-            _current.Sleep();
-            _current = newState;
-            CurrentState = input;
+            
+            if (_current == null || _current.IsManualSleep == false)
+            {
+                _current.Sleep();
+                _current = newState;
+                CurrentState = input;
+                OnEnterState?.Invoke(CurrentState);
+                _current.Awake();
+            }
+            else
+            {
+                _newState = newState;
+                _newInput = input;
+                _current.OnSleepFinished += OnSleepFinishedHandler;
+                _current.Sleep();
+            }
+        }
+
+        private void OnSleepFinishedHandler()
+        {
+            _current.OnSleepFinished -= OnSleepFinishedHandler;
+            //
+            _current = _newState;
+            CurrentState = _newInput;
             OnEnterState?.Invoke(CurrentState);
             _current.Awake();
         }

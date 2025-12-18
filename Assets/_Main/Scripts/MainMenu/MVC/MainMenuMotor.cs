@@ -5,6 +5,8 @@ namespace _Main.Scripts.MainMenu.MVC
 {
     public class MainMenuMotor : ObservableComponent
     {
+        private bool _loreEnabled;
+        
         public void Enable()
         {
             NotifyAll(MainMenuObserverMessage.Enable);
@@ -17,11 +19,18 @@ namespace _Main.Scripts.MainMenu.MVC
 
         public void Lore()
         {
+            _loreEnabled = true;
             NotifyAll(MainMenuObserverMessage.LoreMenu);
         }
 
         public void Menu()
         {
+            if (_loreEnabled)
+            {
+                NotifyAll(MainMenuObserverMessage.LoreClosed);
+                _loreEnabled = false;
+            }
+
             NotifyAll(MainMenuObserverMessage.MainMenu);
         }
 
@@ -63,6 +72,21 @@ namespace _Main.Scripts.MainMenu.MVC
         public void StartDisable()
         {
             NotifyAll(MainMenuObserverMessage.StartDisable);
+        }
+
+        public void TriggerMainPanelOpen()
+        {
+            NotifyAll(MainMenuObserverMessage.MainPanelOpened);
+        }
+
+        public void FirstGame()
+        {
+            NotifyAll(MainMenuObserverMessage.FirstGame);
+        }
+
+        public void Stats()
+        {
+            NotifyAll(MainMenuObserverMessage.Stats);
         }
     }
 }

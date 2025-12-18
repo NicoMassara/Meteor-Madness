@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace _Main.Scripts.FiniteStateMachine
 {
-    public class State<T> : IState<T>
+    public abstract class State<T> : IState<T>
     {
         private readonly Dictionary<T, IState<T>> _transitions = new Dictionary<T, IState<T>>();
+        public virtual bool IsManualSleep { get; private set; }
+        
+        public event Action OnSleepFinished;
         
         public virtual void Awake(){}
         public virtual void Execute(float deltaTime){}
@@ -42,5 +46,7 @@ namespace _Main.Scripts.FiniteStateMachine
                 _transitions.Remove(input);
             }
         }
+
+        public void TriggerOnSleepFinished() => OnSleepFinished?.Invoke();
     }
 }

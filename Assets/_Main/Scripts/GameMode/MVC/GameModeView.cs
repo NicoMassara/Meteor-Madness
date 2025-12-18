@@ -2,9 +2,12 @@
 using _Main.Scripts.CustomId;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Interfaces.Vibration;
+using _Main.Scripts.Interfaces.Analytics;
 using _Main.Scripts.Managers;
 using _Main.Scripts.GameConfig;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Observer;
+using _Main.Scripts.Save;
 using _Main.Scripts.SecurityData;
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
@@ -13,12 +16,12 @@ using UnityEngine;
 namespace _Main.Scripts.GameMode
 {
     public class GameModeView : ManagedBehavior, IObserver,IGameModeSounds,
-        GameModeView.IGameModeView, IGameModeVibration
+        GameModeView.IGameModeView, IGameModeVibration, IGameModeAnalytics
     {
         public interface IGameModeView
         {
             public event Action OnPaused;
-            public event Action OnUnPaused;
+            public event Action OnResume;
             
             public event Action OnDataInitialized;
             public event Action<float> OnCountdownUpdated;
@@ -29,13 +32,12 @@ namespace _Main.Scripts.GameMode
             public event Action OnGameStopped;
             public event Action OnScoreSaved;
             public event Action OnGameModeDisable;
-            public event Action OnGameFinished;
         }
         
         #region IGameModeView
         
         public event Action OnPaused;
-        public event Action OnUnPaused;
+        public event Action OnResume;
             
         public event Action OnDataInitialized;
         public event Action<float> OnCountdownUpdated;
@@ -46,8 +48,6 @@ namespace _Main.Scripts.GameMode
         public event Action OnGameStopped;
         public event Action OnScoreSaved;
         public event Action OnGameModeDisable;
-        public event Action OnGameFinished;
-        
         #endregion
 
         #region IGameModeSounds
@@ -59,6 +59,15 @@ namespace _Main.Scripts.GameMode
         public event Action OnStopMusic;
         public event Action OnPlayMusic;
 
+        #endregion
+
+        #region IGameModeAnalytics
+        
+        public event Action<float> OnPointGained;
+        public event Action<AbilityType> OnAbilityTriggered;
+        public event Action<int> OnLevelUpdate;
+        public event Action OnGameInterrupted;
+        
         #endregion
         
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -94,8 +103,6 @@ namespace _Main.Scripts.GameMode
                     HandleTriggerEarthDestruction();
                     break;
                 
-                
-                
                 //=== Pause ===//
                 case GameModeObserverMessage.GamePaused:
                     HandleGamePaused();
@@ -115,8 +122,9 @@ namespace _Main.Scripts.GameMode
                     HandleInitializeData();
                     break;
                 case GameModeObserverMessage.SaveScore:
-                    HandleSaveScore((GeneratedId)args[0]);
+                    HandleSaveScore((DataManagerTools.GameplayStatsIdData)args[0]);
                     break;
+                
                 
                 //=== Meteor ===//
                 case GameModeObserverMessage.PointsGained:
@@ -162,9 +170,17 @@ namespace _Main.Scripts.GameMode
                 case GameModeObserverMessage.GameFinish:
                     HandleGameFinish();
                     break;
+                case GameModeObserverMessage.GameInterrupted:
+                    HandleGameInterrupted();
+                    break;
+                
+                // === Ability ===//
+                case GameModeObserverMessage.AbilityActive:
+                    HandleAbilityActive((AbilityType)args[0]);
+                    break;
             }
         }
-        
+
         #region Finish
 
         private void HandleStartFinish()
@@ -175,10 +191,14 @@ namespace _Main.Scripts.GameMode
         
         private void HandleGameFinish()
         {
-            GameManager.Instance.UnpauseGame();
+            GameManager.Instance.ResumeGame();
             GameManager.Instance.CanPlay = false;
             ShieldEventCaller.Disable();
-            OnGameFinished?.Invoke();
+        }
+        
+        private void HandleGameInterrupted()
+        {
+            OnGameInterrupted?.Invoke();
         }
 
         #endregion
@@ -193,7 +213,6 @@ namespace _Main.Scripts.GameMode
             AbilitiesEventCaller.EnableUI();
             SetEnableInputs(true);
             SetEnableUIInputs(true);
-            OnGameStarted?.Invoke();
         }
         
         private void HandleStopGameplay()
@@ -217,6 +236,7 @@ namespace _Main.Scripts.GameMode
             _debugData.PointsGained += amount;
             
 #endif
+            OnPointGained?.Invoke(amount);
             var finalScore = (ushort)(amount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
             FloatingTextEventCaller.Spawn(new FloatingTextValues
             {
@@ -242,7 +262,7 @@ namespace _Main.Scripts.GameMode
         {
             OnStopMusic?.Invoke();
             AbilitiesEventCaller.Disable();
-            GameManager.Instance.VisualPoints = 0;
+            GameManager.Instance.StatsController.VisualPoints = 0;
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
         
@@ -289,11 +309,11 @@ namespace _Main.Scripts.GameMode
             _debugData.IsPaused = false;
 #endif
             
-            OnUnPaused?.Invoke();
+            OnResume?.Invoke();
             SetEnableInputs(true);
             AbilitiesEventCaller.EnableUI();
             GameModeEventCaller.SetPause(false);
-            GameManager.Instance.UnpauseGame();
+            GameManager.Instance.ResumeGame();
             
 #if UNITY_ANDROID || UNITY_IOS
 
@@ -330,20 +350,16 @@ namespace _Main.Scripts.GameMode
             OnInitialized?.Invoke();
         }
         
-        private void HandleSaveScore(GeneratedId generatedId)
+        private void HandleSaveScore(DataManagerTools.GameplayStatsIdData saveData)
         {
             GameModeEventCaller.SetEnablePause(false);
             GameManager.Instance.CanPlay = false;
             ShieldEventCaller.Disable();
-            GameManager.Instance.CurrentScoreSecuredId = generatedId;
+            GameManager.Instance.StatsController.SetStatsIdData(saveData);
             
-            if (SecureValueManager.GetDoesContainValue<uint>(generatedId,
-                    out var currentScore))
-            {
-                //Debug.LogWarning($"Current Score: {currentScore}");
-            }
             OnScoreSaved?.Invoke();
         }
+        
 
         #endregion
         
@@ -372,6 +388,7 @@ namespace _Main.Scripts.GameMode
 
         private void HandleStartCountdown(int countdown)
         {
+            AdsEvents.Banner_TriggerHide();
             CameraEventCaller.ZoomOut(0.5f);
             OnCountDownStarted?.Invoke();
         }
@@ -402,6 +419,7 @@ namespace _Main.Scripts.GameMode
             _debugData.CurrentLevel = currentLevel;
 #endif
             ProjectileEventCaller.UpdateLevel(currentLevel);
+            OnLevelUpdate?.Invoke(currentLevel);
         }
 
         #endregion
@@ -422,6 +440,19 @@ namespace _Main.Scripts.GameMode
         }
 
         #endregion
-        
+
+        #region Ability
+
+        private void HandleAbilityActive(AbilityType abilityType)
+        {
+            OnAbilityTriggered?.Invoke(abilityType);
+        }
+
+        #endregion
+
+        private void OnApplicationQuit()
+        {
+            OnGameInterrupted?.Invoke();
+        }
     }
 }

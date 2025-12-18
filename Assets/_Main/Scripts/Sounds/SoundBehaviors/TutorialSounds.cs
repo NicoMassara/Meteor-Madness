@@ -1,14 +1,14 @@
-﻿using _Main.Scripts.CustomId;
-using _Main.Scripts.Interfaces.Sounds;
+﻿using _Main.Scripts.Interfaces.Sounds;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Sounds.Components
 {
     public class TutorialSounds : MusicBehavior<ITutorialSounds>
     {
-        [SerializeField] private SoundClassSo music;
+        [SerializeField] private SoundSourceDataSo music;
 
-        private GeneratedId _musicId;
+        private SoundManager.GeneratedId _musicId;
 
         private void Start()
         {

@@ -17,6 +17,7 @@
         public struct SubGroup
         {
             public const string Ability = "Ability";
+            public const string AbilitySpawner = "Ability Spawner";
             public const string Earth = "Earth";
             public const string GameMode = "GameMode";
             public const string Shield = "Shield";

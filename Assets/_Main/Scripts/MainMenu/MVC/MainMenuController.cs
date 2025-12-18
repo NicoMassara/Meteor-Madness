@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.DebugGUI;
 using _Main.Scripts.FiniteStateMachine;
+using UnityEngine;
 
 namespace _Main.Scripts.MainMenu.MVC
 {
@@ -21,10 +22,15 @@ namespace _Main.Scripts.MainMenu.MVC
             public void TriggerOptions();
             public void TriggerCosmetic();
             public void ExecuteDisable();
+            public void MainPanelOpened();
+            public void SetHasPlayed(bool hasPlayed);
+            public void TriggerStats();
         }
         
         private readonly MainMenuMotor _motor;
         private FSM<States> _fsm;
+        
+        private bool _hasPlayed;
         
         #region States
     
@@ -34,6 +40,7 @@ namespace _Main.Scripts.MainMenu.MVC
             Enable,
             Disable,
             Menu,
+            FirstGame,
             Lore,
             Tutorial,
             Credits
@@ -95,6 +102,14 @@ namespace _Main.Scripts.MainMenu.MVC
                 Controller.Credits();
             }
         }
+        
+        private class FirstGameState<T> : StateBase<T>
+        {
+            public override void Awake()
+            {
+                Controller.FirstGame();
+            }
+        }
 
         #endregion
         
@@ -123,6 +138,7 @@ namespace _Main.Scripts.MainMenu.MVC
 
             var none = new StateBase<States>();
             var enable = new EnableState<States>();
+            var first = new FirstGameState<States>();
             var disable = new DisableState<States>();
             var menu = new MenuState<States>();
             var lore = new LoreState<States>();
@@ -130,13 +146,13 @@ namespace _Main.Scripts.MainMenu.MVC
             var credits = new CreditsState<States>();
             
             temp.Add(none);
+            temp.Add(first);
             temp.Add(enable);
             temp.Add(disable);
             temp.Add(menu);
             temp.Add(lore);
             temp.Add(tutorial);
             temp.Add(credits);
-
 
             #endregion
 
@@ -146,10 +162,15 @@ namespace _Main.Scripts.MainMenu.MVC
             
             enable.AddTransition(States.Menu, menu);
             
+            menu.AddTransition(States.FirstGame, first);
             menu.AddTransition(States.Lore, lore);
             menu.AddTransition(States.Tutorial, tutorial);
             menu.AddTransition(States.Disable, disable);
             menu.AddTransition(States.Credits, credits);
+            
+            first.AddTransition(States.Menu, menu);
+            first.AddTransition(States.Tutorial, tutorial);
+            first.AddTransition(States.Disable, disable);
             
             lore.AddTransition(States.Menu, menu);
             
@@ -207,6 +228,11 @@ namespace _Main.Scripts.MainMenu.MVC
             SetTransition(States.Credits);
         }
         
+        private void TransitionToFirstGame()
+        {
+            SetTransition(States.FirstGame);
+        }
+        
         #endregion
 
         #endregion
@@ -231,6 +257,21 @@ namespace _Main.Scripts.MainMenu.MVC
             }
         }
 
+        public void MainPanelOpened()
+        {
+            _motor.TriggerMainPanelOpen();
+        }
+
+        public void SetHasPlayed(bool hasPlayed)
+        {
+            _hasPlayed = hasPlayed;
+        }
+
+        public void TriggerStats()
+        {
+            _motor.Stats();
+        }
+
         public void Lore()
         {
             _motor.Lore();
@@ -248,9 +289,16 @@ namespace _Main.Scripts.MainMenu.MVC
 
         public void TriggerGameMode()
         {
-            _motor.TriggerGameMode();
+            if (_hasPlayed == false)
+            {
+                TransitionToFirstGame();
+            }
+            else
+            {
+                _motor.TriggerGameMode();
+            }
         }
-
+        
         public void TriggerTutorial()
         {
             _motor.TriggerTutorial();
@@ -274,6 +322,11 @@ namespace _Main.Scripts.MainMenu.MVC
         public void Credits()
         {
             _motor.Credits();
+        }
+        
+        public void FirstGame()
+        {
+            _motor.FirstGame();
         }
         #endregion
     }

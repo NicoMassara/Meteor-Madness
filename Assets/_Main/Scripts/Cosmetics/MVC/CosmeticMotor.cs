@@ -24,9 +24,9 @@ namespace _Main.Scripts.Cosmetics.MVC
             NotifyAll(CosmeticObserverMessage.TriggerMainMenu);
         }
 
-        public void SelectAbility(int index)
+        public void SelectSkin(int index)
         {
-            NotifyAll(CosmeticObserverMessage.AbilitySelect,index);
+            NotifyAll(CosmeticObserverMessage.SkinSelected,index);
         }
 
         public void StartDisable()

@@ -61,7 +61,7 @@
     "DoublePoints" : "Double Points",
     "Automatic" : "Auto-Pilot"
   },
-  
+
   "Cosmetic": {
     "Title" : "Skin Selector",
     "SkinType" : {
@@ -83,6 +83,36 @@
     "Death": {
       "Title" : "Humanity Is Over!",
       "Score" : "Your Score"
+    }
+  },
+  
+  "Stats" : {
+    "Title" : "Stats",
+    "Deflect" : "Deflected Meteors",
+    "Collision" : "Meteors Collisions",
+    "AbilityCount" : "Ability Used",
+    "GamesPlayed" : "Games Played",
+    "DeflectStreak" : "Deflect Streak",
+    "LongestTime" : "Longest Time",
+    "HighScore" : "High Score",
+    "HistoricScore" : "Total Score"
+  },
+  
+  "FirstOpen":
+  {
+    "Stats" : {
+      "Title" : "Stats",
+      "Text" : "@Texts/en/First/stats.txt"
+      },
+
+    "Play": {
+      "Title" : "Attention!",
+      "Text" : "@Texts/en/First/play.txt"
+    },
+
+    "Cosmetic": {
+      "Title" : "Skin Selector",
+      "Text" : "@Texts/en/First/cosmetic.txt"
     }
   }
 }

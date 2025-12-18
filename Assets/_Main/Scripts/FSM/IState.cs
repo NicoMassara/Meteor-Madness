@@ -1,4 +1,6 @@
-﻿namespace _Main.Scripts.FiniteStateMachine
+﻿using System;
+
+namespace _Main.Scripts.FiniteStateMachine
 {
     public interface IState<T>
     {
@@ -13,5 +15,8 @@
         void AddTransition(T input, IState<T> state);
         void RemoveTransition(IState<T> state);
         void RemoveTransition(T input);
+        
+        public bool IsManualSleep { get; }
+        public event Action OnSleepFinished;
     }
 }

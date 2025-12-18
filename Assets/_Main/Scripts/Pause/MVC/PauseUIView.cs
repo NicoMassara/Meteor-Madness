@@ -63,14 +63,14 @@ namespace _Main.Scripts.Pause
         private void LocalizationEvents_OnLanguageChangedHandler()
         {
             UpdateLocalizedScoreText();
-            SetScoreText(GameManager.Instance.VisualPoints);
+            SetScoreText(GameManager.Instance.StatsController.VisualPoints);
         }
         
         #endregion
 
         private void HandleEnable()
         {
-            SetScoreText(GameManager.Instance.VisualPoints);
+            SetScoreText(GameManager.Instance.StatsController.VisualPoints);
             
             UIComponents.ResumeButton?.onClick.AddListener(() =>
             {
