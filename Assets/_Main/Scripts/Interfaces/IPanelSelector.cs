@@ -1,5 +1,9 @@
 ﻿using System;
+using _Main.Scripts.Localization;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace _Main.Scripts.Interfaces
 {
@@ -12,17 +16,9 @@ namespace _Main.Scripts.Interfaces
     [Serializable]
     public abstract class UiComponentsData
     {
-        private GameObject _activePanel;
-
-        public void SetActivePanel(GameObject panelObject)
-        {
-            _activePanel?.SetActive(false);
-            _activePanel = panelObject;
-            _activePanel.SetActive(true);
-        }
-        public void DisableActivePanel()
-        {
-            _activePanel?.SetActive(false);
-        }
+        protected void SetText(TMP_Text text, string textToPlace) => text.text = textToPlace;
+        protected void AddListenerToButton(Button button, UnityAction onClick) => button.onClick.AddListener(onClick);
+        protected void RemoveListenerFromButton(Button button, UnityAction onClick) => button.onClick.RemoveListener(onClick);
+        protected string GetLocalizedString(string langKey) => LocalizationManager.Instance.GetText(langKey);
     }
 }

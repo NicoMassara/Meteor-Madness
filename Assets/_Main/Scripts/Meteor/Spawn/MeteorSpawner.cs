@@ -12,6 +12,8 @@ namespace _Main.Scripts.Meteor
         [Header("Components")]
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
         [SerializeField] private MeteorView meteorPrefab;
+
+        private const byte MeteorValue = 100;
         
         private MeteorFactory _meteorFactory;
         private bool _isSpawningRing;
@@ -46,7 +48,7 @@ namespace _Main.Scripts.Meteor
                 Rotation = tempRot,
                 Position = spawnPosition,
                 Direction = direction.normalized,
-                Value = 100
+                Value = MeteorValue
             });
             tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
             tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
@@ -87,7 +89,7 @@ namespace _Main.Scripts.Meteor
                         yield return new WaitForSeconds(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
 
                         CreateMeteor(meteorSpeed * speedMultiplier, spawnSettings.GetPositionByAngle(currAngle), 
-                            GetRingMeteorValue(amountToSpawn, ringValues.RingsAmount));
+                            GetRingMeteorValue(amountToSpawn, ringValues.RingsAmount, MeteorValue));
                         currAngle += angleOffset;
                         currAngle = Mathf.Repeat(currAngle, 360f);
                     }
@@ -113,7 +115,7 @@ namespace _Main.Scripts.Meteor
         }
         
         
-        public static byte GetRingMeteorValue(int countPerWave, int waves, byte baseValue = 100)
+        private static byte GetRingMeteorValue(int countPerWave, int waves, byte baseValue = 100)
         {
             int total = countPerWave * waves;
 

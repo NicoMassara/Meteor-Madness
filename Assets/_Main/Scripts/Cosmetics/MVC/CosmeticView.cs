@@ -46,7 +46,7 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void HandleEnable()
         {
-            if (GameManager.Instance.GetHasOpenedCosmetics() == false)
+            if (GameManager.Instance.FlagsController.GetHasOpenedCosmetics() == false)
             {
                 OnCosmeticFirstEnable?.Invoke();
             }

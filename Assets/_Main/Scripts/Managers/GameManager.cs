@@ -22,20 +22,15 @@ namespace _Main.Scripts.Managers
         public EventBusManager EventManager { get; private set; }
         public IInputReader InputReader { get; private set; }
         
-        // Game Stored Data
-        
-        private GeneratedId _highScoreSecuredId;
-        public uint VisualPoints { get;  set; }
-
         public bool AntiEpileptic { get; set; } = true;
-        public GeneratedId CurrentScoreSecuredId { get; set; }
-        public GeneratedId CollisionCountId { get; set; }
-        public GeneratedId AbilityUseCountId { get; set; }
-        public GeneratedId DeflectCountId { get; set; }
+        public StatsController StatsController { get; private set; } 
+        public FlagsController FlagsController { get; private set; } 
 
         private void Awake()
         {
             EventManager = new EventBusManager();
+            StatsController = new StatsController();
+            FlagsController = new FlagsController();
         }
         
         public void SetInputReader(IInputReader inputReader)
@@ -85,242 +80,12 @@ namespace _Main.Scripts.Managers
                 
             }, isPaused);
         }
-        
 
         public void QuitGame()
         {
             QuitUtility.Quit();
         }
 
-        #region Score
 
-        public void ClearScoreData()
-        {
-            CurrentScoreSecuredId = null;
-            CollisionCountId = null;
-            AbilityUseCountId = null;
-            DeflectCountId = null;
-        }
-
-        public bool GetHasNewHighScore()
-        {
-            if(SecureValueManager.GetDoesContainValue<uint>(CurrentScoreSecuredId, out var currentScore) == false) 
-                return false;
-            
-            if(SecureValueManager.GetDoesContainValue<uint>(GetHighScoreSecuredId(), out var highScore) == false) 
-                return true;
-            
-            return currentScore > highScore;
-        }
-
-        public GeneratedId GetHighScoreSecuredId()
-        {
-            if (_highScoreSecuredId == null)
-            {
-                var temp = DataManager.Instance.GetData<DataManager.ScoreSaveData>(DataManager.SaveDataType.Score);
-                _highScoreSecuredId = SecureValueManager.RegisterValue(temp.HighScore);
-            }
-
-            return _highScoreSecuredId;
-        }
-
-        public void SaveHighScore(GeneratedId currentScoreId)
-        {
-            if (currentScoreId == null)
-            {
-                Debug.LogWarning("Failed To Save High Score Data");
-                return;
-            }
-
-            // Gets current Score
-            if (SecureValueManager.GetDoesContainValue<uint>(CurrentScoreSecuredId, out var currentScore) == false)
-            {
-                Debug.LogWarning("Failed To Save High Score Data");
-                return;
-            }
-
-            // Gets Saved High Score
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.ScoreSaveData>(DataManager.SaveDataType.Score);
-            
-            // Overwrites the data
-            saveData.HighScore = currentScore;
-            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Score);
-        }
-
-        public void SaveRuntimeHighScore(GeneratedId highScoreId, GeneratedId currentScoreId)
-        {
-            if (SecureValueManager.GetDoesContainValue<uint>(currentScoreId, out var currentScore) == false)
-            {
-                Debug.LogWarning("Failed To Save High Score Data");
-                return;
-            }
-            
-            SecureValueManager.ModifyValue(highScoreId,currentScore);
-        }
-
-        #endregion
-        
-        public void SaveStats()
-        {
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-
-            if (SecureValueManager.GetDoesContainValue<uint>(CollisionCountId, out var collisionCount))
-            {
-                saveData.CollisionAmount = collisionCount;
-            }
-
-            if (SecureValueManager.GetDoesContainValue<uint>(AbilityUseCountId, out var abilityCount))
-            {
-                saveData.AbilityUseAmount = abilityCount;
-            }
-            
-            if (SecureValueManager.GetDoesContainValue<uint>(DeflectCountId, out var deflectCount))
-            {
-                saveData.DeflectAmount = deflectCount;
-            }
-
-            saveData.GamesPlayed++;
-            
-#pragma warning disable CS0162 // Unreachable code detected
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (GameParameters.GameplayValues.DoesSaveProgress)
-            {
-                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-            }
-#else
-            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-#endif
-#pragma warning restore CS0162 // Unreachable code detected
-            
-        }
-        
-        public bool GetHasPlayed()
-        {
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-            var value = saveData.HasPlayed;
-            
-            if(value)
-                return true;
-            
-            saveData.HasPlayed = true;
-            
-#pragma warning disable CS0162 // Unreachable code detected
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (GameParameters.GameplayValues.DoesSaveProgress)
-            {
-                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-            }
-#else
-            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-#endif
-#pragma warning restore CS0162 // Unreachable code detected
-            
-            return false;
-        }
-
-        public bool GetHasCompletedTutorial()
-        {
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-            
-            return saveData.HasCompletedTutorial;
-        }
-
-        public void SetHasCompletedTutorial()
-        {
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-            saveData.HasCompletedTutorial = true;
-#pragma warning disable CS0162 // Unreachable code detected
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (GameParameters.GameplayValues.DoesSaveProgress)
-            {
-                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-            }
-#else
-            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-#endif
-#pragma warning restore CS0162 // Unreachable code detected
-            
-        }
-        
-        
-        public bool GetHasOpenedCosmetics()
-        {
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-            var value = saveData.HasOpenedCosmetics;
-            
-            if(value)
-                return true;
-            
-            saveData.HasOpenedCosmetics = true;
-            
-#pragma warning disable CS0162 // Unreachable code detected
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (GameParameters.GameplayValues.DoesSaveProgress)
-            {
-                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-            }
-#else
-            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-#endif
-#pragma warning restore CS0162 // Unreachable code detected
-            
-            return false;
-        }
-        
-        public bool GetHasOpenedLore()
-        {
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-            var value = saveData.HasOpenedLore;
-            
-            if(value)
-                return true;
-            
-            saveData.HasOpenedLore = true;
-            
-#pragma warning disable CS0162 // Unreachable code detected
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (GameParameters.GameplayValues.DoesSaveProgress)
-            {
-                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-            }
-#else
-            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-#endif
-#pragma warning restore CS0162 // Unreachable code detected
-            
-            return false;
-        }
-        
-        public bool GetHasOpenedStats()
-        {
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-            var value = saveData.HasOpenedStats;
-            
-            if(value)
-                return true;
-            
-            saveData.HasOpenedStats = true;
-            
-#pragma warning disable CS0162 // Unreachable code detected
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (GameParameters.GameplayValues.DoesSaveProgress)
-            {
-                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-            }
-#else
-            dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
-#endif
-#pragma warning restore CS0162 // Unreachable code detected
-            
-            return false;
-        }
     }
 }

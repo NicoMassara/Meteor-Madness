@@ -7,8 +7,6 @@ namespace _Main.Scripts.GameMode
 {
     public class GameModeMotor : ObservableComponent
     {
-        // Scores Values
-        private GeneratedId _currentScoreId;
         // Gameplay Values
         private readonly GameLevelController _levelController;
         private bool _hasDoublePoints;
@@ -17,24 +15,16 @@ namespace _Main.Scripts.GameMode
 #pragma warning disable CS0414 // Field is assigned but its value is never used
         private bool _isPaused;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
-        // Stats Values
-        private readonly GeneratedId _collisionId;
-        private readonly GeneratedId _abilityUseId;
-        private readonly GeneratedId _deflectId;
 
+        private GameplayStats _stats;
 
         public GameModeMotor(int[] levelStreakAmount)
         {
             _levelController = new(levelStreakAmount);
             _levelController.OnLevelChange += UpdateCurrentLevel;
-
-            _currentScoreId = SecureValueManager.RegisterValue<uint>(0);
-
-            SecureValueManager.OnCheatDetected += OnCheatDetectedHandler;
             
-            _collisionId = SecureValueManager.RegisterValue<uint>(0);
-            _abilityUseId = SecureValueManager.RegisterValue<uint>(0);
-            _deflectId = SecureValueManager.RegisterValue<uint>(0);
+            _stats = new GameplayStats();
+            _stats.OnCheatDetected += OnCheatDetectedHandler;
         }
 
         private void RestartValues()
@@ -117,10 +107,7 @@ namespace _Main.Scripts.GameMode
 
         public void InitializeData()
         {
-            UpdateCurrentScore(0);
-            UpdateCollisionCount(0);
-            UpdateAbilityCount(0);
-            UpdateDeflectCount(0);
+            _stats.InitializeValues();
             NotifyAll(GameModeObserverMessage.InitializeData);
         }
 
@@ -128,8 +115,7 @@ namespace _Main.Scripts.GameMode
         {
             // The View receives this data and stores it in the GameManager
             // So the DefeatScreen can use it 
-            NotifyAll(GameModeObserverMessage.SaveScore, _currentScoreId);
-            NotifyAll(GameModeObserverMessage.SaveStats, _collisionId,_abilityUseId,_deflectId);
+            NotifyAll(GameModeObserverMessage.SaveScore, _stats.CreateGameplayStatsData());
         }
 
         #endregion    
@@ -139,11 +125,11 @@ namespace _Main.Scripts.GameMode
         public void HandleMeteorDeflect(Vector2 position, byte projectileValue)
         {
             var finalValue = (uint)(_hasDoublePoints ? projectileValue * 2 : projectileValue);
-            var currentScore = GetCurrentScore();
+            var currentScore = _stats.GetCurrentScore();
 
             currentScore += finalValue;
             
-            UpdateCurrentScore(currentScore);
+            _stats.UpdateCurrentScore(currentScore);
             
             if (projectileValue >= 1)
             {
@@ -242,31 +228,6 @@ namespace _Main.Scripts.GameMode
 
         #endregion
 
-        #region Stats
-
-        public void IncreaseCollisionCount()
-        {
-            var current = GetCollisionCount();
-            current++;
-            UpdateCollisionCount(current);
-        }
-
-        public void IncreaseAbilityUseCount()
-        {
-            var current = GetUsedAbilityCount();
-            current++;
-            UpdateAbilityCount(current);
-        }
-        
-        public void IncreaseDeflectCount()
-        {
-            var current = GetDeflectCount();
-            current++;
-            UpdateDeflectCount(current);
-        }
-
-        #endregion
-
         #region Internal Level
 
         private void UpdateCurrentLevel()
@@ -276,85 +237,25 @@ namespace _Main.Scripts.GameMode
 
         #endregion
         
-        #region Secured Data
-
-        #region Score
-
-        private uint GetCurrentScore()
-        {
-            return SecureValueManager.GetDoesContainValue(_currentScoreId, out uint value) ? value : 0;
-        }
-        private void UpdateCurrentScore(uint input)
-        {
-            SecureValueManager.ModifyValue(_currentScoreId, input);
-        }
-        
-        #endregion
-
-        #region Stats
-
-        private uint GetCollisionCount()
-        {
-            return SecureValueManager.GetDoesContainValue(_collisionId, out uint value) ? value : 0;
-        }
-        private void UpdateCollisionCount(uint input)
-        {
-            SecureValueManager.ModifyValue(_collisionId, input);
-        }
-        
-        private uint GetUsedAbilityCount()
-        {
-            return SecureValueManager.GetDoesContainValue(_abilityUseId, out uint value) ? value : 0;
-        }
-        private void UpdateAbilityCount(uint input)
-        {
-            SecureValueManager.ModifyValue(_abilityUseId, input);
-        }
-        
-        private uint GetDeflectCount()
-        {
-            return SecureValueManager.GetDoesContainValue(_deflectId, out uint value) ? value : 0;
-        }
-        private void UpdateDeflectCount(uint input)
-        {
-            SecureValueManager.ModifyValue(_deflectId, input);
-        }
-
-
-        #endregion
-        
-        private void OnCheatDetectedHandler(ushort id)
-        {
-            if (_currentScoreId.Id == id)
-            {
-                Debug.LogWarning("Cheat Detected! Restarting Points!");
-                UpdateCurrentScore(0);
-            }
-            if (_collisionId.Id == id)
-            {
-                Debug.LogWarning("Cheat Detected! Restarting Collision Stats!");
-                UpdateCollisionCount(0);
-            }
-            
-            if (_abilityUseId.Id == id)
-            {
-                Debug.LogWarning("Cheat Detected! Restarting Ability Stats!");
-                UpdateAbilityCount(0);
-            }
-            
-            if (_deflectId.Id == id)
-            {
-                Debug.LogWarning("Cheat Detected! Restarting Ability Stats!");
-                UpdateDeflectCount(0);
-            }
-        }
-        
-        #endregion
-
-        
         public void NotifyAbilityActive(AbilityType abilityType)
         {
             NotifyAll(GameModeObserverMessage.AbilityActive, abilityType);
         }
+        
+        private void OnCheatDetectedHandler()
+        {
+            //NotifyAll(GameModeObserverMessage.CheatDetected);
+        }
+
+        #region Stats
+
+        public void IncreaseCollisionCount() => _stats.IncreaseCollisionCount();
+        public void IncreaseAbilityUseCount() => _stats.IncreaseAbilityUseCount();
+        public void IncreaseDeflectCount() => _stats.IncreaseDeflectCount();
+
+        public void UpdateTimer(float deltaTime) => _stats.IncreaseTimer(deltaTime);
+
+        #endregion
+
     }
 }

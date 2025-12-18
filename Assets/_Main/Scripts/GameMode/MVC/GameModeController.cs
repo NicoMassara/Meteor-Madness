@@ -55,6 +55,8 @@ namespace _Main.Scripts.GameMode
             public void DisableProjectileSpawn();
             public void FinishGame();
             public void StartFinish();
+            
+            public void UpdateTimer(float deltaTime);
         }
 
         private class MainController
@@ -130,6 +132,11 @@ namespace _Main.Scripts.GameMode
                 public override void Awake()
                 {
                     Controller.StartGameplay();
+                }
+
+                public override void Execute(float deltaTime)
+                {
+                    Controller.UpdateTimer(deltaTime);
                 }
 
                 public override void Sleep()
@@ -329,8 +336,7 @@ namespace _Main.Scripts.GameMode
             public bool GetIsPaused() => _actionGate.IsPaused;
 
             #endregion
-
-
+            
             public bool GetWasFinished() => _actionGate.HasSavedScore;
         }
         
@@ -338,7 +344,6 @@ namespace _Main.Scripts.GameMode
         
         private readonly GameModeMotor _motor;
         private MainController _mainController;
-        
         
         public GameModeController(GameModeMotor motor)
         {
@@ -419,6 +424,12 @@ namespace _Main.Scripts.GameMode
         public void StartFinish()
         {
             _motor.StartFinish();
+        }
+
+        public void UpdateTimer(float deltaTime)
+        {
+            if (_mainController.GetIsInGameplay())
+                _motor.UpdateTimer(deltaTime);
         }
 
         public void UpdateCountdown(float remainingTime)
@@ -544,22 +555,19 @@ namespace _Main.Scripts.GameMode
         public void IncreaseCollisionCount()
         {
             if(_mainController.GetIsInGameplay())
-                return;
-            _motor.IncreaseCollisionCount();
+                _motor.IncreaseCollisionCount();
         }
 
         public void IncreaseAbilityUseCount()
         {
             if(_mainController.GetIsInGameplay())
-                return;
-            _motor.IncreaseAbilityUseCount();
+                _motor.IncreaseAbilityUseCount();
         }
         
         public void IncreaseDeflectCount()
         {
             if(_mainController.GetIsInGameplay())
-                return;
-            _motor.IncreaseDeflectCount();
+                _motor.IncreaseDeflectCount();
         }
 
         #endregion

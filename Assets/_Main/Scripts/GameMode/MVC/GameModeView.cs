@@ -7,6 +7,7 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.GameConfig;
 using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Observer;
+using _Main.Scripts.Save;
 using _Main.Scripts.SecurityData;
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
@@ -121,13 +122,7 @@ namespace _Main.Scripts.GameMode
                     HandleInitializeData();
                     break;
                 case GameModeObserverMessage.SaveScore:
-                    HandleSaveScore((GeneratedId)args[0]);
-                    break;
-                case GameModeObserverMessage.SaveStats:
-                    HandleSaveStats(
-                        (GeneratedId)args[0],
-                        (GeneratedId)args[1],
-                        (GeneratedId)args[2]);
+                    HandleSaveScore((DataManagerTools.GameplayStatsIdData)args[0]);
                     break;
                 
                 
@@ -267,7 +262,7 @@ namespace _Main.Scripts.GameMode
         {
             OnStopMusic?.Invoke();
             AbilitiesEventCaller.Disable();
-            GameManager.Instance.VisualPoints = 0;
+            GameManager.Instance.StatsController.VisualPoints = 0;
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
         
@@ -355,30 +350,16 @@ namespace _Main.Scripts.GameMode
             OnInitialized?.Invoke();
         }
         
-        private void HandleSaveScore(GeneratedId generatedId)
+        private void HandleSaveScore(DataManagerTools.GameplayStatsIdData saveData)
         {
             GameModeEventCaller.SetEnablePause(false);
             GameManager.Instance.CanPlay = false;
             ShieldEventCaller.Disable();
-            GameManager.Instance.CurrentScoreSecuredId = generatedId;
+            GameManager.Instance.StatsController.SetStatsIdData(saveData);
             
-            if (SecureValueManager.GetDoesContainValue<uint>(generatedId,
-                    out var currentScore))
-            {
-                //Debug.LogWarning($"Current Score: {currentScore}");
-            }
             OnScoreSaved?.Invoke();
         }
         
-        private void HandleSaveStats(
-            GeneratedId collisionCount, 
-            GeneratedId abilityUseCount, 
-            GeneratedId deflectCount)
-        {
-            GameManager.Instance.CollisionCountId = collisionCount;
-            GameManager.Instance.AbilityUseCountId = abilityUseCount;
-            GameManager.Instance.DeflectCountId = deflectCount;
-        }
 
         #endregion
         

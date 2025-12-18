@@ -106,4 +106,11 @@ namespace _Main.Scripts.Interfaces.Vibration
         
     }
     
+    //=== Stats ===//
+    
+    public interface IStatsUIVibration : IVibrationComponent
+    {
+        public event Action OnBackButtonPressed; 
+    }
+    
 }

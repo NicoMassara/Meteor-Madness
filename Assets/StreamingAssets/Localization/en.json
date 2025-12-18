@@ -38,10 +38,6 @@
       "Button" : "Credits",
       "Title" : "Credits",
       "Text" : "Develop By"
-    },
-    "FirstPlay": {
-      "Title" : "Attention!",
-      "Text" : "@Texts/en/firstPlay.txt"
     }
   },
   
@@ -95,7 +91,28 @@
     "Deflect" : "Deflected Meteors",
     "Collision" : "Meteors Collisions",
     "AbilityCount" : "Ability Used",
-    "GamesPlayed" : "Games Played"
-  }
+    "GamesPlayed" : "Games Played",
+    "DeflectStreak" : "Deflect Streak",
+    "LongestTime" : "Longest Time",
+    "HighScore" : "High Score",
+    "HistoricScore" : "Total Score"
+  },
   
+  "FirstOpen":
+  {
+    "Stats" : {
+      "Title" : "Stats",
+      "Text" : "@Texts/en/First/stats.txt"
+      },
+
+    "Play": {
+      "Title" : "Attention!",
+      "Text" : "@Texts/en/First/play.txt"
+    },
+
+    "Cosmetic": {
+      "Title" : "Skin Selector",
+      "Text" : "@Texts/en/First/cosmetic.txt"
+    }
+  }
 }

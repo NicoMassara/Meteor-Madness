@@ -69,10 +69,12 @@ namespace _Main.Scripts.MyTest.Defeat
             
             private void SetScoreValue()
             {
-                GameManager.Instance.CurrentScoreSecuredId = 
-                    SecureValueManager.RegisterValue(scoreAmount);
+                GameManager.Instance.StatsController.SetStatsIdData(new DataManagerTools.GameplayStatsIdData
+                {
+                  CurrentScoreId = SecureValueManager.RegisterValue(scoreAmount)
+                });
 
-                SecureValueManager.ModifyValue(GameManager.Instance.GetHighScoreSecuredId(), highScore);
+                SecureValueManager.ModifyValue(GameManager.Instance.StatsController.GetHighScoreSecuredId(), highScore);
             }
 
             private IEnumerator Coroutine_DisableDefeatScreen()
