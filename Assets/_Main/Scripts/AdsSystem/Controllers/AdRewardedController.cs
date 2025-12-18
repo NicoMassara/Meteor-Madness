@@ -29,10 +29,7 @@ namespace _Main.Scripts.AdsSystem
 
         protected void TryLoadAd()
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            
-            if(GameParameters.GameplayValues.AdsEnable == false) return;
-#endif
+            if(AdsTools.GetAreAdsDisable()) return;
             
             _hasRewarded = false;
 
@@ -50,10 +47,7 @@ namespace _Main.Scripts.AdsSystem
         
         protected void TryShowAd()
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            
-            if(GameParameters.GameplayValues.AdsEnable == false) return;
-#endif
+            if(AdsTools.GetAreAdsDisable()) return;
             
             if (AdManager.RewardedAd == null)
             {
@@ -85,10 +79,7 @@ namespace _Main.Scripts.AdsSystem
 
         protected void Reward()
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            
-            if(GameParameters.GameplayValues.AdsEnable == false) return;
-#endif
+            if(AdsTools.GetAreAdsDisable()) return;
             
             if(_hasRewarded) return;
             

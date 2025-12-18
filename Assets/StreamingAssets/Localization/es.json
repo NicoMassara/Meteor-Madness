@@ -38,10 +38,6 @@
       "Button" : "Creditos",
       "Title" : "Creditos",
       "Text" : "Desarrollado por"
-    },
-    "FirstPlay": {
-      "Title" : "Atención!",
-      "Text" : "@Texts/es/firstPlay.txt"
     }
   },
 
@@ -96,5 +92,23 @@
     "Collision" : "Meteors Colisionados",
     "AbilityCount" : "Habilidades Usadas",
     "GamesPlayed" : "Partidas Jugadas"
+  },
+
+  "FirstOpen":
+  {
+    "Stats" : {
+      "Title" : "Stats",
+      "Text" : "@Texts/First/en/stats.txt"
+    },
+
+    "Play": {
+      "Title" : "Attention!",
+      "Text" : "@Texts/First/en/play.txt"
+    },
+
+    "Cosmetic": {
+      "Title" : "Skin Selector",
+      "Text" : "@Texts/First/en/cosmetic.txt"
+    }
   }
 }

@@ -156,9 +156,9 @@ namespace _Main.Scripts.Tutorial.MVC
         
         private void HandleFinish()
         {
-            if (GameManager.Instance.GetHasCompletedTutorial() == false)
+            if (GameManager.Instance.FlagsController.GetHasCompletedTutorial() == false)
             {
-                GameManager.Instance.SetHasCompletedTutorial();
+                GameManager.Instance.FlagsController.SetHasCompletedTutorial();
             }
             
             GameManager.Instance.CanPlay = false;

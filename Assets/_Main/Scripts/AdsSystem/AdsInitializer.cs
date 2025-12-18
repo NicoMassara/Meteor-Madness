@@ -23,13 +23,14 @@ namespace _Main.Scripts.AdsSystem
             //
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
 
-            if (GameParameters.GameplayValues.AdsEnable == false)
+            if (AdsTools.GetAreAdsDisable())
             {
                 AdsEvents.TriggerAdsInitialized();
                 AdsEvents.OnInitializeAds -= InitializeAds;
                 return;
             }
 #endif
+            
             
             LevelPlay.ValidateIntegration();
             

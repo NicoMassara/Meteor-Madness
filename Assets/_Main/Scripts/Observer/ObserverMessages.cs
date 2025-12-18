@@ -55,7 +55,7 @@
         public const ulong OpenPauseMenu = 0xA2022;
         public const ulong StartFinish = 0xA2023;
         public const ulong FinishAddingPoints = 0xA2024;
-        public const ulong SaveStats = 0xA2025;
+        public const ulong CheatDetected = 0xA2025;
         public const ulong AbilityActive = 0xA2026;
         public const ulong GameInterrupted = 0xA2027;
 

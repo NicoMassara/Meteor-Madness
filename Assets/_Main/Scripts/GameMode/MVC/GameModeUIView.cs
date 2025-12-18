@@ -147,7 +147,7 @@ namespace _Main.Scripts.GameMode
         private void SetStoredPoints(uint storedPoints)
         {
             _storedPoints = storedPoints;
-            GameManager.Instance.VisualPoints = _storedPoints;
+            GameManager.Instance.StatsController.VisualPoints = _storedPoints;
         }
         
 

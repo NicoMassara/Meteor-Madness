@@ -75,7 +75,7 @@ namespace _Main.Scripts.MainMenu.MVC
         
         private void HandleLoreMenu()
         {
-            GameManager.Instance.GetHasOpenedLore();
+            GameManager.Instance.FlagsController.GetHasOpenedLore();
             OnLoreOpened?.Invoke();
         }
         

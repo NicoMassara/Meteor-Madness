@@ -55,7 +55,7 @@ namespace _Main.Scripts.MainMenu.MVC
             _view.OnMainMenuEnable += () =>
             {
                 _controller.TransitionToMenu();
-                var hasPlayed = GameManager.Instance.GetHasPlayed();
+                var hasPlayed = GameManager.Instance.FlagsController.GetHasPlayed();
 
 #pragma warning disable CS0162 // Unreachable code detected
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -86,7 +86,7 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnTutorialTriggered += () =>
             {
                 // Flips HasPlayed
-                GameManager.Instance.GetHasPlayed();
+                GameManager.Instance.FlagsController.GetHasPlayed();
                 _controller.TriggerTutorial();
             };
             _ui.OnLoreOpen += () => _controller.TransitionToLore();

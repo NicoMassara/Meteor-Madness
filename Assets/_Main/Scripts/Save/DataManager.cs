@@ -56,10 +56,10 @@ namespace _Main.Scripts.Save
         [System.Serializable]
         private class MainSaveData
         {
-            public ScoreSaveData Score = new(); 
             public StatsSaveData Stats = new(); 
             public SettingsSaveData Settings = new(); 
             public SkinSaveData Skin = new(); 
+            public FlagsSaveData Flags = new(); 
         }
         private static class SaveSystem
         {
@@ -329,8 +329,8 @@ namespace _Main.Scripts.Save
         {
             Settings,
             Stats,
-            Score,
             Skin,
+            Flags,
             Test
         }
         
@@ -339,29 +339,20 @@ namespace _Main.Scripts.Save
         {
             public abstract SaveDataType Type { get;}
         }
-
-        [System.Serializable]
-        public class ScoreSaveData : SaveDataBase
-        {
-            public override SaveDataType Type => SaveDataType.Score;
-            public uint HighScore;
-        }
+        
     
         [System.Serializable]
         public class StatsSaveData : SaveDataBase
         {
             public override SaveDataType Type => SaveDataType.Stats;
-            // Flags
-            public bool HasPlayed;
-            public bool HasCompletedTutorial;
-            public bool HasOpenedCosmetics;
-            public bool HasOpenedStats;
-            public bool HasOpenedLore;
-            // Stats
+            public uint HighScore;
             public uint DeflectAmount;
             public uint CollisionAmount;
             public uint AbilityUseAmount;
             public uint GamesPlayed;
+            public float LongestTime;
+            public uint LongestStreak;
+            public uint TotalScore;
         }
     
         [System.Serializable]
@@ -378,6 +369,17 @@ namespace _Main.Scripts.Save
         {
             public override SaveDataType Type => SaveDataType.Skin;
             public int SkinIndex = 0;
+        }
+
+        [System.Serializable]
+        public class FlagsSaveData : SaveDataBase
+        {
+            public override SaveDataType Type => SaveDataType.Flags;
+            public bool HasPlayed;
+            public bool HasCompletedTutorial;
+            public bool HasOpenedCosmetics;
+            public bool HasOpenedStats;
+            public bool HasOpenedLore;
         }
 
         #endregion
@@ -461,8 +463,8 @@ namespace _Main.Scripts.Save
             {
                 SaveDataType.Settings => _mainSaveData.Settings as T,
                 SaveDataType.Stats => _mainSaveData.Stats as T,
-                SaveDataType.Score => _mainSaveData.Score as T,
                 SaveDataType.Skin => _mainSaveData.Skin as T,
+                SaveDataType.Flags => _mainSaveData.Flags as T,
                 _ => throw new ArgumentOutOfRangeException(nameof(saveType), saveType, null)
             };
         }
@@ -477,11 +479,11 @@ namespace _Main.Scripts.Save
                 case SaveDataType.Stats:
                     _mainSaveData.Stats = data as StatsSaveData;
                     break;
-                case SaveDataType.Score:
-                    _mainSaveData.Score = data as ScoreSaveData;
-                    break;
                 case SaveDataType.Skin:
                     _mainSaveData.Skin = data as SkinSaveData;
+                    break;
+                case SaveDataType.Flags:
+                    _mainSaveData.Flags = data as FlagsSaveData;
                     break;
             }
         }

@@ -107,7 +107,7 @@ namespace _Main.Scripts.Defeat
         {
             if (hasNewHighScore)
             {
-                GameManager.Instance.SaveRuntimeHighScore(highScoreId, currentScoreId);
+                GameManager.Instance.StatsController.SaveRuntimeHighScore(highScoreId, currentScoreId);
             }
             
             AdsEvents.Rewarded_TriggerLoad();
@@ -116,14 +116,14 @@ namespace _Main.Scripts.Defeat
 
         private void SaveGameData()
         {
-            GameManager.Instance.SaveHighScore(GameManager.Instance.GetHighScoreSecuredId());
-            GameManager.Instance.SaveStats();
+            GameManager.Instance.StatsController.SaveHighScore(GameManager.Instance.StatsController.GetHighScoreSecuredId());
+            GameManager.Instance.StatsController.SaveStats();
  
         }
         
         private void HandleExecuteDisable()
         {
-            GameManager.Instance.ClearScoreData();
+            GameManager.Instance.StatsController.ClearScoreData();
             GameScreenEventCaller.DisableScreen(ScreenType.Defeat, EventRequestType.Granted);
         }
 
@@ -135,9 +135,9 @@ namespace _Main.Scripts.Defeat
         private void HandleDataLoaded()
         {
             OnDataLoaded?.Invoke(
-                GameManager.Instance.CurrentScoreSecuredId, 
-                GameManager.Instance.GetHighScoreSecuredId(),
-                GameManager.Instance.GetHasNewHighScore());
+                GameManager.Instance.StatsController.GetCurrentScoreSecuredId(), 
+                GameManager.Instance.StatsController.GetHighScoreSecuredId(),
+                GameManager.Instance.StatsController.GetHasNewHighScore());
 
         }
         
