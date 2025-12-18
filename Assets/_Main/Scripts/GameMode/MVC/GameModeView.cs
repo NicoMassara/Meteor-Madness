@@ -124,7 +124,10 @@ namespace _Main.Scripts.GameMode
                     HandleSaveScore((GeneratedId)args[0]);
                     break;
                 case GameModeObserverMessage.SaveStats:
-                    HandleSaveStats((GeneratedId)args[0],(GeneratedId)args[1],(GeneratedId)args[2]);
+                    HandleSaveStats(
+                        (GeneratedId)args[0],
+                        (GeneratedId)args[1],
+                        (GeneratedId)args[2]);
                     break;
                 
                 

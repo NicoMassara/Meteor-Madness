@@ -24,6 +24,7 @@ namespace _Main.Scripts.MainMenu.MVC
             public void ExecuteDisable();
             public void MainPanelOpened();
             public void SetHasPlayed(bool hasPlayed);
+            public void TriggerStats();
         }
         
         private readonly MainMenuMotor _motor;
@@ -264,6 +265,11 @@ namespace _Main.Scripts.MainMenu.MVC
         public void SetHasPlayed(bool hasPlayed)
         {
             _hasPlayed = hasPlayed;
+        }
+
+        public void TriggerStats()
+        {
+            _motor.Stats();
         }
 
         public void Lore()

@@ -45,7 +45,7 @@
         OptionsMenu,
         Defeat,
         Pause,
-        Empty2,
+        Stats,
         Empty3,
         Empty4,
         Empty5,

@@ -83,5 +83,10 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             NotifyAll(MainMenuObserverMessage.FirstGame);
         }
+
+        public void Stats()
+        {
+            NotifyAll(MainMenuObserverMessage.Stats);
+        }
     }
 }

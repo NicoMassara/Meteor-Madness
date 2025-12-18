@@ -18,9 +18,9 @@ namespace _Main.Scripts.GameMode
         private bool _isPaused;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
         // Stats Values
-        private GeneratedId _collisionId;
-        private GeneratedId _abilityUseId;
-        private GeneratedId _deflectId;
+        private readonly GeneratedId _collisionId;
+        private readonly GeneratedId _abilityUseId;
+        private readonly GeneratedId _deflectId;
 
 
         public GameModeMotor(int[] levelStreakAmount)
@@ -31,6 +31,10 @@ namespace _Main.Scripts.GameMode
             _currentScoreId = SecureValueManager.RegisterValue<uint>(0);
 
             SecureValueManager.OnCheatDetected += OnCheatDetectedHandler;
+            
+            _collisionId = SecureValueManager.RegisterValue<uint>(0);
+            _abilityUseId = SecureValueManager.RegisterValue<uint>(0);
+            _deflectId = SecureValueManager.RegisterValue<uint>(0);
         }
 
         private void RestartValues()
@@ -67,7 +71,6 @@ namespace _Main.Scripts.GameMode
         public void StartFinish()
         {
             NotifyAll(GameModeObserverMessage.StartFinish);
-            NotifyAll(GameModeObserverMessage.SaveStats, _collisionId,_abilityUseId,_deflectId);
         }
 
         #endregion
@@ -126,6 +129,7 @@ namespace _Main.Scripts.GameMode
             // The View receives this data and stores it in the GameManager
             // So the DefeatScreen can use it 
             NotifyAll(GameModeObserverMessage.SaveScore, _currentScoreId);
+            NotifyAll(GameModeObserverMessage.SaveStats, _collisionId,_abilityUseId,_deflectId);
         }
 
         #endregion    
@@ -289,29 +293,29 @@ namespace _Main.Scripts.GameMode
 
         #region Stats
 
-        private float GetCollisionCount()
+        private uint GetCollisionCount()
         {
-            return SecureValueManager.GetDoesContainValue(_collisionId, out float value) ? value : 0;
+            return SecureValueManager.GetDoesContainValue(_collisionId, out uint value) ? value : 0;
         }
-        private void UpdateCollisionCount(float input)
+        private void UpdateCollisionCount(uint input)
         {
             SecureValueManager.ModifyValue(_collisionId, input);
         }
         
-        private float GetUsedAbilityCount()
+        private uint GetUsedAbilityCount()
         {
-            return SecureValueManager.GetDoesContainValue(_abilityUseId, out float value) ? value : 0;
+            return SecureValueManager.GetDoesContainValue(_abilityUseId, out uint value) ? value : 0;
         }
-        private void UpdateAbilityCount(float input)
+        private void UpdateAbilityCount(uint input)
         {
             SecureValueManager.ModifyValue(_abilityUseId, input);
         }
         
-        private float GetDeflectCount()
+        private uint GetDeflectCount()
         {
-            return SecureValueManager.GetDoesContainValue(_deflectId, out float value) ? value : 0;
+            return SecureValueManager.GetDoesContainValue(_deflectId, out uint value) ? value : 0;
         }
-        private void UpdateDeflectCount(float input)
+        private void UpdateDeflectCount(uint input)
         {
             SecureValueManager.ModifyValue(_deflectId, input);
         }
@@ -329,19 +333,19 @@ namespace _Main.Scripts.GameMode
             if (_collisionId.Id == id)
             {
                 Debug.LogWarning("Cheat Detected! Restarting Collision Stats!");
-                UpdateCollisionCount(Mathf.Infinity);
+                UpdateCollisionCount(0);
             }
             
             if (_abilityUseId.Id == id)
             {
                 Debug.LogWarning("Cheat Detected! Restarting Ability Stats!");
-                UpdateAbilityCount(Mathf.NegativeInfinity);
+                UpdateAbilityCount(0);
             }
             
             if (_deflectId.Id == id)
             {
                 Debug.LogWarning("Cheat Detected! Restarting Ability Stats!");
-                UpdateDeflectCount(Mathf.NegativeInfinity);
+                UpdateDeflectCount(0);
             }
         }
         

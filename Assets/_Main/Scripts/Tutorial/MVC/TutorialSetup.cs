@@ -74,7 +74,6 @@ namespace _Main.Scripts.Tutorial.MVC
 
         private void SubscribeEventBus()
         {
-
             ProjectileEventSubscriber.Deflected(EventBus_Meteor_Deflected);
             ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
             //

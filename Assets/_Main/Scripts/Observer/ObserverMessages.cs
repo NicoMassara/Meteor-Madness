@@ -153,7 +153,7 @@
         public const ulong MainPanelOpened = 0xA7013;
         public const ulong FirstGame = 0xA7014;
         public const ulong LoreClosed = 0xA7015;
-        public const ulong Empty4 = 0xA7016;
+        public const ulong Stats = 0xA7016;
     }
 
     public struct CosmeticObserverMessage
@@ -240,14 +240,14 @@
         public const ulong GameMode = 0xA130A;
     }
 
-    public struct EmptyObserverMessage2
+    public struct StatsObserverMessage
     {
-        public const ulong Empty1  = 0xA1401;
-        public const ulong Empty2  = 0xA1402;
-        public const ulong Empty3  = 0xA1403;
-        public const ulong Empty4  = 0xA1404;
-        public const ulong Empty5  = 0xA1405;
-        public const ulong Empty6  = 0xA1406;
+        public const ulong Initialize  = 0xA1401;
+        public const ulong Enable  = 0xA1402;
+        public const ulong StartDisable  = 0xA1403;
+        public const ulong ExecuteDisable  = 0xA1404;
+        public const ulong MainMenu  = 0xA1405;
+        public const ulong LoadTextData  = 0xA1406;
         public const ulong Empty7  = 0xA1407;
         public const ulong Empty8  = 0xA1408;
         public const ulong Empty9  = 0xA1409;

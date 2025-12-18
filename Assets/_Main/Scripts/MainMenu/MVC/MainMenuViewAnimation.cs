@@ -22,7 +22,7 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             public void PlayFirstOpenAnimation();
             public void PlayOpenAnimation(ScreenType screenType);
-            public void PlayCloseAnimation(ScreenType screenType);
+            public void PlayCloseAnimation(ScreenType screenType, Action onClose = null);
             public void TriggerClose();
         }
         
@@ -82,6 +82,7 @@ namespace _Main.Scripts.MainMenu.MVC
             private class MenuState<T> : BaseState<T>
             {
                 private bool _isFirstOpen = true;
+                public override bool IsManualSleep => true;
                 
                 public override void Awake()
                 {
@@ -98,14 +99,15 @@ namespace _Main.Scripts.MainMenu.MVC
 
                 public override void Sleep()
                 {
-                    Controller.PlayCloseAnimation(ScreenType.MainMenu);
+                    Controller.PlayCloseAnimation(ScreenType.MainMenu, TriggerOnSleepFinished);
                 }
             }
 
             private class DefaultState<T> : BaseState<T>
             {
                 private readonly ScreenType _screenType;
-                
+                public override bool IsManualSleep => true;
+
                 public DefaultState(ScreenType screenType)
                 {
                     _screenType = screenType;
@@ -118,7 +120,7 @@ namespace _Main.Scripts.MainMenu.MVC
 
                 public override void Sleep()
                 {
-                    Controller.PlayCloseAnimation(_screenType);
+                    Controller.PlayCloseAnimation(_screenType,TriggerOnSleepFinished);
                 }
             }
 
@@ -235,8 +237,7 @@ namespace _Main.Scripts.MainMenu.MVC
             #endregion
 
             #endregion
-
-
+            
         }
 
         #region Animations
@@ -386,21 +387,20 @@ namespace _Main.Scripts.MainMenu.MVC
 
         private class Animation_Lore_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel, IBasePanelData>
         {
-            private Vector2 _offscreenPos;
+            private readonly AnimationHelper.PanelPosition _panel;
 
-            public Animation_Lore_Close(MainMenuUiAnimationComponents.ILorePanel components, IBasePanelData animationData)
-                : base(components, animationData) { }
-
-            protected override void Initialize()
+            public Animation_Lore_Close(MainMenuUiAnimationComponents.ILorePanel components,
+                IBasePanelData animationData)
+                : base(components, animationData)
             {
-                UIComponents.LorePanel.gameObject.SetActive(false);
-                _offscreenPos = AnimationHelper.GetOffscreenPos(UIComponents.LorePanel, AnimationData.OffscreenDirection);
+                _panel = new AnimationHelper.PanelPosition(UIComponents.LorePanel,
+                    AnimationData.OffscreenDirection, AnimationData.Offset);
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.LorePanel.DOAnchorPos(_offscreenPos, AnimationData.MovementDuration / 2))
+                    .Append(UIComponents.LorePanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.MovementDuration))
                     .AppendCallback(() => UIComponents.LorePanel.gameObject.SetActive(false));
             }
         }
@@ -451,7 +451,7 @@ namespace _Main.Scripts.MainMenu.MVC
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.TutorialPanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.MovementDuration / 2))
+                    .Append(UIComponents.TutorialPanel.DOAnchorPos(_panel.OffScreenPos, AnimationData.MovementDuration))
                     .AppendCallback(() => UIComponents.TutorialPanel.gameObject.SetActive(false));
             }
         }
@@ -686,28 +686,28 @@ namespace _Main.Scripts.MainMenu.MVC
             }
         }
 
-        public void PlayCloseAnimation(ScreenType screenType)
+        public void PlayCloseAnimation(ScreenType screenType, Action onClose = null)
         {
             switch (screenType)
             {
                 case ScreenType.MainMenu:
-                    PlayAnimation(_animationMenuClose);
+                    PlayAnimation(_animationMenuClose,onClose);
                     break;
                 case ScreenType.Lore:
-                    PlayAnimation(_animationLoreClose);
+                    PlayAnimation(_animationLoreClose,onClose);
                     break;
                 case ScreenType.Tutorial:
-                    PlayAnimation(_animationTutorialClose);
+                    PlayAnimation(_animationTutorialClose,onClose);
                     break;
                 case ScreenType.Credits:
-                    PlayAnimation(_animationCreditsClose);
+                    PlayAnimation(_animationCreditsClose,onClose);
                     break;
                 case ScreenType.FirstGame:
-                    PlayAnimation(_animationFirstGameClose);
+                    PlayAnimation(_animationFirstGameClose,onClose);
                     break;
             }
         }
-        
+
         public void PlayFirstOpenAnimation()
         {
             PlayAnimation(_animationMenuFirstOpen, OnMainPanelOpened);

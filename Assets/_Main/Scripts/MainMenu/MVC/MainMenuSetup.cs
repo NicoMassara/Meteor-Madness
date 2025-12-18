@@ -66,6 +66,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 }
                 else
                 {
+                    _controller.SetHasPlayed(hasPlayed);
                     Debug.Log($"Is First Game: {!hasPlayed}");
                 }
 #else
@@ -95,6 +96,7 @@ namespace _Main.Scripts.MainMenu.MVC
             _ui.OnTutorialOpen += () => _controller.TransitionToTutorial();
             _ui.OnOptionsOpen += () => _controller.TriggerOptions();
             _ui.OnCosmeticTriggered += () => _controller.TriggerCosmetic();
+            _ui.OnStatsOpen += () => _controller.TriggerStats();
             //
             _animation.OnPanelClosed += () => _controller.ExecuteDisable();
             _animation.OnMainPanelOpened += () => _controller.MainPanelOpened();

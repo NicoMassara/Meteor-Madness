@@ -419,7 +419,9 @@ namespace _Main.Scripts.MyCommands
                 "Cosmetic\n" +
                 "OptionsMenu\n" +
                 "Defeat\n" +
-                "Pause\n");
+                "Pause\n" +
+                "Stats\n"
+                );
         }
 
         [ConsoleMethod("screen_open", "Open Selected Screen")]

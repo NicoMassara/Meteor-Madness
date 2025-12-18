@@ -123,12 +123,13 @@ namespace _Main.Scripts.Defeat
         
         private void HandleExecuteDisable()
         {
+            GameManager.Instance.ClearScoreData();
             GameScreenEventCaller.DisableScreen(ScreenType.Defeat, EventRequestType.Granted);
         }
 
         private void HandleStartDisable()
         {
-            GameManager.Instance.ClearScoreData();
+
         }
         
         private void HandleDataLoaded()

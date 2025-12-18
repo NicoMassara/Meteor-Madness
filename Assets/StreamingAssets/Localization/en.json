@@ -41,7 +41,7 @@
     },
     "FirstPlay": {
       "Title" : "Attention!",
-      "Text" : "This is your first time playing Meteor Madness\nAre you sure you want to play right away? \nYou might want  to check the tutorial first!"
+      "Text" : "@Texts/en/firstPlay.txt"
     }
   },
   
@@ -65,7 +65,7 @@
     "DoublePoints" : "Double Points",
     "Automatic" : "Auto-Pilot"
   },
-  
+
   "Cosmetic": {
     "Title" : "Skin Selector",
     "SkinType" : {
@@ -88,5 +88,14 @@
       "Title" : "Humanity Is Over!",
       "Score" : "Your Score"
     }
+  },
+  
+  "Stats" : {
+    "Title" : "Stats",
+    "Deflect" : "Deflected Meteors",
+    "Collision" : "Meteors Collisions",
+    "AbilityCount" : "Ability Used",
+    "GamesPlayed" : "Games Played"
   }
+  
 }

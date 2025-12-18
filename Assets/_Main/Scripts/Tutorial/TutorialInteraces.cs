@@ -1,8 +1,8 @@
 ﻿using _Main.Scripts.MyAnimations;
+using UnityEngine;
 
 namespace _Main.Scripts.Tutorial
 {
-    using UnityEngine;
 
     public interface IPanelData : IUiAnimationData
     {

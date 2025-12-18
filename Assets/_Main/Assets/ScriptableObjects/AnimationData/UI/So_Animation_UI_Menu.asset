@@ -38,24 +38,24 @@ MonoBehaviour:
     leftButtonsOffscreenPos: 0
     rightButtonsOffscreenPos: 1
     movementDuration: 0.25
-    finishDelay: 0.25
+    finishDelay: 0.1
     titleOffset: {x: 0, y: 250}
     leftButtonsOffset: {x: -250, y: 0}
     rightButtonsOffset: {x: 250, y: 0}
   loreOpenData:
-    offscreenDirection: 3
+    offscreenDirection: 1
     movementDuration: 0.3
     offset: {x: 0, y: 0}
   loreCloseData:
-    offscreenDirection: 3
-    movementDuration: 0.3
+    offscreenDirection: 1
+    movementDuration: 0.15
     offset: {x: 0, y: 0}
   tutorialOpenData:
-    offscreenDirection: 0
+    offscreenDirection: 2
     movementDuration: 0.3
     offset: {x: 0, y: 0}
   tutorialCloseData:
-    offscreenDirection: 0
+    offscreenDirection: 2
     movementDuration: 0.3
     offset: {x: 0, y: 0}
   creditsOpenData:
