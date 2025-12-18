@@ -94,6 +94,7 @@
     "Title" : "Stats",
     "Deflect" : "Deflected Meteors",
     "Collision" : "Meteors Collisions",
-    "AbilityCount" : "Ability Used"
+    "AbilityCount" : "Ability Used",
+    "GamesPlayed" : "Games Played"
   }
 }

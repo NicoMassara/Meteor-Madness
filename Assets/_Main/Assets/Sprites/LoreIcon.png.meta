@@ -156,7 +156,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      LoreIcon_0: 3934405734458028726
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

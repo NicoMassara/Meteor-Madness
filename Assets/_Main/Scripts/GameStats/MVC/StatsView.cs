@@ -45,6 +45,8 @@ namespace _Main.Scripts.GameStats
 
         private void HandleInitialize()
         {
+            GameManager.Instance.GetHasOpenedStats();
+            
             var dataManager = DataManager.Instance;
             var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
             
@@ -53,6 +55,7 @@ namespace _Main.Scripts.GameStats
                 DeflectAmount = saveData.DeflectAmount,
                 CollisionAmount = saveData.CollisionAmount,
                 AbilityUseAmount = saveData.AbilityUseAmount,
+                GamesPlayed = saveData.GamesPlayed
             });
         }
         

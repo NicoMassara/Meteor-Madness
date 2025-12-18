@@ -130,6 +130,7 @@ namespace _Main.Scripts.Bootstrap
             //Ads
 #if UNITY_ANDROID || UNITY_IOS
 
+#pragma warning disable CS0162 // Unreachable code detected
             if (GameParameters.GameplayValues.AdsEnable)
             {
                 OnLoadingAsset?.Invoke("Loading Ads");
@@ -142,6 +143,7 @@ namespace _Main.Scripts.Bootstrap
             {
                 _mainSystemLoadedCount++;
             }
+#pragma warning restore CS0162 // Unreachable code detected
 
 #else
             _mainSystemLoadedCount++;

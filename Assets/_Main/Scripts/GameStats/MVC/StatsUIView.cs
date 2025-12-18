@@ -50,6 +50,7 @@ namespace _Main.Scripts.GameStats
             UIComponents.DeflectAmountText.text = $"{GetLocalizedString("Stats.Deflect")}: {statsData.DeflectAmount}";
             UIComponents.CollisionAmountText.text = $"{GetLocalizedString("Stats.Collision")}: {statsData.CollisionAmount}";
             UIComponents.AbilityUseAmountText.text = $"{GetLocalizedString("Stats.AbilityCount")}: {statsData.AbilityUseAmount}";
+            UIComponents.GamesPlayedText.text = $"{GetLocalizedString("Stats.GamesPlayed")}: {statsData.GamesPlayed}";
             
             OnTextsLoaded?.Invoke();
         }

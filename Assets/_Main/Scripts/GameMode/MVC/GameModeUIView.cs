@@ -40,6 +40,7 @@ namespace _Main.Scripts.GameMode
 
         private void Awake()
         {
+            UIComponents.CountdownText.text = "";
             BootEvents.OnSubSystemRequestInitialize += Initialize;
         }
 

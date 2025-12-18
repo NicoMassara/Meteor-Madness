@@ -16,6 +16,7 @@ namespace _Main.Scripts.GameStats
         public TMP_Text DeflectAmountText;
         public TMP_Text CollisionAmountText;
         public TMP_Text AbilityUseAmountText;
+        public TMP_Text GamesPlayedText;
         [Space]
         [Header("Buttons")]
         public Button BackButton;

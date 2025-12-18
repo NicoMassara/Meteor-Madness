@@ -66,6 +66,7 @@ namespace _Main.Scripts.MainMenu.MVC
                 }
                 else
                 {
+                    _controller.SetHasPlayed(hasPlayed);
                     Debug.Log($"Is First Game: {!hasPlayed}");
                 }
 #else

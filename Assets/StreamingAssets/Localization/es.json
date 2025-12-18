@@ -94,6 +94,7 @@
     "Title" : "Estadisticas",
     "Deflect" : "Meteoros Deflectados",
     "Collision" : "Meteors Colisionados",
-    "AbilityCount" : "Habilidades Usadas"
+    "AbilityCount" : "Habilidades Usadas",
+    "GamesPlayed" : "Partidas Jugadas"
   }
 }

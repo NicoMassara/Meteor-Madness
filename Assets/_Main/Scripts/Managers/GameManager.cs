@@ -170,7 +170,7 @@ namespace _Main.Scripts.Managers
             {
                 saveData.CollisionAmount = collisionCount;
             }
-            
+
             if (SecureValueManager.GetDoesContainValue<uint>(AbilityUseCountId, out var abilityCount))
             {
                 saveData.AbilityUseAmount = abilityCount;
@@ -180,8 +180,20 @@ namespace _Main.Scripts.Managers
             {
                 saveData.DeflectAmount = deflectCount;
             }
+
+            saveData.GamesPlayed++;
             
+#pragma warning disable CS0162 // Unreachable code detected
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (GameParameters.GameplayValues.DoesSaveProgress)
+            {
+                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+            }
+#else
             dataManager.SaveGameData(saveData, DataManager.SaveDataType.Stats);
+#endif
+#pragma warning restore CS0162 // Unreachable code detected
+            
         }
         
         public bool GetHasPlayed()

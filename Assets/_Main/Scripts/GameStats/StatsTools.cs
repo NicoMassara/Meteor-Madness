@@ -6,5 +6,6 @@
         public uint DeflectAmount;
         public uint CollisionAmount;
         public uint AbilityUseAmount;
+        public uint GamesPlayed;
     }
 }

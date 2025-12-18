@@ -98,21 +98,25 @@ namespace _Main.Scripts.MainMenu.MVC
             
             GetUiComponents().FirstGame_Play.onClick.AddListener(() =>
             {
+                OnConfirmButtonClicked?.Invoke();
                 OnFirstPlayScreenPlay?.Invoke();
             });
             
             GetUiComponents().FirstGame_Tutorial.onClick.AddListener(() =>
             {
+                OnConfirmButtonClicked?.Invoke();
                 OnTutorialOpen?.Invoke();
             });
             
             GetUiComponents().FirstGame_Close.onClick.AddListener(() =>
             {
+                OnCancelButtonClicked?.Invoke();
                 OnBackToMenu?.Invoke();
             });
             
             GetUiComponents().StatsButton.onClick.AddListener(() =>
             {
+                OnConfirmButtonClicked?.Invoke();
                 OnStatsOpen?.Invoke();
             });
             

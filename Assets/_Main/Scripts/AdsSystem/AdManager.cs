@@ -556,20 +556,10 @@ namespace _Main.Scripts.AdsSystem
             BootEvents.OnMainSystemRequestInitialize -= Initialize;
             //
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-
-            if (GameParameters.GameplayValues.AdsEnable)
-            {
-                _rewardedAd = new RewardedAdClass(AdConfig.RewardedVideoAdUnitId,GetRewardedConfig());
-                _bannerAd = new BannerAdClass(AdConfig.BannerAdUnitId, GetBannerConfig());
-                _interstitialAd = new InterstitialAdClass(AdConfig.InterstitalAdUnitId,GetInterstitialConfig());
-            }
-
-#else
             _rewardedAd = new RewardedAdClass(AdConfig.RewardedVideoAdUnitId,GetRewardedConfig());
             _bannerAd = new BannerAdClass(AdConfig.BannerAdUnitId,GetBannerConfig());
             _interstitialAd = new InterstitialAdClass(AdConfig.InterstitalAdUnitId,GetInterstitialConfig());
-#endif
+            
             //
             BootEvents.MainSystemInitialized();
         }

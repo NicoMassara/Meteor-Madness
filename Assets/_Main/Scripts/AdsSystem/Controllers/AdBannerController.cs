@@ -29,13 +29,18 @@ namespace _Main.Scripts.AdsSystem
         
         private void TryLoadAd()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            if(GameParameters.GameplayValues.AdsEnable == false) return;
+#endif
+            
             if (AdManager.BannerAd == null)
             {
                 Debug.LogWarning("Ad Manager - Banner Ad is null");
                 return;
             }
             
-            AdManager.RewardedAd.TryLoad(
+            AdManager.BannerAd.TryLoad(
                 onLoaded: OnLoaded,
                 onFailed: OnFailed
             );
@@ -69,6 +74,11 @@ namespace _Main.Scripts.AdsSystem
 
         private void TryShowAd()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            if(GameParameters.GameplayValues.AdsEnable == false) return;
+#endif
+            
             if (AdManager.BannerAd == null)
             {
                 Debug.LogWarning("Ad Manager - Banner Ad is null");
@@ -151,6 +161,11 @@ namespace _Main.Scripts.AdsSystem
 
         private void TryHideAd()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            if(GameParameters.GameplayValues.AdsEnable == false) return;
+#endif
+            
             if (AdManager.BannerAd == null)
             {
                 Debug.LogWarning("Ad Manager - Banner Ad is null");
@@ -167,6 +182,11 @@ namespace _Main.Scripts.AdsSystem
 
         private void TryDestroyAd()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            if(GameParameters.GameplayValues.AdsEnable == false) return;
+#endif
+            
             if (AdManager.BannerAd == null)
             {
                 Debug.LogWarning("Ad Manager - Banner Ad is null");
