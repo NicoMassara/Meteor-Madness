@@ -6,7 +6,7 @@ namespace _Main.Scripts.Shield
     public class ShieldMovementDataSo : ScriptableObject
     { 
         [Range(5,50)]
-        [SerializeField] private float rotationSpeed = 10f;      // Velocidad de interpolación de la rotación
+        [SerializeField] private float rotationSpeed = 10f;   
         [Range(0.015f,0.5f)]
         [SerializeField] private float initialDelay = 0.3f;      // Tiempo inicial antes de repetir
         [Range(0.01f,1f)]
