@@ -5,12 +5,15 @@ namespace _Main.Scripts.MyTest.Inputs
     public class AngleGizmos : MonoBehaviour
     {
         private readonly int _divisions = GameParameters.GameplayValues.AngleSlots;
+        public bool isEnable;
         [Range(1,10f)]
         public float radius = 1f;
         public Color gizmoColor = Color.yellow;
 
         void OnDrawGizmos()
         {
+            if(isEnable == false) return;
+            
             Gizmos.color = gizmoColor;
 
             for (int i = 0; i < _divisions; i++)
