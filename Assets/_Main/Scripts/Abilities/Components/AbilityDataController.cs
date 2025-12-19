@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Main.Scripts.GameConfig;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Interfaces;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
@@ -254,6 +255,8 @@ namespace _Main.Scripts.Abilities
         public event Action<AbilityType> OnStartQueueFinished;
         public event Action<AbilityType> OnEndQueueStart;
         public event Action<AbilityType> OnEndQueueFinished;
+        
+        private event Action OnSuperShieldFinished;
 
         #region Commands/Actions
 
@@ -376,13 +379,20 @@ namespace _Main.Scripts.Abilities
             var speedUpEffects = new TimedTimeScaleUpdateAction(
                 targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
             
+            ;
+            
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(start))
+                .Then(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeDisabled(OnShieldTypeDisabled)))
                 .Then(new ParallelAction(new []{slowDownGameplay,slowDownEffects}))
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StopAction))
                 .Then(new DisableShieldTypeAction(ShieldType.Super))
+                .Then(new WaitForEventAction(
+                    subscribe: callback => OnSuperShieldFinished += callback,
+                    unsubscribe: callback => OnSuperShieldFinished -= callback))
+                .Then(new InstantAction(()=> ShieldEventUnSubscriber.NotifyShieldTypeDisabled(OnShieldTypeDisabled)))
                 .Then(new ParallelAction(new []{speedUpGameplay,speedUpEffects}))
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(_enableInputs)
@@ -390,7 +400,13 @@ namespace _Main.Scripts.Abilities
                 .Then(new SimpleCommandAction(end))
                 .Build();
         }
-        
+
+        private void OnShieldTypeDisabled(Managers.ShieldEvents.NotifyShieldTypeDisabled input)
+        {
+            if(input.Type == ShieldType.Super)
+                OnSuperShieldFinished?.Invoke();
+        }
+
         #endregion
 
         #region Heal

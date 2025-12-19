@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf169e09c71a4939b449f05925761b45, type: 3}
   m_Name: SO_RotationData_Shield
   m_EditorClassIdentifier: 
-  maxAngularSpeed: 550
+  maxAngularSpeed: 400
   angularAcceleration: 1500
-  angularDeAcceleration: 2500
+  angularDeAcceleration: 3600
   snapSpeed: 60
-  directionResponse: 10
+  directionResponse: 25

@@ -40,7 +40,6 @@ namespace _Main.Scripts.MyInputs
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
         
         public event Action<int> OnMovementDirectionChanged;
-        public event Action OnStopMovement;
         public event Action<bool> OnAbilityTriggered;
         
         

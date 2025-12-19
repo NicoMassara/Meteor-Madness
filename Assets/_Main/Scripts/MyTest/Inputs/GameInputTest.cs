@@ -23,11 +23,6 @@ namespace _Main.Scripts.MyTest.Inputs
         
         private void Start()
         {
-            GameManager.Instance.InputReader.OnStopMovement += () =>
-            {
-                Debug.Log($"Movement Stopped");
-            };
-            
             GameManager.Instance.InputReader.OnAbilityTriggered += (value) =>
             {
                 Debug.Log($"Ability Triggered: {value}");

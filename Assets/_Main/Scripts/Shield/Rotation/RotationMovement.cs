@@ -6,6 +6,7 @@ namespace _Main.Scripts.Shield.Rotation
 {
     public interface IShieldMovement
     {
+        public float SpeedRatio { get; }
         public event Action OnStartMoving;
         public event Action OnStartStop;
         public event Action OnStopped;
@@ -13,8 +14,10 @@ namespace _Main.Scripts.Shield.Rotation
         public event Action OnReachedMaxSpeed;
         
         public void SetDirection(float direction);
+        public void SetSpeedMultiplier(float multiplier);
         public void ExecuteMovement(float deltaTime);
         public void Restart();
+        public void ForceStop();
     }
     
     public class RotationMovement : IShieldMovement, RotationMovement.IRotationMovement, IMovement
@@ -131,11 +134,6 @@ namespace _Main.Scripts.Shield.Rotation
         }
         private class IdleState : SimpleState
         {
-            public override void Awake()
-            {
-                Debug.Log("Enter Idle State");
-            }
-
             public override void Execute(float deltaTime)
             {
                 if (Rotation.GetHasInput())
@@ -151,10 +149,7 @@ namespace _Main.Scripts.Shield.Rotation
             
             public override void Awake()
             {
-                Debug.Log("Enter Rotating State");
-                
                 Rotation.TriggerOnStartMoving();
-                
                 _noInputTimer = NoInputGraceTime;
             }
 
@@ -186,8 +181,6 @@ namespace _Main.Scripts.Shield.Rotation
         {
             public override void Awake()
             {
-                Debug.Log("Enter Reversing State");
-                
                 Rotation.TriggerOnDirectionChanged();
             }
 
@@ -205,8 +198,6 @@ namespace _Main.Scripts.Shield.Rotation
         {
             public override void Awake()
             {
-                Debug.Log("Enter DeAccelerating State");
-                
                 Rotation.TriggerOnStartStop();
             }
 
@@ -224,8 +215,6 @@ namespace _Main.Scripts.Shield.Rotation
         {
             public override void Awake()
             {
-                Debug.Log("Enter Snapping State");
-                
                 Rotation.CalculateSnapAngle();
             }
 
@@ -260,12 +249,15 @@ namespace _Main.Scripts.Shield.Rotation
         private StatesHolder _statesHolder;
         private readonly RotationDataSo _data;
         private readonly Transform _objectToRotate;
+        private float _speedMultiplier;
         private float _direction;
         private float _angularSpeed;
         private float _snapAngle;
         private float _lastDirection;
         private bool _hasReachedMaxSpeed;
         private int _currentSlot;
+
+        public float SpeedRatio => Mathf.Abs(_angularSpeed) / _data.MaxAngularSpeed;
 
         public event Action OnStartMoving;
         public event Action OnStartStop;
@@ -277,6 +269,7 @@ namespace _Main.Scripts.Shield.Rotation
         {
             _data = data;
             _objectToRotate = objectToRotate;
+            _speedMultiplier = 1;
             
             InitializeFsm();
         }
@@ -296,6 +289,11 @@ namespace _Main.Scripts.Shield.Rotation
             _direction = direction;
         }
 
+        public void SetSpeedMultiplier(float multiplier)
+        {
+            _speedMultiplier = Mathf.Clamp(multiplier, 0, Mathf.Infinity);
+        }
+
         public void ExecuteMovement(float deltaTime)
         {
             _simpleFsm?.Execute(deltaTime);
@@ -308,6 +306,12 @@ namespace _Main.Scripts.Shield.Rotation
         {
             _angularSpeed = 0;
             _objectToRotate.rotation = Quaternion.Euler(0, 0, 0);
+        }
+
+        public void ForceStop()
+        {
+            _angularSpeed = 0;
+            _direction = 0;
         }
 
         public Vector2 GetPosition() => _objectToRotate.position;
@@ -338,7 +342,13 @@ namespace _Main.Scripts.Shield.Rotation
         public void TriggerOnStartStop() => OnStartStop?.Invoke();
         public void Rotate(float deltaTime)
         {
-            _angularSpeed += _direction * _data.AngularAcceleration * deltaTime;
+            float targetSpeed = (_direction * _data.MaxAngularSpeed) * _speedMultiplier;
+
+            _angularSpeed = Mathf.MoveTowards(
+                _angularSpeed,
+                targetSpeed,
+                _data.AngularAcceleration * deltaTime
+            );
 
             if (Mathf.Abs(_angularSpeed) > _data.MaxAngularSpeed
                 && _hasReachedMaxSpeed == false)
@@ -349,7 +359,6 @@ namespace _Main.Scripts.Shield.Rotation
             
             UpdateLastDirection();
         }
-        
         public void Reverse(float deltaTime)
         {
             _hasReachedMaxSpeed = false;
@@ -359,15 +368,15 @@ namespace _Main.Scripts.Shield.Rotation
                 target,
                 _data.AngularAcceleration * _data.DirectionResponse * deltaTime
             );
+            
+            Debug.Log($"Speed Ratio: {SpeedRatio}");
         }
-        
         public void DeAccelerate(float deltaTime)
         {
             _hasReachedMaxSpeed = false;
             _angularSpeed = Mathf.MoveTowards(_angularSpeed, 
                 0f, _data.AngularDeAcceleration * deltaTime);
         }
-        
         public void CalculateSnapAngle()
         {
             int currentSlot = GetCurrentSlot();
@@ -380,7 +389,6 @@ namespace _Main.Scripts.Shield.Rotation
             _snapAngle = currentSlot * GetSlotSize();
             _snapAngle = (_snapAngle + 360f) % 360f;
         }
-
         public void SnapToAngle(float deltaTime)
         {
             var finalSnapSpeed = _data.SnapSpeed * deltaTime;
@@ -411,7 +419,12 @@ namespace _Main.Scripts.Shield.Rotation
         private float GetCurrentAngle() => _objectToRotate.localEulerAngles.z;
         private float GetSlotSize() => 360f / SlotCount;
         private void ChangeState(States newState) => _simpleFsm.ChangeState(_statesHolder.GetSimpleState(newState));
-        private void ClampAngularSpeed() => _angularSpeed = Mathf.Clamp(_angularSpeed, -_data.MaxAngularSpeed, _data.MaxAngularSpeed);
+        private void ClampAngularSpeed()
+        {
+            _angularSpeed = Mathf.Clamp(_angularSpeed, 
+                -_data.MaxAngularSpeed * _speedMultiplier
+                , _data.MaxAngularSpeed * _speedMultiplier);
+        }
         private void UpdateLastDirection() => _lastDirection = _direction;
 
         #endregion

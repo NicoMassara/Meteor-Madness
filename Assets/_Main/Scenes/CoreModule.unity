@@ -375,7 +375,6 @@ MonoBehaviour:
   hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
   cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 11400000, guid: 5ce58a01a5bf45a4389c9d0c8a108114, type: 2}
-  movementData: {fileID: 11400000, guid: 9ccba14033a3a5c429b5de117eeb9cb0, type: 2}
 --- !u!4 &168416677
 Transform:
   m_ObjectHideFlags: 0
@@ -404,15 +403,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteContainer: {fileID: 1661175756}
-  movementData: {fileID: 11400000, guid: 9ccba14033a3a5c429b5de117eeb9cb0, type: 2}
-  timeToEnableSuperShield: 0.75
-  timeToDisableSuperShield: 0.75
-  decayConstant: 500
+  movementData: {fileID: 11400000, guid: a418fb34e0c2df94aa1838ce64d63d64, type: 2}
   detectorData:
     ProjectileLayer:
       serializedVersion: 2
       m_Bits: 64
     CheckRadius: 15
+  speederData:
+    speedMultiplier: 2
+    timeToIncrease: 1
+    timeToDecrease: 1
+    timeToFinishIncreasing: 1
+    startDecreaseDelay: 2
 --- !u!114 &168416679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -457,8 +459,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23df50d13ef44a1918ac581ae274b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotateData: {fileID: 11400000, guid: b3744b85e9a766c4a9a34fe797647366, type: 2}
-  deflectData: {fileID: 11400000, guid: ae79670803633ad4d9f64ba9e8361eef, type: 2}
 --- !u!114 &168416682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,9 +679,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3917780fb8e642179c0e88966d96a8c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggeredData: {fileID: 11400000, guid: d6035c170909d2d438bfcd7e37aa27a4, type: 2}
-  finishedData: {fileID: 11400000, guid: 39b5a31266529be409a3ce33e42474dc, type: 2}
-  addedData: {fileID: 11400000, guid: 0c0bd153906d55247a1e46196c1c8009, type: 2}
 --- !u!114 &234428184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1763,7 +1760,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65107d1653634bd08614a35e7790b571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionData: {fileID: 11400000, guid: 9db3fd3fc0c071346a3c4ebf978de66f, type: 2}
 --- !u!114 &593039196
 MonoBehaviour:
   m_ObjectHideFlags: 0
