@@ -40,6 +40,11 @@ namespace _Main.Scripts.Managers
             public ShieldType Type;
         }
         
+        public struct NotifyMovement
+        {
+            public int Direction;
+        }
+        
         public struct Enable { }
         public struct Disable { }
     }

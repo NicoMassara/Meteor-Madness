@@ -7,10 +7,10 @@ namespace _Main.Scripts.Shield.Rotation
     public interface IShieldMovement
     {
         public float SpeedRatio { get; }
-        public event Action OnStartMoving;
+        public event Action<int> OnStartMoving;
         public event Action OnStartStop;
         public event Action OnStopped;
-        public event Action OnDirectionChange;
+        public event Action<int> OnDirectionChange;
         public event Action OnReachedMaxSpeed;
         
         public void SetDirection(float direction);
@@ -259,10 +259,10 @@ namespace _Main.Scripts.Shield.Rotation
 
         public float SpeedRatio => Mathf.Abs(_angularSpeed) / _data.MaxAngularSpeed;
 
-        public event Action OnStartMoving;
+        public event Action<int> OnStartMoving;
         public event Action OnStartStop;
         public event Action OnStopped;
-        public event Action OnDirectionChange;
+        public event Action<int> OnDirectionChange;
         public event Action OnReachedMaxSpeed;
         
         public RotationMovement(RotationDataSo data, Transform objectToRotate)
@@ -334,10 +334,10 @@ namespace _Main.Scripts.Shield.Rotation
         public void TriggerOnStartMoving()
         {
             if(GetIsStopped())
-                OnStartMoving?.Invoke();
+                OnStartMoving?.Invoke((int)Mathf.Sign(_direction));
         }
 
-        public void TriggerOnDirectionChanged() => OnDirectionChange?.Invoke();
+        public void TriggerOnDirectionChanged() => OnDirectionChange?.Invoke((int)Mathf.Sign(_direction));
         public void TriggerOnStopped() => OnStopped?.Invoke();
         public void TriggerOnStartStop() => OnStartStop?.Invoke();
         public void Rotate(float deltaTime)

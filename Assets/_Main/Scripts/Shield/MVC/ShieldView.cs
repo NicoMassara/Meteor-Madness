@@ -36,7 +36,7 @@ namespace _Main.Scripts.Shield
         public event Action<bool> OnShieldActivated;
         public event Action OnRotate;
         public event Action OnStopped;
-        public event Action OnDirectionChange;
+        public event Action<int> OnDirectionChange;
         public event Action OnDeflect;
         public event Action<AbilityType> OnAbilityStarted;
         public event Action<AbilityType> OnAbilityRunning;
@@ -70,13 +70,16 @@ namespace _Main.Scripts.Shield
                 OnStopped?.Invoke();
             };
             
-            _movement.OnDirectionChange += () =>
+            _movement.OnDirectionChange += (value) =>
             {
-                OnDirectionChange?.Invoke();
+                OnDirectionChange?.Invoke(value);
+                
+                ShieldEventCaller.NotifyMovement(value);
             };
             
-            _movement.OnStartMoving += () =>
+            _movement.OnStartMoving += (value) =>
             {
+                ShieldEventCaller.NotifyMovement(value);
                 OnRotate?.Invoke();
             };
         }

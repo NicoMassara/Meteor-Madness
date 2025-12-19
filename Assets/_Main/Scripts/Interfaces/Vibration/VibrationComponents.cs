@@ -61,7 +61,7 @@ namespace _Main.Scripts.Interfaces.Vibration
     {
         public event Action OnRotate;
         public event Action OnStopped;
-        public event Action OnDirectionChange;
+        public event Action<int> OnDirectionChange;
         public event Action OnDeflect;
     }
     

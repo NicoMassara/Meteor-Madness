@@ -30,9 +30,9 @@ namespace _Main.Scripts.Shield
         
         public event Action OnProjectileDetected;
         
-        public event Action OnStartMoving;
+        public event Action<int> OnStartMoving;
         public event Action OnStopped;
-        public event Action OnDirectionChange;
+        public event Action<int> OnDirectionChange;
         
         private void Awake()
         {
