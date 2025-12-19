@@ -10,13 +10,11 @@ namespace _Main.Scripts.Shield
         private readonly IShieldMovement _movement;
         private readonly ShieldSpeederData _data;
 
-        private float _speedRatio; // 0..1
+        private float _speedRatio;
         private State _state = State.Idle;
         
         public event Action OnSpeedIncreased;
         public event Action OnSpeedDecreased;
-        
-        public event Action OnStartDecreasing;
 
         private enum State
         {
@@ -88,6 +86,7 @@ namespace _Main.Scripts.Shield
                 {
                     _state = State.Idle;
                     OnSpeedIncreased?.Invoke();
+                    _movement.SetDirection(0);
                 }));
             }
         }
@@ -106,8 +105,6 @@ namespace _Main.Scripts.Shield
             _speedRatio = Mathf.Clamp01(_speedRatio);
 
             var finalRatio = Mathf.Lerp(1, _data.SpeedMultiplier, _speedRatio * _data.SpeedMultiplier);
-            
-            Debug.Log($"Final Ratio: {finalRatio}, Speed Ratio: {_speedRatio}");
             
             _movement.SetSpeedMultiplier(finalRatio);
             _movement.SetDirection(1);

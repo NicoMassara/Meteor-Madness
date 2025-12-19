@@ -29,13 +29,21 @@ namespace _Main.Scripts.Shield
         public ShieldSpeeder ShieldSpeeder { get; private set; }
         
         public event Action OnProjectileDetected;
-
+        
+        public event Action OnStartMoving;
+        public event Action OnStopped;
+        public event Action OnDirectionChange;
+        
         private void Awake()
         {
             var shieldMovement = new RotationMovement(movementData, spriteContainer.transform);
             _movement = shieldMovement;
             ShieldSpeeder = new ShieldSpeeder(_movement,speederData);
             _projectileDetector = new ProjectileDetector(detectorData,shieldMovement);
+            
+            _movement.OnStartMoving += OnStartMoving;
+            _movement.OnStopped += OnStopped;
+            _movement.OnDirectionChange += OnDirectionChange;
         }
         
         private void Start()

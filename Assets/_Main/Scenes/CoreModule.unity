@@ -410,11 +410,11 @@ MonoBehaviour:
       m_Bits: 64
     CheckRadius: 15
   speederData:
-    speedMultiplier: 2
-    timeToIncrease: 1
-    timeToDecrease: 1
-    timeToFinishIncreasing: 1
-    startDecreaseDelay: 2
+    speedMultiplier: 3
+    timeToIncrease: 0.5
+    timeToDecrease: 0.5
+    timeToFinishIncreasing: 0.25
+    startDecreaseDelay: 0.5
 --- !u!114 &168416679
 MonoBehaviour:
   m_ObjectHideFlags: 0

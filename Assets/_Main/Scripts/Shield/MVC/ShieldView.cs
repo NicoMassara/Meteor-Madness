@@ -35,6 +35,8 @@ namespace _Main.Scripts.Shield
         private ShieldColliderExtender _colliderExtender;
         public event Action<bool> OnShieldActivated;
         public event Action OnRotate;
+        public event Action OnStopped;
+        public event Action OnDirectionChange;
         public event Action OnDeflect;
         public event Action<AbilityType> OnAbilityStarted;
         public event Action<AbilityType> OnAbilityRunning;
@@ -62,6 +64,21 @@ namespace _Main.Scripts.Shield
             _movement = GetComponent<ShieldMovement>();
             _shakerController = new ComponentShaker(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
+
+            _movement.OnStopped += () =>
+            {
+                OnStopped?.Invoke();
+            };
+            
+            _movement.OnDirectionChange += () =>
+            {
+                OnDirectionChange?.Invoke();
+            };
+            
+            _movement.OnStartMoving += () =>
+            {
+                OnRotate?.Invoke();
+            };
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -79,9 +96,6 @@ namespace _Main.Scripts.Shield
                     break;
                 case ShieldObserverMessage.StopRotate:
                     HandleStopRotate();
-                    break;
-                case ShieldObserverMessage.ChangedDirection:
-                    HandleChangedDirection();
                     break;
                 case ShieldObserverMessage.SetActiveShield:
                     HandleSetActiveShield((bool)args[0]);
@@ -188,11 +202,6 @@ namespace _Main.Scripts.Shield
             _colliderExtender.Retract();
         }
         
-        private void HandleChangedDirection()
-        {
-            OnRotate?.Invoke();
-        }
-        
         private void HandleRestartPosition()
         {
             _movement.RestartPosition();
@@ -244,7 +253,6 @@ namespace _Main.Scripts.Shield
                     OnAbilityStarted?.Invoke(AbilityType.SuperShield);
                     OnAbilitySetActive?.Invoke(AbilityType.SuperShield, true); 
                     superShieldCollider.enabled = true;
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
                     _movement.IncreaseSpeed();
                 }))
                 .Then(new WaitForEventUpdateAction(speeder.UpdateSpeed, 
@@ -254,7 +262,6 @@ namespace _Main.Scripts.Shield
                 .Then(new WaitSecondsAction(targetTime))
                 .Then(new InstantAction(() =>
                 {
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                     OnAbilityRunning?.Invoke(AbilityType.SuperShield);
                 }))
                 .Then(new InstantAction(()=> ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Super)))
@@ -269,11 +276,7 @@ namespace _Main.Scripts.Shield
             var speeder = _movement.ShieldSpeeder;
             
             var temp = ActionBuilder.Start()
-                .Do(new InstantAction(() =>
-                {
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
-                }))
-                .Then(new InstantAction(()=> OnDisableSuperShield?.Invoke(targetTime)))
+                .Do(new InstantAction(()=> OnDisableSuperShield?.Invoke(targetTime)))
                 .Then(new InstantAction(()=> _movement.DecreaseSpeed()))
                 .Then(new WaitForEventUpdateAction(speeder.UpdateSpeed, 
                     subscribe: callback => speeder.OnSpeedDecreased += callback,
@@ -284,7 +287,6 @@ namespace _Main.Scripts.Shield
                     unsubscribe: callback => _movement.OnProjectileDetected -= callback))
                 .Then(new InstantAction(() =>
                 {
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                     OnAbilitySetActive?.Invoke(AbilityType.SuperShield, false);
                     superShieldCollider.enabled = false;
                     _movement.RestartSpeedValues();
