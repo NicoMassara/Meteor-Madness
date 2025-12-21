@@ -6,21 +6,14 @@ namespace _Main.Scripts.Shield
 {
     public class ShieldMotor : ObservableComponent
     {
-        private float _lastDirection = Mathf.Infinity;
         private ShieldType _currentShieldType;
 
         #region Movement
-        public void Rotate(float direction = 1)
-        {
-            NotifyAll(ShieldObserverMessage.Rotate, direction);
-        }
+        public void Rotate(float direction = 1) 
+            => NotifyAll(ShieldObserverMessage.Rotate, direction);
 
-        public void StopRotate()
-        {
-            _lastDirection = 0;
-            NotifyAll(ShieldObserverMessage.StopRotate);
-        }
-        
+        public void StopRotate() 
+            => NotifyAll(ShieldObserverMessage.StopRotate);
 
         #endregion
 
@@ -39,10 +32,8 @@ namespace _Main.Scripts.Shield
         
         #endregion
 
-        public void HandleHit(Vector3 position, Quaternion rotation, Vector2 direction)
-        {
-            NotifyAll(ShieldObserverMessage.Deflect,position, rotation, direction);
-        }
+        public void HandleHit(Vector3 position, Quaternion rotation, Vector2 direction) 
+            => NotifyAll(ShieldObserverMessage.Deflect,position, rotation, direction);
 
         #region Ability
 
