@@ -400,8 +400,6 @@ namespace _Main.Scripts.Abilities
             var startSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueStarted);  
             var endSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueFinished);
             
-            var disableEarthDamage = new InstantAction(EarthEventCaller.DisableDamage);
-            
             // SlowDown
             var setShieldTimeScale = new SetChannelTimeScaleAction(shieldMinTimeScale, new[]{UpdateGroup.Shield});
             
@@ -430,7 +428,7 @@ namespace _Main.Scripts.Abilities
                 .Then(setShieldTimeScale)
                 //.Then(new WaitSecondsAction(timeData.ZoomIn))
                 .Then(_cameraZoomIn)
-                .Then(disableEarthDamage)
+                .Then(new InstantAction(EarthEventCaller.DisableDamage))
                 .Then(_disableAbilityUI)
                 .Then(_disableInputs)
                 .Then(_playSlowTimeSound)
@@ -453,11 +451,9 @@ namespace _Main.Scripts.Abilities
             var start = new TriggerAbilitySequenceState(AbilityType.Health, OnEndQueueStart);  
             var end = new TriggerAbilitySequenceState(AbilityType.Health, OnEndQueueFinished); 
             
-            var enableEarthDamage = new InstantAction(EarthEventCaller.EnableDamage);
-            
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(start))
-                .Then(enableEarthDamage)
+                .Then(new InstantAction(EarthEventCaller.EnableDamage))
                 .Then(new SimpleCommandAction(end))
                 .Then(new PublishAbilityActiveAction(AbilityType.Health, false))
                 .Build();
@@ -476,7 +472,6 @@ namespace _Main.Scripts.Abilities
                 AbilityType = selectedAbility,
                 StartActions = GetHealStartSequence(minTimeScale,shieldTimeScale,timeData),
                 EndActions = GetHealEndSequence(),
-                HasInstantEffect = true
             };
             
             _abilities.Add(selectedAbility, healData);
@@ -813,7 +808,6 @@ namespace _Main.Scripts.Abilities
     public class AbilityStoredData
     {
         public float ActiveTime;
-        public bool HasInstantEffect;
         public AbilityType AbilityType;
         public IQueueAction StartActions;
         public IQueueAction EndActions;
@@ -831,7 +825,7 @@ namespace _Main.Scripts.Abilities
 
         public bool GetHasInstantEffect()
         {
-            return HasInstantEffect;
+            return EndActions == null;
         }
     }
 }
