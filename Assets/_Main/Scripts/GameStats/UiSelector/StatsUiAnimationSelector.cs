@@ -16,10 +16,7 @@ namespace _Main.Scripts.GameStats
         {
             public RectTransform MainPanel { get; }
             public RectTransform TitleText { get; }
-            public RectTransform DeflectAmountText { get; }
-            public RectTransform CollisionAmountText { get; }
-            public RectTransform AbilityUseAmountText { get; }
-            public RectTransform GamesPlayedText { get; }
+            public RectTransform[] StatsTextsArray { get; }
             public RectTransform BackButton { get; }
         }
 
@@ -27,20 +24,12 @@ namespace _Main.Scripts.GameStats
         [Header("Main Panel")]
         [SerializeField] private RectTransform mainPanel;
         [SerializeField] private RectTransform titleText;
-        [SerializeField] private RectTransform deflectAmountText;
-        [SerializeField] private RectTransform collisionAmountText;
-        [SerializeField] private RectTransform abilityUseAmountText;
-        [SerializeField] private RectTransform gamesPlayedText;
+        [SerializeField] private RectTransform[] statsTextsArray;
         [SerializeField] private RectTransform backButton;
         
         public RectTransform MainPanel => mainPanel;
         public RectTransform TitleText => titleText;
-        public RectTransform DeflectAmountText => deflectAmountText;
-        public RectTransform CollisionAmountText => collisionAmountText;
-        public RectTransform AbilityUseAmountText => abilityUseAmountText;
-
-        public RectTransform GamesPlayedText => gamesPlayedText;
-
+        public RectTransform[] StatsTextsArray => statsTextsArray;
         public RectTransform BackButton => backButton;
     }
 }

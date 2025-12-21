@@ -6,12 +6,7 @@ namespace _Main.Scripts.Save
     {
         public static bool GetIsSaveEnabled()
         {
-            
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             return GameParameters.GameplayValues.DoesSaveProgress;
-#else
-            return true;
-#endif
         }
         
         public class GameplayStatsIdData

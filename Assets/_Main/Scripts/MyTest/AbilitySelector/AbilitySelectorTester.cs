@@ -6,15 +6,19 @@ using UnityEngine;
 
 namespace _Main.Scripts.MyTest.AbilitySelector
 {
+    
     public class AbilitySelectorTester : MonoBehaviour,
         AbilitySelectorTester.IAbilitySelectorTester
     {
         public interface IAbilitySelectorTester
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             public event Action<AbilityType> OnAbilitySelected;
             public event Action<int> OnLevelUpdated;
+#endif
         }
         
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         [SerializeField] private AbilitySelectorDataSo selectorData;
         
         private AbilitySpawner.AbilitySelector _selector;
@@ -48,7 +52,11 @@ namespace _Main.Scripts.MyTest.AbilitySelector
             _selector.UpdateLevel(_currentLevel);
             OnLevelUpdated?.Invoke(_currentLevel);
         }
+#endif
     }
+    
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     
     [CustomEditor(typeof(AbilitySelectorTester))]
     public class AbilitySelectorTesterEditor : Editor
@@ -66,4 +74,5 @@ namespace _Main.Scripts.MyTest.AbilitySelector
             if (GUILayout.Button("Decrease Level")) script.DecreaseLevel();
         }
     }
+#endif
 }

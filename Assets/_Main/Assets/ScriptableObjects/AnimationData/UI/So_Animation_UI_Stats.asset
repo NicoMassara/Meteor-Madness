@@ -15,8 +15,8 @@ MonoBehaviour:
   panelOpenData:
     offscreenDirection: 3
     movementDuration: 0.3
-    offset: {x: 0, y: 0}
+    offset: {x: 0, y: -750}
   panelCloseData:
     offscreenDirection: 3
-    movementDuration: 0.3
-    offset: {x: 0, y: 0}
+    movementDuration: 0.15
+    offset: {x: 0, y: -750}

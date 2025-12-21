@@ -2,6 +2,7 @@
 
 namespace _Main.Scripts.MyTest.AbilitySelector
 {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     public class AbilitySelectorTesterUI : MonoBehaviour
     {
         private AbilitySelectorTester.IAbilitySelectorTester _tester;
@@ -54,4 +55,6 @@ namespace _Main.Scripts.MyTest.AbilitySelector
             GUI.Label(new Rect(x, y + spacing * 2, width, height), $"Last Ability: {_lastAbility}", _style);
         }
     }
+    
+#endif
 }

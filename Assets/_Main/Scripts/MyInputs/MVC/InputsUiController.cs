@@ -42,7 +42,6 @@ namespace _Main.Scripts.MyInputs.MVC
         private void Start()
         {
             //Input Reader
-            GameManager.Instance.InputReader.OnStopMovement += Input_OnStopMovementHandler;
             GameManager.Instance.InputReader.OnMovementDirectionChanged += Input_OnMovementDirectionChangedHandler;
             GameManager.Instance.InputReader.OnAbilityTriggered += Input_OnAbilityTriggeredHandler;
             _motor.Initialize(GameConfigManager.Instance.GetGameplayData().TouchInputData);
@@ -53,11 +52,6 @@ namespace _Main.Scripts.MyInputs.MVC
         private void Input_OnMovementDirectionChangedHandler(int direction)
         {
             _motor.SetDirection(direction);
-        }
-
-        private void Input_OnStopMovementHandler()
-        {
-            _motor.SetDirection(0);
         }
         
         private void Input_OnAbilityTriggeredHandler(bool isTriggered)
@@ -108,8 +102,6 @@ namespace _Main.Scripts.MyInputs.MVC
         {
             _currentDirection = direction;
             
-
-
             switch (_currentDirection)
             {
                 case 0:

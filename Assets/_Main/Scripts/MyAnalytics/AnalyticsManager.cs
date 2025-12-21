@@ -31,11 +31,8 @@ namespace _Main.Scripts.MyAnalytics
 
         private void Start()
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            
             _isTest = GameParameters.GameplayValues.AnalyticsDebugEnable;
             _doesSend = GameParameters.GameplayValues.DoesSendAnalytics;
-#endif
         }
 
         public static void SendEvent(string eventName, Dictionary<string, object> parameters = null)

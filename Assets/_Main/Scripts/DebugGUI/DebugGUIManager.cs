@@ -21,8 +21,11 @@ namespace _Main.Scripts.DebugGUI
 
         private void Update()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
             if (Input.GetKeyDown(KeyCode.Space))
                 _doesShowGUI = !_doesShowGUI;
+#endif
         }
 
         public DebugGroup CreateGroup(string groupName, int sortingOrder = 10)
