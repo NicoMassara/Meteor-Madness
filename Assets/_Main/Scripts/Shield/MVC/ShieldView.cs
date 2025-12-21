@@ -6,6 +6,7 @@ using _Main.Scripts.Observer;
 using _Main.Scripts.Particles;
 using _Main.Scripts.Shaker;
 using _Main.Scripts.GameConfig.Game;
+using _Main.Scripts.GlobalEvents;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -28,13 +29,14 @@ namespace _Main.Scripts.Shield
         [SerializeField] private ShakeDataSo hitShakeData;
         [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
-        [SerializeField] private ShieldMovementDataSo movementData;
         
         private ShieldMovement _movement;
         private ComponentShaker _shakerController;
         private ShieldColliderExtender _colliderExtender;
         public event Action<bool> OnShieldActivated;
         public event Action OnRotate;
+        public event Action OnStopped;
+        public event Action<int> OnDirectionChange;
         public event Action OnDeflect;
         public event Action<AbilityType> OnAbilityStarted;
         public event Action<AbilityType> OnAbilityRunning;
@@ -62,6 +64,24 @@ namespace _Main.Scripts.Shield
             _movement = GetComponent<ShieldMovement>();
             _shakerController = new ComponentShaker(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
+
+            _movement.OnStopped += () =>
+            {
+                OnStopped?.Invoke();
+            };
+            
+            _movement.OnDirectionChange += (value) =>
+            {
+                OnDirectionChange?.Invoke(value);
+                
+                ShieldEventCaller.NotifyMovement(value);
+            };
+            
+            _movement.OnStartMoving += (value) =>
+            {
+                ShieldEventCaller.NotifyMovement(value);
+                OnRotate?.Invoke();
+            };
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -79,9 +99,6 @@ namespace _Main.Scripts.Shield
                     break;
                 case ShieldObserverMessage.StopRotate:
                     HandleStopRotate();
-                    break;
-                case ShieldObserverMessage.ChangedDirection:
-                    HandleChangedDirection();
                     break;
                 case ShieldObserverMessage.SetActiveShield:
                     HandleSetActiveShield((bool)args[0]);
@@ -184,15 +201,8 @@ namespace _Main.Scripts.Shield
             _debugData.Rotation = 0;
 #endif
             
-            if (_movement.TryForceStop())
-            {
-                _colliderExtender.Retract();
-            }
-        }
-        
-        private void HandleChangedDirection()
-        {
-            OnRotate?.Invoke();
+            _movement.ForceStop();
+            _colliderExtender.Retract();
         }
         
         private void HandleRestartPosition()
@@ -237,6 +247,8 @@ namespace _Main.Scripts.Shield
         private void RunSuperShieldQueue()
         {
             var targetTime = 0.75f;
+
+            var speeder = _movement.ShieldSpeeder;
             
             var temp = ActionBuilder.Start()
                 .Do(new InstantAction(() =>
@@ -244,14 +256,15 @@ namespace _Main.Scripts.Shield
                     OnAbilityStarted?.Invoke(AbilityType.SuperShield);
                     OnAbilitySetActive?.Invoke(AbilityType.SuperShield, true); 
                     superShieldCollider.enabled = true;
-                    OnEnableSuperShield?.Invoke(targetTime);
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
+                    _movement.IncreaseSpeed();
                 }))
-                .Then(new TimedUpdateAction(HandleSuperShieldEnable, targetTime))
+                .Then(new WaitForEventUpdateAction(speeder.UpdateSpeed, 
+                    subscribe: callback => speeder.OnSpeedIncreased += callback,
+                    unsubscribe: callback => speeder.OnSpeedIncreased -= callback))
+                .Then(new InstantAction(()=> OnEnableSuperShield?.Invoke(targetTime)))
+                .Then(new WaitSecondsAction(targetTime))
                 .Then(new InstantAction(() =>
                 {
-                    _movement.RestartSpeedValues();
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                     OnAbilityRunning?.Invoke(AbilityType.SuperShield);
                 }))
                 .Then(new InstantAction(()=> ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Super)))
@@ -262,22 +275,24 @@ namespace _Main.Scripts.Shield
         
         private void RunNormalShieldQueue()
         {
-            var targetTime = 0.75f;
+            var targetTime = 0.5f;
+            var speeder = _movement.ShieldSpeeder;
             
             var temp = ActionBuilder.Start()
-                .Do(new InstantAction(() =>
-                {
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 0);
-                    OnDisableSuperShield?.Invoke(targetTime);
-                }))
-                .Then(new TimedUpdateAction(HandleNormalShieldEnable, targetTime))
+                .Do(new InstantAction(()=> OnDisableSuperShield?.Invoke(targetTime)))
+                .Then(new InstantAction(()=> _movement.DecreaseSpeed()))
+                .Then(new WaitForEventUpdateAction(speeder.UpdateSpeed, 
+                    subscribe: callback => speeder.OnSpeedDecreased += callback,
+                    unsubscribe: callback => speeder.OnSpeedDecreased -= callback))
+                .Then(new InstantAction(()=> _movement.RotateTowardsNearestProjectileSlot()))
+                .Then(new WaitForEventAction(
+                    subscribe: callback => _movement.OnProjectileDetected += callback,
+                    unsubscribe: callback => _movement.OnProjectileDetected -= callback))
                 .Then(new InstantAction(() =>
                 {
-                    CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
                     OnAbilitySetActive?.Invoke(AbilityType.SuperShield, false);
                     superShieldCollider.enabled = false;
                     _movement.RestartSpeedValues();
-                    _movement.RotateTowardsNearestProjectileSlot();
                     OnAbilityFinished?.Invoke();
                 }))
                 .Then(new InstantAction(()=> ShieldEventCaller.NotifyShieldTypeDisabled(ShieldType.Super)))
@@ -285,17 +300,7 @@ namespace _Main.Scripts.Shield
             
             ActionManager.Add(temp,ActionManager.UpdateType.Update, ActionManager.PriorityTick.EveryFrame);
         }
-        
-        private void HandleSuperShieldEnable(float deltaTime)
-        {
-            _movement.IncreaseSpeed(deltaTime);
-        }
 
-        private void HandleNormalShieldEnable(float deltaTime)
-        {
-            _movement.DecreaseSpeed(deltaTime);
-        }
-        
         #endregion
         
         #endregion

@@ -12,13 +12,6 @@ namespace _Main.Scripts.Shield
         #region Movement
         public void Rotate(float direction = 1)
         {
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (direction != _lastDirection)
-            {
-                _lastDirection = direction;
-                NotifyAll(ShieldObserverMessage.ChangedDirection);
-            }
-            
             NotifyAll(ShieldObserverMessage.Rotate, direction);
         }
 

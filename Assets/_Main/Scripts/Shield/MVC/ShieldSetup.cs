@@ -30,7 +30,7 @@ namespace _Main.Scripts.Shield
         {
             _controller.Initialize();
             GameManager.Instance.InputReader.OnMovementDirectionChanged += Input_OnMovementDirectionChangedHandler;
-            GameManager.Instance.InputReader.OnStopMovement += Input_OnStopMovementHandler;
+            //GameManager.Instance.InputReader.OnStopMovement += Input_OnStopMovementHandler;
         }
 
         private void Input_OnStopMovementHandler()

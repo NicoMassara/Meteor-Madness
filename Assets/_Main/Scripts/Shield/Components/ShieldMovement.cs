@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _Main.Scripts.AutoTarget;
+using _Main.Scripts.Interfaces;
+using _Main.Scripts.Shield.Rotation;
 using _Main.Scripts.Utilities;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -11,44 +14,46 @@ namespace _Main.Scripts.Shield
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
         [Header("Scriptable Objects")]
-        [SerializeField] private ShieldMovementDataSo movementData;
+        [SerializeField] private RotationDataSo movementData;
         [Header("Values")]
-        [Range(0.1f, 5f)]
-        [SerializeField] private float timeToEnableSuperShield;
-        [Range(0.1f, 5f)]
-        [SerializeField] private float timeToDisableSuperShield;
-        [Range(0, 1000)]
-        [SerializeField] private float decayConstant = 100f;
-        [Space]
         [SerializeField] private ProjectileDetectorData detectorData;
+        [SerializeField] private ShieldSpeeder.ShieldSpeederData speederData;
         
         private ProjectileDetector _projectileDetector;
-        private ShieldMovementComponent _movement;
-        private ShieldSpeeder _shieldSpeeder;
+        private IShieldMovement _movement;
         private bool _isPlayerInputDisable;
-        private float _deltaTime;
         private bool _canAutoCheck;
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
-
+        public ShieldSpeeder ShieldSpeeder { get; private set; }
+        
+        public event Action OnProjectileDetected;
+        
+        public event Action<int> OnStartMoving;
+        public event Action OnStopped;
+        public event Action<int> OnDirectionChange;
+        
         private void Awake()
         {
-            _movement = new ShieldMovementComponent(spriteContainer.transform, movementData);
-            _shieldSpeeder = new ShieldSpeeder(_movement,timeToEnableSuperShield,timeToDisableSuperShield,decayConstant);
-            _projectileDetector = new ProjectileDetector(detectorData,_movement);
+            var shieldMovement = new RotationMovement(movementData, spriteContainer.transform);
+            _movement = shieldMovement;
+            ShieldSpeeder = new ShieldSpeeder(_movement,speederData);
+            _projectileDetector = new ProjectileDetector(detectorData,shieldMovement);
+            
+            _movement.OnStartMoving += OnStartMoving;
+            _movement.OnStopped += OnStopped;
+            _movement.OnDirectionChange += OnDirectionChange;
         }
         
         private void Start()
         {
             _projectileDetector.OnTargetFound += Detector_OnTargetFoundHandler;
-            _projectileDetector.OnTargetLost += Detector_OnTargetLostHandler;
         }
 
         public void ExecuteUpdate(float deltaTime)
         {
-            _deltaTime = deltaTime;
-            _movement.Update(deltaTime);
+            _movement.ExecuteMovement(deltaTime);
         }
         
         public void ExecuteFixedUpdate(float fixedDeltaTime)
@@ -70,14 +75,13 @@ namespace _Main.Scripts.Shield
         {
             if (_isPlayerInputDisable) return false;
             
-            _movement.HandleMove(direction, _deltaTime);
+            _movement.SetDirection(direction);
             return true;
         }
 
-        public bool TryForceStop()
+        public void ForceStop()
         {
-            _movement.HandleMove(0,0);
-            return true;
+            _movement.ForceStop();
         }
 
         public void RestartPosition()
@@ -89,19 +93,19 @@ namespace _Main.Scripts.Shield
 
         #region Speeder
 
-        public void IncreaseSpeed(float deltaTime)
+        public void IncreaseSpeed()
         {
-            _shieldSpeeder.IncreaseSpeed(deltaTime);
+            ShieldSpeeder.IncreaseSpeed();
         }
 
-        public void DecreaseSpeed(float deltaTime)
+        public void DecreaseSpeed()
         {
-            _shieldSpeeder.DecreaseSpeed(deltaTime);
+            ShieldSpeeder.DecreaseSpeed();
         }
 
         public void RestartSpeedValues()
         {
-            _shieldSpeeder.RestartValues();
+            ShieldSpeeder.Reset();
         }
 
         #endregion
@@ -130,13 +134,12 @@ namespace _Main.Scripts.Shield
                 distanceRatio = 1 -distanceRatio;
                 var multiplier = MathfCalculations.Remap(distanceRatio, 0, 1f, 1, 1.75f);
                 currentDirection = _projectileDetector.GetSlotDirection() * 10;
-                _movement.HandleMove((int)currentDirection * multiplier,
-                    _deltaTime);
+                _movement.SetDirection(currentDirection * multiplier);
                 
                 yield return null;
             }
             
-            TryForceStop();
+            ForceStop();
             
             _isPlayerInputDisable = false;
         }
@@ -144,34 +147,29 @@ namespace _Main.Scripts.Shield
         private IEnumerator Coroutine_RotateTowardsNearestProjectileSlot()
         {
             var meteorSlot = _projectileDetector.GetNearestProjectileSlot();
+            var movement = (IMovement)_movement;
             
             if (meteorSlot > -1)
             {
-                _movement.SetSpeedMultiplier(0.5f);
-            
-                while (meteorSlot != _movement.GetCurrentSlot())
+                while (meteorSlot != movement.GetCurrentSlot())
                 {
-                    _movement.HandleMove(1, _deltaTime);
+                    _movement.SetDirection(0.5f);
                 
                     yield return null;
                 }
             
-                _movement.HandleMove(0, 0);
-                _movement.SetSpeedMultiplier(1);
+                _movement.SetDirection(0);
+                ForceStop();
             }
-            
-            CustomTime.SetChannelTimeScale(UpdateGroup.Ability, 1);
+
+            Debug.Log($"Projectile Found at: {meteorSlot}], Shield in Slot: {movement.GetCurrentSlot()}");
+            OnProjectileDetected?.Invoke();
         }
         
 
         #endregion
         
         #region Handlers
-
-        private void Detector_OnTargetLostHandler()
-        {
-
-        }
 
         private void Detector_OnTargetFoundHandler()
         {

@@ -937,24 +937,48 @@ namespace NicolasMassara.CustomActionManager
             return new TimedUpdateAction(_updateFunc, _duration);
         }
     }
+
+    public class WaitForEventUpdateAction : WaitForEventAction
+    {
+        private readonly Action<float> _updateFunc;
+        
+        public WaitForEventUpdateAction(Action<float> updateFunc, Action<Action> subscribe, Action<Action> unsubscribe) 
+            : base(subscribe, unsubscribe)
+        {
+            _updateFunc = updateFunc;
+        }
+
+        public override ActionStatus OnUpdate(float deltaTime)
+        {
+            _updateFunc(deltaTime);
+            
+            return base.OnUpdate(deltaTime);
+        }
+
+        public override IQueueAction Copy()
+        {
+            return new WaitForEventUpdateAction(_updateFunc, Subscribe, Unsubscribe);
+        }
+    }
+    
     public class WaitForEventAction : IQueueAction
     {
-        private readonly Action<Action> _subscribe;
-        private readonly Action<Action> _unsubscribe;
+        protected readonly Action<Action> Subscribe;
+        protected readonly Action<Action> Unsubscribe;
         private bool _triggered;
 
         public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
 
         public WaitForEventAction(Action<Action> subscribe, Action<Action> unsubscribe)
         {
-            _subscribe = subscribe ?? throw new ArgumentNullException(nameof(subscribe));
-            _unsubscribe = unsubscribe ?? throw new ArgumentNullException(nameof(unsubscribe));
+            Subscribe = subscribe ?? throw new ArgumentNullException(nameof(subscribe));
+            Unsubscribe = unsubscribe ?? throw new ArgumentNullException(nameof(unsubscribe));
         }
 
         public void OnStart()
         {
             _triggered = false;
-            _subscribe(OnEventTriggered);
+            Subscribe(OnEventTriggered);
         }
 
         private void OnEventTriggered()
@@ -962,7 +986,7 @@ namespace NicolasMassara.CustomActionManager
             _triggered = true;
         }
 
-        public ActionStatus OnUpdate(float deltaTime)
+        public virtual ActionStatus OnUpdate(float deltaTime)
         {
             if (_triggered)
                 CurrentStatus = ActionStatus.Success;
@@ -972,13 +996,13 @@ namespace NicolasMassara.CustomActionManager
 
         public void OnInterrupt()
         {
-            _unsubscribe(OnEventTriggered);
+            Unsubscribe(OnEventTriggered);
             CurrentStatus = ActionStatus.Failure;
         }
 
-        public IQueueAction Copy()
+        public virtual IQueueAction Copy()
         {
-            return new WaitForEventAction(_subscribe, _unsubscribe);
+            return new WaitForEventAction(Subscribe, Unsubscribe);
         }
     }
 

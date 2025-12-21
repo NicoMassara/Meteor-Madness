@@ -278,6 +278,11 @@ namespace _Main.Scripts
         {
             GameEventCaller.Publish(new ShieldEvents.Disable());
         }
+
+        public static void NotifyMovement(int value)
+        {
+            GameEventCaller.Publish(new ShieldEvents.NotifyMovement{Direction = value});
+        }
     }
     
     public static class ShieldEventSubscriber
@@ -311,6 +316,11 @@ namespace _Main.Scripts
         {
             GameEventCaller.Subscribe(action);
         }
+        
+        public static void NotifyMovement(Action<ShieldEvents.NotifyMovement> action)
+        {
+            GameEventCaller.Subscribe(action);
+        }
     }
     
     public static class ShieldEventUnSubscriber
@@ -341,6 +351,11 @@ namespace _Main.Scripts
         }
         
         public static void Disable(Action<ShieldEvents.Disable> action)
+        {
+            GameEventCaller.Unsubscribe(action);
+        }
+        
+        public static void NotifyMovement(Action<ShieldEvents.NotifyMovement> action)
         {
             GameEventCaller.Unsubscribe(action);
         }

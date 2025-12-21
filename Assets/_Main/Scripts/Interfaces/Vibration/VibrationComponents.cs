@@ -60,6 +60,8 @@ namespace _Main.Scripts.Interfaces.Vibration
     public interface IShieldVibration : IVibrationComponent
     {
         public event Action OnRotate;
+        public event Action OnStopped;
+        public event Action<int> OnDirectionChange;
         public event Action OnDeflect;
     }
     
