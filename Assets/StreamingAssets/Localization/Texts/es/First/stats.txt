@@ -1,1 +1,2 @@
-This is your stats screen. here you'll see every thing you did during your gameplay!
+Esta es la pantalla de estadisticas. \n
+Aqui podras ver todo el progreso logrado en cada partida!

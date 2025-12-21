@@ -97,17 +97,17 @@
   "FirstOpen":
   {
     "Stats" : {
-      "Title" : "Stats",
+      "Title" : "Estadisticas",
       "Text" : "@Texts/First/en/stats.txt"
     },
 
     "Play": {
-      "Title" : "Attention!",
+      "Title" : "Atención!",
       "Text" : "@Texts/First/en/play.txt"
     },
 
     "Cosmetic": {
-      "Title" : "Skin Selector",
+      "Title" : "Apariencia",
       "Text" : "@Texts/First/en/cosmetic.txt"
     }
   }

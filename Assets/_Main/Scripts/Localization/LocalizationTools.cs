@@ -8,7 +8,7 @@ namespace _Main.Scripts.Localization
     public class LocalizationTools
     {
         private static readonly Regex _placeholderRegex = new Regex(@"%%(.*?)%%");
-        public const int LanguageCount = 6;
+        public const int LanguageCount = 2; // Locked to English - Spanish
 
 
         public static void ReplacePlaceHolders(
