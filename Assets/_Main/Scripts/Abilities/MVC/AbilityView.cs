@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Abilities.So;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
@@ -20,6 +21,7 @@ namespace _Main.Scripts.Abilities
 
         }
         
+        [SerializeField] private AbilityConfigTimeDataSo abilityTimeData;
         private TimerManager.GeneratedId _finishAbilityTimerId;
         private ActionManager.GeneratedId _actionId;
         
@@ -51,7 +53,7 @@ namespace _Main.Scripts.Abilities
             abilityDataController = new AbilityDataController(OnTimeSpeedUp, OnTimeSlowDown);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
-            abilityDataController.Initialize();
+            abilityDataController.Initialize(abilityTimeData);
 
             GameManager.Instance.OnPaused += GM_OnPausedHandler;
             GameManager.Instance.OnResumed += GM_OnResumedHandler;

@@ -2,12 +2,11 @@
 using _Main.Scripts.InspectorTools;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.GameConfig.Game;
-using _Main.Scripts.GameConfig.Ability;
 using UnityEngine;
 
-namespace _Main.Scripts.GameConfig.Ability
+namespace _Main.Scripts.Abilities.So
 {
-    [CreateAssetMenu(fileName = "SO_AbilityConfigTimeData_Name", menuName = "Scriptable Objects/Game Config/Ability/Time Config Data", order = 0)]
+    [CreateAssetMenu(fileName = "SO_AbilityConfigTimeData_Name", menuName = "Scriptable Objects/Ability/Time Config Data", order = 0)]
     public class AbilityConfigTimeDataSo : ScriptableObject, IAbilityTimeConfigData
     {
         [SerializeField] private AbilityData[] abilities;

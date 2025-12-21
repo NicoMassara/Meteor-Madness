@@ -287,15 +287,13 @@ namespace _Main.Scripts.Abilities
             _disableAbilityUI = new SetBoolAction(false,SetEnableAbilityUI);
         }
         
-        public void Initialize()
+        public void Initialize(IAbilityTimeConfigData data)
         {
-            CreateAbilityData();
+            CreateAbilityData(data);
         }
         
-        private void CreateAbilityData()
+        private void CreateAbilityData(IAbilityTimeConfigData configData)
         {
-            var configData = GameConfigManager.Instance.GetGameplayData().AbilityTimeData;
-            
             CreateSlowMotionData(configData);
             CreateShieldData(configData);
             CreateHealData(configData);

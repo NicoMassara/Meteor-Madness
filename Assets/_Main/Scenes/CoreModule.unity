@@ -627,6 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f6865758b734b238a7930c936969ff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  abilityTimeData: {fileID: 11400000, guid: ce4bcdecd89003b44a8bd6aa137b27e6, type: 2}
 --- !u!114 &234428180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3264,6 +3265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 8335861176009586927, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
+  selectorData: {fileID: 11400000, guid: 4ecea22b7640c414dace2b0e8ec03413, type: 2}
   spawnDelay: 5
 --- !u!1 &1238111394
 GameObject:

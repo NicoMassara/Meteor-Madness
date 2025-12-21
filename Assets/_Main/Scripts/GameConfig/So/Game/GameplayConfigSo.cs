@@ -1,5 +1,4 @@
 ﻿using _Main.Scripts.Interfaces;
-using _Main.Scripts.GameConfig.Ability;
 using UnityEngine;
 
 namespace _Main.Scripts.GameConfig.Game
@@ -15,10 +14,8 @@ namespace _Main.Scripts.GameConfig.Game
 
         [Space]
         [SerializeField] private LevelDataSo levelData; 
-        [SerializeField] private AbilitySelectorDataSo abilitySelectorData; 
         [SerializeField] private ProjectileDataSo projectileData; 
         [SerializeField] private GameTimeDataSo gameTimeData; 
-        [SerializeField] private AbilityConfigTimeDataSo abilityTimeData; 
         [SerializeField] private EarthTimeDataSo earthTimeData; 
         [SerializeField] private TouchInputDataSo touchInputData; 
 
@@ -29,10 +26,8 @@ namespace _Main.Scripts.GameConfig.Game
         public int PointsMultiplier => pointsMultiplier;
         
         public ILevelData LevelData => levelData;
-        public IAbilitySelector AbilitySelectorData => abilitySelectorData;
         public IProjectileData ProjectileData => projectileData;
         public IGameTimeData GameTimeData => gameTimeData;
-        public IAbilityTimeConfigData AbilityTimeData => abilityTimeData;
         public IEarthTime EarthTimeData => earthTimeData;
         public ITouchInputData TouchInputData => touchInputData;
 
@@ -40,7 +35,6 @@ namespace _Main.Scripts.GameConfig.Game
         
         private void OnValidate()
         {
-            abilitySelectorData?.ValidateByLevelAmount(levelAmount);
             levelData?.ValidateByLevelAmount(levelAmount);
             projectileData?.ValidateByLevelAmount(levelAmount);
         }

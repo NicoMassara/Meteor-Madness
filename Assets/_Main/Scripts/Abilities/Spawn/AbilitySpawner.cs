@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Main.Scripts.Abilities.So;
 using _Main.Scripts.Abilities.Sphere;
 using _Main.Scripts.Managers;
 using _Main.Scripts.GameConfig;
@@ -13,8 +14,148 @@ namespace _Main.Scripts.Abilities.Spawn
 {
     public class AbilitySpawner : ManagedBehavior
     {
+        #region Private Classes
+
+        public class AbilitySelector
+        {
+            public bool IsStorageFull { get; set; }
+
+            private readonly Roulette _roulette = new Roulette();
+            private readonly Func<Tuple<AbilityType[], int[]>> _getValuesAction;
+            private readonly Func<Tuple<int[],AbilityType[]>> _getUnlockAction;
+            private readonly Dictionary<AbilityType, ActionValue> _multipliers = new Dictionary<AbilityType, ActionValue>();
+            private AbilityType _abilityToDrop;
+
+            private class ActionValue
+            {
+                public readonly AbilityType AbilityType;
+                public int Value { get; private set; }
+
+                public ActionValue(AbilityType abilityType)
+                {
+                    AbilityType = abilityType;
+                }
+
+                public void IncreaseValue() => Value += 5;
+                public void DecreaseValue() => Value -= 5;
+                public void EnableValue() => Value = 10;
+                public void DisableValue() => Value = 0;
+            }
+
+            public AbilitySelector(
+                Func<Tuple<AbilityType[], int[]>> getValuesAction, 
+                Func<Tuple<int[],AbilityType[]>> getUnlockAction)
+            {
+                _getValuesAction = getValuesAction;
+                _getUnlockAction = getUnlockAction;
+
+                for (int i = 0; i < (int)AbilityType.Default_MAX; i++)
+                {
+                    var ability = (AbilityType)i;
+                    _multipliers.Add(ability,new ActionValue(ability));
+                }
+            }
+
+            private AbilityType GetAbilityToUnlock(int level)
+            {
+                var tempValues = _getUnlockAction();
+                var length = tempValues.Item1.Length;
+                
+                for (int i = 0; i < length; i++)
+                {
+                    var unlockLevel = tempValues.Item1[i];
+
+                    if (unlockLevel == level)
+                    {
+                        return tempValues.Item2[i];
+                    }
+                }
+
+                return AbilityType.None;
+            }
+
+            private void ResetMultipliers()
+            {
+                foreach (var item in _multipliers)
+                {
+                    item.Value.DisableValue();
+                }
+            }
+
+            private int GetAbilityValue(AbilityType abilityType)
+            {
+                if (_multipliers.TryGetValue(abilityType, out var multiplier))
+                {
+                    return multiplier.Value;
+                }
+
+                return 1;
+            }
+
+            public void IncreaseValue(AbilityType ability)
+            {
+                if (_multipliers.TryGetValue(ability, out var multiplier))
+                {
+                    multiplier.IncreaseValue();
+                }
+            }
+
+            public void DecreaseValue(AbilityType ability)
+            {
+                if (_multipliers.TryGetValue(ability, out var multiplier))
+                {
+                    multiplier.DecreaseValue();
+                }
+            }
+
+            public void UpdateLevel(int level)
+            {
+                var ability = GetAbilityToUnlock(level);
+                if (ability == AbilityType.None) return;
+
+                if (_multipliers.TryGetValue(ability, out var multiplier))
+                {
+                    multiplier.EnableValue();
+                }
+            }
+            
+            public void Reset() => ResetMultipliers();
+
+            public AbilityType GetAbilityToAdd()
+            {
+                if (_abilityToDrop == AbilityType.None)
+                {
+                    var tempDic = new Dictionary<AbilityType, int>();
+                    var values = _getValuesAction();
+                    var length = values.Item1.Length;
+
+                    for (int i = 0; i < length; i++)
+                    {
+                        var ability = values.Item1[i];
+                        var finalValue = values.Item2[i] * GetAbilityValue(ability);
+
+                        tempDic.Add(ability, finalValue);
+                    }
+
+                    _abilityToDrop = _roulette.Run(tempDic);
+
+                    return _abilityToDrop;
+                }
+
+                var tempValue = _abilityToDrop;
+                _abilityToDrop = AbilityType.None;
+            
+                return tempValue;
+            }
+
+        public void SetAbilityToDrop(AbilityType ability) => _abilityToDrop = ability;
+    }
+
+        #endregion
+        
         [Header("Components")]
         [SerializeField] private AbilitySphereView prefab;
+        [SerializeField] private AbilitySelectorDataSo selectorData;
         [Header("Values")] 
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
@@ -44,7 +185,6 @@ namespace _Main.Scripts.Abilities.Spawn
         {
             BootEvents.OnSubSystemRequestInitialize -= Initialize;
             //
-            var selectorData = GameConfigManager.Instance.GetGameplayData().AbilitySelectorData;
             _minUnlockLevel = selectorData.MinUnlockLevel;
             
             _selector = new AbilitySelector(selectorData.GetRarityValues,selectorData.GetUnlockLevelValues);
@@ -321,161 +461,6 @@ namespace _Main.Scripts.Abilities.Spawn
         #endregion
 
         #endregion
-    }
-
-    public class AbilitySelector
-    {
-        public bool IsStorageFull { get; set; }
-
-        private readonly Roulette _roulette = new Roulette();
-        private readonly Func<Tuple<AbilityType[], int[]>> _getValuesAction;
-        private readonly Func<Tuple<int[],AbilityType[]>> _getUnlockAction;
-        private readonly Dictionary<AbilityType, ActionValue> _multipliers = new Dictionary<AbilityType, ActionValue>();
-        private AbilityType _abilityToDrop;
-
-        private class ActionValue
-        {
-            public readonly AbilityType AbilityType;
-            public int Value { get; private set; }
-
-            public ActionValue(AbilityType abilityType)
-            {
-                AbilityType = abilityType;
-            }
-
-            public void IncreaseValue()
-            {
-                Value += 5;
-            }
-
-            public void DecreaseValue()
-            {
-                Value -= 5;
-            }
-
-            public void EnableValue()
-            {
-                Value = 10;
-            }
-
-            public void DisableValue()
-            {
-                Value = 0;
-            }
-        }
-
-        public AbilitySelector(
-            Func<Tuple<AbilityType[], int[]>> getValuesAction, 
-            Func<Tuple<int[],AbilityType[]>> getUnlockAction)
-        {
-            _getValuesAction = getValuesAction;
-            _getUnlockAction = getUnlockAction;
-
-            for (int i = 0; i < (int)AbilityType.Default_MAX; i++)
-            {
-                var ability = (AbilityType)i;
-                _multipliers.Add(ability,new ActionValue(ability));
-            }
-        }
-
-        private AbilityType GetAbilityToUnlock(int level)
-        {
-            var tempValues = _getUnlockAction();
-            var length = tempValues.Item1.Length;
-            
-            for (int i = 0; i < length; i++)
-            {
-                var unlockLevel = tempValues.Item1[i];
-
-                if (unlockLevel == level)
-                {
-                    return tempValues.Item2[i];
-                }
-            }
-
-            return AbilityType.None;
-        }
-
-        private void ResetMultipliers()
-        {
-            foreach (var item in _multipliers)
-            {
-                item.Value.DisableValue();
-            }
-        }
-
-        private int GetAbilityValue(AbilityType abilityType)
-        {
-            if (_multipliers.TryGetValue(abilityType, out var multiplier))
-            {
-                return multiplier.Value;
-            }
-
-            return 1;
-        }
-
-        public void IncreaseValue(AbilityType ability)
-        {
-            if (_multipliers.TryGetValue(ability, out var multiplier))
-            {
-                multiplier.IncreaseValue();
-            }
-        }
-
-        public void DecreaseValue(AbilityType ability)
-        {
-            if (_multipliers.TryGetValue(ability, out var multiplier))
-            {
-                multiplier.DecreaseValue();
-            }
-        }
-
-        public void UpdateLevel(int level)
-        {
-            var ability = GetAbilityToUnlock(level);
-            if (ability == AbilityType.None) return;
-
-            if (_multipliers.TryGetValue(ability, out var multiplier))
-            {
-                multiplier.EnableValue();
-            }
-        }
-        
-        public void Reset()
-        {
-            ResetMultipliers();
-        }
-
-        public AbilityType GetAbilityToAdd()
-        {
-            if (_abilityToDrop == AbilityType.None)
-            {
-                var tempDic = new Dictionary<AbilityType, int>();
-                var values = _getValuesAction();
-                var length = values.Item1.Length;
-
-                for (int i = 0; i < length; i++)
-                {
-                    var ability = values.Item1[i];
-                    var finalValue = values.Item2[i] * GetAbilityValue(ability);
-
-                    tempDic.Add(ability, finalValue);
-                }
-
-                _abilityToDrop = _roulette.Run(tempDic);
-
-                return _abilityToDrop;
-            }
-
-            var tempValue = _abilityToDrop;
-            _abilityToDrop = AbilityType.None;
-            return tempValue;
-        }
-
-        public void SetAbilityToDrop(AbilityType ability)
-        {
-            _abilityToDrop = ability;
-        }
     }
 }
 

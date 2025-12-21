@@ -4,9 +4,9 @@ using _Main.Scripts.Interfaces;
 using _Main.Scripts.GameConfig.Game;
 using UnityEngine;
 
-namespace _Main.Scripts.GameConfig.Ability
+namespace _Main.Scripts.Abilities.So
 {
-    [CreateAssetMenu(fileName = "SO_AbilityData_Name", menuName = "Scriptable Objects/Game Config/Ability/Selector Data", order = -1)]
+    [CreateAssetMenu(fileName = "SO_AbilityData_Name", menuName = "Scriptable Objects/Ability/Selector Data", order = -1)]
     public class AbilitySelectorDataSo : ScriptableObject, IAbilitySelector
     {
         [ReadOnly]

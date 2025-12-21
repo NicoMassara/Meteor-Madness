@@ -1,9 +1,9 @@
 ﻿using _Main.Scripts.Interfaces;
 using UnityEngine;
 
-namespace _Main.Scripts.GameConfig.Ability
+namespace _Main.Scripts.Abilities.So
 {
-    [CreateAssetMenu(fileName = "SO_AbilityTimeData_[ABILITYNAME]_Default", menuName = "Scriptable Objects/Game Config/Ability/Time Data", order = 0)]
+    [CreateAssetMenu(fileName = "SO_AbilityTimeData_[ABILITYNAME]_Default", menuName = "Scriptable Objects/Ability/Time Data", order = 0)]
     public class AbilityTimeDataSo : ScriptableObject, IAbilityTimeData
     {
         [Range(1,15)]
