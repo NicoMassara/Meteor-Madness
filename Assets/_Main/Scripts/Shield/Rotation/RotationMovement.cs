@@ -26,11 +26,12 @@ namespace _Main.Scripts.Shield.Rotation
 
         private interface IRotationMovement
         {
+            public float Direction { get; }
             public bool GetHasInput();
             public bool GetIsSnapFinished();
             public bool GetIsReversing();
             public bool GetIsStopped();
-            public void Rotate(float deltaTime);
+            public void Rotate(float direction, float deltaTime);
             public void TransitionToIdle();
             public void TransitionToRotating();
             public void TransitionToReversing();
@@ -146,35 +147,40 @@ namespace _Main.Scripts.Shield.Rotation
         {
             private const float NoInputGraceTime = 0.06f;
             private float _noInputTimer = NoInputGraceTime;
+            private float _storedDirection;
             
             public override void Awake()
             {
                 Rotation.TriggerOnStartMoving();
                 _noInputTimer = NoInputGraceTime;
+                _storedDirection = Rotation.Direction;
             }
 
             public override void Execute(float deltaTime)
             {
-                Rotation.Rotate(deltaTime);
+                if (Rotation.GetHasInput())
+                {
+                    _noInputTimer = NoInputGraceTime;
+                    _storedDirection = Rotation.Direction;
+                }
+                else
+                {
+                    _noInputTimer -= deltaTime;
+
+                    if (_noInputTimer <= 0f)
+                    {
+                        Rotation.TransitionToDeAccelerating();
+                        return;
+                    }
+                }
 
                 if (Rotation.GetIsReversing())
                 {
                     Rotation.TransitionToReversing();
                     return;
                 }
-
-                if (Rotation.GetHasInput())
-                {
-                    _noInputTimer = NoInputGraceTime;
-                    return;
-                }
-
-                _noInputTimer -= deltaTime;
-
-                if (_noInputTimer <= 0f)
-                {
-                    Rotation.TransitionToDeAccelerating();
-                }
+                
+                Rotation.Rotate(_storedDirection, deltaTime);
             }
         }
         private class ReversingState : SimpleState
@@ -188,7 +194,7 @@ namespace _Main.Scripts.Shield.Rotation
             {
                 Rotation.Reverse(deltaTime);
                 
-                if (Rotation.GetIsReversing() == false)
+                if (Rotation.GetIsStopped())
                 {
                     Rotation.TransitionToRotating();
                 }
@@ -258,6 +264,7 @@ namespace _Main.Scripts.Shield.Rotation
         private int _currentSlot;
 
         public float SpeedRatio => Mathf.Abs(_angularSpeed) / _data.MaxAngularSpeed;
+        public float Direction => _direction;
 
         public event Action<int> OnStartMoving;
         public event Action OnStartStop;
@@ -340,9 +347,9 @@ namespace _Main.Scripts.Shield.Rotation
         public void TriggerOnDirectionChanged() => OnDirectionChange?.Invoke((int)Mathf.Sign(_direction));
         public void TriggerOnStopped() => OnStopped?.Invoke();
         public void TriggerOnStartStop() => OnStartStop?.Invoke();
-        public void Rotate(float deltaTime)
+        public void Rotate(float direction, float deltaTime)
         {
-            float targetSpeed = (_direction * _data.MaxAngularSpeed) * _speedMultiplier;
+            float targetSpeed = (direction * _data.MaxAngularSpeed) * _speedMultiplier;
 
             _angularSpeed = Mathf.MoveTowards(
                 _angularSpeed,
@@ -362,14 +369,12 @@ namespace _Main.Scripts.Shield.Rotation
         public void Reverse(float deltaTime)
         {
             _hasReachedMaxSpeed = false;
-            float target = _data.MaxAngularSpeed * _direction;
-            _angularSpeed = Mathf.MoveTowards(
-                _angularSpeed, 
-                target,
-                _data.AngularAcceleration * _data.DirectionResponse * deltaTime
-            );
             
-            Debug.Log($"Speed Ratio: {SpeedRatio}");
+            _angularSpeed = Mathf.MoveTowards(
+                _angularSpeed,
+                0f,
+                _data.AngularDeAcceleration * _data.DirectionResponse * deltaTime
+            );
         }
         public void DeAccelerate(float deltaTime)
         {
