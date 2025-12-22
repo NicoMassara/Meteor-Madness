@@ -10,9 +10,11 @@ namespace _Main.Scripts.Tutorial.MVC
     {
         [SerializeField] private TutorialUiSelector uiSelector;
 
-        private const string MovementHintCode = "Tutorial.Hint.Movement";
+        private const string MeteorHintCode = "Tutorial.Hint.Meteor";
         private const string AbilityHintCode = "Tutorial.Hint.Ability";
         private const string ShieldHintCode = "Tutorial.Hint.Shield";
+        private const string MoveRightHintCode = "Tutorial.Hint.MoveRight";
+        private const string MoveLeftHintCode = "Tutorial.Hint.MoveLeft";
         private TutorialUiComponents _uiComponents;
 
         public event Action OnHintTextEnable;
@@ -23,23 +25,60 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             switch (message)
             {
-                case TutorialObserverMessage.Movement:
-                    HandleMovement();
-                    break;
-                case TutorialObserverMessage.Ability:
-                    HandleAbility();
-                    break;
+                
+                // === Multi Page === //
+                
                 case TutorialObserverMessage.MultiPage:
                     HandleMultiPage();
                     break;
+                
+                // === Movement === //
+                
+                case TutorialObserverMessage.RightMovement:
+                    HandleRightMovement();
+                    break;
+                
+                case TutorialObserverMessage.LeftMovement:
+                    HandleLeftMovement();
+                    break;
+                
+                // === Meteor === //
+                
+                case TutorialObserverMessage.Meteor:
+                    HandleMeteor();
+                    break;
+                
+                // === Ability === //
+                
                 case TutorialObserverMessage.SphereDeflected:
                     HandleSphereDeflected();
                     break;
+                
+                case TutorialObserverMessage.Ability:
+                    HandleAbility();
+                    break;
+                
                 case TutorialObserverMessage.AbilityRunning:
                     HandleAbilityRunning();
                     break;
             }
         }
+
+
+
+        #region Movement
+
+        private void HandleRightMovement()
+        {
+            SetHintText(GetLocalizedText(MoveRightHintCode));
+        }
+        
+        private void HandleLeftMovement()
+        {
+            SetHintText(GetLocalizedText(MoveLeftHintCode));
+        }
+
+        #endregion
         
         private TutorialUiComponents GetUiComponents()
         {
@@ -61,9 +100,9 @@ namespace _Main.Scripts.Tutorial.MVC
             OnHintTextDisable?.Invoke();
         }
         
-        private void HandleMovement()
+        private void HandleMeteor()
         {
-            SetHintText(GetLocalizedText(MovementHintCode));
+            SetHintText(GetLocalizedText(MeteorHintCode));
         }
         
         private void HandleAbility()

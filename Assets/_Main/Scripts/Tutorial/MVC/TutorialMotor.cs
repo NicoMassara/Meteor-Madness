@@ -1,68 +1,104 @@
-﻿using _Main.Scripts.Observer;
+﻿using System;
+using _Main.Scripts.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.Tutorial.MVC
 {
     public class TutorialMotor : ObservableComponent
     {
+        #region Private Classes
+        private class MovementCounter
+        {
+            private readonly float _maxMovementTime;
+            
+            private float _currentMovementTime;
+
+            public event Action OnFinished;
+
+            public MovementCounter(float maxMovementTime = 3)
+            {
+                _maxMovementTime = maxMovementTime;
+            }
+
+            public void Update(float deltaTime)
+            {
+                _currentMovementTime += deltaTime;
+
+                if (_currentMovementTime > _maxMovementTime)
+                {
+                    OnFinished?.Invoke();
+                }
+            }
+
+            public void Reset() => _currentMovementTime = 0;
+        }
         
-        public void Movement()
-        {
-            NotifyAll(TutorialObserverMessage.Movement);
-        }
+        #endregion
 
-        public void Ability()
-        {
-            NotifyAll(TutorialObserverMessage.Ability);
-        }
+        private const float RotateTime = 0.5f;
+        private MovementCounter _rightCounter;
+        private MovementCounter _leftCounter;
+        
+        private float _currentDirection;
 
-        public void Finish()
+        public TutorialMotor()
         {
-            NotifyAll(TutorialObserverMessage.Finish);
+            Initialize();
         }
         
-        public void Disable()
+        private void Initialize()
         {
-            NotifyAll(TutorialObserverMessage.Disable);
+            _rightCounter = new MovementCounter(RotateTime);
+            _leftCounter = new MovementCounter(RotateTime);
+
+            _rightCounter.OnFinished += () =>
+            {
+                NotifyAll(TutorialObserverMessage.RightMovementFinished);
+            };
+            
+            _leftCounter.OnFinished += () =>
+            {
+                NotifyAll(TutorialObserverMessage.LeftMovementFinished);
+            };
         }
 
+        public void Meteor() => NotifyAll(TutorialObserverMessage.Meteor);
+        public void Ability() => NotifyAll(TutorialObserverMessage.Ability);
+        public void Finish() => NotifyAll(TutorialObserverMessage.Finish);
+        public void Disable() => NotifyAll(TutorialObserverMessage.Disable);
         public void Enable()
         {
+            _rightCounter.Reset();
+            _leftCounter.Reset();
             NotifyAll(TutorialObserverMessage.Enable);
         }
 
-        public void SpawnExtraMeteors()
+        public void SpawnExtraMeteors() => NotifyAll(TutorialObserverMessage.ExtraMeteors);
+        public void SendAdditionalProjectile(int projectileTypeIndex) => NotifyAll(TutorialObserverMessage.AdditionalProjectile, projectileTypeIndex);
+        public void SetMultiPage() => NotifyAll(TutorialObserverMessage.MultiPage);
+        public void TriggerSphereDeflected() => NotifyAll(TutorialObserverMessage.SphereDeflected);
+        public void SetAbilityRunning() => NotifyAll(TutorialObserverMessage.AbilityRunning);
+        public void EnableHint() => NotifyAll(TutorialObserverMessage.EnableHint);
+        public void DisableHint() => NotifyAll(TutorialObserverMessage.DisableHint);
+        public void SetRightMovement() => NotifyAll(TutorialObserverMessage.RightMovement);
+        public void SetLeftMovement() => NotifyAll(TutorialObserverMessage.LeftMovement);
+
+        #region Movement
+
+        public void SetMovementDirection(float direction) => _currentDirection = direction;
+
+        public void ExecuteRightMovement(float deltaTime)
         {
-            NotifyAll(TutorialObserverMessage.ExtraMeteors);
+            if(Mathf.Sign(_currentDirection) < 0)
+                _rightCounter.Update(deltaTime);
         }
         
-        public void SendAdditionalProjectile(int projectileTypeIndex)
+        public void ExecuteLeftMovement(float deltaTime)
         {
-            NotifyAll(TutorialObserverMessage.AdditionalProjectile, projectileTypeIndex);
+            if(Mathf.Sign(_currentDirection) > 0)
+                _leftCounter.Update(deltaTime);
         }
 
-        public void SetMultiPage()
-        {
-            NotifyAll(TutorialObserverMessage.MultiPage);
-        }
-
-        public void TriggerSphereDeflected()
-        {
-            NotifyAll(TutorialObserverMessage.SphereDeflected);
-        }
-
-        public void SetAbilityRunning()
-        {
-            NotifyAll(TutorialObserverMessage.AbilityRunning);
-        }
-
-        public void EnableHint()
-        {
-            NotifyAll(TutorialObserverMessage.EnableHint);
-        }
-
-        public void DisableHint()
-        {
-            NotifyAll(TutorialObserverMessage.DisableHint);
-        }
+        #endregion
     }
 }

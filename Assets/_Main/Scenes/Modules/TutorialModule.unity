@@ -919,10 +919,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mobileMultiPageData:
+  - {fileID: 11400000, guid: bdd7e4dad48f7fb42bee301f68e4360a, type: 2}
+  - {fileID: 11400000, guid: 7f9b4712a4b6c86468af649529d6b1aa, type: 2}
   - {fileID: 11400000, guid: 73a438166a2e1614abe3dd5aeff332c8, type: 2}
   - {fileID: 11400000, guid: ff23311737689ed45b4271a7428d43ea, type: 2}
   - {fileID: 11400000, guid: 9152477445a03f941a9824a717aecd48, type: 2}
   desktopMultiPageData:
+  - {fileID: 11400000, guid: d4b2ab5daea835b4c97af8ec305380ce, type: 2}
+  - {fileID: 11400000, guid: 54038f0641388d04c9911d1290f5544b, type: 2}
   - {fileID: 11400000, guid: 88fcfd3e755a8574fb1a206d2d397d1d, type: 2}
   - {fileID: 11400000, guid: 2fba5efa57b15064e94ef0da6ae4c2a8, type: 2}
   - {fileID: 11400000, guid: 404dd558b8f6e464daedbc72427d0c7a, type: 2}
@@ -977,7 +981,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9a391280ef6492ca43a1dcdbe5db127, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventName: tutorial_completed
 --- !u!1 &2111792461
 GameObject:
   m_ObjectHideFlags: 0

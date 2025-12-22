@@ -13,10 +13,11 @@ namespace _Main.Scripts.Tutorial.MVC
         public interface ITutorialController
         {
             public void Initialize();
+            public void Execute(float deltaTime);
             public void TransitionToEnable();
             public void TransitionToMultiPage();
             public void TransitionToDisable();
-            public void TransitionToMovement();
+            public void TransitionToMeteor();
             public void TransitionToAbility();
             public void SpawnExtraMeteors();
             public void TransitionToFinish();
@@ -25,6 +26,9 @@ namespace _Main.Scripts.Tutorial.MVC
             public void SendAdditionalProjectile(int inputType);
             public void EnableHint();
             public void DisableHint();
+            public void SetMovementDirection(float direction);
+            public void TransitionToMoveRight();
+            public void TransitionToMoveLeft();
         }
         private interface IController
         {
@@ -32,9 +36,13 @@ namespace _Main.Scripts.Tutorial.MVC
             public void SetDisable();
             public void SetEnable();
             public void SetFinish();
-            public void SetMovement();
+            public void SetMeteor();
             public void SetAbilityRunning();
             public void SetMultiPage();
+            public void SetRightMovement();
+            public void SetLeftMovement();
+            public void ExecuteLeftMovement(float deltaTime);
+            public void ExecuteRightMovement(float deltaTime);
         }
 
         #endregion
@@ -69,9 +77,9 @@ namespace _Main.Scripts.Tutorial.MVC
                 public override void Awake() => Controller.SetFinish();
             }
     
-            private class MovementState<T> : BaseState<T>
+            private class MeteorState<T> : BaseState<T>
             {
-                public override void Awake() => Controller.SetMovement();
+                public override void Awake() => Controller.SetMeteor();
             }
 
             private class AbilityRunningState<T> : BaseState<T>
@@ -84,6 +92,19 @@ namespace _Main.Scripts.Tutorial.MVC
                 public override void Awake() => Controller.SetMultiPage();
             }
 
+            private class MoveRightState<T> : BaseState<T>
+            {
+                public override void Awake() => Controller.SetRightMovement();
+                public override void Execute(float deltaTime) => Controller.ExecuteRightMovement(deltaTime);
+            }
+            
+            private class MoveLeftState<T> : BaseState<T>
+            {
+                public override void Awake() => Controller.SetLeftMovement();
+
+                public override void Execute(float deltaTime) => Controller.ExecuteLeftMovement(deltaTime);
+            }
+
             #endregion
             
             private FSM<States> _fsm;
@@ -91,7 +112,9 @@ namespace _Main.Scripts.Tutorial.MVC
             {
                 None,
                 Enable,
-                Movement,
+                MovementRight,
+                MovementLeft,
+                MeteorDeflect,
                 Ability,
                 AbilityRunning,
                 Finish,
@@ -106,7 +129,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
                 protected override void OnEnterState(States state)
                 {
-                    ProjectileReStockEnable = state is States.Ability or States.Movement;
+                    ProjectileReStockEnable = state is States.Ability or States.MeteorDeflect;
                 }
             }
             
@@ -116,7 +139,9 @@ namespace _Main.Scripts.Tutorial.MVC
             {
                 InitializeFsm(controller);
             }
-            
+
+            public void Execute(float deltaTime) => _fsm?.Execute(deltaTime);
+
             #region FSM
 
             private void InitializeFsm(IController controller)
@@ -134,7 +159,9 @@ namespace _Main.Scripts.Tutorial.MVC
                 var none = new BaseState<States>();
                 var disable = new DisableState<States>();
                 var enable = new EnableState<States>();
-                var movement = new MovementState<States>();
+                var moveRight = new MoveRightState<States>();
+                var moveLeft = new MoveLeftState<States>();
+                var meteorDeflect = new MeteorState<States>();
                 var ability = new AbilityState<States>();
                 var finish = new FinishState<States>();
                 var abilityRunning = new AbilityRunningState<States>();
@@ -143,8 +170,10 @@ namespace _Main.Scripts.Tutorial.MVC
                 temp.Add(none);
                 temp.Add(disable);
                 temp.Add(enable);
+                temp.Add(moveRight);
+                temp.Add(moveLeft);
                 temp.Add(abilityRunning);
-                temp.Add(movement);
+                temp.Add(meteorDeflect);
                 temp.Add(ability);
                 temp.Add(finish);
                 temp.Add(multiPage);
@@ -157,19 +186,39 @@ namespace _Main.Scripts.Tutorial.MVC
                 
                 enable.AddTransition(States.MultiPage, multiPage);
                 
-                multiPage.AddTransition(States.Movement, movement);
+                // === //
                 
-                movement.AddTransition(States.MultiPage, multiPage);
+                multiPage.AddTransition(States.MovementRight, moveRight);
+                
+                moveRight.AddTransition(States.MultiPage, multiPage);
+                
+                // === //
+                
+                multiPage.AddTransition(States.MovementLeft, moveLeft);
+                
+                moveLeft.AddTransition(States.MultiPage, multiPage);
+                
+                // === //
+                
+                multiPage.AddTransition(States.MeteorDeflect, meteorDeflect);
+                
+                meteorDeflect.AddTransition(States.MultiPage, multiPage);
+                
+                // === //
                 
                 multiPage.AddTransition(States.Ability, ability);
                 
                 ability.AddTransition(States.AbilityRunning, abilityRunning);
+                
+                // === //
                 
                 abilityRunning.AddTransition(States.Finish, finish);
                 
                 finish.AddTransition(States.MultiPage, multiPage);
                 
                 multiPage.AddTransition(States.Finish, finish);
+                
+                // === //
                 
                 multiPage.AddTransition(States.Disable, disable);
                 
@@ -186,45 +235,16 @@ namespace _Main.Scripts.Tutorial.MVC
             }
 
             #region Transitions
-
-            private void SetTransition(States state)
-            {
-                _fsm?.Transitions(state);
-            }
-            
-            public void TransitionToEnable()
-            {
-                SetTransition(States.Enable);
-            }
-            
-            public void TransitionToDisable()
-            {
-                SetTransition(States.Disable);
-            }
-            
-            public void TransitionToMovement()
-            {
-                SetTransition(States.Movement);
-            }
-            
-            public void TransitionToAbility()
-            {
-                SetTransition(States.Ability);
-            }
-            public void TransitionToAbilityRunning()
-            {
-                SetTransition(States.AbilityRunning);
-            }
-            
-            public void TransitionToFinish()
-            {
-                SetTransition(States.Finish);
-            }
-
-            public void TransitionToMultiPage()
-            {
-                SetTransition(States.MultiPage);
-            }
+            private void SetTransition(States state) => _fsm?.Transitions(state);
+            public void TransitionToEnable() => SetTransition(States.Enable);
+            public void TransitionToDisable() => SetTransition(States.Disable);
+            public void TransitionToMeteor() => SetTransition(States.MeteorDeflect);
+            public void TransitionToRightMovement() => SetTransition(States.MovementRight);
+            public void TransitionToLeftMovement() => SetTransition(States.MovementLeft);
+            public void TransitionToAbility() => SetTransition(States.Ability);
+            public void TransitionToAbilityRunning() => SetTransition(States.AbilityRunning);
+            public void TransitionToFinish() => SetTransition(States.Finish);
+            public void TransitionToMultiPage() => SetTransition(States.MultiPage);
 
             #endregion
             
@@ -251,82 +271,30 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             _controller = new Controller(this);
         }
-
-        public void TransitionToEnable()
-        {
-            _controller.TransitionToEnable();
-        }
-
-        public void TransitionToMultiPage()
-        {
-            _controller.TransitionToMultiPage();
-        }
-
-        public void TransitionToDisable()
-        {
-            _controller.TransitionToDisable();
-        }
-
-        public void TransitionToMovement()
-        {
-            _controller.TransitionToMovement();
-        }
-
-        public void TransitionToAbility()
-        {
-            _controller.TransitionToAbility();
-        }
-
-        public void TransitionToFinish()
-        {
-            _controller.TransitionToFinish();
-        }
-        
-        public void TransitionToAbilityRunning()
-        {
-            _controller.TransitionToAbilityRunning();
-        }
+        public void Execute(float deltaTime) => _controller.Execute(deltaTime);
+        public void TransitionToEnable() => _controller.TransitionToEnable();
+        public void TransitionToMultiPage() => _controller.TransitionToMultiPage();
+        public void TransitionToDisable() => _controller.TransitionToDisable();
+        public void TransitionToMeteor() => _controller.TransitionToMeteor();
+        public void TransitionToAbility() => _controller.TransitionToAbility();
+        public void TransitionToFinish() => _controller.TransitionToFinish();
+        public void TransitionToAbilityRunning() => _controller.TransitionToAbilityRunning();
+        public void SetMovementDirection(float direction) => _motor.SetMovementDirection(direction);
+        public void TransitionToMoveRight() => _controller.TransitionToRightMovement();
+        public void TransitionToMoveLeft() => _controller.TransitionToLeftMovement();
 
         #endregion
         
         #region IController
 
-        public void SetMovement()
-        {
-            _motor.Movement();
-        }
-
-        public void SetAbility()
-        {
-            _motor.Ability();
-        }
-
-        public void SetFinish()
-        {
-            _motor.Finish();
-        }
+        public void SetMeteor() => _motor.Meteor();
+        public void SetAbility() => _motor.Ability();
+        public void SetFinish() => _motor.Finish();
+        public void SetDisable() => _motor.Disable();
+        public void SetEnable() => _motor.Enable();
+        public void SpawnExtraMeteors() => _motor.SpawnExtraMeteors();
+        public void SetAbilityRunning() => _motor.SetAbilityRunning();
         
-        public void SetDisable()
-        {
-            _motor.Disable();
-        }
-
-        public void SetEnable()
-        {
-            _motor.Enable();
-        }
-        
-        public void SpawnExtraMeteors()
-        {
-            _motor.SpawnExtraMeteors();
-        }
-
-        public void SetAbilityRunning()
-        {
-            _motor.SetAbilityRunning();
-        }
-        
-
         public void SendAdditionalProjectile(int projectileTypeIndex)
         {
             if (_controller.GetCanReStockProjectile())
@@ -335,25 +303,15 @@ namespace _Main.Scripts.Tutorial.MVC
             }
         }
 
-        public void EnableHint()
-        {
-            _motor.EnableHint();
-        }
-
-        public void DisableHint()
-        {
-            _motor.DisableHint();
-        }
-
-        public void SetMultiPage()
-        {
-            _motor.SetMultiPage();
-        }
-
-        public void TriggerSphereDeflected()
-        {
-            _motor.TriggerSphereDeflected();
-        }
+        public void EnableHint() => _motor.EnableHint();
+        public void DisableHint() => _motor.DisableHint();
+        
+        public void SetMultiPage() => _motor.SetMultiPage();
+        public void SetRightMovement() => _motor.SetRightMovement();
+        public void SetLeftMovement() => _motor.SetLeftMovement();
+        public void ExecuteLeftMovement(float deltaTime) => _motor.ExecuteLeftMovement(deltaTime);
+        public void ExecuteRightMovement(float deltaTime) => _motor.ExecuteRightMovement(deltaTime);
+        public void TriggerSphereDeflected() => _motor.TriggerSphereDeflected();
 
         #endregion
     }

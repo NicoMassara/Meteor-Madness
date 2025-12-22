@@ -118,7 +118,7 @@
     public struct TutorialObserverMessage
     {
         public const ulong EnableHint = 0xA6001;
-        public const ulong Movement = 0xA6002;
+        public const ulong Meteor = 0xA6002;
         public const ulong Disable = 0xA6003;
         public const ulong Ability = 0xA6004;
         public const ulong Finish = 0xA6005;
@@ -129,10 +129,10 @@
         public const ulong AdditionalProjectile = 0xA6010;
         public const ulong MultiPage = 0xA6011;
         public const ulong DisableHint = 0xA6012;
-        public const ulong Empty2 = 0xA6013;
-        public const ulong Empty3 = 0xA6014;
-        public const ulong Empty4 = 0xA6015;
-        public const ulong Empty5 = 0xA6016;
+        public const ulong RightMovement = 0xA6013;
+        public const ulong LeftMovement = 0xA6014;
+        public const ulong RightMovementFinished = 0xA6015;
+        public const ulong LeftMovementFinished = 0xA6016;
         public const ulong Empty6 = 0xA6017;
     }
 

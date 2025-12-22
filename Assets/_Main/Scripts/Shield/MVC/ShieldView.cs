@@ -36,6 +36,7 @@ namespace _Main.Scripts.Shield
         public event Action<bool> OnShieldActivated;
         public event Action OnRotate;
         public event Action OnStopped;
+        public event Action OnStartStop;
         public event Action<int> OnDirectionChange;
         public event Action OnDeflect;
         public event Action<AbilityType> OnAbilityStarted;
@@ -68,6 +69,13 @@ namespace _Main.Scripts.Shield
             _movement.OnStopped += () =>
             {
                 OnStopped?.Invoke();
+            };
+            
+            _movement.OnStartStop += () =>
+            {
+                OnStartStop?.Invoke();
+                
+                ShieldEventCaller.NotifyMovement(0);
             };
             
             _movement.OnDirectionChange += (value) =>

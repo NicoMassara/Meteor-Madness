@@ -43,9 +43,11 @@
 
   "Tutorial": {
     "Hint" : {
-      "Movement" : "Prueba Moverte y destruye el meteorito",
+      "Meteor" : "Destruye el meteorito",
       "Ability" : "Prueba destruyendo la misteriosa esfera",
-      "Shield" : "Activa el Super Escudo!"
+      "Shield" : "Activa el Super Escudo!",
+      "MoveRight" : "Move clockwise!",
+      "MoveLeft" : "Move counter clockwise!"
     }
   },
 

@@ -12,23 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9b66bdddcca450288571efac6c1d294, type: 3}
   m_Name: So_Animation_UI_Gameplay
   m_EditorClassIdentifier: 
-  gameplayUiOpenData:
-    scoreOffscreenPos: 4
-    pauseOffscreenPos: 5
-    scoreOffset: {x: -250, y: 250}
-    pauseOffset: {x: 250, y: 250}
-    movementDuration: 0.25
-  gameplayUiCloseData:
-    scoreOffscreenPos: 4
-    pauseOffscreenPos: 5
-    scoreOffset: {x: -250, y: 250}
-    pauseOffset: {x: 250, y: 250}
-    movementDuration: 0.25
-    finishDelay: 0.5
-  scoreFinishAddingData:
-    bounceScale: 1.25
-    bounceDuration: 0.25
-    bounceReturnTime: 0.1
   countdownUpdateData:
     fadeDuration: 0.4
     bounceDuration: 0.4
@@ -47,3 +30,25 @@ MonoBehaviour:
     aeScaleDelay: 0.45
     aeFinishScaleDuration: 0.45
     finishDelay: 0.5
+  gameplayUiOpenData:
+    scoreOffscreenPos: 4
+    pauseOffscreenPos: 5
+    movementDuration: 0.25
+    finishDelay: 0.5
+    scoreOffset: {x: -250, y: 250}
+    pauseOffset: {x: 250, y: 250}
+  gameplayUiCloseData:
+    scoreOffscreenPos: 4
+    pauseOffscreenPos: 5
+    movementDuration: 0.25
+    finishDelay: 0.5
+    scoreOffset: {x: -250, y: 250}
+    pauseOffset: {x: 250, y: 250}
+  scoreFinishAddingData:
+    bounceScale: 1.25
+    bounceDuration: 0.25
+    bounceReturnTime: 0.1
+  streakFailedData:
+    duration: 0.1
+    horizontalOffset: 30
+    loops: 5

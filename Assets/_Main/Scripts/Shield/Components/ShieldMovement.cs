@@ -32,6 +32,7 @@ namespace _Main.Scripts.Shield
         
         public event Action<int> OnStartMoving;
         public event Action OnStopped;
+        public event Action OnStartStop;
         public event Action<int> OnDirectionChange;
         
         private void Awake()
@@ -43,6 +44,7 @@ namespace _Main.Scripts.Shield
             
             _movement.OnStartMoving += OnStartMoving;
             _movement.OnStopped += OnStopped;
+            _movement.OnStartStop += OnStartStop;
             _movement.OnDirectionChange += OnDirectionChange;
         }
         

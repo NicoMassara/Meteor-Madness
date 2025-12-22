@@ -43,9 +43,11 @@
   
   "Tutorial": {
     "Hint" : {
-      "Movement" : "Try Moving and Deflect a Meteor!",
+      "Meteor" : "Try to Deflect a Meteor!",
       "Ability" : "Try To Deflect the mysterious Sphere!",
-      "Shield" : "Trigger the Super Shield!"
+      "Shield" : "Trigger the Power Up!",
+      "MoveRight" : "Move clockwise!",
+      "MoveLeft" : "Move counter clockwise!"
     }
   },
 

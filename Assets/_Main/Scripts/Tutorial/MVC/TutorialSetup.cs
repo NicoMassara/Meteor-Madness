@@ -8,13 +8,16 @@ namespace _Main.Scripts.Tutorial.MVC
     [RequireComponent(typeof(TutorialView))]
     [RequireComponent(typeof(TutorialUIView))]
     [RequireComponent(typeof(TutorialViewAnimation))]
-    public class TutorialSetup : ManagedBehavior
+    public class TutorialSetup : ManagedBehavior, IUpdatable
     {
-        private TutorialMotor _motor;
         private TutorialController.ITutorialController _controller;
         private TutorialView _view;
         private TutorialViewAnimation _animator;
         private TutorialUIView _ui;
+
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+
         
         private void Awake()
         {
@@ -22,12 +25,12 @@ namespace _Main.Scripts.Tutorial.MVC
             _ui = GetComponent<TutorialUIView>();
             _animator = GetComponent<TutorialViewAnimation>();
             
-            _motor = new TutorialMotor();
-            _controller = new TutorialController(_motor);
+            var motor = new TutorialMotor();
+            _controller = new TutorialController(motor);
             
-            _motor.Subscribe(_view);
-            _motor.Subscribe(_ui);
-            _motor.Subscribe(_animator);
+            motor.Subscribe(_view);
+            motor.Subscribe(_ui);
+            motor.Subscribe(_animator);
             
             SetViewHandlers();
             
@@ -38,6 +41,11 @@ namespace _Main.Scripts.Tutorial.MVC
         private void Start()
         {
             _controller.Initialize();
+        }
+        
+        public void ExecuteUpdate(float deltaTime)
+        {
+            _controller?.Execute(deltaTime);
         }
 
         private void EnableTutorial()
@@ -58,6 +66,8 @@ namespace _Main.Scripts.Tutorial.MVC
         {
             _view.OnTutorialEnable += ViewOnTutorialEnable;
             _view.OnTutorialFinished += _controller.TransitionToMultiPage;
+            _view.OnRightMovementFinished += _controller.TransitionToMultiPage;
+            _view.OnLeftMovementFinished += _controller.TransitionToMultiPage;
             //
             _ui.OnHintTextEnable += _controller.EnableHint;
             _ui.OnHintTextDisable += _controller.DisableHint;
@@ -82,6 +92,8 @@ namespace _Main.Scripts.Tutorial.MVC
             MeteorEventSubscriber.RingActive(EventBus_Meteor_RingActive);
             //
             MultiPageUIEventSubscriber.Finished(EventBus_MultiPage_Finished);
+            //
+            ShieldEventSubscriber.NotifyMovement(EventBus_Shield_Movement);
         }
 
         private void UnsubscribeEventBus()
@@ -94,6 +106,8 @@ namespace _Main.Scripts.Tutorial.MVC
             MeteorEventUnSubscriber.RingActive(EventBus_Meteor_RingActive);
             //
             MultiPageUIEventUnSubscriber.Finished(EventBus_MultiPage_Finished);
+            //
+            ShieldEventUnSubscriber.NotifyMovement(EventBus_Shield_Movement);
         }
         
         private void EventBus_MultiPage_Finished(MultiPageUIEvents.Finished input)
@@ -101,18 +115,29 @@ namespace _Main.Scripts.Tutorial.MVC
             switch (input.CreateId)
             {
                 case 0:
-                    _controller.TransitionToMovement();
+                    _controller.TransitionToMoveRight();
                     break;
                 case 1:
+                    _controller.TransitionToMoveLeft();
+                    break;
+                case 2:
+                    _controller.TransitionToMeteor();
+                    break;
+                case 3:
                     _controller.TransitionToAbility();
                     break;
-                case 2: 
+                case 4: 
                     GameManager.Instance.LoadMainMenu();
                     break;
                 default:
                     Debug.Log("MultiPage_Finished - Finish Action Not Found");
                     break;
             }
+        }
+        
+        private void EventBus_Shield_Movement(ShieldEvents.NotifyMovement input)
+        {
+            _controller.SetMovementDirection(input.Direction);
         }
         
         private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
