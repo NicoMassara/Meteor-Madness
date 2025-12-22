@@ -39,7 +39,7 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void HandleSkinSelected(int skinIndex)
         {
-            SkinManager.Instance.SelectSkin((SkinType)skinIndex);
+            SkinManager.Instance.PreviewSkin((SkinType)skinIndex);
             SkinManager.Instance.SaveSelected();
             OnCosmeticChanged?.Invoke(((SkinType)skinIndex).ToString());
         }

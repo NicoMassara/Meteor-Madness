@@ -15,8 +15,8 @@ namespace _Main.Scripts.MyComponents
             {
                 hideFlags = HideFlags.DontSave,
             };
-            //Debug.Log($"Singleton Created: {typeof(T)}");
             DontDestroyOnLoad(gameObject);
+            SingletonEvents.OnDestroySingleton += () => Destroy(gameObject);
             return gameObject.AddComponent<T>();
         }
 

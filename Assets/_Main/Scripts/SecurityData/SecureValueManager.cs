@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using _Main.Scripts.CustomId;
 using _Main.Scripts.MyComponents;
 using NicolasMassara.CustomUpdateManager;
@@ -193,7 +194,7 @@ namespace _Main.Scripts.SecurityData
         #region Public API
 
         public static GeneratedId RegisterValue<T>(T startValue = default) where T : struct 
-            => Instance.Internal_RegisterValue<T>(startValue);
+            => Instance.Internal_RegisterValue(startValue);
         
         public static void RemoveValue(GeneratedId valueId)
             => Instance.Internal_RemoveValue(valueId);
@@ -203,6 +204,9 @@ namespace _Main.Scripts.SecurityData
         
         public static bool GetDoesContainValue<T>(GeneratedId valueId, out T value) where T : struct 
             => Instance.Internal_GetDoesContainValue<T>(valueId, out value);
+        
+        public static bool GetDoesContainValue<T>(GeneratedId valueId) where T : struct 
+            => Instance.Internal_GetDoesContainValue<T>(valueId);
 
         #endregion
         
@@ -255,6 +259,17 @@ namespace _Main.Scripts.SecurityData
             }
             
             value = default!;
+            return false;
+        }
+        
+        private bool Internal_GetDoesContainValue<T>(GeneratedId valueId) where T : struct
+        {
+            if (valueId == null)
+                return false;
+
+            if (_secureValuesById.TryGetValue(valueId.Id, out var secureValue))
+                return true;
+            
             return false;
         }
 

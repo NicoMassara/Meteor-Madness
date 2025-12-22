@@ -461,7 +461,7 @@ namespace _Main.Scripts.MyCommands
         [ConsoleMethod("skin_select", "List of Skin Types")]
         public static void SelectSkin(SkinType type)
         {
-            SkinManager.Instance.SelectSkin(type);
+            SkinManager.Instance.ForceSkin(type);
         }
     }
     public static class SettingsCommands

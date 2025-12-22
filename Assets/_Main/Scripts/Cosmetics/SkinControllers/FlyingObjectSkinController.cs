@@ -20,8 +20,6 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
 
         private void Start()
         {
-            //LoadSkin();
-            
             _flyingObject.OnSkinEnable += LoadSkin;
             
             SkinManager.OnSkinChanged += SkinManager_OnSkinChanged;

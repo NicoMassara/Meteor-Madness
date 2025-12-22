@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using _Main.Scripts.MyComponents;
 using System.IO;
 using System.Linq;
@@ -369,6 +370,8 @@ namespace _Main.Scripts.Save
         {
             public override SaveDataType Type => SaveDataType.Skin;
             public int SkinIndex = 0;
+            public uint SkinCoins = 0;
+            public List<int> UnlockedSkins;
         }
 
         [System.Serializable]

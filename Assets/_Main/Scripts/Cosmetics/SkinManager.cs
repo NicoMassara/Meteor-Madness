@@ -9,76 +9,28 @@ namespace _Main.Scripts.Cosmetics
 {
     public class SkinManager : SingletonBehaviour<SkinManager>
     {
-        #region Tools
-        private class AssetsLoader
-        {
-            private readonly Dictionary<SkinType, SkinDataSo> _dataDic = new Dictionary<SkinType, SkinDataSo>();
-            private const string Path = "ScriptableObjects/Skins";
-            private bool _hasLoaded = false;
-            
-            public AssetsLoader()
-            {
-                Initialize();
-            }
-
-            private void Initialize()
-            {
-                if(_hasLoaded) return;
-                
-                var loaded = Resources.LoadAll<SkinDataSo>(Path);
-
-                foreach (var data in loaded)
-                {
-                    var skinType = data.SkinType;
-
-                    if (_dataDic.ContainsKey(skinType))
-                    {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                
-                        Debug.LogWarning($"{skinType} Skin Data duplicated found in Resources/{Path} was not loaded, check the SkinType and changed to load it!");
-#endif
-                        continue;
-                    }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                
-                    //Debug.Log($"{skinType} Skin loaded from Resources/{Path}");
-#endif
-                
-                    _dataDic.Add(skinType, data);
-                }
-                
-                _hasLoaded = true;
-                SkinEvents.TriggerOnAssetsLoaded();
-            }
-
-            public bool Contains(SkinType soundType)
-            {
-                return _dataDic.ContainsKey(soundType);
-            }
-
-            public SkinDataSo GetData(SkinType skinType)
-            {
-                return _dataDic[skinType];
-            }
-        }
-
-        #endregion
-        
-        private AssetsLoader _assetsLoader;
         private DataManager.SkinSaveData _skinData;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private CosmeticsDebugData _debugData;
 #endif
         
+        // === Controllers === // 
+        private SkinController _skinController;
+        private LockedSkinController _lockedSkinController;
+        private CoinsController _coinsController;
+
+        private SkinType _currentSkinPreview;
+        
         public event Action<SkinType> OnSkinChanged;
         
         private void Awake()
         {
-            _assetsLoader = new AssetsLoader();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _debugData = new CosmeticsDebugData();
 #endif
+            _skinController = new SkinController();
+            _lockedSkinController = new LockedSkinController();
+            _coinsController = new CoinsController();
             
             BootEvents.OnMainSystemRequestInitialize += Initialize;
         }
@@ -87,90 +39,120 @@ namespace _Main.Scripts.Cosmetics
         {
             BootEvents.OnMainSystemRequestInitialize -= Initialize;
             //
-            _skinData = DataManager.Instance.GetData<DataManager.SkinSaveData>(DataManager.SaveDataType.Skin);
-            if (_skinData == null)
+            var data = DataManager.Instance.GetData<DataManager.SkinSaveData>(DataManager.SaveDataType.Skin);
+            if (data == null)
             {
                 Debug.LogWarning("Skin save data not found");
                 return;
             }
+            
+            _skinController.Initialize(data);
+            _lockedSkinController.Initialize(data);
+            _coinsController.Initialize(data);
 
-            SelectSkin((SkinType)_skinData.SkinIndex);
+            SetInitialSkin();
             
-            
+            //
             BootEvents.MainSystemInitialized();
+        }
+
+        private void SetInitialSkin()
+        {
+            var storedSkin = _skinController.GetCurrentSkinType();
+
+            if (_lockedSkinController.GetIsLocked((int)storedSkin) == false && 
+                _skinController.TrySetCurrentSkinType(storedSkin))
+            {
+                OnSkinChanged?.Invoke(storedSkin);
+            }
+            else
+            {
+                OnSkinChanged?.Invoke(SkinType.Default);
+            }
+            
             SkinEvents.TriggerOnSaveLoaded();
         }
-        
-        public void SelectSkin(SkinType skinType)
+
+
+        public void PreviewSkin(SkinType skinType)
         {
-            if(GetCurrentSkinType() == skinType) return;
-            
-            _skinData.SkinIndex = (int)skinType;
-            
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _debugData.CurrentSkin = GetCurrentSkinType();
-#endif
-            Debug.Log($"Skin {GetCurrentSkinType()} is selected");
+            _currentSkinPreview = skinType;
             OnSkinChanged?.Invoke(skinType);
         }
         
         public void SaveSelected()
         {
-            DataManager.Instance.SaveGameData(_skinData, DataManager.SaveDataType.Skin);
-        }
-        
-        public SkinType GetCurrentSkinType()
-        {
-            if (_skinData == null)
+            if (_currentSkinPreview != SkinType.None)
             {
-                Debug.LogWarning("Skin save data not found");
-                return SkinType.Default;
+                var isLocked = _lockedSkinController.GetIsLocked((int)_currentSkinPreview);
+
+                if (isLocked == false)
+                {
+                    if (_skinController.TrySetCurrentSkinType(_currentSkinPreview))
+                    {
+                        OnSkinChanged?.Invoke(_skinController.GetCurrentSkinType());
+                    }
+                }
+                else
+                {
+                    OnSkinChanged?.Invoke(_skinController.GetCurrentSkinType());
+                }
             }
             
-            return (SkinType)_skinData.SkinIndex;
+            if(_lockedSkinController.GetIsLocked((int)_skinController.GetCurrentSkinType()))
+            {
+                if (_skinController.TrySetCurrentSkinType(SkinType.Default))
+                {
+                    OnSkinChanged?.Invoke(_skinController.GetCurrentSkinType());
+                }
+            }
+
+            var data = DataManager.Instance.GetData<DataManager.SkinSaveData>(DataManager.SaveDataType.Skin);
+            
+            _currentSkinPreview = SkinType.None;
+
+            data.SkinIndex = (int)_skinController.GetCurrentSkinType();
+            data.UnlockedSkins = _lockedSkinController.GetUnlockedSkins();
+            data.SkinCoins = _coinsController.GetCoins();
+            
+            DataManager.Instance.SaveGameData(data, DataManager.SaveDataType.Skin);
         }
+        
 
         #region Data Getters
         
-        public bool GetHasData(SkinType skinType)
-        {
-            return _assetsLoader.Contains(skinType);
-        }
+        // === Skin Controller ===// 
+        public SkinType GetCurrentSkinType() => _skinController.GetCurrentSkinType();
+        public bool GetHasData(SkinType skinType) => _skinController.GetHasData(skinType);
+        public EarthSkinData GetEarthData(SkinType skinType) => _skinController.GetEarthData(skinType);
+        public MeteorSkinData GetMeteorData(SkinType skinType) => _skinController.GetMeteorData(skinType);
+        public CometSkinData GetCometData(SkinType skinType) => _skinController.GetCometData(skinType);
+        public ShieldSkinData GetShieldData(SkinType skinType) => _skinController.GetShieldData(skinType);
 
-        public EarthSkinData GetEarthData(SkinType skinType)
-        {
-            if(GetHasData(skinType) == false) return null;
-            
-            return _assetsLoader.GetData(skinType).EarthData;
-        }
+        // === Locked Skin Controller ===// 
+        public List<int> GetUnlockedSkins() => _lockedSkinController.GetUnlockedSkins();
+        public void UnlockSkin(int skinIndex) => _lockedSkinController.UnlockSkin(skinIndex);
+        public bool GetIsLocked(int skinIndex) => _lockedSkinController.GetIsLocked(skinIndex);
         
-        public MeteorSkinData GetMeteorData(SkinType skinType)
-        {
-            if(GetHasData(skinType) == false) return null;
-            
-            return _assetsLoader.GetData(skinType).MeteorData;
-        }
-        
-        public CometSkinData GetCometData(SkinType skinType)
-        {
-            if(GetHasData(skinType) == false) return null;
-            
-            return _assetsLoader.GetData(skinType).CometData;
-        }
-        
-        public ShieldSkinData GetShieldData(SkinType skinType)
-        {
-            if(GetHasData(skinType) == false) return null;
-            
-            return _assetsLoader.GetData(skinType).ShieldData;
-        }
-        
+        // === Coins Controller ===// 
+        public bool TryAddCoins(uint score) => _coinsController.TryAddCoins(score);
+        public uint GetCoins() => _coinsController.GetCoins();
+        public bool GetContainsEnoughCoins(uint coinsAmount) => _coinsController.GetContainsEnoughCoins(coinsAmount);
+        public bool TryRemoveCoins(uint coinsToRemove) => _coinsController.TryRemoveCoins(coinsToRemove);
+        public void SaveStoredCoins() => _coinsController.SaveStoredCoins();
+
         #endregion
-    }
 
-    public enum SkinType
-    {
-        Default,
-        Pizza
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        
+        public void ForceSkin(SkinType type)
+        {
+            if (_skinController.TrySetCurrentSkinType(type))
+            {
+                OnSkinChanged?.Invoke(_skinController.GetCurrentSkinType());
+            }
+        }
+        
+#endif
     }
 }
