@@ -116,8 +116,34 @@ namespace _Main.Scripts.GameMode
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.ScorePanel.DOScale(AnimationData.BounceScale, AnimationData.BounceDuration))
-                    .Append(UIComponents.ScorePanel.DOScale(1, AnimationData.BounceReturnTime));
+                    .Append(UIComponents.ScoreText.DOScale(AnimationData.BounceScale, AnimationData.BounceDuration))
+                    .Append(UIComponents.ScoreText.DOScale(1, AnimationData.BounceReturnTime));
+            }
+        }
+
+        private class Animation_Streak_Failed : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel, IStreakFailed>
+        {
+            private readonly float _horizontalPos;
+            
+            public Animation_Streak_Failed(GameModeUIAnimationComponents.IGameplayPanel components, IStreakFailed animationData) 
+                : base(components, animationData)
+            {
+                _horizontalPos = UIComponents.StreakText.anchoredPosition.x;
+            }
+
+            protected override void Initialize()
+            {
+                UIComponents.StreakText.anchoredPosition = new Vector2(_horizontalPos, UIComponents.StreakText.anchoredPosition.y);
+            }
+
+            protected override Sequence CreateAnimation()
+            {
+                return DOTween.Sequence()
+                        .Append(UIComponents.StreakText.DOAnchorPosX(
+                            _horizontalPos + AnimationData.HorizontalOffset, AnimationData.Duration))
+                        .SetEase(Ease.InOutSine)
+                        .SetLoops(AnimationData.Loops, LoopType.Yoyo)
+                    ;
             }
         }
 
@@ -199,7 +225,10 @@ namespace _Main.Scripts.GameMode
         private IUIAnimator _animationUiOpen;
         private IUIAnimator _animationUiClose;
         private IUIAnimator _animationFinishAddingScore;
+        private IUIAnimator _animationStreakFailed;
 
+        private uint _lastStreak;
+            
         #region IGameModeViewAnimation
 
         public event Action OnUiClosed;
@@ -215,6 +244,8 @@ namespace _Main.Scripts.GameMode
             _animationUiClose = new Animation_UI_Close(UIComponents, animData.GameplayUiCloseData);
             //
             _animationFinishAddingScore = new Animation_Score_FinishAdding(UIComponents, animData.ScoreFinishAddingData);
+            //
+            _animationStreakFailed = new Animation_Streak_Failed(UIComponents, animData.StreakFailedData);
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -247,7 +278,25 @@ namespace _Main.Scripts.GameMode
                 case GameModeObserverMessage.UpdateGameLevel:
                     HandleUpdateGameLevel((int)args[0]);
                     break;
+                
+                //=== Streak ===//
+                case GameModeObserverMessage.UpdateStreak:
+                    HandleUpdateStreak((uint)args[0]);
+                    break;
             }
+        }
+
+        private void HandleUpdateStreak(uint amount)
+        {
+            if (amount == 0 && _lastStreak > 0)
+            {
+                Debug.Log($"Play Animation Streak Failed");
+                
+                Debug.Log(_animationStreakFailed);
+                PlayAnimation(_animationStreakFailed);
+            }
+            
+            _lastStreak = amount;
         }
 
         #region Countdown

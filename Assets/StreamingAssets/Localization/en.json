@@ -78,6 +78,7 @@
     "CountDownStart" : "Prepare In",
     "CountdownFinish" : "Defend!",
     "Score" : "Score",
+    "Streak" : "Streak",
     "HighScore" : "High Score",
     "NewHighScore" : "New High Score!",
     "Death": {

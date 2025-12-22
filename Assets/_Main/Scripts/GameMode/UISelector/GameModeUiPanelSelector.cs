@@ -16,6 +16,7 @@ namespace _Main.Scripts.GameMode
         [Header("Text")]
         public TMP_Text CountdownText;
         public TMP_Text ScoreText;
+        public TMP_Text StreakText;
         [Header("Buttons Components")]
         public Button PauseButton;
     }

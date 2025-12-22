@@ -50,6 +50,7 @@
                 public const string GainedPoints = "points";
                 public const string Level = "level";
                 public const string Ability = "ability";
+                public const string MaxStreak = "streak";
             }
             
             public struct Completed
@@ -59,6 +60,7 @@
                 public const string GainedPoints = "points";
                 public const string Level = "level";
                 public const string Ability = "ability";
+                public const string MaxStreak = "streak";
             }
         }
     }

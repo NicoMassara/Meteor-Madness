@@ -53,6 +53,7 @@ namespace _Main.Scripts.Interfaces.Vibration
     {
         public event Action OnCountDownFinished;
         public event Action<float> OnCountdownUpdated;
+        public event Action<uint> OnStreakUpdated;
     }
     
     //=== Shield ===//

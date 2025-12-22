@@ -25,6 +25,8 @@ namespace _Main.Scripts.GameMode
         private float _highScore;
         private string _scoreTextValue;
         private uint _storedPoints = 0;
+        private string _streakTextValue;
+        private uint _storedStreak = 0;
 
         #region IGameModeUIVibration
 
@@ -98,6 +100,10 @@ namespace _Main.Scripts.GameMode
                 case GameModeObserverMessage.InitializeData:
                     HandleInitializeData();
                     break;
+                
+                case GameModeObserverMessage.UpdateStreak:
+                    HandleUpdateStreak((uint)args[0]);
+                    break;
             }
         }
         
@@ -109,11 +115,37 @@ namespace _Main.Scripts.GameMode
             _numberIncrementer.ResetValues();
             _storedPoints = 0;
             UpdateScoreTextLocalization();
+
+            _storedStreak = 0;
+            UpdateStreakTextLocalization();
+            
         }
         
         private void HandleStartDisable()
         {
             _storedPoints = 0;
+            _storedStreak = 0;
+        }
+        
+
+        
+        #endregion
+
+        #region Streak
+
+        
+        private void HandleUpdateStreak(uint amount)
+        {
+            UIComponents.StreakText.text = $"{_streakTextValue}:{amount}";;
+            
+            _storedStreak = amount;
+        }
+
+        private void UpdateStreakTextLocalization()
+        {
+            var textValue = $"{_streakTextValue}:{_storedStreak}";
+            
+            UIComponents.StreakText.text = textValue;
         }
 
         #endregion
@@ -159,7 +191,9 @@ namespace _Main.Scripts.GameMode
         private void Localization_OnLanguageChangedHandler()
         {
             _scoreTextValue = GetLocalizedString("Gameplay.Score");
+            _streakTextValue = GetLocalizedString("Gameplay.Streak");
             UpdateScoreTextLocalization();
+            UpdateStreakTextLocalization();
         }
         
         #endregion

@@ -12,6 +12,8 @@ namespace _Main.Scripts.MyAnalytics.Components
         [SerializeField] private int minTimeToRegister;
         private float _gainedPoints;
         private int _internalLevel;
+        private int _maxStreak;
+        private int _currentStreak;
         private bool _canRegister;
         private readonly Timer _gameModeTimer = new Timer();
         private readonly Dictionary<AbilityType, int> _abilityUseCount = new Dictionary<AbilityType, int>();
@@ -74,7 +76,16 @@ namespace _Main.Scripts.MyAnalytics.Components
             Component.OnPointGained += (value) => _gainedPoints += value;
             Component.OnAbilityTriggered += (value) => AddAbility(value);
             Component.OnLevelUpdate += (value) => _internalLevel = value;
-            
+            Component.OnStreakUpdated += (value) =>
+            {
+                _currentStreak = (int)value;
+
+                if (_currentStreak > _maxStreak)
+                {
+                    _maxStreak = _currentStreak;
+                }
+            };
+
             InitializeAbilityDic();
         }
 
@@ -125,6 +136,8 @@ namespace _Main.Scripts.MyAnalytics.Components
                     _gainedPoints },
                 { $"{AnalyticEventsName.GameMode.Interrupted.Level}",
                     _internalLevel },
+                { $"{AnalyticEventsName.GameMode.Completed.MaxStreak}",
+                    _maxStreak }
             };
             
             foreach (var ability in _abilityUseCount)
@@ -146,6 +159,8 @@ namespace _Main.Scripts.MyAnalytics.Components
                     _gainedPoints },
                 { $"{AnalyticEventsName.GameMode.Completed.Level}",
                     _internalLevel },
+                { $"{AnalyticEventsName.GameMode.Completed.MaxStreak}",
+                    _maxStreak }
             };
             
             foreach (var ability in _abilityUseCount)

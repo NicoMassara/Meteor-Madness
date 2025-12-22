@@ -106,6 +106,7 @@ namespace _Main.Scripts.Interfaces.Sounds
         public event Action OnCountDownStarted;
         public event Action<float> OnCountdownUpdated;
         public event Action OnCountdownUpdatedFinished;
+        public event Action<uint> OnStreakUpdated;
         public event Action OnStopMusic;
         public event Action OnPlayMusic;
     }

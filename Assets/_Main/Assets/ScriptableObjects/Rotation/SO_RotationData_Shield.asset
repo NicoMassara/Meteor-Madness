@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAngularSpeed: 500
   angularAcceleration: 2000
-  angularDeAcceleration: 4000
+  angularDeAcceleration: 5000
   snapSpeed: 75
   directionResponse: 30

@@ -58,6 +58,7 @@ namespace _Main.Scripts.GameMode
 #pragma warning restore CS0067 // Event is never used
         public event Action OnStopMusic;
         public event Action OnPlayMusic;
+        public event Action<uint> OnStreakUpdated;
 
         #endregion
 
@@ -178,9 +179,20 @@ namespace _Main.Scripts.GameMode
                 case GameModeObserverMessage.AbilityActive:
                     HandleAbilityActive((AbilityType)args[0]);
                     break;
+                
+                // === Streak === //
+                case GameModeObserverMessage.UpdateStreak:
+                    HandleUpdateStreak((uint)args[0]);
+                    break;
             }
         }
 
+        #region Streak
+
+        private void HandleUpdateStreak(uint streakAmount) => OnStreakUpdated?.Invoke(streakAmount);
+
+        #endregion
+        
         #region Finish
 
         private void HandleStartFinish()

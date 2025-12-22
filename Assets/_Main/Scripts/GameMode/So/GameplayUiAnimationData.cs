@@ -49,6 +49,23 @@ namespace _Main.Scripts.GameMode.So
             public float BounceReturnTime => bounceReturnTime;
         }
 
+        [Serializable]
+        public class StreakFailed : IStreakFailed
+        {
+            [Header("Time Values")]
+            public float duration = 0.1f;
+            [Space] 
+            [Header("Offsets")]
+            public float horizontalOffset = 20f;
+            [Space] 
+            [Header("Misc Values")]
+            [SerializeField] int loops = 10;
+
+            public float Duration => duration;
+            public float HorizontalOffset => horizontalOffset;
+            public int Loops => loops;
+        }
+
 
         #endregion
 
@@ -123,6 +140,8 @@ namespace _Main.Scripts.GameMode.So
         [Space(2)]
         [Header("Score")]
         [SerializeField] private ScoreFinishAdding scoreFinishAddingData;
+        [Header("Streak")]
+        [SerializeField] private StreakFailed streakFailedData;
 
         // Public interface getters
         public IGameplayPanelData GameplayUiOpenData => gameplayUiOpenData;
@@ -130,6 +149,7 @@ namespace _Main.Scripts.GameMode.So
         public IScoreFinishAdding ScoreFinishAddingData => scoreFinishAddingData;
         public ICountdownUpdate CountdownUpdateData => countdownUpdateData;
         public ICountdownFinish CountdownFinishData => countdownFinishData;
+        public IStreakFailed StreakFailedData => streakFailedData;
     }
 
 }

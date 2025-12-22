@@ -1,6 +1,4 @@
-﻿using _Main.Scripts.CustomId;
-using _Main.Scripts.Observer;
-using _Main.Scripts.SecurityData;
+﻿using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.GameMode
@@ -16,7 +14,7 @@ namespace _Main.Scripts.GameMode
         private bool _isPaused;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
 
-        private GameplayStats _stats;
+        private readonly GameplayStats _stats;
 
         public GameModeMotor(int[] levelStreakAmount)
         {
@@ -25,6 +23,7 @@ namespace _Main.Scripts.GameMode
             
             _stats = new GameplayStats();
             _stats.OnCheatDetected += OnCheatDetectedHandler;
+            _stats.OnStreakUpdated += OnStreakUpdated;
         }
 
         private void RestartValues()
@@ -254,6 +253,11 @@ namespace _Main.Scripts.GameMode
         public void IncreaseDeflectCount() => _stats.IncreaseDeflectCount();
 
         public void UpdateTimer(float deltaTime) => _stats.IncreaseTimer(deltaTime);
+        
+        private void OnStreakUpdated(uint streak)
+        {
+            NotifyAll(GameModeObserverMessage.UpdateStreak, streak);
+        }
 
         #endregion
 

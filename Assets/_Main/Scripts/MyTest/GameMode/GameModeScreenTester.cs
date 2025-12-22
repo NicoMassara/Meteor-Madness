@@ -4,6 +4,8 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.MySettings;
 using _Main.Scripts.Save;
 using _Main.Scripts.GlobalEvents;
+using NicolasMassara.CustomActionManager;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -31,9 +33,10 @@ namespace _Main.Scripts.MyTest.GameMode
 
         private void Start()
         {
-            var localization = LocalizationManager.Instance;
-            var dataManager = DataManager.Instance;
-            var settings = SettingsManager.Instance;
+            LocalizationManager.LoadInstance();
+            DataManager.LoadInstance();
+            SettingsManager.LoadInstance();
+            SoundManager.LoadInstance();
         }
 
         private void Update()
@@ -72,6 +75,10 @@ namespace _Main.Scripts.MyTest.GameMode
 
             yield return new WaitForEndOfFrame();
             
+            SoundEvents.InitializeSoundManager();
+            
+            yield return new WaitForEndOfFrame();
+            
             BootEvents.InitializeMainSystem();
             
             yield return new WaitForEndOfFrame();
@@ -94,6 +101,11 @@ namespace _Main.Scripts.MyTest.GameMode
                 Type = ProjectileType.Meteor
                 
             });
+        }
+        
+        public void FailStreak()
+        {
+           ProjectileEventCaller.Collision(new CollisionData());
         }
 
         #region Event Bus
@@ -136,17 +148,9 @@ namespace _Main.Scripts.MyTest.GameMode
             // Agrega el botón
             GameModeScreenTester script = (GameModeScreenTester)target;
                 
-            if (GUILayout.Button("Give Points"))
-            {
-                // Llama al método normalmente
-                script.GivePoints();
-            }
-            
-            if (GUILayout.Button("Reload"))
-            {
-                // Llama al método normalmente
-                script.Reload();
-            }
+            if (GUILayout.Button("Give Points")) script.GivePoints();
+            if (GUILayout.Button("Reload")) script.Reload();
+            if (GUILayout.Button("Fail Streak")) script.FailStreak();
                 
         }
     }

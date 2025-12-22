@@ -14,6 +14,7 @@ namespace _Main.Scripts.Interfaces.Analytics
         public event Action<float> OnPointGained;
         public event Action<AbilityType> OnAbilityTriggered;
         public event Action<int> OnLevelUpdate;
+        public event Action<uint> OnStreakUpdated;
     }
 
     public interface ITutorialAnalytics : IAnalyticComponent

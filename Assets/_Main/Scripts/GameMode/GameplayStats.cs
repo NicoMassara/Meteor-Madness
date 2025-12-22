@@ -17,6 +17,7 @@ namespace _Main.Scripts.GameMode
         private readonly GeneratedId _maxStreakId;
         
         public event Action OnCheatDetected;
+        public event Action<uint> OnStreakUpdated;
 
         public GameplayStats()
         {
@@ -107,12 +108,16 @@ namespace _Main.Scripts.GameMode
             current++;
             UpdateValueById(_currentStreakId,current);
             
+            OnStreakUpdated?.Invoke(current);
+            
             var max = GetValueById<uint>(_maxStreakId);
             if (current > max) UpdateValueById(_maxStreakId,current);
         }
         
         private void ClearStreak()
         {
+            OnStreakUpdated?.Invoke(0);
+            
             UpdateValueById<uint>(_currentStreakId,0);
         }
 

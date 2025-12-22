@@ -19,6 +19,14 @@ namespace _Main.Scripts.GameMode
         public float BounceDuration { get; }
         public float BounceReturnTime { get; }
     }
+    
+    
+    public interface IStreakFailed : IUiAnimationData
+    {
+        public float Duration { get; }
+        public float HorizontalOffset { get; }
+        public int Loops { get; }
+    }
 
     public interface ICountdownUpdate : IUiAnimationData
     {

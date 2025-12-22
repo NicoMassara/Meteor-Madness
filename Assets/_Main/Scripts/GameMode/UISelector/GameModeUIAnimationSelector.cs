@@ -19,6 +19,8 @@ namespace _Main.Scripts.GameMode
         {
             public RectTransform GameplayPanel { get; }
             public RectTransform ScorePanel { get; }
+            public RectTransform ScoreText { get; }
+            public RectTransform StreakText { get; }
             public RectTransform PauseButton { get; }
         }
         
@@ -35,6 +37,8 @@ namespace _Main.Scripts.GameMode
         [Header("Gameplay")]
         [SerializeField] private RectTransform gameplayPanel;
         [SerializeField] private RectTransform scorePanel;
+        [SerializeField] private RectTransform scoreText;
+        [SerializeField] private RectTransform streakText;
         [SerializeField] private RectTransform pauseButton;
 
         // Countdown
@@ -45,5 +49,7 @@ namespace _Main.Scripts.GameMode
         public RectTransform CountdownText => countdownText;
         public RectTransform GameplayPanel => gameplayPanel;
         public RectTransform PauseButton => pauseButton;
+        public RectTransform ScoreText => scoreText;
+        public RectTransform StreakText => streakText;
     }
 }
