@@ -38,11 +38,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _ChromaticAberration: 0.1
-    - _EffectFrequency: 0.62941176
+    - _EffectFrequency: 0.35
     - _EffectSpeed: 1
-    - _EffectWidth: 0.5671042
+    - _EffectWidth: 0.75
     - _Float0: 31.87
-    - _Opacity: 0
+    - _Opacity: 1
     - __dirty: 0
     m_Colors:
     - _AbilityColor: {r: 1, g: 0.9215686, b: 0.01568628, a: 1}
