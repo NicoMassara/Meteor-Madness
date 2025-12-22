@@ -7,6 +7,8 @@ namespace _Main.Scripts.Vibration.Behaviours
     {
 #if UNITY_ANDROID 
         [SerializeField] private VibrationDataSo rotateData;
+        [SerializeField] private VibrationDataSo directionChangeData;
+        [SerializeField] private VibrationDataSo stopData;
         [SerializeField] private VibrationDataSo deflectData;
         
         protected override void Start()
@@ -17,9 +19,19 @@ namespace _Main.Scripts.Vibration.Behaviours
                 Vibrate(rotateData);
             };
             
+            ComponentToVibrate.OnStopped += () =>
+            {
+                Vibrate(stopData);
+            };
+            
             ComponentToVibrate.OnDeflect += () =>
             {
                 Vibrate(deflectData);
+            };
+            
+            ComponentToVibrate.OnDirectionChange += (value) =>
+            {
+                Vibrate(directionChangeData);
             };
         }
 #endif

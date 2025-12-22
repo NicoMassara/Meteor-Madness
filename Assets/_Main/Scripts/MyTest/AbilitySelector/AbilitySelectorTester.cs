@@ -12,13 +12,13 @@ namespace _Main.Scripts.MyTest.AbilitySelector
     {
         public interface IAbilitySelectorTester
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
             public event Action<AbilityType> OnAbilitySelected;
             public event Action<int> OnLevelUpdated;
 #endif
         }
         
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
         [SerializeField] private AbilitySelectorDataSo selectorData;
         
         private AbilitySpawner.AbilitySelector _selector;
@@ -56,7 +56,7 @@ namespace _Main.Scripts.MyTest.AbilitySelector
     }
     
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
     
     [CustomEditor(typeof(AbilitySelectorTester))]
     public class AbilitySelectorTesterEditor : Editor
@@ -74,5 +74,6 @@ namespace _Main.Scripts.MyTest.AbilitySelector
             if (GUILayout.Button("Decrease Level")) script.DecreaseLevel();
         }
     }
+    
 #endif
 }

@@ -51,7 +51,7 @@ namespace _Main.Scripts.MyTest.Inputs
         }
     }
     
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
     
     [CustomEditor(typeof(InputMovementTest))]
     public class InputMovementTestEditor : Editor

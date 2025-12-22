@@ -43,9 +43,6 @@ namespace _Main.Scripts.Defeat
             switch (message)
             {
                 //=== Disable ===//
-                case DefeatObserverMessage.StartDisable:
-                    HandleStartDisable();
-                    break;
                 case DefeatObserverMessage.ExecuteDisable:
                     HandleExecuteDisable();
                     break;
@@ -94,7 +91,14 @@ namespace _Main.Scripts.Defeat
         private void HandleSendAds()
         {
 #if UNITY_ANDROID || UNITY_IOS
-            AdsEvents.Rewarded_TriggerShow();
+            if (GameParameters.GameplayValues.AdsEnable)
+            {
+                AdsEvents.Rewarded_TriggerShow();
+            }
+            else
+            {
+                TriggerReward();
+            }
 #else
             // Skips all Ads system, only for Desktop or Paid Mobile Version
             TriggerReward();
@@ -126,11 +130,6 @@ namespace _Main.Scripts.Defeat
             GameManager.Instance.StatsController.ClearScoreData();
             GameScreenEventCaller.DisableScreen(ScreenType.Defeat, EventRequestType.Granted);
         }
-
-        private void HandleStartDisable()
-        {
-
-        }
         
         private void HandleDataLoaded()
         {
@@ -144,14 +143,11 @@ namespace _Main.Scripts.Defeat
         private void TriggerReward()
         {
 #pragma warning disable CS0162 // Unreachable code detected
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
             if (GameParameters.GameplayValues.DoesSaveProgress)
             {
                 SaveGameData();
             }
-#else
-            SaveGameData();
-#endif
             
             OnGameSaved?.Invoke();
 #pragma warning restore CS0162 // Unreachable code detected

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace _Main.Scripts.MyTest.Inputs
 {
     
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
     public class GameInputTest : MonoBehaviour
     {
         [Range(1, 3)]
@@ -82,7 +82,7 @@ namespace _Main.Scripts.MyTest.Inputs
     
 #endif
     
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
     
     [CustomEditor(typeof(GameInputTest))]
     public class ComponentsNameChangeEditor : Editor

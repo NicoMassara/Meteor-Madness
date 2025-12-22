@@ -7,6 +7,7 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.MySettings;
 using _Main.Scripts.Save;
 using _Main.Scripts.SecurityData;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -65,6 +66,7 @@ namespace _Main.Scripts.MyTest.Defeat
                 LocalizationManager.LoadInstance();
                 DataManager.LoadInstance();
                 SettingsManager.LoadInstance();
+                SoundManager.LoadInstance();
             }
             
             private void SetScoreValue()
@@ -98,6 +100,10 @@ namespace _Main.Scripts.MyTest.Defeat
                 {
                     yield return null;
                 }
+                
+                yield return new WaitForEndOfFrame();
+                
+                SoundEvents.InitializeSoundManager();
                 
                 yield return new WaitForEndOfFrame();
                 

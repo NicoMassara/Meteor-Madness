@@ -103,6 +103,12 @@ namespace _Main.Scripts.Tutorial.MVC
             ShieldEventCaller.Enable();
             InputsEventCaller.SetEnable(true);
             
+#if UNITY_ANDROID || UNITY_IOS
+            
+            InputsEventCaller.SetUIEnable(true);
+            
+#endif
+            
         }
 
         private void HandleRightMovement()
@@ -111,6 +117,12 @@ namespace _Main.Scripts.Tutorial.MVC
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.Enable();
             InputsEventCaller.SetEnable(true);
+            
+#if UNITY_ANDROID || UNITY_IOS
+            
+            InputsEventCaller.SetUIEnable(true);
+            
+#endif
         }
         
         private void HandleLeftMovementFinished()

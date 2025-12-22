@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: SO_VibrationData_Shield_Deflect
   m_EditorClassIdentifier: 
   data:
-    Duration: 100
-    Intensity: 40
-  duration: 2
-  intensity: 3
+    Duration: 75
+    Intensity: 50
+  duration: 3
+  intensity: 4
   type: 0

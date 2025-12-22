@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d138f494ef3d45a699f40e378683ae62, type: 3}
-  m_Name: SO_VibrationData_Shield_Rotate
+  m_Name: SO_VibrationData_Shield_DirectionChange
   m_EditorClassIdentifier: 
   data:
-    Duration: 100
+    Duration: 50
     Intensity: 25
-  duration: 2
+  duration: 1
   intensity: 2
   type: 0

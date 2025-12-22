@@ -2,7 +2,7 @@
 
 namespace _Main.Scripts.MyTest.AbilitySelector
 {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
     public class AbilitySelectorTesterUI : MonoBehaviour
     {
         private AbilitySelectorTester.IAbilitySelectorTester _tester;

@@ -44,13 +44,23 @@ namespace _Main.Scripts.Vibration
         protected virtual void Vibrate(VibrationDataSo soData)
         {
             if(_canVibrate == false) return;
-            
+            if (soData == null)
+            {
+                Debug.LogWarning($"Vibration data is null in {gameObject.name}");
+                return;
+            }
+
             Vibrate(soData.Data);
         }
 
         public void Vibrate(VibrationData data)
         {
             if(_canVibrate == false) return;
+            if (data == null)
+            {
+                Debug.LogWarning($"Vibration data is null in {gameObject.name}");
+                return;
+            }
             
             _vibration.Vibrate(data);
         }
