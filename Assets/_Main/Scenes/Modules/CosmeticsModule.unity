@@ -789,7 +789,7 @@ MonoBehaviour:
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 119.2
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2430,7 +2430,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd250590973146aeb2f7018465b87115, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventName: cosmetics_opened
 --- !u!1 &2095163020
 GameObject:
   m_ObjectHideFlags: 0
@@ -2789,7 +2788,7 @@ MonoBehaviour:
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 119.2
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

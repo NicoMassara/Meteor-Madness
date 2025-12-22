@@ -37,6 +37,9 @@ namespace _Main.Scripts.Pause
         {
             switch (message)
             {
+                case PauseObserverMessage.Initialize:
+                    HandleInitialize();
+                    break;
                case PauseObserverMessage.Enable:
                    HandleEnable();
                    break;
@@ -45,6 +48,8 @@ namespace _Main.Scripts.Pause
                    break;
             }
         }
+
+
 
         #region Score Text
         
@@ -68,10 +73,13 @@ namespace _Main.Scripts.Pause
         
         #endregion
 
-        private void HandleEnable()
+        private void HandleInitialize()
         {
             SetScoreText(GameManager.Instance.StatsController.VisualPoints);
-            
+        }
+        
+        private void HandleEnable()
+        {
             UIComponents.ResumeButton?.onClick.AddListener(() =>
             {
                 OnResumeButtonPressed?.Invoke();

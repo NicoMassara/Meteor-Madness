@@ -136,14 +136,14 @@ namespace _Main.Scripts.GameMode
         
         private void HandleUpdateStreak(uint amount)
         {
-            UIComponents.StreakText.text = $"{_streakTextValue}:{amount}";;
+            UIComponents.StreakText.text = $"{_streakTextValue}: {amount:D4}";
             
             _storedStreak = amount;
         }
 
         private void UpdateStreakTextLocalization()
         {
-            var textValue = $"{_streakTextValue}:{_storedStreak}";
+            var textValue = $"{_streakTextValue}: {_storedStreak:D4}";
             
             UIComponents.StreakText.text = textValue;
         }
@@ -164,14 +164,14 @@ namespace _Main.Scripts.GameMode
         
         private void HandleUpdatePointsText(uint amount)
         {
-            UIComponents.ScoreText.text = $"{_scoreTextValue}:{amount:D6}";;
+            UIComponents.ScoreText.text = $"{_scoreTextValue}: {amount:D6}";;
 
             SetStoredPoints(amount);
         }
 
         private void UpdateScoreTextLocalization()
         {
-            var textValue = $"{_scoreTextValue}:{_storedPoints:D6}";
+            var textValue = $"{_scoreTextValue}: {_storedPoints:D6}";
             
             UIComponents.ScoreText.text = textValue;
         }
