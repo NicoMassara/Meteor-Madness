@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf4168e7eb8a4661b41187eed3aa7e1c, type: 3}
   m_Name: SO_SkinData_PPizza
   m_EditorClassIdentifier: 
-  skinType: 1
+  skinType: 2
+  localizationCode: Cosmetic.SkinData.Pizza
   earthData:
     material: {fileID: 2100000, guid: c27fd55e4bb0922479bacb909b36128d, type: 2}
     scaleOffsetX: 3.5

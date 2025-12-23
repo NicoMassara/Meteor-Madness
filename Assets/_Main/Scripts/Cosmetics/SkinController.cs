@@ -75,12 +75,16 @@ namespace _Main.Scripts.Cosmetics
 
         public void Initialize(DataManager.SkinSaveData data)
         {
-
             _secureId = SecureValueManager.RegisterValue(data.SkinIndex);
         }
 
         #region Public Methods
-        
+
+        public ISkinInformation GetSkinInformationByType(SkinType skinType)
+        {
+            return _assetsLoader.Contains(skinType) ? _assetsLoader.GetData(skinType) : null;
+        }
+
         public SkinType GetCurrentSkinType()
         {
             if (SecureValueManager.GetDoesContainValue(_secureId, out int skinIndex) == false)

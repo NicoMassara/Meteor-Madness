@@ -15,9 +15,8 @@ namespace _Main.Scripts.Cosmetics
         [Space]
         [Header("Buttons")]
         public Button MainMenuButton;
-        [Header("Components")]
-        [SerializeField] private SkinButtonSelector buttonSelector;
-
-        public IButtonSelector ButtonSelector => buttonSelector;
+        [Header("Select Buttons")]
+        public Transform ButtonsContainer;
+        public SkinSelectButton SkinSelectButton;
     }
 }

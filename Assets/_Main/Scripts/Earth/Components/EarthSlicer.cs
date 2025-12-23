@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.GameConfig;
 using _Main.Slicer;
@@ -39,6 +40,12 @@ namespace _Main.Scripts.Earth
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
 
+        private void Start()
+        {
+            SkinManager.Instance.OnSkinChanged += SkinManager_OnSkinChanged;
+            SetSliceType(GetSliceType(SkinManager.Instance.GetCurrentSkinType()));
+        }
+        
         public void ExecuteUpdate(float deltaTime)
         {
             _deltaTime = deltaTime;
@@ -229,6 +236,25 @@ namespace _Main.Scripts.Earth
                 SliceType.Default => 1.25f,
                 SliceType.Pizza => 0.75f,
                 _ => 1f
+            };
+        }
+        
+        #region Handler
+
+        private void SkinManager_OnSkinChanged(SkinType skinType)
+        {
+            SetSliceType(GetSliceType(skinType));
+        }
+
+        #endregion
+        
+        private SliceType GetSliceType(SkinType skinType)
+        {
+            return skinType switch
+            {
+                SkinType.Default => SliceType.Default,
+                SkinType.Pizza => SliceType.Pizza,
+                _ => SliceType.Default
             };
         }
     }

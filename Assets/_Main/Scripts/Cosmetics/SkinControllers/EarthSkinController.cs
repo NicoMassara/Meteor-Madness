@@ -13,7 +13,6 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         private static readonly int HealthInShader = Shader.PropertyToID("_HealthAmount");
         private static readonly int OpacityInShader = Shader.PropertyToID("_Opacity");
         private IEarthSkin _earthHealth;
-        private EarthSlicer _slicer;
         private float _healthAmount = 1f;
         private float _opacity = 1f;
         
@@ -21,7 +20,6 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         {
             spriteRenderer.gameObject.SetActive(false);
             _earthHealth = GetComponent<IEarthSkin>();
-            _slicer = GetComponent<EarthSlicer>();
             
             //Hack
             BootEvents.OnGameLoaded += OnGameLoadedHandler;
@@ -81,7 +79,6 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         private void View_OnHealthChangedHandler(float health)
         {
             _healthAmount = health;
-
             UpdateMaterialHealth();
         }
 
@@ -100,18 +97,6 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             spriteRenderer.transform.localScale = data.ScaleOffset;
             
             UpdateMaterialHealth();
-            _slicer.SetSliceType(GetSliceType(skinType));
         }
-
-        private EarthSlicer.SliceType GetSliceType(SkinType skinType)
-        {
-            return skinType switch
-            {
-                SkinType.Default => EarthSlicer.SliceType.Default,
-                SkinType.Pizza => EarthSlicer.SliceType.Pizza,
-                _ => EarthSlicer.SliceType.Default
-            };
-        }
-
     }
 }

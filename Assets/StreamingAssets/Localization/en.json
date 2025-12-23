@@ -66,10 +66,7 @@
 
   "Cosmetic": {
     "Title" : "Skin Selector",
-    "SkinType" : {
-      "Default" : "Default",
-      "Pizza" : "Pizza"
-    }
+    "SkinData" :"@Skins/en/skinData.json"
   },
   
   "Pause": {

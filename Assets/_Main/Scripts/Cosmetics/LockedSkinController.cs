@@ -11,11 +11,8 @@ namespace _Main.Scripts.Cosmetics
     /// </summary>
     public class LockedSkinController
     {
-        private struct UnlockSnapshot
-        {
-            public int[] SnapshotArray;
-        }
         
+        public List<int> UnlockedSkins;
         private GeneratedId _secureId;
 
         public LockedSkinController()
@@ -25,10 +22,7 @@ namespace _Main.Scripts.Cosmetics
 
         public void Initialize(DataManager.SkinSaveData data)
         {
-            _secureId = SecureValueManager.RegisterValue(new UnlockSnapshot
-            {
-                SnapshotArray = data.UnlockedSkins.ToArray()
-            });
+            UnlockedSkins = data.UnlockedSkins;
         }
 
         #region Public Methods
@@ -36,32 +30,21 @@ namespace _Main.Scripts.Cosmetics
 
         public List<int> GetUnlockedSkins()
         {
-            if (SecureValueManager.GetDoesContainValue(_secureId, out UnlockSnapshot storedData) == false)
-                return new List<int>();
-            
-            return storedData.SnapshotArray.ToList();
+            return UnlockedSkins.ToList();
         }
 
         public void UnlockSkin(int skinIndex)
         {
-            if (SecureValueManager.GetDoesContainValue(_secureId, out UnlockSnapshot storedData) == false)
-                return;
-
-            var hashSet = storedData.SnapshotArray.ToHashSet();
+            var hashSet = UnlockedSkins.ToHashSet();
             
             hashSet.Add(skinIndex);
             
-            storedData.SnapshotArray = hashSet.ToArray();
-
-            SecureValueManager.ModifyValue(_secureId, storedData);
+            UnlockedSkins = hashSet.ToList();
         }
 
         public bool GetIsLocked(int skinIndex)
         {
-            if (SecureValueManager.GetDoesContainValue(_secureId, out UnlockSnapshot storedData) == false)
-                return true;
-            
-            var hashSet = storedData.SnapshotArray.ToHashSet();
+            var hashSet = UnlockedSkins.ToHashSet();
             
             return hashSet.Contains(skinIndex) == false;
         }

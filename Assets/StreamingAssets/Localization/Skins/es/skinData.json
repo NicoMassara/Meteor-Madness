@@ -1,0 +1,11 @@
+﻿{ 
+  "Default" : {
+    "Name" : "Earth",
+    "Description" : "Home"
+  },
+
+  "Pizza" : {
+    "Name" : "Pizza",
+    "Description" : "Best pizza ever!"
+  }
+}

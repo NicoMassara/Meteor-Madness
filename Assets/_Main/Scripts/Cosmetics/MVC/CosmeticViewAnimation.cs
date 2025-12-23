@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Managers;
 using _Main.Scripts.MyAnimations;
 using _Main.Scripts.Observer;
 using DG.Tweening;
@@ -6,8 +7,14 @@ using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.MVC
 {
-    public class CosmeticViewAnimation : BaseViewAnimation<CosmeticUiAnimationSelector,CosmeticUiAnimationComponents>
+    public class CosmeticViewAnimation : BaseViewAnimation<CosmeticUiAnimationSelector,CosmeticUiAnimationComponents>,
+        CosmeticViewAnimation.ICosmeticViewAnimation
     {
+        
+        public interface ICosmeticViewAnimation : IBaseViewAnimation
+        {
+            
+        }
         
         [SerializeField] private CosmeticUiAnimationData animData;
         
@@ -73,7 +80,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             switch (message)
             {
-                case CosmeticObserverMessage.Initial:
+                case CosmeticObserverMessage.Enable:
                     HandleEnable();
                     break;
                 case CosmeticObserverMessage.StartDisable:

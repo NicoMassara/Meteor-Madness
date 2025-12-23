@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf4168e7eb8a4661b41187eed3aa7e1c, type: 3}
   m_Name: SO_SkinData_Default
   m_EditorClassIdentifier: 
-  skinType: 0
+  skinType: 1
+  localizationCode: Cosmetic.SkinData.Default
   earthData:
     material: {fileID: 2100000, guid: 2e1f081b661392f4a8844d7adf4093aa, type: 2}
     scaleOffsetX: 3.5

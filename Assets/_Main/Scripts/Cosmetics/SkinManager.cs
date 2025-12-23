@@ -77,6 +77,14 @@ namespace _Main.Scripts.Cosmetics
         public void PreviewSkin(SkinType skinType)
         {
             _currentSkinPreview = skinType;
+            
+            if (_lockedSkinController.GetIsLocked((int)skinType) == false && 
+                _skinController.GetCurrentSkinType() != _currentSkinPreview &&
+                _skinController.TrySetCurrentSkinType(skinType))
+            {
+                Debug.Log($"{skinType} skin selected!");
+            }
+            
             OnSkinChanged?.Invoke(skinType);
         }
         
@@ -95,6 +103,8 @@ namespace _Main.Scripts.Cosmetics
                 }
                 else
                 {
+                    Debug.Log($"{_currentSkinPreview} skin is locked, reverting to {_skinController.GetCurrentSkinType()} skin!");
+                    
                     OnSkinChanged?.Invoke(_skinController.GetCurrentSkinType());
                 }
             }
@@ -124,6 +134,9 @@ namespace _Main.Scripts.Cosmetics
         // === Skin Controller ===// 
         public SkinType GetCurrentSkinType() => _skinController.GetCurrentSkinType();
         public bool GetHasData(SkinType skinType) => _skinController.GetHasData(skinType);
+        public ISkinInformation GetSkinInformationByType(SkinType skinType) => _skinController.GetSkinInformationByType(skinType);
+        
+        // MODIFY - This functions should return the current skin data
         public EarthSkinData GetEarthData(SkinType skinType) => _skinController.GetEarthData(skinType);
         public MeteorSkinData GetMeteorData(SkinType skinType) => _skinController.GetMeteorData(skinType);
         public CometSkinData GetCometData(SkinType skinType) => _skinController.GetCometData(skinType);

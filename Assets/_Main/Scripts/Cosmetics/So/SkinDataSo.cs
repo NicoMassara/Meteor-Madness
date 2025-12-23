@@ -4,10 +4,12 @@ using UnityEngine;
 namespace _Main.Scripts.Cosmetics
 {
     [CreateAssetMenu(fileName = "SO_SkinData_Name", menuName = "Scriptable Objects/Skins/Data", order = 0)]
-    public class SkinDataSo : ScriptableObject
+    public class SkinDataSo : ScriptableObject, ISkinInformation, ISkinData
     {
         [Header("Type")]
         [SerializeField] private SkinType skinType;
+        [Header("Information")]
+        [SerializeField] private string localizationCode;
         [Header("Materials")]
         [SerializeField] private EarthSkinData earthData;
         [SerializeField] private ShieldSkinData shieldData;
@@ -15,6 +17,10 @@ namespace _Main.Scripts.Cosmetics
         [SerializeField] private CometSkinData cometData;
         
         public SkinType SkinType => skinType;
+
+        public string NameCode => $"{localizationCode}.Name";
+
+        public string DescriptionCode => $"{localizationCode}.Description";
 
         public EarthSkinData EarthData => earthData;
 

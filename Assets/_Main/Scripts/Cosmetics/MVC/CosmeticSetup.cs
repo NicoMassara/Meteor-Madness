@@ -11,9 +11,9 @@ namespace _Main.Scripts.Cosmetics.MVC
     [RequireComponent(typeof(CosmeticViewAnimation))]
     public class CosmeticSetup : ManagedBehavior
     {
-        private CosmeticView _view;
-        private CosmeticUIView _ui;
-        private CosmeticViewAnimation _animation;
+        private CosmeticView.ICosmeticView _view;
+        private CosmeticUIView.ICosmeticUIView _ui;
+        private CosmeticViewAnimation.ICosmeticViewAnimation _animation;
         private CosmeticController _controller;
         private CosmeticMotor _motor;
 
@@ -23,12 +23,17 @@ namespace _Main.Scripts.Cosmetics.MVC
             _controller = new CosmeticController(_motor);
             
             
-            _view = GetComponent<CosmeticView>();
-            _ui = GetComponent<CosmeticUIView>();
-            _animation = GetComponent<CosmeticViewAnimation>();
+            var view = GetComponent<CosmeticView>();
+            var ui = GetComponent<CosmeticUIView>();
+            var anim = GetComponent<CosmeticViewAnimation>();
             
-            _motor.Subscribe(_view);
-            _motor.Subscribe(_animation);
+            _motor.Subscribe(view);
+            _motor.Subscribe(ui);
+            _motor.Subscribe(anim);
+            
+            _view = view;
+            _ui = ui;
+            _animation = anim;
             
             _controller.InitializeValues();
             
@@ -40,7 +45,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         private void EnableCosmetic()
         {
-            _controller.TransitionToEnable();
+            _controller.TransitionToInitialize();
             SubscribeEventBus();
         }
 
@@ -55,13 +60,10 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void SetViewHandlers()
         {
-            _view.OnCosmeticEnable += ()=> _controller.TransitionToInitial();
+            _view.OnInitialized += ()=> _controller.TransitionToEnable();
             //
             _ui.OnMainMenuButtonPressed += () => { _controller.TriggerMainMenu();};
-            _ui.OnSkinSelected += (value) =>
-            {
-                _controller.SkinSelected(value);
-            };
+            _ui.OnSkinSelected += (value) => _controller.SkinSelected(value);
             //
             _animation.OnPanelOpened += () => AdsEvents.Banner_TriggerShow();
             _animation.OnPanelClosed += () => _controller.ExecuteDisable();

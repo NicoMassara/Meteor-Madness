@@ -7,9 +7,14 @@ using NicolasMassara.CustomUpdateManager;
 namespace _Main.Scripts.Cosmetics.MVC
 {
     public class CosmeticView : ManagedBehavior, IObserver,
-        ICosmeticsAnalytics
+        ICosmeticsAnalytics, CosmeticView.ICosmeticView
     {
-        public event Action OnCosmeticEnable;
+        public interface ICosmeticView
+        {
+            public event Action OnInitialized;
+        }
+        
+        public event Action OnInitialized;
 
         #region ICosmeticsAnalytics
         
@@ -22,8 +27,14 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             switch (message)
             {
+                case CosmeticObserverMessage.Initialize:
+                    HandleInitialize();
+                    break;
                 case CosmeticObserverMessage.Enable:
                     HandleEnable();
+                    break;
+                case CosmeticObserverMessage.StartDisable:
+                    HandleStartDisable();
                     break;
                 case CosmeticObserverMessage.Disable:
                     HandleDisable();
@@ -36,11 +47,16 @@ namespace _Main.Scripts.Cosmetics.MVC
                     break;
             }
         }
+        
+        private void HandleInitialize()
+        {
+            OnInitialized?.Invoke();
+        }
 
         private void HandleSkinSelected(int skinIndex)
         {
             SkinManager.Instance.PreviewSkin((SkinType)skinIndex);
-            SkinManager.Instance.SaveSelected();
+
             OnCosmeticChanged?.Invoke(((SkinType)skinIndex).ToString());
         }
 
@@ -51,8 +67,12 @@ namespace _Main.Scripts.Cosmetics.MVC
                 OnCosmeticFirstEnable?.Invoke();
             }
             
-            OnCosmeticEnable?.Invoke();
             CameraEventCaller.LookLeft();
+        }
+        
+        private void HandleStartDisable()
+        {
+            SkinManager.Instance.SaveSelected();
         }
 
         private void HandleDisable()
