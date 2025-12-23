@@ -13,7 +13,7 @@ namespace _Main.Scripts
             public const bool AnalyticsDebugEnable = true;
             public const bool DoesSendAnalytics = false;
             public const bool AlwaysFirstGame = false;
-            public const bool DoesSaveProgress = true;
+            public const bool DoesSaveProgress = false;
             public const bool DoesSaveSettings = false;
         }
     }

@@ -10,5 +10,9 @@ namespace _Main.Scripts.Cosmetics.MVC
         public void TriggerMainMenu() => NotifyAll(CosmeticObserverMessage.TriggerMainMenu);
         public void SelectSkin(int index) => NotifyAll(CosmeticObserverMessage.SkinSelected,index);
         public void StartDisable() => NotifyAll(CosmeticObserverMessage.StartDisable);
+        public void TriggerOpened() => NotifyAll(CosmeticObserverMessage.Opened);
+        public void TryUnlockSkin(int skinIndex) => NotifyAll(CosmeticObserverMessage.TryUnlockSkin, skinIndex);
+        public void SkinUnlocked(int skinIndex) => NotifyAll(CosmeticObserverMessage.Unlocked, skinIndex);
+        public void FailedToUnlock() => NotifyAll(CosmeticObserverMessage.FailedToUnlock);
     }
 }

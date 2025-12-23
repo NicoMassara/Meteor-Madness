@@ -26,10 +26,7 @@ namespace _Main.Scripts.MyCamera
 
         #region Zoom Actions
 
-        public void TryZoom(float timeToZoom)
-        {
-            _timeToZoom = timeToZoom;
-        }
+        public void TryZoom(float timeToZoom) => _timeToZoom = timeToZoom;
 
         private void ExecuteZoom(CameraZoomPosition zoomPosition)
         {
@@ -43,16 +40,10 @@ namespace _Main.Scripts.MyCamera
             NotifyAll(observerMessage,_timeToZoom);
         }
 
-        public void ExecuteZoomIn()
-        {
-            ExecuteZoom(CameraZoomPosition.ZoomIn);
-        }
-        
-        public void ExecuteZoomOut()
-        {
-            ExecuteZoom(CameraZoomPosition.ZoomOut);
-        }
-        
+        public void ExecuteZoomIn() => ExecuteZoom(CameraZoomPosition.ZoomIn);
+
+        public void ExecuteZoomOut() => ExecuteZoom(CameraZoomPosition.ZoomOut);
+
         #endregion
 
         #region Look Actions
@@ -73,36 +64,20 @@ namespace _Main.Scripts.MyCamera
         }
 
 
-        public void TryLook(float timeToLook)
-        {
-            _timeToLook = timeToLook;
-        }
+        public void TryLook(float timeToLook) => _timeToLook = timeToLook;
+        public void LookCenter() => ExecuteLook(CameraLookPosition.Center);
+        public void LookRight() => ExecuteLook(CameraLookPosition.Right);
+        public void LookLeft() => ExecuteLook(CameraLookPosition.Left);
+        public void LookAtTop() => ExecuteLook(CameraLookPosition.Top);
+        public void LookAtBottom() => ExecuteLook(CameraLookPosition.Bottom);
 
-        public void LookCenter()
-        {
-            ExecuteLook(CameraLookPosition.Center);
-        }
+        #endregion
 
-        public void LookRight()
-        {
-            ExecuteLook(CameraLookPosition.Right);
-        }
+        #region GrayScale
         
-        public void LookLeft()
-        {
-            ExecuteLook(CameraLookPosition.Left);
-        }
-        
-        public void LookAtTop()
-        {
-            ExecuteLook(CameraLookPosition.Top);
-        }
-        
-        public void LookAtBottom()
-        {
-            ExecuteLook(CameraLookPosition.Bottom);
-        }
-        
+        public void EnableGrayscale() => NotifyAll(CameraObserverMessage.EnableGrayscale);
+        public void DisableGrayscale() => NotifyAll(CameraObserverMessage.DisableGrayscale);
+
         #endregion
     }
 }

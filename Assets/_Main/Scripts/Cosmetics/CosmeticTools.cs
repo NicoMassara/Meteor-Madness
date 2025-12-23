@@ -10,15 +10,5 @@ namespace _Main.Scripts.Cosmetics
         {
             return score / PointsToCoin;
         }
-
-        public static int GetSkinPrice(SkinType skinType)
-        {
-            return skinType switch
-            {
-                SkinType.Default => 0,
-                SkinType.Pizza => 100,
-                _ => int.MaxValue
-            };
-        }
     }
 }

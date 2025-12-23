@@ -133,14 +133,14 @@ Shader "Mat_Shield_Ability_Unlit_Stencil"
 Version=19905
 Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;6;-2966.491,14.69378;Inherit;False;1441.727;646.1461;Comment;13;52;51;50;49;48;47;46;45;44;43;42;41;40;Effect;1,1,1,1;0;0
 Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;42;-2912.955,427.9466;Inherit;False;Property;_EffectSpeed;EffectSpeed;2;0;Create;True;0;0;0;False;0;False;6;1;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;46;-2916.491,251.5756;Inherit;False;Property;_EffectFrequency;EffectFrequency;0;0;Create;True;0;0;0;False;0;False;0;0.6294118;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;46;-2916.491,251.5756;Inherit;False;Property;_EffectFrequency;EffectFrequency;0;0;Create;True;0;0;0;False;0;False;0;0.35;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TFHCRemapNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;43;-2602.16,245.6182;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;10;False;4;FLOAT;100;False;1;FLOAT;0
 Node;AmplifyShaderEditor.TFHCRemapNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;51;-2578.213,440.9788;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;0;False;4;FLOAT;30;False;1;FLOAT;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;52;-2932.638,88.40231;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;40;-2418.88,116.5462;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleTimeNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;47;-2360.67,379.65;Inherit;False;1;0;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleAddOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;41;-2201.411,113.9644;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;48;-2159.265,470.3788;Inherit;False;Property;_EffectWidth;EffectWidth;3;0;Create;True;0;0;0;False;0;False;0.4235294;0.5671042;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;48;-2159.265,470.3788;Inherit;False;Property;_EffectWidth;EffectWidth;3;0;Create;True;0;0;0;False;0;False;0.4235294;0.75;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;2;-2963.478,752.0388;Inherit;False;1082.843;381.4408;Comment;6;39;38;37;36;28;72;Hide Mask;1,1,1,1;0;0
 Node;AmplifyShaderEditor.TFHCRemapNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;49;-1987.264,242.379;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;-0.75;False;4;FLOAT;0.5;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SinOpNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;50;-2070.881,117.5462;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
@@ -205,4 +205,4 @@ WireConnection;64;0;69;0
 WireConnection;0;2;8;0
 WireConnection;0;9;65;0
 ASEEND*/
-//CHKSM=B1D7EFB17161F5E216CFFF6D5EFFA85B7C947E13
+//CHKSM=27A30ADF83C600EF23967BB7509C4EC5B111B2BB

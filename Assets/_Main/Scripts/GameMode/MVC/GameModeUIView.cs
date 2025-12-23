@@ -127,12 +127,9 @@ namespace _Main.Scripts.GameMode
             _storedStreak = 0;
         }
         
-
-        
         #endregion
 
         #region Streak
-
         
         private void HandleUpdateStreak(uint amount)
         {

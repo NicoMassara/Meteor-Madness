@@ -1,11 +1,11 @@
 ﻿{ 
   "Default" : {
-    "Name" : "Earth",
-    "Description" : "Home"
+    "Name" : "The Earth",
+    "Description" : "The Earth, our home"
   },
 
   "Pizza" : {
-    "Name" : "Pizza",
-    "Description" : "Best pizza ever!"
+    "Name" : "Pineapple Pizza",
+    "Description" : "Best pizza flavor! Right?"
   }
 }

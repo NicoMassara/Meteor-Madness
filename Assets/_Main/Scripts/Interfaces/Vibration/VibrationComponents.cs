@@ -13,6 +13,10 @@ namespace _Main.Scripts.Interfaces.Vibration
     {
         public event Action<int> OnSkinSelected;
         public event Action OnMainMenuButtonPressed;
+        public event Action OnScroll;
+        public event Action OnCoinsFinishedDecrement;
+        public event Action OnUnlockFailed;
+        public event Action OnUnlocked;
     }
     
     //=== Defeat ===///

@@ -36,13 +36,16 @@ namespace _Main.Scripts
 
             _currentValue = (uint)Mathf.Lerp(_startValue, _targetValue, ratio);
             _increaseAction?.Invoke(_currentValue);
-            
-            _increaseAction?.Invoke(_currentValue);
 
             if (ratio >= 1f)
             {
                 _startValue = _currentValue;
+                _increaseAction?.Invoke(_currentValue);
                 _actionOnFinish?.Invoke();
+            }
+            else
+            {
+                _increaseAction?.Invoke(_currentValue);
             }
         }
         

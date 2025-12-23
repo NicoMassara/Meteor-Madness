@@ -121,6 +121,9 @@ namespace _Main.Scripts.Interfaces.Sounds
     public interface ICosmeticUISounds : ISoundComponent
     {
         public event Action OnMainMenuButtonPressed;
+        public event Action OnUnlockFailed;
+        public event Action OnUnlocked;
+        public event Action OnCoinsFinishedDecrement;
     }
     
     // Defeat

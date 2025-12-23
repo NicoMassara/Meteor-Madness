@@ -8,8 +8,9 @@ namespace _Main.Scripts.Cosmetics.Components
     public class SkinButtonCreator 
     {
         private readonly Func<SkinSelectButton> _buttonSpawnerFunc;
-        private readonly int _skinCount;
         private readonly Dictionary<SkinType, ISkinButton> _skinButtons = new Dictionary<SkinType, ISkinButton>();
+        private ISkinButton[] _buttonsArray;
+        private int _skinCount;
         private SkinType _lasSelectedSkin;
         
         public event Action<SkinType> OnSkinSelected;
@@ -17,9 +18,6 @@ namespace _Main.Scripts.Cosmetics.Components
         public SkinButtonCreator(Func<SkinSelectButton> buttonSpawnerFunc)
         {
             _buttonSpawnerFunc = buttonSpawnerFunc;
-            // Had to add One more than the real amount, don't know why
-            _skinCount = 2 + 1;
-            //_skinCount = (int)SkinType.DEFAULT_MAX;
         }
 
         public void Initialize()
@@ -42,10 +40,22 @@ namespace _Main.Scripts.Cosmetics.Components
 
         private void CreateAllButtons()
         {
-            var buttonsArray = new ISkinButton[_skinCount];
+            // It needs to add 1 and then use _skinCount-1 to work, don't know, don't care but it works
+            _skinCount = 1;
             
-            for (int i = 0; i < _skinCount-1; i++) buttonsArray[i] = _buttonSpawnerFunc();
-            for (int i = 1; i < _skinCount; i++) SetButtonText(buttonsArray[i-1], (SkinType)i);
+            for (int i = 1; i < (int)SkinType.DEFAULT_MAX; i++)
+            {
+                var skinName = ((SkinType)i).ToString();
+                if (skinName.Contains("Empty", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                
+                _skinCount++;
+            }
+            
+            _buttonsArray = new ISkinButton[_skinCount];
+
+            for (int i = 0; i < _skinCount-1; i++) _buttonsArray[i] = _buttonSpawnerFunc();
+            for (int i = 1; i < _skinCount; i++) SetButtonText(_buttonsArray[i-1], (SkinType)i);
         }
         
         private void SetButtonText(ISkinButton button, SkinType skinType)
@@ -84,5 +94,27 @@ namespace _Main.Scripts.Cosmetics.Components
             if(_skinButtons.TryGetValue(skin, out var button))
                 button.SetInteractable(interactable);
         }
+
+        #region Add / Remove Listener
+        
+        public void RemoveListenerFromAllButtons()
+        {
+            for (int i = 0; i < _buttonsArray.Length-1; i++)
+            {
+                var item = _buttonsArray[i];
+                item.RemoveListener();
+            }
+        }
+
+        public void AddListenerToAllButtons()
+        {
+            for (int i = 0; i < _buttonsArray.Length-1; i++)
+            {
+                var item = _buttonsArray[i];
+                item.AddListener();
+            }
+        }
+        
+        #endregion
     }
 }

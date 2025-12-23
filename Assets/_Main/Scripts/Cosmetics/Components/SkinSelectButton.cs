@@ -14,20 +14,11 @@ namespace _Main.Scripts.Cosmetics.Components
         
         public SkinType SkinType => _skinType;
         public event Action<SkinType> OnSelect;
-
-        private void OnEnable()
+        
+        private void TriggerOnSelect()
         {
-            selectButton?.onClick.AddListener(() =>
-            {
-                OnSelect?.Invoke(_skinType);
-            });
+            OnSelect?.Invoke(_skinType);
         }
-
-        private void OnDisable()
-        {
-            selectButton.onClick.RemoveAllListeners();
-        }
-
 
         public SkinSelectButton SetData(string skinName, SkinType skinType)
         {
@@ -38,5 +29,8 @@ namespace _Main.Scripts.Cosmetics.Components
         }
 
         public void SetInteractable(bool isInteractable) => selectButton.interactable = isInteractable;
+
+        public void RemoveListener() => selectButton?.onClick.RemoveListener(TriggerOnSelect);
+        public void AddListener() => selectButton?.onClick.AddListener(TriggerOnSelect);
     }
 }   

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using _Main.Scripts.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.Save
@@ -369,7 +370,7 @@ namespace _Main.Scripts.Save
         public class SkinSaveData : SaveDataBase
         {
             public override SaveDataType Type => SaveDataType.Skin;
-            public int SkinIndex = 0;
+            public int SkinIndex = 1;
             public uint SkinCoins = 0;
 
             public List<int> UnlockedSkins = new List<int> { 1 };
@@ -451,6 +452,8 @@ namespace _Main.Scripts.Save
         
         public void SaveGameData<T>(T data, SaveDataType type) where T : SaveDataBase
         {
+            if(GameParameters.GameplayValues.DoesSaveProgress == false) return;
+            
             SetDataByType(data, type);
             SaveSystem.Save(_mainSaveData);
         }

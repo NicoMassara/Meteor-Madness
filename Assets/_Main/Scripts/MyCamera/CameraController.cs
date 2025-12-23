@@ -26,6 +26,8 @@ namespace _Main.Scripts.MyCamera
             public void TryLookLeft(float timeToLook);
             public void TryLookAtTop(float timeToLook);
             public void TryLookAtBottom(float timeToLook);
+            public void EnableGrayscale();
+            public void DisableGrayscale();
         }
 
         private interface IMainCameraController
@@ -601,6 +603,10 @@ namespace _Main.Scripts.MyCamera
             _motor.TryLook(timeToLook);
             _lookController.TransitionToBottom();
         }
+
+        public void EnableGrayscale() => _motor.EnableGrayscale();
+
+        public void DisableGrayscale() => _motor.DisableGrayscale();
 
         #endregion
 

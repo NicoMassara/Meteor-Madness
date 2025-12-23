@@ -10,6 +10,7 @@ namespace _Main.Scripts.Cosmetics
         [SerializeField] private SkinType skinType;
         [Header("Information")]
         [SerializeField] private string localizationCode;
+        [SerializeField] private uint unlockPrice;
         [Header("Materials")]
         [SerializeField] private EarthSkinData earthData;
         [SerializeField] private ShieldSkinData shieldData;
@@ -21,6 +22,7 @@ namespace _Main.Scripts.Cosmetics
         public string NameCode => $"{localizationCode}.Name";
 
         public string DescriptionCode => $"{localizationCode}.Description";
+        public uint UnlockPrice => unlockPrice;
 
         public EarthSkinData EarthData => earthData;
 

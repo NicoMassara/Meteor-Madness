@@ -131,6 +131,14 @@ namespace _Main.Scripts.Cosmetics
 
         #region Data Getters
         
+        public SkinType GetPreviewedSkin() => _currentSkinPreview;
+
+        public void UnlockPreviewSkin()
+        {
+            _skinController.TrySetCurrentSkinType(_currentSkinPreview);
+            _currentSkinPreview = SkinType.None;
+        }
+
         // === Skin Controller ===// 
         public SkinType GetCurrentSkinType() => _skinController.GetCurrentSkinType();
         public bool GetHasData(SkinType skinType) => _skinController.GetHasData(skinType);

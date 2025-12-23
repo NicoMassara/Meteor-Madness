@@ -165,10 +165,10 @@
         public const ulong SkinSelected = 0xA8005;
         public const ulong StartDisable = 0xA8006;
         public const ulong SkinChanged = 0xA8007;
-        public const ulong Empty6 = 0xA8008;
-        public const ulong Empty7 = 0xA8009;
-        public const ulong Empty8 = 0xA8010;
-        public const ulong Empty9 = 0xA8011;
+        public const ulong Opened = 0xA8008;
+        public const ulong TryUnlockSkin = 0xA8009;
+        public const ulong Unlocked = 0xA8010;
+        public const ulong FailedToUnlock = 0xA8011;
         public const ulong Empty10 = 0xA8012;
     }
 
@@ -207,6 +207,8 @@
         public const ulong LookLeft = 0xA1106;
         public const ulong LookTop = 0xA1107;
         public const ulong LookBottom = 0xA1108;
+        public const ulong EnableGrayscale = 0xA1109;
+        public const ulong DisableGrayscale = 0xA1110;
     }
     
     public struct DefeatObserverMessage

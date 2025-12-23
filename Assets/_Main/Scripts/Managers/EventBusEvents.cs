@@ -194,6 +194,8 @@ namespace _Main.Scripts.Managers
         public struct ZoomFinished { }
         public struct LookFinished { }
         public struct ShakeFinished { }
+        public struct GrayscaleEnable { }
+        public struct GrayscaleDisable { }
     }
 
     public struct InputsEvents

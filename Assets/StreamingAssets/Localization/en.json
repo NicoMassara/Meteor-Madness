@@ -66,7 +66,18 @@
 
   "Cosmetic": {
     "Title" : "Skin Selector",
-    "SkinData" :"@Skins/en/skinData.json"
+    "Description" : "Description:",
+    "Locked" : "Locked!",
+    "Unlock" : "Unlock",
+    "Unlocked" : "Unlocked!",
+    "StoredCoins" : "Your Coins",
+    "Requirement" : "You Need",
+    "NotEnough" : "Not Enough Coins!",
+    "SkinData" :"@Skins/en/skinData.json",
+    "Coins" : {
+      "Single" : "Coin",
+      "Multiple" : "Coins"
+    }
   },
   
   "Pause": {

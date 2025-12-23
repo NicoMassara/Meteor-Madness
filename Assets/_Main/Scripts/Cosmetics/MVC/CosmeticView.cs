@@ -12,9 +12,18 @@ namespace _Main.Scripts.Cosmetics.MVC
         public interface ICosmeticView
         {
             public event Action OnInitialized;
+            public event Action<SkinType> OnSkinUnlocked;
+            public event Action OnFailedToUnlock;
         }
+
+        #region ICosmeticView
+
         
         public event Action OnInitialized;
+        public event Action<SkinType> OnSkinUnlocked;
+        public event Action OnFailedToUnlock;
+
+        #endregion
 
         #region ICosmeticsAnalytics
         
@@ -45,6 +54,11 @@ namespace _Main.Scripts.Cosmetics.MVC
                 case CosmeticObserverMessage.SkinSelected:
                     HandleSkinSelected((int)args[0]);
                     break;
+                
+                // === Unlock === //
+                case CosmeticObserverMessage.TryUnlockSkin:
+                    HandleTryUnlock((int)args[0]);
+                    break;
             }
         }
         
@@ -56,6 +70,15 @@ namespace _Main.Scripts.Cosmetics.MVC
         private void HandleSkinSelected(int skinIndex)
         {
             SkinManager.Instance.PreviewSkin((SkinType)skinIndex);
+
+            if (SkinManager.Instance.GetIsLocked(skinIndex))
+            {
+                CameraEventCaller.EnableGrayscale();
+            }
+            else
+            {
+                CameraEventCaller.DisableGrayscale();
+            }
 
             OnCosmeticChanged?.Invoke(((SkinType)skinIndex).ToString());
         }
@@ -72,6 +95,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         private void HandleStartDisable()
         {
+            CameraEventCaller.DisableGrayscale();
             SkinManager.Instance.SaveSelected();
         }
 
@@ -83,7 +107,28 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         private void HandleTriggerMainMenu()
         {
+
             GameManager.Instance.LoadMainMenu();
+        }
+
+        private void HandleTryUnlock(int skinIndex)
+        {
+            var type = (SkinType)skinIndex;
+            var coinsTarget = SkinManager.Instance.GetSkinInformationByType(type).UnlockPrice;
+            var hasEnough = SkinManager.Instance.GetContainsEnoughCoins(coinsTarget);
+
+            if (hasEnough)
+            {
+                SkinManager.Instance.UnlockPreviewSkin();
+                SkinManager.Instance.TryRemoveCoins(coinsTarget);
+                SkinManager.Instance.UnlockSkin(skinIndex);
+                OnSkinUnlocked?.Invoke(type);
+                CameraEventCaller.DisableGrayscale();
+            }
+            else
+            {
+                OnFailedToUnlock?.Invoke();
+            }
         }
     }
 }

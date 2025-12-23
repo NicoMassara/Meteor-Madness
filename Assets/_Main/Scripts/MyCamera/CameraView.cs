@@ -13,6 +13,7 @@ namespace _Main.Scripts.MyCamera
         [Header("Components")]
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Camera dummyCamera;
+        [SerializeField] private GameObject grayScaleStencil;
         [Range(0, 0.5f)] 
         [SerializeField] 
         private float horizontalLookOffset = 0.3f;
@@ -32,6 +33,7 @@ namespace _Main.Scripts.MyCamera
         private void Start()
         {
             _shakerController = new ComponentShaker(mainCamera.transform);
+            HandleDisableGrayscale();
         }
         
         public void ExecuteLateUpdate(float deltaTime)
@@ -78,8 +80,24 @@ namespace _Main.Scripts.MyCamera
                 case CameraObserverMessage.LookBottom:
                     HandleLook(CameraLookPosition.Bottom, (float)args[0]);
                     break;
+                
+                // === Grayscale === //
+                case CameraObserverMessage.EnableGrayscale:
+                    HandleEnableGrayscale();
+                    break;
+                
+                case CameraObserverMessage.DisableGrayscale:
+                    HandleDisableGrayscale();
+                    break;
+                
             }
         }
+
+        private void HandleEnableGrayscale() 
+            => grayScaleStencil.SetActive(true);
+
+        private void HandleDisableGrayscale() 
+            => grayScaleStencil.SetActive(false);
 
         private void HandleShake(IShakeData shakeData)
         {

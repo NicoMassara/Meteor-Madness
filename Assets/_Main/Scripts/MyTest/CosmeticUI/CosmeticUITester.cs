@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using _Main.Scripts.Cosmetics;
 using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Localization;
 using _Main.Scripts.Managers;
@@ -15,11 +16,17 @@ namespace _Main.Scripts.MyTest.CosmeticUI
     
     public class CosmeticUITester : MonoBehaviour
     {
+        [Range(0,1000)]
+        [SerializeField] private uint coinsAmount = 100;
+        
+        private bool _isLoading;
+        
         private void Awake()
         {
             LocalizationEvents.OnLocalizationLoaded += () =>
             {
-                StartCoroutine(Coroutine_LoadCoreScene());
+                if(_isLoading == false)
+                    StartCoroutine(Coroutine_LoadCoreScene());
             };
             
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
@@ -34,8 +41,15 @@ namespace _Main.Scripts.MyTest.CosmeticUI
             SoundManager.LoadInstance();
         }
 
+        private void SetCoins()
+        {
+            SkinManager.Instance.TryAddCoins(coinsAmount * 5000);
+        }
+
         private IEnumerator Coroutine_LoadCoreScene()
         {
+            _isLoading = true;
+            
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("CosmeticsModule", LoadSceneMode.Additive);
                 
             while (!asyncLoad.isDone)
@@ -59,6 +73,10 @@ namespace _Main.Scripts.MyTest.CosmeticUI
             
             BootEvents.TriggerOnGameLoaded();
             TestEvents.ShowEarth();
+            
+            yield return new WaitForEndOfFrame();
+
+            SetCoins();
             
             yield return new WaitForEndOfFrame();
             

@@ -1,5 +1,4 @@
-﻿using System;
-using _Main.Scripts.GlobalEvents;
+﻿using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -56,16 +55,22 @@ namespace _Main.Scripts.Cosmetics.MVC
         }
 
         #region View Handlers
-        
 
         private void SetViewHandlers()
         {
             _view.OnInitialized += ()=> _controller.TransitionToEnable();
+            _view.OnSkinUnlocked += (value)=> _controller.SkinUnlocked((int)value);
+            _view.OnFailedToUnlock += ()=> _controller.FailedToUnlock();
             //
             _ui.OnMainMenuButtonPressed += () => { _controller.TriggerMainMenu();};
             _ui.OnSkinSelected += (value) => _controller.SkinSelected(value);
+            _ui.OnUnlockButtonPressed += (value) => _controller.TryUnlockSkin((int)value);
             //
-            _animation.OnPanelOpened += () => AdsEvents.Banner_TriggerShow();
+            _animation.OnPanelOpened += () =>
+            {
+                AdsEvents.Banner_TriggerShow();
+                _controller.TriggerOpened();
+            };
             _animation.OnPanelClosed += () => _controller.ExecuteDisable();
         }
 

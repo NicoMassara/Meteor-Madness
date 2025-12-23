@@ -47,7 +47,7 @@ Material:
     - _Opacity: 1
     - _PIMultiplier: 10.16
     - _RotationSpeed: 10
-    - __dirty: 1
+    - __dirty: 0
     m_Colors:
     - _CrossColor: {r: 1, g: 1, b: 1, a: 1}
     - _DefaultColor: {r: 0, g: 0.9388051, b: 1, a: 1}

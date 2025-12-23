@@ -131,5 +131,11 @@ namespace _Main.Scripts.Cosmetics.MVC
         #endregion
 
         public void SkinSelected(int index) => _motor.SelectSkin(index);
+
+        public void TriggerOpened() => _motor.TriggerOpened();
+
+        public void TryUnlockSkin(int skinIndex) => _motor.TryUnlockSkin(skinIndex);
+        public void SkinUnlocked(int skinIndex) => _motor.SkinUnlocked(skinIndex);
+        public void FailedToUnlock() => _motor.FailedToUnlock();
     }
 }

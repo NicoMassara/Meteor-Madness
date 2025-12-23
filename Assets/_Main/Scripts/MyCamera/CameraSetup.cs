@@ -43,7 +43,23 @@ namespace _Main.Scripts.MyCamera
             CameraEventSubscriber.LookLeft(EventBus_Camera_LookLeft);
             CameraEventSubscriber.LookUp(EventBus_Camera_LookUp);
             CameraEventSubscriber.LookDown(EventBus_Camera_LookDown);
+            CameraEventSubscriber.EnableGrayscale(EventBus_Camera_Grayscale_Enable);
+            CameraEventSubscriber.DisableGrayscale(EventBus_Camera_Grayscale_Disable);
         }
+
+        #region GrayScale
+
+        private void EventBus_Camera_Grayscale_Enable(CameraEvents.GrayscaleEnable input)
+        {
+            _controller.EnableGrayscale();
+        }
+        
+        private void EventBus_Camera_Grayscale_Disable(CameraEvents.GrayscaleDisable input)
+        {
+            _controller.DisableGrayscale();
+        }
+
+        #endregion
         
         private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)
         {
