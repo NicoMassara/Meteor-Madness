@@ -19,9 +19,11 @@ namespace _Main.Scripts.MainMenu.MVC
 
         public event Action OnLoreOpened;
         public event Action OnLoreClosed;
+        public event Action<bool> OnFirstGame;
 
         #endregion
         
+
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -35,7 +37,6 @@ namespace _Main.Scripts.MainMenu.MVC
                 case MainMenuObserverMessage.Quit:
                     HandleQuit();
                     break;
-
                 
                 // === Screens === // 
                 case MainMenuObserverMessage.LoreMenu:
@@ -112,7 +113,6 @@ namespace _Main.Scripts.MainMenu.MVC
         {
             AdsEvents.Banner_TriggerShow();
         }
-
         
         private void HandleDisable()
         {
@@ -136,6 +136,8 @@ namespace _Main.Scripts.MainMenu.MVC
         private void HandleEnable()
         {
             OnMainMenuEnable?.Invoke();
+            var hasPlayed = GameManager.Instance.FlagsController.GetHasPlayed();
+            OnFirstGame?.Invoke(hasPlayed);
             CameraEventCaller.ZoomIn(0.5f);
             EarthEventCaller.DisableDamage();
         }

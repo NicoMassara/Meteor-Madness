@@ -66,6 +66,32 @@ namespace _Main.Scripts.GameMode.So
             public int Loops => loops;
         }
 
+        [Serializable]
+        private class StreakNotify : IStreakNotify
+        {
+            [Header("Positions")]
+            [SerializeField] private AnimationHelper.Direction startPosition;
+            [SerializeField] private AnimationHelper.Direction endPosition;
+
+            [Space()]
+            [Header("Time Values")]
+            [SerializeField] private float movementDuration;
+            [SerializeField] private float stopDuration;
+
+            [Space()]
+            [Header("Offsets")]
+            [SerializeField] private Vector2 startOffset;
+            [SerializeField] private Vector2 endOffset;
+
+            public AnimationHelper.Direction StartPosition => startPosition;
+            public AnimationHelper.Direction EndPosition => endPosition;
+            public float MovementDuration => movementDuration;
+            public float StopDuration => stopDuration;
+            public Vector2 StartOffset => startOffset;
+            public Vector2 EndOffset => endOffset;
+        }
+
+
 
         #endregion
 
@@ -142,6 +168,7 @@ namespace _Main.Scripts.GameMode.So
         [SerializeField] private ScoreFinishAdding scoreFinishAddingData;
         [Header("Streak")]
         [SerializeField] private StreakFailed streakFailedData;
+        [SerializeField] private StreakNotify streakNotifyData;
 
         // Public interface getters
         public IGameplayPanelData GameplayUiOpenData => gameplayUiOpenData;
@@ -150,6 +177,7 @@ namespace _Main.Scripts.GameMode.So
         public ICountdownUpdate CountdownUpdateData => countdownUpdateData;
         public ICountdownFinish CountdownFinishData => countdownFinishData;
         public IStreakFailed StreakFailedData => streakFailedData;
+        public IStreakNotify StreakNotifyData => streakNotifyData;
     }
 
 }

@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _Main.Scripts.AdsSystem;
+using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Defeat;
 using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Localization;
@@ -16,7 +18,10 @@ namespace _Main.Scripts.MyTest.Defeat
         [AddComponentMenu("_Main/ModuleTester/Defeat Screen Tester")]
         public class DefeatScreenTester : MonoBehaviour
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            [SerializeField] private SkinType deathTitleCode;
+            [Range(0,100)]
+            [SerializeField] private uint startCoins;
             [Range(0,1000)]
             [SerializeField] private uint scoreAmount;
             [Range(0,1000)]
@@ -64,6 +69,7 @@ namespace _Main.Scripts.MyTest.Defeat
             private void Start()
             {
                 LocalizationManager.LoadInstance();
+                SkinManager.LoadInstance();
                 DataManager.LoadInstance();
                 SettingsManager.LoadInstance();
                 SoundManager.LoadInstance();
@@ -73,7 +79,7 @@ namespace _Main.Scripts.MyTest.Defeat
             {
                 GameManager.Instance.StatsController.SetStatsIdData(new DataManagerTools.GameplayStatsIdData
                 {
-                  CurrentScoreId = SecureValueManager.RegisterValue(scoreAmount)
+                    CurrentScoreId = SecureValueManager.RegisterValue(scoreAmount)
                 });
 
                 SecureValueManager.ModifyValue(GameManager.Instance.StatsController.GetHighScoreSecuredId(), highScore);
@@ -90,10 +96,6 @@ namespace _Main.Scripts.MyTest.Defeat
 
             private IEnumerator LoadDefeatScreen()
             {
-                yield return new WaitForSeconds(0.25f);
-                yield return new WaitForSeconds(0.25f);
-                yield return new WaitForSeconds(0.25f);
-                
                 AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("DefeatModule", LoadSceneMode.Additive);
                 
                 while (!asyncLoad.isDone)
@@ -107,22 +109,34 @@ namespace _Main.Scripts.MyTest.Defeat
                 
                 yield return new WaitForEndOfFrame();
                 
-                AdManager.LoadInstance();
+
+                if (GameParameters.GameplayValues.AdsEnable)
+                {
+                    AdManager.LoadInstance();
                 
-                yield return new WaitForEndOfFrame();
+                    yield return new WaitForEndOfFrame();
+                    
+                    AdsEvents.InitializeAds();
                 
-                AdsEvents.InitializeAds();
-                
-                yield return new WaitForEndOfFrame();
-                yield return new WaitUntil(()=> _hasInitializedAds == true);
+                    yield return new WaitForEndOfFrame();
+                    yield return new WaitUntil(()=> _hasInitializedAds == true);
+                }
                 
                 BootEvents.InitializeMainSystem();
-
-                yield return new WaitForSeconds(1);
-                yield return new WaitUntil(()=> _hasInitializedManager == true);
+                
+                //yield return new WaitUntil(()=> _hasInitializedManager == true);
+                yield return new WaitForEndOfFrame();
                 
                 BootEvents.InitializeSubSystems();
+                
+                yield return new WaitForEndOfFrame();
 
+                GameManager.Instance.DeathTitle = GetDeathTitleCode();
+
+                yield return new WaitForEndOfFrame();
+
+                SkinManager.Instance.TryAddCoins(startCoins * 20);
+                
                 yield return new WaitForEndOfFrame();
                 
                 SetScoreValue();
@@ -131,7 +145,7 @@ namespace _Main.Scripts.MyTest.Defeat
                 
                 GameManager.Instance.LoadDefeatScreen();
 
-                yield return new WaitForEndOfFrame();
+                yield return new WaitForSeconds(0.25f);
                 
                 EarthEventCaller.DestructionFinished();
             }
@@ -140,6 +154,10 @@ namespace _Main.Scripts.MyTest.Defeat
             {
                 yield return new WaitForEndOfFrame();
                 
+                GameManager.Instance.DeathTitle = GetDeathTitleCode();
+                
+                yield return new WaitForEndOfFrame();
+                
                 SetScoreValue();
                 
                 yield return new WaitForEndOfFrame();
@@ -150,7 +168,16 @@ namespace _Main.Scripts.MyTest.Defeat
                 
                 EarthEventCaller.DestructionFinished();
             }
-            
+
+            private string GetDeathTitleCode()
+            {
+                return deathTitleCode switch
+                {
+                    SkinType.Default => "Cosmetic.SkinData.Default.DeathTitle",
+                    SkinType.Pizza => "Cosmetic.SkinData.Pizza.DeathTitle",
+                    _ => "Cosmetic.SkinData.Default.DeathTitle"
+                };
+            }
 
             #region Event Bus
 

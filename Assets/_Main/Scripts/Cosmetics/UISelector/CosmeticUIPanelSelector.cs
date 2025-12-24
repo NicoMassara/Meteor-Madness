@@ -36,16 +36,23 @@ namespace _Main.Scripts.Cosmetics
         [SerializeField] private Button unlockButton;
         [Header("Coins")]
         [SerializeField] private TMP_Text coinsText;
+        [Space]
+        [Header("First Open")]
+        [SerializeField] private GameObject firstOpenPanel;
+        [SerializeField] private Button closeFirstOpenButton;
         
         // === Buttons === //
         
+        #region Buttons
         public void AddListenerToBackButton(UnityAction onClick) 
             => AddListenerToButton(backButton,onClick);
         public void RemoveListenerBackButton(UnityAction onClick) 
             => RemoveListenerFromButton(backButton,onClick);
-
+        #endregion
         
         // === Scroll Rect === //
+        
+        #region Scroll Rect
         public void AddScrollListener(UnityAction<Vector2> onScroll)
         {
             scrollRect.onValueChanged.AddListener(onScroll);
@@ -55,14 +62,21 @@ namespace _Main.Scripts.Cosmetics
         {
             scrollRect.onValueChanged.RemoveListener(onScroll);
         }
+        #endregion
 
         // === Description === //
+        
+        #region Description
+        
         public void SetActiveDescriptionPanel(bool active)
             => SetActiveObject(descriptionPanel,active);
         public void SetDescriptionText(string textCode) 
             => SetText(descriptionText, GetLocalizedString(textCode));
+        #endregion
 
         // === Locked === //
+        
+        #region Locked
         public void SetActiveLockedPanel(bool active) 
             => SetActiveObject(lockedPanel,active);
         public void SetRequirementText(string requirementTextCode,uint coinsAmount, string coinsTextCode)
@@ -76,8 +90,8 @@ namespace _Main.Scripts.Cosmetics
         public void ClearRequirementText() => ClearText(requirementText);
         public void SetLockedText(string textCode) 
             => SetText(lockedText, GetLocalizedString(textCode));
-        public void SetLockedTextGreen() => SetTextColor(lockedText, new Color(0,0.5f,0,1));
-        public void SetLockedTextRed() => SetTextColor(lockedText, new Color(0.5f,0,0,1));
+        public void SetLockedTextGreen() => SetTextColor(lockedText, new Color(0,0.75f,0,1));
+        public void SetLockedTextRed() => SetTextColor(lockedText, new Color(0.75f,0,0,1));
 
         public void AddListenerToUnlockButton(UnityAction onClick) 
             => AddListenerToButton(unlockButton,onClick);
@@ -91,11 +105,34 @@ namespace _Main.Scripts.Cosmetics
             => SetActiveObject(unlockButton.gameObject, false);
         public void EnableUnlockButton()
             => SetActiveObject(unlockButton.gameObject, true);
+        #endregion
 
         // === Coins === //
+
+        #region Coins
+        
         public void SetCoinsText(string textCode, uint coinsAmount)
         {
-            SetText(coinsText, $"{GetLocalizedString(textCode)}:{coinsAmount:D4}");
+            SetText(coinsText, $"{GetLocalizedString(textCode)}:{coinsAmount:D6}");
         }
+        
+        #endregion
+        
+        // === First Open === //
+
+        #region First Open
+
+        public void SetActiveFirstOpenPanel(bool active) 
+            => SetActiveObject(firstOpenPanel,active);
+        
+        public void AddListenerToCloseFirstOpenButton(UnityAction onClick) 
+            => AddListenerToButton(closeFirstOpenButton,onClick);
+        public void RemoveListenerToCloseFirstOpenButton(UnityAction onClick) 
+            => RemoveListenerFromButton(closeFirstOpenButton,onClick);
+        
+        public void SetInteractiveCloseFirstOpenButton(bool active)
+            => SetButtonInteractable(closeFirstOpenButton,active);
+
+        #endregion
     }
 }

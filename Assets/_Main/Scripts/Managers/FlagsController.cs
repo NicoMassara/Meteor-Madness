@@ -8,17 +8,23 @@ namespace _Main.Scripts.Managers
         {
             var dataManager = DataManager.Instance;
             var saveData = dataManager.GetData<DataManager.FlagsSaveData>(DataManager.SaveDataType.Flags);
-            var value = saveData.HasPlayed;
-            
-            if(value)
-                return true;
-            
-            saveData.HasPlayed = true;
-            
-            if (DataManagerTools.GetIsSaveEnabled()) dataManager.SaveGameData(saveData, DataManager.SaveDataType.Flags);
-            
-            return false;
+            return saveData.HasPlayed;
         }
+
+        public void FlipHasPlayed()
+        {
+            var dataManager = DataManager.Instance;
+            var saveData = dataManager.GetData<DataManager.FlagsSaveData>(DataManager.SaveDataType.Flags);
+            
+            if (saveData.HasPlayed) return;
+            
+            if (DataManagerTools.GetIsSaveEnabled())
+            {
+                saveData.HasPlayed = true;
+                dataManager.SaveGameData(saveData, DataManager.SaveDataType.Flags);
+            }
+        }
+
         public bool GetHasCompletedTutorial()
         {
             var dataManager = DataManager.Instance;

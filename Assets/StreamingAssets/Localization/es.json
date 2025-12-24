@@ -65,10 +65,18 @@
   },
 
   "Cosmetic": {
-    "Title" : "Apariencia",
-    "SkinType" : {
-      "Default" : "Normal",
-      "Pizza" : "Pizza"
+    "Title" : "Selector de Apariencia",
+    "Description" : "Descripción:",
+    "Locked" : "Bloqueado!",
+    "Unlock" : "Desbloquear",
+    "Unlocked" : "Desbloqueado!",
+    "StoredCoins" : "Tus Monedas",
+    "Requirement" : "Necesitas",
+    "NotEnough" : "Monedas Insuficientes!",
+    "SkinData" :"@Skins/es/skinData.json",
+    "Coins" : {
+      "Single" : "Moneda",
+      "Multiple" : "Monedas"
     }
   },
 
@@ -85,32 +93,38 @@
     "Death": {
       "Title" : "La Humanidad se acabo!",
       "Score" : "Tus Puntos"
-    }
+    },
+    "StreakNotify" : "%% Meteoritos en Racha!"
   },
 
   "Stats" : {
     "Title" : "Estadisticas",
-    "Deflect" : "Meteoros Deflectados",
-    "Collision" : "Meteors Colisionados",
-    "AbilityCount" : "Habilidades Usadas",
-    "GamesPlayed" : "Partidas Jugadas"
+    "Deflect" : "Meteoritos Deflectados",
+    "Collision" : "Colisiones",
+    "AbilityCount" : "Super Habilidades Usadas",
+    "GamesPlayed" : "Veces Jugado",
+    "DeflectStreak" : "Racha Maxima",
+    "LongestTime" : "Maxima Duración",
+    "HighScore" : "Record Maximo",
+    "HistoricScore" : "Puntaje Total"
   },
 
   "FirstOpen":
   {
     "Stats" : {
       "Title" : "Estadisticas",
-      "Text" : "@Texts/First/en/stats.txt"
+      "Text" : "@Texts/es/First/stats.txt"
     },
 
     "Play": {
       "Title" : "Atención!",
-      "Text" : "@Texts/First/en/play.txt"
+      "Text" : "@Texts/es/First/play.txt"
     },
 
     "Cosmetic": {
       "Title" : "Apariencia",
-      "Text" : "@Texts/First/en/cosmetic.txt"
+      "Text" : "@Texts/es/First/cosmetic.txt",
+      "CloseButton" : "Cerrar"
     }
   }
 }

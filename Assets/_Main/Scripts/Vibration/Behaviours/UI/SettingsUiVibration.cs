@@ -5,7 +5,7 @@ namespace _Main.Scripts.Vibration.Behaviours.UI
 {
     public class SettingsUiVibration : VibrationBehavior<ISettingsUiVibration>
     {
-#if UNITY_ANDROID 
+#if UNITY_ANDROID
         protected override void Start()
         {
             base.Start();

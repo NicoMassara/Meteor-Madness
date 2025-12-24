@@ -137,5 +137,6 @@ namespace _Main.Scripts.Cosmetics.MVC
         public void TryUnlockSkin(int skinIndex) => _motor.TryUnlockSkin(skinIndex);
         public void SkinUnlocked(int skinIndex) => _motor.SkinUnlocked(skinIndex);
         public void FailedToUnlock() => _motor.FailedToUnlock();
+        public void OpenFirstPanel() => _motor.OpenFirstPanel();
     }
 }

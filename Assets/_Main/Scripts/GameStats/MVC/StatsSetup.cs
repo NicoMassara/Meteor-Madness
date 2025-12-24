@@ -36,11 +36,13 @@ namespace _Main.Scripts.GameStats
         private void SetViewHandlers()
         {
             _view.OnInitialize += (value) => _motor.LoadTextData(value);
+            _view.OnFirstOpen += () => _motor.TriggerFirstOpen();
             //
             _ui.OnBackButtonPressed += () => _motor.OpenMainMenu();
             _ui.OnTextsLoaded += () => _motor.Enable();
             //
             _animation.OnPanelClosed += () => _motor.ExecuteDisable();
+            _animation.OnPanelOpened += () => _motor.PanelOpened();
         }
         
         private void EnableStats()

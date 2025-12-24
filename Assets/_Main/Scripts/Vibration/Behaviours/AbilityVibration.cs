@@ -5,11 +5,12 @@ namespace _Main.Scripts.Vibration.Behaviours
 {
     public class AbilityVibration : VibrationBehavior<IAbilityVibration>
     {
-#if UNITY_ANDROID 
         [Header("Vibration Data")]
         [SerializeField] private VibrationDataSo triggeredData;
         [SerializeField] private VibrationDataSo finishedData;
         [SerializeField] private VibrationDataSo addedData;
+        
+#if UNITY_ANDROID
         
         protected override void Start()
         {

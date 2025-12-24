@@ -96,18 +96,21 @@ namespace _Main.Scripts.GameMode
                     HandleStartDisable();
                     break;
                 
-                //=== Data ===/
+                //=== Data ===//
                 case GameModeObserverMessage.InitializeData:
                     HandleInitializeData();
                     break;
                 
+                // === Streak === //
                 case GameModeObserverMessage.UpdateStreak:
                     HandleUpdateStreak((uint)args[0]);
+                    break;
+                case GameModeObserverMessage.NotifyStreak:
+                    HandleNotifyStreak((int)args[0]);
                     break;
             }
         }
         
-
         #region Data
 
         private void HandleInitializeData()
@@ -133,9 +136,17 @@ namespace _Main.Scripts.GameMode
         
         private void HandleUpdateStreak(uint amount)
         {
-            UIComponents.StreakText.text = $"{_streakTextValue}: {amount:D4}";
+            UIComponents.SetStreakText(_streakTextValue, amount);
             
             _storedStreak = amount;
+        }
+        
+        private void HandleNotifyStreak(int streakAmount)
+        {
+            string localizedText = GetLocalizedString("Gameplay.StreakNotify");
+            string result = localizedText.Replace("%%", $"{streakAmount}");
+            
+            UIComponents.SetNotifyText(result);
         }
 
         private void UpdateStreakTextLocalization()
@@ -161,16 +172,14 @@ namespace _Main.Scripts.GameMode
         
         private void HandleUpdatePointsText(uint amount)
         {
-            UIComponents.ScoreText.text = $"{_scoreTextValue}: {amount:D6}";;
+            UIComponents.SetScoreText(_scoreTextValue,amount);
 
             SetStoredPoints(amount);
         }
 
         private void UpdateScoreTextLocalization()
         {
-            var textValue = $"{_scoreTextValue}: {_storedPoints:D6}";
-            
-            UIComponents.ScoreText.text = textValue;
+            UIComponents.SetScoreText(_scoreTextValue,_storedPoints);
         }
 
         private void SetStoredPoints(uint storedPoints)

@@ -144,6 +144,5 @@ namespace _Main.Scripts.Managers
         {
             _gameplayStatsIdData = statsId;
         }
-
     }
 }

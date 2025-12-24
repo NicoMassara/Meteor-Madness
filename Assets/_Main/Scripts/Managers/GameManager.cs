@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Cosmetics;
 using _Main.Scripts.Interfaces;
 using _Main.Scripts.MyComponents;
 using _Main.Scripts.MyTools;
@@ -24,8 +25,9 @@ namespace _Main.Scripts.Managers
         
         public bool AntiEpileptic { get; set; } = true;
         public StatsController StatsController { get; private set; } 
-        public FlagsController FlagsController { get; private set; } 
+        public FlagsController FlagsController { get; private set; }
 
+        public string DeathTitle { get; set; } = "No Title";
         private void Awake()
         {
             EventManager = new EventBusManager();
@@ -52,6 +54,14 @@ namespace _Main.Scripts.Managers
         public void LoadPauseScreen() => LoadGameScreen(ScreenType.Pause);
         public void LoadLastScreen() => GameScreenEventCaller.LoadLastScreen();
         private void LoadGameScreen(ScreenType type) => GameScreenEventCaller.EnableScreen(type, EventRequestType.Requested);
+
+        #endregion
+
+        #region Skin Values
+
+        public uint GetStoredCoins() => SkinManager.Instance.GetCoins();
+        public bool TryAddCoins(uint score) => SkinManager.Instance.TryAddCoins(score);
+        public void SaveCoins() => SkinManager.Instance.SaveStoredCoins();
 
         #endregion
 

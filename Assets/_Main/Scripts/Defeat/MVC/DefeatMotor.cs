@@ -9,26 +9,10 @@ namespace _Main.Scripts.Defeat
         private GeneratedId _highScoreId;
         private bool _hasNewHighScore;
         
-        public void ExecuteDisable()
-        {
-            NotifyAll(DefeatObserverMessage.ExecuteDisable);
-        }
-
-        public void StartDisable()
-        {
-            NotifyAll(DefeatObserverMessage.StartDisable);
-        }
-
-        public void Enable()
-        {
-            NotifyAll(DefeatObserverMessage.Enable);
-        }
-        
-        public void LoadData()
-        {
-            NotifyAll(DefeatObserverMessage.LoadData);
-        }
-
+        public void ExecuteDisable() => NotifyAll(DefeatObserverMessage.ExecuteDisable);
+        public void StartDisable() => NotifyAll(DefeatObserverMessage.StartDisable);
+        public void Enable() => NotifyAll(DefeatObserverMessage.Enable);
+        public void LoadData() => NotifyAll(DefeatObserverMessage.LoadData);
         public void LoadScoreData(GeneratedId score, GeneratedId highScore, bool hasNewHigh)
         {
             _scoreId = score;
@@ -38,47 +22,26 @@ namespace _Main.Scripts.Defeat
             NotifyAll(DefeatObserverMessage.InitializeData, _highScoreId,_scoreId,_hasNewHighScore);
         }
         
-        public void SendScore() 
-        {
-            NotifyAll(DefeatObserverMessage.SendScore, _scoreId);   
-        }
-        
-        public void SendHighScore()
-        {
-            NotifyAll(DefeatObserverMessage.SendHighScore, _highScoreId,_hasNewHighScore);
-        }
-
-        public void SendButtons()
-        {
-            NotifyAll(DefeatObserverMessage.SendButtons);
-        }
-
-        public void EnableButtons()
-        {
-            NotifyAll(DefeatObserverMessage.EnableButtons);
-        }
+        public void SendScore() => NotifyAll(DefeatObserverMessage.SendScore, _scoreId);
+        public void SendHighScore() => NotifyAll(DefeatObserverMessage.SendHighScore, _highScoreId,_hasNewHighScore);
+        public void SendButtons() => NotifyAll(DefeatObserverMessage.SendButtons);
+        public void EnableButtons() => NotifyAll(DefeatObserverMessage.EnableButtons);
 
         public void SaveHighScore()
         {
-            if (_hasNewHighScore)
-            {
+            if (_hasNewHighScore) 
                 NotifyAll(DefeatObserverMessage.SaveHighScore);
-            }
         }
 
-        public void SendAd()
-        {
-            NotifyAll(DefeatObserverMessage.SendAds);
-        }
+        public void SendAd() => NotifyAll(DefeatObserverMessage.SendAds);
+        public void RestartGame() => NotifyAll(DefeatObserverMessage.RestartGame);
+        public void LoadMainMenu() => NotifyAll(DefeatObserverMessage.LoadMainMenu);
+        public void SendCoins() => NotifyAll(DefeatObserverMessage.SendCoins);
 
-        public void RestartGame()
-        {
-            NotifyAll(DefeatObserverMessage.RestartGame);
-        }
+        public void CheckForNewCoins()
+            => NotifyAll(DefeatObserverMessage.CheckNewCoins);
 
-        public void LoadMainMenu()
-        {
-            NotifyAll(DefeatObserverMessage.LoadMainMenu);
-        }
+        public void UpdateCoins(uint stored, uint gained) 
+            => NotifyAll(DefeatObserverMessage.UpdateCoins, stored, gained);
     }
 }

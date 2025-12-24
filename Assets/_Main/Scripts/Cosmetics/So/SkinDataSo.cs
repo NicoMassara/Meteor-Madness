@@ -4,7 +4,7 @@ using UnityEngine;
 namespace _Main.Scripts.Cosmetics
 {
     [CreateAssetMenu(fileName = "SO_SkinData_Name", menuName = "Scriptable Objects/Skins/Data", order = 0)]
-    public class SkinDataSo : ScriptableObject, ISkinInformation, ISkinData
+    public class SkinDataSo : ScriptableObject, ISkinInformation, ISkinData, ISkinDeathMessage
     {
         [Header("Type")]
         [SerializeField] private SkinType skinType;
@@ -22,6 +22,7 @@ namespace _Main.Scripts.Cosmetics
         public string NameCode => $"{localizationCode}.Name";
 
         public string DescriptionCode => $"{localizationCode}.Description";
+        public string DeathTitle => $"{localizationCode}.DeathTitle";
         public uint UnlockPrice => unlockPrice;
 
         public EarthSkinData EarthData => earthData;
@@ -31,7 +32,6 @@ namespace _Main.Scripts.Cosmetics
 
 
         public CometSkinData CometData => cometData;
-        
     }
 
     [Serializable]

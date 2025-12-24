@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.CustomId;
+using _Main.Scripts.Managers;
 using _Main.Scripts.Save;
 using _Main.Scripts.SecurityData;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace _Main.Scripts.Cosmetics
         public void Initialize(DataManager.SkinSaveData data)
         {
             _secureId = SecureValueManager.RegisterValue(data.SkinCoins);
+            
         }
 
         #region Public Methods

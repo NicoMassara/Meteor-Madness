@@ -5,8 +5,8 @@ namespace _Main.Scripts.Vibration.Behaviours
 {
     public class EarthVibration : VibrationBehavior<IEarthVibration>
     {
-#if UNITY_ANDROID 
         [SerializeField] private VibrationDataSo collisionData;
+#if UNITY_ANDROID
         
         protected override void Start()
         {
@@ -25,10 +25,15 @@ namespace _Main.Scripts.Vibration.Behaviours
                 });
             };
             
-            ComponentToVibrate.OnDestruction += () =>
+            ComponentToVibrate.OnVibrateDestruction += () =>
             {
                 StopVibration();
                 Vibrate(VibrationDurationType.ExtraShort, VibrationIntensityType.MediumHeavy);
+            };
+            
+            ComponentToVibrate.OnReconstruct += () =>
+            {
+                Vibrate(VibrationDurationType.ExtraShort, VibrationIntensityType.Heavy);
             };
         }
 #endif

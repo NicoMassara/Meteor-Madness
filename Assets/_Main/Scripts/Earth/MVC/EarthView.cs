@@ -47,6 +47,8 @@ namespace _Main.Scripts.Earth
         public event Action OnHealing;
         public event Action OnCollision;
         public event Action OnDestruction;
+        public event Action OnVibrateDestruction;
+        public event Action OnReconstruct;
         public event Action OnPreDestruction;
         public event Action<bool> OnLowHealth;
 
@@ -391,10 +393,12 @@ namespace _Main.Scripts.Earth
                             subscribe: callback => _slicer.OnEndUnite += callback,
                             unsubscribe: callback => _slicer.OnEndUnite -= callback
                         ))
-                        .Then(new InstantAction(()=> OnShow?.Invoke()))
+                        .Then(new InstantAction(() => OnShow?.Invoke()))
+                        .Then(new InstantAction(() => OnReconstruct?.Invoke()))
                         .Then(new WaitFramesAction(3))
-                        .Then(new InstantAction(()=> _slicer.UniteMeshes()))
-                        .Then(new WaitSecondsAction(0.5f));
+                        .Then(new InstantAction(() => _slicer.UniteMeshes()))
+                        .Then(new WaitSecondsAction(0.5f))
+                        .Then(new InstantAction(() => _slicer.SetActiveRenderPlane(false)));
                 }
                 
                 #endregion
@@ -451,6 +455,7 @@ namespace _Main.Scripts.Earth
             _slicer.StartSlicing();
             _isDead = true;
             OnDestruction?.Invoke();
+            OnVibrateDestruction?.Invoke();
         }
 
         private void HandleDeath()

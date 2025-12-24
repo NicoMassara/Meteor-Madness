@@ -19,11 +19,10 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             public event Action OnMainMenuButtonPressed;
             public event Action<int> OnSkinSelected;
-            
             public event Action<SkinType> OnUnlockButtonPressed;
         }
 
-        private class NumberDecrementor
+        private class NumberDecrement
         {
             private readonly float IncreaseTime;
             private float _elapsedTime;
@@ -35,7 +34,7 @@ namespace _Main.Scripts.Cosmetics.MVC
             private readonly Action<uint> _decrementAction;
             private readonly Action _actionOnFinished;
 
-            public NumberDecrementor(float increaseTime, Action<uint> decreaseAction, Action onFinishedAction)
+            public NumberDecrement(float increaseTime, Action<uint> decreaseAction, Action onFinishedAction)
             {
                 IncreaseTime = increaseTime;
                 _decrementAction = decreaseAction;
@@ -86,7 +85,7 @@ namespace _Main.Scripts.Cosmetics.MVC
             }
         }
         
-        private NumberDecrementor _numberDecrementor;
+        private NumberDecrement numberDecrement;
         private SkinButtonCreator _skinButtonController;
         
         // Hack
@@ -105,8 +104,10 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void Awake()
         {
-            _numberDecrementor = new NumberDecrementor(1f, UpdateCoinsText, OnDecrementFinished);
+            numberDecrement = new NumberDecrement(1f, UpdateCoinsText, OnDecrementFinished);
             UIComponents.SetActiveDescriptionPanel(false);
+            UIComponents.SetActiveFirstOpenPanel(false);
+            UIComponents.SetLockedTextRed();
             _skinButtonController = new SkinButtonCreator(()=> Instantiate(UIComponents.SkinSelectButton, UIComponents.ButtonsContainer));
             _skinButtonController.OnSkinSelected += ButtonControllerOnSkinSelectedHandler;
         }
@@ -117,9 +118,9 @@ namespace _Main.Scripts.Cosmetics.MVC
         }
         public void ExecuteUpdate(float deltaTime)
         {
-            if (_numberDecrementor.IsActive)
+            if (numberDecrement.IsActive)
             {
-                _numberDecrementor.Execute(deltaTime);
+                numberDecrement.Execute(deltaTime);
             }
         }
 
@@ -148,8 +149,15 @@ namespace _Main.Scripts.Cosmetics.MVC
                 case CosmeticObserverMessage.FailedToUnlock:
                     UnlockFailedToUnlock();
                     break;
+                
+                // === First Open === //
+                case CosmeticObserverMessage.FirstOpen:
+                    UnlockFirstOpen();
+                    break;
             }
         }
+
+
 
         #region Enable / Disable
 
@@ -201,7 +209,7 @@ namespace _Main.Scripts.Cosmetics.MVC
             UIComponents.DisableUnlockButton();
             UIComponents.RemoveScrollListener(TriggerOnScroll);
             
-            _numberDecrementor.SetStartValue(_lastCoins, SkinManager.Instance.GetCoins());
+            numberDecrement.SetStartValue(_lastCoins, SkinManager.Instance.GetCoins());
         }
 
         private void UnlockFailedToUnlock()
@@ -217,6 +225,25 @@ namespace _Main.Scripts.Cosmetics.MVC
                 UIComponents.SetLockedText("Cosmetic.Locked");
                 UIComponents.EnableUnlockButton();
             }));
+        }
+
+        #endregion
+
+        #region FirstOpen
+
+        private void UnlockFirstOpen()
+        {
+            UIComponents.SetActiveFirstOpenPanel(true);
+            UIComponents.SetInteractiveCloseFirstOpenButton(false);
+            UIComponents.AddListenerToCloseFirstOpenButton(OnFirstPanelClosed);
+            TimerManager.Add(new TimerData(1f, 
+                () => UIComponents.SetInteractiveCloseFirstOpenButton(true)));
+        }
+
+        private void OnFirstPanelClosed()
+        {
+            OnSkinSelected?.Invoke(-1);
+            UIComponents.SetActiveFirstOpenPanel(false);
         }
 
         #endregion
@@ -246,8 +273,10 @@ namespace _Main.Scripts.Cosmetics.MVC
         }
 
 
-        private void UpdateCoinsText(uint coinsAmount) 
-            => UIComponents.SetCoinsText("Cosmetic.StoredCoins", coinsAmount);
+        private void UpdateCoinsText(uint coinsAmount)
+        {
+            UIComponents.SetCoinsText("Cosmetic.StoredCoins", coinsAmount);
+        }
 
         private void UpdateRequirementText(SkinType skinType)
         {

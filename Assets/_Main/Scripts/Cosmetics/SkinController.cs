@@ -80,10 +80,12 @@ namespace _Main.Scripts.Cosmetics
 
         #region Public Methods
 
-        public ISkinInformation GetSkinInformationByType(SkinType skinType)
-        {
-            return _assetsLoader.Contains(skinType) ? _assetsLoader.GetData(skinType) : null;
-        }
+        public ISkinInformation GetSkinInformationByType(SkinType skinType) 
+            => _assetsLoader.Contains(skinType) ? _assetsLoader.GetData(skinType) : null;
+
+        public ISkinDeathMessage GetSkinDeathMessageByType(SkinType skinType) 
+            => _assetsLoader.Contains(skinType) ? _assetsLoader.GetData(skinType) : null;
+
 
         public SkinType GetCurrentSkinType()
         {

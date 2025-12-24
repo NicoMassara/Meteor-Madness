@@ -24,11 +24,21 @@ namespace _Main.Scripts.Vibration
 
         private void Start()
         {
+            
+#if UNITY_EDITOR
+            _canVibrate = true;
+#else
             _canVibrate = SettingsManager.Instance.GetVibration();
+#endif
             
             SettingsManager.Instance.OnVibrationChanged += (value) =>
             {
+#if UNITY_EDITOR
+                SetVibration(true);
+#else
                 SetVibration(value);
+#endif
+
             };
 
             _vibrationController.OnVibrate += OnVibrate;
@@ -40,6 +50,9 @@ namespace _Main.Scripts.Vibration
             if(_canVibrate == false) return;
             
             _vibrationController.Vibrate(data.Duration, data.Intensity);
+#if UNITY_EDITOR
+            Debug.Log($"Vibrating : Duration - {data.Duration}, Intensity - {data.Intensity}");
+#endif
         }
 
         public void Vibrate(VibrationDurationType duration, VibrationIntensityType intensity)
@@ -47,6 +60,10 @@ namespace _Main.Scripts.Vibration
             if(_canVibrate == false) return;
             
             _vibrationController.Vibrate(VibrationTools.GetDuration(duration), VibrationTools.GetIntensity(intensity));
+            
+#if UNITY_EDITOR
+            Debug.Log($"Vibrating : Duration - {duration}, Intensity - {intensity}");
+#endif
         }
 
         public void Vibrate(VibrationType type)
@@ -56,6 +73,9 @@ namespace _Main.Scripts.Vibration
 
         public void CancelVibration()
         {
+#if UNITY_EDITOR
+            Debug.Log("Vibration cancelled");
+#endif
             _vibrationController.CancelVibration();
         }
 

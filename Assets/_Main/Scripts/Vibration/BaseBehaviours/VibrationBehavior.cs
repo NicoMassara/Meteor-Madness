@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿using System;
+using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.MySettings;
 using _Main.Scripts.GameConfig.Game;
 using UnityEngine;
@@ -9,41 +10,34 @@ namespace _Main.Scripts.Vibration
     public abstract class VibrationBehavior<T> : MonoBehaviour
     where T : IVibrationComponent
     {
-#if UNITY_ANDROID 
+#if UNITY_ANDROID
         private VibrationManager _vibration;
-
-        private bool _canVibrate;
+        
         protected T ComponentToVibrate { get; private set; }
         
         protected bool IsVibrating => _vibration.IsVibrating;
 
         protected virtual void Awake()
         {
+#if !UNITY_EDITOR
             if (SystemInfo.deviceType == DeviceType.Desktop)
             {
                 enabled = false;
             }
+#endif
             
-            ComponentToVibrate = GetComponent<T>();
         }
 
         protected virtual void Start()
         {
+            ComponentToVibrate = GetComponent<T>();
             _vibration = VibrationManager.Instance;
-            SettingsManager.Instance.OnVibrationChanged += Settings_OnVibrationChangedHandler;
-            _canVibrate = SettingsManager.Instance.GetVibration();
-        }
-
-        private void OnDestroy()
-        {
-            SettingsManager.Instance.OnVibrationChanged -= Settings_OnVibrationChangedHandler;
         }
 
         #region Vibration Actions
 
         protected virtual void Vibrate(VibrationDataSo soData)
         {
-            if(_canVibrate == false) return;
             if (soData == null)
             {
                 Debug.LogWarning($"Vibration data is null in {gameObject.name}");
@@ -55,7 +49,6 @@ namespace _Main.Scripts.Vibration
 
         public void Vibrate(VibrationData data)
         {
-            if(_canVibrate == false) return;
             if (data == null)
             {
                 Debug.LogWarning($"Vibration data is null in {gameObject.name}");
@@ -67,15 +60,11 @@ namespace _Main.Scripts.Vibration
 
         public void Vibrate(VibrationDurationType duration, VibrationIntensityType intensity)
         {
-            if(_canVibrate == false) return;
-            
             _vibration.Vibrate(duration, intensity);
         }
 
         public void Vibrate(VibrationType type)
         {
-            if(_canVibrate == false) return;
-            
             _vibration.Vibrate(type);
         }
 
@@ -85,12 +74,6 @@ namespace _Main.Scripts.Vibration
         }
 
         #endregion
-        
-        
-        private void Settings_OnVibrationChangedHandler(bool canVibrate)
-        {
-            _canVibrate = canVibrate;
-        }
 #endif
     }
 }

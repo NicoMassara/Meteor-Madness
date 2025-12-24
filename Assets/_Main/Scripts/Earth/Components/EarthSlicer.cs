@@ -44,6 +44,7 @@ namespace _Main.Scripts.Earth
         {
             SkinManager.Instance.OnSkinChanged += SkinManager_OnSkinChanged;
             SetSliceType(GetSliceType(SkinManager.Instance.GetCurrentSkinType()));
+            SetActiveRenderPlane(false);
         }
         
         public void ExecuteUpdate(float deltaTime)
@@ -60,6 +61,7 @@ namespace _Main.Scripts.Earth
 
         public void StartSlicing()
         {
+            SetActiveRenderPlane(false);
             _moveTargetDistance = GetSliceDistance();
             var sliceTimes = GameConfigManager.Instance.GetGameplayData().EarthTimeData.Slice;
             _moveTargetTime = sliceTimes.MoveSlices;
@@ -213,6 +215,11 @@ namespace _Main.Scripts.Earth
         private void SetActiveContainer(bool isActive)
         {
             sliceContainer.SetActive(isActive);
+        }
+
+        public void SetActiveRenderPlane(bool isActive)
+        {
+            slicePlane.SetActive(isActive);
         }
 
         private void DestroyActiveSlices()

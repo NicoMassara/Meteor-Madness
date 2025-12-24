@@ -1,11 +1,13 @@
-﻿{ 
+﻿{
   "Default" : {
-    "Name" : "Earth",
-    "Description" : "Home"
+    "Name" : "La Tierra",
+    "Description" : "La Tierra, nuestra casa",
+    "DeathTitle" : "La Humanidad se acabo!"
   },
 
   "Pizza" : {
-    "Name" : "Pizza",
-    "Description" : "Best pizza ever!"
+    "Name" : "Pizza Con Piña",
+    "Description" : "La mejor pizza! Verdad?",
+    "DeathTitle" : "La Pizza esta lista!"
   }
 }

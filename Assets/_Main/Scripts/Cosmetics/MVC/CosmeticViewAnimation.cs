@@ -11,7 +11,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         CosmeticViewAnimation.ICosmeticViewAnimation
     {
         
-        public interface ICosmeticViewAnimation : IBaseViewAnimation
+        public interface ICosmeticViewAnimation : BaseViewAnimation<CosmeticUiAnimationSelector,CosmeticUiAnimationComponents>.IBaseViewAnimation
         {
             
         }

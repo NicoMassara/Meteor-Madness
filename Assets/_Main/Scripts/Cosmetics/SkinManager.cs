@@ -4,6 +4,7 @@ using _Main.Scripts.MyComponents;
 using _Main.Scripts.Save;
 using UnityEngine;
 using _Main.Scripts.GlobalEvents;
+using _Main.Scripts.Managers;
 
 namespace _Main.Scripts.Cosmetics
 {
@@ -60,15 +61,22 @@ namespace _Main.Scripts.Cosmetics
         {
             var storedSkin = _skinController.GetCurrentSkinType();
 
+            var deathTitle = "";
+
             if (_lockedSkinController.GetIsLocked((int)storedSkin) == false && 
                 _skinController.TrySetCurrentSkinType(storedSkin))
             {
                 OnSkinChanged?.Invoke(storedSkin);
+                deathTitle = _skinController.GetSkinDeathMessageByType(storedSkin).DeathTitle;
             }
             else
             {
                 OnSkinChanged?.Invoke(SkinType.Default);
+                deathTitle = _skinController.GetSkinDeathMessageByType(SkinType.Default).DeathTitle;
             }
+            
+            GameManager.Instance.DeathTitle = deathTitle;
+            
             
             SkinEvents.TriggerOnSaveLoaded();
         }
@@ -118,6 +126,10 @@ namespace _Main.Scripts.Cosmetics
             }
 
             var data = DataManager.Instance.GetData<DataManager.SkinSaveData>(DataManager.SaveDataType.Skin);
+
+            
+            var title = _skinController.GetSkinDeathMessageByType(_skinController.GetCurrentSkinType()).DeathTitle;
+            GameManager.Instance.DeathTitle = title;
             
             _currentSkinPreview = SkinType.None;
 
@@ -143,6 +155,7 @@ namespace _Main.Scripts.Cosmetics
         public SkinType GetCurrentSkinType() => _skinController.GetCurrentSkinType();
         public bool GetHasData(SkinType skinType) => _skinController.GetHasData(skinType);
         public ISkinInformation GetSkinInformationByType(SkinType skinType) => _skinController.GetSkinInformationByType(skinType);
+        public ISkinDeathMessage GetSkinDeathMessageByType(SkinType skinType) => _skinController.GetSkinDeathMessageByType(skinType);
         
         // MODIFY - This functions should return the current skin data
         public EarthSkinData GetEarthData(SkinType skinType) => _skinController.GetEarthData(skinType);

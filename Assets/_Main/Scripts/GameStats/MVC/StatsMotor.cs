@@ -10,5 +10,7 @@ namespace _Main.Scripts.GameStats
         public void ExecuteDisable() => NotifyAll(StatsObserverMessage.ExecuteDisable);
         public void OpenMainMenu() => NotifyAll(StatsObserverMessage.MainMenu);
         public void LoadTextData(StatsData data) => NotifyAll(StatsObserverMessage.LoadTextData,data);
+        public void TriggerFirstOpen() => NotifyAll(StatsObserverMessage.FirstOpen);
+        public void PanelOpened() => NotifyAll(StatsObserverMessage.Opened);
     }
 }

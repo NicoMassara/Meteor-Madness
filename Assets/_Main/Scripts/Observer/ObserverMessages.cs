@@ -58,6 +58,8 @@
         public const ulong UpdateStreak = 0xA2025;
         public const ulong AbilityActive = 0xA2026;
         public const ulong GameInterrupted = 0xA2027;
+        public const ulong CheatDetected = 0xA2028;
+        public const ulong NotifyStreak = 0xA2029;
 
         //
         public const ulong Debug_MeteorDeflect = 0xB2001;
@@ -154,6 +156,7 @@
         public const ulong FirstGame = 0xA7014;
         public const ulong LoreClosed = 0xA7015;
         public const ulong Stats = 0xA7016;
+        public const ulong Empty1 = 0xA7017;
     }
 
     public struct CosmeticObserverMessage
@@ -169,7 +172,7 @@
         public const ulong TryUnlockSkin = 0xA8009;
         public const ulong Unlocked = 0xA8010;
         public const ulong FailedToUnlock = 0xA8011;
-        public const ulong Empty10 = 0xA8012;
+        public const ulong FirstOpen = 0xA8012;
     }
 
     public struct InputsUIObserverMessage
@@ -213,19 +216,35 @@
     
     public struct DefeatObserverMessage
     {
-        public const ulong ExecuteDisable  = 0xA1201;
-        public const ulong StartDisable  = 0xA1202;
-        public const ulong InitializeData  = 0xA1203;
-        public const ulong Enable  = 0xA1204;
-        public const ulong LoadData  = 0xA1205;
-        public const ulong SendScore  = 0xA1206;
-        public const ulong SendHighScore  = 0xA1207;
-        public const ulong SendButtons  = 0xA1208;
-        public const ulong EnableButtons  = 0xA1209;
-        public const ulong SaveHighScore = 0xA120A;
-        public const ulong SendAds = 0xA120B;
-        public const ulong RestartGame = 0xA120C;
-        public const ulong LoadMainMenu = 0xA120D;
+        public const ulong ExecuteDisable   = 0xA1201;
+        public const ulong StartDisable     = 0xA1202;
+        public const ulong InitializeData   = 0xA1203;
+        public const ulong Enable           = 0xA1204;
+        public const ulong LoadData         = 0xA1205;
+        public const ulong SendScore        = 0xA1206;
+        public const ulong SendHighScore    = 0xA1207;
+        public const ulong SendButtons      = 0xA1208;
+        public const ulong EnableButtons    = 0xA1209;
+        public const ulong SaveHighScore    = 0xA120A;
+        public const ulong SendAds          = 0xA120B;
+        public const ulong RestartGame      = 0xA120C;
+        public const ulong LoadMainMenu     = 0xA120D;
+        public const ulong SendCoins        = 0xA120F;
+        public const ulong CheckNewCoins    = 0xA1210;
+        public const ulong UpdateCoins      = 0xA1211;
+        public const ulong Empty3           = 0xA1212;
+        public const ulong Empty4           = 0xA1213;
+        public const ulong Empty5           = 0xA1214;
+        public const ulong Empty6           = 0xA1215;
+        public const ulong Empty7           = 0xA1216;
+        public const ulong Empty8           = 0xA1217;
+        public const ulong Empty9           = 0xA1218;
+        public const ulong Empty10          = 0xA1219;
+        public const ulong Empty11          = 0xA121A;
+        public const ulong Empty12          = 0xA121B;
+        public const ulong Empty13          = 0xA121C;
+        public const ulong Empty14          = 0xA121D;
+        public const ulong Empty15          = 0xA121E;
     }
     
     public struct PauseObserverMessage
@@ -250,8 +269,8 @@
         public const ulong ExecuteDisable  = 0xA1404;
         public const ulong MainMenu  = 0xA1405;
         public const ulong LoadTextData  = 0xA1406;
-        public const ulong Empty7  = 0xA1407;
-        public const ulong Empty8  = 0xA1408;
+        public const ulong FirstOpen  = 0xA1407;
+        public const ulong Opened  = 0xA1408;
         public const ulong Empty9  = 0xA1409;
         public const ulong Empty10 = 0xA140A;
     }

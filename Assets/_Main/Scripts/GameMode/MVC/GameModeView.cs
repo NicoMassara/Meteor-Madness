@@ -219,6 +219,7 @@ namespace _Main.Scripts.GameMode
         
         private void HandleStartGameplay()
         {
+            GameManager.Instance.FlagsController.FlipHasPlayed();
             OnGameStarted?.Invoke();
             EarthEventCaller.EnableDamage();
             AbilitiesEventCaller.Enable();

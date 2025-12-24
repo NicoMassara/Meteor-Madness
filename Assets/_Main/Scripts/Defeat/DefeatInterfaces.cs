@@ -23,10 +23,12 @@ namespace _Main.Scripts.Defeat
         public AnimationHelper.Direction CurrentScoreOffscreenPosition { get; }
         public AnimationHelper.Direction HighScoreOffscreenPosition { get; }
         public AnimationHelper.Direction TitleOffscreenPosition { get; }
+        public AnimationHelper.Direction CoinsOffscreenPosition { get; }
         public AnimationHelper.Direction ButtonsOffscreenPosition { get; }
         public float FadeDelay { get; }
         public float BackgroundFadeDuration { get; }
         public Vector2 ButtonsOffScreenOffset { get; }
+        public Vector2 CoinsOffScreenOffset { get; }
         public Vector2 TitleOffScreenOffset { get; }
     }
     public interface ICurrentScoreIncrement : IUiAnimationData
@@ -60,5 +62,11 @@ namespace _Main.Scripts.Defeat
         public float FinishDelay { get; }
     }
 
-
+    public interface ICoinsOpen : IUiAnimationData
+    {
+        public AnimationHelper.Direction OffscreenPosition { get; }
+        public Vector2 OffscreenOffset { get; }
+        public float MoveDuration { get; }
+        public float FinishDelay { get; }
+    }
 }

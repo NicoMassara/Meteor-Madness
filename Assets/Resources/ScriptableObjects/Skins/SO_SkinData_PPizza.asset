@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skinType: 2
   localizationCode: Cosmetic.SkinData.Pizza
-  unlockPrice: 100
+  unlockPrice: 10
   earthData:
     material: {fileID: 2100000, guid: c27fd55e4bb0922479bacb909b36128d, type: 2}
     scaleOffsetX: 3.5

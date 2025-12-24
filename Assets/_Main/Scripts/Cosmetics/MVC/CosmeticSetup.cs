@@ -21,7 +21,6 @@ namespace _Main.Scripts.Cosmetics.MVC
             _motor = new CosmeticMotor();
             _controller = new CosmeticController(_motor);
             
-            
             var view = GetComponent<CosmeticView>();
             var ui = GetComponent<CosmeticUIView>();
             var anim = GetComponent<CosmeticViewAnimation>();
@@ -61,6 +60,7 @@ namespace _Main.Scripts.Cosmetics.MVC
             _view.OnInitialized += ()=> _controller.TransitionToEnable();
             _view.OnSkinUnlocked += (value)=> _controller.SkinUnlocked((int)value);
             _view.OnFailedToUnlock += ()=> _controller.FailedToUnlock();
+            _view.OnFirstOpen += () => _controller.OpenFirstPanel();
             //
             _ui.OnMainMenuButtonPressed += () => { _controller.TriggerMainMenu();};
             _ui.OnSkinSelected += (value) => _controller.SkinSelected(value);

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace _Main.Scripts.Defeat
 {
-    [AddComponentMenu("_Main/Defeat/UI Selector")]
+    [AddComponentMenu("_Main/Defeat/UI Anim Selector")]
     public class DefeatUiAnimationSelector : UiComponentsSelector<DefeatUiAnimationComponents> { }
     
     [Serializable]
@@ -15,6 +15,7 @@ namespace _Main.Scripts.Defeat
         DefeatUiAnimationComponents.IScore,
         DefeatUiAnimationComponents.IMainPanel,
         DefeatUiAnimationComponents.IHighScore,
+        DefeatUiAnimationComponents.ICoins,
         DefeatUiAnimationComponents.IButtons
     {
         public interface IMainPanel : IUiAnimationComponent
@@ -25,6 +26,7 @@ namespace _Main.Scripts.Defeat
             public RectTransform Score { get; }
             public RectTransform HighScorePanel { get; }
             public RectTransform HighScoreText { get; }
+            public RectTransform CoinsPanel { get; }
             public RectTransform ButtonsPanel { get; }
             public RectTransform SubHighScoreText { get;}
         }
@@ -41,6 +43,11 @@ namespace _Main.Scripts.Defeat
             public RectTransform SubHighScoreText { get; }
         }
         
+        public interface ICoins : IUiAnimationComponent
+        {
+            public RectTransform CoinsPanel { get; }
+        }
+    
         public interface IButtons : IUiAnimationComponent
         {
             public RectTransform ButtonsPanel { get; }
@@ -54,6 +61,7 @@ namespace _Main.Scripts.Defeat
         [SerializeField] private RectTransform highScoreText;
         [SerializeField] private RectTransform highScorePanel;
         [SerializeField] private RectTransform subHighScoreText;
+        [SerializeField] private RectTransform coinsPanel;
         [SerializeField] private RectTransform buttonsPanel;
         [Header("Images")]
         [SerializeField] private Image backgroundImage;
@@ -65,16 +73,8 @@ namespace _Main.Scripts.Defeat
         public RectTransform HighScorePanel => highScorePanel;
         public RectTransform HighScoreText => highScoreText;
         public RectTransform SubHighScoreText => subHighScoreText;
+        public RectTransform CoinsPanel => coinsPanel;
         public RectTransform ButtonsPanel => buttonsPanel;
         
-        // Shared
-        
-        // IMainPanel
-        
-        // IScore
-        
-        // IHighScore
-
-        // IButtons
     }
 }

@@ -137,7 +137,7 @@ namespace _Main.Scripts.Tutorial.MVC
 
         #endregion
 
-        #region Enable Disable
+        #region Enable / Disable
 
         private void HandleEnable()
         {
@@ -164,6 +164,7 @@ namespace _Main.Scripts.Tutorial.MVC
             AbilitiesEventCaller.Disable();
             ShieldEventCaller.Disable();
             CameraEventCaller.ZoomIn();
+            GameManager.Instance.FlagsController.FlipHasPlayed();
             OnTutorialFinished?.Invoke();
         }
 

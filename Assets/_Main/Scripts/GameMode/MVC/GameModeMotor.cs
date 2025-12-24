@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Observer;
+﻿using System;
+using _Main.Scripts.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.GameMode
@@ -16,6 +17,38 @@ namespace _Main.Scripts.GameMode
 
         private readonly GameplayStats _stats;
 
+        private class StreakMilestoneNotifier
+        {
+            private int _nextMilestone;
+            private readonly int _step = 10;
+            
+            public event Action<int> OnMilestoneReached;
+            
+            public void UpdateStreak(int current)
+            {
+                if (current == 0)
+                {
+                    ResetMilestone();
+                    return;
+                }
+                
+                if(current == 1) return;
+
+                if (current >= _nextMilestone)
+                {
+                    _nextMilestone += _step;
+                    OnMilestoneReached?.Invoke(current);
+                }
+            }
+
+            public void ResetMilestone()
+            {
+                _nextMilestone = _step;
+            }
+        }
+        
+        private StreakMilestoneNotifier _streakNotifier;
+
         public GameModeMotor(int[] levelStreakAmount)
         {
             _levelController = new(levelStreakAmount);
@@ -24,8 +57,10 @@ namespace _Main.Scripts.GameMode
             _stats = new GameplayStats();
             _stats.OnCheatDetected += OnCheatDetectedHandler;
             _stats.OnStreakUpdated += OnStreakUpdated;
+            
+            _streakNotifier = new StreakMilestoneNotifier();
+            _streakNotifier.OnMilestoneReached += OnStreakMilestoneReached;
         }
-
         private void RestartValues()
         {
             _hasDoublePoints = false;
@@ -236,15 +271,11 @@ namespace _Main.Scripts.GameMode
 
         #endregion
         
-        public void NotifyAbilityActive(AbilityType abilityType)
-        {
-            NotifyAll(GameModeObserverMessage.AbilityActive, abilityType);
-        }
-        
-        private void OnCheatDetectedHandler()
-        {
-            //NotifyAll(GameModeObserverMessage.CheatDetected);
-        }
+        public void NotifyAbilityActive(AbilityType abilityType) 
+            => NotifyAll(GameModeObserverMessage.AbilityActive, abilityType);
+
+        private void OnCheatDetectedHandler() 
+            => NotifyAll(GameModeObserverMessage.CheatDetected);
 
         #region Stats
 
@@ -256,10 +287,17 @@ namespace _Main.Scripts.GameMode
         
         private void OnStreakUpdated(uint streak)
         {
+            _streakNotifier.UpdateStreak((int)streak);
+            
             NotifyAll(GameModeObserverMessage.UpdateStreak, streak);
         }
+        
+        private void OnStreakMilestoneReached(int streak) 
+            => NotifyAll(GameModeObserverMessage.NotifyStreak, streak);
 
         #endregion
+        
+        
 
     }
 }

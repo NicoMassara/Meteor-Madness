@@ -14,5 +14,6 @@ namespace _Main.Scripts.Cosmetics.MVC
         public void TryUnlockSkin(int skinIndex) => NotifyAll(CosmeticObserverMessage.TryUnlockSkin, skinIndex);
         public void SkinUnlocked(int skinIndex) => NotifyAll(CosmeticObserverMessage.Unlocked, skinIndex);
         public void FailedToUnlock() => NotifyAll(CosmeticObserverMessage.FailedToUnlock);
+        public void OpenFirstPanel() => NotifyAll(CosmeticObserverMessage.FirstOpen);
     }
 }

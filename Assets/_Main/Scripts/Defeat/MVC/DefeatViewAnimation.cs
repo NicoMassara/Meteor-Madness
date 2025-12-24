@@ -22,6 +22,7 @@ namespace _Main.Scripts.Defeat
         {
             public event Action OnScoreFinished;
             public event Action OnHighScoreFinished;
+            public event Action OnCoinsFinished;
             public event Action OnButtonsFinished;
         }
 
@@ -54,6 +55,9 @@ namespace _Main.Scripts.Defeat
                 
                 // Buttons
                 UIComponents.ButtonsPanel.gameObject.SetActive(false);
+                
+                // Coins
+                UIComponents.CoinsPanel.gameObject.SetActive(false);
             }
         }
 
@@ -113,6 +117,7 @@ namespace _Main.Scripts.Defeat
             private readonly AnimationHelper.PanelPosition _highScorePanel;
             private readonly AnimationHelper.PanelPosition _titlePanel;
             private readonly AnimationHelper.PanelPosition _buttonsPanel;
+            private readonly AnimationHelper.PanelPosition _coinsPanel;
             
             public Animation_Main_Close(DefeatUiAnimationComponents.IMainPanel components, IPanelClose animationData)
                 : base(components, animationData)
@@ -128,12 +133,16 @@ namespace _Main.Scripts.Defeat
                 
                 _buttonsPanel = new AnimationHelper.PanelPosition(UIComponents.ButtonsPanel, 
                     AnimationData.ButtonsOffscreenPosition, AnimationData.ButtonsOffScreenOffset);
+                
+                _coinsPanel = new AnimationHelper.PanelPosition(UIComponents.CoinsPanel, 
+                    AnimationData.CoinsOffscreenPosition, AnimationData.CoinsOffScreenOffset);
             }
 
             protected override void RestartValues()
             {
                 UIComponents.Title.anchoredPosition = _titlePanel.StartPos;
                 UIComponents.ButtonsPanel.anchoredPosition = _buttonsPanel.StartPos;
+                UIComponents.CoinsPanel.anchoredPosition = _coinsPanel.StartPos;
             }
 
             protected override Sequence CreateAnimation()
@@ -146,8 +155,7 @@ namespace _Main.Scripts.Defeat
                         .Join(UIComponents.HighScorePanel.DOAnchorPos(_highScorePanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.Title.DOAnchorPos(_titlePanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.ButtonsPanel.DOAnchorPos(_buttonsPanel.OffScreenPos, movementDuration))
-                        //.AppendInterval(AnimationData.fadeDelay)
-                        //.Append(UIComponents.BackgroundImage.DOFade(0, AnimationData.backgroundFadeDuration))
+                        .Join(UIComponents.CoinsPanel.DOAnchorPos(_coinsPanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.BackgroundImage.DOFade(0, AnimationData.BackgroundFadeDuration))
                         .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(false))
                     ;
@@ -285,6 +293,35 @@ namespace _Main.Scripts.Defeat
         }
         
         #endregion
+
+        #region Coins
+
+        private class Animation_Coins_OpenPanel : SequenceUIAnimator<DefeatUiAnimationComponents.ICoins,ICoinsOpen>
+        {
+            private readonly AnimationHelper.PanelPosition _panelPosition;
+
+            public Animation_Coins_OpenPanel(DefeatUiAnimationComponents.ICoins components, ICoinsOpen animationData)
+                : base(components, animationData)
+            {
+                _panelPosition = new AnimationHelper.PanelPosition(UIComponents.CoinsPanel, AnimationData.OffscreenPosition, AnimationData.OffscreenOffset);
+            }
+
+            protected override void Initialize()
+            {
+                UIComponents.CoinsPanel.anchoredPosition = _panelPosition.OffScreenPos;
+            }
+
+            protected override Sequence CreateAnimation()
+            {
+                return DOTween.Sequence()
+                        .AppendCallback(()=> UIComponents.CoinsPanel.gameObject.SetActive(true))
+                        .Append(UIComponents.CoinsPanel.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
+                        .AppendInterval(AnimationData.FinishDelay)
+                    ;
+            }
+        }
+
+        #endregion
         
         #endregion
 
@@ -297,6 +334,8 @@ namespace _Main.Scripts.Defeat
         private IUIAnimator _animationScoreHigh;
         //
         private IUIAnimator _animationButtonsOpen;
+        //
+        private IUIAnimator _animationOpenCoinsPanel;
         
         
         private string _currentScoreLocalizedText;
@@ -307,6 +346,7 @@ namespace _Main.Scripts.Defeat
         public event Action OnScoreFinished;
         public event Action OnHighScoreFinished;
         public event Action OnButtonsFinished;
+        public event Action OnCoinsFinished;
 
         #endregion
         
@@ -330,6 +370,8 @@ namespace _Main.Scripts.Defeat
             _animationScoreCurrent = new Animation_CurrentScore_Increment(UIComponents,animationData.CurrentScoreData,HandleCurrentScoreText);
             //
             _animationScoreHigh = new Animation_HighScore_Increment(UIComponents,animationData.HighScoreData,HandleHighScoreText);
+            //
+            _animationOpenCoinsPanel = new Animation_Coins_OpenPanel(UIComponents, animationData.CoinsOpenData);
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -342,6 +384,10 @@ namespace _Main.Scripts.Defeat
                     break;
                 case DefeatObserverMessage.SendHighScore:
                     HandleSendHighScore((GeneratedId)args[0],(bool)args[1]);
+                    break;
+                
+                case DefeatObserverMessage.SendCoins:
+                    HandleSendCoins();
                     break;
                 
                 //=== Enable / Disable ===
@@ -362,7 +408,7 @@ namespace _Main.Scripts.Defeat
                     break;
             }
         }
-
+        
         private void HandleInitializeData()
         {
             _animationInitializer.InitializeValues();
@@ -462,6 +508,15 @@ namespace _Main.Scripts.Defeat
         {
             var instance = GameConfigManager.Instance;
             return instance ? GameConfigManager.Instance.GetGameplayData().PointsMultiplier : 500;
+        }
+
+        #endregion
+
+        #region Coins
+
+        private void HandleSendCoins()
+        {
+            PlayAnimation(_animationOpenCoinsPanel, OnCoinsFinished);
         }
 
         #endregion

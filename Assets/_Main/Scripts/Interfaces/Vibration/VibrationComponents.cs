@@ -27,6 +27,11 @@ namespace _Main.Scripts.Interfaces.Vibration
         public event Action OnRestartButtonPressed;
     }
     
+    public interface IDefeatAnimationVibration : IVibrationComponent
+    {
+
+    }
+    
     //=== Ability ===//
     
     public interface IAbilityVibration : IVibrationComponent
@@ -42,7 +47,9 @@ namespace _Main.Scripts.Interfaces.Vibration
     {
         public event Action OnPreDestruction;
         public event Action OnCollision;
-        public event Action OnDestruction;
+        public event Action OnVibrateDestruction;
+        public event Action OnReconstruct;
+        
     }
     
     //=== GameMode ===//
@@ -118,6 +125,7 @@ namespace _Main.Scripts.Interfaces.Vibration
     public interface IStatsUIVibration : IVibrationComponent
     {
         public event Action OnBackButtonPressed; 
+        public event Action OnCloseFirstButtonPressed;
     }
     
 }

@@ -65,6 +65,8 @@ namespace _Main.Scripts.GameMode
                     new AnimationHelper.PanelPosition(UIComponents.PauseButton,
                         AnimationData.PauseOffscreenPos,
                         AnimationData.PauseOffset);
+
+                UIComponents.GameplayPanel.gameObject.SetActive(false);
             }
 
             protected override void Initialize()
@@ -97,11 +99,12 @@ namespace _Main.Scripts.GameMode
                 _pausePanel =
                     new AnimationHelper.PanelPosition(UIComponents.PauseButton, AnimationData.PauseOffscreenPos, AnimationData.PauseOffset);
             }
+            
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.ScorePanel.DOAnchorPos(_scorePanel.OffScreenPos, AnimationData.MovementDuration))
+                    .Append(UIComponents.ScorePanel.DOAnchorPos(_scorePanel.StartPos, AnimationData.MovementDuration))
                     .Join(UIComponents.PauseButton.DOAnchorPos(_pausePanel.OffScreenPos, AnimationData.MovementDuration))
                     .AppendInterval(AnimationData.FinishDelay)
                     .AppendCallback(() => UIComponents.GameplayPanel.gameObject.SetActive(false));
@@ -144,6 +147,37 @@ namespace _Main.Scripts.GameMode
                         .SetEase(Ease.InOutSine)
                         .SetLoops(AnimationData.Loops, LoopType.Yoyo)
                     ;
+            }
+        }
+        
+        private class Animation_Streak_Notify : SequenceUIAnimator<GameModeUIAnimationComponents.INotifyPanel, IStreakNotify>
+        {
+            private readonly AnimationHelper.PanelPosition _startNotifyPanel;
+            private readonly AnimationHelper.PanelPosition _endNotifyPanel;
+
+            public Animation_Streak_Notify(GameModeUIAnimationComponents.INotifyPanel components, IStreakNotify animationData)
+                : base(components, animationData)
+            {
+                _startNotifyPanel =
+                    new AnimationHelper.PanelPosition(UIComponents.NotifyPanel, AnimationData.StartPosition, AnimationData.StartOffset);
+                _endNotifyPanel =
+                    new AnimationHelper.PanelPosition(UIComponents.NotifyPanel, AnimationData.EndPosition, AnimationData.EndOffset);
+                UIComponents.NotifyPanel.gameObject.SetActive(false);
+            }
+
+            protected override void Initialize()
+            {
+                UIComponents.NotifyPanel.anchoredPosition = _startNotifyPanel.OffScreenPos;
+            }
+
+            protected override Sequence CreateAnimation()
+            {
+                return DOTween.Sequence()
+                    .AppendCallback(() => UIComponents.NotifyPanel.gameObject.SetActive(true))
+                    .Append(UIComponents.NotifyPanel.DOAnchorPos(_startNotifyPanel.StartPos, AnimationData.MovementDuration))
+                    .AppendInterval(AnimationData.StopDuration)
+                    .Append(UIComponents.NotifyPanel.DOAnchorPos(_endNotifyPanel.OffScreenPos, AnimationData.MovementDuration))
+                    .AppendCallback(() => UIComponents.NotifyPanel.gameObject.SetActive(false));
             }
         }
 
@@ -226,6 +260,7 @@ namespace _Main.Scripts.GameMode
         private IUIAnimator _animationUiClose;
         private IUIAnimator _animationFinishAddingScore;
         private IUIAnimator _animationStreakFailed;
+        private IUIAnimator _animationStreakNotify;
 
         private uint _lastStreak;
             
@@ -246,6 +281,7 @@ namespace _Main.Scripts.GameMode
             _animationFinishAddingScore = new Animation_Score_FinishAdding(UIComponents, animData.ScoreFinishAddingData);
             //
             _animationStreakFailed = new Animation_Streak_Failed(UIComponents, animData.StreakFailedData);
+            _animationStreakNotify = new Animation_Streak_Notify(UIComponents, animData.StreakNotifyData);
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -283,7 +319,17 @@ namespace _Main.Scripts.GameMode
                 case GameModeObserverMessage.UpdateStreak:
                     HandleUpdateStreak((uint)args[0]);
                     break;
+                case GameModeObserverMessage.NotifyStreak:
+                    HandleNotifyStreak();
+                    break;
+                
+                
             }
+        }
+
+        private void HandleNotifyStreak()
+        {
+            PlayAnimation(_animationStreakNotify);
         }
 
         private void HandleUpdateStreak(uint amount)

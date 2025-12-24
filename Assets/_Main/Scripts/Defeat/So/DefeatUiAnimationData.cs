@@ -50,6 +50,7 @@ namespace _Main.Scripts.Defeat.So
             public AnimationHelper.Direction highScoreOffscreenPosition = AnimationHelper.Direction.UpLeft;
             public AnimationHelper.Direction titleOffscreenPosition = AnimationHelper.Direction.Up;
             public AnimationHelper.Direction buttonsOffscreenPosition = AnimationHelper.Direction.Down;
+            public AnimationHelper.Direction coinsOffscreenPosition = AnimationHelper.Direction.Left;
             
             [Space]
             [Header("Time Values")]
@@ -62,6 +63,7 @@ namespace _Main.Scripts.Defeat.So
             [Header("Offsets")]
             public Vector2 buttonsOffScreenOffset;
             public Vector2 titleOffScreenOffset;
+            public Vector2 coinsOffScreenOffset;
 
             // Interface properties
             public float MovementDelay => movementDelay;
@@ -70,13 +72,19 @@ namespace _Main.Scripts.Defeat.So
             public AnimationHelper.Direction HighScoreOffscreenPosition => highScoreOffscreenPosition;
             public AnimationHelper.Direction TitleOffscreenPosition => titleOffscreenPosition;
             public AnimationHelper.Direction ButtonsOffscreenPosition => buttonsOffscreenPosition;
+
+            public AnimationHelper.Direction CoinsOffscreenPosition => coinsOffscreenPosition;
+
             public float FadeDelay => fadeDelay;
             public float BackgroundFadeDuration => backgroundFadeDuration;
             public Vector2 ButtonsOffScreenOffset => buttonsOffScreenOffset;
             public Vector2 TitleOffScreenOffset => titleOffScreenOffset;
+
+            public Vector2 CoinsOffScreenOffset => coinsOffScreenOffset;
         }
         
         #endregion
+        
         #region Score
         
         [Serializable]
@@ -163,6 +171,30 @@ namespace _Main.Scripts.Defeat.So
         }
 
         #endregion
+
+        #region Coins
+
+        [Serializable]
+        public class CoinsOpen : ICoinsOpen
+        {
+            [Header("Positions")]
+            public AnimationHelper.Direction offscreenPosition = AnimationHelper.Direction.Down;
+            [Space]
+            [Header("Time Values")]
+            public Vector2 offscreenOffset;
+            [Range(0,1)]
+            public float moveDuration = 0.3f;
+            [Range(0,1)]
+            public float finishDelay = 0.5f;
+
+            // Interface properties
+            public AnimationHelper.Direction OffscreenPosition => offscreenPosition;
+            public Vector2 OffscreenOffset => offscreenOffset;
+            public float MoveDuration => moveDuration;
+            public float FinishDelay => finishDelay;
+        }
+
+        #endregion
         
         #endregion
         
@@ -178,11 +210,15 @@ namespace _Main.Scripts.Defeat.So
         [Space(2)]
         [Header("Buttons")]
         [SerializeField] private ButtonsOpen buttonsOpenData;
+        [Space(2)]
+        [Header("Coins")]
+        [SerializeField] private CoinsOpen coinsOpenData;
 
         public IPanelOpen PanelOpenData => panelOpenData;
         public IPanelClose PanelCloseData => panelCloseData;
         public ICurrentScoreIncrement CurrentScoreData => currentScoreData;
         public IHighScoreIncrement HighScoreData => highScoreData;
         public IButtonsOpen ButtonsOpenData => buttonsOpenData;
+        public ICoinsOpen CoinsOpenData => coinsOpenData;
     }
 }

@@ -1,11 +1,13 @@
 ﻿{ 
   "Default" : {
     "Name" : "The Earth",
-    "Description" : "The Earth, our home"
+    "Description" : "The Earth, our home",
+    "DeathTitle" : "Humanity is over!"
   },
 
   "Pizza" : {
     "Name" : "Pineapple Pizza",
-    "Description" : "Best pizza flavor! Right?"
+    "Description" : "Best pizza flavor! Right?",
+    "DeathTitle" : "Pizza is served!"
   }
 }

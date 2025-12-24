@@ -3,6 +3,7 @@ using _Main.Scripts.Interfaces.Analytics;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.MVC
 {
@@ -12,6 +13,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         public interface ICosmeticView
         {
             public event Action OnInitialized;
+            public event Action OnFirstOpen;
             public event Action<SkinType> OnSkinUnlocked;
             public event Action OnFailedToUnlock;
         }
@@ -22,12 +24,12 @@ namespace _Main.Scripts.Cosmetics.MVC
         public event Action OnInitialized;
         public event Action<SkinType> OnSkinUnlocked;
         public event Action OnFailedToUnlock;
+        public event Action OnFirstOpen;
 
         #endregion
 
         #region ICosmeticsAnalytics
         
-        public event Action OnCosmeticFirstEnable;
         public event Action<string> OnCosmeticChanged;
 
         #endregion
@@ -36,6 +38,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             switch (message)
             {
+                // === Enable / Disable === //
                 case CosmeticObserverMessage.Initialize:
                     HandleInitialize();
                     break;
@@ -51,17 +54,33 @@ namespace _Main.Scripts.Cosmetics.MVC
                 case CosmeticObserverMessage.TriggerMainMenu:
                     HandleTriggerMainMenu();
                     break;
-                case CosmeticObserverMessage.SkinSelected:
-                    HandleSkinSelected((int)args[0]);
+                case CosmeticObserverMessage.Opened:
+                    HandleOpened();
                     break;
+                
                 
                 // === Unlock === //
                 case CosmeticObserverMessage.TryUnlockSkin:
                     HandleTryUnlock((int)args[0]);
                     break;
+                
+                // === Skin === //
+                case CosmeticObserverMessage.SkinSelected:
+                    HandleSkinSelected((int)args[0]);
+                    break;
             }
         }
-        
+
+        private void HandleOpened()
+        {
+            var hasOpened = GameManager.Instance.FlagsController.GetHasOpenedCosmetics();
+
+            if (hasOpened == false)
+            {
+                OnFirstOpen?.Invoke();
+            }
+        }
+
         private void HandleInitialize()
         {
             OnInitialized?.Invoke();
@@ -69,10 +88,13 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void HandleSkinSelected(int skinIndex)
         {
+            if(skinIndex == -1) return;
+            
             SkinManager.Instance.PreviewSkin((SkinType)skinIndex);
 
             if (SkinManager.Instance.GetIsLocked(skinIndex))
             {
+                Debug.Log($"{(SkinType)skinIndex} skin Is Locked");
                 CameraEventCaller.EnableGrayscale();
             }
             else
@@ -85,11 +107,6 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void HandleEnable()
         {
-            if (GameManager.Instance.FlagsController.GetHasOpenedCosmetics() == false)
-            {
-                OnCosmeticFirstEnable?.Invoke();
-            }
-            
             CameraEventCaller.LookLeft();
         }
         
@@ -107,7 +124,6 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         private void HandleTriggerMainMenu()
         {
-
             GameManager.Instance.LoadMainMenu();
         }
 

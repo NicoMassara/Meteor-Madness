@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Vibration
 {
-#if UNITY_ANDROID   
+#if UNITY_ANDROID
     public class VibrationController
     {
         private AndroidJavaObject _vibrator;
@@ -59,6 +59,7 @@ namespace _Main.Scripts.Vibration
                         useAmplitude
                     );
 
+ 
                     _vibrator.Call("vibrate", vibrationEffect);
                 }
                 else
@@ -91,6 +92,7 @@ namespace _Main.Scripts.Vibration
         {
             if (_vibrator != null)
             {
+                Debug.Log("Vibration cancelled");
                 _vibrator.Call("cancel");
                 if (_timerId != null)
                 {

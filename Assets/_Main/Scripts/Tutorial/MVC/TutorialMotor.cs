@@ -35,7 +35,7 @@ namespace _Main.Scripts.Tutorial.MVC
         
         #endregion
 
-        private const float RotateTime = 0.5f;
+        private const float RotateTime = 2f;
         private MovementCounter _rightCounter;
         private MovementCounter _leftCounter;
         

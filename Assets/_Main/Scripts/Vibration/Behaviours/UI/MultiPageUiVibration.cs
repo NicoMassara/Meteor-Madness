@@ -4,7 +4,7 @@ namespace _Main.Scripts.Vibration.Behaviours.UI
 {
     public class MultiPageUiVibration : VibrationBehavior<IMultiPageUIVibration>
     {
-#if UNITY_ANDROID 
+#if UNITY_ANDROID
         protected override void Start()
         {
             base.Start();

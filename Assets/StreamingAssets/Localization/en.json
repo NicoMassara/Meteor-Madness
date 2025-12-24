@@ -71,6 +71,7 @@
     "Unlock" : "Unlock",
     "Unlocked" : "Unlocked!",
     "StoredCoins" : "Your Coins",
+    "GainedCoins" : "Gained Coins",
     "Requirement" : "You Need",
     "NotEnough" : "Not Enough Coins!",
     "SkinData" :"@Skins/en/skinData.json",
@@ -94,14 +95,15 @@
     "Death": {
       "Title" : "Humanity Is Over!",
       "Score" : "Your Score"
-    }
+    },
+    "StreakNotify" : "%% Meteors Streak!"
   },
   
   "Stats" : {
     "Title" : "Stats",
     "Deflect" : "Deflected Meteors",
     "Collision" : "Meteors Collisions",
-    "AbilityCount" : "Ability Used",
+    "AbilityCount" : "Power Ups Used",
     "GamesPlayed" : "Games Played",
     "DeflectStreak" : "Deflect Streak",
     "LongestTime" : "Longest Time",
@@ -123,7 +125,8 @@
 
     "Cosmetic": {
       "Title" : "Skin Selector",
-      "Text" : "@Texts/en/First/cosmetic.txt"
+      "Text" : "@Texts/en/First/cosmetic.txt",
+      "CloseButton" : "Close"
     }
   }
 }

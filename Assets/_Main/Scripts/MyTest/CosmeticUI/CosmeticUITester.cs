@@ -43,7 +43,7 @@ namespace _Main.Scripts.MyTest.CosmeticUI
 
         private void SetCoins()
         {
-            SkinManager.Instance.TryAddCoins(coinsAmount * 5000);
+            SkinManager.Instance.TryAddCoins(coinsAmount * 20);
         }
 
         private IEnumerator Coroutine_LoadCoreScene()

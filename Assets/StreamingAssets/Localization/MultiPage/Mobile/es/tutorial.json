@@ -1,26 +1,46 @@
 ﻿{
-  "Movement": {
+  "MovementRight": {
     "Texts" :[
-      "Hola!\n\\n\nBienvenido al Tutorial!\n",
-      "Aca aprenderas a jugar Meteor Madness!\n\\n\nPrueba apretando cada lado de tu dispositivo para mover el escudo de la tierra!"
+      "Hola!\n Bienvenido al tutorial de Meteor Madness! \n\n Aqui aprenderas como defender la Tierra!",
+      "Para lograrlo, deberas rotar el escudo de la tierra\n\n Eso parece complicado, pero es muy facil!",
+      "Para rotar el escudo en sentido horario, deberas mantener presionado en el lado derecho de la pantalla!\n\n\n Intentalo!"
+    ],
+    "LastButton" : "Intentar!"
+  },
+
+  "MovementLeft": {
+    "Texts" :[
+      "Lo hiciste Excelente! \n\n Ahora aprenderas a rotrarlo en sentido anti-horario!",
+      "Para rotar el escudo en sentido anti-horario, deberas mantener presionado en el lado izquierdo de la pantalla!\n\n\n Intentalo!"
+    ],
+    "LastButton" : "Intentar!"
+  },
+
+  "Deflection": {
+    "Texts" :[
+      "Perfecto! Eres todo un profesional! \n\n Pero, casi. \n Ahora aprenderas lo más importante... \n\n Aprenderas a deflectar un meteorito!",
+      "Deflectar un Meteorito es muy simple! Solo tienes que mover el escudo en direccion al meteorito. \n Cuando este toque el escudo sera convertido en polvo \n Además de que cada uno te dara puntos!",
+      "Pero ten cuidado! \n Si fallas al deflectarlo, el meteorito impactara La Tierra! \n Y si muchos meteoritos impacntan La Tierra, esta sera destruida, llevandose a la raza humana con ella!",
+      "Con todo esto dicho, sin presión! \n\n\n Intenta Deflectar un Meteorito!"
     ],
     "LastButton" : "Intentar!"
   },
 
   "Ability" : {
     "Texts" : [
-      "Mientras estes jugando aveces unas misteriosas esferas apareceran...",
-      "Estas esferas tienen forma de meteoro pero no lo son.\n\\n\nAlgunas personas dicen que al destruirlas, al apretar ambos lados de tu dispositivo al mismo tiempo...\n\\n \nUn Super efecto ocurrira....",
-      "Intenta destruir una y veamos que tiene!"
+      "Hay algo más que debes saber... \n Aveces una esfera misteriosa aparecera! \n Los cientificos descubrieron que estas esferas contienen algo llamado 'Super Habilidad' \n Nadie sabe de donde vienen, pero se supone que es tecnología alienigena",
+      "Esto es aterrador verdad? Despues de todo no estamos solos en el universo! \n Estas esferas se comportan igual que un meteorito pero hay una diferencia \n Cada vez que deflectes una de estas, te dara una 'Super Habilidad' que puede ser usada para destruir aún más meteoritos o reparar los daños causados a La Tierra",
+      "PERO! \n Estas 'Super Habilidades' funcionan por tiempo limitado!",
+      "Despues de días de investigación los cientificos descubrieron como activar estas 'Super Habilidades', lee con atención. \n Al presionar AMBOS lados de tu pantalla al mismo tiempo la 'Super Habilidad' se activara! \n Intentalo!"
     ],
-    "LastButton" : "Intentar"
+    "LastButton" : "Intentar!"
   },
-  
+
   "Finish" : {
     "Texts": [
-      "Has finalizado el tutorial de Meteor Madness!",
-      "Eso es todo lo que necesitas saber para disfrutar del juego! \n\n \n Sientete libre de visitar el tutorial cuantas veces quieras! \n\n\n Eres nuestro heroe y necesitas todas las herramientas para defender la tierra!",
+      "Has terminado el tutorial de Meteor Madness",
+      "Eso es todo lo que necesitas saber para poder jugar!\n\n \nSientete libre de visitar el tutorial cuantas veces quieras! Eres la unica esperanza de la raza humana!"
     ],
-    "LastButton" : "Back to Menu"
+    "LastButton" : "Volver al Menu"
   }
 }

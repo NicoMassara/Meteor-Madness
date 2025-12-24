@@ -11,7 +11,8 @@ namespace _Main.Scripts.GameMode
     [Serializable]
     public class GameModeUIAnimationComponents : UiComponentsData,
         GameModeUIAnimationComponents.IGameplayPanel,
-        GameModeUIAnimationComponents.ICountdownPanel
+        GameModeUIAnimationComponents.ICountdownPanel,
+        GameModeUIAnimationComponents.INotifyPanel
     {
         public interface IGameModeUIAnimation : IUiAnimationComponent { }
         
@@ -29,7 +30,13 @@ namespace _Main.Scripts.GameMode
             public RectTransform CountdownPanel { get; }
             public RectTransform CountdownText { get; }
         }
+        
+        public interface INotifyPanel : IGameModeUIAnimation
+        {
+            public RectTransform NotifyPanel { get; }
 
+        }
+        
 
         [Header("Countdown")]
         [SerializeField] private RectTransform countdownPanel;
@@ -40,6 +47,8 @@ namespace _Main.Scripts.GameMode
         [SerializeField] private RectTransform scoreText;
         [SerializeField] private RectTransform streakText;
         [SerializeField] private RectTransform pauseButton;
+        [Header("Notify")]
+        [SerializeField] private RectTransform notifyPanel;
 
         // Countdown
         public RectTransform ScorePanel => scorePanel;
@@ -51,5 +60,8 @@ namespace _Main.Scripts.GameMode
         public RectTransform PauseButton => pauseButton;
         public RectTransform ScoreText => scoreText;
         public RectTransform StreakText => streakText;
+        
+        // Notify
+        public RectTransform NotifyPanel => notifyPanel;
     }
 }

@@ -5,7 +5,6 @@ namespace _Main.Scripts.Cosmetics
 {
     public interface ISkinInformation
     {
-
         public string NameCode { get; }
         public string DescriptionCode { get; }
         public uint UnlockPrice { get; }
@@ -19,6 +18,12 @@ namespace _Main.Scripts.Cosmetics
         public MeteorSkinData MeteorData { get; }
         public CometSkinData CometData { get; }
     }
+
+    public interface ISkinDeathMessage
+    {
+        public string DeathTitle { get; }
+    }
+
 
     public interface ISkinButton
     {

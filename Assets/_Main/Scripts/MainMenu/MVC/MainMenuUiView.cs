@@ -14,8 +14,7 @@ namespace _Main.Scripts.MainMenu.MVC
         [SerializeField] private MainMenuUiPanelComponents uiPanelSelector;
         
         private MainMenuUiComponents _uiComponents;
-
-
+        
         // Buttons Actions
         public event Action OnConfirmButtonClicked;
         public event Action OnCancelButtonClicked;

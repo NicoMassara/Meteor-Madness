@@ -24,7 +24,7 @@ namespace _Main.Scripts.Interfaces.Analytics
     
     public interface ICosmeticsAnalytics : IAnalyticComponent
     {
-        public event Action OnCosmeticFirstEnable;
+        public event Action OnFirstOpen;
         public event Action<string> OnCosmeticChanged;
     }
     

@@ -3,6 +3,7 @@ using _Main.Scripts.GameConfig;
 using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ViewUI;
+using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
 namespace _Main.Scripts.GameStats
@@ -19,6 +20,17 @@ namespace _Main.Scripts.GameStats
         public event Action OnBackButtonPressed;
         public event Action OnTextsLoaded;
 
+        #region IStatsUIVibration
+
+        public event Action OnCloseFirstButtonPressed;
+
+        #endregion
+
+        private void Start()
+        {
+            UIComponents.SetActiveFirstOpenPanel(false);
+        }
+
         private void EnableButtons()
         {
             UIComponents.AddBackButtonListener(OnBackButtonPressedHandler);
@@ -33,6 +45,7 @@ namespace _Main.Scripts.GameStats
         {
             switch (message)
             {
+                // === Enable / Disable === //
                 case StatsObserverMessage.Enable:
                     HandleEnable();
                     break;
@@ -40,16 +53,40 @@ namespace _Main.Scripts.GameStats
                     HandleStartDisable();
                    break;
                 
+                // === Text Data === ///
+                
                 case StatsObserverMessage.LoadTextData:
                     HandleLoadTextData((StatsData)args[0]);
+                    break;
+                
+                // === First Open === //
+                case StatsObserverMessage.FirstOpen:
+                    HandleFirstOpen();
                     break;
             }
         }
 
-        private void OnBackButtonPressedHandler()
+        #region First Open
+
+        private void HandleFirstOpen()
         {
-            OnBackButtonPressed?.Invoke();
+            UIComponents.SetActiveFirstOpenPanel(true);
+            UIComponents.SetInteractableFirstOpenCloseButton(false);
+            UIComponents.AddListenerToFirstOpenCloseButton(OnFirstOpenPanelClosed);
+            TimerManager.Add(new TimerData(1.5f, 
+                () => UIComponents.SetInteractableFirstOpenCloseButton(true)));
         }
+
+        private void OnFirstOpenPanelClosed()
+        {
+            OnCloseFirstButtonPressed?.Invoke();
+            UIComponents.RemoveListenerToFirstOpenCloseButton(OnFirstOpenPanelClosed);
+            UIComponents.SetActiveFirstOpenPanel(false);
+        }
+
+        #endregion
+
+        #region Text Data 
 
         private void HandleLoadTextData(StatsData statsData)
         {
@@ -68,7 +105,10 @@ namespace _Main.Scripts.GameStats
             
             OnTextsLoaded?.Invoke();
         }
+        #endregion
 
+        #region Enable / Disable
+        
         private void HandleEnable()
         {
             EnableButtons();
@@ -79,9 +119,18 @@ namespace _Main.Scripts.GameStats
             DisableButtons();
         }
         
-        private int GetPointsMultiplier()
+        private void OnBackButtonPressedHandler()
         {
-            return GameConfigManager.Instance.GetGameplayData().PointsMultiplier;
+            OnBackButtonPressed?.Invoke();
         }
+        
+        #endregion
+
+        #region Tools
+
+        private int GetPointsMultiplier() 
+            => GameConfigManager.Instance.GetGameplayData().PointsMultiplier;
+
+        #endregion
     }
 }

@@ -5,11 +5,11 @@ namespace _Main.Scripts.Vibration.Behaviours
 {
     public class ShieldVibration : VibrationBehavior<IShieldVibration>
     {
-#if UNITY_ANDROID 
         [SerializeField] private VibrationDataSo rotateData;
         [SerializeField] private VibrationDataSo directionChangeData;
         [SerializeField] private VibrationDataSo stopData;
         [SerializeField] private VibrationDataSo deflectData;
+#if UNITY_ANDROID
         
         protected override void Start()
         {

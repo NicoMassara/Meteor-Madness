@@ -2,7 +2,7 @@
   "MovementRight": {
     "Texts" :[
       "Hello!\n\n Welcome to the Meteor Madness Tutorial! \n\n Here You'll learn How to defend The Earth!",
-      "To achieve this, you must rotate the Earth's shield! \n\n That looks hard, right? But no. Is pretty easy!",
+      "To achieve this, you must to rotate the Earth's shield! \n\n That looks hard, right? But no. Is pretty easy!",
       "To rotate the shield in a clockwise direction, you must press %%RightKey%% \n\n\n Give it a try!"
     ],
     "LastButton" : "Try!"

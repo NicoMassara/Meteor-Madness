@@ -11,6 +11,8 @@ namespace _Main.Scripts.Localization
 {
     public class LanguageTextLoader
     {
+        private bool _isLoading;
+        
         private readonly Dictionary<string, string> _textReplacement = new()
         {
             {"LeftKey", "<color=blue>A</color>"},
@@ -34,6 +36,9 @@ namespace _Main.Scripts.Localization
 
         public void SelectLanguageToLoad(SystemLanguage language)
         {
+            if(_isLoading) return;
+            
+            _isLoading = true;
             _loadedText.Clear();
             
             string langCode = LocalizationTools.GetLanguageCode(language).ToLower();
@@ -72,6 +77,7 @@ namespace _Main.Scripts.Localization
             FlattenJson("", rootJson);
             ReplacePlaceholderText();
             _onTextLoaded?.Invoke();
+            _isLoading = false;
         }
 
         private IEnumerator LoadJsonCoroutine(string path, Action<JObject> callback)

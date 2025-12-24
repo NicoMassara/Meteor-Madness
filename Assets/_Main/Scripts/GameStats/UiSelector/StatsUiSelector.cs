@@ -25,25 +25,54 @@ namespace _Main.Scripts.GameStats
         [Space]
         [Header("Buttons")]
         [SerializeField] private Button backButton;
+        [Header("First Open")]
+        [SerializeField] private GameObject first_Panel;
+        [SerializeField] private Button first_closeButton;
 
         
         #region Texts
         
-        public void SetDeflectAmountText(string langKey, uint value) => SetText(deflectAmountText, $"{GetLocalizedString(langKey)}: {value:D8}");
-        public void SetCollisionAmountText(string langKey, uint value) => SetText(collisionAmountText, $"{GetLocalizedString(langKey)}: {value:D8}");
-        public void SetAbilityUseAmountText(string langKey, uint value) => SetText(abilityUseAmountText, $"{GetLocalizedString(langKey)}: {value:D8}");
-        public void SetGamesPlayedText(string langKey, uint value) => SetText(gamesPlayedText, $"{GetLocalizedString(langKey)}: {value:D8}");
-        public void SetDeflectStreakText(string langKey, uint value) => SetText(deflectStreakText, $"{GetLocalizedString(langKey)}: {value:D8}");
-        public void SetLongestTimeText(string langKey, float value) => SetText(longestTimeText, $"{GetLocalizedString(langKey)}: {FormatToHMS(value)}");
-        public void SetHighScoreText(string langKey, uint value) => SetText(highScoreText, $"{GetLocalizedString(langKey)}: {value:D8}");
-        public void SetAllScoreText(string langKey, long value) => SetText(allScoreText, $"{GetLocalizedString(langKey)}: {value:D8}");
+        public void SetDeflectAmountText(string langKey, uint value) 
+            => SetText(deflectAmountText, $"{GetLocalizedString(langKey)}: {value:D8}");
+        public void SetCollisionAmountText(string langKey, uint value) 
+            => SetText(collisionAmountText, $"{GetLocalizedString(langKey)}: {value:D8}");
+        public void SetAbilityUseAmountText(string langKey, uint value) 
+            => SetText(abilityUseAmountText, $"{GetLocalizedString(langKey)}: {value:D8}");
+        public void SetGamesPlayedText(string langKey, uint value) 
+            => SetText(gamesPlayedText, $"{GetLocalizedString(langKey)}: {value:D8}");
+        public void SetDeflectStreakText(string langKey, uint value) 
+            => SetText(deflectStreakText, $"{GetLocalizedString(langKey)}: {value:D8}");
+        public void SetLongestTimeText(string langKey, float value) 
+            => SetText(longestTimeText, $"{GetLocalizedString(langKey)}: {FormatToHMS(value)}");
+        public void SetHighScoreText(string langKey, uint value) 
+            => SetText(highScoreText, $"{GetLocalizedString(langKey)}: {value:D8}");
+        public void SetAllScoreText(string langKey, long value) 
+            => SetText(allScoreText, $"{GetLocalizedString(langKey)}: {value:D8}");
         
         #endregion
 
         #region Buttons
 
-        public void AddBackButtonListener(UnityAction onClick) => AddListenerToButton(backButton, onClick);
-        public void RemoveBackButtonListener(UnityAction onClick) => RemoveListenerFromButton(backButton, onClick);
+        public void AddBackButtonListener(UnityAction onClick) 
+            => AddListenerToButton(backButton, onClick);
+        public void RemoveBackButtonListener(UnityAction onClick) 
+            => RemoveListenerFromButton(backButton, onClick);
+
+        #endregion
+
+        #region First Open
+
+        public void SetActiveFirstOpenPanel(bool value)
+            => SetActiveObject(first_Panel, value);
+        
+        public void AddListenerToFirstOpenCloseButton(UnityAction onClick) 
+            => AddListenerToButton(first_closeButton, onClick);
+        
+        public void RemoveListenerToFirstOpenCloseButton(UnityAction onClick) 
+            => RemoveListenerFromButton(first_closeButton, onClick);
+        
+        public void SetInteractableFirstOpenCloseButton(bool value)
+        => SetButtonInteractable(first_closeButton, value);
 
         #endregion
         

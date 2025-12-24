@@ -25,6 +25,9 @@ namespace _Main.Scripts.Defeat
             public void SendAd();
             public void RestartGame();
             public void LoadMainMenu();
+            public void SendCoins();
+            public void CheckForNewCoins();
+            public void UpdateCoins(uint stored, uint gained);
         }
 
         #region Private Classes
@@ -219,10 +222,7 @@ namespace _Main.Scripts.Defeat
             _controller.TransitionToDisable();
         }
 
-        public void EnableScreen()
-        {
-            _controller.TransitionToEnable();
-        }
+        public void EnableScreen() => _controller.TransitionToEnable();
 
         public void ExecuteDisable()
         {
@@ -232,50 +232,20 @@ namespace _Main.Scripts.Defeat
             }
         }
 
-        public void LoadScoreData(GeneratedId score, GeneratedId highScore, bool hasNewHigh)
-        {
-            _motor.LoadScoreData(score, highScore,hasNewHigh);
-        }
+        public void LoadScoreData(GeneratedId score, GeneratedId highScore, bool hasNewHigh) 
+            => _motor.LoadScoreData(score, highScore,hasNewHigh);
 
-        public void SendScore()
-        {
-            _motor.SendScore();
-        }
-
-        public void SendHighScore()
-        {
-            _motor.SendHighScore();
-        }
-
-        public void SendButtons()
-        {
-            _motor.SendButtons();
-        }
-
-        public void SetDataIsLoaded()
-        {
-            _controller.SetDataIsLoaded();
-        }
-
-        public void EnableButtons()
-        {
-            _motor.EnableButtons();
-        }
-
-        public void SendAd()
-        {
-            _motor.SendAd();
-        }
-
-        public void RestartGame()
-        {
-            _motor.RestartGame();
-        }
-
-        public void LoadMainMenu()
-        {
-            _motor.LoadMainMenu();
-        }
+        public void SendScore() => _motor.SendScore();
+        public void SendHighScore() => _motor.SendHighScore();
+        public void SendButtons() => _motor.SendButtons();
+        public void SetDataIsLoaded() => _controller.SetDataIsLoaded();
+        public void EnableButtons() => _motor.EnableButtons();
+        public void SendAd() => _motor.SendAd();
+        public void RestartGame() => _motor.RestartGame();
+        public void LoadMainMenu() => _motor.LoadMainMenu();
+        public void SendCoins() => _motor.SendCoins();
+        public void CheckForNewCoins() => _motor.CheckForNewCoins();
+        public void UpdateCoins(uint stored, uint gained) => _motor.UpdateCoins(stored, gained);
 
         #endregion
 

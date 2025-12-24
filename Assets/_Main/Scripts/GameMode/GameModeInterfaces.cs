@@ -51,4 +51,15 @@ namespace _Main.Scripts.GameMode
         public float AeFinishScaleDuration { get; }
         public float FinishDelay { get; }
     }
+
+    public interface IStreakNotify : IUiAnimationData
+    {
+        public AnimationHelper.Direction StartPosition { get; }
+        public AnimationHelper.Direction EndPosition { get; }
+        public float MovementDuration { get; }
+        public float StopDuration { get; }
+        
+        public Vector2 StartOffset { get; }
+        public Vector2 EndOffset { get; }
+    }
 }

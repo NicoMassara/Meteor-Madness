@@ -52,3 +52,10 @@ MonoBehaviour:
     duration: 0.1
     horizontalOffset: 30
     loops: 5
+  streakNotifyData:
+    startPosition: 0
+    endPosition: 1
+    movementDuration: 0.25
+    stopDuration: 1
+    startOffset: {x: 0, y: 0}
+    endOffset: {x: 0, y: 0}

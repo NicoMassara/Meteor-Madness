@@ -4,7 +4,7 @@ namespace _Main.Scripts.Vibration.Behaviours
 {
     public class GameModeVibration : VibrationBehavior<IGameModeVibration>
     {
-#if UNITY_ANDROID 
+#if UNITY_ANDROID
         protected override void Start()
         {
             base.Start();

@@ -1,10 +1,11 @@
 ﻿using _Main.Scripts.Interfaces.Vibration;
+using UnityEngine;
 
 namespace _Main.Scripts.Vibration.Behaviours.UI
 {
     public class CosmeticUiVibration : VibrationBehavior<ICosmeticUIVibration>
     {
-#if UNITY_ANDROID 
+#if UNITY_ANDROID
         protected override void Start()
         {
             base.Start();
@@ -13,6 +14,26 @@ namespace _Main.Scripts.Vibration.Behaviours.UI
                 Vibrate(VibrationType.UIButtonCancel);
             };
             ComponentToVibrate.OnSkinSelected += (value) =>
+            {
+                Vibrate(VibrationType.UIButtonAccept);
+            };
+
+            ComponentToVibrate.OnScroll += () =>
+            {
+                //Vibrate(VibrationType.UIButtonCancel);
+            };
+            
+            ComponentToVibrate.OnCoinsFinishedDecrement += () =>
+            {
+                Vibrate(VibrationType.UIButtonAccept);
+            };
+            
+            ComponentToVibrate.OnUnlockFailed += () =>
+            {
+                Vibrate(VibrationType.UIButtonCancel);
+            };
+            
+            ComponentToVibrate.OnUnlocked += () =>
             {
                 Vibrate(VibrationType.UIButtonAccept);
             };

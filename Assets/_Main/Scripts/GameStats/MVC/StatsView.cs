@@ -11,10 +11,11 @@ namespace _Main.Scripts.GameStats
         public interface IStatsView
         {
             public event Action<StatsData> OnInitialize;
+            public event Action OnFirstOpen;
         }
         
         #region IStatsView
-        
+        public event Action OnFirstOpen;
         public event Action<StatsData> OnInitialize;
         
         #endregion
@@ -23,6 +24,7 @@ namespace _Main.Scripts.GameStats
         {
             switch (message)
             {
+                // === Enable / Disable === //
                 case StatsObserverMessage.Initialize:
                     HandleInitialize();
                     break;
@@ -35,6 +37,21 @@ namespace _Main.Scripts.GameStats
                 case StatsObserverMessage.MainMenu:
                     HandleMainMenu();
                     break;
+                
+                // === Opened === //
+                case StatsObserverMessage.Opened:
+                    HandleOpened();
+                    break;
+            }
+        }
+
+        private void HandleOpened()
+        {
+            var hasOpened = GameManager.Instance.FlagsController.GetHasOpenedStats();
+            
+            if (hasOpened == false)
+            {
+                OnFirstOpen?.Invoke();
             }
         }
 
@@ -45,8 +62,6 @@ namespace _Main.Scripts.GameStats
 
         private void HandleInitialize()
         {
-            GameManager.Instance.FlagsController.GetHasOpenedStats();
-            
             var dataManager = DataManager.Instance;
             var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
             

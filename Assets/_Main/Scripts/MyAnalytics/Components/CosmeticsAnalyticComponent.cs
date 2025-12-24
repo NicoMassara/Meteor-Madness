@@ -9,7 +9,7 @@ namespace _Main.Scripts.MyAnalytics.Components
     {
         private void Start()
         {
-            Component.OnCosmeticFirstEnable += () =>
+            Component.OnFirstOpen += () =>
             {
                 SendEvent(AnalyticEventsName.Cosmetics.Opened);
             };

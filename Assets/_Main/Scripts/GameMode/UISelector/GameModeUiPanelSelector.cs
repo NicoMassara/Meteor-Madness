@@ -17,7 +17,19 @@ namespace _Main.Scripts.GameMode
         public TMP_Text CountdownText;
         public TMP_Text ScoreText;
         public TMP_Text StreakText;
+        [SerializeField] private TMP_Text notifyText;
         [Header("Buttons Components")]
         public Button PauseButton;
+        
+        public void SetScoreText(string textCode, uint amount) 
+            => SetText(ScoreText, $"{textCode}: {amount:D6}");
+        
+        public void SetStreakText(string textCode, uint amount) 
+            => SetText(StreakText, $"{textCode}: {amount:D4}");
+        public void SetCountdownText(string textCode, uint amount) 
+            => SetText(CountdownText, $"{textCode}: {amount:D4}");
+        
+        public void SetNotifyText(string textCode) 
+            => SetText(notifyText, textCode);
     }
 }

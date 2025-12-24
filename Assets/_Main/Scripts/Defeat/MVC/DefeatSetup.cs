@@ -60,8 +60,9 @@ namespace _Main.Scripts.Defeat
         /// 4 - Main Animation and triggers OnPanelOpened when finishes
         /// 5 - Score Animations
         /// 6 - High Score Animation
-        /// 7 - Buttons Animation
-        /// 8 - Buttons Does Enable
+        /// 7 - Coins Animation
+        /// 8 - Buttons Animation
+        /// 9 - Buttons Does Enable
         ///
         /// Step by Step - Disable
         /// 1 - OnRestartButtonPressed or OnMainMenuButtonPressed requests another screen
@@ -79,10 +80,24 @@ namespace _Main.Scripts.Defeat
                 _controller.LoadScoreData(score,highScore,hasNewHigh);
             };
             _view.OnDataInitialized += _controller.SetDataIsLoaded;
-            _view.OnGameSaved += _controller.SendButtons;
+            _view.OnGameSaved += () => _controller.SendButtons();
+            _view.OnNewCoinsAdded += (hasGained, stored, gained) =>
+            {
+                if (hasGained)
+                {
+                    Debug.Log("Gained");
+                    _controller.UpdateCoins(stored, gained);
+                }
+                else
+                {   
+                    Debug.Log("Not Gained");
+                    _controller.SendAd();
+                }
+            };
             //
             _ui.OnRestartButtonPressed += _controller.RestartGame;
             _ui.OnMainMenuButtonPressed += _controller.LoadMainMenu;
+            _ui.OnCoinsFinished += _controller.SendAd;
             //
             _animation.OnPanelOpened += _controller.SendScore;
             _animation.OnPanelClosed += () =>
@@ -95,7 +110,8 @@ namespace _Main.Scripts.Defeat
 #endif
             };
             _animation.OnScoreFinished += _controller.SendHighScore;
-            _animation.OnHighScoreFinished += _controller.SendAd;
+            _animation.OnHighScoreFinished += _controller.SendCoins;
+            _animation.OnCoinsFinished += () => _controller.CheckForNewCoins();
             _animation.OnButtonsFinished += () =>
             {
                 _controller.EnableButtons();

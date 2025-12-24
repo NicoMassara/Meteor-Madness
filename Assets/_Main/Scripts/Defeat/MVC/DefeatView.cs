@@ -1,9 +1,11 @@
 ﻿using System;
 using _Main.Scripts.CustomId;
+using _Main.Scripts.GameConfig;
 using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Interfaces.Analytics;
 using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
+using _Main.Scripts.SecurityData;
 using UnityEngine;
 
 namespace _Main.Scripts.Defeat
@@ -17,6 +19,8 @@ namespace _Main.Scripts.Defeat
             public event Action<GeneratedId, GeneratedId, bool> OnDataLoaded;
             public event Action OnDataInitialized;
             public event Action OnGameSaved;
+            
+            public event Action<bool, uint, uint> OnNewCoinsAdded;
         }
         
         #region IDefeatView
@@ -24,6 +28,7 @@ namespace _Main.Scripts.Defeat
         public event Action<GeneratedId, GeneratedId, bool> OnDataLoaded;
         public event Action OnDataInitialized;
         public event Action OnGameSaved;
+        public event Action<bool, uint, uint> OnNewCoinsAdded;
 
         #endregion
 
@@ -42,12 +47,12 @@ namespace _Main.Scripts.Defeat
         {
             switch (message)
             {
-                //=== Disable ===//
+                // === Disable === //
                 case DefeatObserverMessage.ExecuteDisable:
                     HandleExecuteDisable();
                     break;
                 
-                //=== Load Data ===//
+                // === Load Data === //
                 case DefeatObserverMessage.LoadData:
                     HandleDataLoaded();
                     break;
@@ -55,20 +60,27 @@ namespace _Main.Scripts.Defeat
                     HandleInitializeData((GeneratedId)args[0],(GeneratedId)args[1],(bool)args[2]);
                     break;
                 
-                //=== Ads ===//
+                // === Ads === //
                 case DefeatObserverMessage.SendAds:
                     HandleSendAds();
                     break;
                 
-                //=== Screens ===//
+                // === Screens === //
                 case DefeatObserverMessage.RestartGame:
                     HandleRestartGame();
                     break;
                 case DefeatObserverMessage.LoadMainMenu:
                     HandleLoadMainMenu();
                     break;
+                
+                // === Coins === //
+                case DefeatObserverMessage.CheckNewCoins:
+                    HandleCheckNewCoins();
+                    break;
             }
         }
+
+
 
         #region Screens
         
@@ -107,6 +119,31 @@ namespace _Main.Scripts.Defeat
 
         #endregion
 
+        #region Coins
+
+        private void HandleCheckNewCoins()
+        {
+            var storedCoins = GameManager.Instance.GetStoredCoins();
+            uint gainedCoins = 0;
+
+            if (SecureValueManager.GetDoesContainValue(GameManager.Instance.StatsController.GetCurrentScoreSecuredId(),
+                    out uint currentScore))
+            {
+                if (GameManager.Instance.TryAddCoins(currentScore))
+                {
+                    gainedCoins = GameManager.Instance.GetStoredCoins() - storedCoins;
+                }
+            }
+            
+            Debug.Log($"Score: {currentScore}, Last Coins: {storedCoins}, Current Coins: {GameManager.Instance.GetStoredCoins()}");
+            
+            var hasGainedCoins = gainedCoins > 0;
+            
+            OnNewCoinsAdded?.Invoke(hasGainedCoins, storedCoins, gainedCoins);
+        }
+
+        #endregion
+
         private void HandleInitializeData(GeneratedId highScoreId, GeneratedId currentScoreId, bool hasNewHighScore)
         {
             if (hasNewHighScore)
@@ -122,6 +159,7 @@ namespace _Main.Scripts.Defeat
         {
             GameManager.Instance.StatsController.SaveHighScore(GameManager.Instance.StatsController.GetHighScoreSecuredId());
             GameManager.Instance.StatsController.SaveStats();
+            GameManager.Instance.SaveCoins();
  
         }
         

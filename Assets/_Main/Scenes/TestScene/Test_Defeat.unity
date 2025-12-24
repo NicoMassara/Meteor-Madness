@@ -148,8 +148,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b930038b15614fe488ca2ce3e0f6aa98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreAmount: 89
-  highScore: 0
+  deathTitleCode: 1
+  startCoins: 10
+  scoreAmount: 200
+  highScore: 1000
 --- !u!4 &282264250
 Transform:
   m_ObjectHideFlags: 0
@@ -159,7 +161,7 @@ Transform:
   m_GameObject: {fileID: 282264248}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.316563, y: -15.615887, z: 11.948844}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
