@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Interfaces;
+using _Main.Scripts.Interfaces.Vibration;
 using DG.Tweening;
 using UnityEngine;
 
@@ -43,6 +44,21 @@ namespace _Main.Scripts.MyAnimations
         public void Kill() => _sequence?.Kill();
     }
     
+    public abstract class SequenceUIAnimationVibration<T, TS, TA> : SequenceUIAnimator<T, TS>
+        where T : IUiAnimationComponent
+        where TS : IUiAnimationData
+        where TA : IAnimationVibrationComponent
+    {
+
+        protected TA VibrationComponent { get; private set; }
+
+        protected SequenceUIAnimationVibration(T components, TS animationData, TA vibrationComponent) 
+            : base(components, animationData)
+        {
+            VibrationComponent = vibrationComponent; 
+        }
+    }
+    
     
     public interface IUiAnimationData {}
 
@@ -83,4 +99,5 @@ namespace _Main.Scripts.MyAnimations
     }
     
     public interface IUiAnimationComponent {}
+    public interface IAnimationVibrationComponent {}
 }

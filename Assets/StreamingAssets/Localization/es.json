@@ -71,6 +71,7 @@
     "Unlock" : "Desbloquear",
     "Unlocked" : "Desbloqueado!",
     "StoredCoins" : "Tus Monedas",
+    "GainedCoins" : "Monedas Ganadas",
     "Requirement" : "Necesitas",
     "NotEnough" : "Monedas Insuficientes!",
     "SkinData" :"@Skins/es/skinData.json",
@@ -88,6 +89,7 @@
     "CountDownStart" : "Preparado en",
     "CountdownFinish" : "Defender!",
     "Score" : "Puntos",
+    "Streak" : "Racha",
     "HighScore" : "Record",
     "NewHighScore" : "Nuevo Record!",
     "Death": {

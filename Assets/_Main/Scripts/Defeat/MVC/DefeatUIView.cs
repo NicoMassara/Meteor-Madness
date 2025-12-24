@@ -5,8 +5,6 @@ using _Main.Scripts.Managers;
 using _Main.Scripts.Observer;
 using _Main.Scripts.ViewUI;
 using NicolasMassara.CustomActionManager;
-using NicolasMassara.CustomUpdateManager;
-using NUnit.Framework.Internal;
 using Unity.Mathematics;
 using UnityEngine;
 

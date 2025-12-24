@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Cosmetics.Components;
+using _Main.Scripts.GlobalEvents;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.Localization;
@@ -114,8 +115,10 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void Start()
         {
-            _skinButtonController.Initialize();   
+            _skinButtonController.Initialize();
+            LocalizationEvents.OnLanguageChanged += OnLanguageChanged;
         }
+
         public void ExecuteUpdate(float deltaTime)
         {
             if (numberDecrement.IsActive)
@@ -316,6 +319,11 @@ namespace _Main.Scripts.Cosmetics.MVC
         }
         
         private void TriggerOnScroll(Vector2 scrollPosition) => OnScroll?.Invoke();
+        
+        private void OnLanguageChanged()
+        {
+            _skinButtonController.UpdateButtonsName();
+        }
         
         #endregion
     }

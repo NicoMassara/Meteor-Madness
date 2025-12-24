@@ -4,6 +4,7 @@ using _Main.Scripts.Defeat.So;
 using _Main.Scripts.Interfaces.Sounds;
 using _Main.Scripts.Localization;
 using _Main.Scripts.GameConfig;
+using _Main.Scripts.Interfaces.Vibration;
 using _Main.Scripts.MyAnimations;
 using _Main.Scripts.Observer;
 using _Main.Scripts.SecurityData;
@@ -15,7 +16,7 @@ using UnityEngine;
 namespace _Main.Scripts.Defeat
 {
     public class DefeatViewAnimation : BaseViewAnimation<DefeatUiAnimationSelector,DefeatUiAnimationComponents>,
-        DefeatViewAnimation.IDefeatViewAnimation, IDefeatAnimationSounds
+        DefeatViewAnimation.IDefeatViewAnimation, IDefeatAnimationSounds, IDefeatAnimationVibration, DefeatViewAnimation.IVibrationCaller
     {
         public interface IDefeatViewAnimation : 
             BaseViewAnimation<DefeatUiAnimationSelector,DefeatUiAnimationComponents>.IBaseViewAnimation
@@ -24,6 +25,15 @@ namespace _Main.Scripts.Defeat
             public event Action OnHighScoreFinished;
             public event Action OnCoinsFinished;
             public event Action OnButtonsFinished;
+        }
+
+        private interface IVibrationCaller : IAnimationVibrationComponent
+        {
+            public void TriggerScoreMoved();
+            public void TriggerHighScoreMoved();
+            public void TriggerNewHighScore();
+            public void TriggerCoinsMoved();
+            public void TriggerTitleMoved();
         }
 
         [SerializeField] private DefeatUiAnimationData animationData; 
@@ -60,14 +70,15 @@ namespace _Main.Scripts.Defeat
                 UIComponents.CoinsPanel.gameObject.SetActive(false);
             }
         }
-
+        
         #region Main Panel
 
-        private class Animation_Main_Open : SequenceUIAnimator<DefeatUiAnimationComponents.IMainPanel,IPanelOpen>
+        private class Animation_Main_Open : SequenceUIAnimationVibration<DefeatUiAnimationComponents.IMainPanel,IPanelOpen, IVibrationCaller>
         {
-            public Animation_Main_Open(DefeatUiAnimationComponents.IMainPanel components, IPanelOpen animationData)
-                : base(components, animationData) { }
-            
+            public Animation_Main_Open(DefeatUiAnimationComponents.IMainPanel components, IPanelOpen animationData,
+                IVibrationCaller vibrationComponent)
+                : base(components, animationData, vibrationComponent) { }
+
             protected override void Initialize()
             {
                 // Main Panel
@@ -97,8 +108,8 @@ namespace _Main.Scripts.Defeat
                         .AppendCallback(() => UIComponents.MainPanel.gameObject.SetActive(true))
                         .AppendCallback(() => UIComponents.BackgroundImage.gameObject.SetActive(true))
                         .Append(UIComponents.BackgroundImage.DOFade(0, 0))
-                        .Append(UIComponents.BackgroundImage
-                            .DOFade(AnimationData.FadeIntensity, AnimationData.FadeInDuration).SetEase(Ease.InQuad))
+                        .Append(UIComponents.BackgroundImage.DOFade(AnimationData.FadeIntensity, AnimationData.FadeInDuration).SetEase(Ease.InQuad))
+                        .AppendCallback(() => VibrationComponent.TriggerTitleMoved())
                         .AppendInterval(AnimationData.ScaleDelay)
                         .Append(UIComponents.Title.DOScale(0, 0))
                         .AppendCallback(() => UIComponents.Title.gameObject.SetActive(true))
@@ -106,11 +117,12 @@ namespace _Main.Scripts.Defeat
                         .AppendInterval(AnimationData.BounceDelay)
                         .Append(UIComponents.Title.DOScale(AnimationData.BounceScale, AnimationData.BounceDuration))
                         .Append(UIComponents.Title.DOScale(1, AnimationData.BounceReturnTime))
+                        .AppendCallback(() => VibrationComponent.TriggerTitleMoved())
                         .AppendInterval(AnimationData.FinishDelay)
                     ;
             }
         }
-        private class Animation_Main_Close : SequenceUIAnimator<DefeatUiAnimationComponents.IMainPanel,IPanelClose>
+        private class Animation_Main_Close : SequenceUIAnimationVibration<DefeatUiAnimationComponents.IMainPanel,IPanelClose, IVibrationCaller>
         {
             
             private readonly AnimationHelper.PanelPosition _scorePanel;
@@ -119,8 +131,9 @@ namespace _Main.Scripts.Defeat
             private readonly AnimationHelper.PanelPosition _buttonsPanel;
             private readonly AnimationHelper.PanelPosition _coinsPanel;
             
-            public Animation_Main_Close(DefeatUiAnimationComponents.IMainPanel components, IPanelClose animationData)
-                : base(components, animationData)
+            public Animation_Main_Close(DefeatUiAnimationComponents.IMainPanel components, IPanelClose animationData,
+                IVibrationCaller vibrationComponent)
+                : base(components, animationData, vibrationComponent)
             {
                 _scorePanel = new AnimationHelper.PanelPosition(UIComponents.Score,
                     AnimationData.CurrentScoreOffscreenPosition);
@@ -151,6 +164,7 @@ namespace _Main.Scripts.Defeat
                 
                 return DOTween.Sequence()
                         .AppendInterval(AnimationData.MovementDelay)
+                        .AppendCallback(() => VibrationComponent.TriggerTitleMoved())
                         .Append(UIComponents.Score.DOAnchorPos(_scorePanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.HighScorePanel.DOAnchorPos(_highScorePanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.Title.DOAnchorPos(_titlePanel.OffScreenPos, movementDuration))
@@ -166,14 +180,18 @@ namespace _Main.Scripts.Defeat
 
         #region Score
         
-        private class Animation_CurrentScore_Increment : SequenceUIAnimator<DefeatUiAnimationComponents.IScore,ICurrentScoreIncrement>
+        private class Animation_CurrentScore_Increment : SequenceUIAnimationVibration<DefeatUiAnimationComponents.IScore,ICurrentScoreIncrement, IVibrationCaller>
         {
             private readonly Action<TMP_Text,long> _handleText;
             private uint _targetScore;
             private readonly AnimationHelper.PanelPosition _panelPosition;
 
-            public Animation_CurrentScore_Increment(DefeatUiAnimationComponents.IScore components, ICurrentScoreIncrement animationData, Action<TMP_Text,long> handleText)
-                : base(components, animationData)
+            public Animation_CurrentScore_Increment(
+                DefeatUiAnimationComponents.IScore components, 
+                ICurrentScoreIncrement animationData, 
+                Action<TMP_Text,long> handleText, 
+                IVibrationCaller vibrationComponent)
+                : base(components, animationData, vibrationComponent)
             {
                 _handleText = handleText;
                 _panelPosition = new AnimationHelper.PanelPosition(UIComponents.Score,
@@ -197,12 +215,13 @@ namespace _Main.Scripts.Defeat
                 return DOTween.Sequence()
                         .AppendCallback(()=> UIComponents.Score.gameObject.SetActive(true))
                         .Append(UIComponents.Score.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
+                        .AppendCallback(() => VibrationComponent.TriggerScoreMoved())
                         .Append(TweenUtils.AnimateScore(_handleText, text, _targetScore, TweenUtils.GetDurationLog(_targetScore)))
                         .AppendInterval(AnimationData.FinishDelay)
                     ;
             }
         }
-        private class Animation_HighScore_Increment : SequenceUIAnimator<DefeatUiAnimationComponents.IHighScore,IHighScoreIncrement>
+        private class Animation_HighScore_Increment : SequenceUIAnimationVibration<DefeatUiAnimationComponents.IHighScore,IHighScoreIncrement,IVibrationCaller>
         {
             private readonly Action<TMP_Text,long> _handleText;
             private uint _targetScore;
@@ -210,8 +229,9 @@ namespace _Main.Scripts.Defeat
             private readonly AnimationHelper.PanelPosition _panelPosition;
             
             public Animation_HighScore_Increment(DefeatUiAnimationComponents.IHighScore components, IHighScoreIncrement animationData, 
-                Action<TMP_Text,long> handleText) 
-                : base(components, animationData)
+                Action<TMP_Text,long> handleText,
+                IVibrationCaller vibrationComponent)
+                : base(components, animationData, vibrationComponent)
             {
                 _handleText = handleText;
                 _panelPosition = new AnimationHelper.PanelPosition(UIComponents.HighScorePanel,
@@ -234,9 +254,10 @@ namespace _Main.Scripts.Defeat
                 var text = UIComponents.HighScoreText.GetComponent<TMP_Text>();
 
                 var sequence = DOTween.Sequence()
-                    .AppendCallback(() => UIComponents.HighScoreText.gameObject.SetActive(true))
                     .AppendCallback(() => UIComponents.HighScorePanel.gameObject.SetActive(true))
+                    .AppendCallback(() => UIComponents.HighScoreText.gameObject.SetActive(true))
                     .Append(UIComponents.HighScorePanel.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
+                    .AppendCallback(() => VibrationComponent.TriggerHighScoreMoved())
                     .Append(TweenUtils.AnimateScore(_handleText, text, (long)_targetScore,
                         TweenUtils.GetDurationLog(_targetScore)));
 
@@ -250,6 +271,7 @@ namespace _Main.Scripts.Defeat
                         .Append(UIComponents.SubHighScoreText.DOScale(0,0))
                         .AppendInterval(AnimationData.NewScoreTextDelay)
                         .AppendCallback(()=> UIComponents.SubHighScoreText.gameObject.SetActive(true))
+                        .AppendCallback(() => VibrationComponent.TriggerNewHighScore())
                         .Append(UIComponents.SubHighScoreText.DOScale(AnimationData.NewScoreBounceScale, AnimationData.NewScoreBounceDuration))
                         .Append(UIComponents.SubHighScoreText.DOScale(1, AnimationData.NewScoreBounceReturnTime))
                         ;
@@ -265,12 +287,13 @@ namespace _Main.Scripts.Defeat
 
         #region Buttons
         
-        private class Animation_Buttons_Open : SequenceUIAnimator<DefeatUiAnimationComponents.IButtons,IButtonsOpen>
+        private class Animation_Buttons_Open : SequenceUIAnimationVibration<DefeatUiAnimationComponents.IButtons,IButtonsOpen, IVibrationCaller>
         {
             private readonly AnimationHelper.PanelPosition _panelPosition;
             
-            public Animation_Buttons_Open(DefeatUiAnimationComponents.IButtons components, IButtonsOpen animationData)
-                : base(components, animationData)
+            public Animation_Buttons_Open(DefeatUiAnimationComponents.IButtons components, IButtonsOpen animationData,
+                IVibrationCaller vibrationComponent)
+                : base(components, animationData, vibrationComponent)
             {
                 _panelPosition =
                     new AnimationHelper.PanelPosition(UIComponents.ButtonsPanel, AnimationData.OffscreenPosition, AnimationData.OffscreenOffset);
@@ -296,12 +319,13 @@ namespace _Main.Scripts.Defeat
 
         #region Coins
 
-        private class Animation_Coins_OpenPanel : SequenceUIAnimator<DefeatUiAnimationComponents.ICoins,ICoinsOpen>
+        private class Animation_Coins_OpenPanel : SequenceUIAnimationVibration<DefeatUiAnimationComponents.ICoins,ICoinsOpen, IVibrationCaller>
         {
             private readonly AnimationHelper.PanelPosition _panelPosition;
 
-            public Animation_Coins_OpenPanel(DefeatUiAnimationComponents.ICoins components, ICoinsOpen animationData)
-                : base(components, animationData)
+            public Animation_Coins_OpenPanel(DefeatUiAnimationComponents.ICoins components, ICoinsOpen animationData,
+                IVibrationCaller vibrationComponent)
+                : base(components, animationData, vibrationComponent)
             {
                 _panelPosition = new AnimationHelper.PanelPosition(UIComponents.CoinsPanel, AnimationData.OffscreenPosition, AnimationData.OffscreenOffset);
             }
@@ -316,6 +340,7 @@ namespace _Main.Scripts.Defeat
                 return DOTween.Sequence()
                         .AppendCallback(()=> UIComponents.CoinsPanel.gameObject.SetActive(true))
                         .Append(UIComponents.CoinsPanel.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
+                        .AppendCallback(() => VibrationComponent.TriggerCoinsMoved())
                         .AppendInterval(AnimationData.FinishDelay)
                     ;
             }
@@ -356,6 +381,17 @@ namespace _Main.Scripts.Defeat
         public event Action OnStopMusic;
 
         #endregion
+
+        #region IDefeatAnimationVibration
+
+        public event Action OnScoreMoved;
+        public event Action OnHighScoreMoved;
+        public event Action OnNewHighScore;
+        public event Action OnCoinsMoved;
+        public event Action OnTitleMoved;
+
+        #endregion
+        
         
         private void Start()
         {
@@ -363,15 +399,15 @@ namespace _Main.Scripts.Defeat
             
             _animationInitializer = new AnimationInitializer(UIComponents);
             //
-            _animationMainOpen = new Animation_Main_Open(UIComponents,animationData.PanelOpenData);
-            _animationMainClose = new Animation_Main_Close(UIComponents, animationData.PanelCloseData);
+            _animationMainOpen = new Animation_Main_Open(UIComponents,animationData.PanelOpenData, this);
+            _animationMainClose = new Animation_Main_Close(UIComponents, animationData.PanelCloseData, this);
             //
-            _animationButtonsOpen = new Animation_Buttons_Open(UIComponents, animationData.ButtonsOpenData);
-            _animationScoreCurrent = new Animation_CurrentScore_Increment(UIComponents,animationData.CurrentScoreData,HandleCurrentScoreText);
+            _animationButtonsOpen = new Animation_Buttons_Open(UIComponents, animationData.ButtonsOpenData, this);
+            _animationScoreCurrent = new Animation_CurrentScore_Increment(UIComponents,animationData.CurrentScoreData,HandleCurrentScoreText, this);
             //
-            _animationScoreHigh = new Animation_HighScore_Increment(UIComponents,animationData.HighScoreData,HandleHighScoreText);
+            _animationScoreHigh = new Animation_HighScore_Increment(UIComponents,animationData.HighScoreData,HandleHighScoreText, this);
             //
-            _animationOpenCoinsPanel = new Animation_Coins_OpenPanel(UIComponents, animationData.CoinsOpenData);
+            _animationOpenCoinsPanel = new Animation_Coins_OpenPanel(UIComponents, animationData.CoinsOpenData, this);
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -525,6 +561,16 @@ namespace _Main.Scripts.Defeat
         {
             return LocalizationManager.Instance.GetText(key);
         }
-        
+
+        #region IVibrationCaller
+
+        public void TriggerScoreMoved() => OnScoreMoved?.Invoke();
+        public void TriggerHighScoreMoved() => OnHighScoreMoved?.Invoke();
+        public void TriggerNewHighScore() => OnNewHighScore?.Invoke();
+        public void TriggerCoinsMoved() => OnCoinsMoved?.Invoke();
+        public void TriggerTitleMoved() => OnTitleMoved?.Invoke();
+
+        #endregion
+
     }
 }

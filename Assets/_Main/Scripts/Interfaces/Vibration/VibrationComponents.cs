@@ -29,9 +29,13 @@ namespace _Main.Scripts.Interfaces.Vibration
     
     public interface IDefeatAnimationVibration : IVibrationComponent
     {
-
+        public event Action OnScoreMoved;
+        public event Action OnHighScoreMoved;
+        public event Action OnNewHighScore;
+        public event Action OnCoinsMoved;
+        public event Action OnTitleMoved;
     }
-    
+        
     //=== Ability ===//
     
     public interface IAbilityVibration : IVibrationComponent

@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.MyCommands
 {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     public static class GameModeCommands
     {
         [ConsoleMethod("gm_help", "List of GameMode commands")]
@@ -510,7 +511,6 @@ namespace _Main.Scripts.MyCommands
             SettingsManager.Instance.SetVibration(enable);
         }
     }
-
     public static class SaveCommands
     {
         [ConsoleMethod("save_cmd_help", "List of Settings commands")]
@@ -528,7 +528,6 @@ namespace _Main.Scripts.MyCommands
             DataManager.Instance.ClearSaveData();
         }
     }
-
     public static class TimeScaleCommands
     {
         [ConsoleMethod("time_cmd_help", "List of Settings commands")]
@@ -589,4 +588,6 @@ namespace _Main.Scripts.MyCommands
             );
         }
     }
+    
+#endif
 }

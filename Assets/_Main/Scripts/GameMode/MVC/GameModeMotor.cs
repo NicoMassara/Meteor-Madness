@@ -20,10 +20,17 @@ namespace _Main.Scripts.GameMode
         private class StreakMilestoneNotifier
         {
             private int _nextMilestone;
-            private readonly int _step = 10;
+            private readonly int _step;
             
             public event Action<int> OnMilestoneReached;
-            
+
+
+            public StreakMilestoneNotifier(int step = 10)
+            {
+                _step = step;
+                ResetMilestone();
+            }
+
             public void UpdateStreak(int current)
             {
                 if (current == 0)

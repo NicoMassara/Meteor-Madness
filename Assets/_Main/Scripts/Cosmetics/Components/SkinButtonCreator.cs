@@ -38,6 +38,14 @@ namespace _Main.Scripts.Cosmetics.Components
             _lasSelectedSkin = SkinType.None;
         }
 
+        public void UpdateButtonsName()
+        {
+            foreach (var item in _skinButtons)
+            {
+                SetButtonText(item.Value, item.Key);
+            }
+        }
+
         private void CreateAllButtons()
         {
             // It needs to add 1 and then use _skinCount-1 to work, don't know, don't care but it works
@@ -55,22 +63,13 @@ namespace _Main.Scripts.Cosmetics.Components
             _buttonsArray = new ISkinButton[_skinCount];
 
             for (int i = 0; i < _skinCount-1; i++) _buttonsArray[i] = _buttonSpawnerFunc();
-            for (int i = 1; i < _skinCount; i++) SetButtonText(_buttonsArray[i-1], (SkinType)i);
+            for (int i = 1; i < _skinCount; i++) InitializeButtonData(_buttonsArray[i-1], (SkinType)i);
         }
         
-        private void SetButtonText(ISkinButton button, SkinType skinType)
+        private void InitializeButtonData(ISkinButton button, SkinType skinType)
         {
-            var information = GetSkinInformation(skinType);
-
-            var defaultSkinName = "";
-
-            if (information != null)
-                defaultSkinName = GetLocalizedString(information.NameCode);
-            else
-                defaultSkinName = skinType.ToString();
-
-            button.SetData(defaultSkinName, skinType).OnSelect += Button_OnSelectHandler;
-            
+            SetButtonText(button, skinType);
+            button.OnSelect += Button_OnSelectHandler;
             _skinButtons.Add(skinType, button);
         }
 
@@ -87,6 +86,20 @@ namespace _Main.Scripts.Cosmetics.Components
                 SetInteractable(skinSelected, false);
                 _lasSelectedSkin = skinSelected;
             }
+        }
+
+        private void SetButtonText(ISkinButton button, SkinType skinType)
+        {
+            var information = GetSkinInformation(skinType);
+
+            var defaultSkinName = "";
+
+            if (information != null)
+                defaultSkinName = GetLocalizedString(information.NameCode);
+            else
+                defaultSkinName = skinType.ToString();
+
+            button.SetData(defaultSkinName, skinType);
         }
 
         private void SetInteractable(SkinType skin, bool interactable)
