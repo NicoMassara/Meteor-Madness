@@ -1,7 +1,7 @@
 {
     "name": "MeteorMadness.GlobalValues",
     "rootNamespace": "MeteorMadness.GlobalValues",
-    "references": ["GUID:cbcefa849418cda42a15b4f089dcf60b"],
+    "references": ["GUID:cbcefa849418cda42a15b4f089dcf60b","GUID:47a70d1f9c6c9c14e9bd7f0d7fbc68d1"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

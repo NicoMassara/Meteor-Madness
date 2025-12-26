@@ -1,8 +1,7 @@
 using System;
-using UnityEngine;
 using System.Collections.Generic;
 
-namespace _Main.Scripts.FiniteStateMachine
+namespace MeteorMadness.Systems
 {
     #region States
     public abstract class State<T> : IState<T>

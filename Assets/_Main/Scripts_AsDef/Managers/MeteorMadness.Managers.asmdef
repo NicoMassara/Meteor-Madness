@@ -1,7 +1,13 @@
 {
     "name": "MeteorMadness.Managers",
     "rootNamespace": "MeteorMadness.Managers",
-    "references": [],
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:c86df55943534d8e992b0a5e142eef8a",
+        "GUID:6f153d6ddbe9d704b9c46d65edb727e0",
+        "MeteorMadness.Services",
+        "GUID:cbcefa849418cda42a15b4f089dcf60b"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
