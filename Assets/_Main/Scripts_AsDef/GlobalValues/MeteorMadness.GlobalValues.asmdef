@@ -1,0 +1,14 @@
+{
+    "name": "MeteorMadness.GlobalValues",
+    "rootNamespace": "MeteorMadness.GlobalValues",
+    "references": ["GUID:cbcefa849418cda42a15b4f089dcf60b"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,14 @@
+{
+    "name": "NicolasMassara.CustomUpdateManager",
+    "rootNamespace": "NicolasMassara.CustomUpdateManager",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
