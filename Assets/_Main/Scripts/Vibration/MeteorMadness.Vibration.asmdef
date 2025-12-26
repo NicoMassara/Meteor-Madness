@@ -1,4 +1,21 @@
-﻿{
-  "name": "MeteorMadness.Vibration",
-  "references":[ "GUID:47a70d1f9c6c9c14e9bd7f0d7fbc68d1", "GUID:c86df55943534d8e992b0a5e142eef8a", "GUID:72999fc0cb6d47409e53a0030917cc84" ]
+{
+    "name": "MeteorMadness.Vibration",
+    "rootNamespace": "MeteorMadness.Vibration",
+    "references": [
+        "GUID:47a70d1f9c6c9c14e9bd7f0d7fbc68d1",
+        "GUID:c86df55943534d8e992b0a5e142eef8a",
+        "GUID:72999fc0cb6d47409e53a0030917cc84"
+    ],
+    "includePlatforms": [
+        "Android",
+        "iOS"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
