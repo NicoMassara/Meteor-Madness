@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using MeteorMadness.GlobalEvents.Events;
 using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.Services.AdsSystem;

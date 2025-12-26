@@ -1,8 +1,7 @@
-﻿
-using System.Collections.Generic;
-using MeteorMadness.GlobalEvents.Events;
+﻿using System.Collections.Generic;
 using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.BaseSingleton;
+using MeteorMadness.GlobalValues.Events;
 using Unity.Services.Analytics;
 using UnityEngine;
 

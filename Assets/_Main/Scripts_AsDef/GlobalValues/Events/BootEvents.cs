@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MeteorMadness.GlobalEvents.Events
+namespace MeteorMadness.GlobalValues.Events
 {
     public class BootEvents
     {

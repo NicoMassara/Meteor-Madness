@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using MeteorMadness.GlobalEvents.Events;
+using MeteorMadness.GlobalValues.Events;
 using Unity.Services.Core;
 using UnityEngine;
 

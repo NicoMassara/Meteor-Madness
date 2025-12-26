@@ -1,6 +1,6 @@
 ﻿using System;
-using MeteorMadness.GlobalEvents.Events;
 using MeteorMadness.GlobalValues.BaseSingleton;
+using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.Services.AdsSystem.Controllers;
 using Unity.Services.LevelPlay;
 using UnityEngine;
