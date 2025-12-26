@@ -10,7 +10,7 @@ using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace _Main.Scripts.FlyingObject
+namespace MeteorMadness.Gameplay.FlyingObject
 {
     public class FlyingObjectMovement : ManagedComponent, IFixedUpdatable
     {

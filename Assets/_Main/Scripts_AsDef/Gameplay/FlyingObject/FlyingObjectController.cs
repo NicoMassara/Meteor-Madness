@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace _Main.Scripts.FlyingObject
+namespace MeteorMadness.Gameplay.FlyingObject
 {
     public abstract class FlyingObjectController<T, TVS> 
         where T : FlyingObjectMotor<TVS> 

@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.FlyingObject;
+﻿using MeteorMadness.Gameplay.FlyingObject;
 using UnityEngine;
 
 namespace MeteorMadness.Gameplay.Abilities.Sphere

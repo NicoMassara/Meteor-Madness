@@ -1,5 +1,5 @@
 ﻿using System;
-using _Main.Scripts.FlyingObject;
+using MeteorMadness.Gameplay.FlyingObject;
 using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Interfaces;
 using MeteorMadness.GlobalValues.Interfaces.Sounds;

@@ -1,4 +1,4 @@
-﻿using _Main.Scripts.FlyingObject;
+﻿using MeteorMadness.Gameplay.FlyingObject;
 using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;

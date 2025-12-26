@@ -1,7 +1,7 @@
 ﻿using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
 
-namespace _Main.Scripts.FlyingObject
+namespace MeteorMadness.Gameplay.FlyingObject
 {
     public abstract class FlyingObjectMotor<TVS> : ObservableComponent where TVS : FlyingObjectValues
     {
