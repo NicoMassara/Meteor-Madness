@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Skin_Default_Comet_Unlit
-  m_Shader: {fileID: 4800000, guid: 5f7c0b7616bb36c4a9bcace9cb18865a, type: 3}
+  m_Name: Mat_Skin_Meteor_Earth_Unlit
+  m_Shader: {fileID: 4800000, guid: c9278dac8d29fed4ba9e99dbf0bf9e92, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,20 +23,12 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BaseTexture:
-        m_Texture: {fileID: 0}
+    - _MeteorTexture:
+        m_Texture: {fileID: 2800000, guid: 54c9e9baffb09864a83d438f96841dfd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _CometTexture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _TextureSample0:
-        m_Texture: {fileID: 2800000, guid: 1ac8012a596b2c046a90ebeca4909712, type: 3}
+    - _MeteorTexture1:
+        m_Texture: {fileID: 2800000, guid: 54c9e9baffb09864a83d438f96841dfd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -45,12 +37,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _ColorMultiplier: 0.75
+    - _AtmosphereSize: 4.13808
     - _Cutoff: 0.5
-    - _NoiseScale: 1
-    - __dirty: 1
-    m_Colors:
-    - _BaseColor: {r: 0, g: 1, b: 0.9903088, a: 0}
-    - _Vector0: {r: 10.26, g: -1.35, b: 0, a: 0}
+    - _HealthAmount: 1
+    - __dirty: 0
+    m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1

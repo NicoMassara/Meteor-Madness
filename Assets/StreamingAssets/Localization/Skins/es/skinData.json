@@ -15,5 +15,17 @@
     "Name" : "Disco de Vinilo",
     "Description" : "Un viejo vinilo, un poco golpeado",
     "DeathTitle" : "La Musica se detuvo!"
+  },
+
+  "GoldenEarth" : {
+    "Name" : "Tierra Dorada",
+    "Description" : "Nuestra casa, pero dorada!",
+    "DeathTitle" : "La Humanidad se acabo!"
+  },
+
+  "Meteor" : {
+    "Name" : "Meteorito",
+    "Description" : "UN METEORito?! Bue...",
+    "DeathTitle" : "La Humanidad esta salvada!"
   }
 }

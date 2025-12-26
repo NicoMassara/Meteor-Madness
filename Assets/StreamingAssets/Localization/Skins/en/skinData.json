@@ -15,5 +15,17 @@
     "Name" : "Vinyl Record",
     "Description" : "An old school Vintage Record",
     "DeathTitle" : "Music has Stopped!"
+  },
+
+  "GoldenEarth" : {
+    "Name" : "Golden Earth",
+    "Description" : "Our home but Golden!",
+    "DeathTitle" : "Golden Humanity is over!"
+  },
+
+  "Meteor" : {
+    "Name" : "Meteor",
+    "Description" : "A METEOR?! Huh...",
+    "DeathTitle" : "Humanity is saved!"
   }
 }

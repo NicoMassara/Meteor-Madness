@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf4168e7eb8a4661b41187eed3aa7e1c, type: 3}
-  m_Name: SO_SkinData_PPizza
+  m_Name: SO_SkinData_GoldenEarth
   m_EditorClassIdentifier: 
-  skinType: 2
-  localizationCode: Pizza
-  unlockPrice: 100
+  skinType: 4
+  localizationCode: GoldenEarth
+  unlockPrice: 9999
   earthData:
-    material: {fileID: 2100000, guid: c27fd55e4bb0922479bacb909b36128d, type: 2}
+    material: {fileID: 2100000, guid: f90848d404b56de4c9149362f31a03a7, type: 2}
     scaleOffsetX: 3.5
     scaleOffsetY: 3.5
     rotationOffset: 0
@@ -25,10 +25,10 @@ MonoBehaviour:
     scaleOffsetX: 1
     scaleOffsetY: 1
   meteorData:
-    material: {fileID: 2100000, guid: 47c3879eebf98744385b4c6415aa28d8, type: 2}
+    material: {fileID: 2100000, guid: fd10c15ef4269e541a4d92ea1cc667e9, type: 2}
     scaleOffsetX: 1
     scaleOffsetY: 1
   cometData:
-    material: {fileID: 2100000, guid: 2c1801b43e0c35642bfa8b66825cde1a, type: 2}
+    material: {fileID: 2100000, guid: e70363e40a9ba7a4880250c7dc83db8e, type: 2}
     scaleOffsetX: 1
     scaleOffsetY: 1

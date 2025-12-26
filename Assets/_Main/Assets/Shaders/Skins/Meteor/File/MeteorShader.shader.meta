@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: c9278dac8d29fed4ba9e99dbf0bf9e92
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _MeteorTexture1: {fileID: 2800000, guid: 54c9e9baffb09864a83d438f96841dfd, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
