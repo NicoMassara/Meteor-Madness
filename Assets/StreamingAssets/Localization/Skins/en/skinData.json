@@ -9,5 +9,11 @@
     "Name" : "Pineapple Pizza",
     "Description" : "Best pizza flavor! Right?",
     "DeathTitle" : "Pizza is served!"
+  },
+
+  "Vinyl" : {
+    "Name" : "Vinyl Record",
+    "Description" : "An old school Vintage Record",
+    "DeathTitle" : "Music has Stopped!"
   }
 }

@@ -13,8 +13,10 @@ using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.MVC
 {
-    public class CosmeticUIView : BaseViewUI<CosmeticUIPanelSelector, CosmeticUIComponents>, 
-        ICosmeticUISounds, ICosmeticUIVibration, CosmeticUIView.ICosmeticUIView, IUpdatable
+    public class CosmeticUIView : BaseViewUI<CosmeticUIPanelSelector, CosmeticUIComponents>, CosmeticUIView.ICosmeticUIView, 
+        IUpdatable,
+        ICosmeticUISounds, 
+        ICosmeticUIVibration
     {
         public interface ICosmeticUIView
         {
@@ -91,14 +93,31 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         // Hack
         private uint _lastCoins;
-        
+
+        #region ICosmeticUIView
+
         public event Action OnMainMenuButtonPressed;
-        public event Action OnScroll;
+        public event Action<int> OnSkinSelected;
+        public event Action<SkinType> OnUnlockButtonPressed;
+
+        #endregion
+        
+        #region ICosmeticUISounds
+
+        
+
+        #endregion
+        
+        #region ICosmeticUIVibration
+
         public event Action OnUnlockFailed;
         public event Action OnUnlocked;
         public event Action OnCoinsFinishedDecrement;
-        public event Action<int> OnSkinSelected;
-        public event Action<SkinType> OnUnlockButtonPressed;
+
+        public event Action<int> OnScroll;
+
+        #endregion
+
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.UI;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
@@ -169,6 +188,9 @@ namespace _Main.Scripts.Cosmetics.MVC
             _skinButtonController.DisableCurrentSkinButtonInteraction();
             UpdateDescriptionText(SkinManager.Instance.GetCurrentSkinType());
             UpdateCoinsText(SkinManager.Instance.GetCoins());
+            UIComponents.SetLockedText("Cosmetic.Locked");
+            UIComponents.SetLockedTextRed();
+            UIComponents.EnableUnlockButton();
             UIComponents.SetActiveLockedPanel(false);
         }
         
@@ -258,6 +280,9 @@ namespace _Main.Scripts.Cosmetics.MVC
             
             if (SkinManager.Instance.GetIsLocked((int)skinSelected))
             {
+                UIComponents.SetLockedTextRed();
+                UIComponents.EnableUnlockButton();
+                UIComponents.SetLockedText("Cosmetic.Locked");
                 UIComponents.SetActiveLockedPanel(true);
                 UpdateRequirementText(skinSelected);
             }
@@ -271,19 +296,31 @@ namespace _Main.Scripts.Cosmetics.MVC
         
         private void UpdateDescriptionText(SkinType skinType)
         {
-            var descriptionCode = SkinManager.Instance.GetSkinInformationByType(skinType).DescriptionCode;
+            var skinInfo = SkinManager.Instance.GetSkinInformationByType(skinType);
+            if (skinInfo == null)
+            {
+                UIComponents.SetDescriptionText("Null");
+                return;
+            }
+
+            var descriptionCode = skinInfo.DescriptionCode;
             UIComponents.SetDescriptionText(descriptionCode);
         }
 
 
-        private void UpdateCoinsText(uint coinsAmount)
-        {
-            UIComponents.SetCoinsText("Cosmetic.StoredCoins", coinsAmount);
-        }
+        private void UpdateCoinsText(uint coinsAmount) 
+            => UIComponents.SetCoinsText("Cosmetic.StoredCoins", coinsAmount);
 
         private void UpdateRequirementText(SkinType skinType)
-        {
-            var coinsPrize = SkinManager.Instance.GetSkinInformationByType(skinType).UnlockPrice;
+        {            
+            var skinInfo = SkinManager.Instance.GetSkinInformationByType(skinType);
+            if (skinInfo == null)
+            {
+                UIComponents.SetRequirementText("Cosmetic.Requirement", int.MaxValue, "Cosmetic.Coins.Multiple");
+                return;
+            }
+            
+            var coinsPrize = skinInfo.UnlockPrice;
             var coinsCode = coinsPrize != 1 ? "Cosmetic.Coins.Multiple" : "Cosmetic.Coins.Single";
             UIComponents.SetRequirementText("Cosmetic.Requirement", coinsPrize, coinsCode);
         }
@@ -318,7 +355,7 @@ namespace _Main.Scripts.Cosmetics.MVC
             _skinButtonController.AddListenerToAllButtons();
         }
         
-        private void TriggerOnScroll(Vector2 scrollPosition) => OnScroll?.Invoke();
+        private void TriggerOnScroll(int scrollDirection) => OnScroll?.Invoke(scrollDirection);
         
         private void OnLanguageChanged()
         {

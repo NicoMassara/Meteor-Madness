@@ -5,7 +5,7 @@
         None,
         Default,
         Pizza,
-        Empty1,
+        Vinyl,
         Empty2,
         Empty3,
         Empty4,

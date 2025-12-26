@@ -9,5 +9,11 @@
     "Name" : "Pizza Con Piña",
     "Description" : "La mejor pizza! Verdad?",
     "DeathTitle" : "La Pizza esta lista!"
+  },
+
+  "Vinyl" : {
+    "Name" : "Disco de Vinilo",
+    "Description" : "Un viejo vinilo, un poco golpeado",
+    "DeathTitle" : "La Musica se detuvo!"
   }
 }

@@ -124,6 +124,7 @@ namespace _Main.Scripts.Interfaces.Sounds
         public event Action OnUnlockFailed;
         public event Action OnUnlocked;
         public event Action OnCoinsFinishedDecrement;
+        public event Action<int> OnScroll;
     }
     
     // Defeat

@@ -23,7 +23,7 @@ namespace _Main.Scripts.Cosmetics
         public SkinSelectButton SkinSelectButton;
         [Space]
         [Header("Scroll")]
-        [SerializeField] private ScrollRect scrollRect;
+        [SerializeField] private ButtonsScrollRect scrollRect;
         [Space]
         [Header("Description")] 
         [SerializeField] private GameObject descriptionPanel;
@@ -53,15 +53,12 @@ namespace _Main.Scripts.Cosmetics
         // === Scroll Rect === //
         
         #region Scroll Rect
-        public void AddScrollListener(UnityAction<Vector2> onScroll)
-        {
-            scrollRect.onValueChanged.AddListener(onScroll);
-        }
-        
-        public void RemoveScrollListener(UnityAction<Vector2> onScroll)
-        {
-            scrollRect.onValueChanged.RemoveListener(onScroll);
-        }
+        public void AddScrollListener(Action<int> onScroll) 
+            => scrollRect.OnScrolled += onScroll;
+
+        public void RemoveScrollListener(Action<int> onScroll) 
+            => scrollRect.OnScrolled -= onScroll;
+
         #endregion
 
         // === Description === //
@@ -79,7 +76,7 @@ namespace _Main.Scripts.Cosmetics
         #region Locked
         public void SetActiveLockedPanel(bool active) 
             => SetActiveObject(lockedPanel,active);
-        public void SetRequirementText(string requirementTextCode,uint coinsAmount, string coinsTextCode)
+        public void SetRequirementText(string requirementTextCode,int coinsAmount, string coinsTextCode)
         {
             SetText(requirementText,
                 $"{GetLocalizedString(requirementTextCode)}" + " " + 

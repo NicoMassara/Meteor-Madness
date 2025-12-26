@@ -131,12 +131,12 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             var type = (SkinType)skinIndex;
             var coinsTarget = SkinManager.Instance.GetSkinInformationByType(type).UnlockPrice;
-            var hasEnough = SkinManager.Instance.GetContainsEnoughCoins(coinsTarget);
+            var hasEnough = SkinManager.Instance.GetContainsEnoughCoins((uint)coinsTarget);
 
             if (hasEnough)
             {
                 SkinManager.Instance.UnlockPreviewSkin();
-                SkinManager.Instance.TryRemoveCoins(coinsTarget);
+                SkinManager.Instance.TryRemoveCoins((uint)coinsTarget);
                 SkinManager.Instance.UnlockSkin(skinIndex);
                 OnSkinUnlocked?.Invoke(type);
                 CameraEventCaller.DisableGrayscale();

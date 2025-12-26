@@ -84,48 +84,5 @@ namespace _Main.Scripts.Vibration
             _canVibrate = canVibrate;
         }
     }
-
-    [Serializable]
-    public class VibrationData
-    {
-        [Tooltip("In ms")]
-        [Range(10,3000)]
-        public long Duration;
-        [Range(1,255)]
-        public int Intensity;
-    }
-    
-    public enum VibrationDurationType
-    {
-        None,
-        ExtraShort,
-        Short,
-        MediumShort,
-        Medium,
-        MediumLong,
-        Long,
-        ExtraLong,
-        SuperLong
-    }
-
-    public enum VibrationIntensityType
-    {
-        None,
-        ExtraLight,
-        Light,
-        MediumLight,
-        Medium,
-        MediumHeavy,
-        Heavy,
-        ExtraHeavy,
-        FullHard
-    }
-    
-    public enum VibrationType
-    {
-        None,
-        UIButtonAccept,
-        UIButtonCancel
-    }
 #endif
 }

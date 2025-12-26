@@ -18,9 +18,16 @@ namespace _Main.Scripts.Vibration.Behaviours.UI
                 Vibrate(VibrationType.UIButtonAccept);
             };
 
-            ComponentToVibrate.OnScroll += () =>
+            ComponentToVibrate.OnScroll += (value) =>
             {
-                //Vibrate(VibrationType.UIButtonCancel);
+                if (value == 1)
+                {
+                    Vibrate(VibrationType.UIButtonAccept);
+                }
+                else
+                {
+                    Vibrate(VibrationType.UIButtonCancel);
+                }
             };
             
             ComponentToVibrate.OnCoinsFinishedDecrement += () =>

@@ -7,10 +7,10 @@ namespace _Main.Scripts.Cosmetics.Components
 {
     public class SkinButtonCreator 
     {
+        private readonly bool _createEmptyButtons;
         private readonly Func<SkinSelectButton> _buttonSpawnerFunc;
         private readonly Dictionary<SkinType, ISkinButton> _skinButtons = new Dictionary<SkinType, ISkinButton>();
         private ISkinButton[] _buttonsArray;
-        private int _skinCount;
         private SkinType _lasSelectedSkin;
         
         public event Action<SkinType> OnSkinSelected;
@@ -18,6 +18,9 @@ namespace _Main.Scripts.Cosmetics.Components
         public SkinButtonCreator(Func<SkinSelectButton> buttonSpawnerFunc)
         {
             _buttonSpawnerFunc = buttonSpawnerFunc;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _createEmptyButtons = false;
+#endif
         }
 
         public void Initialize()
@@ -46,24 +49,55 @@ namespace _Main.Scripts.Cosmetics.Components
             }
         }
 
+
+        private interface ISortable
+        {
+            public int GetSortValue();
+        }
+        private class PrizeData : ISortable
+        {
+            public int Prize { get; set; }
+            public int SkinIndex { get; set; }
+            public int GetSortValue() => Prize;
+        }
+
         private void CreateAllButtons()
         {
             // It needs to add 1 and then use _skinCount-1 to work, don't know, don't care but it works
-            _skinCount = 1;
+            var skinCount = 1;
             
-            for (int i = 1; i < (int)SkinType.DEFAULT_MAX; i++)
+            for (int i = 1; i < (int)SkinType.DEFAULT_MAX-1; i++)
             {
                 var skinName = ((SkinType)i).ToString();
-                if (skinName.Contains("Empty", StringComparison.OrdinalIgnoreCase))
-                    continue;
+                if (_createEmptyButtons == false)
+                    if (skinName.Contains("Empty", StringComparison.OrdinalIgnoreCase))
+                        continue;
                 
-                _skinCount++;
+                skinCount++;
             }
             
-            _buttonsArray = new ISkinButton[_skinCount];
+            var prizeArray = new PrizeData[skinCount];
+            _buttonsArray = new ISkinButton[skinCount];
 
-            for (int i = 0; i < _skinCount-1; i++) _buttonsArray[i] = _buttonSpawnerFunc();
-            for (int i = 1; i < _skinCount; i++) InitializeButtonData(_buttonsArray[i-1], (SkinType)i);
+            for (int i = 0; i < skinCount; i++)
+            {
+                var item = new PrizeData
+                {
+                    Prize = GetSkinPrice((SkinType)i+1),
+                    SkinIndex = i+1
+                };
+                
+                prizeArray[i] = item;
+            }
+            
+            Array.Sort(prizeArray, (a, b) => a.GetSortValue().CompareTo(b.GetSortValue()));
+            
+            for (int i = 0; i < prizeArray.Length - 1; i++)
+            {
+                _buttonsArray[i] = _buttonSpawnerFunc();
+                var skinType = (SkinType)prizeArray[i].SkinIndex;
+                InitializeButtonData(_buttonsArray[i], skinType);
+            }
         }
         
         private void InitializeButtonData(ISkinButton button, SkinType skinType)
@@ -73,7 +107,17 @@ namespace _Main.Scripts.Cosmetics.Components
             _skinButtons.Add(skinType, button);
         }
 
-        private ISkinInformation GetSkinInformation(SkinType type) => SkinManager.Instance.GetSkinInformationByType(type);
+        private int GetSkinPrice(SkinType type)
+        {
+            var info = SkinManager.Instance.GetSkinInformationByType(type);
+            return info?.UnlockPrice ?? int.MaxValue;
+        }
+
+        private ISkinInformation GetSkinInformation(SkinType type)
+        {
+            return SkinManager.Instance.GetSkinInformationByType(type);
+        }
+
         private string GetLocalizedString(string key) => LocalizationManager.Instance.GetText(key);
         
         private void Button_OnSelectHandler(SkinType skinSelected)

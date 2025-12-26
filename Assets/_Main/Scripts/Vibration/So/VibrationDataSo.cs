@@ -1,10 +1,8 @@
 ﻿using _Main.Scripts.Interfaces;
-using _Main.Scripts.Vibration;
 using UnityEngine;
 
 namespace _Main.Scripts.Vibration
 {
-#if UNITY_ANDROID 
     [CreateAssetMenu(fileName = "SO_VibrationData_Name", menuName = "Scriptable Objects/Vibration/Data", order = 0)]
     public class VibrationDataSo : ScriptableObject, IVibrationData
     {
@@ -58,5 +56,4 @@ namespace _Main.Scripts.Vibration
             _lastDuration = data.Duration;
         }
     }
-#endif
 }

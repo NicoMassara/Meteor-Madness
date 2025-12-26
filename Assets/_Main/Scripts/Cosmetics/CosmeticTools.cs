@@ -4,7 +4,7 @@ namespace _Main.Scripts.Cosmetics
 {
     public class CosmeticTools
     {
-        private const int PointsToCoin = 20;
+        private const int PointsToCoin = 200;
         
         public static uint ScoreToCoinsConverter(uint score)
         {

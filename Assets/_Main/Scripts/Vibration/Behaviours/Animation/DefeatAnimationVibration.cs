@@ -4,6 +4,7 @@ namespace _Main.Scripts.Vibration.Behaviours.Animation
 {
     public class DefeatAnimationVibration : VibrationBehavior<IDefeatAnimationVibration>
     {
+#if UNITY_ANDROID
         protected override void Start()
         {
             base.Start();
@@ -52,5 +53,6 @@ namespace _Main.Scripts.Vibration.Behaviours.Animation
                 });
             };
         }
+#endif
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Cosmetics.Components;
+using _Main.Scripts.MyAnimations;
 
 namespace _Main.Scripts.Cosmetics
 {
@@ -7,7 +8,7 @@ namespace _Main.Scripts.Cosmetics
     {
         public string NameCode { get; }
         public string DescriptionCode { get; }
-        public uint UnlockPrice { get; }
+        public int UnlockPrice { get; }
     }
     
     public interface ISkinData
@@ -34,4 +35,22 @@ namespace _Main.Scripts.Cosmetics
         public void RemoveListener();
         public void AddListener();
     }
+    
+    // Animations 
+
+    #region Animations
+    
+    public interface IPanelData : IUiAnimationData
+    {
+        public AnimationHelper.Direction OffScreenPos { get; }
+        public float MovementDuration { get; }
+    }
+
+    public interface IPanelCloseData : IUiAnimationData
+    {
+        public AnimationHelper.Direction OffScreenPos { get; }
+        public float MovementDuration { get; }
+    }
+    
+    #endregion
 }

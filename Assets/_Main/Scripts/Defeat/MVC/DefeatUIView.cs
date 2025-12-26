@@ -138,6 +138,7 @@ namespace _Main.Scripts.Defeat
         private void HandleInitializeData()
         {
             UIComponents.SetDeathTitle(GameManager.Instance.DeathTitle);
+            UpdateNewCoinsText(0);
             UIComponents.SetStoredCoinsText("Cosmetic.StoredCoins", GameManager.Instance.GetStoredCoins());
         }
 

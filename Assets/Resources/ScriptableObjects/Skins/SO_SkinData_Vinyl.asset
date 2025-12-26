@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf4168e7eb8a4661b41187eed3aa7e1c, type: 3}
-  m_Name: SO_SkinData_Default
+  m_Name: SO_SkinData_Vinyl
   m_EditorClassIdentifier: 
-  skinType: 1
-  localizationCode: Default
-  unlockPrice: 0
+  skinType: 3
+  localizationCode: Vinyl
+  unlockPrice: 10
   earthData:
-    material: {fileID: 2100000, guid: 2e1f081b661392f4a8844d7adf4093aa, type: 2}
+    material: {fileID: 2100000, guid: 6d67e6d2452bddf49881b5df25cc00a7, type: 2}
     scaleOffsetX: 3.5
     scaleOffsetY: 3.5
-    rotationOffset: 12.5
+    rotationOffset: 0
   shieldData:
-    material: {fileID: 2100000, guid: be408e41b07513a47a4436ea266aa07c, type: 2}
+    material: {fileID: 2100000, guid: 2a92b8816b0f2e347a34a8d1d6aa21ed, type: 2}
     scaleOffsetX: 1
     scaleOffsetY: 1
   meteorData:
-    material: {fileID: 2100000, guid: 98baa2b1c8c12ae4f8d8d0851749b3f5, type: 2}
+    material: {fileID: 2100000, guid: fb43e0e1a62af464a9a2c00c1011bb68, type: 2}
     scaleOffsetX: 1
     scaleOffsetY: 1
   cometData:
-    material: {fileID: 2100000, guid: 37f1457b6d65ea5488086123ad1f14c7, type: 2}
+    material: {fileID: 2100000, guid: e6795e1828f49d14895a03ca65111351, type: 2}
     scaleOffsetX: 1
     scaleOffsetY: 1

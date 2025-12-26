@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Skin_Base_Shield_Unlit
-  m_Shader: {fileID: 4800000, guid: 0e0c4ae1376bc7c40911651cdd0582f0, type: 3}
+  m_Name: Mat_Skin_Vinyl_Meteor_Unlit
+  m_Shader: {fileID: 4800000, guid: ca51800a13b56404f92e258e524c12bc, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,12 +23,8 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 869c9fe9f51fc9c41b7f19176e72dfcc, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ShieldTexture:
-        m_Texture: {fileID: 2800000, guid: 869c9fe9f51fc9c41b7f19176e72dfcc, type: 3}
+    - _Texture:
+        m_Texture: {fileID: 2800000, guid: b63cb86ade31367439ed377d92f214c3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -38,7 +34,6 @@ Material:
     m_Ints: []
     m_Floats:
     - _Cutoff: 0.5
-    - _Opacity: 1
     - __dirty: 0
     m_Colors: []
   m_BuildTextureStacks: []
