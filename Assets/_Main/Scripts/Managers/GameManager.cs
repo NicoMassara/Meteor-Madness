@@ -23,8 +23,7 @@ namespace MeteorMadness.Managers
         public bool AntiEpileptic { get; set; } = true;
         public StatsController StatsController { get; private set; } 
         public FlagsController FlagsController { get; private set; }
-
-        public string DeathTitle { get; set; } = "No Title";
+        
         private void Awake()
         {
             EventManager = new EventBusManager();
@@ -51,27 +50,6 @@ namespace MeteorMadness.Managers
         public void LoadPauseScreen() => LoadGameScreen(ScreenType.Pause);
         public void LoadLastScreen() => GameScreenEventCaller.LoadLastScreen();
         private void LoadGameScreen(ScreenType type) => GameScreenEventCaller.EnableScreen(type, EventRequestType.Requested);
-
-        #endregion
-
-        #region Skin Values
-
-        public uint GetStoredCoins()
-        {
-            //return SkinManager.Instance.GetCoins();
-            return 0;
-        }
-
-        public bool TryAddCoins(uint score)
-        {
-            return true;
-            //return SkinManager.Instance.TryAddCoins(score);
-        }
-
-        public void SaveCoins()
-        {
-            //SkinManager.Instance.SaveStoredCoins();
-        }
 
         #endregion
 

@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace MeteorMadness.ScreenFlow.Stats
 {
+    [RequireComponent(typeof(StatsView))]
+    [RequireComponent(typeof(StatsUIView))]
+    [RequireComponent(typeof(StatsViewAnimation))]
     public class StatsSetup : MonoBehaviour
     {
         private StatsView.IStatsView _view;

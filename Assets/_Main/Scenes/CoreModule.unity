@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65d98b02d47f4d7d80199e4c055e4e32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnSettings: {fileID: 0}
+  spawnSettings: {fileID: 12163667}
   projectileCount: 0
 --- !u!1 &16885182
 GameObject:
@@ -370,13 +370,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12882d17264b434e8bd59ab81f133737, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deflect: {fileID: 0}
-  rotate: {fileID: 0}
+  deflect: {fileID: 11400000, guid: 4a8c99e88d1f9f845baf4cc0d97ec4c4, type: 2}
+  rotate: {fileID: 11400000, guid: 30834b7f58717fe4da7245e37bb3f894, type: 2}
   shieldActivated: {fileID: 0}
-  superShieldStart: {fileID: 0}
+  superShieldStart: {fileID: 11400000, guid: 8f898851c32c1a04690d91db3b54a687, type: 2}
   doublePointsRunning: {fileID: 0}
   automaticRunning: {fileID: 0}
-  superShieldRunning: {fileID: 0}
+  superShieldRunning: {fileID: 11400000, guid: ca692e5cc1edb654fbede31373d9b037, type: 2}
 --- !u!114 &168416679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,10 +389,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a91761d9a58e4970bfb84a08736871e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotateData: {fileID: 0}
-  directionChangeData: {fileID: 0}
-  stopData: {fileID: 0}
-  deflectData: {fileID: 0}
+  rotateData: {fileID: 11400000, guid: b3744b85e9a766c4a9a34fe797647366, type: 2}
+  directionChangeData: {fileID: 11400000, guid: 4e3f9c8ec6f8ad0468b36a1342485c70, type: 2}
+  stopData: {fileID: 11400000, guid: b08e3c364049d7a45b9fa33a69e7c986, type: 2}
+  deflectData: {fileID: 11400000, guid: ae79670803633ad4d9f64ba9e8361eef, type: 2}
 --- !u!114 &168416680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -405,12 +405,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53b4d39b80ea437ca4cc28c67c9d220e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalSprite: {fileID: 0}
-  superSprite: {fileID: 0}
-  abilityRenderer: {fileID: 0}
+  normalSprite: {fileID: 1133430235}
+  superSprite: {fileID: 256456276}
+  abilityRenderer: {fileID: 742944995}
   materialOpacityLerpTime: 0.25
-  timeToEnableSuperShield: 0.1
-  timeToDisableSuperShield: 0.1
+  timeToEnableSuperShield: 0.75
+  timeToDisableSuperShield: 0.75
 --- !u!114 &168416681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,8 +423,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bda0c9172554ce1a9db53c769b3b95c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trailMaterial: {fileID: 0}
-  defaultColor: {r: 0, g: 0, b: 0, a: 0}
+  trailMaterial: {fileID: 2100000, guid: 5bb8d64ee1521564aa1575949d88443a, type: 2}
+  defaultColor: {r: 0, g: 0.9137255, b: 0.98039216, a: 0}
 --- !u!114 &168416682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -449,12 +449,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5a4792da163461f968e34015b0da571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteContainer: {fileID: 0}
-  normalShieldSprite: {fileID: 0}
-  shieldCollider: {fileID: 0}
-  superShieldCollider: {fileID: 0}
-  hitShakeData: {fileID: 0}
-  cameraShakeData: {fileID: 0}
+  spriteContainer: {fileID: 1661175756}
+  normalShieldSprite: {fileID: 1661175756}
+  shieldCollider: {fileID: 1250290977}
+  superShieldCollider: {fileID: 870347182}
+  hitShakeData: {fileID: 11400000, guid: dd5645183524c134d993bf83c148590f, type: 2}
+  cameraShakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
   deflectParticleData: {fileID: 0}
 --- !u!114 &168416684
 MonoBehaviour:
@@ -468,19 +468,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 975d47da637a4969b1a2da9afd6b3850, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteContainer: {fileID: 0}
+  spriteContainer: {fileID: 1661175756}
   movementData: {fileID: 0}
   detectorData:
     ProjectileLayer:
       serializedVersion: 2
-      m_Bits: 0
-    CheckRadius: 10
+      m_Bits: 64
+    CheckRadius: 15
   speederData:
-    speedMultiplier: 5
+    speedMultiplier: 3
     timeToIncrease: 0.5
     timeToDecrease: 0.5
-    timeToFinishIncreasing: 1
-    startDecreaseDelay: 1
+    timeToFinishIncreasing: 0.25
+    startDecreaseDelay: 0.5
 --- !u!1 &208616928
 GameObject:
   m_ObjectHideFlags: 0
@@ -1794,7 +1794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d2d1771d6b348e1b38792bc1f91d395, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionData: {fileID: 0}
+  collisionData: {fileID: 11400000, guid: 9db3fd3fc0c071346a3c4ebf978de66f, type: 2}
 --- !u!114 &593039202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1937,8 +1937,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4f6fe9300544defab1c575a4180e854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnSettings: {fileID: 0}
-  meteorPrefab: {fileID: 0}
+  spawnSettings: {fileID: 12163667}
+  meteorPrefab: {fileID: 7980529498143047617, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
 --- !u!1 &723755121
 GameObject:
   m_ObjectHideFlags: 0
@@ -2333,7 +2333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74dd2eb23c7f49f7bcb518e26ee40f6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityTimeData: {fileID: 0}
+  abilityTimeData: {fileID: 11400000, guid: ce4bcdecd89003b44a8bd6aa137b27e6, type: 2}
 --- !u!4 &807675765
 Transform:
   m_ObjectHideFlags: 0
@@ -3115,6 +3115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mobileCanvas:
   - {fileID: 276659171}
+  - {fileID: 1356343176}
   desktopCanvas:
   - {fileID: 385104970}
 --- !u!4 &1222781336
@@ -3208,7 +3209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 8902019207783047263, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
-  selectorData: {fileID: 0}
+  selectorData: {fileID: 11400000, guid: 4ecea22b7640c414dace2b0e8ec03413, type: 2}
   spawnDelay: 5
 --- !u!1 &1238111394
 GameObject:
@@ -4709,9 +4710,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7ed84cdaffd470a97942cadfa940e42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggeredData: {fileID: 0}
-  finishedData: {fileID: 0}
-  addedData: {fileID: 0}
+  triggeredData: {fileID: 11400000, guid: d6035c170909d2d438bfcd7e37aa27a4, type: 2}
+  finishedData: {fileID: 11400000, guid: 39b5a31266529be409a3ce33e42474dc, type: 2}
+  addedData: {fileID: 11400000, guid: 0c0bd153906d55247a1e46196c1c8009, type: 2}
 --- !u!114 &1859037546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4752,7 +4753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74dd2eb23c7f49f7bcb518e26ee40f6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityTimeData: {fileID: 0}
+  abilityTimeData: {fileID: 11400000, guid: ce4bcdecd89003b44a8bd6aa137b27e6, type: 2}
 --- !u!4 &1859037549
 Transform:
   m_ObjectHideFlags: 0

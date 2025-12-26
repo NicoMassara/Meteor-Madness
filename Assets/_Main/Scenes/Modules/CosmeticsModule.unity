@@ -6468,6 +6468,9 @@ GameObject:
   - component: {fileID: 1901379614}
   - component: {fileID: 1901379613}
   - component: {fileID: 1901379618}
+  - component: {fileID: 1901379621}
+  - component: {fileID: 1901379620}
+  - component: {fileID: 1901379619}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -6541,6 +6544,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiPanelSelector: {fileID: 604189449}
   animData: {fileID: 11400000, guid: 9573b7c8d3a26cb4eb71f24c4246f1cc, type: 2}
+--- !u!114 &1901379619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901379611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7549cf044a47e434f802fa013581e61c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1901379620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901379611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c3ab9a2e3b241988512d6948c7a87eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1901379621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901379611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92779e3e4b494f14a691c9e1e2d3a3c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1923368587
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using MeteorMadness.GlobalValues.Interfaces.Sounds;
 using MeteorMadness.GlobalValues.Interfaces.Vibration;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
+using MeteorMadness.Managers.Cosmetics;
 using MeteorMadness.ScreenFlow.Base;
 using NicolasMassara.CustomActionManager;
 using Unity.Mathematics;
@@ -137,9 +138,9 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         private void HandleInitializeData()
         {
-            UIComponents.SetDeathTitle(GameManager.Instance.DeathTitle);
+            UIComponents.SetDeathTitle(SkinManager.Instance.GetDeathTitle());
             UpdateNewCoinsText(0);
-            UIComponents.SetStoredCoinsText("Cosmetic.StoredCoins", GameManager.Instance.GetStoredCoins());
+            UIComponents.SetStoredCoinsText("Cosmetic.StoredCoins", SkinManager.Instance.GetCoins());
         }
 
         private void HandleStartDisable()

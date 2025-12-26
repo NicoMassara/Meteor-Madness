@@ -9,9 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f78ce30fe404e10ac57d6c51ab00dbb, type: 3}
+  m_Script: {fileID: 11500000, guid: 040a577cb4ab487a924500981b830213, type: 3}
   m_Name: SO_TimeData_Default
   m_EditorClassIdentifier: 
   startGameCount: 3
   firstCometSpawnDelay: 1
   cometSpawnDelay: 8
+  timeToLoadGameScene: 1
+  triggerRestart: 0
+  restartEarth: 0.25

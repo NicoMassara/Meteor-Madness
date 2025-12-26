@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71c87b806985474ba85889f5e9b0986f, type: 3}
+  m_Script: {fileID: 11500000, guid: a1cb06ef9f4e4ef1b401e6241c7c8ea0, type: 3}
   m_Name: So_Animation_UI_Menu
   m_EditorClassIdentifier: 
   menuFirstOpenData:

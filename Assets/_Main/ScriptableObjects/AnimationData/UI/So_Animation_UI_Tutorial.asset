@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e95afff27e8348798c240e4a7ba7774c, type: 3}
+  m_Script: {fileID: 11500000, guid: 1f8fde4d8ae04638a18cd1e842ef7bf3, type: 3}
   m_Name: So_Animation_UI_Tutorial
   m_EditorClassIdentifier: 
   panelOpenData:

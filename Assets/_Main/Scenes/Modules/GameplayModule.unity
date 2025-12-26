@@ -137,7 +137,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &81793092
 RectTransform:
   m_ObjectHideFlags: 0
@@ -373,7 +373,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &217036837
 RectTransform:
   m_ObjectHideFlags: 0
@@ -966,7 +966,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &607786566
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1510,6 +1510,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 997762970}
+  - component: {fileID: 997762973}
+  - component: {fileID: 997762972}
+  - component: {fileID: 997762971}
   m_Layer: 0
   m_Name: UISelector
   m_TagString: Untagged
@@ -1532,6 +1535,82 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &997762971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997762969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b86c8858ab0f47cc992886fba361efeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mobileCanvas:
+  - {fileID: 582161613}
+  - {fileID: 145722713}
+  - {fileID: 1590206347}
+  desktopCanvas:
+  - {fileID: 1825697636}
+  - {fileID: 2118220935}
+  - {fileID: 1245424178}
+--- !u!114 &997762972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997762969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa8ba2d256c04c279f84cc260aa1cb59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelName: Gameplay - Animation
+  mobileData:
+    countdownPanel: {fileID: 637835839}
+    countdownText: {fileID: 1425980918}
+    gameplayPanel: {fileID: 217036837}
+    scorePanel: {fileID: 1059663738}
+    scoreText: {fileID: 1273441778}
+    streakText: {fileID: 927989789}
+    pauseButton: {fileID: 1919243666}
+    notifyPanel: {fileID: 1516608931}
+  desktopData:
+    countdownPanel: {fileID: 575877854}
+    countdownText: {fileID: 1016699660}
+    gameplayPanel: {fileID: 81793092}
+    scorePanel: {fileID: 649174707}
+    scoreText: {fileID: 1285684194}
+    streakText: {fileID: 1574829652}
+    pauseButton: {fileID: 1880084338}
+    notifyPanel: {fileID: 607786566}
+--- !u!114 &997762973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997762969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52683435457042eebdb8b3d724bae078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelName: Gameplay
+  mobileData:
+    CountdownText: {fileID: 1425980919}
+    ScoreText: {fileID: 1273441779}
+    StreakText: {fileID: 927989790}
+    notifyText: {fileID: 639530336}
+    PauseButton: {fileID: 1874520946}
+  desktopData:
+    CountdownText: {fileID: 1016699662}
+    ScoreText: {fileID: 1285684197}
+    StreakText: {fileID: 1574829653}
+    notifyText: {fileID: 328750960}
+    PauseButton: {fileID: 1880084339}
 --- !u!1 &1016699659
 GameObject:
   m_ObjectHideFlags: 0
@@ -1677,6 +1756,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1024740937}
+  - component: {fileID: 1024740941}
+  - component: {fileID: 1024740940}
+  - component: {fileID: 1024740939}
+  - component: {fileID: 1024740938}
+  - component: {fileID: 1024740945}
+  - component: {fileID: 1024740944}
+  - component: {fileID: 1024740943}
+  - component: {fileID: 1024740942}
   m_Layer: 0
   m_Name: Contrroller
   m_TagString: Untagged
@@ -1699,6 +1786,110 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1024740938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024740936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0993f031855b45c882144ffd95ab0d66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1024740939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024740936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 996c6292c2b44520813e581cc5b12af4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiPanelSelector: {fileID: 997762972}
+  animData: {fileID: 11400000, guid: f49d28fae47a76b479bce8c92dd632b0, type: 2}
+--- !u!114 &1024740940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024740936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5eedfc08a1d4178be41fad49aea1231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiPanelSelector: {fileID: 997762973}
+--- !u!114 &1024740941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024740936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3442adcd1a84c33b88522047d7c5d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1024740942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024740936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25ca9951b8264cd494cc6e60c47cdacb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameMusicData: {fileID: 11400000, guid: 0c3e9bdd5f0204d4787c51615ff71221, type: 2}
+  countdownSound: {fileID: 11400000, guid: 72349cb5a1b79094090034040d420787, type: 2}
+  countdownFinish: {fileID: 11400000, guid: 53106164b81249c4bbf7a598ffde2cb3, type: 2}
+--- !u!114 &1024740943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024740936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c696d6ac45155f46aa24d75fbaa54f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minTimeToRegister: 3
+--- !u!114 &1024740944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024740936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd40b1f8d20438a829b87a1b66ca326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1024740945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024740936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 067e23c284b345718cd578e788e727ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointsAdded: {fileID: 0}
 --- !u!1 &1059663737
 GameObject:
   m_ObjectHideFlags: 0

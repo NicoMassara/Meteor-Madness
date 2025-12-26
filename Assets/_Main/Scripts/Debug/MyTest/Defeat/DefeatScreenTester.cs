@@ -129,8 +129,7 @@ namespace _Main.Scripts.MyTest.Defeat
                 BootEvents.InitializeSubSystems();
                 
                 yield return new WaitForEndOfFrame();
-
-                GameManager.Instance.DeathTitle = GetDeathTitleCode();
+                
 
                 yield return new WaitForEndOfFrame();
 
@@ -153,7 +152,6 @@ namespace _Main.Scripts.MyTest.Defeat
             {
                 yield return new WaitForEndOfFrame();
                 
-                GameManager.Instance.DeathTitle = GetDeathTitleCode();
                 
                 yield return new WaitForEndOfFrame();
                 
@@ -166,16 +164,6 @@ namespace _Main.Scripts.MyTest.Defeat
                 yield return new WaitForEndOfFrame();
                 
                 EarthEventCaller.DestructionFinished();
-            }
-
-            private string GetDeathTitleCode()
-            {
-                return deathTitleCode switch
-                {
-                    SkinType.Default => "Cosmetic.SkinData.Default.DeathTitle",
-                    SkinType.Pizza => "Cosmetic.SkinData.Pizza.DeathTitle",
-                    _ => "Cosmetic.SkinData.Default.DeathTitle"
-                };
             }
 
             #region Event Bus

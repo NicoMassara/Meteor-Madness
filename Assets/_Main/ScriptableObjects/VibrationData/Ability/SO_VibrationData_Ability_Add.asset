@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d138f494ef3d45a699f40e378683ae62, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a0792800bf4481fbdb7c858765d206f, type: 3}
   m_Name: SO_VibrationData_Ability_Add
   m_EditorClassIdentifier: 
   data:
     Duration: 100
     Intensity: 75
-  duration: 2
-  intensity: 5
+  duration: 0
+  intensity: 0
   type: 0

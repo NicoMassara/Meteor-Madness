@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9b66bdddcca450288571efac6c1d294, type: 3}
+  m_Script: {fileID: 11500000, guid: c9beff644bd143ce98baa41bf261d116, type: 3}
   m_Name: So_Animation_UI_Gameplay
   m_EditorClassIdentifier: 
   countdownUpdateData:

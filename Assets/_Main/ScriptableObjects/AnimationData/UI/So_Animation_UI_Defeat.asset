@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 469764951a5bab54aa7ee1de20ee189f, type: 3}
+  m_Script: {fileID: 11500000, guid: 55929f6b1abd4d839d2c02cb2c6c9996, type: 3}
   m_Name: So_Animation_UI_Defeat
   m_EditorClassIdentifier: 
   panelOpenData:

@@ -5,6 +5,7 @@ using MeteorMadness.GlobalValues.Interfaces.Analytics;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
+using MeteorMadness.Managers.Cosmetics;
 using UnityEngine;
 
 namespace MeteorMadness.ScreenFlow.Defeat
@@ -122,19 +123,19 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         private void HandleCheckNewCoins()
         {
-            var storedCoins = GameManager.Instance.GetStoredCoins();
+            var storedCoins = SkinManager.Instance.GetCoins();
             uint gainedCoins = 0;
 
             if (SecureValueManager.GetDoesContainValue(GameManager.Instance.StatsController.GetCurrentScoreSecuredId(),
                     out uint currentScore))
             {
-                if (GameManager.Instance.TryAddCoins(currentScore))
+                if (SkinManager.Instance.TryAddCoins(currentScore))
                 {
-                    gainedCoins = GameManager.Instance.GetStoredCoins() - storedCoins;
+                    gainedCoins = SkinManager.Instance.GetCoins() - storedCoins;
                 }
             }
             
-            Debug.Log($"Score: {currentScore}, Last Coins: {storedCoins}, Current Coins: {GameManager.Instance.GetStoredCoins()}");
+            Debug.Log($"Score: {currentScore}, Last Coins: {storedCoins}, Current Coins: {SkinManager.Instance.GetCoins()}");
             
             var hasGainedCoins = gainedCoins > 0;
             
@@ -158,7 +159,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
         {
             GameManager.Instance.StatsController.SaveHighScore(GameManager.Instance.StatsController.GetHighScoreSecuredId());
             GameManager.Instance.StatsController.SaveStats();
-            GameManager.Instance.SaveCoins();
+            SkinManager.Instance.SaveStoredCoins();
  
         }
         

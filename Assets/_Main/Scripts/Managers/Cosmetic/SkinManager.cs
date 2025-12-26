@@ -63,16 +63,11 @@ namespace MeteorMadness.Managers.Cosmetics
                 _skinController.TrySetCurrentSkinType(storedSkin))
             {
                 OnSkinChanged?.Invoke(storedSkin);
-                deathTitle = _skinController.GetSkinDeathMessageByType(storedSkin).DeathTitle;
             }
             else
             {
                 OnSkinChanged?.Invoke(SkinType.Default);
-                deathTitle = _skinController.GetSkinDeathMessageByType(SkinType.Default).DeathTitle;
             }
-            
-            GameManager.Instance.DeathTitle = deathTitle;
-            
             
             SkinEvents.TriggerOnSaveLoaded();
         }
@@ -122,10 +117,7 @@ namespace MeteorMadness.Managers.Cosmetics
             }
 
             var data = DataManager.Instance.GetData<DataManager.SkinSaveData>(DataManager.SaveDataType.Skin);
-
             
-            var title = _skinController.GetSkinDeathMessageByType(_skinController.GetCurrentSkinType()).DeathTitle;
-            GameManager.Instance.DeathTitle = title;
             
             _currentSkinPreview = SkinType.None;
 
@@ -140,6 +132,7 @@ namespace MeteorMadness.Managers.Cosmetics
         #region Data Getters
         
         public SkinType GetPreviewedSkin() => _currentSkinPreview;
+        public string GetDeathTitle() => _skinController.GetSkinDeathMessageByType(_skinController.GetCurrentSkinType()).DeathTitle;
 
         public void UnlockPreviewSkin()
         {

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3827b408aede46b0b9de9a20e3ce077e, type: 3}
+  m_Script: {fileID: 11500000, guid: b03f3589c4314ce0ab1efbfdd29b1425, type: 3}
   m_Name: SO_LevelData_Default
   m_EditorClassIdentifier: 
   gameplayLevelRequierment: 0200000002000000030000000300000004000000060000000a0000000f0000001400000019000000
