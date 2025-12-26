@@ -1,6 +1,5 @@
-﻿using System;
-using _Main.Scripts.CustomId;
-using _Main.Scripts.Interfaces.Sounds;
+﻿using MeteorMadness.GlobalValues.Interfaces.Sounds;
+using MeteorMadness.Sounds.BaseBehaviors;
 using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 

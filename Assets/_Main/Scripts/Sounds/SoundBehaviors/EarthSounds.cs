@@ -1,8 +1,9 @@
-﻿using _Main.Scripts.Interfaces.Sounds;
+﻿using MeteorMadness.GlobalValues.Interfaces.Sounds;
+using MeteorMadness.Sounds.BaseBehaviors;
 using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
-namespace _Main.Scripts.Sounds.Components
+namespace MeteorMadness.Sounds.SoundBehaviors
 {
     public class EarthSounds : SoundBehaviour<IEarthSounds>
     {

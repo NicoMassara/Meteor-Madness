@@ -1,7 +1,8 @@
-﻿using _Main.Scripts.Interfaces;
+﻿using MeteorMadness.GlobalValues;
+using MeteorMadness.GlobalValues.Interfaces;
 using UnityEngine;
 
-namespace _Main.Scripts.Managers
+namespace MeteorMadness.Managers
 {
     
     public struct EarthEvents
@@ -245,6 +246,20 @@ namespace _Main.Scripts.Managers
         public struct Enable { }
         public struct Disable { }
         public struct RunTimer { }
+    }
+
+    public struct AbilitiesUIEvents
+    {
+        public struct Add
+        {
+            public int AbilityIndex;
+        }
+        
+        public struct Initialize { }
+        public struct SelectAbility { }
+        public struct Restart { }
+        public struct EnableUI { }
+        public struct DisableUI { }
     }
 
     public struct FloatingTextEvents

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration
+namespace MeteorMadness.Vibration
 {
     public class VibrationTools
     {
@@ -67,36 +67,4 @@ namespace _Main.Scripts.Vibration
         public int Intensity;
     }
     
-    public enum VibrationDurationType
-    {
-        None,
-        ExtraShort,
-        Short,
-        MediumShort,
-        Medium,
-        MediumLong,
-        Long,
-        ExtraLong,
-        SuperLong
-    }
-
-    public enum VibrationIntensityType
-    {
-        None,
-        ExtraLight,
-        Light,
-        MediumLight,
-        Medium,
-        MediumHeavy,
-        Heavy,
-        ExtraHeavy,
-        FullHard
-    }
-    
-    public enum VibrationType
-    {
-        None,
-        UIButtonAccept,
-        UIButtonCancel
-    }
 }

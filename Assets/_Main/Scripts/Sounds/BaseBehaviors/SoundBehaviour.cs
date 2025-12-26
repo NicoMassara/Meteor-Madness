@@ -1,8 +1,8 @@
-﻿using _Main.Scripts.Interfaces.Sounds;
+﻿using MeteorMadness.GlobalValues.Interfaces.Sounds;
 using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
-namespace _Main.Scripts.Sounds
+namespace MeteorMadness.Sounds.BaseBehaviors
 {
     public abstract class SoundBehaviour<T> : MonoBehaviour
     where T : ISoundComponent

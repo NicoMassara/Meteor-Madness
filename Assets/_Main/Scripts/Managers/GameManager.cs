@@ -1,15 +1,12 @@
 ﻿using System;
-using _Main.Scripts.Cosmetics;
-using _Main.Scripts.Interfaces;
-using _Main.Scripts.MyComponents;
-using _Main.Scripts.MyTools;
-using _Main.Scripts.CustomId;
-using _Main.Scripts.Save;
-using _Main.Scripts.SecurityData;
+using MeteorMadness.GlobalValues;
+using MeteorMadness.GlobalValues.BaseSingleton;
+using MeteorMadness.GlobalValues.Interfaces;
+using MeteorMadness.GlobalValues.Tools;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
-namespace _Main.Scripts.Managers
+namespace MeteorMadness.Managers
 {
     public class GameManager : SingletonBehaviour<GameManager>
     {
@@ -59,9 +56,22 @@ namespace _Main.Scripts.Managers
 
         #region Skin Values
 
-        public uint GetStoredCoins() => SkinManager.Instance.GetCoins();
-        public bool TryAddCoins(uint score) => SkinManager.Instance.TryAddCoins(score);
-        public void SaveCoins() => SkinManager.Instance.SaveStoredCoins();
+        public uint GetStoredCoins()
+        {
+            //return SkinManager.Instance.GetCoins();
+            return 0;
+        }
+
+        public bool TryAddCoins(uint score)
+        {
+            return true;
+            //return SkinManager.Instance.TryAddCoins(score);
+        }
+
+        public void SaveCoins()
+        {
+            //SkinManager.Instance.SaveStoredCoins();
+        }
 
         #endregion
 
@@ -95,7 +105,5 @@ namespace _Main.Scripts.Managers
         {
             QuitUtility.Quit();
         }
-
-
     }
 }

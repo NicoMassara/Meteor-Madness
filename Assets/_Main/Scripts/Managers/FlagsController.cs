@@ -1,6 +1,6 @@
-﻿using _Main.Scripts.Save;
+﻿using MeteorMadness.Managers.Save;
 
-namespace _Main.Scripts.Managers
+namespace MeteorMadness.Managers
 {
     public class FlagsController
     {

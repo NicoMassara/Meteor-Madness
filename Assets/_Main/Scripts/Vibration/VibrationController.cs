@@ -2,7 +2,7 @@
 using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration
+namespace MeteorMadness.Vibration
 {
 #if UNITY_ANDROID
     public class VibrationController

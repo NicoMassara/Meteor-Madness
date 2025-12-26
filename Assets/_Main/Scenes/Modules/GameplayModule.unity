@@ -1501,6 +1501,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 927989788}
   m_CullTransparentMesh: 1
+--- !u!1 &997762969
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 997762970}
+  m_Layer: 0
+  m_Name: UISelector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &997762970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997762969}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1016699659
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,6 +1668,37 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &1024740936
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1024740937}
+  m_Layer: 0
+  m_Name: Contrroller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1024740937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024740936}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1059663737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1683,116 +1745,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1059663737}
   m_CullTransparentMesh: 1
---- !u!1 &1059927929
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1059927931}
-  - component: {fileID: 1059927930}
-  - component: {fileID: 1059927933}
-  - component: {fileID: 1059927932}
-  m_Layer: 0
-  m_Name: UISelector
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1059927930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1059927929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cae90a39e59438f96501ec3e4f3985d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panelName: Gameplay
-  mobileData:
-    CountdownText: {fileID: 1425980919}
-    ScoreText: {fileID: 1273441779}
-    StreakText: {fileID: 927989790}
-    notifyText: {fileID: 639530336}
-    PauseButton: {fileID: 1874520946}
-  desktopData:
-    CountdownText: {fileID: 1016699662}
-    ScoreText: {fileID: 1285684197}
-    StreakText: {fileID: 1574829653}
-    notifyText: {fileID: 328750960}
-    PauseButton: {fileID: 1880084339}
---- !u!4 &1059927931
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1059927929}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1059927932
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1059927929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 118196d4f3584bd4995c40a33d0a7c43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mobileCanvas:
-  - {fileID: 582161613}
-  - {fileID: 145722713}
-  - {fileID: 1590206347}
-  desktopCanvas:
-  - {fileID: 1825697636}
-  - {fileID: 2118220935}
-  - {fileID: 1245424178}
---- !u!114 &1059927933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1059927929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d072d2d04cd446e862700ebf02f011f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panelName: Gameplay-Animation
-  mobileData:
-    countdownPanel: {fileID: 637835839}
-    countdownText: {fileID: 1425980918}
-    gameplayPanel: {fileID: 217036837}
-    scorePanel: {fileID: 1059663738}
-    scoreText: {fileID: 1273441778}
-    streakText: {fileID: 927989789}
-    pauseButton: {fileID: 1919243666}
-    notifyPanel: {fileID: 1516608931}
-  desktopData:
-    countdownPanel: {fileID: 575877854}
-    countdownText: {fileID: 1016699660}
-    gameplayPanel: {fileID: 81793092}
-    scorePanel: {fileID: 649174707}
-    scoreText: {fileID: 1285684194}
-    streakText: {fileID: 1574829652}
-    pauseButton: {fileID: 1237854095}
-    notifyPanel: {fileID: 607786566}
 --- !u!1 &1142360723
 GameObject:
   m_ObjectHideFlags: 0
@@ -2090,149 +2042,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1253651362
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1253651364}
-  - component: {fileID: 1253651367}
-  - component: {fileID: 1253651366}
-  - component: {fileID: 1253651365}
-  - component: {fileID: 1253651373}
-  - component: {fileID: 1253651375}
-  - component: {fileID: 1253651374}
-  - component: {fileID: 1253651376}
-  - component: {fileID: 1253651377}
-  m_Layer: 0
-  m_Name: Controller
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1253651364
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1253651365
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 931e2c9b596c423198585ea1ef2fdb84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1253651366
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 935ef18d510e4e2cb557e315f289bea0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiPanelSelector: {fileID: 1059927930}
---- !u!114 &1253651367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f12934bf659c4ad6aa6a0eb01ed6af54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1253651373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30bd284309cd4e37952152108b966d0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiPanelSelector: {fileID: 1059927933}
-  animData: {fileID: 11400000, guid: f49d28fae47a76b479bce8c92dd632b0, type: 2}
---- !u!114 &1253651374
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e45b12914585419fbc55f9dbfdefd76b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1253651375
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed71a619a87340b3a9bdcf0b49eb39c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointsAdded: {fileID: 11400000, guid: 2e659106af03afc4c9382e8803fa99ec, type: 2}
---- !u!114 &1253651376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27cb7ef6b6d4404cbff738c552f32274, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameMusicData: {fileID: 11400000, guid: 0c3e9bdd5f0204d4787c51615ff71221, type: 2}
-  countdownSound: {fileID: 11400000, guid: 72349cb5a1b79094090034040d420787, type: 2}
-  countdownFinish: {fileID: 11400000, guid: 53106164b81249c4bbf7a598ffde2cb3, type: 2}
---- !u!114 &1253651377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253651362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 687314a1ec174d7b9878071ba0eb665b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minTimeToRegister: 3
 --- !u!1 &1273441777
 GameObject:
   m_ObjectHideFlags: 0
@@ -3524,5 +3333,5 @@ SceneRoots:
   - {fileID: 2118220936}
   - {fileID: 1245424182}
   - {fileID: 2023637912}
-  - {fileID: 1253651364}
-  - {fileID: 1059927931}
+  - {fileID: 1024740937}
+  - {fileID: 997762970}

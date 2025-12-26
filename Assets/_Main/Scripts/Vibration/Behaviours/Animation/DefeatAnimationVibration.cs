@@ -1,6 +1,7 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿
+using MeteorMadness.GlobalValues.Interfaces.Vibration;
 
-namespace _Main.Scripts.Vibration.Behaviours.Animation
+namespace MeteorMadness.Vibration.BaseBehaviours
 {
     public class DefeatAnimationVibration : VibrationBehavior<IDefeatAnimationVibration>
     {

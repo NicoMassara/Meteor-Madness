@@ -1,6 +1,7 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿using MeteorMadness.GlobalValues.Interfaces.Vibration;
+using MeteorMadness.Vibration.BaseBehaviours;
 
-namespace _Main.Scripts.Vibration.Behaviours
+namespace MeteorMadness.Vibration.Behaviours
 {
     public class GameModeVibration : VibrationBehavior<IGameModeVibration>
     {

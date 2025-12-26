@@ -1,9 +1,9 @@
 ﻿using System;
-using _Main.Scripts.MyComponents;
-using _Main.Scripts.MySettings;
+using MeteorMadness.GlobalValues.BaseSingleton;
+using MeteorMadness.Managers;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration
+namespace MeteorMadness.Vibration
 {
 #if UNITY_ANDROID
     public class VibrationManager : SingletonBehaviour<VibrationManager>

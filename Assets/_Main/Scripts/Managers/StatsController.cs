@@ -1,9 +1,8 @@
-﻿using _Main.Scripts.CustomId;
-using _Main.Scripts.Save;
-using _Main.Scripts.SecurityData;
+﻿using MeteorMadness.GlobalValues.Tools;
+using MeteorMadness.Managers.Save;
 using UnityEngine;
 
-namespace _Main.Scripts.Managers
+namespace MeteorMadness.Managers
 {
     public class StatsController
     {

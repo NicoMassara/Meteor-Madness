@@ -1,0 +1,23 @@
+﻿using MeteorMadness.GlobalValues.Tools.Observer;
+
+namespace MeteorMadness.ScreenFlow.Settings
+{
+    public class SettingsMotor : ObservableComponent
+    {
+        public void StartDisable() => NotifyAll(SettingsObserverMessage.StartDisable);
+
+        public void Enable() => NotifyAll(SettingsObserverMessage.Enable);
+
+        public void Close() => NotifyAll(SettingsObserverMessage.Close);
+
+        public void Initial() => NotifyAll(SettingsObserverMessage.Initial);
+
+        public void Vibration(bool isEnable) => NotifyAll(SettingsObserverMessage.Vibration,isEnable);
+
+        public void Volume(float volume) => NotifyAll(SettingsObserverMessage.Volume, volume);
+
+        public void Language(int index) => NotifyAll(SettingsObserverMessage.Language, index);
+
+        public void ExecuteDisable() => NotifyAll(SettingsObserverMessage.Disable);
+    }
+}

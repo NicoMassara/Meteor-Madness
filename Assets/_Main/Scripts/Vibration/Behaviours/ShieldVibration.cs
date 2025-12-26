@@ -1,7 +1,9 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿using MeteorMadness.GlobalValues.Interfaces.Vibration;
+using MeteorMadness.Vibration.BaseBehaviours;
+using MeteorMadness.Vibration.So;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration.Behaviours
+namespace MeteorMadness.Vibration.Behaviours
 {
     public class ShieldVibration : VibrationBehavior<IShieldVibration>
     {
