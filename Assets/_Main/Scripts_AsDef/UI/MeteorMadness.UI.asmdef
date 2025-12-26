@@ -1,14 +1,11 @@
 {
-    "name": "MeteorMadness.ScreenFlow",
-    "rootNamespace": "MeteorMadness.ScreenFlow",
+    "name": "MeteorMadness.UI",
+    "rootNamespace": "",
     "references": [
-        "GUID:cbcefa849418cda42a15b4f089dcf60b",
         "GUID:c86df55943534d8e992b0a5e142eef8a",
         "GUID:72999fc0cb6d47409e53a0030917cc84",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:420b34b0a7084b92a4a9dd53f7729d18",
-        "GUID:e024e336b4ec4435bb9c3ed6b544d470",
-        "GUID:f41d70007b812924daeea491665ac32d"
+        "GUID:cbcefa849418cda42a15b4f089dcf60b",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,7 +1,17 @@
 {
     "name": "MeteorMadness.Gameplay",
     "rootNamespace": "MeteorMadness.Gameplay",
-    "references": [],
+    "references": [
+        "EzySlice",
+        "MeteorMadness.GlobalValues",
+        "MeteorMadness.Systems",
+        "NicolasMassara.CustomUpdateManager",
+        "NicolasMassara.CustomActionManager",
+        "NicolasMassara.CustomTimerManager",
+        "MeteorMadness.Managers",
+        "MeteorMadness.ScreenFlow",
+        "MeteorMadness.Animations"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

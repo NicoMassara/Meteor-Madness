@@ -5,7 +5,7 @@ namespace MeteorMadness.GlobalValues.Tools
 {
     public class GeneratedId
     {
-        internal ushort Id { get; private set; }
+        public ushort Id { get; private set; }
         public bool IsValid => Id > 0;
 
         private event Action<GeneratedId> _onRelease;
