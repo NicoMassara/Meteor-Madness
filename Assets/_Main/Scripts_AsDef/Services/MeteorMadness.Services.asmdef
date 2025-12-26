@@ -1,12 +1,13 @@
 {
-    "name": "MeteorMadness.UnityServices",
-    "rootNamespace": "MeteorMadness.UnityServices",
+    "name": "MeteorMadness.Services",
+    "rootNamespace": "MeteorMadness.Services",
     "references": [
         "GUID:47a70d1f9c6c9c14e9bd7f0d7fbc68d1",
         "GUID:cbcefa849418cda42a15b4f089dcf60b",
         "GUID:760a4c7888534400e882b82c5b3fba06",
         "GUID:c86df55943534d8e992b0a5e142eef8a",
-        "GUID:5e0b455853cd340e0813387221dfd501"
+        "GUID:5e0b455853cd340e0813387221dfd501",
+        "GUID:fe25561d224ed4743af4c60938a59d0b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

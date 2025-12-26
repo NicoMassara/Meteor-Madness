@@ -1,4 +1,4 @@
-﻿namespace MeteorMadness.UnityServices.MyAnalytics
+﻿namespace MeteorMadness.Services.MyAnalytics
 {
     public struct AnalyticEventsName
     {

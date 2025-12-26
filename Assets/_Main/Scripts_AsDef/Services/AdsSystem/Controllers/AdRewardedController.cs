@@ -3,7 +3,7 @@ using NicolasMassara.CustomTimerManager;
 using Unity.Services.LevelPlay;
 using UnityEngine;
 
-namespace MeteorMadness.UnityServices.AdsSystem
+namespace MeteorMadness.Services.AdsSystem.Controllers
 {
     public class AdRewardedController : MonoBehaviour
     {

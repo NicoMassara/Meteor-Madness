@@ -6,7 +6,7 @@ using MeteorMadness.GlobalValues.BaseSingleton;
 using Unity.Services.Analytics;
 using UnityEngine;
 
-namespace MeteorMadness.UnityServices.MyAnalytics
+namespace MeteorMadness.Services.MyAnalytics
 {
     public class AnalyticsManager : SingletonBehaviour<AnalyticsManager>
     {

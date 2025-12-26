@@ -2,7 +2,7 @@
 using MeteorMadness.GlobalValues.Interfaces.Analytics;
 using UnityEngine;
 
-namespace MeteorMadness.UnityServices.MyAnalytics.Components
+namespace MeteorMadness.Services.MyAnalytics.Components
 {
     public class DefeatAnalyticComponent : AnalyticComponent<IDefeatAnalytics>
     {

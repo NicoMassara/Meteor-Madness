@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MeteorMadness.GlobalValues.Interfaces.Analytics;
-using UnityEngine;
+using MeteorMadness.Services.MyAnalytics;
 
-namespace MeteorMadness.UnityServices.MyAnalytics.Components
+namespace MeteorMadness.Services.MyAnalytics.Components
 {
     public class CosmeticsAnalyticComponent :  AnalyticComponent<ICosmeticsAnalytics>
     {

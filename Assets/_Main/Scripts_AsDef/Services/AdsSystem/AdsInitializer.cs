@@ -2,7 +2,7 @@
 using Unity.Services.LevelPlay;
 using UnityEngine;
 
-namespace MeteorMadness.UnityServices.AdsSystem
+namespace MeteorMadness.Services.AdsSystem
 {
     public class AdsInitializer : MonoBehaviour
     {

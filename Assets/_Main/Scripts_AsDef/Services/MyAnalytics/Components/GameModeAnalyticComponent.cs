@@ -5,7 +5,7 @@ using MeteorMadness.GlobalValues.Interfaces.Analytics;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
-namespace MeteorMadness.UnityServices.MyAnalytics.Components
+namespace MeteorMadness.Services.MyAnalytics.Components
 {
     public class GameModeAnalyticComponent : AnalyticComponent<IGameModeAnalytics>, IUpdatable
     {

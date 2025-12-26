@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MeteorMadness.GlobalValues.Interfaces.Analytics;
 using NicolasMassara.CustomUpdateManager;
 
-namespace MeteorMadness.UnityServices.MyAnalytics.Components
+namespace MeteorMadness.Services.MyAnalytics.Components
 {
     public class MainMenuAnalyticComponent : AnalyticComponent<IMainMenuAnalytics>, IUpdatable
     {

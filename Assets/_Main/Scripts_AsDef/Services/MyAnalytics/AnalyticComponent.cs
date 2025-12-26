@@ -3,7 +3,7 @@ using MeteorMadness.GlobalValues.Interfaces.Analytics;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
-namespace MeteorMadness.UnityServices.MyAnalytics
+namespace MeteorMadness.Services.MyAnalytics
 {
     public abstract class AnalyticComponent<T> : ManagedBehavior
     where T : IAnalyticComponent

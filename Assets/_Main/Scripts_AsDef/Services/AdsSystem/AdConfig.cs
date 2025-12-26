@@ -1,4 +1,4 @@
-﻿namespace MeteorMadness.UnityServices.AdsSystem
+﻿namespace MeteorMadness.Services.AdsSystem
 {
     public static class AdConfig
     {

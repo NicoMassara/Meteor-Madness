@@ -1,10 +1,11 @@
 ﻿using System;
 using MeteorMadness.GlobalEvents.Events;
 using MeteorMadness.GlobalValues.BaseSingleton;
+using MeteorMadness.Services.AdsSystem.Controllers;
 using Unity.Services.LevelPlay;
 using UnityEngine;
 
-namespace MeteorMadness.UnityServices.AdsSystem
+namespace MeteorMadness.Services.AdsSystem
 {
     [RequireComponent(typeof(AdBannerController))]
     [RequireComponent(typeof(AdRewardedController))]

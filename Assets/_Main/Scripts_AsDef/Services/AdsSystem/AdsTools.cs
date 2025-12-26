@@ -1,6 +1,6 @@
 ﻿using MeteorMadness.GlobalValues;
 
-namespace MeteorMadness.UnityServices.AdsSystem
+namespace MeteorMadness.Services.AdsSystem
 {
     public class AdsTools
     {
