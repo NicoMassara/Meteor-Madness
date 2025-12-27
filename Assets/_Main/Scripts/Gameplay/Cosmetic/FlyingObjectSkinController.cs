@@ -42,7 +42,6 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             }
             
             var data = GetSkinData(skinType);
-            
             spriteRenderer.material = data.Material;
             spriteRenderer.transform.localScale = data.ScaleOffset;
         }

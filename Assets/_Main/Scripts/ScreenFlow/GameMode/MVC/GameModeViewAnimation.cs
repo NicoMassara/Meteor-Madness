@@ -104,7 +104,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
-                    .Append(UIComponents.ScorePanel.DOAnchorPos(_scorePanel.StartPos, AnimationData.MovementDuration))
+                    .Append(UIComponents.ScorePanel.DOAnchorPos(_scorePanel.OffScreenPos, AnimationData.MovementDuration))
                     .Join(UIComponents.PauseButton.DOAnchorPos(_pausePanel.OffScreenPos, AnimationData.MovementDuration))
                     .AppendInterval(AnimationData.FinishDelay)
                     .AppendCallback(() => UIComponents.GameplayPanel.gameObject.SetActive(false));

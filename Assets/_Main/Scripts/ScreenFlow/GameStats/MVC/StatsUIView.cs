@@ -101,7 +101,6 @@ namespace MeteorMadness.ScreenFlow.Stats
             
 
             var finalScore = (statsData.TotalScore * GetPointsMultiplier());
-            Debug.Log($"High Score Data: {statsData.HighScore}, Deflect Streak: {statsData.DeflectStreak}, Longest Time: {statsData.LongestTime}, Total Score: {finalScore}");
             UIComponents.SetAllScoreText("Stats.HistoricScore",finalScore);
             
             OnTextsLoaded?.Invoke();

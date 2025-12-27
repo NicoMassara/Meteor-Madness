@@ -403,7 +403,6 @@ namespace _Main.Scripts.Earth
                 action
                 .Then(new InstantAction(() =>
                 {
-                    Debug.Log("EarthView::RestartFinished");
                     OnHealed?.Invoke();
                     EarthEventCaller.RestartFinished();
                 }));

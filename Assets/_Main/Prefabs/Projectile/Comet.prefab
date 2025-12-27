@@ -169,8 +169,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7ac06b117094c9e83143a4ad0bab39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRotationSpeed: 25
-  sphereObject: {fileID: 4732004088864625325}
+  maxRotationSpeed: 0
+  sphereObject: {fileID: 7488542339345361076}
   fireObject: {fileID: 6191557560812045889}
   collisionParticle: {fileID: 0}
 --- !u!114 &630883917832283782

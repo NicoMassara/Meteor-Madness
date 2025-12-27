@@ -23,8 +23,6 @@ namespace MeteorMadness.Gameplay.Abilities
         }
 
         #endregion
-
-        //Todo: Implemente Ability MVC from Gameplay with This
         
         private AbilityUIMotor _motor;
         private AbilityUIView.IAbilityUIView _ui;
