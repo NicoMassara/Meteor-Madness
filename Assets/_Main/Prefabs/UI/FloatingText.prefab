@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceb82e5d3dc441189aa88ea691807ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshText: {fileID: 2462941764947261801}
   movementSpeed: 2
   fadeTime: 1
   fadeDelay: 1

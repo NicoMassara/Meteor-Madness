@@ -16,7 +16,7 @@ MonoBehaviour:
   localizationCode: Meteor
   unlockPrice: 50
   earthData:
-    material: {fileID: 2100000, guid: 8858547e1d65c984db2b6f248c35edb3, type: 2}
+    material: {fileID: 2100000, guid: e2c8685b4795a814c860bd5dba39fe3b, type: 2}
     scaleOffsetX: 3.5
     scaleOffsetY: 3.5
     rotationOffset: 0

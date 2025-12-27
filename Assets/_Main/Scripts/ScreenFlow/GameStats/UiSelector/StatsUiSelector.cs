@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.FirstOpen;
 using MeteorMadness.ScreenFlow.Base;
 using TMPro;
 using UnityEngine;
@@ -25,8 +26,7 @@ namespace _Main.Scripts.GameStats
         [Header("Buttons")]
         [SerializeField] private Button backButton;
         [Header("First Open")]
-        [SerializeField] private GameObject first_Panel;
-        [SerializeField] private Button first_closeButton;
+        [SerializeField] private FirstOpenPanel firstOpenPanel;
 
         
         #region Texts
@@ -62,16 +62,16 @@ namespace _Main.Scripts.GameStats
         #region First Open
 
         public void SetActiveFirstOpenPanel(bool value)
-            => SetActiveObject(first_Panel, value);
-        
-        public void AddListenerToFirstOpenCloseButton(UnityAction onClick) 
-            => AddListenerToButton(first_closeButton, onClick);
-        
-        public void RemoveListenerToFirstOpenCloseButton(UnityAction onClick) 
-            => RemoveListenerFromButton(first_closeButton, onClick);
-        
-        public void SetInteractableFirstOpenCloseButton(bool value)
-        => SetButtonInteractable(first_closeButton, value);
+            => SetActiveObject(firstOpenPanel.gameObject, value);
+
+        public void AddListenerToFirstOpenCloseButton(Action onClick) 
+            => firstOpenPanel.OnClose += onClick;
+
+        public void RemoveListenerToFirstOpenCloseButton(Action onClick) 
+            => firstOpenPanel.OnClose -= onClick;
+
+        public void SetInteractableFirstOpenCloseButton(bool value) 
+            => firstOpenPanel.SetButtonInteractable(value);
 
         #endregion
         

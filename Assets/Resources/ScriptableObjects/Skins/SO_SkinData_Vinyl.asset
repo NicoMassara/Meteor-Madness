@@ -16,7 +16,7 @@ MonoBehaviour:
   localizationCode: Vinyl
   unlockPrice: 50
   earthData:
-    material: {fileID: 2100000, guid: 8858547e1d65c984db2b6f248c35edb3, type: 2}
+    material: {fileID: 2100000, guid: 6d67e6d2452bddf49881b5df25cc00a7, type: 2}
     scaleOffsetX: 3.5
     scaleOffsetY: 3.5
     rotationOffset: 0

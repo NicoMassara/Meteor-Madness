@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Cosmetics.Components;
+using _Main.Scripts.FirstOpen;
 using MeteorMadness.ScreenFlow.Base;
 using TMPro;
 using UnityEngine;
@@ -37,8 +38,7 @@ namespace _Main.Scripts.Cosmetics
         [SerializeField] private TMP_Text coinsText;
         [Space]
         [Header("First Open")]
-        [SerializeField] private GameObject firstOpenPanel;
-        [SerializeField] private Button closeFirstOpenButton;
+        [SerializeField] private FirstOpenPanel firstOpenPanel;
         
         // === Buttons === //
         
@@ -119,15 +119,16 @@ namespace _Main.Scripts.Cosmetics
         #region First Open
 
         public void SetActiveFirstOpenPanel(bool active) 
-            => SetActiveObject(firstOpenPanel,active);
+            => SetActiveObject(firstOpenPanel.gameObject,active);
         
-        public void AddListenerToCloseFirstOpenButton(UnityAction onClick) 
-            => AddListenerToButton(closeFirstOpenButton,onClick);
-        public void RemoveListenerToCloseFirstOpenButton(UnityAction onClick) 
-            => RemoveListenerFromButton(closeFirstOpenButton,onClick);
-        
+        public void AddListenerToCloseFirstOpenButton(Action onClick) 
+            => firstOpenPanel.OnClose += onClick;
+
+        public void RemoveListenerToCloseFirstOpenButton(Action onClick) 
+            => firstOpenPanel.OnClose -= onClick;
+
         public void SetInteractiveCloseFirstOpenButton(bool active)
-            => SetButtonInteractable(closeFirstOpenButton,active);
+            => firstOpenPanel.SetButtonInteractable(active);
 
         #endregion
     }

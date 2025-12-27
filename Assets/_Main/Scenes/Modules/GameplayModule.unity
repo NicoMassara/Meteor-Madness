@@ -604,7 +604,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 309914513}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Script: {fileID: 11500000, guid: e3803a97b225461e8dbf20338d773e1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Pause
@@ -2082,7 +2082,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1142360723}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
+  m_Script: {fileID: 11500000, guid: e3803a97b225461e8dbf20338d773e1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Pause

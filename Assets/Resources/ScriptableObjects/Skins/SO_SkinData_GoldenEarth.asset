@@ -16,7 +16,7 @@ MonoBehaviour:
   localizationCode: GoldenEarth
   unlockPrice: 9999
   earthData:
-    material: {fileID: 2100000, guid: 8858547e1d65c984db2b6f248c35edb3, type: 2}
+    material: {fileID: 2100000, guid: f90848d404b56de4c9149362f31a03a7, type: 2}
     scaleOffsetX: 3.5
     scaleOffsetY: 3.50297
     rotationOffset: 12.5

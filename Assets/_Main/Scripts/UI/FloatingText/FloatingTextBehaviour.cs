@@ -1,13 +1,14 @@
 ﻿using System;
 using MeteorMadness.Contracts;
 using NicolasMassara.CustomUpdateManager;
+using TMPro;
 using UnityEngine;
 
 namespace MeteorMadness.UI.FloatingText
 {
     public class FloatingTextBehaviour : ManagedBehavior,IUpdatable,IFloatingText
     {
-        //[SerializeField] private TextMeshPro meshText;
+        [SerializeField] private TextMeshPro meshText;
         [Range(1, 5)] 
         [SerializeField] private float movementSpeed = 2;
         [Range(0.1f,3)]
@@ -55,9 +56,9 @@ namespace MeteorMadness.UI.FloatingText
             float a = _fadeTimer/fadeTime;
             _currentAlpha = Mathf.Lerp(1, 0, a);
             
-            /*var textColor = meshText.color;
+            var textColor = meshText.color;
             textColor.a = _currentAlpha;
-            meshText.color = textColor;*/
+            meshText.color = textColor;
 
             if (_currentAlpha <= 0)
             {
@@ -68,8 +69,8 @@ namespace MeteorMadness.UI.FloatingText
         public void SetValues(FloatingTextValues values)
         {
             transform.position = values.Position + values.Offset;
-            /*meshText.text = values.Text;
-            meshText.color = values.Color;*/
+            meshText.text = values.Text;
+            meshText.color = values.Color;
             
             _canMove = values.DoesMove;
             _canFade = values.DoesFade;

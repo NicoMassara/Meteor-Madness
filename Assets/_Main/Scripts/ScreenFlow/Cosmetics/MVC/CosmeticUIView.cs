@@ -242,6 +242,10 @@ namespace _Main.Scripts.Cosmetics.MVC
             OnUnlockFailed?.Invoke();
             UIComponents.SetUnlockButtonInteractable(false);
             UIComponents.SetLockedText("Cosmetic.NotEnough");
+            _skinButtonController.RemoveListenerFromAllButtons();
+            UIComponents.RemoveListenerToUnlockButton(UnlockButton_OnClickHandler);
+            UIComponents.RemoveListenerBackButton(TriggerMainMenuButtonPressed);
+            UIComponents.RemoveScrollListener(TriggerOnScroll);
             
             TimerManager.Add(new TimerData(1.5f, () =>
             {
@@ -249,6 +253,10 @@ namespace _Main.Scripts.Cosmetics.MVC
                 UIComponents.SetLockedTextRed();
                 UIComponents.SetLockedText("Cosmetic.Locked");
                 UIComponents.EnableUnlockButton();
+                UIComponents.AddListenerToUnlockButton(UnlockButton_OnClickHandler);
+                UIComponents.AddListenerToBackButton(TriggerMainMenuButtonPressed);
+                UIComponents.AddScrollListener(TriggerOnScroll);
+                _skinButtonController.AddListenerToAllButtons();
             }));
         }
 

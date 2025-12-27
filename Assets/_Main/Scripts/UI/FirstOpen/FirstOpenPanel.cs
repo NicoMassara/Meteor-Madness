@@ -18,7 +18,12 @@ namespace _Main.Scripts.FirstOpen
         [SerializeField] private Button closeButton;
         
         public event Action OnClose;
-        
+
+        private void Start()
+        {
+            gameObject.SetActive(false);
+        }
+
         private void OnEnable()
         {
             titleText.text = GetLocalizatedString(titleCode);
@@ -34,5 +39,10 @@ namespace _Main.Scripts.FirstOpen
         private void TriggerOnClose() => OnClose?.Invoke();
 
         private string GetLocalizatedString(string key) => LocalizationManager.Instance.GetText(key);
+
+        public void SetButtonInteractable(bool value)
+        {
+            closeButton.interactable = value;
+        }
     }
 }

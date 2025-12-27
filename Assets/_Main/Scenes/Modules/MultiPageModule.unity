@@ -430,7 +430,6 @@ GameObject:
   - component: {fileID: 446946152}
   - component: {fileID: 446946155}
   - component: {fileID: 446946154}
-  - component: {fileID: 446946153}
   m_Layer: 5
   m_Name: D_MultiPage_Text_Title
   m_TagString: Untagged
@@ -457,19 +456,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -0.000030517578}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &446946153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446946151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textKey: 
 --- !u!114 &446946154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -820,7 +806,7 @@ GameObject:
   - component: {fileID: 881819197}
   - component: {fileID: 881819200}
   - component: {fileID: 881819199}
-  - component: {fileID: 881819198}
+  - component: {fileID: 881819201}
   m_Layer: 5
   m_Name: D_Multipage_Text_NextButton
   m_TagString: Untagged
@@ -847,19 +833,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -0.0000009536743}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &881819198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 881819196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textKey: UIButton.Next
 --- !u!114 &881819199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -959,6 +932,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 881819196}
   m_CullTransparentMesh: 1
+--- !u!114 &881819201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881819196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3803a97b225461e8dbf20338d773e1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Next
 --- !u!1 &920070071
 GameObject:
   m_ObjectHideFlags: 0
@@ -1060,7 +1046,7 @@ GameObject:
   - component: {fileID: 1157215372}
   - component: {fileID: 1157215375}
   - component: {fileID: 1157215374}
-  - component: {fileID: 1157215373}
+  - component: {fileID: 1157215376}
   m_Layer: 5
   m_Name: M_Multipage_Text_NextButton
   m_TagString: Untagged
@@ -1087,19 +1073,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -0.0000009536743}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1157215373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1157215371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textKey: UIButton.Next
 --- !u!114 &1157215374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1199,6 +1172,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1157215371}
   m_CullTransparentMesh: 1
+--- !u!114 &1157215376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1157215371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3803a97b225461e8dbf20338d773e1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Next
 --- !u!1 &1235429183
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,7 +1196,7 @@ GameObject:
   - component: {fileID: 1235429184}
   - component: {fileID: 1235429187}
   - component: {fileID: 1235429186}
-  - component: {fileID: 1235429185}
+  - component: {fileID: 1235429188}
   m_Layer: 5
   m_Name: D_Multipage_Text_PreviousButton
   m_TagString: Untagged
@@ -1237,19 +1223,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1235429185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1235429183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textKey: UIButton.Previous
 --- !u!114 &1235429186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1349,6 +1322,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1235429183}
   m_CullTransparentMesh: 1
+--- !u!114 &1235429188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235429183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3803a97b225461e8dbf20338d773e1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Previous
 --- !u!1 &1248430026
 GameObject:
   m_ObjectHideFlags: 0
@@ -1560,10 +1546,10 @@ RectTransform:
   - {fileID: 920070072}
   m_Father: {fileID: 1655418246}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1920, y: -90.305115}
-  m_SizeDelta: {x: 1280, y: 180.61023}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1322222444
 CanvasRenderer:
@@ -1605,10 +1591,10 @@ RectTransform:
   - {fileID: 1604898553}
   m_Father: {fileID: 1655418246}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 640, y: -90.305115}
-  m_SizeDelta: {x: 1280, y: 180.61023}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1355657255
 CanvasRenderer:
@@ -1629,7 +1615,7 @@ GameObject:
   - component: {fileID: 1459385665}
   - component: {fileID: 1459385668}
   - component: {fileID: 1459385667}
-  - component: {fileID: 1459385666}
+  - component: {fileID: 1459385669}
   m_Layer: 5
   m_Name: M_Multipage_Text_PreviousButton
   m_TagString: Untagged
@@ -1656,19 +1642,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1459385666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1459385664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textKey: UIButton.Previous
 --- !u!114 &1459385667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1768,6 +1741,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1459385664}
   m_CullTransparentMesh: 1
+--- !u!114 &1459385669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459385664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3803a97b225461e8dbf20338d773e1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textKey: UIButton.Previous
 --- !u!1 &1464369893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1779,7 +1765,6 @@ GameObject:
   - component: {fileID: 1464369894}
   - component: {fileID: 1464369897}
   - component: {fileID: 1464369896}
-  - component: {fileID: 1464369895}
   m_Layer: 5
   m_Name: M_MultiPage_Text_Title
   m_TagString: Untagged
@@ -1806,19 +1791,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -0.000030517578}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1464369895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1464369893}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textKey: 
 --- !u!114 &1464369896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2459,7 +2431,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1937736855
 RectTransform:
   m_ObjectHideFlags: 0
