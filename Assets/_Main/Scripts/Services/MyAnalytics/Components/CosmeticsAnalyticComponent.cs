@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using MeteorMadness.GlobalValues.Interfaces.Analytics;
-using MeteorMadness.Services.MyAnalytics;
+using MeteorMadness.Contracts.Interfaces.Analytics;
 
 namespace MeteorMadness.Services.MyAnalytics.Components
 {

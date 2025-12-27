@@ -1,4 +1,4 @@
-﻿using MeteorMadness.GlobalValues.Events;
+﻿using MeteorMadness.Contracts.Events;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.ScreenFlow.Menu;
 using UnityEngine;

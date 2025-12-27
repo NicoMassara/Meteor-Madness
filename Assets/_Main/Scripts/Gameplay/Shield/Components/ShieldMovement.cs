@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using MeteorMadness.GlobalValues.Interfaces;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Utilities;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;

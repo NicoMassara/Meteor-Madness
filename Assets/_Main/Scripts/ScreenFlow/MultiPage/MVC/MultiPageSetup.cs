@@ -1,4 +1,5 @@
-﻿using MeteorMadness.GlobalValues.Interfaces;
+﻿using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Managers;
 using MeteorMadness.ScreenFlow.MultiPage;
 using NicolasMassara.CustomUpdateManager;

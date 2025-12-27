@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Main.Scripts.Cosmetics;
-using MeteorMadness.GlobalValues;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.Contracts.Interfaces.Skins;
 using MeteorMadness.GlobalValues.BaseSingleton;
-using MeteorMadness.GlobalValues.Events;
-using MeteorMadness.GlobalValues.Interfaces.Skins;
 using MeteorMadness.Managers.Save;
 using UnityEngine;
 
@@ -146,11 +146,10 @@ namespace MeteorMadness.Managers.Cosmetics
         public ISkinInformation GetSkinInformationByType(SkinType skinType) => _skinController.GetSkinInformationByType(skinType);
         public ISkinDeathMessage GetSkinDeathMessageByType(SkinType skinType) => _skinController.GetSkinDeathMessageByType(skinType);
         
-        // MODIFY - This functions should return the current skin data
-        public IEarthSkinData GetEarthData(SkinType skinType) => _skinController.GetEarthData(skinType);
-        public IMeteorSkinData GetMeteorData(SkinType skinType) => _skinController.GetMeteorData(skinType);
-        public ICometSkinData GetCometData(SkinType skinType) => _skinController.GetCometData(skinType);
-        public IShieldSkinData GetShieldData(SkinType skinType) => _skinController.GetShieldData(skinType);
+        public EarthSkinData GetEarthData(SkinType skinType) => _skinController.GetEarthData(skinType);
+        public MeteorSkinData GetMeteorData(SkinType skinType) => _skinController.GetMeteorData(skinType);
+        public CometSkinData GetCometData(SkinType skinType) => _skinController.GetCometData(skinType);
+        public ShieldSkinData GetShieldData(SkinType skinType) => _skinController.GetShieldData(skinType);
 
         // === Locked Skin Controller ===// 
         public List<int> GetUnlockedSkins() => _lockedSkinController.GetUnlockedSkins();

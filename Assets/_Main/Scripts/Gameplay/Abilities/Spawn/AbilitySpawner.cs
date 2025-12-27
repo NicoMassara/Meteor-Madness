@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Managers.GameConfig;
 using MeteorMadness.Gameplay.Abilities.So;
 using MeteorMadness.Gameplay.Abilities.Sphere;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomTimerManager;

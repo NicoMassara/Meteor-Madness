@@ -1,7 +1,6 @@
 ﻿using System;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces;
-using UnityEngine;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 
 namespace MeteorMadness.Managers
 {

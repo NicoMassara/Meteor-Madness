@@ -1,5 +1,5 @@
 ﻿using System;
-using MeteorMadness.GlobalValues.Interfaces;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.ScreenFlow.Base;
 using UnityEngine;
 using UnityEngine.UI;

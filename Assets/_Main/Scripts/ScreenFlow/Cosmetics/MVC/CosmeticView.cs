@@ -1,6 +1,6 @@
 ﻿using System;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces.Analytics;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces.Analytics;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.Cosmetics;

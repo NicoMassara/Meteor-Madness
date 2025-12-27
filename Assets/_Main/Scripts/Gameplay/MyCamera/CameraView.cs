@@ -1,6 +1,6 @@
 ﻿using System;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Gameplay.Shaker;
-using MeteorMadness.GlobalValues.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomActionManager;

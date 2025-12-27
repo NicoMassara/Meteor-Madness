@@ -1,4 +1,5 @@
 ﻿using System;
+using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues;
 using TMPro;
 using UnityEngine;

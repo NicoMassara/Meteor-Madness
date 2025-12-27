@@ -1,9 +1,9 @@
 ﻿using System;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Events;
-using MeteorMadness.GlobalValues.Interfaces.Analytics;
-using MeteorMadness.GlobalValues.Interfaces.Sounds;
-using MeteorMadness.GlobalValues.Interfaces.Vibration;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.Contracts.Interfaces.Analytics;
+using MeteorMadness.Contracts.Interfaces.Sounds;
+using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;

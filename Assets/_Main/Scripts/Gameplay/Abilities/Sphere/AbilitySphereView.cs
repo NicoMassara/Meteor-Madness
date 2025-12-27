@@ -1,8 +1,8 @@
 ﻿using System;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Gameplay.FlyingObject;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces;
-using MeteorMadness.GlobalValues.Interfaces.Sounds;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
 using UnityEngine.Events;

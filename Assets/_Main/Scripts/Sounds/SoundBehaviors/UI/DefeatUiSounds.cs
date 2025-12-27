@@ -1,5 +1,5 @@
 ﻿using System;
-using MeteorMadness.GlobalValues.Interfaces.Sounds;
+using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Sounds.BaseBehaviors;
 using Plugins.NicolasMassara.CustomSoundManager;
 

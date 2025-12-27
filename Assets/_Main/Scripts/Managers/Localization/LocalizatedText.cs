@@ -1,6 +1,6 @@
-﻿using NicolasMassara.CustomUpdateManager;
+﻿using MeteorMadness.Contracts.Events;
+using NicolasMassara.CustomUpdateManager;
 using TMPro;
-using MeteorMadness.GlobalValues.Events;
 using UnityEngine;
 
 namespace MeteorMadness.Managers.Localization

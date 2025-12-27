@@ -1,5 +1,5 @@
 ﻿using System;
-using MeteorMadness.GlobalValues.Interfaces.Skins;
+using MeteorMadness.Contracts.Interfaces.Skins;
 using UnityEngine;
 
 namespace _Main.Scripts.MyTest.CosmeticUI

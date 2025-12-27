@@ -1,13 +1,11 @@
-﻿
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces.Skins;
+﻿using MeteorMadness.Contracts;
 using MeteorMadness.Managers.Cosmetics;
 
 namespace _Main.Scripts.Cosmetics.SkinControllers
 {
-    public class CometSkinController : FlyingObjectSkinController<ICometSkinData>
+    public class CometSkinController : FlyingObjectSkinController<CometSkinData>
     {
-        protected override ICometSkinData GetSkinData(SkinType skinType)
+        protected override CometSkinData GetSkinData(SkinType skinType)
         {
             return SkinManager.Instance.GetCometData(skinType);
         }

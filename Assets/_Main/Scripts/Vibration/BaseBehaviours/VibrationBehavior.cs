@@ -1,4 +1,5 @@
-﻿using MeteorMadness.GlobalValues.Interfaces.Vibration;
+﻿
+using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.Vibration.So;
 using UnityEngine;
 

@@ -1,4 +1,4 @@
-﻿using MeteorMadness.GlobalValues;
+﻿using MeteorMadness.Contracts;
 
 namespace MeteorMadness.Services.AdsSystem
 {

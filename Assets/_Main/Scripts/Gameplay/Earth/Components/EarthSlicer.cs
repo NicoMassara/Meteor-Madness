@@ -1,8 +1,7 @@
 ﻿using System;
-using _Main.Scripts.Cosmetics;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Gameplay;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces;
 using MeteorMadness.Managers.Cosmetics;
 using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomActionManager;

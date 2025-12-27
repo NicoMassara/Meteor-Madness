@@ -1,6 +1,6 @@
 ﻿using System;
 using IngameDebugConsole;
-using MeteorMadness.GlobalValues;
+using MeteorMadness.Contracts;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.Cosmetics;
 using MeteorMadness.Managers.Save;

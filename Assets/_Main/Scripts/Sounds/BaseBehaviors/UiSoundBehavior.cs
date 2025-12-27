@@ -1,4 +1,4 @@
-﻿using MeteorMadness.GlobalValues.Interfaces.Sounds;
+﻿using MeteorMadness.Contracts.Interfaces.Sounds;
 using Plugins.NicolasMassara.CustomSoundManager;
 
 namespace MeteorMadness.Sounds.BaseBehaviors

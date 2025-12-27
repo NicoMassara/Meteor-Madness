@@ -1,11 +1,10 @@
-﻿using UnityEngine;
+﻿using MeteorMadness.Contracts.Events;
+using UnityEngine;
 using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using Random = UnityEngine.Random;
-using MeteorMadness.Gameplay.Comet;
 using MeteorMadness.Gameplay.FlyingObject;
-using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.Managers;
 

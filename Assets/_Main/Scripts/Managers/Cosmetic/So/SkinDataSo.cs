@@ -1,6 +1,6 @@
 ﻿using System;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces.Skins;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces.Skins;
 using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics
@@ -31,48 +31,9 @@ namespace _Main.Scripts.Cosmetics
         public string DeathTitle => $"{BaseLocalizationCode}.DeathTitle";
         public int UnlockPrice => unlockPrice;
 
-        public IEarthSkinData EarthData => earthData;
-        public IShieldSkinData ShieldData => shieldData;
-        public IMeteorSkinData MeteorData => meteorData;
-        public ICometSkinData CometData => cometData;
+        public EarthSkinData EarthData => earthData;
+        public ShieldSkinData ShieldData => shieldData;
+        public MeteorSkinData MeteorData => meteorData;
+        public CometSkinData CometData => cometData;
     }
-
-    [Serializable]
-    public class SkinData : IBaseSkinData
-    {
-        [SerializeField] private Material material;
-        [Range(0.1f, 10f)] [SerializeField] private float scaleOffsetX = 1f;
-        [Range(0.1f, 10f)] [SerializeField] private float scaleOffsetY = 1f;
-        
-        public Material Material => material;
-
-        public Vector3 ScaleOffset => new Vector3(scaleOffsetX,scaleOffsetY,0);
-    }
-
-    [Serializable]
-    public class EarthSkinData : SkinData, IEarthSkinData
-    {
-        [Range(0,359)]
-        [SerializeField] private float rotationOffset;
-        public Vector3 EarthRotationOffset => new Vector3(0,0,rotationOffset);
-    }
-    
-    [Serializable]
-    public class MeteorSkinData : SkinData, IMeteorSkinData
-    {
-
-    }
-    
-    [Serializable]
-    public class CometSkinData : SkinData, ICometSkinData
-    {
-
-    }
-    
-    [Serializable]
-    public class ShieldSkinData : SkinData, IShieldSkinData
-    {
-
-    }
-    
 }

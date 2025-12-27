@@ -1,4 +1,4 @@
-﻿using MeteorMadness.GlobalValues.Interfaces;
+﻿using MeteorMadness.Contracts.Interfaces;
 using UnityEngine;
 
 namespace _Main.Scripts.Projectile

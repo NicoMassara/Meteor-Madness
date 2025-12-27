@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MeteorMadness.GlobalValues.Interfaces;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Systems;
 using NicolasMassara.CustomActionManager;
 using UnityEngine;

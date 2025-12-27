@@ -1,6 +1,6 @@
 ﻿using System;
 using _Main.Scripts.GameStats;
-using MeteorMadness.GlobalValues.Interfaces.Vibration;
+using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers.GameConfig;
 using MeteorMadness.ScreenFlow.Base;

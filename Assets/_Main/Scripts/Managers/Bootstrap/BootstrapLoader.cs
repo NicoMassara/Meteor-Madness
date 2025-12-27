@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using MeteorMadness.GlobalValues;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.Managers.Cosmetics;
 using MeteorMadness.Managers.Localization;

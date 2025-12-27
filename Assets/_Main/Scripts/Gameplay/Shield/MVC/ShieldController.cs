@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MeteorMadness.GlobalValues;
+using MeteorMadness.Contracts;
 using MeteorMadness.Systems;
 using UnityEngine;
 

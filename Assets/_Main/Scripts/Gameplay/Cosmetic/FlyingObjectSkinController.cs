@@ -1,12 +1,12 @@
-﻿using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces.Skins;
+﻿using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces.Skins;
 using MeteorMadness.Managers.Cosmetics;
 using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.SkinControllers
 {
-    public abstract class FlyingObjectSkinController<T> : MonoBehaviour 
-    where T : IBaseSkinData
+    public abstract class FlyingObjectSkinController<T> : MonoBehaviour
+    where T : SkinData
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Transform spriteContainer;

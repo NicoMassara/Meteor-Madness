@@ -1,8 +1,9 @@
 ﻿using System;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.Contracts.Interfaces.Skins;
+using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Gameplay.Particles;
-using MeteorMadness.GlobalValues.Interfaces;
-using MeteorMadness.GlobalValues.Interfaces.Skins;
-using MeteorMadness.GlobalValues.Interfaces.Sounds;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;

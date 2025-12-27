@@ -1,7 +1,7 @@
 ﻿using System;
+using MeteorMadness.Contracts;
 using MeteorMadness.Gameplay.Abilities.So;
 using MeteorMadness.Gameplay.Abilities.Spawn;
-using MeteorMadness.GlobalValues;
 using UnityEditor;
 using UnityEngine;
 

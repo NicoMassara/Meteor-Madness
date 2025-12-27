@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skinType: 3
   localizationCode: Vinyl
-  unlockPrice: 10
+  unlockPrice: 50
   earthData:
-    material: {fileID: 2100000, guid: 6d67e6d2452bddf49881b5df25cc00a7, type: 2}
+    material: {fileID: 2100000, guid: 8858547e1d65c984db2b6f248c35edb3, type: 2}
     scaleOffsetX: 3.5
     scaleOffsetY: 3.5
     rotationOffset: 0
   shieldData:
-    material: {fileID: 2100000, guid: 2a92b8816b0f2e347a34a8d1d6aa21ed, type: 2}
+    material: {fileID: 2100000, guid: be408e41b07513a47a4436ea266aa07c, type: 2}
     scaleOffsetX: 1
     scaleOffsetY: 1
   meteorData:
@@ -29,6 +29,6 @@ MonoBehaviour:
     scaleOffsetX: 1
     scaleOffsetY: 1
   cometData:
-    material: {fileID: 2100000, guid: e6795e1828f49d14895a03ca65111351, type: 2}
+    material: {fileID: 2100000, guid: 2c1801b43e0c35642bfa8b66825cde1a, type: 2}
     scaleOffsetX: 1
     scaleOffsetY: 1

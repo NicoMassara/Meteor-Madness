@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using _Main.Scripts.Projectile;
-using MeteorMadness.GlobalValues;
+using MeteorMadness.Contracts;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomUpdateManager;

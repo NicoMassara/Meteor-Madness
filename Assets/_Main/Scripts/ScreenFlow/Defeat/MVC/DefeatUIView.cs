@@ -1,6 +1,6 @@
 ﻿using System;
-using MeteorMadness.GlobalValues.Interfaces.Sounds;
-using MeteorMadness.GlobalValues.Interfaces.Vibration;
+using MeteorMadness.Contracts.Interfaces.Sounds;
+using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.Cosmetics;

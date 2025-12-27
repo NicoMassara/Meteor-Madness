@@ -1,6 +1,6 @@
 ﻿using System;
-using MeteorMadness.GlobalValues.Events;
-using MeteorMadness.GlobalValues.Interfaces;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.Managers;
 using TMPro;

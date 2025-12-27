@@ -1,7 +1,7 @@
 ﻿using System;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Managers.GameConfig.Game;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces;
 using Unity.Collections;
 using UnityEngine;
 

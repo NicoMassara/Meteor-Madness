@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Events;
-using MeteorMadness.GlobalValues.Interfaces.Skins;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.Contracts.Interfaces.Skins;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.Save;
@@ -118,28 +118,32 @@ namespace _Main.Scripts.Cosmetics
             return _assetsLoader.Contains(skinType);
         }
 
-        public IEarthSkinData GetEarthData(SkinType skinType)
+        public EarthSkinData GetEarthData(SkinType skinType)
         {
-            if(GetHasData(skinType) == false) return null;
+            if (GetHasData(skinType) == false)
+            {
+                Debug.LogWarning($"Earth Skin data from {skinType} is not found");
+                return null;
+            }
             
             return _assetsLoader.GetData(skinType).EarthData;
         }
         
-        public IMeteorSkinData GetMeteorData(SkinType skinType)
+        public MeteorSkinData GetMeteorData(SkinType skinType)
         {
             if(GetHasData(skinType) == false) return null;
             
             return _assetsLoader.GetData(skinType).MeteorData;
         }
         
-        public ICometSkinData GetCometData(SkinType skinType)
+        public CometSkinData GetCometData(SkinType skinType)
         {
             if(GetHasData(skinType) == false) return null;
             
             return _assetsLoader.GetData(skinType).CometData;
         }
         
-        public IShieldSkinData GetShieldData(SkinType skinType)
+        public ShieldSkinData GetShieldData(SkinType skinType)
         {
             if(GetHasData(skinType) == false) return null;
             

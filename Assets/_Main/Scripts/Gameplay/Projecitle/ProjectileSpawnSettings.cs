@@ -1,5 +1,4 @@
-﻿using System;
-using MeteorMadness.GlobalValues;
+﻿using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Utilities;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;

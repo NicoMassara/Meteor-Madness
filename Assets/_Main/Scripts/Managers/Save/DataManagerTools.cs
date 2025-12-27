@@ -1,4 +1,4 @@
-﻿using MeteorMadness.GlobalValues;
+﻿using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools;
 
 namespace MeteorMadness.Managers.Save

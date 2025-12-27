@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Events;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.Managers.Save;

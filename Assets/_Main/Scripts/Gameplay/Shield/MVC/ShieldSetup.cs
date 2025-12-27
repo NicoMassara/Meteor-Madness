@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Gameplay.Shield;
+﻿using MeteorMadness.Contracts;
+using MeteorMadness.Gameplay.Shield;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;

@@ -1,6 +1,5 @@
-﻿using System;
-using MeteorMadness.GlobalValues.Interfaces.Analytics;
-using UnityEngine;
+﻿using MeteorMadness.Contracts.Interfaces.Analytics;
+
 
 namespace MeteorMadness.Services.MyAnalytics.Components
 {

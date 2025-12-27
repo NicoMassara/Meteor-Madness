@@ -1,4 +1,6 @@
-﻿using MeteorMadness.GlobalValues;
+﻿using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;

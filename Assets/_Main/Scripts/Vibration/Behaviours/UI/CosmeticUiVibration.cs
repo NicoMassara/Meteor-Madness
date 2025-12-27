@@ -1,5 +1,5 @@
 ﻿
-using MeteorMadness.GlobalValues.Interfaces.Vibration;
+using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.Vibration.BaseBehaviours;
 
 namespace MeteorMadness.Vibration.Behaviours

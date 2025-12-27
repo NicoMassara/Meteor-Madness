@@ -1,5 +1,5 @@
 ﻿using System;
-using MeteorMadness.GlobalValues.Interfaces;
+using MeteorMadness.Contracts.Interfaces;
 using UnityEngine.InputSystem;
 
 namespace _Main.Scripts.MyInputs

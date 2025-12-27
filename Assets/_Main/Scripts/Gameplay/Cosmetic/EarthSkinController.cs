@@ -1,6 +1,6 @@
-﻿using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Events;
-using MeteorMadness.GlobalValues.Interfaces.Skins;
+﻿using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.Contracts.Interfaces.Skins;
 using MeteorMadness.Managers.Cosmetics;
 using UnityEngine;
 
@@ -93,6 +93,7 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             }
             
             var data = SkinManager.Instance.GetEarthData(skinType);
+            
             
             spriteRenderer.material = data.Material;
             spriteContainer.rotation = Quaternion.Euler(data.EarthRotationOffset);

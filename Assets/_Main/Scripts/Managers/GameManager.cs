@@ -1,7 +1,7 @@
 ﻿using System;
-using MeteorMadness.GlobalValues;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.BaseSingleton;
-using MeteorMadness.GlobalValues.Interfaces;
 using MeteorMadness.GlobalValues.Tools;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;

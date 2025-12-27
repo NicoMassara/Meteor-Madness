@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using MeteorMadness.GlobalValues;
+using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.BaseSingleton;
 using MeteorMadness.GlobalValues.Events;
 using UnityEngine;

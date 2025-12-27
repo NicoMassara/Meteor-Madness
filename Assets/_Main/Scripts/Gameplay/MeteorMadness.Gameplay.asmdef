@@ -10,7 +10,8 @@
         "NicolasMassara.CustomTimerManager",
         "MeteorMadness.Managers",
         "MeteorMadness.ScreenFlow",
-        "MeteorMadness.Animations"
+        "MeteorMadness.Animations",
+        "MeteorMadness.Contracts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

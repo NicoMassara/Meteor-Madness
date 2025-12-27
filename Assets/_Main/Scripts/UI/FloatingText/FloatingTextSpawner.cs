@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Managers;
+﻿using MeteorMadness.Contracts;
+using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 

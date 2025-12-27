@@ -1,8 +1,8 @@
 ﻿using System;
 using _Main.Scripts.Pause;
-using MeteorMadness.GlobalValues.Events;
-using MeteorMadness.GlobalValues.Interfaces.Sounds;
-using MeteorMadness.GlobalValues.Interfaces.Vibration;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.Contracts.Interfaces.Sounds;
+using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.Localization;

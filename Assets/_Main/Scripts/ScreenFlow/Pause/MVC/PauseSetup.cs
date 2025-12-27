@@ -1,8 +1,7 @@
-﻿using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Events;
+﻿using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Managers;
 using MeteorMadness.ScreenFlow.Pause;
-using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Pause

@@ -1,5 +1,4 @@
-﻿using System;
-using MeteorMadness.GlobalValues.Events;
+﻿using MeteorMadness.Contracts.Events;
 using UnityEngine;
 
 namespace MeteorMadness.GlobalValues.BaseSingleton

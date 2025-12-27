@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MeteorMadness.GlobalValues.Interfaces.Analytics;
+using MeteorMadness.Contracts.Interfaces.Analytics;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 

@@ -1,4 +1,4 @@
-﻿using MeteorMadness.GlobalValues;
+﻿using MeteorMadness.Contracts;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;

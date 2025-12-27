@@ -1,5 +1,4 @@
-﻿using System;
-using MeteorMadness.GlobalValues;
+﻿using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;

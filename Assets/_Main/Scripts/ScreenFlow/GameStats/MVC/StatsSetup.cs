@@ -1,6 +1,4 @@
-﻿using System;
-using _Main.Scripts.GameStats;
-using MeteorMadness.GlobalValues;
+﻿using MeteorMadness.Contracts;
 using MeteorMadness.Managers;
 using UnityEngine;
 

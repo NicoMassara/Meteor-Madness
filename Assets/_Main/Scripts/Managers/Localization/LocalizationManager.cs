@@ -1,7 +1,7 @@
 ﻿using System.Collections;
+using MeteorMadness.Contracts.Events;
 using UnityEngine;
 using MeteorMadness.GlobalValues.BaseSingleton;
-using MeteorMadness.GlobalValues.Events;
 
 namespace MeteorMadness.Managers.Localization
 {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using MeteorMadness.Contracts;
+using UnityEngine;
 
 namespace MeteorMadness.GlobalValues.Utilities
 {

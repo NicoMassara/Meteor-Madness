@@ -1,7 +1,7 @@
 ﻿using System;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Meteor;
 using MeteorMadness.Gameplay.FlyingObject;
-using MeteorMadness.GlobalValues.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
 using UnityEngine.Events;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces.Skins;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces.Skins;
 using MeteorMadness.Managers.Cosmetics;
 using MeteorMadness.Managers.Localization;
 using UnityEngine;

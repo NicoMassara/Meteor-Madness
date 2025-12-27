@@ -1,5 +1,5 @@
 ﻿using System;
-using MeteorMadness.GlobalValues.Interfaces;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.Managers;

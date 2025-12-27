@@ -1,6 +1,6 @@
 ﻿using System;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Managers.GameConfig.Game;
 using UnityEngine;
 

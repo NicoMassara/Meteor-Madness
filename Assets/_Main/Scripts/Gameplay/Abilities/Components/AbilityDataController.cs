@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Interfaces;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
@@ -399,7 +399,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 .Build();
         }
 
-        private void OnShieldTypeDisabled(Managers.ShieldEvents.NotifyShieldTypeDisabled input)
+        private void OnShieldTypeDisabled(ShieldEvents.NotifyShieldTypeDisabled input)
         {
             if(input.Type == ShieldType.Super)
                 OnSuperShieldFinished?.Invoke();

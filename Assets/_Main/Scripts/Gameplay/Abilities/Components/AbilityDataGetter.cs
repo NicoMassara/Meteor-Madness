@@ -1,7 +1,6 @@
 ﻿using System;
-using MeteorMadness.GlobalValues;
+using MeteorMadness.Contracts;
 using MeteorMadness.Managers.Localization;
-using UnityEngine;
 
 namespace MeteorMadness.Gameplay.Abilities
 {
