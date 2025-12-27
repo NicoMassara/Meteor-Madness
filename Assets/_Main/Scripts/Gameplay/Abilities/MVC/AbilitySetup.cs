@@ -13,10 +13,7 @@ namespace MeteorMadness.Gameplay.Abilities
         private IInputReader _inputReader;
         
         private AbilityView.IAbilityView _view;
-        private AbilityUIView.IAbilityUIView _ui;
-        private AbilityViewAnimation.IAbilityViewAnimation _animation;
         
-
         private void Awake()
         {
             _motor = new AbilityMotor();
@@ -55,8 +52,6 @@ namespace MeteorMadness.Gameplay.Abilities
         {
             _view.OnAbilityFinished += _controller.TryEnableAbility;
             _view.OnAbilitySelected += _controller.TryTriggerAbility;
-            //
-            _animation.OnDataInitialized += _controller.TryEnableAbility;
         }
 
         #endregion

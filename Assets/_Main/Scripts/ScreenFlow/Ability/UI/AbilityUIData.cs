@@ -1,4 +1,5 @@
 ﻿using MeteorMadness.GlobalValues;
+using MeteorMadness.GlobalValues.Utilities;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 using UnityEngine.UI;
@@ -70,12 +71,8 @@ namespace MeteorMadness.Gameplay.Abilities
             _inUseCount--;
         }
 
-        private Color GetAbilityColor(AbilityType ability)
-        {
-            //return AbilityDataGetter.GetColor(ability);
-            //Todo: Find Solution
-            return Color.red;
-        }
+        private Color GetAbilityColor(AbilityType ability) 
+            => AbilityColorHelper.GetColor(ability);
 
         public void RestartValues()
         {

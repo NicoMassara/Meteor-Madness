@@ -161,7 +161,7 @@ MonoBehaviour:
   maxRotationSpeed: 25
   sphereObject: {fileID: 863054988490834452}
   fireObject: {fileID: 0}
-  collisionParticle: {fileID: 0}
+  collisionParticle: {fileID: 11400000, guid: 60bdf3f1b016b3e47b31b9559ff0e040, type: 2}
 --- !u!114 &2197510377924421923
 MonoBehaviour:
   m_ObjectHideFlags: 0

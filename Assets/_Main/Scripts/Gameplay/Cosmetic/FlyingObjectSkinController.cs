@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace _Main.Scripts.Cosmetics.SkinControllers
 {
-    public abstract class FlyingObjectSkinController : MonoBehaviour
+    public abstract class FlyingObjectSkinController<T> : MonoBehaviour 
+    where T : IBaseSkinData
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Transform spriteContainer;
@@ -46,6 +47,6 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             spriteRenderer.transform.localScale = data.ScaleOffset;
         }
         
-        protected abstract SkinData GetSkinData(SkinType skinType);
+        protected abstract T GetSkinData(SkinType skinType);
     }
 }

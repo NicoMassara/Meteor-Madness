@@ -2,6 +2,9 @@
 using System.Collections;
 using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Events;
+using MeteorMadness.Managers.Cosmetics;
+using MeteorMadness.Managers.Localization;
+using MeteorMadness.Managers.Save;
 using MeteorMadness.Services.AdsSystem;
 using MeteorMadness.Services.MyAnalytics;
 using Plugins.NicolasMassara.CustomSoundManager;
@@ -58,7 +61,7 @@ namespace MeteorMadness.Managers.Boostrap
             
             SaveDataEvents.OnSaveDataCorrupted += () =>
             {
-                //GameManager.Instance.HadCorruptedSaveData = true;
+                GameManager.Instance.HadCorruptedSaveData = true;
             };
             
             SkinEvents.OnAssetsLoaded += () =>
@@ -89,7 +92,7 @@ namespace MeteorMadness.Managers.Boostrap
             };
 #endif
 
-            //LocalizationManager.LoadInstance();
+            LocalizationManager.LoadInstance();
             SoundManager.LoadInstance();
             AnalyticsManager.LoadInstance();
         }
@@ -107,7 +110,7 @@ namespace MeteorMadness.Managers.Boostrap
             
             // Save Data
             OnLoadingAsset?.Invoke("Loading Saves");
-            //DataManager.LoadInstance();
+            DataManager.LoadInstance();
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedData);
             
@@ -119,7 +122,7 @@ namespace MeteorMadness.Managers.Boostrap
             
             // Skins
             OnLoadingAsset?.Invoke("Loading Skins");
-            //SkinManager.LoadInstance();
+            SkinManager.LoadInstance();
             yield return new WaitForSeconds(delayBeforeLoad);
             yield return new WaitUntil(()=> _hasLoadedSkins);
 

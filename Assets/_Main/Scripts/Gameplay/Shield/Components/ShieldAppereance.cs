@@ -1,6 +1,7 @@
 ﻿using System;
 using MeteorMadness.Gameplay.Abilities;
 using MeteorMadness.GlobalValues;
+using MeteorMadness.GlobalValues.Utilities;
 using NicolasMassara.CustomActionManager;
 using UnityEngine;
 
@@ -127,7 +128,7 @@ namespace MeteorMadness.Gameplay.Shield
         
         private void SetMaterialColor(AbilityType abilityType)
         {
-            var color = AbilityDataGetter.GetColor(abilityType);
+            var color = AbilityColorHelper.GetColor(abilityType);
             abilityRenderer.material.SetColor(AbilityColor, color);
         }
 
@@ -154,7 +155,7 @@ namespace MeteorMadness.Gameplay.Shield
                 return;
             }
 
-            var color = AbilityDataGetter.GetColor(abilityType);
+            var color = AbilityColorHelper.GetColor(abilityType);
             _shieldTrail.SetTrailColor(color);
         }
         

@@ -4,6 +4,7 @@ using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Interfaces.Sounds;
 using MeteorMadness.GlobalValues.Interfaces.Vibration;
 using MeteorMadness.GlobalValues.Tools.Observer;
+using MeteorMadness.GlobalValues.Utilities;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomTimerManager;
@@ -108,7 +109,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 Position = position,
                 Offset = new Vector2(0, 1f),
                 Text = AbilityDataGetter.GetDisplayName(ability),
-                Color = AbilityDataGetter.GetColor(ability),
+                Color = AbilityColorHelper.GetColor(ability),
                 DoesFade = true,
                 DoesMove = true
             });

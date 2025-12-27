@@ -6292,9 +6292,9 @@ MonoBehaviour:
     FirstGame_Close: {fileID: 887024998}
     OpenTutorialButton: {fileID: 651620291}
     BackButtons:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 1998267745}
+    - {fileID: 379400878}
+    - {fileID: 1763682323}
   desktopData:
     CreditsText: {fileID: 551609581}
     PlayButton: {fileID: 1714214084}
@@ -6310,9 +6310,9 @@ MonoBehaviour:
     FirstGame_Close: {fileID: 1634402409}
     OpenTutorialButton: {fileID: 1954980928}
     BackButtons:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 2075310862}
+    - {fileID: 1912109264}
+    - {fileID: 867641692}
 --- !u!1 &1045410095
 GameObject:
   m_ObjectHideFlags: 0

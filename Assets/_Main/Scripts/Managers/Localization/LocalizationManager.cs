@@ -40,12 +40,12 @@ namespace MeteorMadness.Managers.Localization
         {
             StartCoroutine(WaitForSettingsData());
 
-            //SettingsManager.Instance.OnLanguageChanged += Settings_OnLanguageChangedHandler;
+            SettingsManager.Instance.OnLanguageChanged += Settings_OnLanguageChangedHandler;
         }
 
         private IEnumerator WaitForSettingsData()
         {
-            /*var settings = SettingsManager.Instance;
+            var settings = SettingsManager.Instance;
             
             float timeout = 5f;
             float timer = 0f;
@@ -76,7 +76,7 @@ namespace MeteorMadness.Managers.Localization
                 settings.SaveSettings();
             }
             
-            LoadLanguage(LocalizationTools.GetLanguageFromIndex(languageIndex));*/
+            LoadLanguage(LocalizationTools.GetLanguageFromIndex(languageIndex));
 
             yield return null;
         }
