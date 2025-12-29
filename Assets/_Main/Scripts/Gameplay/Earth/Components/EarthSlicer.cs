@@ -1,6 +1,7 @@
 ﻿using System;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.Contracts.Interfaces.GameplayData.Earth;
 using MeteorMadness.Gameplay;
 using MeteorMadness.Managers.Cosmetics;
 using MeteorMadness.Managers.GameConfig;

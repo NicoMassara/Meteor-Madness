@@ -16,7 +16,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
     {
         public interface IDefeatView
         {
-            public event Action<GeneratedId, GeneratedId, bool> OnDataLoaded;
+            public event Action<DefeatScreenData> OnDataLoaded;
             public event Action OnDataInitialized;
             public event Action OnGameSaved;
             
@@ -25,7 +25,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
         
         #region IDefeatView
 
-        public event Action<GeneratedId, GeneratedId, bool> OnDataLoaded;
+        public event Action<DefeatScreenData> OnDataLoaded;
         public event Action OnDataInitialized;
         public event Action OnGameSaved;
         public event Action<bool, uint, uint> OnNewCoinsAdded;
@@ -57,7 +57,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                     HandleDataLoaded();
                     break;
                 case DefeatObserverMessage.InitializeData:
-                    HandleInitializeData((GeneratedId)args[0],(GeneratedId)args[1],(bool)args[2]);
+                    HandleInitializeData((bool)args[0]);
                     break;
                 
                 // === Ads === //
@@ -126,13 +126,11 @@ namespace MeteorMadness.ScreenFlow.Defeat
             var storedCoins = SkinManager.Instance.GetCoins();
             uint gainedCoins = 0;
 
-            if (SecureValueManager.GetDoesContainValue(GameManager.Instance.StatsController.GetCurrentScoreSecuredId(),
-                    out uint currentScore))
+            var currentScore = (uint)StatsManager.GetRuntimeScore();
+
+            if (SkinManager.Instance.TryAddCoins(currentScore))
             {
-                if (SkinManager.Instance.TryAddCoins(currentScore))
-                {
-                    gainedCoins = SkinManager.Instance.GetCoins() - storedCoins;
-                }
+                gainedCoins = SkinManager.Instance.GetCoins() - storedCoins;
             }
             
             Debug.Log($"Score: {currentScore}, Last Coins: {storedCoins}, Current Coins: {SkinManager.Instance.GetCoins()}");
@@ -144,11 +142,12 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         #endregion
 
-        private void HandleInitializeData(GeneratedId highScoreId, GeneratedId currentScoreId, bool hasNewHighScore)
+        private void HandleInitializeData(bool hasNewHighScore)
         {
             if (hasNewHighScore)
             {
-                GameManager.Instance.StatsController.SaveRuntimeHighScore(highScoreId, currentScoreId);
+                var newHighScore = (uint)StatsManager.GetRuntimeScore();
+                StatsManager.ModifyValueByStat(StatType.HighScore, newHighScore);
             }
             
             AdsEvents.Rewarded_TriggerLoad();
@@ -157,25 +156,29 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         private void SaveGameData()
         {
-            GameManager.Instance.StatsController.SaveHighScore(GameManager.Instance.StatsController.GetHighScoreSecuredId());
-            GameManager.Instance.StatsController.SaveStats();
+            StatsManager.SaveValues();
             SkinManager.Instance.SaveStoredCoins();
  
         }
         
         private void HandleExecuteDisable()
         {
-            GameManager.Instance.StatsController.ClearScoreData();
+            StatsManager.ClearRuntimeData();
             GameScreenEventCaller.DisableScreen(ScreenType.Defeat, EventRequestType.Granted);
         }
         
         private void HandleDataLoaded()
         {
-            OnDataLoaded?.Invoke(
-                GameManager.Instance.StatsController.GetCurrentScoreSecuredId(), 
-                GameManager.Instance.StatsController.GetHighScoreSecuredId(),
-                GameManager.Instance.StatsController.GetHasNewHighScore());
-
+            var runtimeScore = (uint)StatsManager.GetRuntimeScore();
+            var storedHighScore = (uint)StatsManager.GetValueByStat(StatType.HighScore);
+            var hasNewHighScore = runtimeScore > storedHighScore;
+            
+            OnDataLoaded?.Invoke(new DefeatScreenData
+            {
+                Score = runtimeScore,
+                HighScore = hasNewHighScore ? runtimeScore : storedHighScore,
+                HasNewHighScore = hasNewHighScore
+            });
         }
         
         private void TriggerReward()

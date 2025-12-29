@@ -1,10 +1,11 @@
-﻿using MeteorMadness.Contracts.Interfaces;
+﻿using MeteorMadness.Contracts.Interfaces.GameplayData;
+using MeteorMadness.Contracts.Interfaces.GameplayData.Earth;
 using UnityEngine;
 
 namespace MeteorMadness.Managers.GameConfig.Game
 {
     [CreateAssetMenu(fileName = "SO_GameConfig_Name", menuName = "Scriptable Objects/Game Config/Game Data", order = -1)]
-    public class GameplayConfigSo : ScriptableObject
+    public class GameplayConfigSo : ScriptableObject, IGameplayConfig
     {
         [Header("Values")]
         [Range(1,25)]

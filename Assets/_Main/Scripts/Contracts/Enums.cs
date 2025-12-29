@@ -78,6 +78,7 @@
     public enum SkinType
     {
         None,
+        //
         Default,
         Pizza,
         Vinyl,
@@ -150,6 +151,23 @@
         Empty68,
         Empty69,
         Empty70,
+        //
+        DEFAULT_MAX
+    }
+
+    public enum StatType
+    {
+        None,
+        //
+        HighScore,
+        Collision,
+        Deflect,
+        Ability,
+        Streak,
+        TimesPlayed,
+        TotalScored,
+        Time,
+        //
         DEFAULT_MAX
     }
 }

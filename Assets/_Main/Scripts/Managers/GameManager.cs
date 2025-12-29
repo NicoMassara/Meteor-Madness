@@ -21,13 +21,13 @@ namespace MeteorMadness.Managers
         public IInputReader InputReader { get; private set; }
         
         public bool AntiEpileptic { get; set; } = true;
-        public StatsController StatsController { get; private set; } 
+
+        public uint VisualPoints { get; set; }
         public FlagsController FlagsController { get; private set; }
         
         private void Awake()
         {
             EventManager = new EventBusManager();
-            StatsController = new StatsController();
             FlagsController = new FlagsController();
         }
         
@@ -52,6 +52,8 @@ namespace MeteorMadness.Managers
         private void LoadGameScreen(ScreenType type) => GameScreenEventCaller.EnableScreen(type, EventRequestType.Requested);
 
         #endregion
+
+        #region Pause
 
         public void PauseGame()
         {
@@ -78,6 +80,9 @@ namespace MeteorMadness.Managers
                 
             }, isPaused);
         }
+
+        #endregion
+
 
         public void QuitGame()
         {

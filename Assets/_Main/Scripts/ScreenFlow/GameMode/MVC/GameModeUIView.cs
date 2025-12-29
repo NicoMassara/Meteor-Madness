@@ -116,6 +116,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         private void HandleInitializeData()
         {
+            GameManager.Instance.VisualPoints = 0;
+            
             _numberIncrementer.ResetValues();
             _storedPoints = 0;
             UpdateScoreTextLocalization();
@@ -186,7 +188,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         private void SetStoredPoints(uint storedPoints)
         {
             _storedPoints = storedPoints;
-            GameManager.Instance.StatsController.VisualPoints = _storedPoints;
+            GameManager.Instance.VisualPoints = (uint)(_storedPoints * GetPointsMultiplier());
         }
         
 

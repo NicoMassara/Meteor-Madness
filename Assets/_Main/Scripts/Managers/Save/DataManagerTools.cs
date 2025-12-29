@@ -12,7 +12,7 @@ namespace MeteorMadness.Managers.Save
         
         public class GameplayStatsIdData
         {
-            public GeneratedId CurrentScoreId;
+            public GeneratedId RuntimeScoreId;
             public GeneratedId CollisionId;
             public GeneratedId AbilityUseId;
             public GeneratedId DeflectId;

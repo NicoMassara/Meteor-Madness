@@ -1,6 +1,7 @@
 ﻿using System;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.Contracts.Interfaces.GameplayData.Earth;
 using MeteorMadness.Contracts.Interfaces.Skins;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;

@@ -4,6 +4,7 @@ using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.Cosmetics;
+using MeteorMadness.Managers.GameConfig;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.Managers.Save;
 using MeteorMadness.ScreenFlow.Defeat;
@@ -14,7 +15,6 @@ using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts.MyTest.Defeat
 {
-        [AddComponentMenu("_Main/ModuleTester/Defeat Screen Tester")]
         public class DefeatScreenTester : MonoBehaviour
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -24,7 +24,7 @@ namespace _Main.Scripts.MyTest.Defeat
             [Range(0,1000)]
             [SerializeField] private uint scoreAmount;
             [Range(0,1000)]
-            [SerializeField] private uint highScore;
+            [SerializeField] private uint storedHighScore;
             
             private bool _hasInitializedAds;
             private bool _hasInitializedManager;
@@ -72,16 +72,17 @@ namespace _Main.Scripts.MyTest.Defeat
                 DataManager.LoadInstance();
                 SettingsManager.LoadInstance();
                 SoundManager.LoadInstance();
+                GameConfigManager.LoadInstance();
             }
             
             private void SetScoreValue()
             {
-                GameManager.Instance.StatsController.SetStatsIdData(new DataManagerTools.GameplayStatsIdData
+                StatsManager.UpdateRuntimeData(new DataManagerTools.GameplayStatsIdData
                 {
-                    CurrentScoreId = SecureValueManager.RegisterValue(scoreAmount)
+                    RuntimeScoreId = SecureValueManager.RegisterValue(scoreAmount * 100)
                 });
-
-                SecureValueManager.ModifyValue(GameManager.Instance.StatsController.GetHighScoreSecuredId(), highScore);
+                
+                StatsManager.ModifyValueByStat(StatType.HighScore, storedHighScore * 100);
             }
 
             private IEnumerator Coroutine_DisableDefeatScreen()
@@ -123,7 +124,6 @@ namespace _Main.Scripts.MyTest.Defeat
                 
                 BootEvents.InitializeMainSystem();
                 
-                //yield return new WaitUntil(()=> _hasInitializedManager == true);
                 yield return new WaitForEndOfFrame();
                 
                 BootEvents.InitializeSubSystems();

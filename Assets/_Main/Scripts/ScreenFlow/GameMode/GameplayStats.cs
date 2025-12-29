@@ -54,7 +54,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             return new DataManagerTools.GameplayStatsIdData
             {
-                CurrentScoreId = _currentScoreId,
+                RuntimeScoreId = _currentScoreId,
                 CollisionId = _collisionId,
                 AbilityUseId = _abilityUseId,
                 DeflectId = _deflectId,

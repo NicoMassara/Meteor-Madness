@@ -9,8 +9,7 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
 {
     public class EarthSkinController : MonoBehaviour
     {
-        [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private Transform spriteContainer;
+        [SerializeField] private Renderer spriteRenderer;
         
         private static readonly int HealthInShader = Shader.PropertyToID("_HealthAmount");
         private static readonly int OpacityInShader = Shader.PropertyToID("_Opacity");
@@ -94,10 +93,8 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             
             var data = SkinManager.Instance.GetEarthData(skinType);
             
-            
-            spriteRenderer.material = data.Material;
-            spriteContainer.rotation = Quaternion.Euler(data.EarthRotationOffset);
-            spriteRenderer.transform.localScale = data.ScaleOffset;
+            spriteRenderer.transform.rotation = data.EarthRotationOffset;
+            spriteRenderer.material = SkinManager.Instance.GetEarthData(skinType).Material;
             
             UpdateMaterialHealth();
         }

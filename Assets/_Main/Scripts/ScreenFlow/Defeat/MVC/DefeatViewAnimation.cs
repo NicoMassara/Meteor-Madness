@@ -6,6 +6,7 @@ using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
+using MeteorMadness.Managers.GameConfig;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.ScreenFlow.Base;
 using MeteorMadness.ScreenFlow.Defeat.So;
@@ -416,10 +417,10 @@ namespace MeteorMadness.ScreenFlow.Defeat
             {
                 //=== Score ===
                 case DefeatObserverMessage.SendScore:
-                    HandleSendScore((GeneratedId)args[0]);
+                    HandleSendScore((uint)args[0]);
                     break;
                 case DefeatObserverMessage.SendHighScore:
-                    HandleSendHighScore((GeneratedId)args[0],(bool)args[1]);
+                    HandleSendHighScore((uint)args[0],(bool)args[1]);
                     break;
                 
                 case DefeatObserverMessage.SendCoins:
@@ -485,17 +486,11 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         #region Score
         
-        private void HandleSendScore(GeneratedId generatedId)
+        private void HandleSendScore(uint currentScore)
         {
-            if (SecureValueManager.GetDoesContainValue<uint>(generatedId, out var currentScore) == false)
-            {
-                Debug.LogWarning("DefeatViewAnimation::HandleSendScore: Could not find score");
-                return;
-            }
-            
             uint finalScore = (uint)(currentScore * GetPointsMultiplier());
             
-            //Debug.LogWarning($"Target Current Score: {finalScore}, Inner: {currentScore}");
+            Debug.Log($"Target Current Score: {finalScore}, Inner: {currentScore}");
             
             var sendScore = (Animation_CurrentScore_Increment)_animationScoreCurrent;
             sendScore.SetTargetScore(finalScore);
@@ -503,17 +498,11 @@ namespace MeteorMadness.ScreenFlow.Defeat
             
         }
 
-        private void HandleSendHighScore(GeneratedId generatedId, bool hasHighScore)
+        private void HandleSendHighScore(uint highScore, bool hasHighScore)
         {
-            if (SecureValueManager.GetDoesContainValue<uint>(generatedId, out var highScore) == false)
-            {
-                Debug.LogWarning("DefeatViewAnimation::HandleSendHighScore: Could not find high score");
-                return;
-            }
-            
             uint finalScore = (uint)(highScore * GetPointsMultiplier());
             
-            //Debug.LogWarning($"Target High Score: {finalScore}, Inner: {highScore}");
+            Debug.Log($"Target High Score: {finalScore}, Inner: {highScore}");
 
             var sendScore = (Animation_HighScore_Increment)_animationScoreHigh;
             sendScore.SetTargetScore(finalScore, hasHighScore);
@@ -542,12 +531,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         private int GetPointsMultiplier()
         {
-            /*var instance = GameConfigManager.Instance;
-            return instance ? GameConfigManager.Instance.GetGameplayData().PointsMultiplier : 500;*/
-            
-            //TODO: FIX
-            
-            return 500;
+            return GameConfigManager.Instance.GetGameplayData().PointsMultiplier;
         }
 
         #endregion

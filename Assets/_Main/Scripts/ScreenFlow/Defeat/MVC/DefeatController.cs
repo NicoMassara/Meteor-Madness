@@ -16,7 +16,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
             public void StartDisable();
             public void EnableScreen();
             public void ExecuteDisable();
-            public void LoadScoreData(GeneratedId score, GeneratedId highScore, bool hasNewHigh);
+            public void LoadScoreData(DefeatScreenData score);
             public void SendScore();
             public void SendHighScore();
             public void SendButtons();
@@ -37,7 +37,6 @@ namespace MeteorMadness.ScreenFlow.Defeat
             public void Enable();
             public void Disable();
             public void LoadData();
-            public void SaveHighScore();
         }
         
         private class MainController
@@ -65,8 +64,6 @@ namespace MeteorMadness.ScreenFlow.Defeat
             private class EnableState<T> : BaseState<T>
             {
                 public override void Awake() => Controller.Enable();
-
-                public override void Sleep() => Controller.SaveHighScore();
             }
             
             private class DisableState<T> : BaseState<T>
@@ -228,8 +225,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
             }
         }
 
-        public void LoadScoreData(GeneratedId score, GeneratedId highScore, bool hasNewHigh) 
-            => _motor.LoadScoreData(score, highScore,hasNewHigh);
+        public void LoadScoreData(DefeatScreenData score)
+            => _motor.LoadScoreData(score);
 
         public void SendScore() => _motor.SendScore();
         public void SendHighScore() => _motor.SendHighScore();
@@ -247,10 +244,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         #region IController
 
-        public void Enable()
-        {
-            _motor.Enable();
-        }
+        public void Enable() => _motor.Enable();
 
         public void Disable()
         {
@@ -258,15 +252,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
             _motor.StartDisable();
         }
 
-        public void LoadData()
-        {
-            _motor.LoadData();
-        }
-
-        public void SaveHighScore()
-        {
-            _motor.SaveHighScore();
-        }
+        public void LoadData() => _motor.LoadData();
 
         #endregion
     }

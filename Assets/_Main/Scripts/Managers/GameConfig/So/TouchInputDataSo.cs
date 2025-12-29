@@ -1,4 +1,5 @@
 ﻿using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.Contracts.Interfaces.GameplayData;
 using UnityEngine;
 
 namespace MeteorMadness.Managers.GameConfig

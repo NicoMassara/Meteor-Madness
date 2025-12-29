@@ -27,6 +27,10 @@ namespace _Main.Scripts.MyTest.Stats
             public uint MaxStreak;
             [Range(0, 1000)]
             public uint HighScore;
+            [Range(0, 1000)]
+            public uint TimesPlayed;
+            [Range(0, 1000)]
+            public uint HistoricalScore;
             [Range(0f, 1000f)]
             public float LongestTime;
         }
@@ -51,19 +55,14 @@ namespace _Main.Scripts.MyTest.Stats
 
         private void SetStats()
         {
-            GameManager.Instance.StatsController.SetStatsIdData(new DataManagerTools.GameplayStatsIdData
-            {
-                CurrentScoreId = SecureValueManager.RegisterValue(statsData.Score),
-                CollisionId = SecureValueManager.RegisterValue(statsData.CollisionCount),
-                AbilityUseId = SecureValueManager.RegisterValue(statsData.AbilityUseCount),
-                DeflectId = SecureValueManager.RegisterValue(statsData.DeflectCount),
-                StreakId = SecureValueManager.RegisterValue(statsData.MaxStreak),
-                TimeId = SecureValueManager.RegisterValue(statsData.LongestTime),
-            });
-            
-            GameManager.Instance.StatsController.SaveHighScore(SecureValueManager.RegisterValue(statsData.HighScore));
-            
-            GameManager.Instance.StatsController.SaveStats();
+            StatsManager.ModifyValueByStat(StatType.HighScore, statsData.HighScore);
+            StatsManager.ModifyValueByStat(StatType.Collision, statsData.CollisionCount);
+            StatsManager.ModifyValueByStat(StatType.Deflect, statsData.DeflectCount);
+            StatsManager.ModifyValueByStat(StatType.Ability, statsData.AbilityUseCount);
+            StatsManager.ModifyValueByStat(StatType.Streak, statsData.MaxStreak);
+            StatsManager.ModifyValueByStat(StatType.TimesPlayed, statsData.TimesPlayed);
+            StatsManager.ModifyValueByStat(StatType.TotalScored, statsData.HistoricalScore);
+            StatsManager.ModifyValueByStat(StatType.Time, statsData.LongestTime);
         }
 
         private void LoadScreen()

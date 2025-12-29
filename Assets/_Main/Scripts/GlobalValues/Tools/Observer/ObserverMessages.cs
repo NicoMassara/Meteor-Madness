@@ -225,7 +225,7 @@
         public const ulong SendHighScore    = 0xA1207;
         public const ulong SendButtons      = 0xA1208;
         public const ulong EnableButtons    = 0xA1209;
-        public const ulong SaveHighScore    = 0xA120A;
+        public const ulong Empty2    = 0xA120A;
         public const ulong SendAds          = 0xA120B;
         public const ulong RestartGame      = 0xA120C;
         public const ulong LoadMainMenu     = 0xA120D;

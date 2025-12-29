@@ -137,6 +137,9 @@ namespace MeteorMadness.Contracts.Interfaces.Sounds
 
     public interface IDefeatUiSounds : ISoundComponent
     {
+        public event Action OnCoinsFinished;
+        public event Action OnCoinsUpdated;
+        public event Action OnCoinsStarted;
         public event Action OnMainMenuButtonPressed;
         public event Action OnRestartButtonPressed;
     }

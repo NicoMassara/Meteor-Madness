@@ -7,8 +7,6 @@ namespace MeteorMadness.Contracts
     public class SkinData
     {
         [SerializeField] private Material material;
-        [Range(0.1f, 10f)] [SerializeField] private float scaleOffsetX = 1f;
-        [Range(0.1f, 10f)] [SerializeField] private float scaleOffsetY = 1f;
         
         private Material _runtimeMaterial;
         
@@ -23,8 +21,6 @@ namespace MeteorMadness.Contracts
         }
         
         public Material Material => material;
-
-        public Vector3 ScaleOffset => new Vector3(scaleOffsetX,scaleOffsetY,0);
     }
     
     [Serializable]
@@ -32,7 +28,7 @@ namespace MeteorMadness.Contracts
     {
         [Range(0,359)]
         [SerializeField] private float rotationOffset;
-        public Vector3 EarthRotationOffset => new Vector3(0,0,rotationOffset);
+        public Quaternion EarthRotationOffset => Quaternion.Euler(new Vector3(0,0,rotationOffset));
     }
     
     [Serializable]

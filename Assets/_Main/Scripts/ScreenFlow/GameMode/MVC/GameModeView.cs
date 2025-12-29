@@ -255,7 +255,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             OnStopMusic?.Invoke();
             AbilitiesEventCaller.Disable();
-            GameManager.Instance.StatsController.VisualPoints = 0;
             GameScreenEventCaller.DisableScreen(ScreenType.GameMode, EventRequestType.Granted);
         }
         
@@ -333,8 +332,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             GameModeEventCaller.SetEnablePause(false);
             GameManager.Instance.CanPlay = false;
             ShieldEventCaller.Disable();
-            GameManager.Instance.StatsController.SetStatsIdData(saveData);
-            
+            StatsManager.UpdateRuntimeData(saveData);
             OnScoreSaved?.Invoke();
         }
         

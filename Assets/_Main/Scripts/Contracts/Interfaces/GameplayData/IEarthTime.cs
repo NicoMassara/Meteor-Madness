@@ -1,4 +1,4 @@
-﻿namespace MeteorMadness.Contracts.Interfaces
+﻿namespace MeteorMadness.Contracts.Interfaces.GameplayData.Earth
 {
     public interface IEarthTime
     {

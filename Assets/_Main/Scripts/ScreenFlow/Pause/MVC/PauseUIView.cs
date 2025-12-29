@@ -69,14 +69,14 @@ namespace MeteorMadness.ScreenFlow.Pause
         private void LocalizationEvents_OnLanguageChangedHandler()
         {
             UpdateLocalizedScoreText();
-            SetScoreText(GameManager.Instance.StatsController.VisualPoints);
+            SetScoreText(GameManager.Instance.VisualPoints);
         }
         
         #endregion
 
         private void HandleInitialize()
         {
-            SetScoreText(GameManager.Instance.StatsController.VisualPoints);
+            SetScoreText(GameManager.Instance.VisualPoints);
         }
         
         private void HandleEnable()

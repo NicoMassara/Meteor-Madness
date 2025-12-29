@@ -56,7 +56,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
         /// <summary>
         /// Step by Step - Enable
         /// 1 - GameScreenEvents Request Enable
-        /// 2 - Defeat data is gotten from GameManager
+        /// 2 - Defeat data is gotten from Stats Manager
         /// 3 - When data is already loaded it notifies it and screen does enable
         /// 4 - Main Animation and triggers OnPanelOpened when finishes
         /// 5 - Score Animations
@@ -76,9 +76,9 @@ namespace MeteorMadness.ScreenFlow.Defeat
         
         private void SetViewHandlers()
         {
-            _view.OnDataLoaded += (score, highScore, hasNewHigh) =>
+            _view.OnDataLoaded += (score) =>
             {
-                _controller.LoadScoreData(score,highScore,hasNewHigh);
+                _controller.LoadScoreData(score);
             };
             _view.OnDataInitialized += _controller.SetDataIsLoaded;
             _view.OnGameSaved += () => _controller.SendButtons();

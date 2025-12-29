@@ -1,39 +1,67 @@
-﻿using MeteorMadness.Contracts;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.Managers.GameConfig.Game;
-using NicolasMassara.CustomUpdateManager;
+﻿using System;
+using MeteorMadness.Contracts;
 using UnityEngine;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.Contracts.Interfaces.GameplayData;
+using MeteorMadness.GlobalValues.BaseSingleton;
+using MeteorMadness.Managers.GameConfig.Game;
 
 namespace MeteorMadness.Managers.GameConfig
 {
-    public class GameConfigManager : ManagedBehavior
+    public class GameConfigManager : SingletonBehaviour<GameConfigManager>
     {
-        [SerializeField] private DamageTypes currentDamageDamageType = DamageTypes.Standard;
-        [SerializeField] private GameplayConfigSo gameplayConfigSo;
-        
-        public static GameConfigManager Instance { get; private set; }
-        
-        private void Awake()
+        #region Private Classes
+
+        private class ConfigFileLoader
         {
-            if (Instance != null)
+            private const string Path = "ScriptableObjects/GameConfig/SO_GameConfig";
+
+            public static IGameplayConfig GetGameplayConfig()
             {
-                Destroy(gameObject);
-                return;
+                var loaded = Resources.Load<GameplayConfigSo>(Path);
+
+                if (loaded)
+                {
+                    return loaded;
+                }
+                
+                Debug.LogError($"Could not load GamePlayConfig at Resources/{Path}, " +
+                               $"please check if the files exists or its name!");
+                return null;
             }
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
-        public GameplayConfigSo GetGameplayData()
+        #endregion
+        
+        
+        private DamageTypes _currentDamageDamageType = DamageTypes.Standard;
+        private IGameplayConfig _gameplayConfigSo;
+
+        private void Awake()
         {
-            return gameplayConfigSo;
+            BootEvents.OnMainSystemRequestInitialize += Initialize;
+        }
+
+        private void Initialize()
+        {
+            BootEvents.OnMainSystemRequestInitialize -= Initialize;
+            //
+
+            _gameplayConfigSo = ConfigFileLoader.GetGameplayConfig();
+            
+            BootEvents.InitializeMainSystem();
+        }
+
+        public IGameplayConfig GetGameplayData()
+        {
+            return _gameplayConfigSo;
         }
         
         #region Damage
 
         public float GetDamageValue()
         {
-            return currentDamageDamageType switch
+            return _currentDamageDamageType switch
             {
                 DamageTypes.None => DamageParameters.Values.NoneDamage,
                 DamageTypes.Standard => DamageParameters.Values.StandardMeteor,
@@ -46,12 +74,12 @@ namespace MeteorMadness.Managers.GameConfig
 
         public DamageTypes GetDamageType()
         {
-            return currentDamageDamageType;
+            return _currentDamageDamageType;
         }
 
         public void SetDamage(DamageTypes damage)
         {
-            currentDamageDamageType = damage;
+            _currentDamageDamageType = damage;
         }
         
         #endregion

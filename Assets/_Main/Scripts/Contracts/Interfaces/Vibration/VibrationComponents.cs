@@ -24,6 +24,9 @@ namespace MeteorMadness.Contracts.Interfaces.Vibration
     public interface IDefeatUIVibration : IVibrationComponent
     {
         public event Action OnMainMenuButtonPressed;
+        public event Action OnCoinsStarted;
+        public event Action OnCoinsUpdated;
+        public event Action OnCoinsFinished;
         public event Action OnRestartButtonPressed;
     }
     

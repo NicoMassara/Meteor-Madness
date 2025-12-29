@@ -24,6 +24,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
         
         public event Action OnMainMenuButtonPressed;
         public event Action OnCoinsFinished;
+        public event Action OnCoinsStarted;
+        public event Action OnCoinsUpdated;
         public event Action OnRestartButtonPressed;
 
         private void Start()
@@ -57,11 +59,18 @@ namespace MeteorMadness.ScreenFlow.Defeat
         
         private void HandleUpdateCoins(uint stored, uint gained)
         {
+            if (gained == 0)
+            {
+                OnCoinsFinished?.Invoke();
+                return;
+            }
+
             var action = ActionBuilder.Start()
                     .Do(new WaitSecondsAction(0.5f))
-                    .Then(new IncrementCoinsAction(0.75f, 0, gained,UpdateNewCoinsText))
+                    .Then(new InstantAction(()=> OnCoinsStarted?.Invoke()))
+                    .Then(new IncrementCoinsAction(0.75f, 0, gained,(value)=> UpdateNewCoinsText(value)))
                     .Then(new WaitSecondsAction(0.5f))
-                    .Then(new IncrementCoinsAction(0.5f, stored, (stored+gained),UpdateStoredCoinsText))
+                    .Then(new IncrementCoinsAction(0.5f, stored, (stored+gained),(value)=> UpdateStoredCoinsText(value)))
                     .Then(new WaitSecondsAction(0.5f))
                     .Then(new InstantAction(()=> OnCoinsFinished?.Invoke()))
                     .Build();
@@ -125,11 +134,19 @@ namespace MeteorMadness.ScreenFlow.Defeat
             }
         }
 
-        private void UpdateNewCoinsText(uint amount) 
-            => UIComponents.SetNewCoinsText("Cosmetic.GainedCoins", amount);
-        
-        private void UpdateStoredCoinsText(uint amount) 
-            => UIComponents.SetStoredCoinsText("Cosmetic.StoredCoins", amount);
+        private void UpdateNewCoinsText(uint amount, bool isSilent = false)
+        {
+            UIComponents.SetNewCoinsText("Cosmetic.GainedCoins", amount);
+            if(isSilent) return;
+            OnCoinsUpdated?.Invoke();
+        }
+
+        private void UpdateStoredCoinsText(uint amount, bool isSilent = false)
+        {
+            UIComponents.SetStoredCoinsText("Cosmetic.StoredCoins", amount);
+            if(isSilent) return;
+            OnCoinsUpdated?.Invoke();
+        }
 
         #endregion
         
@@ -139,8 +156,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
         private void HandleInitializeData()
         {
             UIComponents.SetDeathTitle(SkinManager.Instance.GetDeathTitle());
-            UpdateNewCoinsText(0);
-            UIComponents.SetStoredCoinsText("Cosmetic.StoredCoins", SkinManager.Instance.GetCoins());
+            UpdateNewCoinsText(0, true);
+            UpdateStoredCoinsText(SkinManager.Instance.GetCoins(), true);
         }
 
         private void HandleStartDisable()
