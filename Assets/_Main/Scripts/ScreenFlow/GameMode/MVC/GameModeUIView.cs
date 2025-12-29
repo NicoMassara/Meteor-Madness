@@ -86,6 +86,9 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 case GameModeObserverMessage.UpdateCountdown:
                     HandleUpdateCountdown((float)args[0]);
                     break;
+                case GameModeObserverMessage.FinishCountdown:
+                    HandleFinishCountdown();
+                    break;
                 
                 //=== Meteor ===//
                 case GameModeObserverMessage.PointsGained:
@@ -112,6 +115,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
         }
         
+
         #region Data
 
         private void HandleInitializeData()
@@ -209,12 +213,9 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         #region Countdown
 
-        private void HandleUpdateCountdown(float countdownTime)
-        {
-            var text = countdownTime >= 1 ? $"{GetLocalizedString("Gameplay.CountDownStart")} {(int)countdownTime}..." 
-                : GetLocalizedString("Gameplay.CountdownFinish");
-            UIComponents.CountdownText.text = text;
-        }
+        private void HandleUpdateCountdown(float countdownTime) => UIComponents.SetCountdownText(countdownTime);
+
+        private void HandleFinishCountdown() => UIComponents.SetCountdownText(0f);
 
         #endregion
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Managers;
+using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomUpdateManager;
 
 namespace _Main.Scripts.MyInputs
@@ -25,13 +27,16 @@ namespace _Main.Scripts.MyInputs
         {
             InputsEventSubscriber.SetEnable(EventBus_Inputs_SetEnable);
             GameManager.Instance.SetInputReader(this);
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
         }
 
-        private void Start()
+        private void Initialize()
         {
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
+            //
             
 #if UNITY_ANDROID || UNITY_IOS
-            input = new TouchInput();
+            input = new TouchInput(GameConfigManager.Instance.GetGameplayData().TouchInputData);
 #else
             input = new KeyInput();
 #endif
@@ -40,6 +45,9 @@ namespace _Main.Scripts.MyInputs
             input.OnUpdateDirection += UpdateDirection;
             input.OnPaused += TriggerPause;
             EnableInputs();
+            
+            //
+            BootEvents.SubSystemInitialized();
         }
 
         public void ExecuteUpdate(float deltaTime)
@@ -94,8 +102,6 @@ namespace _Main.Scripts.MyInputs
 
         #endregion
         
-
-
         private void EventBus_Inputs_SetEnable(InputsEvents.SetEnable input)
         {
             if (input.IsEnable)

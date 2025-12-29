@@ -1,4 +1,5 @@
-﻿using MeteorMadness.GlobalValues.Events;
+﻿using MeteorMadness.Contracts.Events;
+using MeteorMadness.GlobalValues.Events;
 using Unity.Services.LevelPlay;
 using UnityEngine;
 

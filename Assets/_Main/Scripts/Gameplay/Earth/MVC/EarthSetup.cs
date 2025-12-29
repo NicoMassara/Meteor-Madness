@@ -1,4 +1,5 @@
 ﻿using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -16,26 +17,32 @@ namespace _Main.Scripts.Earth
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public TickGroup SelfTickGroup { get; } = TickGroup.HalfTarget;
         
+        
         private void Awake()
         {
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
             _view = GetComponent<EarthView>();
+        }
+
+        private void Initialize()
+        {
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
+            //
             
             _motor = new EarthMotor();
             _motor.Subscribe(_view);
             _controller = new EarthController(_motor, GameConfigManager.Instance.GetGameplayData().EarthTimeData.Destruction);
+            _controller.Initialize();
 
             SetViewHandlers();
             SetEventBus();
-        }
-
-        private void Start()
-        {
-            _controller.Initialize();
+            
+            BootEvents.SubSystemInitialized();
         }
 
         public void ExecuteUpdate(float deltaTime)
         {
-            _controller.Execute(deltaTime);
+            _controller?.Execute(deltaTime);
         }
 
         #region ViewHandlers

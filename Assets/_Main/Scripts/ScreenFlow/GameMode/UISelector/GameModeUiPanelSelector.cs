@@ -25,10 +25,24 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         public void SetStreakText(string textCode, uint amount) 
             => SetText(StreakText, $"{textCode}: {amount:D4}");
-        public void SetCountdownText(string textCode, uint amount) 
-            => SetText(CountdownText, $"{textCode}: {amount:D4}");
-        
+        public void SetCountdownText(float countdownTime)
+        {
+            var stringValue = "";
+            
+            if (countdownTime > 0)
+            {
+                stringValue = $"{GetLocalizedString("Gameplay.CountDownStart")} {(int)countdownTime}...";
+            }
+            else
+            {
+                stringValue = GetLocalizedString("Gameplay.CountdownFinish");
+            }
+
+            SetText(CountdownText, stringValue);
+        }
+
         public void SetNotifyText(string textCode) 
             => SetText(notifyText, textCode);
+        
     }
 }

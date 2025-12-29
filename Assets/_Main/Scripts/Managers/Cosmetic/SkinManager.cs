@@ -152,7 +152,6 @@ namespace MeteorMadness.Managers.Cosmetics
         public ShieldSkinData GetShieldData(SkinType skinType) => _skinController.GetShieldData(skinType);
 
         // === Locked Skin Controller ===// 
-        public List<int> GetUnlockedSkins() => _lockedSkinController.GetUnlockedSkins();
         public void UnlockSkin(int skinIndex) => _lockedSkinController.UnlockSkin(skinIndex);
         public bool GetIsLocked(int skinIndex) => _lockedSkinController.GetIsLocked(skinIndex);
         

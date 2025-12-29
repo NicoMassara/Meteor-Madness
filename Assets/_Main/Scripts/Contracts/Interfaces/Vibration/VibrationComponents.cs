@@ -32,11 +32,7 @@ namespace MeteorMadness.Contracts.Interfaces.Vibration
     
     public interface IDefeatAnimationVibration : IVibrationComponent
     {
-        public event Action OnScoreMoved;
-        public event Action OnHighScoreMoved;
-        public event Action OnNewHighScore;
-        public event Action OnCoinsMoved;
-        public event Action OnTitleMoved;
+        public event Action<DefeatAnimationVibrationType> OnVibration;
     }
         
     //=== Ability ===//

@@ -1,5 +1,6 @@
 ﻿using System;
 using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Contracts.Interfaces.GameplayData.Earth;
 using MeteorMadness.Contracts.Interfaces.Skins;
@@ -66,16 +67,22 @@ namespace _Main.Scripts.Earth
         
         private void Awake()
         {
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
             _slicer = GetComponent<EarthSlicer>();
             _planeRotator = new Rotator(destroyedEarthContainer.transform, Vector3.forward, rotationSpeed/2);
             _shakerController = new ComponentShaker(planeMeshContainer.transform);
         }
 
-        private void Start()
+        private void Initialize()
         {
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
+            //
+            
             _restartTimeValues = GameConfigManager.Instance.GetGameplayData().EarthTimeData.Restart;
             _shakerController.SetShakeData(healthShakeData);
             SetShakeMultiplier(1f);
+            
+            BootEvents.SubSystemInitialized();
         }
 
         public void ExecuteUpdate(float deltaTime)

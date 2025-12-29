@@ -100,7 +100,7 @@ namespace MeteorMadness.ScreenFlow.Stats
             UIComponents.SetHighScoreText("Stats.HighScore", statsData.HighScore);
             
 
-            var finalScore = (statsData.TotalScore * GetPointsMultiplier());
+            var finalScore = statsData.TotalScore * GetPointsMultiplier();
             UIComponents.SetAllScoreText("Stats.HistoricScore",finalScore);
             
             OnTextsLoaded?.Invoke();

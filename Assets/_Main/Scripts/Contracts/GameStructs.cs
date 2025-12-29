@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Contracts.Interfaces;
+﻿using System;
+using MeteorMadness.Contracts.Interfaces;
 using UnityEngine;
 
 namespace MeteorMadness.Contracts
@@ -50,5 +51,13 @@ namespace MeteorMadness.Contracts
     {
         public AbilityType AbilityType;
         public Vector2 Position;
+    }
+    
+    
+    [Serializable]
+    public struct UnlockBits128
+    {
+        public ulong low;
+        public ulong high;
     }
 }

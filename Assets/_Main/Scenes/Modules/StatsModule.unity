@@ -4159,6 +4159,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: D_Panel_FirstOpen
       objectReference: {fileID: 0}
+    - target: {fileID: 2865504318091296894, guid: 84086434b703d2b449dfbfd1ca1b583b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8342786909504435217, guid: 84086434b703d2b449dfbfd1ca1b583b, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

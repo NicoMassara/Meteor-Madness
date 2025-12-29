@@ -336,7 +336,7 @@ namespace MeteorMadness.Managers.Save
             public uint CollisionAmount;
             public uint AbilityUseAmount;
             public uint GamesPlayed;
-            public float LongestTime;
+            public uint LongestTime;
             public uint LongestStreak;
             public uint TotalScore;
         }
@@ -356,19 +356,17 @@ namespace MeteorMadness.Managers.Save
             public override SaveDataType Type => SaveDataType.Skin;
             public int SkinIndex = 1;
             public uint SkinCoins = 0;
-
-            public List<int> UnlockedSkins = new List<int> { 1 };
+            public UnlockBits128 UnlockedSkins = new UnlockBits128
+            {
+                low = (1UL << 0) // 0 is Default, must be always unlocked
+            };
         }
 
         [System.Serializable]
         public class FlagsSaveData : SaveDataBase
         {
             public override SaveDataType Type => SaveDataType.Flags;
-            public bool HasPlayed;
-            public bool HasCompletedTutorial;
-            public bool HasOpenedCosmetics;
-            public bool HasOpenedStats;
-            public bool HasOpenedLore;
+            public byte FirstTimeFlags;
         }
 
         #endregion

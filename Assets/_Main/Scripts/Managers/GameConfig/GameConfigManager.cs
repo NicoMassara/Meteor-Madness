@@ -49,7 +49,7 @@ namespace MeteorMadness.Managers.GameConfig
 
             _gameplayConfigSo = ConfigFileLoader.GetGameplayConfig();
             
-            BootEvents.InitializeMainSystem();
+            BootEvents.MainSystemInitialized();
         }
 
         public IGameplayConfig GetGameplayData()

@@ -1,11 +1,10 @@
 ﻿using System;
 using DG.Tweening;
 using MeteorMadness.Animations;
+using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
-using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.GlobalValues.Tools.Observer;
-using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.ScreenFlow.Base;
@@ -30,11 +29,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         private interface IVibrationCaller : IAnimationVibrationComponent
         {
-            public void TriggerScoreMoved();
-            public void TriggerHighScoreMoved();
-            public void TriggerNewHighScore();
-            public void TriggerCoinsMoved();
-            public void TriggerTitleMoved();
+            public void TriggerVibration(DefeatAnimationVibrationType vibrationType);
         }
 
         [SerializeField] private DefeatUiAnimationData animationData; 
@@ -110,15 +105,15 @@ namespace MeteorMadness.ScreenFlow.Defeat
                         .AppendCallback(() => UIComponents.BackgroundImage.gameObject.SetActive(true))
                         .Append(UIComponents.BackgroundImage.DOFade(0, 0))
                         .Append(UIComponents.BackgroundImage.DOFade(AnimationData.FadeIntensity, AnimationData.FadeInDuration).SetEase(Ease.InQuad))
-                        .AppendCallback(() => VibrationComponent.TriggerTitleMoved())
                         .AppendInterval(AnimationData.ScaleDelay)
                         .Append(UIComponents.Title.DOScale(0, 0))
                         .AppendCallback(() => UIComponents.Title.gameObject.SetActive(true))
                         .Append(UIComponents.Title.DOScale(1, AnimationData.ScaleDuration))
+                        .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TextAppear))
                         .AppendInterval(AnimationData.BounceDelay)
+                        .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TitleBounce))
                         .Append(UIComponents.Title.DOScale(AnimationData.BounceScale, AnimationData.BounceDuration))
                         .Append(UIComponents.Title.DOScale(1, AnimationData.BounceReturnTime))
-                        .AppendCallback(() => VibrationComponent.TriggerTitleMoved())
                         .AppendInterval(AnimationData.FinishDelay)
                     ;
             }
@@ -165,8 +160,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 
                 return DOTween.Sequence()
                         .AppendInterval(AnimationData.MovementDelay)
-                        .AppendCallback(() => VibrationComponent.TriggerTitleMoved())
                         .Append(UIComponents.Score.DOAnchorPos(_scorePanel.OffScreenPos, movementDuration))
+                        .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.ClosePanel))
                         .Join(UIComponents.HighScorePanel.DOAnchorPos(_highScorePanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.Title.DOAnchorPos(_titlePanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.ButtonsPanel.DOAnchorPos(_buttonsPanel.OffScreenPos, movementDuration))
@@ -216,7 +211,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 return DOTween.Sequence()
                         .AppendCallback(()=> UIComponents.Score.gameObject.SetActive(true))
                         .Append(UIComponents.Score.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
-                        .AppendCallback(() => VibrationComponent.TriggerScoreMoved())
+                        .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TextAppear))
                         .Append(TweenUtils.AnimateScore(_handleText, text, _targetScore, TweenUtils.GetDurationLog(_targetScore)))
                         .AppendInterval(AnimationData.FinishDelay)
                     ;
@@ -258,7 +253,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                     .AppendCallback(() => UIComponents.HighScorePanel.gameObject.SetActive(true))
                     .AppendCallback(() => UIComponents.HighScoreText.gameObject.SetActive(true))
                     .Append(UIComponents.HighScorePanel.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
-                    .AppendCallback(() => VibrationComponent.TriggerHighScoreMoved())
+                    .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TextAppear))
                     .Append(TweenUtils.AnimateScore(_handleText, text, (long)_targetScore, TweenUtils.GetDurationLog(_targetScore)))
                     ;
 
@@ -272,7 +267,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                         .Append(UIComponents.SubHighScoreText.DOScale(0,0))
                         .AppendInterval(AnimationData.NewScoreTextDelay)
                         .AppendCallback(()=> UIComponents.SubHighScoreText.gameObject.SetActive(true))
-                        .AppendCallback(() => VibrationComponent.TriggerNewHighScore())
+                        .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TitleBounce))
                         .Append(UIComponents.SubHighScoreText.DOScale(AnimationData.NewScoreBounceScale, AnimationData.NewScoreBounceDuration))
                         .Append(UIComponents.SubHighScoreText.DOScale(1, AnimationData.NewScoreBounceReturnTime))
                         ;
@@ -311,6 +306,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 return DOTween.Sequence()
                     .AppendCallback(()=> UIComponents.ButtonsPanel.gameObject.SetActive(true))
                     .Append(UIComponents.ButtonsPanel.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
+                    .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TextAppear))
                     .AppendInterval(AnimationData.FinishDelay)
                     ;
             }
@@ -341,7 +337,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 return DOTween.Sequence()
                         .AppendCallback(()=> UIComponents.CoinsPanel.gameObject.SetActive(true))
                         .Append(UIComponents.CoinsPanel.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
-                        .AppendCallback(() => VibrationComponent.TriggerCoinsMoved())
+                        .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TextAppear))
                         .AppendInterval(AnimationData.FinishDelay)
                     ;
             }
@@ -389,7 +385,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
         public event Action OnHighScoreMoved;
         public event Action OnNewHighScore;
         public event Action OnCoinsMoved;
-        public event Action OnTitleMoved;
+        public event Action<DefeatAnimationVibrationType> OnVibration;
 
         #endregion
         
@@ -551,12 +547,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
         }
 
         #region IVibrationCaller
-
-        public void TriggerScoreMoved() => OnScoreMoved?.Invoke();
-        public void TriggerHighScoreMoved() => OnHighScoreMoved?.Invoke();
-        public void TriggerNewHighScore() => OnNewHighScore?.Invoke();
-        public void TriggerCoinsMoved() => OnCoinsMoved?.Invoke();
-        public void TriggerTitleMoved() => OnTitleMoved?.Invoke();
+        
+        public void TriggerVibration(DefeatAnimationVibrationType vibrationType) => OnVibration?.Invoke(vibrationType);
 
         #endregion
 

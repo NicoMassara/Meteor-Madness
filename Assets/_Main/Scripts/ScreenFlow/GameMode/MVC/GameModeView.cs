@@ -204,7 +204,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         private void HandleStartGameplay()
         {
-            GameManager.Instance.FlagsController.FlipHasPlayed();
+            FlagsManager.SetHasPlayed();
             OnGameStarted?.Invoke();
             EarthEventCaller.EnableDamage();
             AbilitiesEventCaller.Enable();

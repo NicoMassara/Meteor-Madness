@@ -101,13 +101,12 @@ namespace MeteorMadness.Managers
         
         #endregion
 
-        private readonly StatController<uint> _uintStats = new StatController<uint>();
-        private readonly StatController<float> _floatStats = new StatController<float>();
+        private readonly StatController<uint> _uintDic = new StatController<uint>();
         private DataManagerTools.GameplayStatsIdData _runtimeData;
 
         private void Awake()
         {
-            _uintStats.Initialize(new StatType[]
+            _uintDic.Initialize(new StatType[]
             {
                 StatType.HighScore,
                 StatType.Collision,
@@ -116,11 +115,7 @@ namespace MeteorMadness.Managers
                 StatType.Streak,
                 StatType.TimesPlayed,
                 StatType.TotalScored,
-            });
-            
-            _floatStats.Initialize(new StatType[]
-            {
-                StatType.Time,
+                StatType.LongestTime,
             });
 
             BootEvents.OnMainSystemRequestInitialize += Initialize;
@@ -133,7 +128,6 @@ namespace MeteorMadness.Managers
 
             var statsData = DataManager.Instance.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
 
-
             if (statsData != null)
             {
                 Internal_ModifyValueByStat(StatType.HighScore, statsData.HighScore);
@@ -143,15 +137,14 @@ namespace MeteorMadness.Managers
                 Internal_ModifyValueByStat(StatType.Streak, statsData.LongestStreak);
                 Internal_ModifyValueByStat(StatType.TimesPlayed, statsData.GamesPlayed);
                 Internal_ModifyValueByStat(StatType.TotalScored, statsData.TotalScore);
-                Internal_ModifyValueByStat(StatType.Time, statsData.LongestTime);
+                Internal_ModifyValueByStat(StatType.LongestTime, statsData.LongestTime);
             }
             else
             {
                 Debug.Log("Stats saved data was not found!");
             }
             
-
-
+            //
             BootEvents.MainSystemInitialized();
         }
 
@@ -176,26 +169,17 @@ namespace MeteorMadness.Managers
 
         private object Internal_GetValueByStat(StatType statType)
         {
-            if(_uintStats.DoesContain(statType))
-                return _uintStats.GetValue(statType);
-            if(_floatStats.DoesContain(statType))
-                return _floatStats.GetValue(statType);
+            if(_uintDic.DoesContain(statType))
+                return _uintDic.GetValue(statType);
             
             throw new KeyNotFoundException($"{statType} stat was not found!");
         }
         private void Internal_AddValueByStat(StatType statType, object newValue)
         {
-            if (_uintStats.DoesContain(statType))
+            if (_uintDic.DoesContain(statType))
             {
-                var finalValue = _uintStats.GetValue(statType) + (uint)newValue;
-                _uintStats.ModifyValue(statType, finalValue);
-                return;
-            }
-            
-            if (_floatStats.DoesContain(statType))
-            {
-                var finalValue = _floatStats.GetValue(statType) + (float)newValue;
-                _floatStats.ModifyValue(statType, finalValue);
+                var finalValue = _uintDic.GetValue(statType) + (uint)newValue;
+                _uintDic.ModifyValue(statType, finalValue);
                 return;
             }
             
@@ -203,15 +187,9 @@ namespace MeteorMadness.Managers
         }
         private void Internal_ModifyValueByStat(StatType statType, object newValue)
         {
-            if (_uintStats.DoesContain(statType))
+            if (_uintDic.DoesContain(statType))
             {
-                _uintStats.ModifyValue(statType, (uint)newValue);
-                return;
-            }
-
-            if (_floatStats.DoesContain(statType))
-            {
-                _floatStats.ModifyValue(statType, (float)newValue);
+                _uintDic.ModifyValue(statType, (uint)newValue);
                 return;
             }
             
@@ -219,15 +197,9 @@ namespace MeteorMadness.Managers
         }
         private void Internal_ClearValueByStat(StatType statType)
         {
-            if (_uintStats.DoesContain(statType))
+            if (_uintDic.DoesContain(statType))
             {
-                _uintStats.ClearValue(statType);
-                return;
-            }
-
-            if (_floatStats.DoesContain(statType))
-            {
-                _floatStats.ClearValue(statType);
+                _uintDic.ClearValue(statType);
                 return;
             }
             
@@ -236,15 +208,58 @@ namespace MeteorMadness.Managers
         private void Internal_SaveValues()
         {
             var statsData = DataManager.Instance.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-
-            statsData.HighScore = (uint)Internal_GetValueByStat(StatType.HighScore);
-            statsData.CollisionAmount = (uint)Internal_GetValueByStat(StatType.Collision);
-            statsData.DeflectAmount = (uint)Internal_GetValueByStat(StatType.Deflect);
-            statsData.AbilityUseAmount = (uint)Internal_GetValueByStat(StatType.Ability);
-            statsData.LongestStreak = (uint)Internal_GetValueByStat(StatType.Streak);
-            statsData.GamesPlayed = (uint)Internal_GetValueByStat(StatType.TimesPlayed);
+            
+            // Compares the Time and if the recorded is greater, its overwrites it
+            if (SecureValueManager.GetDoesContainValue<uint>(_runtimeData.TimeId, out var recordedTime))
+            {
+                if (recordedTime > (uint)Internal_GetValueByStat(StatType.LongestTime))
+                {
+                    Internal_ModifyValueByStat(StatType.LongestTime, recordedTime);
+                    statsData.LongestTime = (uint)Internal_GetValueByStat(StatType.LongestTime);
+                }
+            }
+            
+            // Compares the HighScore and if the recorded score is greater, its overwrites it
+            if (SecureValueManager.GetDoesContainValue<uint>(_runtimeData.RuntimeScoreId, out var recordedScore))
+            {
+                if (recordedScore > (uint)Internal_GetValueByStat(StatType.HighScore))
+                {
+                    Internal_ModifyValueByStat(StatType.HighScore, recordedTime);
+                    statsData.HighScore = (uint)Internal_GetValueByStat(StatType.HighScore);
+                }
+            }
+            
+            // Compares the HighScore and if the recorded score is greater, its overwrites it
+            if (SecureValueManager.GetDoesContainValue<uint>(_runtimeData.RuntimeScoreId, out var recordedStreak))
+            {
+                if (recordedStreak > (uint)Internal_GetValueByStat(StatType.Streak))
+                {
+                    Internal_ModifyValueByStat(StatType.Streak, recordedStreak);
+                    statsData.LongestStreak = (uint)Internal_GetValueByStat(StatType.Streak);
+                }
+            }
+            
+            
+            // Adds to the total score the runtime one
+            Internal_AddValueByStat(StatType.TotalScored, GetRuntimeScore());
             statsData.TotalScore = (uint)Internal_GetValueByStat(StatType.TotalScored);
-            statsData.LongestTime = (float)Internal_GetValueByStat(StatType.Time);
+            
+            // Adds a game played
+            Internal_AddValueByStat(StatType.TimesPlayed, 1);
+            statsData.GamesPlayed = (uint)Internal_GetValueByStat(StatType.TimesPlayed);
+            
+            // Adds to the total collision count
+            Internal_AddValueByStat(StatType.Collision, GetRuntimeScore());
+            statsData.CollisionAmount = (uint)Internal_GetValueByStat(StatType.Collision);
+            
+            // Adds to the total deflect count
+            Internal_AddValueByStat(StatType.Deflect, GetRuntimeScore());
+            statsData.DeflectAmount = (uint)Internal_GetValueByStat(StatType.Deflect);
+            
+            // Adds to the total ability use count
+            Internal_AddValueByStat(StatType.Ability, GetRuntimeScore());
+            statsData.AbilityUseAmount = (uint)Internal_GetValueByStat(StatType.Ability);
+            
             
             DataManager.Instance.SaveGameData(statsData, DataManager.SaveDataType.Stats);
         }

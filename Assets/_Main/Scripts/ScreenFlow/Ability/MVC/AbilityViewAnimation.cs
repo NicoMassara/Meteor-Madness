@@ -38,7 +38,6 @@ namespace MeteorMadness.Gameplay.Abilities
             public Animation_MainPanel_Open(AbilityUIAnimationComponents.IMainPanel components, IPanelData animationData)
                 : base(components, animationData)
             {
-                Debug.Log(UIComponents.MainPanel);
                 _panel = new AnimationHelper.PanelPosition(UIComponents.MainPanel, animationData.OffscreenPosition);
             }
 

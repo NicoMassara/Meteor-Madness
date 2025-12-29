@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.Managers.Cosmetics;
+using MeteorMadness.Managers.GameConfig;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.Managers.Save;
 using MeteorMadness.Services.AdsSystem;
@@ -26,7 +28,7 @@ namespace MeteorMadness.Managers.Boostrap
         [SerializeField] private float delayBeforeLoad = 0.1f;
         [SerializeField] private Image progressBar;
 
-        private const int MainSystemsCount = 4;
+        private const int MainSystemsCount = 5;
         private const int SubSystemsCount = 7;
         
         public const bool DebugDisabled = true;
@@ -95,6 +97,9 @@ namespace MeteorMadness.Managers.Boostrap
             LocalizationManager.LoadInstance();
             SoundManager.LoadInstance();
             AnalyticsManager.LoadInstance();
+            GameConfigManager.LoadInstance();
+            StatsManager.LoadInstance();
+            FlagsManager.LoadInstance();
         }
 
         private void Start()

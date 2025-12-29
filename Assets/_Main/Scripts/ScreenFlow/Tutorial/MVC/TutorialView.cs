@@ -154,9 +154,22 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         
         private void HandleFinish()
         {
-            if (GameManager.Instance.FlagsController.GetHasCompletedTutorial() == false)
+            var hasPlayed = FlagsManager.GetHasPlayed();
+            var hasCompletedTutorial = FlagsManager.GetHasCompletedTutorial();
+            
+            if (hasPlayed == false)
             {
-                GameManager.Instance.FlagsController.SetHasCompletedTutorial();
+                FlagsManager.SetHasCompletedTutorial();
+            }
+            
+            if (hasCompletedTutorial == false)
+            {
+                FlagsManager.SetHasPlayed();
+            }
+
+            if (hasPlayed == false || hasCompletedTutorial == false)
+            {
+                FlagsManager.SaveFlags();
             }
             
             GameManager.Instance.CanPlay = false;
@@ -165,7 +178,6 @@ namespace MeteorMadness.ScreenFlow.Tutorial
             AbilitiesEventCaller.Disable();
             ShieldEventCaller.Disable();
             CameraEventCaller.ZoomIn();
-            GameManager.Instance.FlagsController.FlipHasPlayed();
             OnTutorialFinished?.Invoke();
         }
 

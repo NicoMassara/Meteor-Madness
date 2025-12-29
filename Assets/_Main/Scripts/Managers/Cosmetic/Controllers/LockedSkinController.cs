@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.Managers.Save;
 
@@ -10,8 +11,34 @@ namespace _Main.Scripts.Cosmetics
     /// </summary>
     public class LockedSkinController
     {
+        #region Tools
+        private static bool GetBit(ref UnlockBits128 bits, int index)
+        {
+            if (index < 64)
+                return (bits.low & (1UL << index)) != 0;
+            else
+                return (bits.high & (1UL << (index - 64))) != 0;
+        }
+
+        private static void SetBit(ref UnlockBits128 bits, int index)
+        {
+            if (index < 64)
+                bits.low |= 1UL << index;
+            else
+                bits.high |= 1UL << (index - 64);
+        }
+
+        private static void ClearBit(ref UnlockBits128 bits, int index)
+        {
+            if (index < 64)
+                bits.low &= ~(1UL << index);
+            else
+                bits.high &= ~(1UL << (index - 64));
+        }
         
-        public List<int> UnlockedSkins;
+        #endregion
+        
+        private UnlockBits128 _bits;
         private GeneratedId _secureId;
 
         public LockedSkinController()
@@ -21,33 +48,32 @@ namespace _Main.Scripts.Cosmetics
 
         public void Initialize(DataManager.SkinSaveData data)
         {
-            UnlockedSkins = data.UnlockedSkins;
+            _bits = data.UnlockedSkins;
         }
 
         #region Public Methods
-
-
-        public List<int> GetUnlockedSkins()
-        {
-            return UnlockedSkins.ToList();
-        }
-
+        
+        public UnlockBits128 GetUnlockedSkins() => _bits;
         public void UnlockSkin(int skinIndex)
         {
-            var hashSet = UnlockedSkins.ToHashSet();
-            
-            hashSet.Add(skinIndex);
-            
-            UnlockedSkins = hashSet.ToList();
+            if (skinIndex > 128)
+            {
+                skinIndex = 128;
+            }
+
+            SetBit(ref _bits, skinIndex-1);
         }
 
         public bool GetIsLocked(int skinIndex)
         {
-            var hashSet = UnlockedSkins.ToHashSet();
+            if (skinIndex > 128)
+            {
+                skinIndex = 128;
+            }
             
-            return hashSet.Contains(skinIndex) == false;
+            return GetBit(ref _bits, skinIndex-1) == false;
         }
-        
+
         #endregion
     }
 }

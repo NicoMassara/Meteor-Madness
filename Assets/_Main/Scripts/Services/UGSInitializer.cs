@@ -19,6 +19,8 @@ namespace MeteorMadness.Services
         
         private IEnumerator Coroutine_Initialize()
         {
+            BootEvents.OnMainSystemRequestInitialize -= Initialize;
+            //
             var initTask = UnityServices.InitializeAsync();
 
             while (!initTask.IsCompleted)

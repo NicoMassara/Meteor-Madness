@@ -77,7 +77,11 @@ namespace MeteorMadness.ScreenFlow.Menu
         
         private void HandleLoreMenu()
         {
-            GameManager.Instance.FlagsController.GetHasOpenedLore();
+            if (FlagsManager.GetHasOpenedLore() == false)
+            {
+                FlagsManager.SetHasOpenedLore();
+                FlagsManager.SaveFlags();
+            }
             OnLoreOpened?.Invoke();
         }
         
@@ -137,7 +141,7 @@ namespace MeteorMadness.ScreenFlow.Menu
         private void HandleEnable()
         {
             OnMainMenuEnable?.Invoke();
-            var hasPlayed = GameManager.Instance.FlagsController.GetHasPlayed();
+            var hasPlayed = FlagsManager.GetHasPlayed();
             OnFirstGame?.Invoke(hasPlayed);
             CameraEventCaller.ZoomIn(0.5f);
             EarthEventCaller.DisableDamage();

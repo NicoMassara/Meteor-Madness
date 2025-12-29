@@ -232,6 +232,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 {
                     sequence
                         .Append(TextTween.Fade(UIComponents.CountdownText, AnimationData.FadeDuration, true))
+
                         .Append(UIComponents.CountdownText.DOScale(AnimationData.BounceScale, AnimationData.BounceDuration))
                         .AppendInterval(AnimationData.FadeDelay)
                         .Append(TextTween.Fade(UIComponents.CountdownText, AnimationData.FinalFadeDuration, false));
@@ -239,6 +240,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 else
                 {
                     sequence
+                        .Append(UIComponents.CountdownText.DOScale(.15f, 0))
                         .Append(UIComponents.CountdownText.DOScale(AnimationData.AeBounceScale, AnimationData.AeScaleDuration))
                         .AppendInterval(AnimationData.AeScaleDelay)
                         .Append(UIComponents.CountdownText.DOScale(0, AnimationData.AeFinishScaleDuration));
@@ -290,10 +292,10 @@ namespace MeteorMadness.ScreenFlow.GameMode
             {
                 //=== Countdown ===//
                 case GameModeObserverMessage.StartCountdown:
-                    HandleStartCountdown((int)args[0]);
+                    HandleStartCountdown();
                     break;
                 case GameModeObserverMessage.UpdateCountdown:
-                    HandleUpdateCountdown((float)args[0]);
+                    HandleUpdateCountdown();
                     break;
                 case GameModeObserverMessage.FinishCountdown:
                     HandleFinishCountdown();
@@ -347,26 +349,19 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         #region Countdown
 
-        private void HandleStartCountdown(int delay)
+        private void HandleStartCountdown()
         {
             UIComponents.CountdownPanel.gameObject.SetActive(true);
         }
         
-        private void HandleUpdateCountdown(float time)
+        private void HandleUpdateCountdown()
         {
-            if (time > 1)
-            {
-                PlayAnimation(_animationCountdownUpdate);
-            }
-            else if(time > 0)
-            {
-                PlayAnimation(_animationCountdownFinish);
-            }
+            PlayAnimation(_animationCountdownUpdate);
         }
         
         private void HandleFinishCountdown()
         {
-
+            PlayAnimation(_animationCountdownFinish);
         }
 
         #endregion

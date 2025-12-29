@@ -1,7 +1,6 @@
 ﻿using MeteorMadness.Contracts;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 namespace MeteorMadness.UI.FloatingText

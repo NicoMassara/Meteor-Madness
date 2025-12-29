@@ -166,7 +166,7 @@
         Streak,
         TimesPlayed,
         TotalScored,
-        Time,
+        LongestTime,
         //
         DEFAULT_MAX
     }

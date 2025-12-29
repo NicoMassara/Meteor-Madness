@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using MeteorMadness.Managers.GameConfig;
+using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.Contracts.Interfaces.GameplayData;
+using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -18,8 +19,9 @@ namespace _Main.Scripts.MyInputs
         private const float TressHoldToCountDoubleTap = 0.05f;
         private readonly Dictionary<int, TouchData> _touchesDic = new Dictionary<int, TouchData>();
         private readonly List<int> _indexList = new List<int>();
-        private int CurrentTouches => _touchesDic.Count;
         private TimerManager.GeneratedId _addTouchTimerId;
+        private ITouchInputData _touchInputData;
+        private int CurrentTouches => _touchesDic.Count;
         private double _lastTouchTime = ulong.MaxValue;
         private bool _hasTriggeredAbility;
         
@@ -35,8 +37,10 @@ namespace _Main.Scripts.MyInputs
         public event Action OnPaused;
 #pragma warning restore CS0067
 
-        public TouchInput()
+        public TouchInput(ITouchInputData touchInputData)
         {
+            _touchInputData = touchInputData;
+            
             OnTriggerAbility += (isTriggered) =>
             {
                 _hasTriggeredAbility = isTriggered;
@@ -70,6 +74,8 @@ namespace _Main.Scripts.MyInputs
         
         private void OnFingerDown(Finger input)
         {
+            if(_touchInputData == null) return; 
+            
             var touchType = GetTouchType(input.screenPosition);
             if(touchType == TouchType.OutOfBounds) return;
 
@@ -172,9 +178,9 @@ namespace _Main.Scripts.MyInputs
         private bool IsTouchInSafeZone(float posY)
         {
             return
-                posY >= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetBottomBound()
+                posY >= _touchInputData.GetBottomBound()
                 &&
-                posY <= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetTopBound();
+                posY <= _touchInputData.GetTopBound();
         }
 
 
@@ -182,18 +188,18 @@ namespace _Main.Scripts.MyInputs
         {
             // ReSharper disable once PossibleLossOfFraction
             return
-                posX >= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetLeftZoneBounds().x
+                posX >= _touchInputData.GetLeftZoneBounds().x
                 &&
-                posX <= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetLeftZoneBounds().y;
+                posX <= _touchInputData.GetLeftZoneBounds().y;
         }
 
         private bool IsTouchInRightZone(float posX)
         {
                 // ReSharper disable once PossibleLossOfFraction
             return
-                posX >= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetRightZoneBounds().x
+                posX >= _touchInputData.GetRightZoneBounds().x
                 &&
-                posX <= GameConfigManager.Instance.GetGameplayData().TouchInputData.GetRightZoneBounds().y;
+                posX <= _touchInputData.GetRightZoneBounds().y;
         }
         
         private bool IsTouchOverUI(Vector2 touchPosition)

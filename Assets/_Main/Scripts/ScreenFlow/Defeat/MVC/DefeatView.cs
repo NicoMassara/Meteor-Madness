@@ -2,7 +2,6 @@
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces.Analytics;
-using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.Cosmetics;
@@ -57,7 +56,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                     HandleDataLoaded();
                     break;
                 case DefeatObserverMessage.InitializeData:
-                    HandleInitializeData((bool)args[0]);
+                    HandleInitializeData();
                     break;
                 
                 // === Ads === //
@@ -142,14 +141,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         #endregion
 
-        private void HandleInitializeData(bool hasNewHighScore)
+        private void HandleInitializeData()
         {
-            if (hasNewHighScore)
-            {
-                var newHighScore = (uint)StatsManager.GetRuntimeScore();
-                StatsManager.ModifyValueByStat(StatType.HighScore, newHighScore);
-            }
-            
             AdsEvents.Rewarded_TriggerLoad();
             OnDataInitialized?.Invoke();
         }

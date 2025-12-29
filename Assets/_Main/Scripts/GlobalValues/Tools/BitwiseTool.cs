@@ -6,36 +6,32 @@ namespace MeteorMadness.GlobalValues.Tools
     {
         public static byte Set(byte word, int n)
         {
-            if(IsInRange(n)) return word;
-            
+            ValidateRange(n);
             return (byte)(word | (1 << n));
         }
 
         public static byte Clear(byte word, int n)
         {
-            if(IsInRange(n)) return word;
-            
+            ValidateRange(n);
             return (byte)(word & ~(1 << n));
         }
 
         public static byte Toggle(byte word, int n)
         {
-            if(IsInRange(n)) return word;
-            
+            ValidateRange(n);
             return (byte)(word ^ (1 << n));
         }
 
-        public static byte Read(byte word, int n)
+        public static bool Read(byte word, int n)
         {
-            if(IsInRange(n)) return word;
-            
-            return (byte)((word >> n) & 1);
+            ValidateRange(n);
+            return ((word >> n) & 1) != 0;
         }
 
-        private static bool IsInRange(int n)
+        private static void ValidateRange(int n)
         {
-            if (n is >= 0 and <= 7) return true;
-            throw new ArgumentOutOfRangeException(nameof(n), "Bit index must be between 0 and 7.");
+            if (n < 0 || n > 7)
+                throw new ArgumentOutOfRangeException(nameof(n), "Bit index must be between 0 and 7.");
         }
     }
     

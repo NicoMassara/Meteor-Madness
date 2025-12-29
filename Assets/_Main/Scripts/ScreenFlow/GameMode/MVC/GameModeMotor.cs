@@ -1,6 +1,5 @@
 ﻿using System;
 using MeteorMadness.Contracts;
-using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
 

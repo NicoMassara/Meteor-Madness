@@ -23,12 +23,10 @@ namespace MeteorMadness.Managers
         public bool AntiEpileptic { get; set; } = true;
 
         public uint VisualPoints { get; set; }
-        public FlagsController FlagsController { get; private set; }
         
         private void Awake()
         {
             EventManager = new EventBusManager();
-            FlagsController = new FlagsController();
         }
         
         public void SetInputReader(IInputReader inputReader)

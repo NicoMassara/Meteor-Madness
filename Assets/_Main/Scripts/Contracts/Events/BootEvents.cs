@@ -42,16 +42,8 @@ namespace MeteorMadness.Contracts.Events
         {
             OnGameLoaded?.Invoke();
         }
+
         public static event Action OnGameLoaded;
-
-
-
-
-        
-
-
-
-
 
     }
 }

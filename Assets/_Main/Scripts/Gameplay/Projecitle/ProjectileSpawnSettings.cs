@@ -1,4 +1,5 @@
 ﻿using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.GlobalValues.Utilities;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;
@@ -30,6 +31,13 @@ namespace _Main.Scripts.Projectile
 
         private void Awake()
         {
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
+        }
+
+        private void Initialize()
+        {
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
+            //
             var gameplayData = GameConfigManager.Instance.GetGameplayData();
             var projectileData = gameplayData.ProjectileData;
 
@@ -41,6 +49,8 @@ namespace _Main.Scripts.Projectile
             _location = new ProjectileAngleController(SlotAmount);
             
             SetEventBus();
+            //
+            BootEvents.SubSystemInitialized();
         }
 
         public Vector2 GetPositionByAngle(float currAngle)

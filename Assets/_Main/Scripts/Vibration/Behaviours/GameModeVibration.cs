@@ -1,5 +1,6 @@
 ﻿using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.Vibration.BaseBehaviours;
+using UnityEngine;
 
 namespace MeteorMadness.Vibration.Behaviours
 {
@@ -11,19 +12,12 @@ namespace MeteorMadness.Vibration.Behaviours
             base.Start();
             ComponentToVibrate.OnCountDownFinished += () =>
             {
-
+                Vibrate(VibrationDurationType.MediumLong,VibrationIntensityType.Heavy);
             };
             
             ComponentToVibrate.OnCountdownUpdated += (time) =>
             {
-                if (time > 1)
-                {
-                    Vibrate(VibrationDurationType.Short,VibrationIntensityType.MediumLight);
-                }
-                else if (time <= 0)
-                {
-                    Vibrate(VibrationDurationType.MediumLong,VibrationIntensityType.MediumHeavy);
-                }
+                Vibrate(VibrationDurationType.ExtraShort,VibrationIntensityType.MediumLight);
             };
         }
 #endif

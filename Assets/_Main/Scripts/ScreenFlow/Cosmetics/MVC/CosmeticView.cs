@@ -75,9 +75,7 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void HandleOpened()
         {
-            var hasOpened = GameManager.Instance.FlagsController.GetHasOpenedCosmetics();
-
-            if (hasOpened == false)
+            if (FlagsManager.GetHasOpenedCosmetics() == false)
             {
                 OnFirstOpen?.Invoke();
             }
@@ -85,6 +83,12 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void HandleInitialize()
         {
+            if (FlagsManager.GetHasOpenedCosmetics() == false)
+            {
+                FlagsManager.SetHasOpenedCosmetics();
+                FlagsManager.SaveFlags();
+            }
+            
             OnInitialized?.Invoke();
         }
 

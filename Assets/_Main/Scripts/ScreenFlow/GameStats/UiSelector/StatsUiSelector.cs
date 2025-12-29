@@ -41,8 +41,8 @@ namespace _Main.Scripts.GameStats
             => SetText(gamesPlayedText, $"{GetLocalizedString(langKey)}: {value:D8}");
         public void SetDeflectStreakText(string langKey, uint value) 
             => SetText(deflectStreakText, $"{GetLocalizedString(langKey)}: {value:D8}");
-        public void SetLongestTimeText(string langKey, float value) 
-            => SetText(longestTimeText, $"{GetLocalizedString(langKey)}: {FormatToHMS(value)}");
+        public void SetLongestTimeText(string langKey, uint value) 
+            => SetText(longestTimeText, $"{GetLocalizedString(langKey)}: {FormatToHms(value)}");
         public void SetHighScoreText(string langKey, uint value) 
             => SetText(highScoreText, $"{GetLocalizedString(langKey)}: {value:D8}");
         public void SetAllScoreText(string langKey, long value) 
@@ -75,10 +75,10 @@ namespace _Main.Scripts.GameStats
 
         #endregion
         
-        private string FormatToHMS(float totalSeconds)
+        private string FormatToHms(uint totalSeconds)
         {
             TimeSpan time = TimeSpan.FromSeconds(totalSeconds);
-            string value = null;
+            string value = "";
 
             if (totalSeconds <= 0)
             {

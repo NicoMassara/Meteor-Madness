@@ -64,6 +64,7 @@ namespace MeteorMadness.Vibration
                 }
                 else
                 {
+
                     _vibrator.Call("vibrate", milliseconds);
                 }
                 

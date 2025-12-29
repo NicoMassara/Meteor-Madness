@@ -15,7 +15,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
         private readonly GeneratedId _currentStreakId;
         private readonly GeneratedId _timeId;
         private readonly GeneratedId _maxStreakId;
-        
+
+        private uint _currentTime; // in seconds
+        private float _elapsedTime;
+        private const int TimeStep = 1;
+
         public event Action OnCheatDetected;
         public event Action<uint> OnStreakUpdated;
 
@@ -27,7 +31,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             _deflectId = SecureValueManager.RegisterValue<uint>(0);
             _currentStreakId = SecureValueManager.RegisterValue<uint>(0);
             _maxStreakId = SecureValueManager.RegisterValue<uint>(0);
-            _timeId = SecureValueManager.RegisterValue<float>(0);
+            _timeId = SecureValueManager.RegisterValue<uint>(0);
 
             SecureValueManager.OnCheatDetected += OnCheatDetectedHandler;
         }
@@ -47,7 +51,10 @@ namespace MeteorMadness.ScreenFlow.GameMode
             UpdateValueById<uint>(_abilityUseId,0);
             UpdateValueById<uint>(_deflectId,0);
             UpdateValueById<uint>(_currentStreakId,0);
-            UpdateValueById<float>(_timeId,0f);
+            UpdateValueById<uint>(_timeId,0);
+
+            _elapsedTime = 0;
+            _currentTime = 0;
         }
 
         public DataManagerTools.GameplayStatsIdData CreateGameplayStatsData()
@@ -123,9 +130,14 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         public void IncreaseTimer(float deltaTime)
         {
-            var current = GetValueById<float>(_timeId);
-            current += deltaTime;
-            UpdateValueById(_timeId,current);
+            _elapsedTime += deltaTime;
+
+            if (_elapsedTime >= TimeStep)
+            {
+                _elapsedTime -= TimeStep;
+                _currentTime++;
+                UpdateValueById(_timeId,_currentTime);
+            }
         }
 
         #endregion
@@ -143,8 +155,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
         }
 
         #endregion
-
-
-
+        
     }
 }

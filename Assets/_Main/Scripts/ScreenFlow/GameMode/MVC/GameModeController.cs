@@ -94,37 +94,37 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
             private class CountdownState<T> : BaseState<T>
             {
-                private readonly float _countdownTime;
+                private readonly int _timerCount;
+                private const float TimeStep = 1.5f;
+                private float _elapsedTime;
+                private int _currentCount;
 
                 public CountdownState(float countdownTime)
                 {
-                    _countdownTime = countdownTime + 1;
+                    _timerCount = (int)countdownTime + 1;
                 }
-
-                private float _startTimer;
+                
                 private float _lastDisplayedTimer;
                 
                 public override void Awake()
                 {
-                    _startTimer = _countdownTime;
+                    _currentCount = _timerCount;
                     Controller.StartCountdown();
                 }
 
                 public override void Execute(float deltaTime)
                 {
-                    _startTimer -= deltaTime;
-                    int seconds = Mathf.CeilToInt(_startTimer);
-                    
-                    if (seconds != _lastDisplayedTimer)
-                    {
-                        _lastDisplayedTimer = seconds;
-                        
-                        Controller.UpdateCountdown(_startTimer);
+                    _elapsedTime += deltaTime;
 
-                        if (_startTimer <= 0)
-                        {
+                    if (_elapsedTime >= TimeStep)
+                    {
+                        _elapsedTime -= TimeStep;
+                        _currentCount--;
+
+                        if (_currentCount <= 0)
                             Controller.FinishCountdown();
-                        }
+                        else
+                            Controller.UpdateCountdown(_currentCount);
                     }
                 }
             }

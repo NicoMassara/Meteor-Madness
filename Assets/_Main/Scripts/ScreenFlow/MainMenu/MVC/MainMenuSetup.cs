@@ -62,12 +62,7 @@ namespace MeteorMadness.ScreenFlow.Menu
                 _controller.TriggerGameMode();
             };
             _ui.OnGameModeTriggered += () => _controller.TriggerGameMode();
-            _ui.OnTutorialTriggered += () =>
-            {
-                // Flips HasPlayed
-                GameManager.Instance.FlagsController.GetHasPlayed();
-                _controller.TriggerTutorial();
-            };
+            _ui.OnTutorialTriggered += () => _controller.TriggerTutorial();
             _ui.OnLoreOpen += () => _controller.TransitionToLore();
             _ui.OnBackToMenu += () => _controller.TransitionToMenu();
             _ui.OnExit += () => _controller.TriggerQuit();

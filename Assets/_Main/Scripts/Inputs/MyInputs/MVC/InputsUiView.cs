@@ -1,5 +1,6 @@
 ﻿
 using System;
+using MeteorMadness.Contracts.Interfaces.GameplayData;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;

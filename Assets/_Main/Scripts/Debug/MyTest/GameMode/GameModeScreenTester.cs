@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
+using MeteorMadness.Debug._Main.Scripts.Debug;
 using MeteorMadness.Managers;
+using MeteorMadness.Managers.GameConfig;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.Managers.Save;
 using Plugins.NicolasMassara.CustomSoundManager;
@@ -21,21 +23,32 @@ namespace _Main.Scripts.MyTest.GameMode
         
         private void Awake()
         {
-            LocalizationEvents.OnLocalizationLoaded += () =>
-            {
-                StartCoroutine(Coroutine_LoadScreen());
-            };
-
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
 
         private void Start()
         {
+            SoundEvents.OnSoundManagerInitialized += LoadScene;
+            
             LocalizationManager.LoadInstance();
             DataManager.LoadInstance();
             SettingsManager.LoadInstance();
             SoundManager.LoadInstance();
+            GameConfigManager.LoadInstance();
+            
+            SoundEvents.InitializeSoundManager();
+
+        }
+
+        private void LoadScene()
+        {
+            var enumerator = TestTools.LoadScreen(
+                new string[] { "GameplayModule" }, 
+                0, 0, 
+                null,
+                GameManager.Instance.LoadGameMode);
+            StartCoroutine(enumerator);
         }
 
         private void Update()
@@ -62,35 +75,6 @@ namespace _Main.Scripts.MyTest.GameMode
             
             GameManager.Instance.LoadGameMode();
         }
-
-        private IEnumerator Coroutine_LoadScreen()
-        {
-            AsyncOperation asyncLoadGameplay = SceneManager.LoadSceneAsync("GameplayModule", LoadSceneMode.Additive);
-                
-            while (!asyncLoadGameplay.isDone)
-            {
-                yield return null;
-            }
-
-            yield return new WaitForEndOfFrame();
-            
-            SoundEvents.InitializeSoundManager();
-            
-            yield return new WaitForEndOfFrame();
-            
-            BootEvents.InitializeMainSystem();
-            
-            yield return new WaitForEndOfFrame();
-                
-            BootEvents.InitializeSubSystems();
-
-            yield return new WaitForEndOfFrame();
-                
-            GameManager.Instance.LoadGameMode();
-
-            yield return new WaitForEndOfFrame();
-        }
-        
 
         public void GivePoints()
         {

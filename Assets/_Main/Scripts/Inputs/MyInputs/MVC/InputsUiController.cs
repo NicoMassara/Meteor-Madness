@@ -1,4 +1,10 @@
-﻿using NicolasMassara.CustomUpdateManager;
+﻿using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.Contracts.Interfaces.GameplayData;
+using MeteorMadness.GlobalValues.Tools.Observer;
+using MeteorMadness.Managers;
+using MeteorMadness.Managers.GameConfig;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.MyInputs.MVC
@@ -28,20 +34,30 @@ namespace _Main.Scripts.MyInputs.MVC
             
             _motor = new InputsUiMotor();
             _motor.Subscribe(_view);
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
             
             SetEventBus();
 #endif
+            
+            
         }
         
 #if UNITY_ANDROID
+        
 
-        private void Start()
+        private void Initialize()
         {
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
+            //
+
             //Input Reader
             GameManager.Instance.InputReader.OnMovementDirectionChanged += Input_OnMovementDirectionChangedHandler;
             GameManager.Instance.InputReader.OnAbilityTriggered += Input_OnAbilityTriggeredHandler;
             _motor.Initialize(GameConfigManager.Instance.GetGameplayData().TouchInputData);
+
+            BootEvents.SubSystemInitialized();
         }
+        
 
         #region Handlers
 

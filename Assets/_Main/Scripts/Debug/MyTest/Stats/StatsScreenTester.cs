@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
 using MeteorMadness.Contracts;
-using MeteorMadness.Contracts.Events;
+using MeteorMadness.Debug._Main.Scripts.Debug;
 using MeteorMadness.Managers;
-using MeteorMadness.Managers.Localization;
-using MeteorMadness.Managers.Save;
+using MeteorMadness.Managers.GameConfig;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts.MyTest.Stats
 {
@@ -15,24 +13,50 @@ namespace _Main.Scripts.MyTest.Stats
         [Serializable]
         private class StatsData
         {
-            [Range(0, 1000)]
-            public uint Score;
-            [Range(0, 1000)]
-            public uint CollisionCount;
-            [Range(0, 1000)]
-            public uint AbilityUseCount;
-            [Range(0, 1000)]
-            public uint DeflectCount;
-            [Range(0, 1000)]
-            public uint MaxStreak;
-            [Range(0, 1000)]
-            public uint HighScore;
-            [Range(0, 1000)]
-            public uint TimesPlayed;
-            [Range(0, 1000)]
-            public uint HistoricalScore;
-            [Range(0f, 1000f)]
-            public float LongestTime;
+            [Range(0, 1)]
+            [SerializeField] private float deflectCount;
+            //
+            [Range(0, 1)]
+            [SerializeField] private float collisionCount;
+            //
+            [Range(0, 1)]
+            [SerializeField] private float abilityUseCount;
+            //
+            [Range(0, 1)]
+            [SerializeField] private float timesPlayed;
+            //
+            [Range(0, 1)]
+            [SerializeField] private float maxStreak;
+            //
+            [Range(0, 1)]
+            [SerializeField] private float longestTime;
+            //
+            [Range(0, 1)]
+            [SerializeField] private float highScore;
+            //
+            [Range(0, 1)]
+            [SerializeField] private float historicalScore;
+
+
+            public uint DeflectCount => LerpFullRangeUInt(deflectCount);
+            public uint CollisionCount => LerpFullRangeUInt(collisionCount);
+            public uint AbilityUseCount => LerpFullRangeUInt(abilityUseCount);
+            public uint TimesPlayed => LerpFullRangeUInt(timesPlayed);
+            public uint MaxStreak => LerpFullRangeUInt(maxStreak);
+            public uint LongestTime => LerpFullRangeUInt(longestTime, uint.MaxValue-1);
+            public uint HighScore => LerpFullRangeUInt(highScore);
+            public uint HistoricalScore => LerpFullRangeUInt(historicalScore);
+            
+            
+            public static uint LerpFullRangeUInt(float t,  uint max = uint.MaxValue)
+            {
+                t = Math.Clamp(t, 0f, 1f);
+
+                uint min = uint.MinValue;
+                
+                return (uint)Math.Round(min + (max - min) * t);
+            }
+            
         }
         
         [SerializeField] private StatsData statsData;
@@ -40,17 +64,18 @@ namespace _Main.Scripts.MyTest.Stats
 
         private void Awake()
         {
-            LocalizationEvents.OnLocalizationLoaded += () => LoadScreen();
-
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
             
         private void Start()
         {
-            LocalizationManager.LoadInstance();
-            DataManager.LoadInstance();
             SettingsManager.LoadInstance();
+            GameConfigManager.LoadInstance();
+            StatsManager.LoadInstance();
+            FlagsManager.LoadInstance();
+
+            LoadScreen();
         }
 
         private void SetStats()
@@ -62,34 +87,17 @@ namespace _Main.Scripts.MyTest.Stats
             StatsManager.ModifyValueByStat(StatType.Streak, statsData.MaxStreak);
             StatsManager.ModifyValueByStat(StatType.TimesPlayed, statsData.TimesPlayed);
             StatsManager.ModifyValueByStat(StatType.TotalScored, statsData.HistoricalScore);
-            StatsManager.ModifyValueByStat(StatType.Time, statsData.LongestTime);
+            StatsManager.ModifyValueByStat(StatType.LongestTime, statsData.LongestTime);
         }
 
         private void LoadScreen()
         {
-            StartCoroutine(Coroutine_LoadScreen());
-        }
-
-        private IEnumerator Coroutine_LoadScreen()
-        {
-            yield return new WaitForSeconds(0.25f);
-                
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("StatsModule", LoadSceneMode.Additive);
-                
-            while (!asyncLoad.isDone)
-            {
-                yield return null;
-            }
-            
-            yield return new WaitForEndOfFrame();
-                
-            SetStats();
-            
-            yield return new WaitForEndOfFrame();
-                
-            GameManager.Instance.LoadStatsScreen();
-            
-            yield return null;
+            var enumerator = TestTools.LoadScreen(
+                new string[] { "StatsModule" }, 
+                3, 0, 
+                SetStats,
+                GameManager.Instance.LoadStatsScreen);
+            StartCoroutine(enumerator);
         }
         
         private void ReloadScreen()

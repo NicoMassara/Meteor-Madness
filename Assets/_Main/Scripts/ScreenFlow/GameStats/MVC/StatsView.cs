@@ -48,10 +48,11 @@ namespace MeteorMadness.ScreenFlow.Stats
 
         private void HandleOpened()
         {
-            var hasOpened = GameManager.Instance.FlagsController.GetHasOpenedStats();
-            
-            if (hasOpened == false)
+            if (FlagsManager.GetHasOpenedStats() == false)
             {
+                FlagsManager.SetHasOpenedStats();
+                FlagsManager.SaveFlags();
+                
                 OnFirstOpen?.Invoke();
             }
         }
@@ -63,19 +64,16 @@ namespace MeteorMadness.ScreenFlow.Stats
 
         private void HandleInitialize()
         {
-            var dataManager = DataManager.Instance;
-            var saveData = dataManager.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
-            
             OnInitialize?.Invoke(new StatsData
             {
-                DeflectAmount = saveData.DeflectAmount,
-                CollisionAmount = saveData.CollisionAmount,
-                AbilityUseAmount = saveData.AbilityUseAmount,
-                GamesPlayed = saveData.GamesPlayed,
-                DeflectStreak = saveData.LongestStreak,
-                LongestTime = saveData.LongestTime,
-                HighScore = saveData.HighScore,
-                TotalScore = saveData.TotalScore,
+                DeflectAmount = (uint)StatsManager.GetValueByStat(StatType.Deflect),
+                CollisionAmount = (uint)StatsManager.GetValueByStat(StatType.Collision),
+                AbilityUseAmount = (uint)StatsManager.GetValueByStat(StatType.Ability),
+                GamesPlayed = (uint)StatsManager.GetValueByStat(StatType.TimesPlayed),
+                DeflectStreak = (uint)StatsManager.GetValueByStat(StatType.Deflect),
+                HighScore = (uint)StatsManager.GetValueByStat(StatType.HighScore),
+                TotalScore = (uint)StatsManager.GetValueByStat(StatType.TotalScored),
+                LongestTime = (uint)StatsManager.GetValueByStat(StatType.LongestTime)
             });
         }
         

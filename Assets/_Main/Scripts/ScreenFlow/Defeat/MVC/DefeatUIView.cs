@@ -2,7 +2,6 @@
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.GlobalValues.Tools.Observer;
-using MeteorMadness.Managers;
 using MeteorMadness.Managers.Cosmetics;
 using MeteorMadness.ScreenFlow.Base;
 using NicolasMassara.CustomActionManager;
