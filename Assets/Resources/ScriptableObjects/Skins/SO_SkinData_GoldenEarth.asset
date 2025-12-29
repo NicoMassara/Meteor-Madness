@@ -17,18 +17,10 @@ MonoBehaviour:
   unlockPrice: 9999
   earthData:
     material: {fileID: 2100000, guid: f90848d404b56de4c9149362f31a03a7, type: 2}
-    scaleOffsetX: 3.5
-    scaleOffsetY: 3.5
-    rotationOffset: 0
+    rotationOffset: 12.5
   shieldData:
-    material: {fileID: 2100000, guid: 2a92b8816b0f2e347a34a8d1d6aa21ed, type: 2}
-    scaleOffsetX: 1
-    scaleOffsetY: 1
+    material: {fileID: 2100000, guid: be408e41b07513a47a4436ea266aa07c, type: 2}
   meteorData:
     material: {fileID: 2100000, guid: fd10c15ef4269e541a4d92ea1cc667e9, type: 2}
-    scaleOffsetX: 1
-    scaleOffsetY: 1
   cometData:
     material: {fileID: 2100000, guid: e70363e40a9ba7a4880250c7dc83db8e, type: 2}
-    scaleOffsetX: 1
-    scaleOffsetY: 1

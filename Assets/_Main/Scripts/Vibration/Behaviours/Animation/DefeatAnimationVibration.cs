@@ -1,56 +1,37 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿using System;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces.Vibration;
+using MeteorMadness.Vibration.So;
+using UnityEngine;
 
-namespace _Main.Scripts.Vibration.Behaviours.Animation
+namespace MeteorMadness.Vibration.BaseBehaviours
 {
     public class DefeatAnimationVibration : VibrationBehavior<IDefeatAnimationVibration>
     {
+        [SerializeField] private VibrationDataSo textAppearData;
+        [SerializeField] private VibrationDataSo titleBounceData;
+        [SerializeField] private VibrationDataSo closePanelData;
+        
 #if UNITY_ANDROID
         protected override void Start()
         {
             base.Start();
-            ComponentToVibrate.OnScoreMoved += () =>
+            ComponentToVibrate.OnVibration += ExecuteVibrationByType;
+        }
+
+        private void ExecuteVibrationByType(DefeatAnimationVibrationType vibrationType)
+        {
+            Vibrate(SelectVibration(vibrationType));
+        }
+
+        private VibrationDataSo SelectVibration(DefeatAnimationVibrationType vibrationType)
+        {
+            return vibrationType switch
             {
-                Vibrate(new VibrationData
-                {
-                    Duration = VibrationTools.GetDuration(VibrationDurationType.Short),
-                    Intensity = VibrationTools.GetIntensity(VibrationIntensityType.Light)
-                });
-            };
-            
-            ComponentToVibrate.OnHighScoreMoved += () =>
-            {
-                Vibrate(new VibrationData
-                {
-                    Duration = VibrationTools.GetDuration(VibrationDurationType.Short),
-                    Intensity = VibrationTools.GetIntensity(VibrationIntensityType.Light)
-                });
-            };
-            
-            ComponentToVibrate.OnNewHighScore += () =>
-            {
-                Vibrate(new VibrationData
-                {
-                    Duration = VibrationTools.GetDuration(VibrationDurationType.Short),
-                    Intensity = VibrationTools.GetIntensity(VibrationIntensityType.MediumLight)
-                });
-            };
-            
-            ComponentToVibrate.OnCoinsMoved += () =>
-            {
-                Vibrate(new VibrationData
-                {
-                    Duration = VibrationTools.GetDuration(VibrationDurationType.Short),
-                    Intensity = VibrationTools.GetIntensity(VibrationIntensityType.Light)
-                });
-            };
-            
-            ComponentToVibrate.OnTitleMoved += () =>
-            {
-                Vibrate(new VibrationData
-                {
-                    Duration = VibrationTools.GetDuration(VibrationDurationType.Short),
-                    Intensity = VibrationTools.GetIntensity(VibrationIntensityType.Medium)
-                });
+                DefeatAnimationVibrationType.TextAppear => textAppearData,
+                DefeatAnimationVibrationType.TitleBounce => titleBounceData,
+                DefeatAnimationVibrationType.ClosePanel => closePanelData,
+                _ => throw new ArgumentOutOfRangeException(nameof(vibrationType), vibrationType, null)
             };
         }
 #endif

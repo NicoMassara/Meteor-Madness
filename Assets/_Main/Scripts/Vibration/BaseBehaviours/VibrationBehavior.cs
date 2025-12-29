@@ -1,10 +1,9 @@
-﻿using System;
-using _Main.Scripts.Interfaces.Vibration;
-using _Main.Scripts.MySettings;
-using _Main.Scripts.GameConfig.Game;
+﻿
+using MeteorMadness.Contracts.Interfaces.Vibration;
+using MeteorMadness.Vibration.So;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration
+namespace MeteorMadness.Vibration.BaseBehaviours
 {
     
     public abstract class VibrationBehavior<T> : MonoBehaviour

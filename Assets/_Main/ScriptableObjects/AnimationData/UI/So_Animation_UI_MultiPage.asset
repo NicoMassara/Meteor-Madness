@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 726c49e84ac7494db7a888ccd3bfc07c, type: 3}
+  m_Name: So_Animation_UI_MultiPage
+  m_EditorClassIdentifier: 
+  panelOpenData:
+    offscreenDirection: 2
+    movementDuration: 0.3
+    offset: {x: 0, y: 0}
+  panelCloseData:
+    offscreenDirection: 3
+    movementDuration: 0.3
+    offset: {x: 0, y: 0}

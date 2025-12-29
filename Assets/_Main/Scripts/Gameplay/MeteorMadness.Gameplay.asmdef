@@ -1,0 +1,25 @@
+{
+    "name": "MeteorMadness.Gameplay",
+    "rootNamespace": "MeteorMadness.Gameplay",
+    "references": [
+        "EzySlice",
+        "MeteorMadness.GlobalValues",
+        "MeteorMadness.Systems",
+        "NicolasMassara.CustomUpdateManager",
+        "NicolasMassara.CustomActionManager",
+        "NicolasMassara.CustomTimerManager",
+        "MeteorMadness.Managers",
+        "MeteorMadness.ScreenFlow",
+        "MeteorMadness.Animations",
+        "MeteorMadness.Contracts"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

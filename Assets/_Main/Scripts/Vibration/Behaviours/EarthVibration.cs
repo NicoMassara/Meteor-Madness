@@ -1,7 +1,10 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿using MeteorMadness.Contracts.Interfaces.Vibration;
+using MeteorMadness.Vibration.BaseBehaviours;
+using MeteorMadness.Vibration;
+using MeteorMadness.Vibration.So;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration.Behaviours
+namespace MeteorMadness.Vibration.Behaviours
 {
     public class EarthVibration : VibrationBehavior<IEarthVibration>
     {

@@ -1,0 +1,99 @@
+﻿using System;
+using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Meteor;
+using MeteorMadness.Gameplay.FlyingObject;
+using MeteorMadness.GlobalValues.Tools.Observer;
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace _Main.Scripts.Meteor
+{
+    public class MeteorView : FlyingObjectView<MeteorMotor, MeteorView, MeteorValuesData>, 
+        IMeteor, ITargetable, IProjectile
+    {
+        public UnityAction<MeteorCollisionData> OnEarthCollision { get; set; }
+        public UnityAction<MeteorCollisionData> OnDeflection { get; set; }
+        public Vector2 Position => (Vector2)transform.position;
+
+        public bool CanBeTargeted { get; private set; }
+        public bool EnableMovement { get; set; }
+
+        public event Action OnDeath;
+        
+        public void DisableTargetable()
+        {
+            CanBeTargeted = false;
+        }
+
+        public override void SetValues(MeteorValuesData data)
+        {
+            base.SetValues(data);
+            CanBeTargeted = true;
+        }
+        
+        public void SetEnableMovement(bool enable)
+        {
+            Movement.CanMove = enable;
+        }
+
+        public override void OnNotify(ulong message, params object[] args)
+        {
+            switch (message)
+            {
+                case MeteorObserverMessage.EarthCollision:
+                    HandleEarthCollision(
+                        (Vector2)args[0], 
+                        (Quaternion)args[1],
+                        (Vector2)args[2]);
+                    break;
+                case MeteorObserverMessage.ShieldDeflection:
+                    HandleShieldDeflection(
+                        (Vector2)args[0], 
+                        (Quaternion)args[1],
+                        (Vector2)args[2],
+                        (byte)args[3]);
+                    break;
+            }
+            
+            base.OnNotify(message, args);
+        }
+
+        private void HandleEarthCollision(Vector2 position, Quaternion rotation, Vector2 direction)
+        {
+            OnDeath?.Invoke();
+            
+            OnEarthCollision?.Invoke(new MeteorCollisionData
+            {
+                Meteor = this,
+                Position = position,
+                Rotation = rotation,
+                Direction = direction,
+            });
+        }
+        
+        private void HandleShieldDeflection(Vector2 position,Quaternion rotation, Vector2 direction, byte value)
+        {
+            OnDeath?.Invoke();
+            
+            OnDeflection?.Invoke(new MeteorCollisionData
+            {
+                Meteor = this,
+                Position = position,
+                Rotation = rotation,
+                Direction = direction,
+                Value = value
+            });
+            
+            HandleCollision(false, position, direction,true);
+        }
+    }
+
+    public struct MeteorCollisionData
+    {
+        public MeteorView Meteor;
+        public Vector3 Position;
+        public Quaternion Rotation;
+        public Vector2 Direction;
+        public byte Value;
+    }
+}

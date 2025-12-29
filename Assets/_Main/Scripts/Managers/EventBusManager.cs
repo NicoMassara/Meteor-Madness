@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace _Main.Scripts.Managers
+namespace MeteorMadness.Managers
 {
     public class EventBusManager
     {

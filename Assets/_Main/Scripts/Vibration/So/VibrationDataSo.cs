@@ -1,7 +1,6 @@
-﻿using _Main.Scripts.Interfaces;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace _Main.Scripts.Vibration
+namespace MeteorMadness.Vibration.So
 {
     [CreateAssetMenu(fileName = "SO_VibrationData_Name", menuName = "Scriptable Objects/Vibration/Data", order = 0)]
     public class VibrationDataSo : ScriptableObject, IVibrationData

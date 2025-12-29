@@ -1,0 +1,52 @@
+﻿using MeteorMadness.GlobalValues.Tools.Observer;
+using UnityEngine;
+
+namespace MeteorMadness.Gameplay.FlyingObject
+{
+    public abstract class FlyingObjectMotor<TVS> : ObservableComponent where TVS : FlyingObjectValues
+    {
+        protected float MovementSpeed { get; set; }
+        public Vector2 Position { get; protected set; }
+        public Quaternion Rotation { get; protected set; }
+        public Vector2 Direction { get; protected set; }
+        public Vector2 Scale { get; protected set; }
+        public float Depth { get; protected set; }
+        protected bool CanMove { get; set; }
+        
+
+        public virtual void SetValues(TVS data)
+        {
+            MovementSpeed = data.MovementSpeed;
+            Rotation = data.Rotation;
+            Position = data.Position;
+            Direction = data.Direction;
+            Depth = data.Depth;
+            Scale = data.Scale;
+            CanMove = true;
+            
+            NotifyAll(FlyingObjectObserverMessage.SetValues, MovementSpeed, Rotation, Position, Depth,Scale,CanMove);
+        }
+
+        public virtual void HandleCollision(bool doesShowParticles)
+        {
+            CanMove = false;
+            
+            NotifyAll(FlyingObjectObserverMessage.HandleCollision, CanMove, Position, Direction, doesShowParticles);
+        }
+        
+        public void UpdatePosition(Vector2 transformPosition)
+        {
+            Position = transformPosition;
+        }
+    }
+    
+    public class FlyingObjectValues
+    {
+        public float MovementSpeed;
+        public Quaternion Rotation;
+        public Vector2 Position;
+        public Vector2 Direction;
+        public float Depth;
+        public Vector2 Scale = new Vector2(1, 1);
+    }
+}

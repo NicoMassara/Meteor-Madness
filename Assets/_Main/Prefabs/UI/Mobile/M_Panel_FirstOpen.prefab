@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7403573641653936230}
   - component: {fileID: 1834692887134637265}
   - component: {fileID: 4687920817155581490}
-  - component: {fileID: 7634244559007498001}
   m_Layer: 5
   m_Name: M_Sub_Text_CloseButton
   m_TagString: Untagged
@@ -93,7 +92,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 57.3
+  m_fontSize: 90
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -137,19 +136,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &7634244559007498001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1313669811933452944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textKey: FirstOpen.Cosmetic.CloseButton
 --- !u!1 &1985034596385507891
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,6 +223,7 @@ GameObject:
   - component: {fileID: 6156561339109488384}
   - component: {fileID: 3772500241257865111}
   - component: {fileID: 943992528356615335}
+  - component: {fileID: 1638199232294067357}
   m_Layer: 5
   m_Name: M_Panel_FirstOpen
   m_TagString: Untagged
@@ -310,7 +297,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &943992528356615335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +315,23 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1638199232294067357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2208411506705678051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7c20026e1454422ac4aa21057fdb048, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleCode: FirstOpen.Stats.Title
+  descriptionCode: FirstOpen.Stats.Text
+  titleText: {fileID: 5954582133808302344}
+  descriptionText: {fileID: 8783059104925499151}
+  closeButton: {fileID: 2662683661343674939}
 --- !u!1 &3428347911843502994
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,7 +343,6 @@ GameObject:
   - component: {fileID: 3071367186206240858}
   - component: {fileID: 7835377604905087653}
   - component: {fileID: 5954582133808302344}
-  - component: {fileID: 7921260070192480530}
   m_Layer: 5
   m_Name: M_Sub_Title
   m_TagString: Untagged
@@ -421,7 +424,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 85.25
+  m_fontSize: 150
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -465,19 +468,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &7921260070192480530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3428347911843502994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textKey: FirstOpen.Stats.Title
 --- !u!1 &4800779420061160352
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,7 +555,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &1362104085124196638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -758,7 +748,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5874882786594724471}
   - component: {fileID: 1457530691360884222}
-  - component: {fileID: 7788362739874768882}
   - component: {fileID: 8783059104925499151}
   m_Layer: 5
   m_Name: M_Sub_FirstOpen_Text
@@ -794,19 +783,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8380932832560187849}
   m_CullTransparentMesh: 1
---- !u!114 &7788362739874768882
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8380932832560187849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f623fde0c54c24a78ed8ffc8843f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textKey: FirstOpen.Stats.Text
 --- !u!114 &8783059104925499151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -854,7 +830,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70.15
+  m_fontSize: 75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

@@ -1,7 +1,9 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿using MeteorMadness.Contracts.Interfaces.Vibration;
+using MeteorMadness.Vibration.BaseBehaviours;
+using MeteorMadness.Vibration;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration.Behaviours.UI
+namespace MeteorMadness.Vibration.Behaviours
 {
     public class SettingsUiVibration : VibrationBehavior<ISettingsUiVibration>
     {

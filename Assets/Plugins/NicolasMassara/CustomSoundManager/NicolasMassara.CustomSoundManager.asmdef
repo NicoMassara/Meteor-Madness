@@ -1,0 +1,14 @@
+{
+    "name": "NicolasMassara.CustomSoundManager",
+    "rootNamespace": "NicolasMassara.CustomSoundManager",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

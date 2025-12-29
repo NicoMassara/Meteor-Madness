@@ -1,9 +1,10 @@
 ﻿using System;
-using _Main.Scripts.MyComponents;
-using _Main.Scripts.MySettings;
+using _Main.Scripts.Contracts.Events;
+using MeteorMadness.GlobalValues.BaseSingleton;
+using MeteorMadness.Managers;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration
+namespace MeteorMadness.Vibration
 {
 #if UNITY_ANDROID
     public class VibrationManager : SingletonBehaviour<VibrationManager>
@@ -50,6 +51,7 @@ namespace _Main.Scripts.Vibration
             if(_canVibrate == false) return;
             
             _vibrationController.Vibrate(data.Duration, data.Intensity);
+            VibrationEvents.TriggerOnVibrate(data.Duration, data.Intensity);
 #if UNITY_EDITOR
             Debug.Log($"Vibrating : Duration - {data.Duration}, Intensity - {data.Intensity}");
 #endif
@@ -60,6 +62,7 @@ namespace _Main.Scripts.Vibration
             if(_canVibrate == false) return;
             
             _vibrationController.Vibrate(VibrationTools.GetDuration(duration), VibrationTools.GetIntensity(intensity));
+            VibrationEvents.TriggerOnVibrate(VibrationTools.GetDuration(duration), VibrationTools.GetIntensity(intensity));
             
 #if UNITY_EDITOR
             Debug.Log($"Vibrating : Duration - {duration}, Intensity - {intensity}");
@@ -77,6 +80,7 @@ namespace _Main.Scripts.Vibration
             Debug.Log("Vibration cancelled");
 #endif
             _vibrationController.CancelVibration();
+            VibrationEvents.TriggerOnCancel();
         }
 
         private void SetVibration(bool canVibrate)

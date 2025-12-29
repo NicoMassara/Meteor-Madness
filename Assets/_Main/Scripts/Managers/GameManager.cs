@@ -1,15 +1,12 @@
 ﻿using System;
-using _Main.Scripts.Cosmetics;
-using _Main.Scripts.Interfaces;
-using _Main.Scripts.MyComponents;
-using _Main.Scripts.MyTools;
-using _Main.Scripts.CustomId;
-using _Main.Scripts.Save;
-using _Main.Scripts.SecurityData;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.GlobalValues.BaseSingleton;
+using MeteorMadness.GlobalValues.Tools;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
-namespace _Main.Scripts.Managers
+namespace MeteorMadness.Managers
 {
     public class GameManager : SingletonBehaviour<GameManager>
     {
@@ -24,15 +21,12 @@ namespace _Main.Scripts.Managers
         public IInputReader InputReader { get; private set; }
         
         public bool AntiEpileptic { get; set; } = true;
-        public StatsController StatsController { get; private set; } 
-        public FlagsController FlagsController { get; private set; }
 
-        public string DeathTitle { get; set; } = "No Title";
+        public uint VisualPoints { get; set; }
+        
         private void Awake()
         {
             EventManager = new EventBusManager();
-            StatsController = new StatsController();
-            FlagsController = new FlagsController();
         }
         
         public void SetInputReader(IInputReader inputReader)
@@ -57,13 +51,7 @@ namespace _Main.Scripts.Managers
 
         #endregion
 
-        #region Skin Values
-
-        public uint GetStoredCoins() => SkinManager.Instance.GetCoins();
-        public bool TryAddCoins(uint score) => SkinManager.Instance.TryAddCoins(score);
-        public void SaveCoins() => SkinManager.Instance.SaveStoredCoins();
-
-        #endregion
+        #region Pause
 
         public void PauseGame()
         {
@@ -91,11 +79,12 @@ namespace _Main.Scripts.Managers
             }, isPaused);
         }
 
+        #endregion
+
+
         public void QuitGame()
         {
             QuitUtility.Quit();
         }
-
-
     }
 }
