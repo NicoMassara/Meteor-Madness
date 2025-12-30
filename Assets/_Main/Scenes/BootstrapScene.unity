@@ -458,6 +458,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7755820402423392348, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 7755820402423392348, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 350
+      objectReference: {fileID: 0}
+    - target: {fileID: 7755820402423392348, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 8970443425136408093, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
       propertyPath: m_Name
       value: GameBackground

@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Contracts.Events;
+﻿using System;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.ScreenFlow.Menu;
 using UnityEngine;
@@ -17,7 +18,12 @@ namespace _Main.Scripts.Menu
         {
             LocalizationEvents.OnLanguageChanged += UpdateText;
         }
-        
+
+        private void OnDestroy()
+        {
+            LocalizationEvents.OnLanguageChanged -= UpdateText;
+        }
+
         private void UpdateText()
         {
             if(uiSelector.GetPanelData() == null) return;

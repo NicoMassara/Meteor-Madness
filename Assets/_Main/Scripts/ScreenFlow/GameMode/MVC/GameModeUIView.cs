@@ -58,7 +58,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
             
             BootEvents.SubSystemInitialized();
         }
-        
+
+        private void OnDestroy()
+        {
+            LocalizationEvents.OnLanguageChanged -= Localization_OnLanguageChangedHandler;
+        }
+
         public void ExecuteUpdate(float deltaTime)
         {
             if (_numberIncrementer != null)

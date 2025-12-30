@@ -135,6 +135,11 @@ namespace _Main.Scripts.Cosmetics.MVC
             LocalizationEvents.OnLanguageChanged += OnLanguageChanged;
         }
 
+        private void OnDestroy()
+        {
+            LocalizationEvents.OnLanguageChanged -= OnLanguageChanged;
+        }
+
         public void ExecuteUpdate(float deltaTime)
         {
             if (numberDecrement.IsActive)

@@ -19,7 +19,7 @@ namespace MeteorMadness.Services.MyAnalytics.Components
                     { AnalyticEventsName.Cosmetics.Changed.SkinType, skinName }
                 };
                     
-                SendEvent(AnalyticEventsName.Cosmetics.Changed.EventName, parameters);
+                //SendEvent(AnalyticEventsName.Cosmetics.Changed.EventName, parameters);
             };
         }
     }

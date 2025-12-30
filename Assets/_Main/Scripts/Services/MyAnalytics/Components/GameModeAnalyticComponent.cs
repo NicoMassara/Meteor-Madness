@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces.Analytics;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace MeteorMadness.Services.MyAnalytics.Components
         private bool _canRegister;
         private readonly Timer _gameModeTimer = new Timer();
         private readonly Dictionary<AbilityType, int> _abilityUseCount = new Dictionary<AbilityType, int>();
+        private string _selectedSkin;
 
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         public TickGroup SelfTickGroup { get; } = TickGroup.HalfTarget;
@@ -47,6 +49,8 @@ namespace MeteorMadness.Services.MyAnalytics.Components
 
         private void Start()
         {
+            SkinEvents.OnSkinChanged += value => _selectedSkin = value;
+            
             Component.OnInitialized += () =>
             {
                 ClearAbilityDic();
@@ -131,46 +135,50 @@ namespace MeteorMadness.Services.MyAnalytics.Components
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
-                { $"{AnalyticEventsName.GameMode.Interrupted.ElapsedTime}", 
+                { $"{AnalyticEventsName.GameMode.GameplayNames.ElapsedTime}", 
                     _gameModeTimer.ElapsedTime },
-                { $"{AnalyticEventsName.GameMode.Interrupted.GainedPoints}", 
+                { $"{AnalyticEventsName.GameMode.GameplayNames.GainedPoints}", 
                     _gainedPoints },
-                { $"{AnalyticEventsName.GameMode.Interrupted.Level}",
+                { $"{AnalyticEventsName.GameMode.GameplayNames.Level}",
                     _internalLevel },
-                { $"{AnalyticEventsName.GameMode.Completed.MaxStreak}",
-                    _maxStreak }
+                { $"{AnalyticEventsName.GameMode.GameplayNames.MaxStreak}",
+                    _maxStreak },
+                { $"{AnalyticEventsName.GameMode.GameplayNames.Skin}",
+                    _selectedSkin }
             };
             
             foreach (var ability in _abilityUseCount)
             {
-                parameters[$"{AnalyticEventsName.GameMode.Interrupted.Ability}_{ability.Key}"] = ability.Value;
+                parameters[$"{AnalyticEventsName.GameMode.GameplayNames.Ability}_{ability.Key}"] = ability.Value;
             }
             
             //
-            SendEvent(AnalyticEventsName.GameMode.Interrupted.EventName, parameters);
+            SendEvent(AnalyticEventsName.GameMode.GameplayNames.EventName, parameters);
         }
         
         private void SendFinishData()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
-                { $"{AnalyticEventsName.GameMode.Completed.ElapsedTime}", 
+                { $"{AnalyticEventsName.GameMode.GameplayNames.ElapsedTime}", 
                     _gameModeTimer.ElapsedTime },
-                { $"{AnalyticEventsName.GameMode.Completed.GainedPoints}", 
+                { $"{AnalyticEventsName.GameMode.GameplayNames.GainedPoints}", 
                     _gainedPoints },
-                { $"{AnalyticEventsName.GameMode.Completed.Level}",
+                { $"{AnalyticEventsName.GameMode.GameplayNames.Level}",
                     _internalLevel },
-                { $"{AnalyticEventsName.GameMode.Completed.MaxStreak}",
-                    _maxStreak }
+                { $"{AnalyticEventsName.GameMode.GameplayNames.MaxStreak}",
+                    _maxStreak },
+                { $"{AnalyticEventsName.GameMode.GameplayNames.Skin}",
+                    _selectedSkin }
             };
             
             foreach (var ability in _abilityUseCount)
             {
-                parameters[$"{AnalyticEventsName.GameMode.Completed.Ability}_{ability.Key}"] = ability.Value;
+                parameters[$"{AnalyticEventsName.GameMode.GameplayNames.Ability}_{ability.Key}"] = ability.Value;
             }
             
             //
-            SendEvent(AnalyticEventsName.GameMode.Completed.EventName, parameters);
+            SendEvent(AnalyticEventsName.GameMode.GameplayNames.EventName, parameters);
         }
     }
 }

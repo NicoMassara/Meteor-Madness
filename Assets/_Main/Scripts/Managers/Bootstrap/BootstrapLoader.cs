@@ -48,7 +48,6 @@ namespace MeteorMadness.Managers.Boostrap
 #endif
         
         public event Action<string> OnLoadingAsset;
-        
         private void Awake()
         {
             LocalizationEvents.OnLocalizationLoaded += () =>

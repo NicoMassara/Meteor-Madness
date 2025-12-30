@@ -20,6 +20,7 @@ namespace MeteorMadness.Managers.Cosmetics
         private CoinsController _coinsController;
 
         private SkinType _currentSkinPreview;
+        private bool _isPreviewSkinUnlocked = false;
         
         public event Action<SkinType> OnSkinChanged;
         
@@ -30,6 +31,7 @@ namespace MeteorMadness.Managers.Cosmetics
             _coinsController = new CoinsController();
             
             BootEvents.OnMainSystemRequestInitialize += Initialize;
+            OnSkinChanged += (value)=> SkinEvents.TriggerOnSkinChanged(value.ToString());
         }
         
         private void Initialize()
@@ -81,7 +83,8 @@ namespace MeteorMadness.Managers.Cosmetics
                 _skinController.GetCurrentSkinType() != _currentSkinPreview &&
                 _skinController.TrySetCurrentSkinType(skinType))
             {
-                Debug.Log($"{skinType} skin selected!");
+                _isPreviewSkinUnlocked = true;
+                //Debug.Log($"{skinType} skin selected!");
             }
             
             OnSkinChanged?.Invoke(skinType);
@@ -91,9 +94,7 @@ namespace MeteorMadness.Managers.Cosmetics
         {
             if (_currentSkinPreview != SkinType.None)
             {
-                var isLocked = _lockedSkinController.GetIsLocked((int)_currentSkinPreview);
-
-                if (isLocked == false)
+                if (_isPreviewSkinUnlocked)
                 {
                     if (_skinController.TrySetCurrentSkinType(_currentSkinPreview))
                     {

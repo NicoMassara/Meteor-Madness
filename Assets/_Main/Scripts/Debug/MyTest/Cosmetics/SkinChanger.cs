@@ -19,10 +19,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Cosmetics
         {
             SkinManager.LoadInstance();
             
-            SaveDataEvents.OnSaveInitialized += () =>
-            {
-                BootEvents.InitializeMainSystem();
-            };
+            SaveDataEvents.OnSaveInitialized += BootEvents.InitializeMainSystem;
             
             DataManager.LoadInstance();
         }
@@ -30,6 +27,12 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Cosmetics
         private void Start()
         {
             SkinManager.Instance.OnSkinChanged += OnSkinChanged;
+        }
+
+        private void OnDestroy()
+        {
+            SaveDataEvents.OnSaveInitialized -= BootEvents.InitializeMainSystem;
+            SkinManager.Instance.OnSkinChanged -= OnSkinChanged;
         }
 
         private void OnSkinChanged(SkinType skinType)

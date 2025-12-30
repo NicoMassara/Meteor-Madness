@@ -16,5 +16,10 @@ namespace MeteorMadness.Contracts.Events
         {
             OnSaveLoaded?.Invoke();
         }
+        
+        // ================================================== //
+        
+        public static event Action<string> OnSkinChanged;
+        public static void TriggerOnSkinChanged(string skinName) => OnSkinChanged?.Invoke(skinName);
     }
 }

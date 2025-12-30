@@ -21,6 +21,6 @@ MonoBehaviour:
   shieldData:
     material: {fileID: 2100000, guid: be408e41b07513a47a4436ea266aa07c, type: 2}
   meteorData:
-    material: {fileID: 2100000, guid: fd10c15ef4269e541a4d92ea1cc667e9, type: 2}
+    material: {fileID: 2100000, guid: 98baa2b1c8c12ae4f8d8d0851749b3f5, type: 2}
   cometData:
-    material: {fileID: 2100000, guid: e70363e40a9ba7a4880250c7dc83db8e, type: 2}
+    material: {fileID: 2100000, guid: 37f1457b6d65ea5488086123ad1f14c7, type: 2}

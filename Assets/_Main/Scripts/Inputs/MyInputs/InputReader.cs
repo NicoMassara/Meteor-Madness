@@ -6,6 +6,14 @@ using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
+#if UNITY_ANDROID || UNITY_IOS
+
+using MeteorMadness.Managers.GameConfig;
+
+#else
+
+#endif
+
 namespace _Main.Scripts.MyInputs
 {
     public class InputReader : ManagedBehavior, IInputReader, IUpdatable

@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Contracts;
+﻿using System;
+using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces.Skins;
 using MeteorMadness.Managers.Cosmetics;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
     public abstract class FlyingObjectSkinController<T> : MonoBehaviour
     where T : SkinData
     {
-        [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private Renderer spriteRenderer;
 
         private IFlyingObjectSkin _flyingObject;
         protected SkinManager SkinManager { get; private set; }
@@ -16,13 +17,20 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
         private void Awake()
         {
             SkinManager = SkinManager.Instance;
-            
             _flyingObject = GetComponent<IFlyingObjectSkin>();
-            
-            _flyingObject.OnSkinEnable += LoadSkin;
+        }
+
+        private void OnEnable()
+        {
+            LoadSkin();
             SkinManager.OnSkinChanged += SkinManager_OnSkinChanged;
         }
-        
+
+        private void OnDisable()
+        {
+            SkinManager.OnSkinChanged -= SkinManager_OnSkinChanged;
+        }
+
         private void LoadSkin()
         {
             SkinManager_OnSkinChanged(SkinManager.GetCurrentSkinType());
@@ -35,7 +43,6 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
                 Debug.LogWarning($"Skin {skinType} not found");
                 return;
             }
-            
             spriteRenderer.material = GetSkinData(skinType).Material;
         }
         

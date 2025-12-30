@@ -43,17 +43,7 @@
         {
             public const string Start = "game_start";
             
-            public struct Interrupted
-            {
-                public const string EventName = "game_interrupted";
-                public const string ElapsedTime = "time_seconds";
-                public const string GainedPoints = "points";
-                public const string Level = "level";
-                public const string Ability = "ability";
-                public const string MaxStreak = "streak";
-            }
-            
-            public struct Completed
+            public struct GameplayNames
             {
                 public const string EventName = "game_complete";
                 public const string ElapsedTime = "time_seconds";
@@ -61,6 +51,7 @@
                 public const string Level = "level";
                 public const string Ability = "ability";
                 public const string MaxStreak = "streak";
+                public const string Skin = "skin";
             }
         }
     }

@@ -14,7 +14,7 @@ namespace MeteorMadness.Contracts
             public const bool DoesSendAnalytics = false;
             public const bool DoesSaveProgress = true;
             public const bool HasInfiniteCoins = false;
-            public const bool HasAllSkinsUnlocked = true;
+            public const bool HasAllSkinsUnlocked = false;
             public const float BaseMeteorValue = 10f;
         }
     }
