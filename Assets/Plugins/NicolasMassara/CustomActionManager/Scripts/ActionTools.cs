@@ -15,7 +15,6 @@ namespace NicolasMassara.CustomActionManager
         Failure
     }
     
-
     public sealed class ActionQueueTools
     {
         public static Queue<IQueueAction> CreateQueue(IEnumerable<IQueueAction> data)

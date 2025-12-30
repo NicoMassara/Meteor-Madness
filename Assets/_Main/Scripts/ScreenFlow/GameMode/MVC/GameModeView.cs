@@ -93,8 +93,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 case GameModeObserverMessage.GamePaused:
                     HandleGamePaused();
                     break;
-                case GameModeObserverMessage.GameUnPaused:
-                    HandleGameUnPaused();
+                case GameModeObserverMessage.GameResume:
+                    HandleGameResume();
                     break;
                 case GameModeObserverMessage.PauseGameModeScreen:
                     HandlePauseGameModeScreen();
@@ -172,6 +172,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
         }
 
+
+
         #region Streak
 
         private void HandleUpdateStreak(uint streakAmount) => OnStreakUpdated?.Invoke(streakAmount);
@@ -204,13 +206,29 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         private void HandleStartGameplay()
         {
-            FlagsManager.SetHasPlayed();
+            if (FlagsManager.GetHasPlayed() == false)
+            {
+                FlagsManager.SetHasPlayed();
+            }
+
+            GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
+            GameModeEventCaller.SetEnablePause(true);
+            GameManager.Instance.CanPlay = true;
             OnGameStarted?.Invoke();
-            EarthEventCaller.EnableDamage();
+            OnPlayMusic?.Invoke();
+            ShieldEventCaller.Enable();
             AbilitiesEventCaller.Enable();
+            AbilitiesEventCaller.SetCanUse(true);
             AbilitiesEventCaller.EnableUI();
+            EarthEventCaller.EnableDamage();
             SetEnableInputs(true);
+            
+            
+#if UNITY_ANDROID || UNITY_IOS
+
             SetEnableUIInputs(true);
+                
+#endif
         }
         
         private void HandleStopGameplay()
@@ -218,9 +236,14 @@ namespace MeteorMadness.ScreenFlow.GameMode
             EarthEventCaller.DisableDamage();
             AbilitiesEventCaller.DisableUI();
             SetEnableInputs(false);
-            SetEnableUIInputs(false);
             CameraEventCaller.ZoomIn(0.5F);
             OnGameStopped?.Invoke();
+            
+#if UNITY_ANDROID || UNITY_IOS
+
+            SetEnableUIInputs(true);
+                
+#endif
         }
 
         #endregion
@@ -230,7 +253,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         private void HandlePointsGained(Vector2 position, uint amount, bool isDouble)
         {
             OnPointGained?.Invoke(amount);
-            var finalScore = (ushort)(amount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
+            var finalScore = (amount * GameConfigManager.Instance.GetGameplayData().PointsMultiplier);
             FloatingTextEventCaller.Spawn(new FloatingTextValues
             {
                 Position = position, 
@@ -283,14 +306,15 @@ namespace MeteorMadness.ScreenFlow.GameMode
             GameManager.Instance.PauseGame();
         }
         
-        private void HandleGameUnPaused()
+        private void HandleGameResume()
         {
-            
             OnResume?.Invoke();
-            SetEnableInputs(true);
-            AbilitiesEventCaller.EnableUI();
             GameModeEventCaller.SetPause(false);
+            AbilitiesEventCaller.EnableUI();
+            EarthEventCaller.EnableDamage();
+            AbilitiesEventCaller.EnableUI();
             GameManager.Instance.ResumeGame();
+            SetEnableInputs(true);
             
 #if UNITY_ANDROID || UNITY_IOS
 
@@ -376,13 +400,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         private void HandleFinishCountdown()
         {
-            GameModeEventCaller.SetEnablePause(true);
-            GameManager.Instance.CanPlay = true;
-            ShieldEventCaller.Enable();
-            GameConfigManager.Instance.SetDamage(DamageTypes.Standard);
             OnCountDownFinished?.Invoke();
-            OnPlayMusic?.Invoke();
-            
         }
 
         #endregion

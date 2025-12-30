@@ -167,14 +167,12 @@ namespace MeteorMadness.Gameplay.Abilities
             private class RunningState<T> : BaseState<T>
             {
                 public override void Awake() => Controller.TriggerAbility();
-
                 public override void Sleep() => Controller.FinishAbility();
             }
             
             private class InitializeState<T> : BaseState<T>
             {
                 public override void Awake() => Controller.InitializeData();
-                
             }
     
             private class EnableState<T> : BaseState<T>
@@ -265,11 +263,10 @@ namespace MeteorMadness.Gameplay.Abilities
                 enable.AddTransition(States.Disabled, disable);
                 enable.AddTransition(States.Running, running);
             
-                disable.AddTransition(States.Enable, enable);
-            
                 running.AddTransition(States.Enable, enable);
                 running.AddTransition(States.Disabled, disable);
             
+                disable.AddTransition(States.Enable, enable);
 
                 #endregion
 
@@ -363,15 +360,8 @@ namespace MeteorMadness.Gameplay.Abilities
             {
                 _mainController.TransitionToInitialize();
             }
-
-
         }
-
-        public void TryDisableAbility()
-        {
-            _mainController.TransitionToDisable();
-        }
-
+        public void TryDisableAbility() => _mainController.TransitionToDisable();
         public void TryTriggerAbility()
         {
             _mainController.TransitionToRunning();
@@ -384,20 +374,17 @@ namespace MeteorMadness.Gameplay.Abilities
             _motor.TryAddAbility(abilityTypeIndex,abilityPosition);
         }
 
+
         public void SelectAbility()
         {
+            if(_mainController.GetIsAbilityDisabled()) return;
+            
             _motor.SelectAbility();
         }
-        
-        public void RunActiveTimer()
-        {
-            _motor.RunActiveTimer();
-        }
 
-        public void SetCanUse(bool inputCanUse)
-        {
-            _motor.SetCanUseAbility(inputCanUse);
-        }
+        public void RunActiveTimer() => _motor.RunActiveTimer();
+
+        public void SetCanUse(bool inputCanUse) => _motor.SetCanUseAbility(inputCanUse);
 
         #endregion
         

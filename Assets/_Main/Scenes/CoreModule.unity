@@ -1767,7 +1767,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 208616930}
-  spriteContainer: {fileID: 2145775996}
 --- !u!114 &593039200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3257,7 +3256,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1238111395
 Light:
   m_ObjectHideFlags: 0

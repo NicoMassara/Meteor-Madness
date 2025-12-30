@@ -4437,15 +4437,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2865504318091296894, guid: 84086434b703d2b449dfbfd1ca1b583b, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3544915360799968769, guid: 84086434b703d2b449dfbfd1ca1b583b, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6862077090651122476, guid: 84086434b703d2b449dfbfd1ca1b583b, type: 3}
       propertyPath: titleCode
-      value: FirstOpen.Cosmetics.Title
+      value: FirstOpen.Cosmetic.Title
       objectReference: {fileID: 0}
     - target: {fileID: 6862077090651122476, guid: 84086434b703d2b449dfbfd1ca1b583b, type: 3}
       propertyPath: descriptionCode
-      value: FirstOpen.Cosmetics.Text
+      value: FirstOpen.Cosmetic.Text
       objectReference: {fileID: 0}
     - target: {fileID: 8342786909504435217, guid: 84086434b703d2b449dfbfd1ca1b583b, type: 3}
       propertyPath: m_Pivot.x
@@ -4558,17 +4562,21 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1638199232294067357, guid: 819262724e430da41991eb20fa49f675, type: 3}
       propertyPath: titleCode
-      value: FirstOpen.Cosmetics.Title
+      value: FirstOpen.Cosmetic.Title
       objectReference: {fileID: 0}
     - target: {fileID: 1638199232294067357, guid: 819262724e430da41991eb20fa49f675, type: 3}
       propertyPath: descriptionCode
-      value: FirstOpen.Cosmetics.Text
+      value: FirstOpen.Cosmetic.Text
       objectReference: {fileID: 0}
     - target: {fileID: 2208411506705678051, guid: 819262724e430da41991eb20fa49f675, type: 3}
       propertyPath: m_Name
       value: M_Panel_FirstOpen
       objectReference: {fileID: 0}
     - target: {fileID: 2208411506705678051, guid: 819262724e430da41991eb20fa49f675, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3288392335613845454, guid: 819262724e430da41991eb20fa49f675, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}

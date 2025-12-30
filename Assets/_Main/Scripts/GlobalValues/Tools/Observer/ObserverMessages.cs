@@ -45,7 +45,7 @@
         public const ulong GrantProjectileSpawn = 0xA2012; 
         public const ulong SetCanPause = 0xA2013;
         public const ulong SaveScore = 0xA2014; 
-        public const ulong GameUnPaused = 0xA2015;
+        public const ulong GameResume = 0xA2015;
         public const ulong StartDisable = 0xA2016; 
         public const ulong StopGameplay = 0xA2017;
         public const ulong DisableGameplayUI = 0xA2018; 

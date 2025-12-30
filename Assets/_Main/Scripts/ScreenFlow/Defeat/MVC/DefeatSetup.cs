@@ -85,15 +85,9 @@ namespace MeteorMadness.ScreenFlow.Defeat
             _view.OnNewCoinsAdded += (hasGained, stored, gained) =>
             {
                 if (hasGained)
-                {
-                    Debug.Log("Gained");
                     _controller.UpdateCoins(stored, gained);
-                }
                 else
-                {   
-                    Debug.Log("Not Gained");
                     _controller.SendAd();
-                }
             };
             //
             _ui.OnRestartButtonPressed += _controller.RestartGame;

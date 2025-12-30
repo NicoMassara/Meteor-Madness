@@ -61,8 +61,13 @@ namespace _Main.Scripts.GameStats
 
         #region First Open
 
-        public void SetActiveFirstOpenPanel(bool value)
-            => SetActiveObject(firstOpenPanel.gameObject, value);
+        public void SetActiveFirstOpenPanel(bool active)
+        {
+            if (active)
+                firstOpenPanel.EnablePanel();
+            else
+                firstOpenPanel.DisablePanel();
+        }
 
         public void AddListenerToFirstOpenCloseButton(Action onClick) 
             => firstOpenPanel.OnClose += onClick;

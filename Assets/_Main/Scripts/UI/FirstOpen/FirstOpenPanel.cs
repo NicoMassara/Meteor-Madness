@@ -16,19 +16,26 @@ namespace _Main.Scripts.FirstOpen
         [SerializeField] private TMP_Text descriptionText;
         [Header("Button")]
         [SerializeField] private Button closeButton;
-        
+        [Header("Panel")]
+        [SerializeField] private GameObject panel;
         public event Action OnClose;
 
         private void Start()
         {
-            gameObject.SetActive(false);
+            panel.SetActive(false);
         }
 
-        private void OnEnable()
+        public void EnablePanel()
         {
             titleText.text = GetLocalizatedString(titleCode);
             descriptionText.text = GetLocalizatedString(descriptionCode);
             closeButton.onClick.AddListener(TriggerOnClose);
+            panel.SetActive(true);
+        }
+        public void DisablePanel()
+        {
+            closeButton.onClick.RemoveListener(TriggerOnClose);
+            panel.SetActive(false);
         }
 
         private void OnDisable()
@@ -37,12 +44,7 @@ namespace _Main.Scripts.FirstOpen
         }
 
         private void TriggerOnClose() => OnClose?.Invoke();
-
         private string GetLocalizatedString(string key) => LocalizationManager.Instance.GetText(key);
-
-        public void SetButtonInteractable(bool value)
-        {
-            closeButton.interactable = value;
-        }
+        public void SetButtonInteractable(bool value) => closeButton.interactable = value;
     }
 }

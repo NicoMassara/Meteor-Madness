@@ -2,6 +2,7 @@
 using MeteorMadness.ScreenFlow.Base;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace MeteorMadness.ScreenFlow.GameMode
@@ -43,6 +44,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         public void SetNotifyText(string textCode) 
             => SetText(notifyText, textCode);
-        
+
+        public void AddListenerToPauseButton(UnityAction action) => PauseButton.onClick.AddListener(action);
+        public void RemoveListenerToPauseButton(UnityAction action) => PauseButton.onClick.RemoveListener(action);
     }
 }

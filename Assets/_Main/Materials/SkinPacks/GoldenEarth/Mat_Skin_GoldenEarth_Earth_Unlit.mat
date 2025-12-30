@@ -60,6 +60,7 @@ Material:
     - _Cutoff: 0.5
     - _FlowIntensity: 1
     - _HealthAmount: 1
+    - _Opacity: 1
     - _WaterTiling1: 2.75
     - __dirty: 0
     m_Colors:

@@ -77,18 +77,14 @@ namespace _Main.Scripts.Cosmetics.MVC
         {
             if (FlagsManager.GetHasOpenedCosmetics() == false)
             {
+                FlagsManager.SetHasOpenedCosmetics();
+                FlagsManager.SaveFlags();
                 OnFirstOpen?.Invoke();
             }
         }
 
         private void HandleInitialize()
         {
-            if (FlagsManager.GetHasOpenedCosmetics() == false)
-            {
-                FlagsManager.SetHasOpenedCosmetics();
-                FlagsManager.SaveFlags();
-            }
-            
             OnInitialized?.Invoke();
         }
 

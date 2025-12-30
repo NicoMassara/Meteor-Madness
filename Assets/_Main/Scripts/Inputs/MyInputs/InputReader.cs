@@ -3,8 +3,8 @@ using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Managers;
-using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace _Main.Scripts.MyInputs
 {

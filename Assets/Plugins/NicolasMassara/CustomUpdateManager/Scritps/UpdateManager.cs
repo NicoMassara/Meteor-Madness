@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MeteorMadness.Contracts.Events;
 using UnityEngine;
 
 namespace NicolasMassara.CustomUpdateManager
@@ -18,7 +19,7 @@ namespace NicolasMassara.CustomUpdateManager
             {
                 hideFlags = HideFlags.DontSave,
             };
-            //Debug.Log($"Singleton Created: {typeof(T)}");
+            SingletonEvents.OnDestroySingleton += () => DestroyImmediate(gameObject);
             DontDestroyOnLoad(gameObject);
             return gameObject.AddComponent<UpdateManager>();
         }
@@ -400,12 +401,12 @@ namespace NicolasMassara.CustomUpdateManager
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            IsGlobalPaused = !hasFocus;
+            //IsGlobalPaused = !hasFocus;
         }
 
         private void OnApplicationPause(bool pauseStatus)
         {
-            IsGlobalPaused = pauseStatus;
+            //IsGlobalPaused = pauseStatus;
         }
     }
 }

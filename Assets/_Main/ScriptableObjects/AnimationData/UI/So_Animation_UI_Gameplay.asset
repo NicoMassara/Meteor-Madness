@@ -29,7 +29,7 @@ MonoBehaviour:
     aeBounceScale: 1.5
     aeScaleDelay: 0.45
     aeFinishScaleDuration: 0.45
-    finishDelay: 0.5
+    finishDelay: 0
   gameplayUiOpenData:
     scoreOffscreenPos: 4
     pauseOffscreenPos: 5

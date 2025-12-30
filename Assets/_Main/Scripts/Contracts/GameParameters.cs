@@ -13,6 +13,8 @@ namespace MeteorMadness.Contracts
             public const bool AnalyticsDebugEnable = true;
             public const bool DoesSendAnalytics = false;
             public const bool DoesSaveProgress = false;
+            public const bool HasInfiniteCoins = true;
+            public const float BaseMeteorValue = 10f;
         }
     }
 

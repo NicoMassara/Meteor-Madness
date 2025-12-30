@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.Cosmetics;
+using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.Managers.Save;
 using UnityEngine;
@@ -16,7 +17,17 @@ namespace MeteorMadness.Managers.Cosmetics
 
         public void Initialize(DataManager.SkinSaveData data)
         {
+#if UNITY_EDITOR
+            
+            if (GameParameters.GameplayValues.HasInfiniteCoins)
+                _secureId = SecureValueManager.RegisterValue((uint)1_000_000);
+            else
+                _secureId = SecureValueManager.RegisterValue(data.SkinCoins);
+            
+#else
+
             _secureId = SecureValueManager.RegisterValue(data.SkinCoins);
+#endif
             
         }
 

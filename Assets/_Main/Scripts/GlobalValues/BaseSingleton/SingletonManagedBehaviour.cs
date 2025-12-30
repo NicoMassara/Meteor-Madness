@@ -1,4 +1,5 @@
-﻿using NicolasMassara.CustomUpdateManager;
+﻿using MeteorMadness.Contracts.Events;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace MeteorMadness.GlobalValues.BaseSingleton
@@ -16,6 +17,7 @@ namespace MeteorMadness.GlobalValues.BaseSingleton
                 hideFlags = HideFlags.DontSave,
             };
             DontDestroyOnLoad(gameObject);
+            SingletonEvents.OnDestroySingleton += () => DestroyImmediate(gameObject);
             return gameObject.AddComponent<T>();
         }
 

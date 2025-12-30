@@ -118,9 +118,14 @@ namespace _Main.Scripts.Cosmetics
 
         #region First Open
 
-        public void SetActiveFirstOpenPanel(bool active) 
-            => SetActiveObject(firstOpenPanel.gameObject,active);
-        
+        public void SetActiveFirstOpenPanel(bool active)
+        {
+            if (active)
+                firstOpenPanel.EnablePanel();
+            else
+                firstOpenPanel.DisablePanel();
+        }
+
         public void AddListenerToCloseFirstOpenButton(Action onClick) 
             => firstOpenPanel.OnClose += onClick;
 

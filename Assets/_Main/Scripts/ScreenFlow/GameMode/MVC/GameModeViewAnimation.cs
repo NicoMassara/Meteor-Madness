@@ -15,6 +15,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         public interface IGameModeViewAnimation : BaseViewAnimation<GameModeUIAnimationSelector,GameModeUIAnimationComponents>.IBaseViewAnimation
         {
             public event Action OnUiClosed;
+            public event Action OnCountdownFinished;
         }
         
         [SerializeField] private GameplayUiAnimationData animData;
@@ -73,12 +74,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
             {
                 UIComponents.ScorePanel.anchoredPosition = _scorePanel.OffScreenPos;
                 UIComponents.PauseButton.anchoredPosition = _pausePanel.OffScreenPos;
+                
+                Debug.Log("Here");
             }
 
             protected override Sequence CreateAnimation()
             {
-                Initialize();
-
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.GameplayPanel.gameObject.SetActive(true))
                     .Append(UIComponents.ScorePanel.DOAnchorPos(_scorePanel.StartPos, AnimationData.MovementDuration))
@@ -269,7 +270,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
         #region IGameModeViewAnimation
 
         public event Action OnUiClosed;
-
+        public event Action OnCountdownFinished;
+        
         #endregion
         
         private void Awake()
@@ -338,9 +340,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             if (amount == 0 && _lastStreak > 0)
             {
-                Debug.Log($"Play Animation Streak Failed");
-                
-                Debug.Log(_animationStreakFailed);
                 PlayAnimation(_animationStreakFailed);
             }
             
@@ -354,15 +353,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
             UIComponents.CountdownPanel.gameObject.SetActive(true);
         }
         
-        private void HandleUpdateCountdown()
-        {
-            PlayAnimation(_animationCountdownUpdate);
-        }
-        
-        private void HandleFinishCountdown()
-        {
-            PlayAnimation(_animationCountdownFinish);
-        }
+        private void HandleUpdateCountdown() 
+            => PlayAnimation(_animationCountdownUpdate);
+
+        private void HandleFinishCountdown() 
+            => PlayAnimation(_animationCountdownFinish,OnCountdownFinished);
 
         #endregion
         
@@ -372,17 +367,16 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             PlayAnimation(_animationUiOpen);
         }
-        
+
         private void HandleDisableGameplayUI()
         {
-            PlayAnimation(_animationUiClose,OnUiClosed);
+            PlayAnimation(_animationUiClose, OnUiClosed);
         }
-        
+
         private void HandleFinishAddingPoints()
         {
             PlayAnimation(_animationFinishAddingScore);
         }
-
 
         #endregion
         

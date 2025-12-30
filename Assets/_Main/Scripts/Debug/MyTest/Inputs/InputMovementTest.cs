@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.MyInputs;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Gameplay.Shield;
 using UnityEditor;
 using UnityEngine;
@@ -31,6 +32,8 @@ namespace _Main.Scripts.MyTest.Inputs
                 if(_shieldSpeeder.IsActive == false)
                     _shieldMovement.SetDirection(value);
             };
+            
+            BootEvents.InitializeSubSystems();
         }
 
         private void Update()

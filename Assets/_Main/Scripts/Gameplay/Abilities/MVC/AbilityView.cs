@@ -143,6 +143,7 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void HandleTriggerAbility(int abilityIndex)
         {
+            
             _actionId = ActionManager.Add(abilityDataController.GetAbilityStartQueue(
                 (AbilityType)abilityIndex),ActionManager.UpdateType.Update);
             

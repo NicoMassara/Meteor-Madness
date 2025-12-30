@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MeteorMadness.Contracts.Events;
 using UnityEngine;
 
 namespace NicolasMassara.CustomTimerManager
@@ -66,6 +67,7 @@ namespace NicolasMassara.CustomTimerManager
                 hideFlags = HideFlags.DontSave,
             };
             DontDestroyOnLoad(gameObject);
+            SingletonEvents.OnDestroySingleton += () => DestroyImmediate(gameObject);
             return gameObject.AddComponent<TimerManager>();
         }
 
@@ -375,12 +377,12 @@ namespace NicolasMassara.CustomTimerManager
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            IsPaused = !hasFocus;
+            //IsPaused = !hasFocus;
         }
 
         private void OnApplicationPause(bool pauseStatus)
         {
-            IsPaused = pauseStatus;
+            //IsPaused = pauseStatus;
         }
 
 

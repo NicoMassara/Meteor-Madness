@@ -874,20 +874,9 @@ namespace MeteorMadness.Managers
     
     public static class AbilitiesEventCaller
     {
-        public static void SetCanUse(bool canUse)
-        {
-            GameEventCaller.Publish(new AbilitiesEvents.SetCanUse{CanUse = canUse});
-        }
-        
-        public static void EnableUI()
-        {
-            GameEventCaller.Publish(new AbilitiesEvents.EnableUI());
-        }
-        
-        public static void DisableUI()
-        {
-            GameEventCaller.Publish(new AbilitiesEvents.DisableUI());
-        }
+        public static void SetCanUse(bool canUse) => GameEventCaller.Publish(new AbilitiesEvents.SetCanUse{CanUse = canUse});
+        public static void EnableUI() => GameEventCaller.Publish(new AbilitiesEvents.EnableUI());
+        public static void DisableUI() => GameEventCaller.Publish(new AbilitiesEvents.DisableUI());
 
         public static void Add(AbilityAddData data)
         {
@@ -897,12 +886,7 @@ namespace MeteorMadness.Managers
                 Position = data.Position
             });
         }
-
-        public static void SetStorageFull(bool isFull)
-        {
-            GameEventCaller.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
-        }
-        
+        public static void SetStorageFull(bool isFull) => GameEventCaller.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
         public static void NotifyIsActive(AbilityType type, bool isActive)
         {
             GameEventCaller.Publish(new AbilitiesEvents.NotifyIsActive
@@ -912,20 +896,11 @@ namespace MeteorMadness.Managers
             });
         }
 
-        public static void Enable()
-        {
-            GameEventCaller.Publish(new AbilitiesEvents.Enable());
-        }
-        
-        public static void Disable()
-        {
-            GameEventCaller.Publish(new AbilitiesEvents.Disable());
-        }
-        
-        public static void RunTimer()
-        {
-            GameEventCaller.Publish(new AbilitiesEvents.RunTimer());
-        }
+        public static void Enable() => GameEventCaller.Publish(new AbilitiesEvents.Enable());
+
+        public static void Disable() => GameEventCaller.Publish(new AbilitiesEvents.Disable());
+
+        public static void RunTimer() => GameEventCaller.Publish(new AbilitiesEvents.RunTimer());
 
         public static void GrantSpawn()
         {
@@ -945,133 +920,40 @@ namespace MeteorMadness.Managers
             });
         }
 
-        public static void SetNextSpawn(AbilityType type)
-        {
-            GameEventCaller.Publish(new AbilitiesEvents.SetNextSpawn{AbilityType = type});
-        }
+        public static void SetNextSpawn(AbilityType type) => GameEventCaller.Publish(new AbilitiesEvents.SetNextSpawn{AbilityType = type});
+        public static void UiInitialized() => GameEventCaller.Publish(new AbilitiesEvents.UIInitialized());
     }
     public static class AbilitiesEventSubscriber
     {
-        public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-        
-        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-        
-        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void Add(Action<AbilitiesEvents.Add> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void SetStorageFull(Action<AbilitiesEvents.SetStorageFull> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-        
-        public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void Enable(Action<AbilitiesEvents.Enable> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-        
-        public static void Disable(Action<AbilitiesEvents.Disable> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-        
-        public static void RunTimer(Action<AbilitiesEvents.RunTimer> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-        
-        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
-
-        public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action)
-        {
-            GameEventCaller.Subscribe(action);
-        }
+        public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action) => GameEventCaller.Subscribe(action);
+        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action) => GameEventCaller.Subscribe(action);
+        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action) => GameEventCaller.Subscribe(action);
+        public static void Add(Action<AbilitiesEvents.Add> action) => GameEventCaller.Subscribe(action);
+        public static void SetStorageFull(Action<AbilitiesEvents.SetStorageFull> action) => GameEventCaller.Subscribe(action);
+        public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action) => GameEventCaller.Subscribe(action);
+        public static void Enable(Action<AbilitiesEvents.Enable> action) => GameEventCaller.Subscribe(action);
+        public static void Disable(Action<AbilitiesEvents.Disable> action) => GameEventCaller.Subscribe(action);
+        public static void RunTimer(Action<AbilitiesEvents.RunTimer> action) => GameEventCaller.Subscribe(action);
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => GameEventCaller.Subscribe(action);
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => GameEventCaller.Subscribe(action);
+        public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action) => GameEventCaller.Subscribe(action);
+        public static void UiInitialized(Action<AbilitiesEvents.UIInitialized> action) => GameEventCaller.Subscribe(action);
     }
     public static class AbilitiesEventUnSubscriber
     {
-        public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-        
-        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-        public static void Add(Action<AbilitiesEvents.Add> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void SetStorageFull(Action<AbilitiesEvents.SetStorageFull> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-        
-        public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void Enable(Action<AbilitiesEvents.Enable> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-        
-        public static void Disable(Action<AbilitiesEvents.Disable> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-        
-        public static void RunTimer(Action<AbilitiesEvents.RunTimer> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-        
-        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
-
-        public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action)
-        {
-            GameEventCaller.Unsubscribe(action);
-        }
+        public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action) => GameEventCaller.Unsubscribe(action);
+        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action) => GameEventCaller.Unsubscribe(action);
+        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action) => GameEventCaller.Unsubscribe(action);
+        public static void Add(Action<AbilitiesEvents.Add> action) => GameEventCaller.Unsubscribe(action);
+        public static void SetStorageFull(Action<AbilitiesEvents.SetStorageFull> action) => GameEventCaller.Unsubscribe(action);
+        public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action) => GameEventCaller.Unsubscribe(action);
+        public static void Enable(Action<AbilitiesEvents.Enable> action) => GameEventCaller.Unsubscribe(action);
+        public static void Disable(Action<AbilitiesEvents.Disable> action) => GameEventCaller.Unsubscribe(action);
+        public static void RunTimer(Action<AbilitiesEvents.RunTimer> action) => GameEventCaller.Unsubscribe(action);
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => GameEventCaller.Unsubscribe(action);
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => GameEventCaller.Unsubscribe(action);
+        public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action) => GameEventCaller.Unsubscribe(action);
+        public static void UiInitialized(Action<AbilitiesEvents.UIInitialized> action) => GameEventCaller.Unsubscribe(action);
     }
 
     #endregion

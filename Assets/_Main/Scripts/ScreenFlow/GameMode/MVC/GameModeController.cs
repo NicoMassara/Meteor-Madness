@@ -24,7 +24,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             public void ExecuteDisable();
             public void EnablePause();
             public void DisablePause();
-            public void HandleMeteorDeflect(Vector2 position, byte projectileValue);
+            public void HandleMeteorDeflect(Vector2 position, float projectileValue);
             public void GrantProjectileSpawn(int projectileTypeIndex);
             public void SetDoublePoints(bool isActive);
             public void IncreaseCollisionCount();
@@ -32,12 +32,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
             public void IncreaseDeflectCount();
             public void DisableGameplayUI();
             public void EnableGameplayUI();
-            
             public void Execute(float deltaTime);
             public void TransitionToSaveScore();
             public void TriggerFinishAddingPoints();
             public void TriggerPauseMenu();
             public void NotifyAbilityActive(AbilityType abilityType);
+            public void SetHasLoseFocus(bool hasFocus);
         }
         
         #region Private Classes
@@ -95,13 +95,13 @@ namespace MeteorMadness.ScreenFlow.GameMode
             private class CountdownState<T> : BaseState<T>
             {
                 private readonly int _timerCount;
-                private const float TimeStep = 1.5f;
+                private const float TimeStep = 1.25f;
                 private float _elapsedTime;
                 private int _currentCount;
 
                 public CountdownState(float countdownTime)
                 {
-                    _timerCount = (int)countdownTime + 1;
+                    _timerCount = (int)countdownTime;
                 }
                 
                 private float _lastDisplayedTimer;
@@ -110,6 +110,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 {
                     _currentCount = _timerCount;
                     Controller.StartCountdown();
+                    Controller.UpdateCountdown(_currentCount);
                 }
 
                 public override void Execute(float deltaTime)
@@ -342,6 +343,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         private readonly GameModeMotor _motor;
         private MainController _mainController;
+        private bool _hasLoseFocus;
         
         public GameModeController(GameModeMotor motor)
         {
@@ -360,69 +362,34 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         #region IController
 
-        public void StartDisable()
-        {
-            _motor.StartDisable();
-        }
+        public void StartDisable() => _motor.StartDisable();
 
-        public void PauseGame()
-        {
-            _motor.PauseGame();
-        }
-        
-        public void InitializeData()
-        {
-            _motor.InitializeData();
-        }
-        
-        public void SaveHighScoreValues()
-        {
-            _motor.SaveScore();   
-        }
-        
+        public void PauseGame() => _motor.PauseGame();
+
+        public void InitializeData() => _motor.InitializeData();
+
+        public void SaveHighScoreValues() => _motor.SaveScore();
+
         public void FinishCountdown()
         {
-            if (_mainController.GetWasPaused())
-            {
-                _motor.UnPauseGame();
-            }
-            else
-            {
+            if (_mainController.GetWasPaused() == false)
                 _motor.EnableProjectileSpawn();
-            }
             
             _motor.FinishCountdown();
         }
-        
-        public void DisableProjectileSpawn()
-        {
-            _motor.DisableProjectileSpawn();
-        }
-        
-        public void StartCountdown()
-        {
-            _motor.StartCountdown();
-        }
-        
+        public void DisableProjectileSpawn() => _motor.DisableProjectileSpawn();
+        public void StartCountdown() => _motor.StartCountdown();
         public void StartGameplay()
         {
             _motor.StartGameplay();
-        }
-        
-        public void StopGameplay()
-        {
-            _motor.StopGameplay();
+            
+            if(_hasLoseFocus) 
+                _mainController.TransitionToPaused();
         }
 
-        public void FinishGame()
-        {
-            _motor.FinishGame();
-        }
-
-        public void StartFinish()
-        {
-            _motor.StartFinish();
-        }
+        public void StopGameplay() => _motor.StopGameplay();
+        public void FinishGame() => _motor.FinishGame();
+        public void StartFinish() => _motor.StartFinish();
 
         public void UpdateTimer(float deltaTime)
         {
@@ -430,10 +397,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 _motor.UpdateTimer(deltaTime);
         }
 
-        public void UpdateCountdown(float remainingTime)
-        {
-            _motor.UpdateCountdown(remainingTime);
-        }
+        public void UpdateCountdown(float remainingTime) => _motor.UpdateCountdown(remainingTime);
 
         #endregion
 
@@ -443,35 +407,21 @@ namespace MeteorMadness.ScreenFlow.GameMode
         public void TransitionToInitialize()
         {
             if (_mainController.GetIsPaused())
-            {
                 _mainController.TransitionToCountDown();
-
-            }
             else
-            {
                 _mainController.TransitionToInitialize();
-            }
         }
 
-        public void TransitionToCountDown()
-        {
-            _mainController.TransitionToCountDown();
-        }
+        public void TransitionToCountDown() => _mainController.TransitionToCountDown();
 
         public void TransitionToPlaying()
         {
             _mainController.TransitionToPlaying();
         }
 
-        public void TransitionToPaused()
-        {
-            _mainController.TransitionToPaused();
-        }
+        public void TransitionToPaused() => _mainController.TransitionToPaused();
 
-        public void TransitionToFinished()
-        {
-            _mainController.TransitionToFinished();
-        }
+        public void TransitionToFinished() => _mainController.TransitionToFinished();
 
         public void TransitionToDisable()
         {
@@ -509,6 +459,14 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 _motor.NotifyAbilityActive(abilityType);
         }
 
+        public void SetHasLoseFocus(bool hasFocus)
+        {
+            _hasLoseFocus = hasFocus;
+
+            if (_hasLoseFocus) 
+                _mainController.TransitionToPaused();
+        }
+
         #endregion
 
         public void ExecuteDisable()
@@ -521,17 +479,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
             _motor.ExecuteDisable();
         }
 
-        public void EnablePause()
-        {
-            _motor.EnablePause();
-        }
+        public void EnablePause() => _motor.EnablePause();
 
-        public void DisablePause()
-        {
-            _motor.DisablePause();
-        }
+        public void DisablePause() => _motor.DisablePause();
 
-        public void HandleMeteorDeflect(Vector2 position, byte projectileValue)
+        public void HandleMeteorDeflect(Vector2 position, float projectileValue)
         {
             if(_mainController.GetIsInGameplay())
                 _motor.HandleMeteorDeflect(position, projectileValue);
@@ -543,10 +495,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 _motor.GrantProjectileSpawn(projectileTypeIndex);
         }
 
-        public void SetDoublePoints(bool isActive)
-        {
-            _motor.SetDoublePoints(isActive);
-        }
+        public void SetDoublePoints(bool isActive) => _motor.SetDoublePoints(isActive);
 
         #region Stats
 
@@ -572,15 +521,13 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         #region UI
 
-        public void DisableGameplayUI()
-        {
-            _motor.DisableGameplayUI();
-        }
+        public void DisableGameplayUI() => _motor.DisableGameplayUI();
 
         public void EnableGameplayUI()
         {
-            if(_mainController.GetIsInGameplay())
+            if (_mainController.GetIsInGameplay()) 
                 _motor.EnableGameplayUI();
+
         }
 
         #endregion

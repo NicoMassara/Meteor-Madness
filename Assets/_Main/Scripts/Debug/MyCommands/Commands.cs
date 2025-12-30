@@ -561,6 +561,25 @@ namespace _Main.Scripts.MyCommands
             CustomTime.GlobalTimeScale = 1f;
         }
     }
+    
+    public static class GameCommands
+    {
+        [ConsoleMethod("game_cmd_help", "List of Game commands")]
+        public static void GameCommandHelp()
+        {
+            Debug.Log(
+                "=== Time COMMANDS ===\n" +
+                "game_restart\n"
+            );
+        }
+        
+        
+        [ConsoleMethod("game_restart", "Restarts game")]
+        public static void RestartGame()
+        {
+            Restarter.RestartGame();
+        }
+    }
 
     // ========================= //
     public static class CommandGlobal
@@ -585,7 +604,8 @@ namespace _Main.Scripts.MyCommands
                 "skin_cmd_help\n" +
                 "settings_cmd_help\n" +
                 "save_cmd_help\n" +
-                "time_cmd_help\n"
+                "save_cmd_help\n" +
+                "game_cmd_help\n"
             );
         }
     }

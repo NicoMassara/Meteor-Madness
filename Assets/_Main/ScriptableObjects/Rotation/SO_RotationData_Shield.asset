@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_RotationData_Shield
   m_EditorClassIdentifier: 
   maxAngularSpeed: 500
-  angularAcceleration: 2000
-  angularDeAcceleration: 5000
+  angularAcceleration: 2500
+  angularDeAcceleration: 8000
   snapSpeed: 75
-  directionResponse: 30
+  directionResponse: 35

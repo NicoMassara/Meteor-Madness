@@ -13,8 +13,6 @@ namespace _Main.Scripts.Meteor
         [Header("Components")]
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
         [SerializeField] private MeteorView meteorPrefab;
-
-        private const byte MeteorValue = 100;
         
         private MeteorFactory _meteorFactory;
         private bool _isSpawningRing;
@@ -49,7 +47,7 @@ namespace _Main.Scripts.Meteor
                 Rotation = tempRot,
                 Position = spawnPosition,
                 Direction = direction.normalized,
-                Value = MeteorValue
+                Value = GameParameters.GameplayValues.BaseMeteorValue
             });
             tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
             tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
@@ -90,7 +88,7 @@ namespace _Main.Scripts.Meteor
                         yield return new WaitForSeconds(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
 
                         CreateMeteor(meteorSpeed * speedMultiplier, spawnSettings.GetPositionByAngle(currAngle), 
-                            GetRingMeteorValue(amountToSpawn, ringValues.RingsAmount, MeteorValue));
+                            GetRingMeteorValue(amountToSpawn, ringValues.RingsAmount, GameParameters.GameplayValues.BaseMeteorValue));
                         currAngle += angleOffset;
                         currAngle = Mathf.Repeat(currAngle, 360f);
                     }
@@ -116,7 +114,7 @@ namespace _Main.Scripts.Meteor
         }
         
         
-        private static byte GetRingMeteorValue(int countPerWave, int waves, byte baseValue = 100)
+        private static float GetRingMeteorValue(int countPerWave, int waves, float baseValue = 100)
         {
             int total = countPerWave * waves;
 
@@ -128,8 +126,9 @@ namespace _Main.Scripts.Meteor
             int value = Mathf.RoundToInt(rawValue);
             
             value = Mathf.Clamp(value, 0, 255);
+            var finalMultiplier = 5;
 
-            return (byte)value;
+            return value * finalMultiplier;
         }
 
         #endregion
@@ -138,7 +137,7 @@ namespace _Main.Scripts.Meteor
 
         // ReSharper disable Unity.PerformanceAnalysis
         
-        private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition, byte value = 100)
+        private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition, float value = 100)
         {
             var tempMeteor = _meteorFactory.SpawnMeteor();
             var cog = spawnSettings.GetCenterOfGravity();

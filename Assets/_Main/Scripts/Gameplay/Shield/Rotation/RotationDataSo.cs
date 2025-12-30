@@ -6,21 +6,21 @@ namespace MeteorMadness.Gameplay.Shield
     public class RotationDataSo : ScriptableObject
     {
         [Range(1,1000)]
-        [SerializeField] private float maxAngularSpeed = 550;
+        [SerializeField] private int maxAngularSpeed = 500;
 
         [Tooltip("Degrees per second")]
-        [Range(1, 5400)] 
-        [SerializeField] private float angularAcceleration = 1500f;
+        [Range(1, 10080)] 
+        [SerializeField] private int angularAcceleration = 2000;
         
         [Tooltip("Degrees per second")]
-        [Range(1,5400)] 
-        [SerializeField] private float angularDeAcceleration = 2500f;
+        [Range(1,10080)] 
+        [SerializeField] private int angularDeAcceleration = 5400;
 
         [Range(1, 100)]
-        [SerializeField] private float snapSpeed = 60;
+        [SerializeField] private int snapSpeed = 75;
 
         [Range(1, 50)] 
-        [SerializeField] private float directionResponse  = 10;
+        [SerializeField] private int directionResponse  = 35;
 
         public float MaxAngularSpeed => maxAngularSpeed;
         public float AngularAcceleration => angularAcceleration;

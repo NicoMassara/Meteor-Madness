@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Contracts;
+﻿using System;
+using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Events;
@@ -83,7 +84,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
         private void SetViewHandlers()
         {
             _view.OnDataInitialized += _controller.TransitionToCountDown;
-            _view.OnCountDownFinished += _controller.TransitionToPlaying;
             _view.OnScoreSaved += GameManager.Instance.LoadDefeatScreen;
             _view.OnGameModeDisable += _controller.ExecuteDisable;
             _view.OnPaused += () =>
@@ -101,6 +101,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             _ui.OnFinishAddingPoints += _controller.TriggerFinishAddingPoints;
             //
             _animation.OnUiClosed += _controller.TriggerPauseMenu;
+            _animation.OnCountdownFinished += _controller.TransitionToPlaying;
         }
         
         #endregion
@@ -124,8 +125,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             //
             AbilitiesEventSubscriber.NotifyIsActive(EventBus_Abilities_IsActive);
         }
-
-
 
         private void UnsubscribeToEventBus()
         {
@@ -239,11 +238,13 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         private void EventBus_Camera_ZoomIn(CameraEvents.ZoomIn input)
         {
+            Debug.Log("Zoom in");
             _controller.DisableGameplayUI();
         }
-        
+
         private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)
         {
+            Debug.Log("Zoom out");
             _controller.EnableGameplayUI();
         }
 
@@ -278,5 +279,13 @@ namespace MeteorMadness.ScreenFlow.GameMode
         #endregion
 
         #endregion
+
+#if !UNITY_EDITOR
+
+        private void OnApplicationFocus(bool hasFocus) => _controller.SetHasLoseFocus(!hasFocus);
+        private void OnApplicationPause(bool pauseStatus) => _controller.SetHasLoseFocus(pauseStatus);
+        
+#endif
+        
     }
 }

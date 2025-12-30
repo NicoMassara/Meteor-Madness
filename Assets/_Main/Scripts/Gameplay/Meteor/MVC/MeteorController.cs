@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Gameplay.FlyingObject;
+﻿using MeteorMadness.Contracts;
+using MeteorMadness.Gameplay.FlyingObject;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
 
@@ -32,9 +33,8 @@ namespace _Main.Scripts.Meteor
     
     public class MeteorMotor : FlyingObjectMotor<MeteorValuesData>
     {
-        private byte _value = 100;
+        private float _value = 0f;
         
-
         public override void SetValues(MeteorValuesData data)
         {
             base.SetValues(data);
@@ -55,6 +55,6 @@ namespace _Main.Scripts.Meteor
 
     public class MeteorValuesData : FlyingObjectValues
     {
-        public byte Value;
+        public float Value;
     }
 }

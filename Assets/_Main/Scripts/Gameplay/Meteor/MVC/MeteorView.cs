@@ -51,7 +51,7 @@ namespace _Main.Scripts.Meteor
                         (Vector2)args[0], 
                         (Quaternion)args[1],
                         (Vector2)args[2],
-                        (byte)args[3]);
+                        (float)args[3]);
                     break;
             }
             
@@ -71,7 +71,7 @@ namespace _Main.Scripts.Meteor
             });
         }
         
-        private void HandleShieldDeflection(Vector2 position,Quaternion rotation, Vector2 direction, byte value)
+        private void HandleShieldDeflection(Vector2 position,Quaternion rotation, Vector2 direction, float value)
         {
             OnDeath?.Invoke();
             
@@ -94,6 +94,6 @@ namespace _Main.Scripts.Meteor
         public Vector3 Position;
         public Quaternion Rotation;
         public Vector2 Direction;
-        public byte Value;
+        public float Value;
     }
 }

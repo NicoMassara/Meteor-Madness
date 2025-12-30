@@ -60,7 +60,6 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Cosmetics
 
     }
     
-    
     [CustomEditor(typeof(SkinChanger))]
     public class SkinChangerEditor : Editor
     {

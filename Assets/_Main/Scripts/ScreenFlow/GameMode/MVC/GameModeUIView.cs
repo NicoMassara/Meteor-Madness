@@ -221,24 +221,17 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         #region Gameplay UI
 
-        private void HandleEnableGameplayUI()
-        {
-            UIComponents.PauseButton.onClick.AddListener(() =>
-            {
-                OnPauseButtonPressed?.Invoke();
-            });
-        }
-        
-        private void HandleDisableGameplayUI()
-        {
-            UIComponents.PauseButton.onClick.RemoveAllListeners();
-        }
+        private void TriggerPauseButtonPressed() => OnPauseButtonPressed?.Invoke();
+
+        private void HandleEnableGameplayUI() 
+            => UIComponents.AddListenerToPauseButton(TriggerPauseButtonPressed);
+
+        private void HandleDisableGameplayUI() 
+            => UIComponents.RemoveListenerToPauseButton(TriggerPauseButtonPressed);
 
         #endregion
         
-        private string GetLocalizedString(string key)
-        {
-            return LocalizationManager.Instance.GetText(key);
-        }
+        private string GetLocalizedString(string key) 
+            => LocalizationManager.Instance.GetText(key);
     }
 }

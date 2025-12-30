@@ -157,20 +157,9 @@ namespace MeteorMadness.ScreenFlow.Tutorial
             var hasPlayed = FlagsManager.GetHasPlayed();
             var hasCompletedTutorial = FlagsManager.GetHasCompletedTutorial();
             
-            if (hasPlayed == false)
-            {
-                FlagsManager.SetHasCompletedTutorial();
-            }
-            
-            if (hasCompletedTutorial == false)
-            {
-                FlagsManager.SetHasPlayed();
-            }
-
-            if (hasPlayed == false || hasCompletedTutorial == false)
-            {
-                FlagsManager.SaveFlags();
-            }
+            if (hasPlayed == false) FlagsManager.SetHasCompletedTutorial();
+            if (hasCompletedTutorial == false) FlagsManager.SetHasPlayed();
+            if (hasPlayed == false || hasCompletedTutorial == false) FlagsManager.SaveFlags();
             
             GameManager.Instance.CanPlay = false;
             ProjectileEventCaller.DisableSpawn();

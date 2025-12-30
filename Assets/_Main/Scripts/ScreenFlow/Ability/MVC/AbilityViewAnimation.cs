@@ -2,6 +2,7 @@
 using DG.Tweening;
 using MeteorMadness.Animations;
 using MeteorMadness.GlobalValues.Tools.Observer;
+using MeteorMadness.Managers;
 using MeteorMadness.ScreenFlow.Ability;
 using MeteorMadness.ScreenFlow.Ability.So;
 using MeteorMadness.ScreenFlow.Base;
@@ -106,6 +107,7 @@ namespace MeteorMadness.Gameplay.Abilities
         {
             var temp = new Animation_Initialize(UIComponents);
             OnDataInitialized?.Invoke();
+            AbilitiesEventCaller.UiInitialized();
         }
 
         private void HandleEnableUI()

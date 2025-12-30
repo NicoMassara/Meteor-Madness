@@ -27,7 +27,7 @@ namespace MeteorMadness.Contracts
         public Vector3 Position;
         public Quaternion Rotation;
         public Vector2 Direction;
-        public byte Value;
+        public float Value;
         public ProjectileType Type;
     }
     

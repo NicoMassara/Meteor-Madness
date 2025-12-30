@@ -174,7 +174,7 @@ namespace _Main.Scripts.Cosmetics.MVC
                 
                 // === First Open === //
                 case CosmeticObserverMessage.FirstOpen:
-                    UnlockFirstOpen();
+                    HandleFirstOpen();
                     break;
             }
         }
@@ -264,11 +264,11 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         #region FirstOpen
 
-        private void UnlockFirstOpen()
+        private void HandleFirstOpen()
         {
-            UIComponents.SetActiveFirstOpenPanel(true);
-            UIComponents.SetInteractiveCloseFirstOpenButton(false);
             UIComponents.AddListenerToCloseFirstOpenButton(OnFirstPanelClosed);
+            UIComponents.SetInteractiveCloseFirstOpenButton(false);
+            UIComponents.SetActiveFirstOpenPanel(true);
             TimerManager.Add(new TimerData(1f, 
                 () => UIComponents.SetInteractiveCloseFirstOpenButton(true)));
         }

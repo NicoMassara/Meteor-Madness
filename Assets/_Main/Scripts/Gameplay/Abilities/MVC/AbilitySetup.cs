@@ -40,7 +40,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 _inputReader.OnAbilityTriggered += (isPressed) =>
                 {
                     if (isPressed)
-                    {
+                    {           
                         _controller.SelectAbility();
                     }
                 };
@@ -68,10 +68,17 @@ namespace MeteorMadness.Gameplay.Abilities
             AbilitiesEventSubscriber.SetCanUse(EventBus_Ability_CanUse);
             AbilitiesEventSubscriber.Add(EventBus_Ability_Add);
             AbilitiesEventSubscriber.RunTimer(EventBus_Ability_RunTimer);
+            AbilitiesEventSubscriber.UiInitialized(EventBus_Ability_UI_Initialized);
+            
             //
         }
-        
+
+
         #region Ability
+        private void EventBus_Ability_UI_Initialized(AbilitiesEvents.UIInitialized input)
+        {
+            _controller.TryEnableAbility();
+        }
 
         private void EventBus_Ability_Enable(AbilitiesEvents.Enable input)
         {

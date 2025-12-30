@@ -115,10 +115,10 @@ namespace MeteorMadness.ScreenFlow.GameMode
             NotifyAll(GameModeObserverMessage.GamePaused);
         }
         
-        public void UnPauseGame()
+        public void ResumeGame()
         {
             _isPaused = false;
-            NotifyAll(GameModeObserverMessage.GameUnPaused);
+            NotifyAll(GameModeObserverMessage.GameResume);
         }
         
         public void EnablePause()
@@ -164,9 +164,10 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         #region Meteor 
         
-        public void HandleMeteorDeflect(Vector2 position, byte projectileValue)
+        public void HandleMeteorDeflect(Vector2 position, float projectileValue)
         {
-            var finalValue = (uint)(_hasDoublePoints ? projectileValue * 2 : projectileValue);
+            var multiplier = _hasDoublePoints ? 2 : 1;
+            var finalValue = (uint)(projectileValue * multiplier);
             var currentScore = _stats.GetCurrentScore();
 
             currentScore += finalValue;
@@ -208,20 +209,14 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         #region Countdown
 
-        public void StartCountdown()
-        {
-            NotifyAll(GameModeObserverMessage.StartCountdown,_startDelay);
-        }
-        
-        public void UpdateCountdown(float remainingTime)
-        {
-            NotifyAll(GameModeObserverMessage.UpdateCountdown, remainingTime);
-        }
-        
-        public void FinishCountdown()
-        {
-            NotifyAll(GameModeObserverMessage.FinishCountdown);
-        }
+        public void StartCountdown() 
+            => NotifyAll(GameModeObserverMessage.StartCountdown,_startDelay);
+
+        public void UpdateCountdown(float remainingTime) 
+            => NotifyAll(GameModeObserverMessage.UpdateCountdown, remainingTime);
+
+        public void FinishCountdown() 
+            => NotifyAll(GameModeObserverMessage.FinishCountdown);
 
         #endregion
         
@@ -229,7 +224,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         public void StartGameplay()
         {
-            NotifyAll(GameModeObserverMessage.StartGameplay);
+            if (_isPaused)
+                ResumeGame();
+            else
+                NotifyAll(GameModeObserverMessage.StartGameplay);
+
             EnableGameplayUI();
         }
         
@@ -239,32 +238,22 @@ namespace MeteorMadness.ScreenFlow.GameMode
             DisableGameplayUI();
         }
         
-        public void FinishGame()
-        {
-            NotifyAll(GameModeObserverMessage.GameFinish);
-        }
+        public void FinishGame() 
+            => NotifyAll(GameModeObserverMessage.GameFinish);
 
-        public void SetDoublePoints(bool isActive)
-        {
-            _hasDoublePoints = isActive;
-        }
-        
+        public void SetDoublePoints(bool isActive) 
+            => _hasDoublePoints = isActive;
+
         #region UI
 
-        public void DisableGameplayUI()
-        {
-            NotifyAll(GameModeObserverMessage.DisableGameplayUI);
-        }
+        public void DisableGameplayUI() 
+            => NotifyAll(GameModeObserverMessage.DisableGameplayUI);
 
-        public void EnableGameplayUI()
-        {
-            NotifyAll(GameModeObserverMessage.EnableGameplayUI);
-        }
-        
-        public void TriggerFinishAddingPoints()
-        {
-            NotifyAll(GameModeObserverMessage.FinishAddingPoints);
-        }
+        public void EnableGameplayUI() 
+            => NotifyAll(GameModeObserverMessage.EnableGameplayUI);
+
+        public void TriggerFinishAddingPoints() 
+            => NotifyAll(GameModeObserverMessage.FinishAddingPoints);
 
         #endregion
 
@@ -305,7 +294,5 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         #endregion
         
-        
-
     }
 }

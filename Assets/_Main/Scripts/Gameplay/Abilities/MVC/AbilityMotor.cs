@@ -36,7 +36,7 @@ namespace MeteorMadness.Gameplay.Abilities
             {
                 return;
             }
-
+            
             _storage.TakeAbility();
         }
         

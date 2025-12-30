@@ -132,7 +132,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 gainedCoins = SkinManager.Instance.GetCoins() - storedCoins;
             }
             
-            Debug.Log($"Score: {currentScore}, Last Coins: {storedCoins}, Current Coins: {SkinManager.Instance.GetCoins()}");
+            //Debug.Log($"Score: {currentScore}, Last Coins: {storedCoins}, Current Coins: {SkinManager.Instance.GetCoins()}");
             
             var hasGainedCoins = gainedCoins > 0;
             

@@ -16,7 +16,7 @@ namespace MeteorMadness.GlobalValues.BaseSingleton
                 hideFlags = HideFlags.DontSave,
             };
             DontDestroyOnLoad(gameObject);
-            SingletonEvents.OnDestroySingleton += () => Destroy(gameObject);
+            SingletonEvents.OnDestroySingleton += () => DestroyImmediate(gameObject);
             return gameObject.AddComponent<T>();
         }
 

@@ -82,6 +82,7 @@ namespace MeteorMadness.ScreenFlow.Menu
                 FlagsManager.SetHasOpenedLore();
                 FlagsManager.SaveFlags();
             }
+            
             OnLoreOpened?.Invoke();
         }
         

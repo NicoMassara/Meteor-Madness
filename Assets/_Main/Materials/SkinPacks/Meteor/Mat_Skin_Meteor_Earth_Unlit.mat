@@ -44,7 +44,8 @@ Material:
     - _AtmosphereSize: 4.13808
     - _Cutoff: 0.5
     - _HealthAmount: 1
-    - __dirty: 1
+    - _Opacity: 1
+    - __dirty: 0
     m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1

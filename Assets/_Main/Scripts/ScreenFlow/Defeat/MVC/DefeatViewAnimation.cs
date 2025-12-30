@@ -192,6 +192,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 _handleText = handleText;
                 _panelPosition = new AnimationHelper.PanelPosition(UIComponents.Score,
                     AnimationData.OffscreenPosition);
+
+                UIComponents.Score.anchoredPosition = _panelPosition.OffScreenPos;
             }
 
             public void SetTargetScore(uint targetScore)
@@ -486,7 +488,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
         {
             uint finalScore = (uint)(currentScore * GetPointsMultiplier());
             
-            Debug.Log($"Target Current Score: {finalScore}, Inner: {currentScore}");
+            //Debug.Log($"Target Current Score: {finalScore}, Inner: {currentScore}");
             
             var sendScore = (Animation_CurrentScore_Increment)_animationScoreCurrent;
             sendScore.SetTargetScore(finalScore);
@@ -498,7 +500,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
         {
             uint finalScore = (uint)(highScore * GetPointsMultiplier());
             
-            Debug.Log($"Target High Score: {finalScore}, Inner: {highScore}");
+            //Debug.Log($"Target High Score: {finalScore}, Inner: {highScore}");
 
             var sendScore = (Animation_HighScore_Increment)_animationScoreHigh;
             sendScore.SetTargetScore(finalScore, hasHighScore);
