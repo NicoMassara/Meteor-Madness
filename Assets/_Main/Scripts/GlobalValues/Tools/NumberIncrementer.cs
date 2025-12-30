@@ -2,75 +2,84 @@
 using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
-namespace MeteorMadness.GlobalValues.Tools
+public class NumberIncrementer
 {
-    public class NumberIncrementer
+    private readonly Action<uint> _onValueChanged;
+    private readonly Action _onStart;
+    private readonly Action _onFinish;
+
+    private uint _startValue;
+    private uint _currentValue;
+    private uint _targetValue;
+
+    private float _elapsedTime;
+    private bool _isRunning;
+
+    private const float DelayToIncrease = 0.25f;
+    private const float IncreaseTime = 0.75f;
+
+    public uint CurrentValue => _currentValue;
+    public bool IsFinished => !_isRunning;
+
+    public NumberIncrementer(
+        Action<uint> onValueChanged,
+        Action onStart,
+        Action onFinish)
     {
-        private readonly Action<uint> _increaseAction;
-        private readonly Action _actionOnStart;
-        private readonly Action _actionOnFinish;
-        private uint _targetValue;
-        private uint _currentValue;
-        private uint _startValue;
-        private float _elapsedTime;
-        private const float DelayToIncrease = 0.25f;
-        private const float IncreaseTime = 0.75f;
+        _onValueChanged = onValueChanged;
+        _onStart = onStart;
+        _onFinish = onFinish;
+    }
 
-        public uint CurrentValue => _currentValue;
-        public bool IsFinished => _currentValue >= _targetValue;
+    public void Run(float deltaTime)
+    {
+        if (!_isRunning)
+            return;
 
-        public NumberIncrementer(Action<uint> increaseAction, Action actionOnStart ,Action actionOnFinish)
+        _elapsedTime += deltaTime;
+        float t = Mathf.Clamp01(_elapsedTime / IncreaseTime);
+
+        _currentValue = (uint)Mathf.Lerp(_startValue, _targetValue, t);
+        _onValueChanged?.Invoke(_currentValue);
+
+        if (t >= 1f)
         {
-            _increaseAction = increaseAction;
-            _actionOnStart = actionOnStart;
-            _actionOnFinish = actionOnFinish;
+            _currentValue = _targetValue;
+            _isRunning = false;
+            _onFinish?.Invoke();
         }
+    }
 
-        public void Run(float deltaTime)
+    public void ResetValues()
+    {
+        _currentValue = 0;
+        _targetValue = 0;
+        _startValue = 0;
+        _elapsedTime = 0;
+        _isRunning = false;
+    }
+
+    public void AddValue(uint value, bool instant = false)
+    {
+        if (instant)
         {
-            _elapsedTime += deltaTime;
-            
-            float ratio = Mathf.Clamp01(_elapsedTime /IncreaseTime);
-
-            _currentValue = (uint)Mathf.Lerp(_startValue, _targetValue, ratio);
-
-            if (ratio >= 1f)
-            {
-                _startValue = _currentValue;
-                _increaseAction?.Invoke(_currentValue);
-                _actionOnFinish?.Invoke();
-            }
-            else
-            {
-                _increaseAction?.Invoke(_currentValue);
-            }
+            _currentValue += value;
+            _targetValue = _currentValue;
+            _startValue = _currentValue;
+            _onValueChanged?.Invoke(_currentValue);
+            _onFinish?.Invoke();
+            return;
         }
         
-
-        public void ResetValues()
+        void StartIncrement()
         {
-            _currentValue = 0;
-            _targetValue = 0;
-            _elapsedTime = 0;
+            _startValue = _currentValue;
+            _targetValue += value;
+            _elapsedTime = 0f;
+            _isRunning = true;
+            _onStart?.Invoke();
         }
-
-        public void AddValue(uint value, bool doInstant = false)
-        {
-            if (doInstant)
-            {
-                _targetValue += value;
-                _elapsedTime = 0;
-                _actionOnStart?.Invoke();
-            }
-            else
-            {
-                TimerManager.Add(new TimerData(DelayToIncrease, () =>
-                {
-                    _targetValue += value;
-                    _elapsedTime = 0;
-                    _actionOnStart?.Invoke();
-                }));
-            }
-        }
+        
+        TimerManager.Add(new TimerData(DelayToIncrease, StartIncrement));
     }
 }

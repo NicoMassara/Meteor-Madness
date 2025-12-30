@@ -78,6 +78,7 @@ namespace _Main.Scripts.Meteor
             var startAngleOffset = angleOffset/2;
             var startOffset = 0f;
             var speedMultiplier = 2f;
+            var valuePerMeteor = GetRingMeteorValue(amountToSpawn, ringValues.RingsAmount);
 
             for (int a = 0; a < ringValues.WavesAmount; a++)
             {
@@ -86,9 +87,12 @@ namespace _Main.Scripts.Meteor
                     for (int j = 0; j < amountToSpawn; j++)
                     {
                         yield return new WaitForSeconds(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
-
-                        CreateMeteor(meteorSpeed * speedMultiplier, spawnSettings.GetPositionByAngle(currAngle), 
-                            GetRingMeteorValue(amountToSpawn, ringValues.RingsAmount, GameParameters.GameplayValues.BaseMeteorValue));
+                        
+                        var finalValue = j % 2 == 0 ? valuePerMeteor : 0;
+                        
+                        CreateMeteor(meteorSpeed * speedMultiplier, 
+                            spawnSettings.GetPositionByAngle(currAngle),finalValue);
+                        
                         currAngle += angleOffset;
                         currAngle = Mathf.Repeat(currAngle, 360f);
                     }
@@ -103,7 +107,6 @@ namespace _Main.Scripts.Meteor
                 yield return new WaitForSeconds(ringValues.DelayBetweenWaves);
             }
             
-            
             yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
             
             yield return new WaitForSeconds(projectileData.MeteorSpawnDelayAfterRing);
@@ -114,22 +117,14 @@ namespace _Main.Scripts.Meteor
         }
         
         
-        private float GetRingMeteorValue(int countPerWave, int waves, float baseValue = 100)
+        private float GetRingMeteorValue(int countPerWave, int waves)
         {
-            int total = countPerWave * waves;
-
-            if (total <= 0)
-                return baseValue;
-            
-            float rawValue = (float)baseValue / total;
-            
-            int value = Mathf.RoundToInt(rawValue);
-            
-            value = Mathf.Clamp(value, 0, 255);
-            var finalMultiplier = 5;
-
-            return value * finalMultiplier;
+            var totalMeteor = (countPerWave * waves);
+            var finalScoreValue = GetRingTargetScore() / totalMeteor;
+            return finalScoreValue;
         }
+
+        private float GetRingTargetScore() => GameParameters.GameplayValues.BaseMeteorValue * 30;
 
         #endregion
 

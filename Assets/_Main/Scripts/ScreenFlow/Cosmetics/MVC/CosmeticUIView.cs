@@ -29,64 +29,61 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private class NumberDecrement
         {
-            private readonly float IncreaseTime;
+            private readonly float _duration;
+
             private float _elapsedTime;
-            private uint _currentValue;
             private uint _startValue;
             private uint _endValue;
-            public bool IsActive { get; private set; }
-            
-            private readonly Action<uint> _decrementAction;
-            private readonly Action _actionOnFinished;
+            private uint _currentValue;
 
-            public NumberDecrement(float increaseTime, Action<uint> decreaseAction, Action onFinishedAction)
+            public bool IsActive { get; private set; }
+
+            private readonly Action<uint> _onValueChanged;
+            private readonly Action _onFinished;
+
+            public NumberDecrement(
+                float duration,
+                Action<uint> onValueChanged,
+                Action onFinished)
             {
-                IncreaseTime = increaseTime;
-                _decrementAction = decreaseAction;
-                _actionOnFinished = onFinishedAction;
+                _duration = Mathf.Max(0.0001f, duration);
+                _onValueChanged = onValueChanged;
+                _onFinished = onFinished;
             }
 
             public void Execute(float deltaTime)
             {
+                if (!IsActive)
+                    return;
+
                 _elapsedTime += deltaTime;
-            
-                float ratio = Mathf.Clamp01(_elapsedTime / IncreaseTime);
+                float t = Mathf.Clamp01(_elapsedTime / _duration);
+
+                _currentValue = (uint)Mathf.Lerp(_startValue, _endValue, t);
+                _currentValue = _startValue > _endValue
+                    ? Math.Max(_endValue, _currentValue)
+                    : Math.Min(_endValue, _currentValue);
                 
-                _currentValue = (uint)math.lerp(_startValue, _endValue, ratio);
-                
-                if (ratio >= 1f)
+                _onValueChanged?.Invoke(_currentValue);
+
+                if (t >= 1f)
                 {
-                    _startValue = _currentValue;
-                    _decrementAction?.Invoke(_currentValue);
-                    _actionOnFinished?.Invoke();
-                    ClearValues();
-                }
-                else
-                {
-                    _decrementAction?.Invoke(_currentValue);
+                    _currentValue = _endValue;
+                    IsActive = false;
+                    _onFinished?.Invoke();
                 }
             }
 
-            public void SetStartValue(uint startValue, uint endValue)
+            public void Start(uint startValue, uint endValue)
             {
-                _currentValue = startValue;
                 _startValue = startValue;
                 _endValue = endValue;
-                _elapsedTime = 0;
+                _currentValue = startValue;
+                _elapsedTime = 0f;
                 IsActive = true;
-                
-                Debug.Log($"Start: {startValue}, End: {endValue}");
-
-            }
-
-            private void ClearValues()
-            {
-                IsActive = false;
-                _startValue = 0;
-                _endValue = 0;
-                _currentValue = 0;
             }
         }
+
         
         private NumberDecrement numberDecrement;
         private SkinButtonCreator _skinButtonController;
@@ -234,7 +231,7 @@ namespace _Main.Scripts.Cosmetics.MVC
             UIComponents.DisableUnlockButton();
             UIComponents.RemoveScrollListener(TriggerOnScroll);
             
-            numberDecrement.SetStartValue(_lastCoins, SkinManager.Instance.GetCoins());
+            numberDecrement.Start(_lastCoins, SkinManager.Instance.GetCoins());
         }
 
         private void UnlockFailedToUnlock()

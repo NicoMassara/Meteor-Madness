@@ -9,7 +9,6 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
     where T : SkinData
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private Transform spriteContainer;
 
         private IFlyingObjectSkin _flyingObject;
         protected SkinManager SkinManager { get; private set; }
@@ -19,12 +18,8 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
             SkinManager = SkinManager.Instance;
             
             _flyingObject = GetComponent<IFlyingObjectSkin>();
-        }
-
-        private void Start()
-        {
-            _flyingObject.OnSkinEnable += LoadSkin;
             
+            _flyingObject.OnSkinEnable += LoadSkin;
             SkinManager.OnSkinChanged += SkinManager_OnSkinChanged;
         }
         
@@ -41,8 +36,7 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
                 return;
             }
             
-            var data = GetSkinData(skinType);
-            spriteRenderer.material = data.Material;
+            spriteRenderer.material = GetSkinData(skinType).Material;
         }
         
         protected abstract T GetSkinData(SkinType skinType);

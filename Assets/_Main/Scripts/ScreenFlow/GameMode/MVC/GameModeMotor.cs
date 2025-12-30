@@ -55,7 +55,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
         }
         
-        private StreakMilestoneNotifier _streakNotifier;
+        private readonly StreakMilestoneNotifier _streakNotifier;
 
         public GameModeMotor(int[] levelStreakAmount)
         {
@@ -169,15 +169,17 @@ namespace MeteorMadness.ScreenFlow.GameMode
             var multiplier = _hasDoublePoints ? 2 : 1;
             var finalValue = (uint)(projectileValue * multiplier);
             var currentScore = _stats.GetCurrentScore();
+            bool isFullValue = GameParameters.GameplayValues.BaseMeteorValue >= projectileValue;
 
             currentScore += finalValue;
             
             _stats.UpdateCurrentScore(currentScore);
             
-            if (projectileValue >= 1)
+            if (isFullValue)
             {
                 _levelController.IncreaseStreak();
                 _levelController.CheckForNextLevel();
+                _stats.IncreaseDeflectStreak();
             }
             
             if (projectileValue > 0)
