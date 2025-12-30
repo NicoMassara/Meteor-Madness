@@ -351,15 +351,15 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         private IUIComponentsInitializer _animationInitializer;
         //
-        private IUIAnimator _animationMainOpen;
-        private IUIAnimator _animationMainClose;
+        private IUiAnimation _animationMainOpen;
+        private IUiAnimation _animationMainClose;
         //
-        private IUIAnimator _animationScoreCurrent;
-        private IUIAnimator _animationScoreHigh;
+        private IUiAnimation _animationScoreCurrent;
+        private IUiAnimation _animationScoreHigh;
         //
-        private IUIAnimator _animationButtonsOpen;
+        private IUiAnimation _animationButtonsOpen;
         //
-        private IUIAnimator _animationOpenCoinsPanel;
+        private IUiAnimation _animationOpenCoinsPanel;
         
         
         private string _currentScoreLocalizedText;

@@ -19,7 +19,7 @@ namespace MeteorMadness.ScreenFlow.Stats
 
         #region Animations
 
-        private class Animation_HintPanel_Open : SequenceUIAnimator<StatsUiAnimationComponents.IMainPanel, IPanelData>
+        private class Animation_HintPanel_Open : SequenceUIAnimation<StatsUiAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
             
@@ -45,7 +45,7 @@ namespace MeteorMadness.ScreenFlow.Stats
             }
         }
 
-        private class Animation_HintPanel_Close : SequenceUIAnimator<StatsUiAnimationComponents.IMainPanel, IPanelData>
+        private class Animation_HintPanel_Close : SequenceUIAnimation<StatsUiAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
             
@@ -66,8 +66,8 @@ namespace MeteorMadness.ScreenFlow.Stats
 
         #endregion
         
-        private IUIAnimator _animationPanelOpen;
-        private IUIAnimator _animationPanelClose;
+        private IUiAnimation _animationPanelOpen;
+        private IUiAnimation _animationPanelClose;
         
         private void Start()
         {

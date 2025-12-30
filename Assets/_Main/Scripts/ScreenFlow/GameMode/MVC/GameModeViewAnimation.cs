@@ -49,7 +49,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         #region Gameplay
 
-        private class Animation_UI_Open : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel, IGameplayPanelData>
+        private class Animation_UI_Open : SequenceUIAnimation<GameModeUIAnimationComponents.IGameplayPanel, IGameplayPanelData>
         {
             private readonly AnimationHelper.PanelPosition _scorePanel;
             private readonly AnimationHelper.PanelPosition _pausePanel;
@@ -74,8 +74,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             {
                 UIComponents.ScorePanel.anchoredPosition = _scorePanel.OffScreenPos;
                 UIComponents.PauseButton.anchoredPosition = _pausePanel.OffScreenPos;
-                
-                Debug.Log("Here");
             }
 
             protected override Sequence CreateAnimation()
@@ -87,7 +85,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
         }
 
-        private class Animation_UI_Close : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel, IGameplayPanelData>
+        private class Animation_UI_Close : SequenceUIAnimation<GameModeUIAnimationComponents.IGameplayPanel, IGameplayPanelData>
         {
             private readonly AnimationHelper.PanelPosition _scorePanel;
             private readonly AnimationHelper.PanelPosition _pausePanel;
@@ -96,9 +94,13 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 : base(components, animationData)
             {
                 _scorePanel =
-                    new AnimationHelper.PanelPosition(UIComponents.ScorePanel, AnimationData.ScoreOffscreenPos, AnimationData.ScoreOffset);
+                    new AnimationHelper.PanelPosition(UIComponents.ScorePanel, 
+                        AnimationData.ScoreOffscreenPos, 
+                        AnimationData.ScoreOffset);
                 _pausePanel =
-                    new AnimationHelper.PanelPosition(UIComponents.PauseButton, AnimationData.PauseOffscreenPos, AnimationData.PauseOffset);
+                    new AnimationHelper.PanelPosition(UIComponents.PauseButton, 
+                        AnimationData.PauseOffscreenPos, 
+                        AnimationData.PauseOffset);
             }
             
 
@@ -107,12 +109,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 return DOTween.Sequence()
                     .Append(UIComponents.ScorePanel.DOAnchorPos(_scorePanel.OffScreenPos, AnimationData.MovementDuration))
                     .Join(UIComponents.PauseButton.DOAnchorPos(_pausePanel.OffScreenPos, AnimationData.MovementDuration))
-                    .AppendInterval(AnimationData.FinishDelay)
                     .AppendCallback(() => UIComponents.GameplayPanel.gameObject.SetActive(false));
             }
         }
 
-        private class Animation_Score_FinishAdding : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel, IScoreFinishAdding>
+        private class Animation_Score_FinishAdding : SequenceUIAnimation<GameModeUIAnimationComponents.IGameplayPanel, IScoreFinishAdding>
         {
             public Animation_Score_FinishAdding(GameModeUIAnimationComponents.IGameplayPanel components, IScoreFinishAdding animationData)
                 : base(components, animationData) { }
@@ -125,7 +126,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
         }
 
-        private class Animation_Streak_Failed : SequenceUIAnimator<GameModeUIAnimationComponents.IGameplayPanel, IStreakFailed>
+        private class Animation_Streak_Failed : SequenceUIAnimation<GameModeUIAnimationComponents.IGameplayPanel, IStreakFailed>
         {
             private readonly float _horizontalPos;
             
@@ -151,10 +152,14 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
         }
         
-        private class Animation_Streak_Notify : SequenceUIAnimator<GameModeUIAnimationComponents.INotifyPanel, IStreakNotify>
+        private class Animation_Streak_Notify : SequenceUIAnimation<GameModeUIAnimationComponents.INotifyPanel, IStreakNotify>
         {
             private readonly AnimationHelper.PanelPosition _startNotifyPanel;
             private readonly AnimationHelper.PanelPosition _endNotifyPanel;
+            private bool _isLeft;
+            
+            private Vector2 _startPosition;
+            private Vector2 _targetPosition;
 
             public Animation_Streak_Notify(GameModeUIAnimationComponents.INotifyPanel components, IStreakNotify animationData)
                 : base(components, animationData)
@@ -164,20 +169,35 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 _endNotifyPanel =
                     new AnimationHelper.PanelPosition(UIComponents.NotifyPanel, AnimationData.EndPosition, AnimationData.EndOffset);
                 UIComponents.NotifyPanel.gameObject.SetActive(false);
+
+                _isLeft = true;
             }
 
             protected override void Initialize()
             {
-                UIComponents.NotifyPanel.anchoredPosition = _startNotifyPanel.OffScreenPos;
+                if (_isLeft)
+                {
+                    _startPosition = _startNotifyPanel.StartPos;
+                    _targetPosition = _endNotifyPanel.OffScreenPos;
+                    UIComponents.NotifyPanel.anchoredPosition = _startNotifyPanel.OffScreenPos;
+                }
+                else
+                {
+                    _startPosition = _endNotifyPanel.StartPos;
+                    _targetPosition = _startNotifyPanel.OffScreenPos;
+                    UIComponents.NotifyPanel.anchoredPosition = _endNotifyPanel.OffScreenPos;
+                }
+                
+                _isLeft = !_isLeft;
             }
 
             protected override Sequence CreateAnimation()
             {
                 return DOTween.Sequence()
                     .AppendCallback(() => UIComponents.NotifyPanel.gameObject.SetActive(true))
-                    .Append(UIComponents.NotifyPanel.DOAnchorPos(_startNotifyPanel.StartPos, AnimationData.MovementDuration))
+                    .Append(UIComponents.NotifyPanel.DOAnchorPos(_startPosition, AnimationData.MovementDuration))
                     .AppendInterval(AnimationData.StopDuration)
-                    .Append(UIComponents.NotifyPanel.DOAnchorPos(_endNotifyPanel.OffScreenPos, AnimationData.MovementDuration))
+                    .Append(UIComponents.NotifyPanel.DOAnchorPos(_targetPosition, AnimationData.MovementDuration))
                     .AppendCallback(() => UIComponents.NotifyPanel.gameObject.SetActive(false));
             }
         }
@@ -186,7 +206,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         #region Countdown
 
-        private class Animation_Countdown_Update : SequenceUIAnimator<GameModeUIAnimationComponents.ICountdownPanel, ICountdownUpdate>
+        private class Animation_Countdown_Update : SequenceUIAnimation<GameModeUIAnimationComponents.ICountdownPanel, ICountdownUpdate>
         {
             public Animation_Countdown_Update(GameModeUIAnimationComponents.ICountdownPanel components, ICountdownUpdate animationData)
                 : base(components, animationData) { }
@@ -215,7 +235,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
         }
 
-        private class Animation_Countdown_Finish : SequenceUIAnimator<GameModeUIAnimationComponents.ICountdownPanel, ICountdownFinish>
+        private class Animation_Countdown_Finish : SequenceUIAnimation<GameModeUIAnimationComponents.ICountdownPanel, ICountdownFinish>
         {
             public Animation_Countdown_Finish(GameModeUIAnimationComponents.ICountdownPanel components, ICountdownFinish animationData)
                 : base(components, animationData) { }
@@ -257,13 +277,13 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         #endregion
         
-        private IUIAnimator _animationCountdownUpdate;
-        private IUIAnimator _animationCountdownFinish;
-        private IUIAnimator _animationUiOpen;
-        private IUIAnimator _animationUiClose;
-        private IUIAnimator _animationFinishAddingScore;
-        private IUIAnimator _animationStreakFailed;
-        private IUIAnimator _animationStreakNotify;
+        private IUiAnimation _animationCountdownUpdate;
+        private IUiAnimation _animationCountdownFinish;
+        private IUiAnimation _animationUiOpen;
+        private IUiAnimation _animationUiClose;
+        private IUiAnimation _animationFinishAddingScore;
+        private IUiAnimation _animationStreakFailed;
+        private IUiAnimation _animationStreakNotify;
 
         private uint _lastStreak;
             
@@ -365,12 +385,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         private void HandleEnableGameplayUI()
         {
-            PlayAnimation(_animationUiOpen);
+            PlayAnimation(_animationUiOpen, null, true);
         }
 
         private void HandleDisableGameplayUI()
         {
-            PlayAnimation(_animationUiClose, OnUiClosed);
+            PlayAnimation(_animationUiClose, OnUiClosed, true);
         }
 
         private void HandleFinishAddingPoints()

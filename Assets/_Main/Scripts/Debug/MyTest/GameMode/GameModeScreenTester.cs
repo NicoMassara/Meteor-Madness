@@ -9,17 +9,16 @@ using MeteorMadness.Managers.Save;
 using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace _Main.Scripts.MyTest.GameMode
 {
 #if UNITY_EDITOR   
-    [AddComponentMenu("_Main/ModuleTester/GameModeScreenTester")]
     public class GameModeScreenTester: MonoBehaviour
     {
         [Range(0, 1)]
         [SerializeField] private float volume;
         private float _lastVolume;
+        private bool _isZoomIn;
         
         private void Awake()
         {
@@ -91,6 +90,20 @@ namespace _Main.Scripts.MyTest.GameMode
            ProjectileEventCaller.Collision(new CollisionData());
         }
 
+        public void ToggleZoom()
+        {
+            if (_isZoomIn == false)  
+            {
+                CameraEventCaller.ZoomIn();
+                _isZoomIn = true;
+            }
+            else
+            {
+                CameraEventCaller.ZoomOut();
+                _isZoomIn = false;
+            }
+        }
+
         #region Event Bus
 
         private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
@@ -134,6 +147,7 @@ namespace _Main.Scripts.MyTest.GameMode
             if (GUILayout.Button("Give Points")) script.GivePoints();
             if (GUILayout.Button("Reload")) script.Reload();
             if (GUILayout.Button("Fail Streak")) script.FailStreak();
+            if (GUILayout.Button("Toggle Zoom")) script.ToggleZoom();
                 
         }
     }

@@ -1,9 +1,10 @@
 ﻿using System;
 using DG.Tweening;
+using NicolasMassara.CustomUpdateManager;
 
 namespace MeteorMadness.ScreenFlow.Base
 {
-    public abstract class SequenceUIAnimator<T, TS> : IUIAnimator
+    public abstract class SequenceUIAnimation<T, TS> : IUiAnimation
     where T : IUiAnimationComponent
     where TS : IUiAnimationData
     {
@@ -12,13 +13,11 @@ namespace MeteorMadness.ScreenFlow.Base
         
         private Sequence _sequence;
         
-        
-        protected SequenceUIAnimator(T components, TS animationData)
+        protected SequenceUIAnimation(T components, TS animationData)
         {
             UIComponents = components;
             AnimationData = animationData;
         }
-
 
         protected virtual void Initialize() { }
 
@@ -31,17 +30,17 @@ namespace MeteorMadness.ScreenFlow.Base
         {
             Initialize();
             
-            CreateAnimation()
+            _sequence = CreateAnimation()
                 .AppendCallback(() => onFinished?.Invoke())
                 .AppendCallback(RestartValues);
         }
 
         public void Pause() => _sequence?.Pause();
         public void Resume() => _sequence?.Play();
-        public void Kill() => _sequence?.Kill();
+        public void Kill(bool waitForComplete = false) => _sequence?.Kill(waitForComplete);
     }
     
-    public abstract class SequenceUIAnimationVibration<T, TS, TA> : SequenceUIAnimator<T, TS>
+    public abstract class SequenceUIAnimationVibration<T, TS, TA> : SequenceUIAnimation<T, TS>
         where T : IUiAnimationComponent
         where TS : IUiAnimationData
         where TA : IAnimationVibrationComponent
@@ -85,14 +84,14 @@ namespace MeteorMadness.ScreenFlow.Base
         public void InitializeValues();
     }
 
-    public interface IUIAnimator
+    public interface IUiAnimation
     {
         public void Play(Action onFinished);
 
         public void Pause();
         public void Resume();
 
-        public void Kill();
+        public void Kill(bool waitForComplete = false);
     }
     
     public interface IUiAnimationComponent {}

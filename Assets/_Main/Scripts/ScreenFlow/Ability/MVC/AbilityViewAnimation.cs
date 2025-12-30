@@ -32,7 +32,7 @@ namespace MeteorMadness.Gameplay.Abilities
             }
         }
 
-        private class Animation_MainPanel_Open : SequenceUIAnimator<AbilityUIAnimationComponents.IMainPanel, IPanelData>
+        private class Animation_MainPanel_Open : SequenceUIAnimation<AbilityUIAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -56,7 +56,7 @@ namespace MeteorMadness.Gameplay.Abilities
             }
         }
 
-        private class Animation_MainPanel_Close : SequenceUIAnimator<AbilityUIAnimationComponents.IMainPanel, IPanelData>
+        private class Animation_MainPanel_Close : SequenceUIAnimation<AbilityUIAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -76,8 +76,8 @@ namespace MeteorMadness.Gameplay.Abilities
 
         #endregion
         
-        private IUIAnimator _animationPanelOpen;
-        private IUIAnimator _animationPanelClose;
+        private IUiAnimation _animationPanelOpen;
+        private IUiAnimation _animationPanelClose;
         
         public event Action OnDataInitialized;
 

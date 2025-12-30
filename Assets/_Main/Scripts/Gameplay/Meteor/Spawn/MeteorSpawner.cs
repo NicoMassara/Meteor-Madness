@@ -114,7 +114,7 @@ namespace _Main.Scripts.Meteor
         }
         
         
-        private static float GetRingMeteorValue(int countPerWave, int waves, float baseValue = 100)
+        private float GetRingMeteorValue(int countPerWave, int waves, float baseValue = 100)
         {
             int total = countPerWave * waves;
 

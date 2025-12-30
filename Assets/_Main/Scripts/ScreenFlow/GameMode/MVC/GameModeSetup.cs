@@ -238,13 +238,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         private void EventBus_Camera_ZoomIn(CameraEvents.ZoomIn input)
         {
-            Debug.Log("Zoom in");
             _controller.DisableGameplayUI();
         }
 
         private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)
         {
-            Debug.Log("Zoom out");
             _controller.EnableGameplayUI();
         }
 

@@ -12,7 +12,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
 
         [SerializeField] private TutorialUiAnimationData animData;
         
-        private class Animation_HintPanel_Open : SequenceUIAnimator<TutorialUiAnimationComponents.IHintPanel, IPanelData>
+        private class Animation_HintPanel_Open : SequenceUIAnimation<TutorialUiAnimationComponents.IHintPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
             
@@ -38,7 +38,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
             }
         }
 
-        private class Animation_HintPanel_Close : SequenceUIAnimator<TutorialUiAnimationComponents.IHintPanel, IPanelData>
+        private class Animation_HintPanel_Close : SequenceUIAnimation<TutorialUiAnimationComponents.IHintPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
             
@@ -58,8 +58,8 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         }
 
         
-        private IUIAnimator _animationPanelOpen;
-        private IUIAnimator _animationPanelClose;
+        private IUiAnimation _animationPanelOpen;
+        private IUiAnimation _animationPanelClose;
         
         private void Start()
         {

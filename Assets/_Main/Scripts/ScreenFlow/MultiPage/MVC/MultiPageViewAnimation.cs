@@ -13,7 +13,7 @@ namespace _Main.Scripts.MultiPage
         [SerializeField] private MultiPageUiAnimationData animationData;
         
         #region Animators
-        private class Animation_MainPanel_Open : SequenceUIAnimator<MultiPageUiAnimationComponents.IMainPanel, IPanelData>
+        private class Animation_MainPanel_Open : SequenceUIAnimation<MultiPageUiAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -39,7 +39,7 @@ namespace _Main.Scripts.MultiPage
             }
         }
 
-        private class Animation_MainPanel_Close : SequenceUIAnimator<MultiPageUiAnimationComponents.IMainPanel, IPanelData>
+        private class Animation_MainPanel_Close : SequenceUIAnimation<MultiPageUiAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -60,8 +60,8 @@ namespace _Main.Scripts.MultiPage
         }
         #endregion
         
-        private IUIAnimator _animationOpen;
-        private IUIAnimator _animationClose;
+        private IUiAnimation _animationOpen;
+        private IUiAnimation _animationClose;
         
         private void Start()
         {

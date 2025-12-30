@@ -20,7 +20,7 @@ namespace MeteorMadness.ScreenFlow.Settings
         [SerializeField] private SettingsUiAnimationData animData;
         
         #region Animators
-        private class Animation_MainPanel_Open : SequenceUIAnimator<SettingsUiAnimationComponents.IMainPanel, IPanelData>
+        private class Animation_MainPanel_Open : SequenceUIAnimation<SettingsUiAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
             
@@ -44,7 +44,7 @@ namespace MeteorMadness.ScreenFlow.Settings
             }
         }
 
-        private class Animation_MainPanel_Close : SequenceUIAnimator<SettingsUiAnimationComponents.IMainPanel, IPanelData>
+        private class Animation_MainPanel_Close : SequenceUIAnimation<SettingsUiAnimationComponents.IMainPanel, IPanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
             
@@ -63,8 +63,8 @@ namespace MeteorMadness.ScreenFlow.Settings
         }
         #endregion
 
-        private IUIAnimator _animationPanelOpen;
-        private IUIAnimator _animationPanelClose;
+        private IUiAnimation _animationPanelOpen;
+        private IUiAnimation _animationPanelClose;
         
         private void Start()
         {

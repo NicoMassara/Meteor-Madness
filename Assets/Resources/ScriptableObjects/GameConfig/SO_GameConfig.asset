@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_GameConfig
   m_EditorClassIdentifier: 
   levelAmount: 10
-  pointsMultiplier: 1
+  pointsMultiplier: 10
   levelData: {fileID: 11400000, guid: 1aa0fbf8cccb4424eba34fb8936e9611, type: 2}
   projectileData: {fileID: 11400000, guid: 752c1653bde0af54883e0de5e868c228, type: 2}
   gameTimeData: {fileID: 11400000, guid: ef8936844b36af448a08e62d473b2a20, type: 2}

@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace MeteorMadness.ScreenFlow.Base
         }
         
         [SerializeField] private T uiPanelSelector;
-        private IUIAnimator _currentAnimator;
+        private IUiAnimation _currentAnimation;
         
         protected TS UIComponents => uiPanelSelector.GetPanelData();
         
@@ -37,11 +38,17 @@ namespace MeteorMadness.ScreenFlow.Base
             OnPanelClosed?.Invoke();
         }
         
-        protected void PlayAnimation(IUIAnimator animator, Action onFinished = null)
+        
+        protected void PlayAnimation(IUiAnimation animator, Action onFinished = null, bool doesOverride = false)
         {
-            _currentAnimator = animator;
+            if (doesOverride)
+            {
+                _currentAnimation?.Kill();
+            }
+
+            _currentAnimation = animator;
             
-            _currentAnimator.Play(() =>
+            _currentAnimation.Play(() =>
             {
                 onFinished?.Invoke();
                 ClearAnimation();
@@ -50,33 +57,9 @@ namespace MeteorMadness.ScreenFlow.Base
 
         private void ClearAnimation()
         {
-            _currentAnimator = null;
+            _currentAnimation = null;
         }
 
         #endregion
-
-        private void OnApplicationFocus(bool hasFocus)
-        {
-            if (hasFocus)
-            {
-                _currentAnimator?.Resume();
-            }
-            else
-            {
-                _currentAnimator?.Pause();
-            }
-        }
-
-        private void OnApplicationPause(bool pauseStatus)
-        {
-            if (pauseStatus == false)
-            {
-                _currentAnimator?.Resume();
-            }
-            else
-            {
-                _currentAnimator?.Pause();
-            }
-        }
     }
 }

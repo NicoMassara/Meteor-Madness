@@ -29,7 +29,7 @@ namespace MeteorMadness.ScreenFlow.Pause
             }
         }
 
-        private class Animation_MainPanel_Open : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel, IPausePanelOpenData>
+        private class Animation_MainPanel_Open : SequenceUIAnimation<PauseUIAnimationComponents.IMainPanel, IPausePanelOpenData>
         {
             private readonly AnimationHelper.PanelPosition _titlePanel;
             private readonly AnimationHelper.PanelPosition _leftButtonsPanel;
@@ -63,7 +63,7 @@ namespace MeteorMadness.ScreenFlow.Pause
             }
         }
 
-        private class Animation_MainPanel_Close : SequenceUIAnimator<PauseUIAnimationComponents.IMainPanel, IPausePanelCloseData>
+        private class Animation_MainPanel_Close : SequenceUIAnimation<PauseUIAnimationComponents.IMainPanel, IPausePanelCloseData>
         {
             private readonly AnimationHelper.PanelPosition _titlePanel;
             private readonly AnimationHelper.PanelPosition _leftButtonsPanel;
@@ -91,8 +91,8 @@ namespace MeteorMadness.ScreenFlow.Pause
 
         #endregion
 
-        private IUIAnimator _animationPanelOpen;
-        private IUIAnimator _animationPanelClose;
+        private IUiAnimation _animationPanelOpen;
+        private IUiAnimation _animationPanelClose;
         
         private void Start()
         {

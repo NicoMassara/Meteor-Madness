@@ -19,7 +19,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         [SerializeField] private CosmeticUiAnimationData animData;
         
         #region Animators
-        private class Animation_MainPanel_Open : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel,IPanelData>
+        private class Animation_MainPanel_Open : SequenceUIAnimation<CosmeticUiAnimationComponents.IMainPanel,IPanelData>
         {
             private AnimationHelper.PanelPosition _panel;
             
@@ -45,7 +45,7 @@ namespace _Main.Scripts.Cosmetics.MVC
             }
         }
         
-        private class Animation_MainPanel_Close : SequenceUIAnimator<CosmeticUiAnimationComponents.IMainPanel,IPanelData>
+        private class Animation_MainPanel_Close : SequenceUIAnimation<CosmeticUiAnimationComponents.IMainPanel,IPanelData>
         {
             public Animation_MainPanel_Close(CosmeticUiAnimationComponents.IMainPanel components,
                 IPanelData animationData)
@@ -67,8 +67,8 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         #endregion
 
-        private IUIAnimator _animationOpen;
-        private IUIAnimator _animationClose;
+        private IUiAnimation _animationOpen;
+        private IUiAnimation _animationClose;
         
         private void Start()
         {

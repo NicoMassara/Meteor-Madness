@@ -239,7 +239,7 @@ namespace MeteorMadness.ScreenFlow.Menu
 
         #region Menu
         
-        private class Animation_Menu_First_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel, IManuFirstOpenData>
+        private class Animation_Menu_First_Open : SequenceUIAnimation<MainMenuUiAnimationComponents.IMainMenuPanel, IManuFirstOpenData>
         {
             private readonly AnimationHelper.PanelPosition _titlePanel;
             private readonly AnimationHelper.PanelPosition _rightButtonsPanel;
@@ -282,7 +282,7 @@ namespace MeteorMadness.ScreenFlow.Menu
             }
         }
 
-        private class Animation_Menu_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel, IMenuPanelData>
+        private class Animation_Menu_Open : SequenceUIAnimation<MainMenuUiAnimationComponents.IMainMenuPanel, IMenuPanelData>
         {
             private readonly AnimationHelper.PanelPosition _titlePanel;
             private readonly AnimationHelper.PanelPosition _rightButtonsPanel;
@@ -321,7 +321,7 @@ namespace MeteorMadness.ScreenFlow.Menu
             }
         }
 
-        private class Animation_Menu_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.IMainMenuPanel, IMenuPanelData>
+        private class Animation_Menu_Close : SequenceUIAnimation<MainMenuUiAnimationComponents.IMainMenuPanel, IMenuPanelData>
         {
             private readonly AnimationHelper.PanelPosition _titlePanel;
             private readonly AnimationHelper.PanelPosition _rightButtonsPanel;
@@ -355,7 +355,7 @@ namespace MeteorMadness.ScreenFlow.Menu
 
         #region Lore
 
-        private class Animation_Lore_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel, IBasePanelData>
+        private class Animation_Lore_Open : SequenceUIAnimation<MainMenuUiAnimationComponents.ILorePanel, IBasePanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -380,7 +380,7 @@ namespace MeteorMadness.ScreenFlow.Menu
             }
         }
 
-        private class Animation_Lore_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ILorePanel, IBasePanelData>
+        private class Animation_Lore_Close : SequenceUIAnimation<MainMenuUiAnimationComponents.ILorePanel, IBasePanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -404,7 +404,7 @@ namespace MeteorMadness.ScreenFlow.Menu
 
         #region Tutorial
 
-        private class Animation_Tutorial_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel, IBasePanelData>
+        private class Animation_Tutorial_Open : SequenceUIAnimation<MainMenuUiAnimationComponents.ITutorialPanel, IBasePanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -430,7 +430,7 @@ namespace MeteorMadness.ScreenFlow.Menu
             }
         }
 
-        private class Animation_Tutorial_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ITutorialPanel, IBasePanelData>
+        private class Animation_Tutorial_Close : SequenceUIAnimation<MainMenuUiAnimationComponents.ITutorialPanel, IBasePanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -455,7 +455,7 @@ namespace MeteorMadness.ScreenFlow.Menu
 
         #region Credits
 
-        private class Animation_Credits_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel, IBasePanelData>
+        private class Animation_Credits_Open : SequenceUIAnimation<MainMenuUiAnimationComponents.ICreditsPanel, IBasePanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -481,7 +481,7 @@ namespace MeteorMadness.ScreenFlow.Menu
             }
         }
 
-        private class Animation_Credits_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.ICreditsPanel, IBasePanelData>
+        private class Animation_Credits_Close : SequenceUIAnimation<MainMenuUiAnimationComponents.ICreditsPanel, IBasePanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -505,7 +505,7 @@ namespace MeteorMadness.ScreenFlow.Menu
         
         #region FirstGame
 
-        private class Animation_FirstGame_Open : SequenceUIAnimator<MainMenuUiAnimationComponents.IFirstGamePanel, IBasePanelData>
+        private class Animation_FirstGame_Open : SequenceUIAnimation<MainMenuUiAnimationComponents.IFirstGamePanel, IBasePanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -531,7 +531,7 @@ namespace MeteorMadness.ScreenFlow.Menu
             }
         }
 
-        private class Animation_FirstGame_Close : SequenceUIAnimator<MainMenuUiAnimationComponents.IFirstGamePanel, IBasePanelData>
+        private class Animation_FirstGame_Close : SequenceUIAnimation<MainMenuUiAnimationComponents.IFirstGamePanel, IBasePanelData>
         {
             private readonly AnimationHelper.PanelPosition _panel;
 
@@ -559,21 +559,21 @@ namespace MeteorMadness.ScreenFlow.Menu
         
         private MenuAnimator _animator;
         
-        private IUIAnimator _animationMenuFirstOpen;
-        private IUIAnimator _animationMenuOpen;
-        private IUIAnimator _animationMenuClose;
+        private IUiAnimation _animationMenuFirstOpen;
+        private IUiAnimation _animationMenuOpen;
+        private IUiAnimation _animationMenuClose;
         //
-        private IUIAnimator _animationLoreOpen;
-        private IUIAnimator _animationLoreClose;
+        private IUiAnimation _animationLoreOpen;
+        private IUiAnimation _animationLoreClose;
         //
-        private IUIAnimator _animationTutorialOpen;
-        private IUIAnimator _animationTutorialClose;
+        private IUiAnimation _animationTutorialOpen;
+        private IUiAnimation _animationTutorialClose;
         //
-        private IUIAnimator _animationCreditsOpen;
-        private IUIAnimator _animationCreditsClose;
+        private IUiAnimation _animationCreditsOpen;
+        private IUiAnimation _animationCreditsClose;
         //
-        private IUIAnimator _animationFirstGameOpen;
-        private IUIAnimator _animationFirstGameClose;
+        private IUiAnimation _animationFirstGameOpen;
+        private IUiAnimation _animationFirstGameClose;
 
         private void Awake()
         {
