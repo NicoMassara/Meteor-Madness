@@ -12,17 +12,17 @@ namespace MeteorMadness.Managers
     {
         public bool CanPlay { get; set; }
         public bool IsPaused { get; private set; }
-
-        public event Action OnPaused;
-        public event Action OnResumed;
         public bool HadCorruptedSaveData { get; set; }
-
-        public EventBusManager EventManager { get; private set; }
         public IInputReader InputReader { get; private set; }
+        public EventBusManager EventManager { get; private set; }
         
         public bool AntiEpileptic { get; set; } = true;
 
         public uint VisualPoints { get; set; }
+        public AbilityType ActiveAbility { get; set; }
+        public bool HasActiveAbility => ActiveAbility != AbilityType.None;
+        public event Action OnPaused;
+        public event Action OnResumed;
         
         private void Awake()
         {
@@ -80,7 +80,6 @@ namespace MeteorMadness.Managers
         }
 
         #endregion
-
 
         public void QuitGame()
         {

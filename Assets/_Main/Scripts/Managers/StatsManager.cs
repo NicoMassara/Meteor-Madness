@@ -245,7 +245,7 @@ namespace MeteorMadness.Managers
             statsData.TotalScore = (uint)Internal_GetValueByStat(StatType.TotalScored);
             
             // Adds a game played
-            Internal_AddValueByStat(StatType.TimesPlayed, 1);
+            Internal_AddValueByStat(StatType.TimesPlayed, (uint)1);
             statsData.GamesPlayed = (uint)Internal_GetValueByStat(StatType.TimesPlayed);
             
             // Adds to the total collision count

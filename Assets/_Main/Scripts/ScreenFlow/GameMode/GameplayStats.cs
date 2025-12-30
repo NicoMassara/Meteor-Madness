@@ -106,10 +106,9 @@ namespace MeteorMadness.ScreenFlow.GameMode
             var current = GetValueById<uint>(_deflectId);
             current++;
             UpdateValueById(_deflectId,current);
-            IncreaseDeflectStreak();
         }
 
-        private void IncreaseDeflectStreak()
+        public void IncreaseDeflectStreak()
         {
             var current = GetValueById<uint>(_currentStreakId);
             current++;

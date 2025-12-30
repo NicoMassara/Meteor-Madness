@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools;
@@ -49,6 +50,15 @@ namespace _Main.Scripts.Cosmetics
         public void Initialize(DataManager.SkinSaveData data)
         {
             _bits = data.UnlockedSkins;
+
+#if UNITY_EDITOR
+            
+            if (GameParameters.GameplayValues.HasAllSkinsUnlocked)
+            {
+                _bits.low = ulong.MaxValue;
+                _bits.high = ulong.MaxValue;
+            }
+#endif
         }
 
         #region Public Methods
