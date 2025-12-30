@@ -7,7 +7,8 @@
         "GUID:6f153d6ddbe9d704b9c46d65edb727e0",
         "MeteorMadness.Services",
         "GUID:cbcefa849418cda42a15b4f089dcf60b",
-        "MeteorMadness.Contracts"
+        "MeteorMadness.Contracts",
+        "GUID:7383e56d37c04177bd5dbfee101ce49c"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

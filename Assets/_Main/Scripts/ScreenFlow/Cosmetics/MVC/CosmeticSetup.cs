@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Contracts;
+﻿using _Main.Scripts.EventBus;
+using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Events;

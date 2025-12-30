@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces;
@@ -92,8 +93,7 @@ namespace _Main.Scripts.MyInputs
 
         private void TriggerPause()
         {
-            GameManager.Instance.EventManager.Publish(
-                new GameModeEvents.SetPause{IsPaused = !GameManager.Instance.IsPaused});
+            
         }
         
         private void TriggerAbility(bool isPressed)

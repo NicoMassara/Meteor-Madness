@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.BaseSingleton;
@@ -14,20 +15,12 @@ namespace MeteorMadness.Managers
         public bool IsPaused { get; private set; }
         public bool HadCorruptedSaveData { get; set; }
         public IInputReader InputReader { get; private set; }
-        public EventBusManager EventManager { get; private set; }
-        
         public bool AntiEpileptic { get; set; } = true;
-
         public uint VisualPoints { get; set; }
         public AbilityType ActiveAbility { get; set; }
         public bool HasActiveAbility => ActiveAbility != AbilityType.None;
         public event Action OnPaused;
         public event Action OnResumed;
-        
-        private void Awake()
-        {
-            EventManager = new EventBusManager();
-        }
         
         public void SetInputReader(IInputReader inputReader)
         {

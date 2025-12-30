@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Managers.GameConfig;

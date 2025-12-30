@@ -11,7 +11,8 @@
         "MeteorMadness.Managers",
         "MeteorMadness.ScreenFlow",
         "MeteorMadness.Animations",
-        "MeteorMadness.Contracts"
+        "MeteorMadness.Contracts",
+        "MeteorMadness.EventBus"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

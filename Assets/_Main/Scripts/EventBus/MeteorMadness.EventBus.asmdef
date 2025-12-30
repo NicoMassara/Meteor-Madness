@@ -1,0 +1,4 @@
+﻿{
+  "name": "MeteorMadness.EventBus",
+  "references":[ "GUID:080f653a58f74254bcaf4ef0dbe0adf7" ]
+}

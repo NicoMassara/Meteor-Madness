@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Contracts;
+﻿using _Main.Scripts.EventBus;
+using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomTimerManager;
@@ -20,22 +21,22 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Always;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
-        
+
         private void Awake()
         {
             _view = GetComponent<TutorialView>();
             _ui = GetComponent<TutorialUIView>();
             _animator = GetComponent<TutorialViewAnimation>();
-            
+
             var motor = new TutorialMotor();
             _controller = new TutorialController(motor);
-            
+
             motor.Subscribe(_view);
             motor.Subscribe(_ui);
             motor.Subscribe(_animator);
-            
+
             SetViewHandlers();
-            
+
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
         }
@@ -44,7 +45,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         {
             _controller.Initialize();
         }
-        
+
         public void ExecuteUpdate(float deltaTime)
         {
             _controller?.Execute(deltaTime);
@@ -81,7 +82,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         }
 
         #endregion
-        
+
         #region Event Bus
 
         private void SubscribeEventBus()
@@ -111,7 +112,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
             //
             ShieldEventUnSubscriber.NotifyMovement(EventBus_Shield_Movement);
         }
-        
+
         private void EventBus_MultiPage_Finished(MultiPageUIEvents.Finished input)
         {
             switch (input.CreateId)
@@ -128,7 +129,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
                 case 3:
                     _controller.TransitionToAbility();
                     break;
-                case 4: 
+                case 4:
                     GameManager.Instance.LoadMainMenu();
                     break;
                 default:
@@ -136,12 +137,12 @@ namespace MeteorMadness.ScreenFlow.Tutorial
                     break;
             }
         }
-        
+
         private void EventBus_Shield_Movement(ShieldEvents.NotifyMovement input)
         {
             _controller.SetMovementDirection(input.Direction);
         }
-        
+
         private void EventBus_Meteor_RingActive(MeteorEvents.RingActive input)
         {
             if (input.IsActive == false)
@@ -149,12 +150,12 @@ namespace MeteorMadness.ScreenFlow.Tutorial
                 _controller.SpawnExtraMeteors();
             }
         }
-        
+
         private void EventBus_Meteor_Deflected(ProjectileEvents.Deflected input)
         {
             if (input.Type == ProjectileType.Meteor)
             {
-                TimerManager.Add(new TimerData(0.5f, 
+                TimerManager.Add(new TimerData(0.5f,
                     () => _controller.TransitionToMultiPage()));
             }
             else if (input.Type == ProjectileType.AbilitySphere)
@@ -162,13 +163,13 @@ namespace MeteorMadness.ScreenFlow.Tutorial
                 _controller.TriggerSphereDeflected();
             }
         }
-        
+
         private void EventBus_Projectile_Collision(ProjectileEvents.Collision input)
         {
             _controller.SendAdditionalProjectile((int)input.Type);
         }
 
-        
+
         private void EventBus_Abilities_Active(AbilitiesEvents.NotifyIsActive input)
         {
             if (input.IsActive == false)
@@ -180,13 +181,13 @@ namespace MeteorMadness.ScreenFlow.Tutorial
                 _controller.TransitionToAbilityRunning();
             }
         }
-        
+
         #region GameScreen
 
         private void EventBus_GameScreen_Disable(GameScreenEvents.DisableScreen input)
         {
-            if(input.ScreenType != ScreenType.Tutorial) return;
-            
+            if (input.ScreenType != ScreenType.Tutorial) return;
+
             if (input.RequestType == EventRequestType.Requested)
             {
                 DisableTutorial();
@@ -195,8 +196,8 @@ namespace MeteorMadness.ScreenFlow.Tutorial
 
         private void EventBus_GameScreen_Enable(GameScreenEvents.EnableScreen input)
         {
-            if(input.ScreenType != ScreenType.Tutorial) return;
-            
+            if (input.ScreenType != ScreenType.Tutorial) return;
+
             if (input.RequestType == EventRequestType.Granted)
             {
                 EnableTutorial();
@@ -204,7 +205,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         }
 
         #endregion
-        
+
         #endregion
     }
 }

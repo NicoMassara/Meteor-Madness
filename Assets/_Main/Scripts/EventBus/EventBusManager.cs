@@ -1,10 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace MeteorMadness.Managers
+namespace _Main.Scripts.EventBus
 {
-    public class EventBusManager
+    public class EventBusManager : MonoBehaviour
     {
+        #region Singleton
+        public static EventBusManager Instance =>  _instance != null ? _instance : (_instance = CreateInstance());
+        protected static EventBusManager _instance;
+        
+        private static EventBusManager CreateInstance()
+        {
+            var gameObject = new GameObject(typeof(EventBusManager).ToString())
+            {
+                hideFlags = HideFlags.DontSave,
+            };
+            DontDestroyOnLoad(gameObject);
+            //SingletonEvents.OnDestroySingleton += () => DestroyImmediate(gameObject);
+            return gameObject.AddComponent<EventBusManager>();
+        }
+
+        public static void LoadInstance() => Instance.Internal_LoadInstance();
+
+        private void Internal_LoadInstance(){ }
+        
+        #endregion
+        
         private readonly Dictionary<Type, List<Delegate>> _listeners = new();
         
         public void Subscribe<T>(Action<T> callback)

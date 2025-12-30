@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Contracts.Interfaces.Skins;
@@ -140,15 +141,13 @@ namespace MeteorMadness.Gameplay.FlyingObject
             Movement.CanMove = canMove;
             if (doesShowParticles)
             {
-                GameManager.Instance.EventManager.Publish
-                (
-                    new ParticleEvents.Spawn
-                    {
-                        ParticleData = collisionParticle,
-                        Position = position,
-                        MoveDirection = direction
-                    }
-                );
+                ParticleEventCaller.Spawn(new ParticleSpawnData
+                {
+                    Position = position,
+                    ParticleData = collisionParticle,
+                    MoveDirection = direction
+                    
+                });
             }
         }
 

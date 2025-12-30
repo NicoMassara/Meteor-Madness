@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Gameplay.Shaker;
 using MeteorMadness.GlobalValues.Tools.Observer;
