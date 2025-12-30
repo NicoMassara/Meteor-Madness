@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Contracts;
+﻿using _Main.Scripts.EventBus;
+using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces.GameplayData;
 using MeteorMadness.GlobalValues.Tools.Observer;
