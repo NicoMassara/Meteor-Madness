@@ -242,7 +242,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             
 #if UNITY_ANDROID || UNITY_IOS
 
-            SetEnableUIInputs(true);
+            SetEnableUIInputs(false);
                 
 #endif
         }
