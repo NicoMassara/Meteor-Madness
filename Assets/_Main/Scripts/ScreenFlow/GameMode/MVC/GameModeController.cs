@@ -117,7 +117,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 {
                     _elapsedTime += deltaTime;
 
-                    if (_elapsedTime >= TimeStep)
+                    if (_elapsedTime >= TimeStep &&
+                        _currentCount > 0)
                     {
                         _elapsedTime -= TimeStep;
                         _currentCount--;
