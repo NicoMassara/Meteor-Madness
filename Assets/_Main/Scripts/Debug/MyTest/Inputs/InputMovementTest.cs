@@ -60,10 +60,8 @@ namespace _Main.Scripts.MyTest.Inputs
     {
         public override void OnInspectorGUI()
         {
-            // Dibuja el inspector normal
             DrawDefaultInspector();
-
-            // Agrega el botón
+            
             InputMovementTest script = (InputMovementTest)target;
 
             if (GUILayout.Button("Enable Speeder")) 
