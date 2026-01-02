@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4168e7eb8a4661b41187eed3aa7e1c, type: 3}
+  m_Name: SO_SkinData_GoldenEarth
+  m_EditorClassIdentifier: 
+  skinType: 4
+  localizationCode: GoldenEarth
+  unlockPrice: 9999
+  earthData:
+    material: {fileID: 2100000, guid: f90848d404b56de4c9149362f31a03a7, type: 2}
+    rotationOffset: 12.5
+  shieldData:
+    material: {fileID: 2100000, guid: be408e41b07513a47a4436ea266aa07c, type: 2}
+  meteorData:
+    material: {fileID: 2100000, guid: 98baa2b1c8c12ae4f8d8d0851749b3f5, type: 2}
+  cometData:
+    material: {fileID: 2100000, guid: 37f1457b6d65ea5488086123ad1f14c7, type: 2}

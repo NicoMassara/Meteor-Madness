@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55929f6b1abd4d839d2c02cb2c6c9996, type: 3}
+  m_Name: So_Animation_UI_Defeat
+  m_EditorClassIdentifier: 
+  panelOpenData:
+    fadeInDelay: 0.5
+    fadeIntensity: 0.5
+    fadeInDuration: 1.5
+    scaleDelay: 0.5
+    scaleDuration: 0.75
+    bounceDelay: 0.05
+    bounceScale: 1.25
+    bounceDuration: 0.1
+    bounceReturnTime: 0.32
+    finishDelay: 0.5
+  panelCloseData:
+    currentScoreOffscreenPosition: 5
+    highScoreOffscreenPosition: 4
+    titleOffscreenPosition: 2
+    buttonsOffscreenPosition: 3
+    coinsOffscreenPosition: 0
+    movementDelay: 0.5
+    movementDuration: 0.25
+    fadeDelay: 0.25
+    backgroundFadeDuration: 0.3
+    buttonsOffScreenOffset: {x: 0, y: -250}
+    titleOffScreenOffset: {x: 0, y: 250}
+    coinsOffScreenOffset: {x: -1000, y: 0}
+  currentScoreData:
+    offscreenPosition: 5
+    moveDuration: 0.3
+    finishDelay: 0.5
+  highScoreData:
+    offscreenPosition: 4
+    moveDuration: 0.3
+    finishDelay: 0.5
+    scaleDuration: 0.75
+    bounceDelay: 0.05
+    bounceScale: 1.25
+    bounceDuration: 0.1
+    bounceReturnTime: 0.35
+    newScoreTextDelay: 0.25
+    newScoreBounceScale: 2
+    newScoreBounceDuration: 0.5
+    newScoreBounceReturnTime: 0.2
+  buttonsOpenData:
+    offscreenPosition: 3
+    offscreenOffset: {x: 0, y: -250}
+    moveDuration: 0.3
+    finishDelay: 0.5
+  coinsOpenData:
+    offscreenPosition: 1
+    offscreenOffset: {x: 1000, y: 0}
+    moveDuration: 0.3
+    finishDelay: 0.5

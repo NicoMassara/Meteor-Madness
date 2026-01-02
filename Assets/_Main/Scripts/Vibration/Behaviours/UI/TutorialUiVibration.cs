@@ -1,7 +1,7 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
-using _Main.Scripts.Vibration;
+﻿using MeteorMadness.Contracts.Interfaces.Vibration;
+using MeteorMadness.Vibration.BaseBehaviours;
 
-namespace _Main.Scripts.Tutorial
+namespace MeteorMadness.ScreenFlow.Tutorial
 {
     public class TutorialUiVibration : VibrationBehavior<ITutorialUIVibration>
     {

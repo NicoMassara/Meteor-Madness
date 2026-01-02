@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4168e7eb8a4661b41187eed3aa7e1c, type: 3}
+  m_Name: SO_SkinData_Vinyl
+  m_EditorClassIdentifier: 
+  skinType: 3
+  localizationCode: Vinyl
+  unlockPrice: 50
+  earthData:
+    material: {fileID: 2100000, guid: 6d67e6d2452bddf49881b5df25cc00a7, type: 2}
+    scaleOffsetX: 3.5
+    scaleOffsetY: 3.5
+    rotationOffset: 0
+  shieldData:
+    material: {fileID: 2100000, guid: be408e41b07513a47a4436ea266aa07c, type: 2}
+    scaleOffsetX: 1
+    scaleOffsetY: 1
+  meteorData:
+    material: {fileID: 2100000, guid: fb43e0e1a62af464a9a2c00c1011bb68, type: 2}
+    scaleOffsetX: 1
+    scaleOffsetY: 1
+  cometData:
+    material: {fileID: 2100000, guid: 2c1801b43e0c35642bfa8b66825cde1a, type: 2}
+    scaleOffsetX: 1
+    scaleOffsetY: 1

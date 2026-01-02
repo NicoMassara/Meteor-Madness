@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Mat_Shield_Ability_Unlit_Stencil
+  m_Shader: {fileID: 4800000, guid: ba199829ad5a7674a9489d7ee8fc1dfe, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _ShieldSilouette:
+        m_Texture: {fileID: 2800000, guid: 869c9fe9f51fc9c41b7f19176e72dfcc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShieldSilouette1:
+        m_Texture: {fileID: 2800000, guid: 869c9fe9f51fc9c41b7f19176e72dfcc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ChromaticAberration: 0.1
+    - _EffectFrequency: 0.35
+    - _EffectSpeed: 1
+    - _EffectWidth: 0.75
+    - _Float0: 31.87
+    - _Opacity: 1
+    - __dirty: 0
+    m_Colors:
+    - _AbilityColor: {r: 1, g: 0.9215686, b: 0.01568628, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

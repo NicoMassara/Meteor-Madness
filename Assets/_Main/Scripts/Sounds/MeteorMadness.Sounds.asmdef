@@ -1,0 +1,18 @@
+{
+    "name": "MeteorMadness.Sounds",
+    "rootNamespace": "MeteorMadness.Sounds",
+    "references": [
+        "GUID:c86df55943534d8e992b0a5e142eef8a",
+        "GUID:6f153d6ddbe9d704b9c46d65edb727e0",
+        "MeteorMadness.Contracts"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

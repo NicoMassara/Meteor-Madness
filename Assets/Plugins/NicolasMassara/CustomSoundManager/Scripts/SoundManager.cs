@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections.Generic;
+using MeteorMadness.Contracts.Events;
 
 namespace Plugins.NicolasMassara.CustomSoundManager
 {
@@ -678,6 +679,7 @@ namespace Plugins.NicolasMassara.CustomSoundManager
                 hideFlags = HideFlags.DontSave,
             };
             DontDestroyOnLoad(gameObject);
+            SingletonEvents.OnDestroySingleton += () => DestroyImmediate(gameObject);
             return gameObject.AddComponent<SoundManager>();
         }
 

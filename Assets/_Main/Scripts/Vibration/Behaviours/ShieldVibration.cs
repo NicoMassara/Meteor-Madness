@@ -1,13 +1,17 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿using MeteorMadness.Contracts.Interfaces.Vibration;
+using MeteorMadness.Vibration.BaseBehaviours;
+using MeteorMadness.Vibration.So;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration.Behaviours
+namespace MeteorMadness.Vibration.Behaviours
 {
     public class ShieldVibration : VibrationBehavior<IShieldVibration>
     {
-#if UNITY_ANDROID 
         [SerializeField] private VibrationDataSo rotateData;
+        [SerializeField] private VibrationDataSo directionChangeData;
+        [SerializeField] private VibrationDataSo stopData;
         [SerializeField] private VibrationDataSo deflectData;
+#if UNITY_ANDROID
         
         protected override void Start()
         {
@@ -17,9 +21,19 @@ namespace _Main.Scripts.Vibration.Behaviours
                 Vibrate(rotateData);
             };
             
+            ComponentToVibrate.OnStopped += () =>
+            {
+                Vibrate(stopData);
+            };
+            
             ComponentToVibrate.OnDeflect += () =>
             {
                 Vibrate(deflectData);
+            };
+            
+            ComponentToVibrate.OnDirectionChange += (value) =>
+            {
+                Vibrate(directionChangeData);
             };
         }
 #endif

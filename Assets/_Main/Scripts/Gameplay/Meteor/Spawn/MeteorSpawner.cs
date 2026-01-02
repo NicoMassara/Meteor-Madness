@@ -1,0 +1,241 @@
+﻿using System.Collections;
+using _Main.Scripts.EventBus;
+using _Main.Scripts.Projectile;
+using MeteorMadness.Contracts;
+using MeteorMadness.Managers;
+using MeteorMadness.Managers.GameConfig;
+using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
+
+namespace _Main.Scripts.Meteor
+{
+    public class MeteorSpawner : ManagedBehavior
+    {
+        [Header("Components")]
+        [SerializeField] private ProjectileSpawnSettings spawnSettings;
+        [SerializeField] private MeteorView meteorPrefab;
+        
+        private MeteorFactory _meteorFactory;
+        private bool _isSpawningRing;
+
+        public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
+        
+        private void Awake()
+        {
+            _meteorFactory = new MeteorFactory(meteorPrefab);
+            
+            SetEventBus();
+        }
+        
+        private float GetMovementSpeed()
+        {
+            return GameConfigManager.Instance.GetGameplayData().ProjectileData.MaxProjectileSpeed;
+        }
+
+        #region Spawn
+
+        private void SpawnSingleMeteor(Vector2 spawnPosition, Vector2 direction, float movementMultiplier)
+        {
+            var finalSpeed = GetMovementSpeed() * movementMultiplier;
+            var tempMeteor = _meteorFactory.SpawnMeteor();
+                
+            //Set Direction and Rotation towards COG
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
+            tempMeteor.SetValues(new MeteorValuesData
+            {
+                MovementSpeed = finalSpeed,
+                Rotation = tempRot,
+                Position = spawnPosition,
+                Direction = direction.normalized,
+                Value = GameParameters.GameplayValues.BaseMeteorValue
+            });
+            tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
+            tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
+            
+            ProjectileEventCaller.Add(tempMeteor);
+        }
+
+        private void SpawnRingMeteor(float meteorSpeed)
+        {
+            if(_isSpawningRing) return;
+            
+            StartCoroutine(CreateRingMeteor(meteorSpeed));
+        }
+
+        private IEnumerator CreateRingMeteor(float meteorSpeed)
+        {
+            MeteorEventCaller.RingActive(true);
+            var projectileData = GameConfigManager.Instance.GetGameplayData().ProjectileData;
+            var ringValues = projectileData.MeteorRingData;
+
+            _isSpawningRing = true;
+            
+            yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
+            
+            var currAngle = 0f;
+            var amountToSpawn = ringValues.MeteorAmount;
+            var angleOffset = 360f / amountToSpawn;
+            var startAngleOffset = angleOffset/2;
+            var startOffset = 0f;
+            var speedMultiplier = 2f;
+            var valuePerMeteor = GetRingMeteorValue(amountToSpawn, ringValues.RingsAmount);
+
+            for (int a = 0; a < ringValues.WavesAmount; a++)
+            {
+                for (int i = 0; i < ringValues.RingsAmount; i++)
+                {
+                    for (int j = 0; j < amountToSpawn; j++)
+                    {
+                        yield return new WaitForSeconds(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                        
+                        var finalValue = j % 2 == 0 ? valuePerMeteor : 0;
+                        
+                        CreateMeteor(meteorSpeed * speedMultiplier, 
+                            spawnSettings.GetPositionByAngle(currAngle),finalValue);
+                        
+                        currAngle += angleOffset;
+                        currAngle = Mathf.Repeat(currAngle, 360f);
+                    }
+                
+                    startOffset += startAngleOffset;
+                    startOffset = Mathf.Repeat(startOffset, 360f);
+                    currAngle = startOffset;
+                    
+                    yield return new WaitForSeconds(ringValues.DelayBetweenRings);
+                }
+                
+                yield return new WaitForSeconds(ringValues.DelayBetweenWaves);
+            }
+            
+            yield return new WaitUntil(()=> _meteorFactory.ActiveMeteorCount == 0);
+            
+            yield return new WaitForSeconds(projectileData.MeteorSpawnDelayAfterRing);
+            
+            MeteorEventCaller.RingActive(false);
+            AbilitiesEventCaller.RunTimer();
+            _isSpawningRing = false;
+        }
+        
+        
+        private float GetRingMeteorValue(int countPerWave, int waves)
+        {
+            var totalMeteor = (countPerWave * waves);
+            var finalScoreValue = GetRingTargetScore() / totalMeteor;
+            return finalScoreValue;
+        }
+
+        private float GetRingTargetScore() => GameParameters.GameplayValues.BaseMeteorValue * 30;
+
+        #endregion
+
+        #region Create
+
+        // ReSharper disable Unity.PerformanceAnalysis
+        
+        private void CreateMeteor(float meteorSpeed, Vector2 spawnPosition, float value = 100)
+        {
+            var tempMeteor = _meteorFactory.SpawnMeteor();
+            var cog = spawnSettings.GetCenterOfGravity();
+                
+            //Set Direction and Rotation towards COG
+            Vector2 direction = cog - spawnPosition;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
+            tempMeteor.SetValues(new MeteorValuesData
+            {
+                MovementSpeed = meteorSpeed,
+                Rotation = tempRot,
+                Position = spawnPosition,
+                Direction = direction.normalized,
+                Value = value
+            });
+            tempMeteor.OnDeflection += Meteor_OnDeflectionHandler;
+            tempMeteor.OnEarthCollision += Meteor_OnEarthCollisionHandler;
+            tempMeteor.EnableMovement = true;
+        }
+
+        private void RecycleAll()
+        {
+            _meteorFactory.RecycleAll();
+        }
+
+        #endregion
+
+        #region Handlers
+
+        private void Meteor_OnDeflectionHandler(MeteorCollisionData data)
+        {
+            data.Meteor.OnDeflection = null;
+            data.Meteor.OnEarthCollision = null;
+            
+            ProjectileEventCaller.Deflected(new DeflectData
+            {
+                Position = data.Position,
+                Rotation = data.Rotation,
+                Direction = data.Direction,
+                Value = data.Value,
+                Type = ProjectileType.Meteor
+            });
+            
+            
+            data.Meteor.Recycle();
+        }
+
+        private void Meteor_OnEarthCollisionHandler(MeteorCollisionData data)
+        {
+            data.Meteor.OnDeflection = null;
+            data.Meteor.OnEarthCollision = null;
+            
+            ProjectileEventCaller.Collision(new CollisionData
+            {
+                Position = data.Position,
+                Rotation = data.Rotation,
+                Direction = data.Direction,
+                Type = ProjectileType.Meteor
+            });
+            
+            data.Meteor.Recycle();
+        }
+
+        #endregion
+
+        #region EventBus
+
+        private void SetEventBus()
+        {
+            MeteorEventSubscriber.SpawnRing(EnventBus_Meteor_SpawnRing);
+            //
+            ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_DisableSpawn);
+            ProjectileEventSubscriber.Spawn(EventBus_Projectile_Spawn);
+        }
+
+        #region Meteor
+
+        private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
+        {
+            SpawnRingMeteor(GetMovementSpeed());
+        }
+
+        #endregion
+        
+        #region Projectiles
+
+        private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
+        {
+            if (input.ProjectileType == ProjectileType.Meteor)
+            {
+                SpawnSingleMeteor(input.Position, input.Direction, input.MovementMultiplier);
+            }
+        }
+        
+        private void EventBus_Projectile_DisableSpawn(ProjectileEvents.DisableSpawn input)
+        {
+            RecycleAll();
+        }
+
+        #endregion
+
+        #endregion
+    }
+}

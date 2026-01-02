@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MeteorMadness.Contracts.Events;
 using UnityEngine;
 
 namespace NicolasMassara.CustomActionManager
@@ -39,6 +40,7 @@ namespace NicolasMassara.CustomActionManager
                 hideFlags = HideFlags.DontSave,
             };
             DontDestroyOnLoad(gameObject);
+            SingletonEvents.OnDestroySingleton += () => DestroyImmediate(gameObject);
             return gameObject.AddComponent<ActionManager>();
         }
         
@@ -461,12 +463,12 @@ namespace NicolasMassara.CustomActionManager
         
         private void OnApplicationFocus(bool hasFocus)
         {
-            IsPaused = !hasFocus;
+            //IsPaused = !hasFocus;
         }
 
         private void OnApplicationPause(bool pauseStatus)
         {
-            IsPaused = pauseStatus;
+            //IsPaused = pauseStatus;
         }
         
 

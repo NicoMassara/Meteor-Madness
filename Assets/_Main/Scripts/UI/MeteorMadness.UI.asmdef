@@ -1,0 +1,21 @@
+{
+    "name": "MeteorMadness.UI",
+    "rootNamespace": "MeteorMadness.UI",
+    "references": [
+        "GUID:c86df55943534d8e992b0a5e142eef8a",
+        "GUID:72999fc0cb6d47409e53a0030917cc84",
+        "GUID:cbcefa849418cda42a15b4f089dcf60b",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "MeteorMadness.Contracts",
+        "GUID:7383e56d37c04177bd5dbfee101ce49c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

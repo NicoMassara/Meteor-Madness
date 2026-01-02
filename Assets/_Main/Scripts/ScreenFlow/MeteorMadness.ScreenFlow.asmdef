@@ -1,0 +1,31 @@
+{
+    "name": "MeteorMadness.ScreenFlow",
+    "rootNamespace": "MeteorMadness.ScreenFlow",
+    "references": [
+        "GUID:cbcefa849418cda42a15b4f089dcf60b",
+        "GUID:6f153d6ddbe9d704b9c46d65edb727e0",
+        "GUID:47a70d1f9c6c9c14e9bd7f0d7fbc68d1",
+        "GUID:a9780fc765d265e41acfd82fbdcfd238",
+        "GUID:c86df55943534d8e992b0a5e142eef8a",
+        "GUID:72999fc0cb6d47409e53a0030917cc84",
+        "GUID:e024e336b4ec4435bb9c3ed6b544d470",
+        "GUID:3b8e3c9c39ad490594ab9598d660e8b7",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:0678ac3b19084e37b0eb687012d5cb7e",
+        "GUID:f41d70007b812924daeea491665ac32d",
+        "GUID:420b34b0a7084b92a4a9dd53f7729d18",
+        "MeteorMadness.Contracts",
+        "GUID:a76180531f6e4921a44c7524f2605ca5",
+        "GUID:7383e56d37c04177bd5dbfee101ce49c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

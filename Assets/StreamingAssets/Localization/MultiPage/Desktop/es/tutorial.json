@@ -1,26 +1,46 @@
 ﻿{
-  "Movement": {
-    "Texts": [
-      "¡Hola!\n\\n\n¡Bienvenido al Tutorial!\n",
-      "¡Aquí aprenderás cómo jugar Meteor Madness!\n\n\nIntenta presionar %%RightKey%% para moverte en el sentido de las agujas del reloj y %%LeftKey%% para moverte en sentido contrario."
+  "MovementRight": {
+    "Texts" :[
+      "Hello!\n\n Welcome to the Meteor Madness Tutorial! \n\n Here You'll learn How to defend The Earth!",
+      "To achieve this, you must to rotate the Earth's shield! \n\n That looks hard, right? But no. Is pretty easy!",
+      "To rotate the shield in a clockwise direction, you must press %%RightKey%% \n\n\n Give it a try!"
     ],
-    "LastButton": "¡Intenta moverte!"
+    "LastButton" : "Try!"
   },
 
-  "Ability": {
-    "Texts": [
-      "Durante tu partida, a veces encontrarás una esfera misteriosa...",
-      "Esta esfera tiene forma de meteorito, pero no es un meteorito.\n\n\nAlgunas personas dicen que después de desviar una de ellas, si presionas %%AbilityKey%%...\n\n\nOcurrirá un súper efecto...",
-      "¡Intenta desviar una de ellas y descubre lo que tiene dentro!"
+  "MovementLeft": {
+    "Texts" :[
+      "You did it perfect! \n\n Now you'll learn how to rotate it in a counter clockwise way!",
+      "To rotate the shield in a counter clockwise way, you must press %%LeftKey%% \n\n\n Give it a try!"
     ],
-    "LastButton": "Intentar"
+    "LastButton" : "Try!"
   },
 
-  "Finish": {
-    "Texts": [
-      "¡Has completado el tutorial de Meteor Madness!",
-      "¡Eso es todo lo que necesitas saber para jugar!\n\n\nSiéntete libre de repetirlo cuando quieras y protege la Tierra. ¡Eres el único que puede salvarla!"
+  "Deflection": {
+    "Texts" :[
+      "Perfect! You are a professional! \n\n But, almost. \n Now you have to learn the core of the matter... \n\n You'll learn how to deflect a Meteor",
+      "Deflecting a Meteor is simple, move the shield towards the direction of the meteor and place it there. \n When the meteor reaches the shield it will be turned into dust! \n Also Each meteor you deflect will give you points!",
+      "But be Careful! \n If you fail  to deflect it, the meteor will impact Earth!! \n And if too many meteors impacts Earth, it'll be destroyed, taking humanity with it!",
+      "With all said, no pressure! \n\n\n Try to deflect a Meteor!"
     ],
-    "LastButton": "Volver al Menú"
+    "LastButton" : "Try!"
+  },
+
+  "Ability" : {
+    "Texts" : [
+      "There is something more you have to know... \n\n Sometimes you'll find a mysterious sphere! \n\n Scientists have discovered that these spheres contains something called 'Power Up' \n Know one knows where do they came from, but is 100% alien technology",
+      "This is scary, right? After all we are not alone in the universe! \n\n These spheres act exactly like a meteor, but there's a difference! \n\n Each time you deflect one of them, it'll give you a 'Power Up' that can be used to destroy more meteors or Reconstruct Earth if is damaged!",
+      "But! \n\n These 'Power Ups' are limited by time!",
+      "After many many days of investigation, scientists have discovered that if you press %%AbilityKey%% these 'Power Ups' will activate! \n\n Give it a try!"
+    ],
+    "LastButton" : "Try"
+  },
+
+  "Finish" : {
+    "Texts": [
+      "You have finished the Meteor Madness Tutorial!",
+      "That's everything you need to know to play the game!\n\n \nFeel free to revisit it any time you need and protect the Earth! You are the only one who can save it!"
+    ],
+    "LastButton" : "Back to Menu"
   }
 }

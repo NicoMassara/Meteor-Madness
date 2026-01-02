@@ -1,37 +1,26 @@
 ﻿using System;
-using _Main.Scripts.Interfaces;
-using _Main.Scripts.MyComponents;
-using _Main.Scripts.MyTools;
-using _Main.Scripts.CustomId;
-using _Main.Scripts.Save;
-using _Main.Scripts.SecurityData;
+using _Main.Scripts.EventBus;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.GlobalValues.BaseSingleton;
+using MeteorMadness.GlobalValues.Tools;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
-namespace _Main.Scripts.Managers
+namespace MeteorMadness.Managers
 {
     public class GameManager : SingletonBehaviour<GameManager>
     {
         public bool CanPlay { get; set; }
         public bool IsPaused { get; private set; }
-
+        public bool HadCorruptedSaveData { get; set; }
+        public IInputReader InputReader { get; private set; }
+        public bool AntiEpileptic { get; set; } = true;
+        public uint VisualPoints { get; set; }
+        public AbilityType ActiveAbility { get; set; }
+        public bool HasActiveAbility => ActiveAbility != AbilityType.None;
         public event Action OnPaused;
         public event Action OnResumed;
-        public bool HadCorruptedSaveData { get; set; }
-
-        public EventBusManager EventManager { get; private set; }
-        public IInputReader InputReader { get; private set; }
-        
-        public bool AntiEpileptic { get; set; } = true;
-        public StatsController StatsController { get; private set; } 
-        public FlagsController FlagsController { get; private set; } 
-
-        private void Awake()
-        {
-            EventManager = new EventBusManager();
-            StatsController = new StatsController();
-            FlagsController = new FlagsController();
-        }
         
         public void SetInputReader(IInputReader inputReader)
         {
@@ -54,6 +43,8 @@ namespace _Main.Scripts.Managers
         private void LoadGameScreen(ScreenType type) => GameScreenEventCaller.EnableScreen(type, EventRequestType.Requested);
 
         #endregion
+
+        #region Pause
 
         public void PauseGame()
         {
@@ -81,11 +72,11 @@ namespace _Main.Scripts.Managers
             }, isPaused);
         }
 
+        #endregion
+
         public void QuitGame()
         {
             QuitUtility.Quit();
         }
-
-
     }
 }

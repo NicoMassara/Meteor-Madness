@@ -1,10 +1,12 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿
+using MeteorMadness.Contracts.Interfaces.Vibration;
+using MeteorMadness.Vibration.BaseBehaviours;
 
-namespace _Main.Scripts.Vibration.Behaviours.UI
+namespace MeteorMadness.Vibration.Behaviours
 {
     public class CosmeticUiVibration : VibrationBehavior<ICosmeticUIVibration>
     {
-#if UNITY_ANDROID 
+#if UNITY_ANDROID
         protected override void Start()
         {
             base.Start();
@@ -13,6 +15,33 @@ namespace _Main.Scripts.Vibration.Behaviours.UI
                 Vibrate(VibrationType.UIButtonCancel);
             };
             ComponentToVibrate.OnSkinSelected += (value) =>
+            {
+                Vibrate(VibrationType.UIButtonAccept);
+            };
+
+            ComponentToVibrate.OnScroll += (value) =>
+            {
+                if (value == 1)
+                {
+                    Vibrate(VibrationType.UIButtonAccept);
+                }
+                else
+                {
+                    Vibrate(VibrationType.UIButtonCancel);
+                }
+            };
+            
+            ComponentToVibrate.OnCoinsFinishedDecrement += () =>
+            {
+                Vibrate(VibrationType.UIButtonAccept);
+            };
+            
+            ComponentToVibrate.OnUnlockFailed += () =>
+            {
+                Vibrate(VibrationType.UIButtonCancel);
+            };
+            
+            ComponentToVibrate.OnUnlocked += () =>
             {
                 Vibrate(VibrationType.UIButtonAccept);
             };

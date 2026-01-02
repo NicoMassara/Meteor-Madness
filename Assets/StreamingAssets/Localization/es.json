@@ -43,9 +43,11 @@
 
   "Tutorial": {
     "Hint" : {
-      "Movement" : "Prueba Moverte y destruye el meteorito",
+      "Meteor" : "Destruye el meteorito",
       "Ability" : "Prueba destruyendo la misteriosa esfera",
-      "Shield" : "Activa el Super Escudo!"
+      "Shield" : "Activa el Super Escudo!",
+      "MoveRight" : "Move clockwise!",
+      "MoveLeft" : "Move counter clockwise!"
     }
   },
 
@@ -63,10 +65,19 @@
   },
 
   "Cosmetic": {
-    "Title" : "Apariencia",
-    "SkinType" : {
-      "Default" : "Normal",
-      "Pizza" : "Pizza"
+    "Title" : "Selector de Apariencia",
+    "Description" : "Descripción:",
+    "Locked" : "Bloqueado!",
+    "Unlock" : "Desbloquear",
+    "Unlocked" : "Desbloqueado!",
+    "StoredCoins" : "Tus Monedas",
+    "GainedCoins" : "Monedas Ganadas",
+    "Requirement" : "Necesitas",
+    "NotEnough" : "Monedas Insuficientes!",
+    "SkinData" :"@Skins/es/skinData.json",
+    "Coins" : {
+      "Single" : "Moneda",
+      "Multiple" : "Monedas"
     }
   },
 
@@ -78,37 +89,44 @@
     "CountDownStart" : "Preparado en",
     "CountdownFinish" : "Defender!",
     "Score" : "Puntos",
+    "Streak" : "Racha",
     "HighScore" : "Record",
     "NewHighScore" : "Nuevo Record!",
     "Death": {
       "Title" : "La Humanidad se acabo!",
       "Score" : "Tus Puntos"
-    }
+    },
+    "StreakNotify" : "%% Meteoritos en Racha!"
   },
 
   "Stats" : {
     "Title" : "Estadisticas",
-    "Deflect" : "Meteoros Deflectados",
-    "Collision" : "Meteors Colisionados",
-    "AbilityCount" : "Habilidades Usadas",
-    "GamesPlayed" : "Partidas Jugadas"
+    "Deflect" : "Meteoritos Deflectados",
+    "Collision" : "Colisiones",
+    "AbilityCount" : "Super Habilidades Usadas",
+    "GamesPlayed" : "Veces Jugado",
+    "DeflectStreak" : "Racha Maxima",
+    "LongestTime" : "Maxima Duración",
+    "HighScore" : "Record Maximo",
+    "HistoricScore" : "Puntaje Total"
   },
 
   "FirstOpen":
   {
     "Stats" : {
-      "Title" : "Stats",
-      "Text" : "@Texts/First/en/stats.txt"
+      "Title" : "Estadisticas",
+      "Text" : "@Texts/es/First/stats.txt"
     },
 
     "Play": {
-      "Title" : "Attention!",
-      "Text" : "@Texts/First/en/play.txt"
+      "Title" : "Atención!",
+      "Text" : "@Texts/es/First/play.txt"
     },
 
     "Cosmetic": {
-      "Title" : "Skin Selector",
-      "Text" : "@Texts/First/en/cosmetic.txt"
+      "Title" : "Apariencia",
+      "Text" : "@Texts/es/First/cosmetic.txt",
+      "CloseButton" : "Cerrar"
     }
   }
 }

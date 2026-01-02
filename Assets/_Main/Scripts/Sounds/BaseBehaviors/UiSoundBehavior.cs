@@ -1,7 +1,7 @@
-﻿using _Main.Scripts.Interfaces.Sounds;
+﻿using MeteorMadness.Contracts.Interfaces.Sounds;
 using Plugins.NicolasMassara.CustomSoundManager;
 
-namespace _Main.Scripts.Sounds
+namespace MeteorMadness.Sounds.BaseBehaviors
 {
     public class UiSoundBehavior<T> : SoundBehaviour<T>
         where T : ISoundComponent

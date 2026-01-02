@@ -1,15 +1,18 @@
-﻿using _Main.Scripts.Interfaces.Vibration;
+﻿using MeteorMadness.Contracts.Interfaces.Vibration;
+using MeteorMadness.Vibration.BaseBehaviours;
+using MeteorMadness.Vibration.So;
 using UnityEngine;
 
-namespace _Main.Scripts.Vibration.Behaviours
+namespace MeteorMadness.Vibration.Behaviours
 {
     public class AbilityVibration : VibrationBehavior<IAbilityVibration>
     {
-#if UNITY_ANDROID 
         [Header("Vibration Data")]
         [SerializeField] private VibrationDataSo triggeredData;
         [SerializeField] private VibrationDataSo finishedData;
         [SerializeField] private VibrationDataSo addedData;
+        
+#if UNITY_ANDROID
         
         protected override void Start()
         {

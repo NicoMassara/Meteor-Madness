@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ae3b564c4df45c18d7eac373d6cc0d2, type: 3}
+  m_Name: SO_GameConfig
+  m_EditorClassIdentifier: 
+  levelAmount: 10
+  pointsMultiplier: 10
+  levelData: {fileID: 11400000, guid: 1aa0fbf8cccb4424eba34fb8936e9611, type: 2}
+  projectileData: {fileID: 11400000, guid: 875f9ac360faea24785bf6a618564e7a, type: 2}
+  gameTimeData: {fileID: 11400000, guid: ef8936844b36af448a08e62d473b2a20, type: 2}
+  earthTimeData: {fileID: 11400000, guid: f3808ca405c62394594215dae67d3ab4, type: 2}
+  touchInputData: {fileID: 11400000, guid: 8d5334561c83ad7419114671a62c01f9, type: 2}

@@ -43,9 +43,11 @@
   
   "Tutorial": {
     "Hint" : {
-      "Movement" : "Try Moving and Deflect a Meteor!",
+      "Meteor" : "Try to Deflect a Meteor!",
       "Ability" : "Try To Deflect the mysterious Sphere!",
-      "Shield" : "Trigger the Super Shield!"
+      "Shield" : "Trigger the Power Up!",
+      "MoveRight" : "Move clockwise!",
+      "MoveLeft" : "Move counter clockwise!"
     }
   },
 
@@ -64,9 +66,18 @@
 
   "Cosmetic": {
     "Title" : "Skin Selector",
-    "SkinType" : {
-      "Default" : "Default",
-      "Pizza" : "Pizza"
+    "Description" : "Description:",
+    "Locked" : "Locked!",
+    "Unlock" : "Unlock",
+    "Unlocked" : "Unlocked!",
+    "StoredCoins" : "Your Coins",
+    "GainedCoins" : "Gained Coins",
+    "Requirement" : "You Need",
+    "NotEnough" : "Not Enough Coins!",
+    "SkinData" :"@Skins/en/skinData.json",
+    "Coins" : {
+      "Single" : "Coin",
+      "Multiple" : "Coins"
     }
   },
   
@@ -78,19 +89,21 @@
     "CountDownStart" : "Prepare In",
     "CountdownFinish" : "Defend!",
     "Score" : "Score",
+    "Streak" : "Streak",
     "HighScore" : "High Score",
     "NewHighScore" : "New High Score!",
     "Death": {
       "Title" : "Humanity Is Over!",
       "Score" : "Your Score"
-    }
+    },
+    "StreakNotify" : "%% Meteors Streak!"
   },
   
   "Stats" : {
     "Title" : "Stats",
     "Deflect" : "Deflected Meteors",
     "Collision" : "Meteors Collisions",
-    "AbilityCount" : "Ability Used",
+    "AbilityCount" : "Power Ups Used",
     "GamesPlayed" : "Games Played",
     "DeflectStreak" : "Deflect Streak",
     "LongestTime" : "Longest Time",
@@ -112,7 +125,8 @@
 
     "Cosmetic": {
       "Title" : "Skin Selector",
-      "Text" : "@Texts/en/First/cosmetic.txt"
+      "Text" : "@Texts/en/First/cosmetic.txt",
+      "CloseButton" : "Close"
     }
   }
 }

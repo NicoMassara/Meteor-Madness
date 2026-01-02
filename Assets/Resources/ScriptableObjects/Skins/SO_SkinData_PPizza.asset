@@ -12,14 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf4168e7eb8a4661b41187eed3aa7e1c, type: 3}
   m_Name: SO_SkinData_PPizza
   m_EditorClassIdentifier: 
-  skinType: 1
+  skinType: 2
+  localizationCode: Pizza
+  unlockPrice: 100
   earthData:
     material: {fileID: 2100000, guid: c27fd55e4bb0922479bacb909b36128d, type: 2}
     scaleOffsetX: 3.5
     scaleOffsetY: 3.5
     rotationOffset: 0
   shieldData:
-    material: {fileID: 2100000, guid: 2a92b8816b0f2e347a34a8d1d6aa21ed, type: 2}
+    material: {fileID: 2100000, guid: be408e41b07513a47a4436ea266aa07c, type: 2}
     scaleOffsetX: 1
     scaleOffsetY: 1
   meteorData:

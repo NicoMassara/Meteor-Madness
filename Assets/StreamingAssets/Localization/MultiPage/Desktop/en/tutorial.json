@@ -1,17 +1,37 @@
 ﻿{
-  "Movement": {
+  "MovementRight": {
     "Texts" :[
-      "Hello!\n\\n\nWelcome to the Tutorial!\n",
-      "Here You'll learn How to Play Meteor Madness!\n\n\n Try Pressing %%RightKey%% to move Clockwise and %%LeftKey%% to move counter clock wise!"
+      "Hello!\n\n Welcome to the Meteor Madness Tutorial! \n\n Here You'll learn How to defend The Earth!",
+      "To achieve this, you must to rotate the Earth's shield! \n\n That looks hard, right? But no. Is pretty easy!",
+      "To rotate the shield in a clockwise direction, you must press %%RightKey%% \n\n\n Give it a try!"
     ],
-    "LastButton" : "Try to Move!"
+    "LastButton" : "Try!"
   },
-  
+
+  "MovementLeft": {
+    "Texts" :[
+      "You did it perfect! \n\n Now you'll learn how to rotate it in a counter clockwise way!",
+      "To rotate the shield in a counter clockwise way, you must press %%LeftKey%% \n\n\n Give it a try!"
+    ],
+    "LastButton" : "Try!"
+  },
+
+  "Deflection": {
+    "Texts" :[
+      "Perfect! You are a professional! \n\n But, almost. \n Now you have to learn the core of the matter... \n\n You'll learn how to deflect a Meteor",
+      "Deflecting a Meteor is simple, move the shield towards the direction of the meteor and place it there. \n When the meteor reaches the shield it will be turned into dust! \n Also Each meteor you deflect will give you points!",
+      "But be Careful! \n If you fail  to deflect it, the meteor will impact Earth!! \n And if too many meteors impacts Earth, it'll be destroyed, taking humanity with it!",
+      "With all said, no pressure! \n\n\n Try to deflect a Meteor!"
+    ],
+    "LastButton" : "Try!"
+  },
+
   "Ability" : {
     "Texts" : [
-      "During your Play sometimes you'll found a mysterious sphere...",
-      "This sphere has a meteor-like form but it is not a Meteor.\n\n\nSome People say that after deflecting one of them, if you press %%AbilityKey%%...\n\n \nA Super Effect Will Happen...",
-      "Try to Deflect one of them and see what has inside!"
+      "There is something more you have to know... \n\n Sometimes you'll find a mysterious sphere! \n\n Scientists have discovered that these spheres contains something called 'Power Up' \n Know one knows where do they came from, but is 100% alien technology",
+      "This is scary, right? After all we are not alone in the universe! \n\n These spheres act exactly like a meteor, but there's a difference! \n\n Each time you deflect one of them, it'll give you a 'Power Up' that can be used to destroy more meteors or Reconstruct Earth if is damaged!",
+      "But! \n\n These 'Power Ups' are limited by time!",
+      "After many many days of investigation, scientists have discovered that if you press %%AbilityKey%% these 'Power Ups' will activate! \n\n Give it a try!"
     ],
     "LastButton" : "Try"
   },

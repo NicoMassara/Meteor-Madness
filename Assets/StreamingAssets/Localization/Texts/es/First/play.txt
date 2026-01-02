@@ -1,1 +1,3 @@
-﻿This is your first time playing Meteor Madness\nAre you sure you want to play right away? \nYou might want  to check the tutorial first!
+﻿Esta es tu primera vez jugando Meteor Madness\n
+Estas seguro que quieres jugar enseguida? \n
+Quizas quieras probar el tutorial primero! 

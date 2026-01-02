@@ -1,0 +1,31 @@
+﻿{
+  "Default" : {
+    "Name" : "La Tierra",
+    "Description" : "La Tierra, nuestra casa",
+    "DeathTitle" : "La Humanidad se acabo!"
+  },
+
+  "Pizza" : {
+    "Name" : "Pizza Con Piña",
+    "Description" : "La mejor pizza! Verdad?",
+    "DeathTitle" : "La Pizza esta lista!"
+  },
+
+  "Vinyl" : {
+    "Name" : "Disco de Vinilo",
+    "Description" : "Un viejo vinilo, un poco golpeado",
+    "DeathTitle" : "La Musica se detuvo!"
+  },
+
+  "GoldenEarth" : {
+    "Name" : "Tierra Dorada",
+    "Description" : "Nuestra casa, pero dorada!",
+    "DeathTitle" : "La Humanidad se acabo!"
+  },
+
+  "Meteor" : {
+    "Name" : "Meteorito",
+    "Description" : "UN METEORito?! Bue...",
+    "DeathTitle" : "La Humanidad esta salvada!"
+  }
+}
