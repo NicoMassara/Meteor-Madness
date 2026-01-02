@@ -1605,12 +1605,14 @@ MonoBehaviour:
     StreakText: {fileID: 927989790}
     notifyText: {fileID: 639530336}
     PauseButton: {fileID: 1874520946}
+    notifyPanel: {fileID: 1516608930}
   desktopData:
     CountdownText: {fileID: 1016699662}
     ScoreText: {fileID: 1285684197}
     StreakText: {fileID: 1574829653}
     notifyText: {fileID: 328750960}
     PauseButton: {fileID: 1880084339}
+    notifyPanel: {fileID: 607786565}
 --- !u!1 &1016699659
 GameObject:
   m_ObjectHideFlags: 0

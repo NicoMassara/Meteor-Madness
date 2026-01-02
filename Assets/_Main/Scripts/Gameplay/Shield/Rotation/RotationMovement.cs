@@ -21,10 +21,16 @@ namespace MeteorMadness.Gameplay.Shield
         public void ForceStop();
     }
     
+    [System.Serializable]
+    public class RotationFsmData
+    {
+        public float InputGraceTime;
+    }
+
+    
     public class RotationMovement : IShieldMovement, RotationMovement.IRotationMovement, IMovement
     {
         #region States
-
         private interface IRotationMovement
         {
             public float Direction { get; }
@@ -65,7 +71,7 @@ namespace MeteorMadness.Gameplay.Shield
             private readonly SimpleState _snappingState;
             private readonly SimpleState _deAcceleratingState;
 
-            public StatesHolder(IRotationMovement rotationMovement)
+            public StatesHolder(IRotationMovement rotationMovement, RotationFsmData data)
             {
                 _idleState = new IdleState();
                 _rotatingState = new RotatingState();
@@ -74,11 +80,11 @@ namespace MeteorMadness.Gameplay.Shield
                 _deAcceleratingState = new DeAcceleratingState();
                 
                 
-                _idleState.Initialize(rotationMovement);
-                _rotatingState.Initialize(rotationMovement);
-                _reversingState.Initialize(rotationMovement);
-                _snappingState.Initialize(rotationMovement);
-                _deAcceleratingState.Initialize(rotationMovement);
+                _idleState.Initialize(rotationMovement, data);
+                _rotatingState.Initialize(rotationMovement, data);
+                _reversingState.Initialize(rotationMovement, data);
+                _snappingState.Initialize(rotationMovement, data);
+                _deAcceleratingState.Initialize(rotationMovement, data);
             }
 
             public SimpleState GetSimpleState(States states)
@@ -124,10 +130,12 @@ namespace MeteorMadness.Gameplay.Shield
         private abstract class SimpleState
         {
             protected IRotationMovement Rotation { get; private set; }
+            protected RotationFsmData Data { get; private set; }
 
-            public void Initialize(IRotationMovement rotation)
+            public void Initialize(IRotationMovement rotation, RotationFsmData data)
             {
                 Rotation = rotation;
+                Data = data;
             }
 
             public virtual void Awake() {}
@@ -146,14 +154,13 @@ namespace MeteorMadness.Gameplay.Shield
         }
         private class RotatingState : SimpleState
         {
-            private const float NoInputGraceTime = 0.06f;
-            private float _noInputTimer = NoInputGraceTime;
+            private float _noInputTimer;
             private float _storedDirection;
-            
+
             public override void Awake()
             {
                 Rotation.TriggerOnStartMoving();
-                _noInputTimer = NoInputGraceTime;
+                _noInputTimer = Data.InputGraceTime;
                 _storedDirection = Rotation.Direction;
             }
 
@@ -161,7 +168,7 @@ namespace MeteorMadness.Gameplay.Shield
             {
                 if (Rotation.GetHasInput())
                 {
-                    _noInputTimer = NoInputGraceTime;
+                    _noInputTimer = Data.InputGraceTime;
                     _storedDirection = Rotation.Direction;
                 }
                 else
@@ -284,7 +291,8 @@ namespace MeteorMadness.Gameplay.Shield
 
         private void InitializeFsm()
         {
-            _statesHolder = new StatesHolder(this);
+            _statesHolder = new StatesHolder(this, _data.RotationFsmData);
+            
             _simpleFsm = new SimpleFsm();
             
             TransitionToIdle();

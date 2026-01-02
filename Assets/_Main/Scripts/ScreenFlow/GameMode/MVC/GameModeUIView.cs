@@ -133,13 +133,14 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
             _storedStreak = 0;
             UpdateStreakTextLocalization();
-            
+            UIComponents.SetActiveNotifyPanel(true);
         }
         
         private void HandleStartDisable()
         {
             _storedPoints = 0;
             _storedStreak = 0;
+            UIComponents.SetActiveNotifyPanel(false);
         }
         
         #endregion

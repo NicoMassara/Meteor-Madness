@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3cb0d9b4e5054085b623feda19bd025d, type: 3}
-  m_Name: SO_ProjectileData_Default
+  m_Name: SO_ProjectileData_Default_Test
   m_EditorClassIdentifier: 
-  maxProjectileSpeed: 36
+  maxProjectileSpeed: 50
   speedMultiplier:
     animationCurve:
       serializedVersion: 2
@@ -83,24 +83,15 @@ MonoBehaviour:
       - serializedVersion: 3
         time: -0.03956929
         value: -0.013603747
-        inSlope: -0.119741894
-        outSlope: -0.119741894
+        inSlope: 0.1659547
+        outSlope: 0.1659547
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.08198726
+        outWeight: 0.12535909
       - serializedVersion: 3
-        time: 0.41166654
-        value: 0.3990581
-        inSlope: 1.3203784
-        outSlope: 1.3203784
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.15577789
-        outWeight: 0.10163129
-      - serializedVersion: 3
-        time: 0.6168887
-        value: 0.6233287
+        time: 0.7124087
+        value: 0.6476512
         inSlope: 2.8924384
         outSlope: 2.8924384
         tangentMode: 0
@@ -108,28 +99,28 @@ MonoBehaviour:
         inWeight: 0.33333334
         outWeight: 0.28665435
       - serializedVersion: 3
-        time: 0.7799206
-        value: 0.783043
-        inSlope: 0.52576965
-        outSlope: 0.52576965
+        time: 0.8103161
+        value: 0.7778245
+        inSlope: 0.30246726
+        outSlope: 0.30246726
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.2033695
-        outWeight: 0.40522382
+        outWeight: 0.26773646
       - serializedVersion: 3
         time: 1
         value: 1
-        inSlope: 0.07208897
-        outSlope: 0.07208897
-        tangentMode: 0
+        inSlope: 1.1712933
+        outSlope: 1.1712933
+        tangentMode: 34
         weightedMode: 0
-        inWeight: 0.045388192
+        inWeight: 0.33333334
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     minValue: 0.1
-    maxValue: 0.35
+    maxValue: 0.45
   slotDistanceData:
   - minSlotProximity: 1
     maxSlotProximity: 6

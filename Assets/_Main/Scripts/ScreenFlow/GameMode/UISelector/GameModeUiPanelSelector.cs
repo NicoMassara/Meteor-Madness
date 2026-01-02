@@ -20,6 +20,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
         [SerializeField] private TMP_Text notifyText;
         [Header("Buttons Components")]
         public Button PauseButton;
+        [SerializeField]
+        private GameObject notifyPanel;
         
         public void SetScoreText(string textCode, uint amount) 
             => SetText(ScoreText, $"{textCode}: {amount:D6}");
@@ -47,5 +49,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         public void AddListenerToPauseButton(UnityAction action) => PauseButton.onClick.AddListener(action);
         public void RemoveListenerToPauseButton(UnityAction action) => PauseButton.onClick.RemoveListener(action);
+        
+        public void SetActiveNotifyPanel(bool isActive) => notifyPanel.SetActive(isActive);
     }
 }

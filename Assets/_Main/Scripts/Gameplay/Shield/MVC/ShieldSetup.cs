@@ -1,5 +1,6 @@
 ﻿using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.Gameplay.Shield;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;
@@ -27,20 +28,17 @@ namespace MeteorMadness.Gameplay.Shield
             _motor.Subscribe(_view);
             
             SetEventBus();
+
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
         }
 
-        private void Start()
+        private void Initialize()
         {
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
             _controller.Initialize();
             GameManager.Instance.InputReader.OnMovementDirectionChanged += Input_OnMovementDirectionChangedHandler;
-            //GameManager.Instance.InputReader.OnStopMovement += Input_OnStopMovementHandler;
-        }
-
-        private void Input_OnStopMovementHandler()
-        {
-            if (GameManager.Instance.CanPlay == false) return;
             
-            _controller.TryStop();
+            BootEvents.SubSystemInitialized();
         }
         
         private void Input_OnMovementDirectionChangedHandler(int direction)

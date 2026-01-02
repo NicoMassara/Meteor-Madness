@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae1a0e8f6d9542efb7070fe15122ae34, type: 3}
-  m_Name: SO_RotationData_Shield
+  m_Name: SO_RotationData_Shield_Test
   m_EditorClassIdentifier: 
-  maxAngularSpeed: 500
-  angularAcceleration: 2500
-  angularDeAcceleration: 8000
-  snapSpeed: 75
-  directionResponse: 35
+  maxAngularSpeed: 600
+  angularAcceleration: 4500
+  angularDeAcceleration: 2147483647
+  snapSpeed: 2147483647
+  directionResponse: 2147483647
   rotationFsmData:
-    InputGraceTime: 0.06
+    InputGraceTime: 0.05

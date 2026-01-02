@@ -353,7 +353,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         private void HandleNotifyStreak()
         {
-            PlayAnimation(_animationStreakNotify);
+            PlayAnimation(_animationStreakNotify, null, true);
         }
 
         private void HandleUpdateStreak(uint amount)
