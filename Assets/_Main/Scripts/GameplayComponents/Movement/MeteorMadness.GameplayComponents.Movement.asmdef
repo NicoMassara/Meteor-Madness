@@ -1,3 +1,4 @@
 ﻿{
-  "name": "MeteorMadness.GameplayComponents.Movement"
+  "name": "MeteorMadness.GameplayComponents.Movement",
+  "references":[ "MeteorMadness.GameplayComponents" ]
 }

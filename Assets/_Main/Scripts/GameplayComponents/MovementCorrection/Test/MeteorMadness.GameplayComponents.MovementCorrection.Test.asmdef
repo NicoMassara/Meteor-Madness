@@ -1,0 +1,4 @@
+﻿{
+  "name": "MeteorMadness.GameplayComponents.MovementCorrection.Test",
+  "references":[ "MeteorMadness.GameplayComponents", "MeteorMadness.GameplayComponents.MovementCorrection", "MeteorMadness.GameplayComponents.Movement"]
+}

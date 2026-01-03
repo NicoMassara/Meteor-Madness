@@ -5,19 +5,6 @@ using UnityEngine;
 
 namespace _Main.Scripts.GameplayComponents.Movement
 {
-    public interface IMovement
-    {
-        public event Action<int> OnStartMoving;
-        public event Action OnStartStop;
-        public event Action OnStopped;
-        public event Action<int> OnDirectionChange;
-        public float SpeedRatio { get; }
-        public int GetCurrentSlot();
-        public void SetDirection(float direction);
-        public void Update(float deltaTime);
-        public void MoveSlot(float direction);
-    }
-
     public class MovementComponent : 
         IMovement,
         MovementComponent.IFsmMovement,
@@ -27,7 +14,7 @@ namespace _Main.Scripts.GameplayComponents.Movement
         {
             public float AngularSpeed { get;}
             public string CurrentState { get; }
-
+            public bool HasToCorrect { get; }
             public void StopMovement();
         }
         
@@ -41,6 +28,14 @@ namespace _Main.Scripts.GameplayComponents.Movement
             public bool GetIsMovingAtMaxSpeed();
             public float GetLastMovementSpeedRatio();
             public bool GetIsSnapFinished();
+            public bool GetHasToCorrectSnap();
+            public bool GetIsCorrectionSnapFinished();
+            
+            // === Setters === //
+
+            public void SetIsStopping(bool isStopping);
+            public void SetIsSnapping(bool isSnapping);
+            public void StopCorrectionSnapping();
             
             // === Actions === //
             public void Stop();
@@ -51,6 +46,7 @@ namespace _Main.Scripts.GameplayComponents.Movement
             public void SmoothSnapToSlot(float deltaTime);
             public void SaveLastMovementSpeedRatio();
             public void CalculateSnapAngle(bool shouldExtraSnap);
+            public void HandleSnapCorrection(float deltaTime);
             
             // === Event Triggers === //
             
@@ -58,6 +54,7 @@ namespace _Main.Scripts.GameplayComponents.Movement
             public void TriggerOnDirectionChanged();
             public void TriggerOnStartStop();
             public void TriggerOnStopped();
+            public void TriggerOnSnapCorrected();
             
             // === Transitions === //
             public void TransitionToStationary();
@@ -65,6 +62,7 @@ namespace _Main.Scripts.GameplayComponents.Movement
             public void TransitionToChangingDirection();
             public void TransitionToStopping();
             public void TransitionSnapping();
+            public void TransitionCorrectionSnapping();
         }
         
         #region States
@@ -76,7 +74,8 @@ namespace _Main.Scripts.GameplayComponents.Movement
             Rotating,
             ChangingDirection,
             Stopping,
-            Snapping
+            Snapping,
+            CorrectionSnapping
         }
         
         private interface IState
@@ -203,6 +202,7 @@ namespace _Main.Scripts.GameplayComponents.Movement
             {
                 Movement.SaveLastMovementSpeedRatio();
                 Movement.TriggerOnStartStop();
+                Movement.SetIsStopping(true);
             }
 
             public override void Execute(float deltaTime)
@@ -217,10 +217,22 @@ namespace _Main.Scripts.GameplayComponents.Movement
                 
                 Movement.DecreaseSpeed(deltaTime);
 
-                if (Movement.GetSpeedRatio() <= Data.MinSpeedRatio)
+                if (Movement.GetSpeedRatio() > Data.MinSpeedRatioToSnap) return;
+
+                if (Movement.GetHasToCorrectSnap())
+                {
+                    Debug.Log("Correcting Snap");
+                    Movement.TransitionCorrectionSnapping();
+                }
+                else
                 {
                     Movement.TransitionSnapping();
                 }
+            }
+
+            public override void Sleep()
+            {
+                Movement.SetIsStopping(false);
             }
         }
         private class SnappingState : StateBase
@@ -229,7 +241,8 @@ namespace _Main.Scripts.GameplayComponents.Movement
             
             public override void Awake()
             {
-                _shouldInstaSnap = Movement.GetLastMovementSpeedRatio() < Data.MinSpeedRatio;
+                Movement.SetIsSnapping(true);
+                _shouldInstaSnap = Movement.GetLastMovementSpeedRatio() < Data.MinSpeedRatioToSnap;
                 Movement.CalculateSnapAngle(_shouldInstaSnap);
                 
                 if (_shouldInstaSnap)
@@ -258,6 +271,17 @@ namespace _Main.Scripts.GameplayComponents.Movement
                     Movement.TransitionToRotating();
                     return;
                 }
+                
+                if (Movement.GetHasToCorrectSnap())
+                {
+                    Movement.TransitionCorrectionSnapping();
+                    return;
+                }
+            }
+
+            public override void Sleep()
+            {
+                Movement.SetIsSnapping(false);
             }
 
             private void Stop()
@@ -267,6 +291,35 @@ namespace _Main.Scripts.GameplayComponents.Movement
                 Movement.TransitionToStationary();
             }
         }
+
+        private class CorrectionSnapping : StateBase
+        {
+            public override void Awake()
+            {
+                Movement.SetIsSnapping(true);
+            }
+
+            public override void Execute(float deltaTime)
+            {
+                if (Movement.GetIsCorrectionSnapFinished())
+                {
+                    Movement.TransitionToStationary();
+                    return;
+                }
+                
+                Movement.HandleSnapCorrection(deltaTime);
+            }
+
+            public override void Sleep()
+            {
+                Movement.Stop();
+                Movement.SetIsSnapping(false);
+                Movement.TriggerOnStopped();
+                Movement.TriggerOnSnapCorrected();
+                Movement.StopCorrectionSnapping();
+            }
+        }
+
         #endregion
 
         #region Controller
@@ -314,6 +367,7 @@ namespace _Main.Scripts.GameplayComponents.Movement
                 _states.Add(States.ChangingDirection, new ChangingDirectionState());
                 _states.Add(States.Stopping, new StoppingState());
                 _states.Add(States.Snapping, new SnappingState());
+                _states.Add(States.CorrectionSnapping, new CorrectionSnapping());
 
                 foreach (var item in _states.Values.Cast<StateBase>())
                 {
@@ -350,14 +404,23 @@ namespace _Main.Scripts.GameplayComponents.Movement
         private float _angularSpeed;
         private float _lastMovementSpeedRatio; // Is the last speed ratio before going to 'Stopping' state
         private float _angleToSnap;
+        private float _targetCorrectionAngle;
+        private bool _hasToCorrectSnap;
+        
+
         public float AngularSpeed => Mathf.Abs(_angularSpeed);
         public float SpeedRatio => AngularSpeed / _data.MaxSpeed;
         public string CurrentState => _controller.GetCurrentState();
+        public bool HasToCorrect => _hasToCorrectSnap;
+        public bool IsSnapping { get; private set; }
+        public bool IsStopping { get; private set; }
 
+        public Vector2 Position => _objectToRotate.position;
         public event Action<int> OnStartMoving;
         public event Action OnStartStop;
         public event Action OnStopped;
         public event Action<int> OnDirectionChange;
+        public event Action OnSnapCorrected;
         
         
         public MovementComponent(IMovementData data, Transform objectToRotate, int angleSlots)
@@ -396,23 +459,31 @@ namespace _Main.Scripts.GameplayComponents.Movement
             RotateObject(deltaTime);
         }
         
+        public void SetCorrectionData(int targetSlot)
+        {
+            _hasToCorrectSnap = true;
+            _targetCorrectionAngle = GetAngleFromSlot(targetSlot);
+        }
+
+        public void ClearCorrectionData()
+        {
+            _hasToCorrectSnap = false;
+        }
+
         public int GetCurrentSlot() => Mathf.RoundToInt(GetCurrentAngle() / GetSlotSize());
 
         #endregion
 
         #region Angle Slots
         
-        public void MoveSlot(float direction)
-        {
-            int currentSlot = GetCurrentSlot() + (int)Mathf.Sign(direction);
-            var snapAngle = currentSlot * GetSlotSize();
-            snapAngle = (snapAngle + 360f) % 360f;
-            
-            _objectToRotate.rotation = Quaternion.Euler(0f,0f,snapAngle);
-        }
-        
         private float GetCurrentAngle() => _objectToRotate.localEulerAngles.z;
         private float GetSlotSize() => 360f / _angleSlots;
+
+        private float GetAngleFromSlot(int slot)
+        {
+            var angle = slot * GetSlotSize();
+            return (angle + 360f) % 360f;
+        }
 
         #endregion
 
@@ -431,18 +502,18 @@ namespace _Main.Scripts.GameplayComponents.Movement
         
         public bool GetIsSnapFinished() 
             => Mathf.Abs(Mathf.DeltaAngle(GetCurrentAngle(), _angleToSnap)) < MinDeltaSnapAngle;
+        public bool GetIsCorrectionSnapFinished() 
+            => Mathf.Abs(Mathf.DeltaAngle(GetCurrentAngle(), _targetCorrectionAngle)) < MinDeltaSnapAngle;
+        
+        public bool GetHasToCorrectSnap() => _hasToCorrectSnap;
 
         #endregion
-        
         
         // === Actions === //
 
         #region Actions
         
-        public void Stop()
-        {
-            _angularSpeed = 0;
-        }
+        public void Stop() => _angularSpeed = 0;
 
         public void ChangeDirection(float deltaTime, float direction)
         {
@@ -466,12 +537,7 @@ namespace _Main.Scripts.GameplayComponents.Movement
 
         public void SmoothSnapToSlot(float deltaTime)
         {
-            var snapSpeed = _data.SnapSpeed;
-
-            if (snapSpeed == 0)
-                snapSpeed = 1;
-            
-            var finalSnapSpeed = snapSpeed * deltaTime;
+            var finalSnapSpeed = _data.SnapSpeed * deltaTime;
                     
             _objectToRotate.rotation = Quaternion.Lerp( 
                 _objectToRotate.rotation, 
@@ -484,10 +550,8 @@ namespace _Main.Scripts.GameplayComponents.Movement
             }
         }
 
-        public void SaveLastMovementSpeedRatio()
-        {
-            _lastMovementSpeedRatio = SpeedRatio;
-        }
+        public void SaveLastMovementSpeedRatio() 
+            => _lastMovementSpeedRatio = SpeedRatio;
 
         public void CalculateSnapAngle(bool shouldExtraSnap)
         {
@@ -499,10 +563,31 @@ namespace _Main.Scripts.GameplayComponents.Movement
                 currentSlot += (int)Mathf.Sign(_lastDirection);
             }
 
-            _angleToSnap = currentSlot * GetSlotSize();
-            _angleToSnap = (_angleToSnap + 360f) % 360f;
+            _angleToSnap = GetAngleFromSlot(currentSlot);
         }
 
+        public void HandleSnapCorrection(float deltaTime)
+        {
+            var finalSnapSpeed = _data.CorrectionSnapSpeed * deltaTime;
+                    
+            _objectToRotate.rotation = Quaternion.Lerp( 
+                _objectToRotate.rotation, 
+                Quaternion.Euler(0f,0f, _targetCorrectionAngle), 
+                finalSnapSpeed);
+            
+            if (Math.Abs(Mathf.DeltaAngle(GetCurrentAngle(), _targetCorrectionAngle)) < MinDeltaSnapAngle)
+            {
+                _objectToRotate.rotation = Quaternion.Euler(0f,0f,_targetCorrectionAngle);
+            }
+        }
+        
+
+        #endregion
+        
+        // === Action Triggers === //
+
+        #region Action Triggers
+        
         public void TriggerOnStartMoving() 
             => OnStartMoving?.Invoke((int)Mathf.Sign(_direction));
 
@@ -511,13 +596,20 @@ namespace _Main.Scripts.GameplayComponents.Movement
 
         public void TriggerOnStopped() => OnStopped?.Invoke();
         public void TriggerOnStartStop() => OnStartStop?.Invoke();
-
+        public void TriggerOnSnapCorrected() => OnSnapCorrected?.Invoke();
+        
         #endregion
         
-        // === Misc === //
+        // === Setters === //
 
-        #region Misc
-        
+        #region Setters
+        public void SetIsStopping(bool isStopping) => IsStopping = isStopping;
+        public void SetIsSnapping(bool isSnapping) => IsSnapping = isSnapping;
+        public void StopCorrectionSnapping()
+        {
+            _hasToCorrectSnap = false;
+            _targetCorrectionAngle = -1;
+        }
 
         #endregion
         
@@ -530,6 +622,7 @@ namespace _Main.Scripts.GameplayComponents.Movement
         public void TransitionToChangingDirection() => _controller.Transition(States.ChangingDirection);
         public void TransitionToStopping() => _controller.Transition(States.Stopping);
         public void TransitionSnapping() => _controller.Transition(States.Snapping);
+        public void TransitionCorrectionSnapping() => _controller.Transition(States.CorrectionSnapping);
         
         #endregion
 

@@ -1,0 +1,4 @@
+﻿{
+  "name": "MeteorMadness.GameplayComponents.ProjectileDetector",
+  "references":[ "MeteorMadness.GameplayComponents" ]
+}

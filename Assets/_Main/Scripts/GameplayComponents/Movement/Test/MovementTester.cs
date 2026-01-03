@@ -34,9 +34,10 @@ namespace _Main.Scripts.GameplayComponents.Movement.Test
             public float Acceleration => acceleration;
             public float Deceleration => deceleration;
             public float StopThreshold => stopThreshold;
-            public float MinSpeedRatio => minSpeedRatioToSnap;
+            public float MinSpeedRatioToSnap => minSpeedRatioToSnap;
 
             public float SnapSpeed => snapSpeed;
+            public float CorrectionSnapSpeed { get; }
             public float ChangeDirectionAcceleration => changeDirectionAcceleration;
             public float StopChangeDirectionSpeedRatio => stopChangeDirectionSpeedRatio;
         }
@@ -55,13 +56,7 @@ namespace _Main.Scripts.GameplayComponents.Movement.Test
         public string CurrentState => _movementDebug.CurrentState;
         public int CurrentSlot => _movementData.GetCurrentSlot();
         public float Direction { get; private set; }
-
-        private void Start()
-        {
-            _movementData = new MovementComponent(movementData,shieldTransform, AngleSlots);
-            _movementDebug = (MovementComponent.IMovementDebug)_movementData;
-        }
-
+        
         private void Update()
         {
             InputNotifier();
@@ -90,12 +85,20 @@ namespace _Main.Scripts.GameplayComponents.Movement.Test
 
         public void MoveSlot(float direction)
         {
-            _movementData.MoveSlot(direction);
+            
         }
 
         public void StopMovement()
         {
             _movementDebug.StopMovement();
+        }
+
+        public IMovement GetMovement()
+        {
+            _movementData = new MovementComponent(movementData,shieldTransform, AngleSlots);
+            _movementDebug = (MovementComponent.IMovementDebug)_movementData;
+            
+            return _movementData;
         }
 
         void OnDrawGizmos()
