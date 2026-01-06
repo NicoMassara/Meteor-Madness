@@ -9,17 +9,8 @@ namespace _Main.Scripts.ShieldRotation.Movement
 {
     public class MovementComponent : 
         IMovement,
-        MovementComponent.IFsmMovement,
-        MovementComponent.IMovementDebug
+        MovementComponent.IFsmMovement
     {
-        public interface IMovementDebug
-        {
-            public float AngularSpeed { get;}
-            public string CurrentState { get; }
-            public bool HasToCorrect { get; }
-            public void StopMovement();
-        }
-        
         #region FSM
         
         private interface IFsmMovement
@@ -57,6 +48,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
             public void TriggerOnStartStop();
             public void TriggerOnStopped();
             public void TriggerOnSnapCorrected();
+            public void TriggerOnCheckForCorrection();
             
             // === Transitions === //
             public void TransitionToStationary();
@@ -192,10 +184,12 @@ namespace _Main.Scripts.ShieldRotation.Movement
                 Controller.SaveLastMovementSpeedRatio();
                 Controller.TriggerOnStartStop();
                 Controller.SetIsStopping(true);
+                Controller.TriggerOnCheckForCorrection();
             }
 
             public override void Execute(float deltaTime)
             {
+                Controller.TriggerOnCheckForCorrection();
                 var hasInput = Controller.GetDirection() != 0;
 
                 if (hasInput)
@@ -210,7 +204,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
 
                 if (Controller.GetHasToCorrectSnap())
                 {
-                    Debug.Log("Correcting Snap");
+                    //Debug.Log("Correcting Snap");
                     Controller.TransitionCorrectionSnapping();
                 }
                 else
@@ -239,10 +233,13 @@ namespace _Main.Scripts.ShieldRotation.Movement
                     Controller.SnapToSlot();
                     Stop();
                 }
+                
+                Controller.TriggerOnCheckForCorrection();
             }
 
             public override void Execute(float deltaTime)
             {
+                Controller.TriggerOnCheckForCorrection();
                 if (_shouldInstaSnap) return;
                 
                 Controller.SmoothSnapToSlot(deltaTime);
@@ -362,7 +359,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
 
         public float AngularSpeed => Mathf.Abs(_angularSpeed);
         public float SpeedRatio => AngularSpeed / _data.MaxSpeed;
-        public string CurrentState => _controller.GetCurrentState();
         public bool HasToCorrect => _hasToCorrectSnap;
         public bool IsSnapping { get; private set; }
         public bool IsStopping { get; private set; }
@@ -373,6 +369,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
         public event Action OnStopped;
         public event Action<int> OnDirectionChange;
         public event Action OnSnapCorrected;
+        public event Action OnCheckForCorrection;
         
         
         public MovementComponent(IMovementData data, Transform objectToRotate, int angleSlots)
@@ -385,15 +382,11 @@ namespace _Main.Scripts.ShieldRotation.Movement
             TransitionToStationary();
         }
         
-        private void RotateObject(float deltaTime)
-        {
-            _objectToRotate.Rotate(0f, 0f, _angularSpeed * deltaTime);
-        }
+        private void RotateObject(float deltaTime) 
+            => _objectToRotate.Rotate(0f, 0f, _angularSpeed * deltaTime);
 
-        private void ClampAngularSpeed()
-        {
-            _angularSpeed = Mathf.Clamp(_angularSpeed, -_data.MaxSpeed, _data.MaxSpeed);
-        }
+        private void ClampAngularSpeed() 
+            => _angularSpeed = Mathf.Clamp(_angularSpeed, -_data.MaxSpeed, _data.MaxSpeed);
 
         #region IMovement
 
@@ -422,23 +415,16 @@ namespace _Main.Scripts.ShieldRotation.Movement
             _hasToCorrectSnap = false;
         }
 
+        public void ForceStop()
+        {
+            Stop();
+            TransitionToStationary();
+        }
+
         public int GetCurrentSlot() => Mathf.RoundToInt(GetCurrentAngle() / GetSlotSize());
 
         #endregion
-
-        #region Angle Slots
         
-        private float GetCurrentAngle() => _objectToRotate.localEulerAngles.z;
-        private float GetSlotSize() => 360f / _angleSlots;
-
-        private float GetAngleFromSlot(int slot)
-        {
-            var angle = slot * GetSlotSize();
-            return (angle + 360f) % 360f;
-        }
-
-        #endregion
-
         #region IFSMMovement
         
         // === Data === //
@@ -549,6 +535,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
         public void TriggerOnStopped() => OnStopped?.Invoke();
         public void TriggerOnStartStop() => OnStartStop?.Invoke();
         public void TriggerOnSnapCorrected() => OnSnapCorrected?.Invoke();
+        public void TriggerOnCheckForCorrection() => OnCheckForCorrection?.Invoke();
         
         #endregion
         
@@ -579,15 +566,14 @@ namespace _Main.Scripts.ShieldRotation.Movement
         #endregion
 
         #endregion
-
-        #region Debug
-
-        public void StopMovement()
-        {
-            Stop();
-            TransitionToStationary();
-        }
+        
+        #region Angle Slots
+        
+        private float GetCurrentAngle() => _objectToRotate.localEulerAngles.z;
+        private float GetSlotSize() => AngleHelper.GetSlotSize(_angleSlots);
+        private float GetAngleFromSlot(int slot) => AngleHelper.GetAngleFromSlot(slot, _angleSlots);
 
         #endregion
+        
     }
 }

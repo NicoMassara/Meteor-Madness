@@ -1,4 +1,4 @@
 ﻿{
   "name": "MeteorMadness.GameplayComponents.TargetSnapper",
-  "references":[ "GUID:d951dbeffc5948fcbb14a9f26f6e78b2" ]
+  "references":["MeteorMadness.ShieldRotation.Contracts", "MeteorMadness.ShieldRotation.Tools" ]
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace _Main.Scripts.ShieldRotation.ProjectileDetector
 {
-    public class ProjectileDetector : IProjectileDetector
+    public class ProjectileDetectorComponent : IProjectileDetector
     {
         private readonly Collider2D[] _colliders;
         private readonly LayerMask _targetLayerMask;
         
-        public ProjectileDetector(IMovement movement, LayerMask targetLayerMask)
+        public ProjectileDetectorComponent(LayerMask targetLayerMask)
         {
             _targetLayerMask = targetLayerMask;
             _colliders = new Collider2D[10];
@@ -24,10 +24,23 @@ namespace _Main.Scripts.ShieldRotation.ProjectileDetector
             };
             
             var hitCount = Physics2D.OverlapCircle(movementPosition, checkRadius, filter,_colliders);
+
+            if (hitCount == 0)
+            {
+                //Debug.Log("No Hit");
+                return null;
+            }
+
+            var collisionIndex = GetNearestProjectile(movementPosition, hitCount);
             
-            return hitCount == 0 ? 
-                null : 
-                _colliders[GetNearestProjectile(movementPosition, hitCount)].GetComponent<ITargetable>();
+            if (collisionIndex == -1)
+            {
+                //Debug.Log("No Hit");
+                return null;
+            }
+            
+            var target = _colliders[collisionIndex].GetComponent<ITargetable>();
+            return target; 
         }
         
         private int GetNearestProjectile(Vector2 movementPosition, int hitCount)

@@ -1,0 +1,4 @@
+﻿{
+  "name": "MeteorMadness.ShieldRotation.Mediator.Test",
+  "references":[ "GUID:e08fa67259954393b2af28d04456e77d", "GUID:e0d2ddf3ea2146c5b0e88155e18febd9" ]
+}

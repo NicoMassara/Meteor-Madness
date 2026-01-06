@@ -50,7 +50,7 @@ namespace _Main.Scripts.ShieldRotation.Tools
             _currentState.Awake();
         }
         public void Execute(float deltaTime) => _currentState?.Execute(deltaTime);
-        public string GetCurrentState() => _currentStateType.ToString();
+        public T GetCurrentState() => _currentStateType;
     }
     
     public abstract class StateBase<T> : IState

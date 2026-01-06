@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 689f1eb17c0940458de86339193dc616, type: 3}
-  m_Name: So_MovementData_Default
+  m_Name: So_ShieldRotation_Movement_Default
   m_EditorClassIdentifier: 
   maxSpeed: 550
   acceleration: 4500
@@ -18,6 +18,6 @@ MonoBehaviour:
   changeDirectionAcceleration: 8000
   minSpeedRatioToSnap: 0.1
   snapSpeed: 150
-  correctionSnapSpeed: 250
+  correctionSnapSpeed: 75
   stopThreshold: 0.06
   stopChangeDirectionSpeedRatio: 0.15

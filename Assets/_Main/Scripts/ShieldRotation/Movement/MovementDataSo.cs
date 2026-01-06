@@ -20,15 +20,19 @@ namespace _Main.Scripts.ShieldRotation.Movement
         public float StopChangeDirectionSpeedRatio { get; }
     }
 
-    [CreateAssetMenu(fileName = "So_MovementData_Default", menuName = "Movement/Data", order = 0)]
+    [CreateAssetMenu(fileName = "So_ShieldRotation_Movement_Default", menuName = "Shield Rotation/Movement Data", order = 0)]
     public class MovementDataSo : ScriptableObject, 
         IMovementData, IFsmMovementData
     {
         [Header("Speed")]
+        [Min(1)]
         [SerializeField] private float maxSpeed;
         [Header("Acceleration")]
+        [Min(1)]
         [SerializeField] private float acceleration;
+        [Min(1)]
         [SerializeField] private float deceleration;
+        [Min(1)]
         [SerializeField] private float changeDirectionAcceleration;
         [Header("Snap Values")]
         [Range(0,1)] 

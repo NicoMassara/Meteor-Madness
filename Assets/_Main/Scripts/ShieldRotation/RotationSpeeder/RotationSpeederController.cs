@@ -33,6 +33,7 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
             public void InitializeIncreaseSpeed();
             public void IncreaseSpeed(float deltaTime);
             public void DecreaseSpeed(float deltaTime);
+            public void ClearSpeed();
             
             // === Triggers === //
             
@@ -69,8 +70,14 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
                 }
             }
         }
-        
-        private class RotatingState : SpeederStateBase { }
+
+        private class RotatingState : SpeederStateBase
+        {
+            public override void Awake()
+            {
+                Controller.ClearSpeed();
+            }
+        }
         private class SpeedDownState : SpeederStateBase
         {
             public override void Awake()
@@ -127,22 +134,24 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
         
         private readonly SpeederFsm _fsmController;
         private readonly IRotationSpeederData _data;
+        private readonly Transform _objectToRotate;
         private const float IncreaseSpeedStep = 0.25f;
         private float _movementTargetStep;
         private float _angularSpeed;
         private float _targetMinSpeed;
-        private float SpeedRatio => _angularSpeed / _data.MaxSpeed;
+        private float SpeedRatio => Mathf.Abs(_angularSpeed) / _data.MaxSpeed;
         
-        public event Action<float> OnUpdate;
+        public float AngularSpeed => _angularSpeed;
         public event Action OnReachedMaxSpeed;
         public event Action OnReachedMinSpeed;
         public event Action OnSpeedIncreased;
         public event Action OnSpeedDecreased;
 
-        public RotationSpeederController(IRotationSpeederData data)
+        public RotationSpeederController(IRotationSpeederData data, Transform objectToRotate)
         {
             _data = data;
             _fsmController = new SpeederFsm(this);
+            _objectToRotate = objectToRotate;
         }
         
         private void ClampAngularSpeed()
@@ -157,7 +166,9 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
             return Mathf.Clamp01(t);
         }
 
-        private float GetMinSpeedRatio() => Inverse01(_targetMinSpeed, _data.MaxSpeed, _angularSpeed);
+        private float GetMinSpeedRatio() => Inverse01(_targetMinSpeed, _data.MaxSpeed, Mathf.Abs(_angularSpeed));
+        
+        private void RotateObject(float deltaTime) => _objectToRotate.Rotate(0f, 0f, _angularSpeed * deltaTime);
 
         #region IRotationSpeeder
 
@@ -166,13 +177,16 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
             _fsmController?.Execute(deltaTime);
             
             ClampAngularSpeed();
-            
-            OnUpdate?.Invoke(_angularSpeed);
+            RotateObject(deltaTime);
         }
 
         public void SetTargetMinSpeed(float minSpeed) => _targetMinSpeed = minSpeed;
         public void SpeedUp() => _fsmController.Transition(States.SpeedUp);
-        public void SlowDown() => _fsmController.Transition(States.SpeedDown);
+        public void SlowDown(float targetMinSpeed)
+        {
+            _targetMinSpeed = targetMinSpeed;
+            _fsmController.Transition(States.SpeedDown);
+        }
 
         #endregion
 
@@ -190,6 +204,11 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
         // === Actions === // 
 
         #region Actions
+
+        public void ClearSpeed()
+        {
+            _angularSpeed = 0;
+        }
 
         public void InitializeIncreaseSpeed()
         {
@@ -209,6 +228,7 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
         
         public void InitializeDecreaseSpeed()
         {
+            _angularSpeed = _data.MaxSpeed;
             _movementTargetStep = 1;
         }
 

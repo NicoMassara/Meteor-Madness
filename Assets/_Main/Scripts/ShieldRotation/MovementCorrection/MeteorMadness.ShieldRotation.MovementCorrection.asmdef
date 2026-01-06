@@ -1,4 +1,4 @@
 ﻿{
   "name": "MeteorMadness.ShieldRotation.MovementCorrection",
-  "references":[ "GUID:e08fa67259954393b2af28d04456e77d" ]
+  "references":["MeteorMadness.ShieldRotation.Contracts", "MeteorMadness.ShieldRotation.Tools" ]
 }

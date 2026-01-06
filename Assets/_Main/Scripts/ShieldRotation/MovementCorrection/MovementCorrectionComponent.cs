@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.ShieldRotation.Contracts;
+using _Main.Scripts.ShieldRotation.Tools;
 using UnityEngine;
 
 namespace _Main.Scripts.ShieldRotation.MovementCorrection
@@ -19,7 +20,7 @@ namespace _Main.Scripts.ShieldRotation.MovementCorrection
             _movementComponent = movement;
             _center = center;
             _slotCount = slotCount;
-            _angleOffset = 180f;
+            //_angleOffset = 180f;
         }
 
         public float GetDistanceToTarget(ITargetable target)
@@ -28,45 +29,47 @@ namespace _Main.Scripts.ShieldRotation.MovementCorrection
         }
         public int GetDirectionToTarget(ITargetable target)
         {
-            int diff = GetAngleSlotFromTarget(target) - _movementComponent.GetCurrentSlot();
-
-            if (diff > _slotCount / 2) diff -= _slotCount;
-            if (diff < -_slotCount / 2) diff += _slotCount;
-
-            return Math.Sign(diff);
+            return AngleHelper.GetDirectionToTarget(
+                GetAngleSlotFromTarget(target), _movementComponent.GetCurrentSlot(),
+                _slotCount);
         }
 
         public int GetSlotDistance(ITargetable target)
         {
             int current = _movementComponent.GetCurrentSlot();
             int targetSlot = GetAngleSlotFromTarget(target);
-
-            int diff = Math.Abs(current - targetSlot);
-            return Math.Min(diff, _slotCount - diff);
+            return AngleHelper.GetSlotDistance(current, targetSlot, _slotCount);
         }
 
         public bool GetTargetIsInRange(ITargetable target)
         {
-            return GetSlotDistance(target) <= _data.CorrectionSlotDistance && 
-                   GetDistanceToTarget(target) <= _data.MaxDistance;
-        }
+            var slotDistance = GetSlotDistance(target);
+            var distance = GetDistanceToTarget(target);
 
-        public bool GetIsInFrontOfTarget(ITargetable target)
-        {
-            return GetSlotDistance(target) == 0 &&
-                   GetDistanceToTarget(target) <= _data.MaxDistance;
+            if (distance > _data.MaxDistance)
+            {
+                //Debug.Log("Out of range");
+                return false;
+            }
+            
+            if (slotDistance > _data.CorrectionSlotDistance)
+            {
+                //Debug.Log("Out of slot range");
+                return false;
+            }
+
+            //Debug.Log("Target is in range");
+
+            return true;
         }
+        
 
         public int GetAngleSlotFromTarget(ITargetable target)
         {
             if (target == null) return -1;
-
-            var dir = target.Position - (Vector2)_center.position;
-            float angle = (Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg) - _angleOffset;
-            angle = (angle + 360f) % 360f;
             
-            int slot = Mathf.FloorToInt(angle / (360f / _slotCount)) % _slotCount;
-            return slot;
+            return AngleHelper.GetAngleSlotFromPosition(target.Position, _center.position, 
+                _slotCount, _angleOffset);
         }
     }
 }
