@@ -168,6 +168,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                     new AnimationHelper.PanelPosition(UIComponents.NotifyPanel, AnimationData.StartPosition, AnimationData.StartOffset);
                 _endNotifyPanel =
                     new AnimationHelper.PanelPosition(UIComponents.NotifyPanel, AnimationData.EndPosition, AnimationData.EndOffset);
+                
                 UIComponents.NotifyPanel.gameObject.SetActive(false);
 
                 _isLeft = true;

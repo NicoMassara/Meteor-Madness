@@ -1,0 +1,4 @@
+﻿{
+  "name": "MeteorMadness.ShieldRotation.ProjectileDetector",
+  "references":[ "MeteorMadness.ShieldRotation", "MeteorMadness.ShieldRotation.Contracts" ]
+}

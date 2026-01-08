@@ -27,6 +27,8 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay
         [SerializeField] private int startLevel = 1;
 
         private int _currentLevel;
+        private bool _hasSuperShield;
+        private bool _hasAutomaticShield;
         public event Action<int> OnLevelUpdated;
         
         private void Awake()
@@ -136,6 +138,34 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay
             EarthEventCaller.Heal();
         }
 
+        public void ToggleSuperShield()
+        {
+            _hasSuperShield = !_hasSuperShield;
+
+            if (_hasSuperShield)
+            {
+                ShieldEventCaller.RequestEnableShieldType(ShieldType.Super);
+            }
+            else
+            {
+                ShieldEventCaller.RequestDisableShieldType(ShieldType.Super);
+            }
+        }
+        
+        public void ToggleAutomaticShield()
+        {
+            _hasAutomaticShield = !_hasAutomaticShield;
+
+            if (_hasAutomaticShield)
+            {
+                ShieldEventCaller.RequestEnableShieldType(ShieldType.Automatic);
+            }
+            else
+            {
+                ShieldEventCaller.RequestDisableShieldType(ShieldType.Automatic);
+            }
+        }
+
         #region Event Bus
 
         private void EventBus_Projectile_RequestSpawn(ProjectileEvents.RequestSpawn input)
@@ -161,6 +191,8 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay
             if (GUILayout.Button("Increase Level")) script.IncreaseLevel();
             if (GUILayout.Button("Decrease Level")) script.DecreaseLevel();
             if (GUILayout.Button("Heal Earth")) script.HealEarth();
+            if (GUILayout.Button("Toggle Super Shield")) script.ToggleSuperShield();
+            if (GUILayout.Button("Toggle Automatic Shield")) script.ToggleAutomaticShield();
         }
     }
 #endif

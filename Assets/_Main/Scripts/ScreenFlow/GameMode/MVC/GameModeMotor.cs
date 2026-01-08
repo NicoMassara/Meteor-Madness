@@ -169,7 +169,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             var multiplier = _hasDoublePoints ? 2 : 1;
             var finalValue = (uint)(projectileValue * multiplier);
             var currentScore = _stats.GetCurrentScore();
-            bool isFullValue = GameParameters.GameplayValues.BaseMeteorValue >= projectileValue;
+            bool isFullValue = GameParameters.GameplayValues.BaseMeteorValue == projectileValue;
 
             currentScore += finalValue;
             

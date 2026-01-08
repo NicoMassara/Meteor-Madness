@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.ShieldRotation.Contracts;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Contracts.Interfaces.Sounds;
@@ -19,6 +20,7 @@ namespace MeteorMadness.Gameplay.Abilities.Sphere
         public bool CanBeTargeted { get; private set; }
         public bool EnableMovement { get; set; }
 
+        public event Action<ITargetable> OnTargetDeath;
         public event Action OnDeath;
         public event Action OnStartSound;
         public event Action OnStopSound;
@@ -39,6 +41,7 @@ namespace MeteorMadness.Gameplay.Abilities.Sphere
         {
             Movement.CanMove = enable;
         }
+
 
         public override void OnNotify(ulong message, params object[] args)
         {
@@ -64,7 +67,7 @@ namespace MeteorMadness.Gameplay.Abilities.Sphere
         
         private void HandleEarthCollision(Vector2 position, Quaternion rotation, Vector2 direction)
         {
-            OnDeath?.Invoke();
+            DestroySphere();
             
             OnEarthCollision?.Invoke(new AbilitySphereCollisionData
             {
@@ -77,8 +80,7 @@ namespace MeteorMadness.Gameplay.Abilities.Sphere
         
         private void HandleShieldDeflection(Vector2 position,Quaternion rotation, Vector2 direction, AbilityType ability)
         {
-            OnDeath?.Invoke();
-            OnStopSound?.Invoke();
+            DestroySphere();
             
             OnDeflection?.Invoke(new AbilitySphereCollisionData
             {
@@ -92,6 +94,12 @@ namespace MeteorMadness.Gameplay.Abilities.Sphere
             HandleCollision(false, position, direction,true);
         }
 
+        private void DestroySphere()
+        {
+            OnDeath?.Invoke();
+            OnStopSound?.Invoke();
+            OnTargetDeath?.Invoke(this);
+        }
 
     }
     

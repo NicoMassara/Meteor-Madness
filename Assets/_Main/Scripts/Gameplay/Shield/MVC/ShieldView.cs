@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.ShieldRotation.Contracts;
+using _Main.Scripts.ShieldRotation.Mediator;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
@@ -14,8 +16,12 @@ using UnityEngine;
 
 namespace MeteorMadness.Gameplay.Shield
 {
-    [RequireComponent(typeof(ShieldMovement))]
-    public class ShieldView : ManagedBehavior, IObserver, IShieldSounds, IAbilityShield, IShieldVibration
+    public class ShieldView : ManagedBehavior, 
+        IObserver,
+        IUpdatable, 
+        IShieldSounds, 
+        IAbilityShield, 
+        IShieldVibration
     {
         [Header("Components")] 
         [SerializeField] private GameObject spriteContainer;
@@ -24,14 +30,16 @@ namespace MeteorMadness.Gameplay.Shield
         [SerializeField] private Collider2D superShieldCollider;
         [Space]
         [Header("Sounds")]
-
         [Space] 
         [Header("Scriptable Objects")]
         [SerializeField] private ShakeDataSo hitShakeData;
         [SerializeField] private ShakeDataSo cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
-        
-        private ShieldMovement _movement;
+        [Header("Movement")]
+        [SerializeField] private Transform normalShieldContainer;
+        [SerializeField] private MediatorDataSo mediatorData;
+        [SerializeField] private LayerMask projectileLayerMask;
+        private IMediator _shieldMovement;
         private ComponentShaker _shakerController;
         private ShieldColliderExtender _colliderExtender;
         public event Action<bool> OnShieldActivated;
@@ -47,45 +55,40 @@ namespace MeteorMadness.Gameplay.Shield
         public event Action<float> OnEnableSuperShield;
         public event Action<float> OnDisableSuperShield;
         public event Action OnDisableAbility;
-
-
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Shield;
+        public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
         private void Awake()
         {
-            
             superShieldCollider.enabled = false;
-            _movement = GetComponent<ShieldMovement>();
             _shakerController = new ComponentShaker(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
-
-            _movement.OnStopped += () =>
-            {
-                OnStopped?.Invoke();
-            };
-            
-            _movement.OnStartStop += () =>
-            {
-                OnStartStop?.Invoke();
-                
-                ShieldEventCaller.NotifyMovement(0);
-            };
-            
-            _movement.OnDirectionChange += (value) =>
-            {
-                OnDirectionChange?.Invoke(value);
-                
-                ShieldEventCaller.NotifyMovement(value);
-            };
-            
-            _movement.OnStartMoving += (value) =>
-            {
-                ShieldEventCaller.NotifyMovement(value);
-                OnRotate?.Invoke();
-            };
+            _shieldMovement = new MediatorComponent(normalShieldContainer, GameParameters.GameplayValues.AngleSlots,
+                mediatorData, projectileLayerMask);
         }
 
+        private void Start()
+        {
+            _shieldMovement.OnStartMoving += Movement_OnStartMovingHandler;
+            _shieldMovement.OnStartStop += Movement_OnStartStopHandler;
+            _shieldMovement.OnDirectionChange += Movement_OnDirectionChangeHandler;
+            _shieldMovement.OnStopped += Movement_OnStoppedHandler;
+            _shieldMovement.OnStartSnapping += Movement_OnStartSnappingHandler;
+            _shieldMovement.OnStopSnapping += Movement_OnStopSnappingHandler;
+            _shieldMovement.OnSpeedIncreased += Movement_OnSpeedIncreasedHandler;
+            _shieldMovement.OnSpeedDecreased += Movement_OnSpeedDecreasedHandler;
+            _shieldMovement.OnReachedMaxSpeed += Movement_OnReachedMaxSpeedHandler;
+            _shieldMovement.OnReachedMinSpeed += Movement_OnReachedMinSpeedHandler;
+            _shieldMovement.OnSnapping += Movement_OnSnappingHandler;
+            _shieldMovement.OnSnapped += Movement_OnSnappedHandler;
+        }
+
+        public void ExecuteUpdate(float deltaTime)
+        {
+            _shieldMovement?.Update(deltaTime);
+        }
+        
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -98,9 +101,6 @@ namespace MeteorMadness.Gameplay.Shield
                         (Vector3)args[0],
                         (Quaternion)args[1],
                         (Vector2)args[2]);
-                    break;
-                case ShieldObserverMessage.StopRotate:
-                    HandleStopRotate();
                     break;
                 case ShieldObserverMessage.SetActiveShield:
                     HandleSetActiveShield((bool)args[0]);
@@ -127,16 +127,16 @@ namespace MeteorMadness.Gameplay.Shield
 
         private void HandleSetAutomatic(bool isActive)
         {
-            _movement.SetAutomaticEnable(isActive);
             OnAbilitySetActive?.Invoke(AbilityType.Automatic, isActive);
-
             if (isActive)
             {
+                _shieldMovement.EnableAutomatic();
                 ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Automatic);
                 OnAbilityRunning?.Invoke(AbilityType.Automatic);
             }
             else
             {
+                _shieldMovement.DisableAutomatic();
                 ShieldEventCaller.NotifyShieldTypeDisabled(ShieldType.Automatic);
                 OnAbilityFinished?.Invoke();
             }
@@ -176,6 +176,12 @@ namespace MeteorMadness.Gameplay.Shield
         private void HandleSetActiveShield(bool isActive)
         {
             spriteContainer.SetActive(isActive);
+            
+            if (isActive)
+                _shieldMovement.Enable();
+            else
+                _shieldMovement.Disable();
+            
             OnShieldActivated?.Invoke(isActive);
             if (isActive == false)
             {
@@ -185,21 +191,12 @@ namespace MeteorMadness.Gameplay.Shield
         
         private void HandleRotation(float direction)
         {
-            if (_movement.TryRotate((int)direction))
-            {
-                _colliderExtender.Extend();
-            }
-        }
-        
-        private void HandleStopRotate()
-        {
-            _movement.ForceStop();
-            _colliderExtender.Retract();
+            _shieldMovement.SetInputDirection(direction);
         }
         
         private void HandleRestartPosition()
         {
-            _movement.RestartPosition();
+            //_shieldMovement.RestartPosition();
         }
         
         private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
@@ -239,8 +236,6 @@ namespace MeteorMadness.Gameplay.Shield
         private void RunSuperShieldQueue()
         {
             var targetTime = 0.75f;
-
-            var speeder = _movement.ShieldSpeeder;
             
             var temp = ActionBuilder.Start()
                 .Do(new InstantAction(() =>
@@ -248,11 +243,11 @@ namespace MeteorMadness.Gameplay.Shield
                     OnAbilityStarted?.Invoke(AbilityType.SuperShield);
                     OnAbilitySetActive?.Invoke(AbilityType.SuperShield, true); 
                     superShieldCollider.enabled = true;
-                    _movement.IncreaseSpeed();
+                    _shieldMovement.SpeedUp();
                 }))
-                .Then(new WaitForEventUpdateAction(speeder.UpdateSpeed, 
-                    subscribe: callback => speeder.OnSpeedIncreased += callback,
-                    unsubscribe: callback => speeder.OnSpeedIncreased -= callback))
+                .Then(new WaitForEventAction(
+                    subscribe: callback => _shieldMovement.OnReachedMaxSpeed += callback,
+                    unsubscribe: callback => _shieldMovement.OnReachedMaxSpeed -= callback))
                 .Then(new InstantAction(()=> OnEnableSuperShield?.Invoke(targetTime)))
                 .Then(new WaitSecondsAction(targetTime))
                 .Then(new InstantAction(() =>
@@ -268,23 +263,21 @@ namespace MeteorMadness.Gameplay.Shield
         private void RunNormalShieldQueue()
         {
             var targetTime = 0.5f;
-            var speeder = _movement.ShieldSpeeder;
             
             var temp = ActionBuilder.Start()
                 .Do(new InstantAction(()=> OnDisableSuperShield?.Invoke(targetTime)))
-                .Then(new InstantAction(()=> _movement.DecreaseSpeed()))
-                .Then(new WaitForEventUpdateAction(speeder.UpdateSpeed, 
-                    subscribe: callback => speeder.OnSpeedDecreased += callback,
-                    unsubscribe: callback => speeder.OnSpeedDecreased -= callback))
-                .Then(new InstantAction(()=> _movement.RotateTowardsNearestProjectileSlot()))
+                .Then(new InstantAction(()=> _shieldMovement.SlowDown()))
                 .Then(new WaitForEventAction(
-                    subscribe: callback => _movement.OnProjectileDetected += callback,
-                    unsubscribe: callback => _movement.OnProjectileDetected -= callback))
+                    subscribe: callback => _shieldMovement.OnReachedMinSpeed += callback,
+                    unsubscribe: callback => _shieldMovement.OnReachedMinSpeed -= callback))
+                .Then(new InstantAction(()=> _shieldMovement.TryToSnapToTarget()))
+                .Then(new WaitForEventAction(
+                    subscribe: callback => _shieldMovement.OnSnapped += callback,
+                    unsubscribe: callback => _shieldMovement.OnSnapped -= callback))
                 .Then(new InstantAction(() =>
                 {
                     OnAbilitySetActive?.Invoke(AbilityType.SuperShield, false);
                     superShieldCollider.enabled = false;
-                    _movement.RestartSpeedValues();
                     OnAbilityFinished?.Invoke();
                 }))
                 .Then(new InstantAction(()=> ShieldEventCaller.NotifyShieldTypeDisabled(ShieldType.Super)))
@@ -305,10 +298,79 @@ namespace MeteorMadness.Gameplay.Shield
             
             while (_shakerController.IsShaking == true)
             {
-                _shakerController.HandleShake(CustomTime.GetDeltaTimeByChannel(SelfUpdateGroup));
+                _shakerController.HandleShake(CustomTime.GetDeltaTimeByChannel(UpdateGroup.Shield));
                 
                 yield return null;
             }
+        }
+
+        #endregion
+
+        #region Handlers
+
+        private void Movement_OnSnappedHandler()
+        {
+            
+        }
+
+        private void Movement_OnSnappingHandler()
+        {
+
+        }
+
+        private void Movement_OnReachedMinSpeedHandler()
+        {
+
+        }
+
+        private void Movement_OnReachedMaxSpeedHandler()
+        {
+
+        }
+
+        private void Movement_OnSpeedDecreasedHandler()
+        {
+
+        }
+
+        private void Movement_OnSpeedIncreasedHandler()
+        {
+
+        }
+
+        private void Movement_OnStopSnappingHandler()
+        {
+
+        }
+
+        private void Movement_OnStartSnappingHandler()
+        {
+
+        }
+
+        private void Movement_OnStoppedHandler()
+        {
+            _colliderExtender.Retract();
+            OnStopped?.Invoke();
+        }
+
+        private void Movement_OnDirectionChangeHandler(int direction)
+        {
+            OnDirectionChange?.Invoke(direction);
+            ShieldEventCaller.NotifyMovement(direction);
+        }
+
+        private void Movement_OnStartStopHandler()
+        {
+            OnStartStop?.Invoke();
+            ShieldEventCaller.NotifyMovement(0);
+        }
+
+        private void Movement_OnStartMovingHandler(int direction)
+        {
+            _colliderExtender.Extend();
+            ShieldEventCaller.NotifyMovement(direction);
+            OnRotate?.Invoke();
         }
 
         #endregion

@@ -1,0 +1,4 @@
+﻿{
+  "name": "MeteorMadness.ShieldRotation.RotationSpeeder",
+  "references":["MeteorMadness.ShieldRotation.Contracts", "MeteorMadness.ShieldRotation.Tools" ]
+}

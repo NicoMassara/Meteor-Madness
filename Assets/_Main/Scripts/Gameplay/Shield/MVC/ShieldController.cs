@@ -17,7 +17,6 @@ namespace MeteorMadness.Gameplay.Shield
             public void Initialize();
             public void Execute(float deltaTime);
             public void TryRotate(float direction);
-            public void TryStop();
             public void TryEnableType(ShieldType type);
 
             public void TryEnable();
@@ -400,16 +399,6 @@ namespace MeteorMadness.Gameplay.Shield
             
             Rotate();
         }
-
-        public void TryStop()
-        {
-            if (_mainController.GetIsMovementDisabled() 
-                || _ability.GetIsRotationDisabled())
-                return;
-            
-            StopRotate();
-        }
-
         public void TryEnable()
         {
             _mainController.TransitionToEnable();
