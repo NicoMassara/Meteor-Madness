@@ -135,10 +135,12 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
         private readonly SpeederFsm _fsmController;
         private readonly IRotationSpeederData _data;
         private readonly Transform _objectToRotate;
-        private const float IncreaseSpeedStep = 0.25f;
-        private float _movementTargetStep;
         private float _angularSpeed;
         private float _targetMinSpeed;
+        private float _totalDegrees;
+        private float _targetDegreesStep;
+        private float _lastAngle;
+        
         private float SpeedRatio => Mathf.Abs(_angularSpeed) / _data.MaxSpeed;
         
         public float AngularSpeed => _angularSpeed;
@@ -170,6 +172,15 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
         
         private void RotateObject(float deltaTime) => _objectToRotate.Rotate(0f, 0f, _angularSpeed * deltaTime);
 
+        private float GetAccelerateTotalDegrees() => _data.AccelerateTurnsAmount * 360f;
+        private float GetAngularAcceleration() => (_data.MaxSpeed * _data.MaxSpeed) / (2f * GetAccelerateTotalDegrees());
+        
+        private float GetDeAccelerateTotalDegrees() => _data.DeAccelerateTurnsAmount * 360f;
+        private float GetAngularDeAcceleration() => (_targetMinSpeed * _targetMinSpeed - _data.MaxSpeed * _data.MaxSpeed) / 
+                                                    (2f * GetDeAccelerateTotalDegrees());
+        
+        private float GetCurrentAngle() => _objectToRotate.localEulerAngles.z;
+
         #region IRotationSpeeder
 
         public void Update(float deltaTime)
@@ -179,8 +190,7 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
             ClampAngularSpeed();
             RotateObject(deltaTime);
         }
-
-        public void SetTargetMinSpeed(float minSpeed) => _targetMinSpeed = minSpeed;
+        
         public void SpeedUp() => _fsmController.Transition(States.SpeedUp);
         public void SlowDown(float targetMinSpeed)
         {
@@ -207,21 +217,29 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
 
         public void ClearSpeed()
         {
-            _angularSpeed = 0;
+            //_angularSpeed = 0;
         }
 
         public void InitializeIncreaseSpeed()
         {
-            _movementTargetStep = IncreaseSpeedStep;
+            _totalDegrees = 0;
+            _lastAngle = GetCurrentAngle();
+            _targetDegreesStep = _data.DegreesStep;
         }
 
         public void IncreaseSpeed(float deltaTime)
         {
-            _angularSpeed += (_data.AccelerationVel * deltaTime);
-
-            if (_movementTargetStep >= SpeedRatio)
+            float currentAngle = GetCurrentAngle();
+            float deltaAngle = Mathf.DeltaAngle(_lastAngle, GetCurrentAngle());
+            
+            _angularSpeed += GetAngularAcceleration() * deltaTime;
+            
+            _totalDegrees += Mathf.Abs(deltaAngle);
+            _lastAngle = currentAngle;
+            
+            if (_totalDegrees >= _targetDegreesStep)
             {
-                _movementTargetStep += IncreaseSpeedStep;
+                _targetDegreesStep += _data.DegreesStep;
                 OnSpeedIncreased?.Invoke();
             }
         }
@@ -229,16 +247,24 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
         public void InitializeDecreaseSpeed()
         {
             _angularSpeed = _data.MaxSpeed;
-            _movementTargetStep = 1;
+            _totalDegrees = 0;
+            _targetDegreesStep = _data.DegreesStep;
+            _lastAngle = GetCurrentAngle();
         }
 
         public void DecreaseSpeed(float deltaTime)
         {
-            _angularSpeed = Mathf.MoveTowards(_angularSpeed, 0, _data.DeAccelerationVel * deltaTime);
+            float currentAngle = GetCurrentAngle();
+            float deltaAngle = Mathf.DeltaAngle(_lastAngle, GetCurrentAngle());
             
-            if (_movementTargetStep <= GetMinSpeedRatio())
+            _angularSpeed += GetAngularDeAcceleration() * deltaTime;
+            
+            _totalDegrees += Mathf.Abs(deltaAngle);
+            _lastAngle = currentAngle;
+            
+            if (_totalDegrees >= _targetDegreesStep)
             {
-                _movementTargetStep -= IncreaseSpeedStep;
+                _targetDegreesStep += _data.DegreesStep;
                 OnSpeedDecreased?.Invoke();
             }
         }

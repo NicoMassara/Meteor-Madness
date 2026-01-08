@@ -11,16 +11,16 @@ namespace _Main.Scripts.ShieldRotation.Mediator.Test
         public Vector2 Position => transform.position;
         public bool CanBeTargeted => canBeTargeted;
         
-        public event Action<ITargetable> OnDeath;
+        public event Action<ITargetable> OnTargetDeath;
         
-        public void DisableTargetableComponent()
+        public void DisableTargetable()
         {
-            
+            canBeTargeted = false;
         }
 
         public void TriggerDeath()
         {
-            OnDeath?.Invoke(this);
+            OnTargetDeath?.Invoke(this);
             canBeTargeted = false;
         }
 

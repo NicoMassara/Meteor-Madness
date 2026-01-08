@@ -3,46 +3,67 @@ using System.Collections;
 using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
-using MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Cosmetics;
+using MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay;
 using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.Managers.Save;
+using NicolasMassara.CustomUpdateManager;
 using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEditor;
 using UnityEngine;
 
-namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay
+namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
 {
-    public interface IGameplayTester
+    public class GameplayAbilityTester : MonoBehaviour, IGameplayTester
     {
-        public event Action<int> OnLevelUpdated;
-    }
+        [Header("Start Values")]
+        [Range(0, 9)] [SerializeField] private int startLevel = 1;
+        [SerializeField] private bool startMeteorsEnable;
+        [Space(5)]
+        [SerializeField] private TimeScales timeScale;
 
-    public class GameplayTester : MonoBehaviour, IGameplayTester
-    {
-        [SerializeField] private DamageTypes damageType;
-        [Range(0,9)]
-        [SerializeField] private int startLevel = 1;
+        [Serializable]
+        private class TimeScales
+        {
+            [Range(0,1)]
+            public float globalTimeScale;
+            [Range(0,1)]
+            public float gameplayTimeScale;
+            [Range(0,1)]
+            public float shieldTimeScale;
+            [Range(0,1)]
+            public float effectsTimeScale;
+        }
 
         private int _currentLevel;
-        private bool _hasSuperShield;
-        private bool _hasAutomaticShield;
+
+        internal bool MeteorActive;
         public event Action<int> OnLevelUpdated;
+        
         
         private void Awake()
         {
             ProjectileEventSubscriber.RequestSpawn(EventBus_Projectile_RequestSpawn);
         }
-
+        
         private void Start()
         {
             _currentLevel = startLevel;
             OnLevelUpdated?.Invoke(_currentLevel);
             Initialize();
         }
-        
+
+        private void Update()
+        {
+            CustomTime.GlobalTimeScale = timeScale.globalTimeScale;
+            CustomTime.GlobalFixedTimeScale = timeScale.globalTimeScale;
+            CustomTime.SetChannelTimeScale(UpdateGroup.Gameplay, timeScale.gameplayTimeScale);
+            CustomTime.SetChannelTimeScale(UpdateGroup.Shield, timeScale.shieldTimeScale);
+            CustomTime.SetChannelTimeScale(UpdateGroup.Effects, timeScale.effectsTimeScale);
+        }
+
         #region Initializer
         
         private void Initialize()
@@ -52,14 +73,19 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay
 
         private void InitializeGameplay()
         {
-            GameConfigManager.Instance.SetDamage(damageType);
+            GameConfigManager.Instance.SetDamage(DamageTypes.None);
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.Enable();
+            AbilitiesEventCaller.Enable();
+            AbilitiesEventCaller.EnableUI();
             EarthEventCaller.EnableDamage();
             InputsEventCaller.SetEnable(true);
             CameraEventCaller.ZoomOut();
-            ProjectileEventCaller.EnableSpawn();
             ProjectileEventCaller.UpdateLevel(_currentLevel);
+            if (startMeteorsEnable)
+            {
+                ToggleMeteorSpawn();
+            }
         }
 
         private IEnumerator Coroutine_Initialize()
@@ -112,10 +138,20 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay
         
         #endregion
 
-        private void GrantProjectile()
+        #region Meteor
+
+        public void ToggleMeteorSpawn()
         {
-            ProjectileEventCaller.GrantSpawn(ProjectileType.Meteor);
+            MeteorActive = !MeteorActive;
+            if(MeteorActive)
+                ProjectileEventCaller.EnableSpawn();
+            else
+                ProjectileEventCaller.DisableSpawn();
         }
+
+        #endregion
+
+        #region Level
 
         public void IncreaseLevel()
         {
@@ -133,66 +169,66 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay
             OnLevelUpdated?.Invoke(_currentLevel);
         }
 
-        public void HealEarth()
+        public void UpdateLevel(int level)
         {
-            EarthEventCaller.Heal();
+            _currentLevel--;
+            _currentLevel = Mathf.Clamp(_currentLevel, 0, 9);
+            ProjectileEventCaller.UpdateLevel(_currentLevel);
+            OnLevelUpdated?.Invoke(_currentLevel);
         }
 
-        public void ToggleSuperShield()
-        {
-            _hasSuperShield = !_hasSuperShield;
+        #endregion
 
-            if (_hasSuperShield)
+        #region Abilities
+
+        public void AddAbility(AbilityType abilityType)
+        {
+            AbilitiesEventCaller.Add(new AbilityAddData
             {
-                ShieldEventCaller.RequestEnableShieldType(ShieldType.Super);
-            }
-            else
-            {
-                ShieldEventCaller.RequestDisableShieldType(ShieldType.Super);
-            }
+                AbilityType = abilityType
+            });
         }
+
+        #endregion
         
-        public void ToggleAutomaticShield()
-        {
-            _hasAutomaticShield = !_hasAutomaticShield;
-
-            if (_hasAutomaticShield)
-            {
-                ShieldEventCaller.RequestEnableShieldType(ShieldType.Automatic);
-            }
-            else
-            {
-                ShieldEventCaller.RequestDisableShieldType(ShieldType.Automatic);
-            }
-        }
-
         #region Event Bus
 
         private void EventBus_Projectile_RequestSpawn(ProjectileEvents.RequestSpawn input)
         {
             if (input.RequestType == EventRequestType.Requested)
             {
-                GrantProjectile();
+                ProjectileEventCaller.GrantSpawn(ProjectileType.Meteor);
             }
         }
 
         #endregion
     }
-
+    
 #if UNITY_EDITOR
     
-    [CustomEditor(typeof(GameplayTester))]
+    [CustomEditor(typeof(GameplayAbilityTester))]
     public class GameplayTesterEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            GameplayTester script = (GameplayTester)target;
+            GameplayAbilityTester script = (GameplayAbilityTester)target;
+            
+            GUILayout.Space(10f);
+            GUILayout.Label("Level");
             if (GUILayout.Button("Increase Level")) script.IncreaseLevel();
             if (GUILayout.Button("Decrease Level")) script.DecreaseLevel();
-            if (GUILayout.Button("Heal Earth")) script.HealEarth();
-            if (GUILayout.Button("Toggle Super Shield")) script.ToggleSuperShield();
-            if (GUILayout.Button("Toggle Automatic Shield")) script.ToggleAutomaticShield();
+            if (GUILayout.Button("Toggle Meteor Spawn")) script.ToggleMeteorSpawn();
+            
+            GUILayout.Space(10f);
+            GUILayout.Label("Abilities");
+            if (GUILayout.Button("Add Super Shield")) script.AddAbility(AbilityType.SuperShield);
+            if (GUILayout.Button("Add Health")) script.AddAbility(AbilityType.Health);
+            if (GUILayout.Button("Add SlowMotion")) script.AddAbility(AbilityType.SlowMotion);
+            if (GUILayout.Button("Add DoublePoints")) script.AddAbility(AbilityType.DoublePoints);
+            if (GUILayout.Button("Add Automatic")) script.AddAbility(AbilityType.Automatic);
+            
+            EditorUtility.SetDirty(target);
         }
     }
 #endif

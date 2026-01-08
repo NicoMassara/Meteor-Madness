@@ -15,6 +15,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
         private enum States
         {
             Idle,
+            Checking,
             Snapping,
         }
 
@@ -23,8 +24,10 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
             // === Data Getters === // 
             public bool GetHasReachedTargetAngle();
             public bool GetHasTargetAngle();
+            public bool GetCanCheck();
             
             // === Actions === // 
+            public void DisableCheck();
             public void SnapToAngle(float deltaTime);
             public void ForceSnap();
             public void CalculateAngleData();
@@ -41,6 +44,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
             // === Transitions === // 
             public void TransitionToIdle();
             public void TransitionToSnapping();
+            public void TransitionToChecking();
         }
 
         #region States
@@ -49,11 +53,22 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
 
         private class IdleState : AutomaticStateBase
         {
+            public override void Execute(float deltaTime)
+            {
+                if (Controller.GetCanCheck())
+                {
+                    Controller.TransitionToChecking();
+                }
+            }
+        }
+
+        private class CheckingState : AutomaticStateBase
+        {
             public override void Awake()
             {
                 Controller.ClearCheckTimer();
             }
-
+            
             public override void Execute(float deltaTime)
             {
                 Controller.CheckForTarget(deltaTime);
@@ -71,6 +86,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
             {
                 Controller.TriggerOnStartSnapping();
                 Controller.CalculateAngleData();
+                Controller.DisableCheck();
             }
 
             public override void Execute(float deltaTime)
@@ -79,6 +95,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
 
                 if (Controller.GetHasReachedTargetAngle())
                 {
+                    Controller.ForceSnap();
                     Controller.TransitionToIdle();
                 }
             }
@@ -86,7 +103,6 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
             public override void Sleep()
             {
                 Controller.TriggerOnStopSnapping();
-                Controller.ForceSnap();
                 Controller.ClearAngleData();
             }
         }
@@ -107,6 +123,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
                 var tempList = new List<StateData>
                 {
                     new (States.Idle, new IdleState()),
+                    new (States.Checking, new CheckingState()),
                     new (States.Snapping, new SnappingState()),
                 };
 
@@ -122,8 +139,8 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
         #endregion
 
         #endregion
-
-        private const float MinDistanceToTarget = 1f;
+        
+        private const float MinDistanceToTarget = 5f;
         private const float CheckTimerDelay = 0.25f;
         private readonly AutomaticFsm _fsmController;
         private readonly Transform _objectToRotate;
@@ -135,6 +152,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
         private float _targetAngle;
         private float _currentAngle;
         private bool _hasTargetAngle;
+        private bool _canCheck;
         public float AngularSpeed => _angularSpeed;
         
         public event Action OnStartSnapping;
@@ -181,7 +199,12 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
             }
 
             _hasTargetAngle = true;
-            _targetAngle = AngleHelper.GetAngleFromSlot(targetSlot,_angleSlots);
+            _targetAngle = AngleHelper.GetAngleFromSlot(targetSlot,_angleSlots, 180f);
+        }
+
+        public void EnableCheck()
+        {
+            _canCheck = true;
         }
 
         #endregion
@@ -194,11 +217,14 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
 
         public bool GetHasReachedTargetAngle() => GetAbsoluteDistanceToTarget() <= MinDistanceToTarget;
         public bool GetHasTargetAngle() => _hasTargetAngle;
+        public bool GetCanCheck() => _canCheck;
 
         #endregion
         
         // === Actions === // 
         #region Actions
+
+        public void DisableCheck() => _canCheck = false;
 
         public void CheckForTarget(float deltaTime)
         {
@@ -259,6 +285,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
         // === Transitions === // 
         #region Transitions
         public void TransitionToIdle() => _fsmController?.Transition(States.Idle);
+        public void TransitionToChecking() => _fsmController?.Transition(States.Checking);
         public void TransitionToSnapping() => _fsmController?.Transition(States.Snapping);
 
         #endregion

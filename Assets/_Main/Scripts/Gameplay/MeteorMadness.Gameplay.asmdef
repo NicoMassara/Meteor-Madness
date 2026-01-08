@@ -12,7 +12,9 @@
         "MeteorMadness.ScreenFlow",
         "MeteorMadness.Animations",
         "MeteorMadness.Contracts",
-        "MeteorMadness.EventBus"
+        "MeteorMadness.EventBus",
+        "MeteorMadness.ShieldRotation.Contracts",
+        "MeteorMadness.ShieldRotation.Mediator"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

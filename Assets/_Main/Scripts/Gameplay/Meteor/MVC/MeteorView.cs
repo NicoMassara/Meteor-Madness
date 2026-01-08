@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.ShieldRotation.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Meteor;
 using MeteorMadness.Gameplay.FlyingObject;
@@ -18,6 +19,7 @@ namespace _Main.Scripts.Meteor
         public bool CanBeTargeted { get; private set; }
         public bool EnableMovement { get; set; }
 
+        public event Action<ITargetable> OnTargetDeath;
         public event Action OnDeath;
         
         public void DisableTargetable()
@@ -60,7 +62,7 @@ namespace _Main.Scripts.Meteor
 
         private void HandleEarthCollision(Vector2 position, Quaternion rotation, Vector2 direction)
         {
-            OnDeath?.Invoke();
+            DestroyMeteor();
             
             OnEarthCollision?.Invoke(new MeteorCollisionData
             {
@@ -73,7 +75,7 @@ namespace _Main.Scripts.Meteor
         
         private void HandleShieldDeflection(Vector2 position,Quaternion rotation, Vector2 direction, float value)
         {
-            OnDeath?.Invoke();
+            DestroyMeteor();
             
             OnDeflection?.Invoke(new MeteorCollisionData
             {
@@ -85,6 +87,12 @@ namespace _Main.Scripts.Meteor
             });
             
             HandleCollision(false, position, direction,true);
+        }
+        
+        private void DestroyMeteor()
+        {
+            OnDeath?.Invoke();
+            OnTargetDeath?.Invoke(this);
         }
     }
 

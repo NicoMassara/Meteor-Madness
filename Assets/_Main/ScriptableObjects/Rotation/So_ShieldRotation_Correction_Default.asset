@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: So_ShieldRotation_Correction_Default
   m_EditorClassIdentifier: 
   correctionSlotDistance: 3
-  maxDistance: 30
+  maxDistance: 100

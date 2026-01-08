@@ -268,7 +268,6 @@ namespace MeteorMadness.Gameplay.Shield
         }
         
         #endregion
-
     }
     
     public interface IAbilityShield

@@ -47,7 +47,6 @@ namespace _Main.Scripts.ShieldRotation.Mediator.Test
         }
         
         // === Input === //
-
         internal void EnableInput() => _shieldMediator.Enable();
         internal void DisableInput() => _shieldMediator.Disable();
         

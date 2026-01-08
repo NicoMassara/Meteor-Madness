@@ -40,6 +40,9 @@ namespace _Main.Scripts.ShieldRotation.ProjectileDetector
             }
             
             var target = _colliders[collisionIndex].GetComponent<ITargetable>();
+
+            target.DisableTargetable();
+            
             return target; 
         }
         
@@ -52,7 +55,12 @@ namespace _Main.Scripts.ShieldRotation.ProjectileDetector
             {
                 var item = _colliders[i].GetComponent<ITargetable>();
                 if (item == null) continue;
-                if (item.CanBeTargeted == false) continue;
+                if (item.CanBeTargeted == false)
+                {
+                    //Debug.Log("Target can't be targeted");
+                    continue;
+                }
+
                 var distance = Vector2.Distance(item.Position, movementPosition);
 
                 if (distance < minDistance)

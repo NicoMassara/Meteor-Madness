@@ -151,6 +151,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         public event Action OnSpeedIncreased;  
         public event Action OnSpeedDecreased; 
         public event Action OnReachedMaxSpeed; 
+        public event Action OnReachedMinSpeed; 
         public event Action OnSnapping;  
         public event Action OnSnapped;  
 
@@ -186,7 +187,6 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             _automaticMovement.OnStartSnapping += IAutomaticMovement_OnStartSnappingHandler;
             _automaticMovement.OnStopSnapping += IAutomaticMovement_OnStopSnappingHandler;
             _automaticMovement.OnCheckForTarget += IAutomaticMovement_OnCheckForTargetHandler;
-            _automaticMovement.OnClearTarget += IAutomaticMovement_OnClearTargetHandler;
             
             // === IRotationSpeeder === //
             _rotationSpeeder.OnSpeedIncreased += IRotationSpeeder_OnSpeedIncreasedHandler;
@@ -210,19 +210,13 @@ namespace _Main.Scripts.ShieldRotation.Mediator
 
         private void TrySetCorrectionToInput()
         {
-            var target = _projectileDetector.GetNearestTarget(_inputMovement.Position);
-            if (target == null)
-            {
-                //Debug.Log("Not target found to correct");
-                return;
-            }
+            if (SetTarget() == false) return;
 
-            if (_movementCorrection.GetTargetIsInRange(target))
+            if (_movementCorrection.GetTargetIsInRange(_currentTarget))
             {
-                var targetSlot = _movementCorrection.GetAngleSlotFromTarget(target);
+                var targetSlot = _movementCorrection.GetAngleSlotFromTarget(_currentTarget);
                 _inputMovement.SetCorrectionData(targetSlot);
             }
-            
         }
 
         private bool CheckForTargetToSnapper()
@@ -231,14 +225,16 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             
             var targetSlot = _movementCorrection.GetAngleSlotFromTarget(_currentTarget);
             _targetSnapper.SetTargetSlot(targetSlot);
-            
             return true;
         }
 
         private bool TrySetTargetToAutomatic()
         {
-            if (SetTarget() == false) return false;
-            
+            if (SetTarget() == false)
+            {
+                return false;
+            }
+
             var targetSlot = _movementCorrection.GetAngleSlotFromTarget(_currentTarget);
             _automaticMovement.SetTargetAngle(targetSlot);
             
@@ -253,14 +249,16 @@ namespace _Main.Scripts.ShieldRotation.Mediator
                 return false;
             }
 
-            _currentTarget.OnDeath += Target_OnDeath;
+            _currentTarget.OnTargetDeath += Target_OnDeath;
             
             return true;
         }
 
         private void ClearTarget()
         {
-            _currentTarget.OnDeath -= Target_OnDeath;
+            if(_currentTarget == null) return;
+            
+            _currentTarget.OnTargetDeath -= Target_OnDeath;
             _currentTarget = null;
         }
 
@@ -313,6 +311,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         public void EnableAutomatic()
         {
             TransitionToAutomatic();
+            _automaticMovement.EnableCheck();
         }
 
         public void DisableAutomatic()
@@ -328,12 +327,14 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         {
             var hasTargetToSnap = CheckForTargetToSnapper();
             
-            Debug.Log($"Slow Down Complete!, Has Found Target: {hasTargetToSnap}");
-            
             if(hasTargetToSnap)
                 TransitionToTargetSnapping();
             else
+            {
+                OnSnapped?.Invoke();
                 TransitionToInputs();
+            }
+
         }
 
         #endregion
@@ -352,7 +353,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         #endregion
 
         // === Transitions === // 
-        #region MyRegion
+        #region Transitions
 
         public void TransitionToDisable() => _fsmController.Transition(States.Disable);
         public void TransitionToInputs() => _fsmController.Transition(States.Inputs);
@@ -369,21 +370,23 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         // === Target === //
         private void Target_OnDeath(ITargetable targetable)
         {
-            targetable.OnDeath -= Target_OnDeath;
+            targetable.OnTargetDeath -= Target_OnDeath;
             _currentTarget = null;
-
+            
             var currentState = _fsmController.GetCurrentState();
             switch (currentState)
             {
                 case States.Automatic:
-                    TrySetTargetToAutomatic();
+                    _automaticMovement.EnableCheck();
                     break;
                 case States.TargetSnapping:
-                    CheckForTargetToSnapper();
+                    ITargetSnapper_OnSnappedHandler();
+                    break;
+                case States.Inputs:
+                    _inputMovement.ClearCorrectionData();
                     break;
             }
         }
-        
         
         // === IMovement === //
         #region IMovement
@@ -430,6 +433,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
                 TransitionToInputs();
                 _shouldStopAutomatic = false;
             }
+            
             OnStopSnapping?.Invoke();
         }
 
@@ -443,11 +447,6 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             TrySetTargetToAutomatic(); 
         }
         
-        private void IAutomaticMovement_OnClearTargetHandler()
-        {
-            ClearTarget();
-        }
-        
         #endregion
         
         // === IRotationSpeeder === //
@@ -455,7 +454,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
 
         private void IRotationSpeeder_OnReachedMinSpeedHandler()
         {
-            TryToSnapToTarget();
+            OnReachedMinSpeed?.Invoke();
         }
 
         private void IRotationSpeeder_OnReachedMaxSpeedHandler()

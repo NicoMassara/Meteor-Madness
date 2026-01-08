@@ -38,6 +38,9 @@ namespace _Main.Scripts.ShieldRotation.MovementCorrection
         {
             int current = _movementComponent.GetCurrentSlot();
             int targetSlot = GetAngleSlotFromTarget(target);
+            
+            Debug.Log($"Origin: {current}, Target: {targetSlot}");
+            
             return AngleHelper.GetSlotDistance(current, targetSlot, _slotCount);
         }
 
@@ -48,17 +51,23 @@ namespace _Main.Scripts.ShieldRotation.MovementCorrection
 
             if (distance > _data.MaxDistance)
             {
-                //Debug.Log("Out of range");
+                Debug.Log($"Out of range, Distance: {distance}");
                 return false;
+            }
+            else
+            {
+                Debug.Log($"Target Distance: {distance}");
             }
             
             if (slotDistance > _data.CorrectionSlotDistance)
             {
-                //Debug.Log("Out of slot range");
+                Debug.Log($"Out of slot range, Distance: {slotDistance}");
                 return false;
             }
-
-            //Debug.Log("Target is in range");
+            else
+            {
+                Debug.Log($"Target Slot Distance: {slotDistance}");
+            }
 
             return true;
         }

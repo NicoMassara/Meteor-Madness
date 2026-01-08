@@ -196,7 +196,7 @@ Transform:
   m_GameObject: {fileID: 295130700}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.69, y: 0, z: 0}
+  m_LocalPosition: {x: -1.93, y: 0.88, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -215,6 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19689bcaaa6f4ab68479ce5d76ac72e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canBeTargeted: 1
 --- !u!61 &295130704
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -258,6 +258,7 @@ namespace MeteorMadness.Gameplay.Abilities
         public event Action<AbilityType> OnEndQueueFinished;
         
         private event Action OnSuperShieldFinished;
+        private event Action OnSuperShieldStarted;
 
         #region Commands/Actions
 
@@ -308,7 +309,7 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateShieldData(IAbilityTimeConfigData configData)
         {
-            var minTimeScale = 0.025f;
+            var minTimeScale = 0.001f;
             var selectedAbility = AbilityType.SuperShield;
             var timeData = configData.GetAbilityTimeData(selectedAbility);
 
@@ -343,6 +344,7 @@ namespace MeteorMadness.Gameplay.Abilities
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(start))
+                .Then(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
                 .Then(new PublishAbilityActiveAction(AbilityType.SuperShield, true))
                 .Then(_disableInputs)
                 .Then(_disableAbilityUI)
@@ -352,6 +354,10 @@ namespace MeteorMadness.Gameplay.Abilities
                 .Then(_cameraZoomIn)
                 .Then(new WaitSecondsAction(timeData.StartAction))
                 .Then(new EnableShieldTypeAction(ShieldType.Super))
+                .Then(new WaitForEventAction(
+                    subscribe: callback => OnSuperShieldStarted += callback,
+                    unsubscribe: callback => OnSuperShieldStarted -= callback))
+                .Then(new InstantAction(()=> ShieldEventUnSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(new InstantAction(MeteorEventCaller.SpawnRing))
                 .Then(_cameraZoomOut)
@@ -377,10 +383,7 @@ namespace MeteorMadness.Gameplay.Abilities
             
             var speedUpEffects = new TimedTimeScaleUpdateAction(
                 targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
-            
-            ;
-            
-            
+
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(start))
                 .Then(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeDisabled(OnShieldTypeDisabled)))
@@ -404,6 +407,12 @@ namespace MeteorMadness.Gameplay.Abilities
         {
             if(input.Type == ShieldType.Super)
                 OnSuperShieldFinished?.Invoke();
+        }
+        
+        private void OnShieldTypeEnabled(ShieldEvents.NotifyShieldTypeEnabled input)
+        {
+            if(input.Type == ShieldType.Super)
+                OnSuperShieldStarted?.Invoke();
         }
 
         #endregion

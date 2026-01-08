@@ -49,7 +49,6 @@ namespace _Main.Scripts.ShieldRotation.Contracts
         public event Action OnReachedMaxSpeed;
         public event Action OnReachedMinSpeed;
         public void Update(float deltaTime);
-        public void SetTargetMinSpeed(float minSpeed);
         public void SpeedUp();
         public void SlowDown(float targetMinSpeed);
     }
@@ -71,6 +70,7 @@ namespace _Main.Scripts.ShieldRotation.Contracts
         public event Action OnClearTarget;
         public void Update(float deltaTime);
         public void SetTargetAngle(int targetSlot);
+        public void EnableCheck();
     }
 
     public interface IMediator
@@ -85,6 +85,7 @@ namespace _Main.Scripts.ShieldRotation.Contracts
         public event Action OnSpeedIncreased;  
         public event Action OnSpeedDecreased;  
         public event Action OnReachedMaxSpeed; 
+        public event Action OnReachedMinSpeed; 
         public event Action OnSnapped;  
         public event Action OnSnapping;  
         
@@ -104,7 +105,7 @@ namespace _Main.Scripts.ShieldRotation.Contracts
     {
         public Vector2 Position { get;}
         public bool CanBeTargeted { get;}
-        public event Action<ITargetable> OnDeath;
-        public void DisableTargetableComponent();
+        public event Action<ITargetable> OnTargetDeath;
+        public void DisableTargetable();
     }
 }

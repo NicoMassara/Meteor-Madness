@@ -114,7 +114,7 @@ namespace _Main.Scripts.ShieldRotation.TargetSnapper
         private readonly SnapperFsm _fsmController;
         private readonly Transform _objectToRotate;
         private readonly ITargetSnapperData _data;
-        private readonly float _angleSlots;
+        private readonly int _angleSlots;
         private float _angularSpeed;
         private float _targetAngle;
         private float _startAngle;
@@ -126,7 +126,7 @@ namespace _Main.Scripts.ShieldRotation.TargetSnapper
         public event Action OnSnapped;
         
 
-        public TargetSnapperComponent(Transform objectToRotate, ITargetSnapperData data, float angleSlots)
+        public TargetSnapperComponent(Transform objectToRotate, ITargetSnapperData data, int angleSlots)
         {
             _objectToRotate = objectToRotate;
             _data = data;
@@ -154,9 +154,8 @@ namespace _Main.Scripts.ShieldRotation.TargetSnapper
         public void SetTargetSlot(int targetSlot)
         {
             _hasToSnap = true;
-            _targetAngle = AngleHelper.GetAngleFromSlot(targetSlot);
+            _targetAngle = AngleHelper.GetAngleFromSlot(targetSlot, _angleSlots, 180f);
             _angularSpeed = StartVelocity;
-            Debug.Log($"TargetSnapperComponent :: Target Angle: {_targetAngle}");
         }
 
         #endregion

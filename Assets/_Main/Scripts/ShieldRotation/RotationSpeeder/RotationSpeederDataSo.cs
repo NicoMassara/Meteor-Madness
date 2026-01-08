@@ -5,8 +5,9 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
     public interface IRotationSpeederData
     {
         public float MaxSpeed { get; }
-        public float AccelerationVel { get; }
-        public float DeAccelerationVel { get; }
+        public int AccelerateTurnsAmount { get; }
+        public int DeAccelerateTurnsAmount { get; }
+        public float DegreesStep { get; }
     }
 
     [CreateAssetMenu(fileName = "So_ShieldRotation_Speeder_Default", menuName = "Shield Rotation/Speeder Data", order = 0)]
@@ -15,12 +16,14 @@ namespace _Main.Scripts.ShieldRotation.RotationSpeeder
         [Min(1)]
         [SerializeField] private float maxSpeed;
         [Min(1)]
-        [SerializeField] private float accelerationVel;
+        [SerializeField] private int accelerateTurnsAmount = 3;
         [Min(1)]
-        [SerializeField] private float deAccelerationVel;
+        [SerializeField] private int deAccelerateTurnsAmount = 2;
+        [SerializeField] private float degreesStep;
 
         public float MaxSpeed => maxSpeed;
-        public float AccelerationVel => accelerationVel;
-        public float DeAccelerationVel => deAccelerationVel;
+        public int AccelerateTurnsAmount => accelerateTurnsAmount;
+        public int DeAccelerateTurnsAmount => deAccelerateTurnsAmount;
+        public float DegreesStep => degreesStep;
     }
 }

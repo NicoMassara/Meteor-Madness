@@ -12,13 +12,13 @@ namespace _Main.Scripts.ShieldRotation.Movement
         MovementComponent.IFsmMovement
     {
         #region FSM
-        
+
+        #region Interfaces
         private interface IFsmMovement
         {
             // === Data === //
             public float GetSpeedRatio();
             public float GetDirection();
-            public bool GetIsMovingAtMaxSpeed();
             public float GetLastMovementSpeedRatio();
             public bool GetIsSnapFinished();
             public bool GetHasToCorrectSnap();
@@ -38,7 +38,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
             public void SnapToSlot();
             public void SmoothSnapToSlot(float deltaTime);
             public void SaveLastMovementSpeedRatio();
-            public void CalculateSnapAngle(bool shouldExtraSnap);
+            public void CalculateSnapAngle();
             public void HandleSnapCorrection(float deltaTime);
             
             // === Event Triggers === //
@@ -58,6 +58,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
             public void TransitionSnapping();
             public void TransitionCorrectionSnapping();
         }
+        #endregion
         
         #region States
 
@@ -131,7 +132,9 @@ namespace _Main.Scripts.ShieldRotation.Movement
                     _stopTimer -= deltaTime;
                     if (_stopTimer <= 0)
                     {
-                        Controller.TransitionToStopping();
+                        Controller.SaveLastMovementSpeedRatio();
+                        Controller.Stop();
+                        Controller.TransitionSnapping();
                         return;
                     }
                 }
@@ -148,23 +151,38 @@ namespace _Main.Scripts.ShieldRotation.Movement
         }
         private class ChangingDirectionState : MovementStateBase
         {
-            private bool _hasChangedDirection;
+            private float _timeOutTimer;
             private float _direction;
+            private bool _hasChangedDirection;
+            private bool _shouldTransitionToRotation;
             
             public override void Awake()
             {
+                RestartTimer();
+                _shouldTransitionToRotation = false;
                 _hasChangedDirection = false;
-                Controller.TriggerOnDirectionChanged();
                 _direction = Controller.GetDirection();
+                Controller.TriggerOnDirectionChanged();
             }
 
             public override void Execute(float deltaTime)
+            {
+                ChangeDirection(deltaTime);
+                RunTimeOutTimer(deltaTime);
+
+                if (_shouldTransitionToRotation)
+                {
+                    Controller.TransitionToRotating();
+                }
+            }
+
+            private void ChangeDirection(float deltaTime)
             {
                 Controller.ChangeDirection(deltaTime, _direction);
 
                 var speedRatio = Controller.GetSpeedRatio();
                 
-                if (speedRatio <= 0.09f && _hasChangedDirection == false)
+                if (speedRatio <= Data.ChangeDirectionSpeedRatio && _hasChangedDirection == false)
                 {
                     _hasChangedDirection = true;
                 }
@@ -173,66 +191,34 @@ namespace _Main.Scripts.ShieldRotation.Movement
 
                 if (speedRatio >= Data.StopChangeDirectionSpeedRatio)
                 {
-                    Controller.TransitionToRotating();
+                    _shouldTransitionToRotation = true;
                 }
+            }
+
+            private void RunTimeOutTimer(float deltaTime)
+            {
+                _timeOutTimer -= deltaTime;
+                if(_timeOutTimer > 0) return;
+
+                _shouldTransitionToRotation = true;
+            }
+
+            private void RestartTimer()
+            {
+                _timeOutTimer = Data.ChangeDirectionTimeOut + Data.StopChangeDirectionTimeOut;
+                _timeOutTimer *= Data.ChangeDirectionTimeOutThreshold;
             }
         }
         private class StoppingState : MovementStateBase
         {
-            public override void Awake()
-            {
-                Controller.SaveLastMovementSpeedRatio();
-                Controller.TriggerOnStartStop();
-                Controller.SetIsStopping(true);
-                Controller.TriggerOnCheckForCorrection();
-            }
 
-            public override void Execute(float deltaTime)
-            {
-                Controller.TriggerOnCheckForCorrection();
-                var hasInput = Controller.GetDirection() != 0;
-
-                if (hasInput)
-                {
-                    Controller.TransitionToRotating();
-                    return;
-                }
-                
-                Controller.DecreaseSpeed(deltaTime);
-
-                if (Controller.GetSpeedRatio() > Data.MinSpeedRatioToSnap) return;
-
-                if (Controller.GetHasToCorrectSnap())
-                {
-                    //Debug.Log("Correcting Snap");
-                    Controller.TransitionCorrectionSnapping();
-                }
-                else
-                {
-                    Controller.TransitionSnapping();
-                }
-            }
-
-            public override void Sleep()
-            {
-                Controller.SetIsStopping(false);
-            }
         }
         private class SnappingState : MovementStateBase
         {
-            private bool _shouldInstaSnap;
-            
             public override void Awake()
             {
+                Controller.CalculateSnapAngle();
                 Controller.SetIsSnapping(true);
-                _shouldInstaSnap = Controller.GetLastMovementSpeedRatio() < Data.MinSpeedRatioToSnap;
-                Controller.CalculateSnapAngle(_shouldInstaSnap);
-                
-                if (_shouldInstaSnap)
-                {
-                    Controller.SnapToSlot();
-                    Stop();
-                }
                 
                 Controller.TriggerOnCheckForCorrection();
             }
@@ -240,13 +226,12 @@ namespace _Main.Scripts.ShieldRotation.Movement
             public override void Execute(float deltaTime)
             {
                 Controller.TriggerOnCheckForCorrection();
-                if (_shouldInstaSnap) return;
                 
                 Controller.SmoothSnapToSlot(deltaTime);
 
                 if (Controller.GetIsSnapFinished())
                 {
-                    Stop();
+                    FinishSnapping();
                     return;
                 }
                 
@@ -270,9 +255,9 @@ namespace _Main.Scripts.ShieldRotation.Movement
                 Controller.SetIsSnapping(false);
             }
 
-            private void Stop()
+            private void FinishSnapping()
             {
-                Controller.Stop();
+                Controller.SnapToSlot();
                 Controller.TriggerOnStopped();
                 Controller.TransitionToStationary();
             }
@@ -287,21 +272,35 @@ namespace _Main.Scripts.ShieldRotation.Movement
 
             public override void Execute(float deltaTime)
             {
-                if (Controller.GetIsCorrectionSnapFinished())
+                if (Controller.GetHasToCorrectSnap() == false)
                 {
-                    Controller.TransitionToStationary();
+                    Debug.Log("Target was lost");
+                    Controller.TransitionToStopping();
                     return;
                 }
+
+                if (Controller.GetIsCorrectionSnapFinished())
+                {
+                    Debug.Log("Snap Corrected");
+                    FinishSnap();
+                    return;
+                }
+
                 
                 Controller.HandleSnapCorrection(deltaTime);
             }
 
-            public override void Sleep()
+            private void FinishSnap()
             {
                 Controller.Stop();
-                Controller.SetIsSnapping(false);
+                Controller.TransitionToStationary();
                 Controller.TriggerOnStopped();
                 Controller.TriggerOnSnapCorrected();
+            }
+
+            public override void Sleep()
+            {
+                Controller.SetIsSnapping(false);
                 Controller.StopCorrectionSnapping();
             }
         }
@@ -346,7 +345,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
         private readonly IMovementData _data;
         private readonly Transform _objectToRotate;
         private readonly int _angleSlots;
-        private const float MinDeltaSnapAngle = 1f;
+        private const float MinDeltaSnapDistance = 2f;
         private float _movementStopDelayTimer;
         private float _direction;
         private float _lastDirection;
@@ -354,7 +353,9 @@ namespace _Main.Scripts.ShieldRotation.Movement
         private float _lastMovementSpeedRatio; // Is the last speed ratio before going to 'Stopping' state
         private float _angleToSnap;
         private float _targetCorrectionAngle;
+        private float _lastTravelledSlotAngle;
         private bool _hasToCorrectSnap;
+        private int _travelledSlots;
         
 
         public float AngularSpeed => Mathf.Abs(_angularSpeed);
@@ -382,16 +383,34 @@ namespace _Main.Scripts.ShieldRotation.Movement
             TransitionToStationary();
         }
         
+        
         private void RotateObject(float deltaTime) 
             => _objectToRotate.Rotate(0f, 0f, _angularSpeed * deltaTime);
 
         private void ClampAngularSpeed() 
             => _angularSpeed = Mathf.Clamp(_angularSpeed, -_data.MaxSpeed, _data.MaxSpeed);
 
+        private void CalculateTravelledSlots()
+        {
+            if(_travelledSlots >= _data.MaxSlotTravelDistance) return;
+            
+            var angleDiff = GetAngleDistance(_lastTravelledSlotAngle);
+
+            if (angleDiff >= GetSlotSize())
+            {
+                _travelledSlots++;
+                _lastTravelledSlotAngle = GetCurrentAngle();
+            }
+        }
+        
+        private float GetTravelledSlotsRatio() => (float)_travelledSlots / (float)_data.MaxSlotTravelDistance;
+
         #region IMovement
 
         public void SetDirection(float direction)
         {
+            if(_direction == direction) return;
+            
             _lastDirection = _direction;
             _direction = direction;
         }
@@ -402,12 +421,14 @@ namespace _Main.Scripts.ShieldRotation.Movement
             
             ClampAngularSpeed();
             RotateObject(deltaTime);
+            CalculateTravelledSlots();
         }
         
         public void SetCorrectionData(int targetSlot)
         {
             _hasToCorrectSnap = true;
-            _targetCorrectionAngle = GetAngleFromSlot(targetSlot);
+            
+            _targetCorrectionAngle = GetAngleFromSlot(targetSlot, 180f);
         }
 
         public void ClearCorrectionData()
@@ -421,7 +442,11 @@ namespace _Main.Scripts.ShieldRotation.Movement
             TransitionToStationary();
         }
 
-        public int GetCurrentSlot() => Mathf.RoundToInt(GetCurrentAngle() / GetSlotSize());
+        public int GetCurrentSlot()
+        {
+            var slot = Mathf.RoundToInt(GetCurrentAngle() / GetSlotSize());
+            return (slot + _angleSlots) % _angleSlots;
+        }
 
         #endregion
         
@@ -433,16 +458,10 @@ namespace _Main.Scripts.ShieldRotation.Movement
         
         public float GetSpeedRatio() => SpeedRatio;
         public float GetDirection() => _direction;
-        public bool GetIsMovingAtMaxSpeed() => SpeedRatio >= 1;
-
-        public bool GetHasLeftInput() => _movementStopDelayTimer > 0;
         public float GetLastMovementSpeedRatio() => _lastMovementSpeedRatio;
-        
-        public bool GetIsSnapFinished() 
-            => Mathf.Abs(Mathf.DeltaAngle(GetCurrentAngle(), _angleToSnap)) < MinDeltaSnapAngle;
-        public bool GetIsCorrectionSnapFinished() 
-            => Mathf.Abs(Mathf.DeltaAngle(GetCurrentAngle(), _targetCorrectionAngle)) < MinDeltaSnapAngle;
-        
+        public float GetAngleDistance(float targetAngle) => Mathf.Abs(Mathf.DeltaAngle(GetCurrentAngle(), targetAngle));
+        public bool GetIsSnapFinished() => GetAngleDistance(_angleToSnap) <= MinDeltaSnapDistance;
+        public bool GetIsCorrectionSnapFinished() => GetAngleDistance(_targetCorrectionAngle) <= MinDeltaSnapDistance;
         public bool GetHasToCorrectSnap() => _hasToCorrectSnap;
 
         #endregion
@@ -450,8 +469,19 @@ namespace _Main.Scripts.ShieldRotation.Movement
         // === Actions === //
 
         #region Actions
-        
-        public void Stop() => _angularSpeed = 0;
+
+        #region Movement
+
+        public void Stop()
+        {
+            _angularSpeed = 0;
+        }
+
+        public void ClearTravelledSlots()
+        {
+            _travelledSlots = 0;
+            _lastTravelledSlotAngle = GetCurrentAngle();
+        }
 
         public void ChangeDirection(float deltaTime, float direction)
         {
@@ -468,58 +498,53 @@ namespace _Main.Scripts.ShieldRotation.Movement
             _angularSpeed = Mathf.MoveTowards(_angularSpeed, 0, _data.Deceleration * deltaTime);
         }
         
+        public void SaveLastMovementSpeedRatio() => _lastMovementSpeedRatio = SpeedRatio;
+
+        #endregion
+        
+        #region Snapping
+
         public void SnapToSlot()
         {
             _objectToRotate.rotation = Quaternion.Euler(0f,0f,_angleToSnap);
         }
+        
+        public void CalculateSnapAngle()
+        {
+            int targetSlot = GetCurrentSlot();
+            var selectedValue = Mathf.Lerp(_data.SlotRangeToSnap.x, _data.SlotRangeToSnap.y, GetTravelledSlotsRatio());
+            var signedLastDir = (int)Mathf.Sign(_lastDirection);
+            targetSlot += (int)(selectedValue * signedLastDir);
+            
+            _angleToSnap = GetAngleFromSlot(targetSlot);
 
+            ClearTravelledSlots();
+        }
+        
         public void SmoothSnapToSlot(float deltaTime)
         {
             var finalSnapSpeed = _data.SnapSpeed * deltaTime;
-                    
-            _objectToRotate.rotation = Quaternion.Lerp( 
+            var rotationLerp= Quaternion.Lerp( 
                 _objectToRotate.rotation, 
                 Quaternion.Euler(0f,0f, _angleToSnap), 
                 finalSnapSpeed);
             
-            if (Math.Abs(Mathf.DeltaAngle(GetCurrentAngle(), _angleToSnap)) < MinDeltaSnapAngle)
-            {
-                _objectToRotate.rotation = Quaternion.Euler(0f,0f,_angleToSnap);
-            }
-        }
-
-        public void SaveLastMovementSpeedRatio() 
-            => _lastMovementSpeedRatio = SpeedRatio;
-
-        public void CalculateSnapAngle(bool shouldExtraSnap)
-        {
-            int currentSlot = GetCurrentSlot();
-
-            if (shouldExtraSnap)
-            {
-                Debug.Log("Not Enough Speed, snapping to next slot");
-                currentSlot += (int)Mathf.Sign(_lastDirection);
-            }
-
-            _angleToSnap = GetAngleFromSlot(currentSlot);
+            _objectToRotate.rotation = rotationLerp;
         }
 
         public void HandleSnapCorrection(float deltaTime)
         {
             var finalSnapSpeed = _data.CorrectionSnapSpeed * deltaTime;
-                    
-            _objectToRotate.rotation = Quaternion.Lerp( 
+            var rotationLerp= Quaternion.Lerp( 
                 _objectToRotate.rotation, 
                 Quaternion.Euler(0f,0f, _targetCorrectionAngle), 
                 finalSnapSpeed);
             
-            if (Math.Abs(Mathf.DeltaAngle(GetCurrentAngle(), _targetCorrectionAngle)) < MinDeltaSnapAngle)
-            {
-                _objectToRotate.rotation = Quaternion.Euler(0f,0f,_targetCorrectionAngle);
-            }
+            _objectToRotate.rotation = rotationLerp;
         }
-        
 
+        #endregion
+        
         #endregion
         
         // === Action Triggers === //
@@ -571,7 +596,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
         
         private float GetCurrentAngle() => _objectToRotate.localEulerAngles.z;
         private float GetSlotSize() => AngleHelper.GetSlotSize(_angleSlots);
-        private float GetAngleFromSlot(int slot) => AngleHelper.GetAngleFromSlot(slot, _angleSlots);
+        private float GetAngleFromSlot(int slot, float angleOffset = 0f) => AngleHelper.GetAngleFromSlot(slot, _angleSlots, angleOffset);
 
         #endregion
         

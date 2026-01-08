@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30a95681c90246f095057e0855b404fb, type: 3}
   m_Name: So_ShieldRotation_Speeder_Default
   m_EditorClassIdentifier: 
-  maxSpeed: 1000
-  accelerationVel: 5000
-  deAccelerationVel: 5000
+  maxSpeed: 2000
+  accelerateTurnsAmount: 3
+  deAccelerateTurnsAmount: 1
+  degreesStep: 180

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine.XR;
 
 namespace _Main.Scripts.ShieldRotation.Tools
@@ -9,6 +10,9 @@ namespace _Main.Scripts.ShieldRotation.Tools
         
         private IState _currentState;
         private T _currentStateType;
+        
+        public event Action<T> OnStateChanged;
+        
         protected class StateData
         {
             public readonly T StateType;
@@ -43,9 +47,12 @@ namespace _Main.Scripts.ShieldRotation.Tools
         public virtual void Transition(T stateType)
         {
             if(_states.TryGetValue(stateType, out var newState) == false) return;
+            _currentStateType = stateType;
+            
             if(_currentState != null)
                 _currentState.Sleep();
             
+            OnStateChanged?.Invoke(_currentStateType);
             _currentState = newState;
             _currentState.Awake();
         }
