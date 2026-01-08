@@ -955,7 +955,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startLevel: 0
-  startMeteorsEnable: 0
+  startMeteorsEnable: 1
   timeScale:
     globalTimeScale: 1
     gameplayTimeScale: 1

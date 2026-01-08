@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a60a6e25af5c45b2b0a7b1ee834fa52b, type: 3}
   m_Name: So_ShieldRotation_Correction_Default
   m_EditorClassIdentifier: 
-  correctionSlotDistance: 3
-  maxDistance: 100
+  correctionSlotDistance: 4
+  maxDistance: 10

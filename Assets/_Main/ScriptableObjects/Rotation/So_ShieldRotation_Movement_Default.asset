@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: So_ShieldRotation_Movement_Default
   m_EditorClassIdentifier: 
   maxSpeed: 550
-  acceleration: 6000
-  deceleration: 3000
+  acceleration: 5000
   stopThreshold: 0.06
-  minSpeedRatioToSnap: 0.1
-  snapSpeed: 25
-  correctionSnapSpeed: 25
-  changeDirectionAcceleration: 6000
+  snapRange:
+    minSlotToSnap: 1
+    maxSlotToSnap: 2
+  maxSlotTravelDistance: 8
+  snapSpeed: 50
+  correctionSnapSpeed: 50
+  changeDirectionAcceleration: 25000
   changeDirectionSpeedRatio: 0.15
   stopChangeDirectionSpeedRatio: 0.05
   changeDirectionTimeOutThreshold: 0.2

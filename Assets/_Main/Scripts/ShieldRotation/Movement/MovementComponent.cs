@@ -19,22 +19,20 @@ namespace _Main.Scripts.ShieldRotation.Movement
             // === Data === //
             public float GetSpeedRatio();
             public float GetDirection();
-            public float GetLastMovementSpeedRatio();
             public bool GetIsSnapFinished();
             public bool GetHasToCorrectSnap();
             public bool GetIsCorrectionSnapFinished();
             
             // === Setters === //
-
-            public void SetIsStopping(bool isStopping);
+            
             public void SetIsSnapping(bool isSnapping);
             public void StopCorrectionSnapping();
+            public void ClearTravelledSlots();
             
             // === Actions === //
             public void Stop();
             public void IncreaseSpeed(float deltaTime, float direction);
             public void ChangeDirection(float deltaTime, float getDirection);
-            public void DecreaseSpeed(float deltaTime);
             public void SnapToSlot();
             public void SmoothSnapToSlot(float deltaTime);
             public void SaveLastMovementSpeedRatio();
@@ -54,7 +52,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
             public void TransitionToStationary();
             public void TransitionToRotating();
             public void TransitionToChangingDirection();
-            public void TransitionToStopping();
             public void TransitionSnapping();
             public void TransitionCorrectionSnapping();
         }
@@ -68,7 +65,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
             Stationary,
             Rotating,
             ChangingDirection,
-            Stopping,
             Snapping,
             CorrectionSnapping
         }
@@ -87,6 +83,11 @@ namespace _Main.Scripts.ShieldRotation.Movement
         
         private class StationaryState : MovementStateBase
         {
+            public override void Awake()
+            {
+                Controller.ClearTravelledSlots();
+            }
+
             public override void Execute(float deltaTime)
             {
                 var hasInput = Controller.GetDirection() != 0;
@@ -209,15 +210,12 @@ namespace _Main.Scripts.ShieldRotation.Movement
                 _timeOutTimer *= Data.ChangeDirectionTimeOutThreshold;
             }
         }
-        private class StoppingState : MovementStateBase
-        {
-
-        }
         private class SnappingState : MovementStateBase
         {
             public override void Awake()
             {
                 Controller.CalculateSnapAngle();
+                Controller.TriggerOnStartStop();
                 Controller.SetIsSnapping(true);
                 
                 Controller.TriggerOnCheckForCorrection();
@@ -262,7 +260,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
                 Controller.TransitionToStationary();
             }
         }
-
         private class CorrectionSnapping : MovementStateBase
         {
             public override void Awake()
@@ -274,14 +271,12 @@ namespace _Main.Scripts.ShieldRotation.Movement
             {
                 if (Controller.GetHasToCorrectSnap() == false)
                 {
-                    Debug.Log("Target was lost");
-                    Controller.TransitionToStopping();
+                    Controller.TransitionSnapping();
                     return;
                 }
 
                 if (Controller.GetIsCorrectionSnapFinished())
                 {
-                    Debug.Log("Snap Corrected");
                     FinishSnap();
                     return;
                 }
@@ -323,7 +318,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
                     new (States.Stationary, new StationaryState()),
                     new (States.Rotating, new RotatingState()),
                     new (States.ChangingDirection, new ChangingDirectionState()),
-                    new (States.Stopping, new StoppingState()),
                     new (States.Snapping, new SnappingState()),
                     new (States.CorrectionSnapping, new CorrectionSnapping())
                 };
@@ -409,6 +403,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
 
         public void SetDirection(float direction)
         {
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if(_direction == direction) return;
             
             _lastDirection = _direction;
@@ -428,7 +423,7 @@ namespace _Main.Scripts.ShieldRotation.Movement
         {
             _hasToCorrectSnap = true;
             
-            _targetCorrectionAngle = GetAngleFromSlot(targetSlot, 180f);
+            _targetCorrectionAngle = GetAngleFromSlot(targetSlot, 0);
         }
 
         public void ClearCorrectionData()
@@ -492,11 +487,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
         {
             _angularSpeed += (_data.Acceleration * deltaTime) * direction;
         }
-
-        public void DecreaseSpeed(float deltaTime)
-        {
-            _angularSpeed = Mathf.MoveTowards(_angularSpeed, 0, _data.Deceleration * deltaTime);
-        }
         
         public void SaveLastMovementSpeedRatio() => _lastMovementSpeedRatio = SpeedRatio;
 
@@ -517,8 +507,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
             targetSlot += (int)(selectedValue * signedLastDir);
             
             _angleToSnap = GetAngleFromSlot(targetSlot);
-
-            ClearTravelledSlots();
         }
         
         public void SmoothSnapToSlot(float deltaTime)
@@ -584,7 +572,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
         public void TransitionToStationary() => _controller.Transition(States.Stationary);
         public void TransitionToRotating() => _controller.Transition(States.Rotating);
         public void TransitionToChangingDirection() => _controller.Transition(States.ChangingDirection);
-        public void TransitionToStopping() => _controller.Transition(States.Stopping);
         public void TransitionSnapping() => _controller.Transition(States.Snapping);
         public void TransitionCorrectionSnapping() => _controller.Transition(States.CorrectionSnapping);
         

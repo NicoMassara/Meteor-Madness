@@ -6,7 +6,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
     {
         public float MaxSpeed { get; }
         public float Acceleration { get; }
-        public float Deceleration { get; }
         public float SnapSpeed { get; }
         public float CorrectionSnapSpeed { get; }
         public float ChangeDirectionAcceleration { get; }
@@ -35,8 +34,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
         [Header("Acceleration")]
         [Min(1)]
         [SerializeField] private float acceleration;
-        [Min(1)]
-        [SerializeField] private float deceleration;
         [Space]
         [Header("Stop")]
         [Tooltip("Time to start stop after input release")]
@@ -76,7 +73,6 @@ namespace _Main.Scripts.ShieldRotation.Movement
 
         public float MaxSpeed => maxSpeed;
         public float Acceleration => acceleration;
-        public float Deceleration => deceleration;
         public float ChangeDirectionAcceleration => changeDirectionAcceleration;
         public float CorrectionSnapSpeed => correctionSnapSpeed;
         public float SnapSpeed => snapSpeed;
