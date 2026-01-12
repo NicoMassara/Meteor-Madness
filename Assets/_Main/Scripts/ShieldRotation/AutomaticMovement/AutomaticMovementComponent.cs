@@ -199,7 +199,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
             }
 
             _hasTargetAngle = true;
-            _targetAngle = AngleHelper.GetAngleFromSlot(targetSlot,_angleSlots, 180f);
+            _targetAngle = AngleHelper.GetAngleFromSlot(targetSlot,_angleSlots, 0);
         }
 
         public void EnableCheck()

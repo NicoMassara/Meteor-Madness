@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.GlobalValues.BaseSingleton;
@@ -57,7 +58,6 @@ namespace MeteorMadness.Managers
                     var id = SecureValueManager.RegisterValue<T>();
                     _statsDic.Add(stat, new StatData<T>(id));
                 }
-                
             }
 
             public bool DoesContain(StatType statType)
@@ -190,6 +190,8 @@ namespace MeteorMadness.Managers
             if (_uintDic.DoesContain(statType))
             {
                 _uintDic.ModifyValue(statType, (uint)newValue);
+                
+                Debug.Log($"{statType} stat was set to: {newValue}");
                 return;
             }
             
@@ -209,6 +211,7 @@ namespace MeteorMadness.Managers
         {
             var statsData = DataManager.Instance.GetData<DataManager.StatsSaveData>(DataManager.SaveDataType.Stats);
             
+            // === Longest Time === //
             // Compares the Time and if the recorded is greater, its overwrites it
             if (SecureValueManager.GetDoesContainValue<uint>(_runtimeData.TimeId, out var recordedTime))
             {
@@ -219,18 +222,20 @@ namespace MeteorMadness.Managers
                 }
             }
             
-            // Compares the HighScore and if the recorded score is greater, its overwrites it
+            // === High Score ===//
+            // Compares the HighScore with the RuntimeScore and if the runtime score is greater, overwrites it
             if (SecureValueManager.GetDoesContainValue<uint>(_runtimeData.RuntimeScoreId, out var recordedScore))
             {
                 if (recordedScore > (uint)Internal_GetValueByStat(StatType.HighScore))
                 {
-                    Internal_ModifyValueByStat(StatType.HighScore, recordedTime);
+                    Internal_ModifyValueByStat(StatType.HighScore, recordedScore);
                     statsData.HighScore = (uint)Internal_GetValueByStat(StatType.HighScore);
                 }
             }
             
-            // Compares the HighScore and if the recorded score is greater, its overwrites it
-            if (SecureValueManager.GetDoesContainValue<uint>(_runtimeData.RuntimeScoreId, out var recordedStreak))
+            // === Streak === //
+            // Compares the Streak and if the recorded score is greater, its overwrites it
+            if (SecureValueManager.GetDoesContainValue<uint>(_runtimeData.StreakId, out var recordedStreak))
             {
                 if (recordedStreak > (uint)Internal_GetValueByStat(StatType.Streak))
                 {
@@ -239,27 +244,32 @@ namespace MeteorMadness.Managers
                 }
             }
             
-            
+            // === Total Score === //
             // Adds to the total score the runtime one
             Internal_AddValueByStat(StatType.TotalScored, GetRuntimeScore());
             statsData.TotalScore = (uint)Internal_GetValueByStat(StatType.TotalScored);
             
+            // === Times Played === //
             // Adds a game played
             Internal_AddValueByStat(StatType.TimesPlayed, (uint)1);
             statsData.GamesPlayed = (uint)Internal_GetValueByStat(StatType.TimesPlayed);
             
+            // === Collision Count === //
             // Adds to the total collision count
-            Internal_AddValueByStat(StatType.Collision, GetRuntimeScore());
+            Internal_AddValueByStat(StatType.Collision, GetRuntimeValue(StatType.Collision));
             statsData.CollisionAmount = (uint)Internal_GetValueByStat(StatType.Collision);
             
+            // === Deflect Count === //
             // Adds to the total deflect count
-            Internal_AddValueByStat(StatType.Deflect, GetRuntimeScore());
+            Internal_AddValueByStat(StatType.Deflect, GetRuntimeValue(StatType.Deflect));
             statsData.DeflectAmount = (uint)Internal_GetValueByStat(StatType.Deflect);
             
+            // === Ability Count === //
             // Adds to the total ability use count
-            Internal_AddValueByStat(StatType.Ability, GetRuntimeScore());
+            Internal_AddValueByStat(StatType.Ability, GetRuntimeValue(StatType.Ability));
             statsData.AbilityUseAmount = (uint)Internal_GetValueByStat(StatType.Ability);
             
+            Debug.Log($"Collisions: {statsData.CollisionAmount}\n");
             
             DataManager.Instance.SaveGameData(statsData, DataManager.SaveDataType.Stats);
         }
@@ -289,22 +299,30 @@ namespace MeteorMadness.Managers
 
         #region Tools
 
-        private void ModifyValueBySecureId<T>(StatType statType, GeneratedId secureId) where T : struct
+        private uint GetRuntimeValue(StatType statType)
         {
-            if (SecureValueManager.GetDoesContainValue<T>(secureId, out var securedValue))
+            if(_runtimeData == null)
+                return 0;
+
+            GeneratedId selectedId;
+            
+            switch (statType)
             {
-                Internal_ModifyValueByStat(statType, securedValue);
+                case StatType.HighScore: selectedId = _runtimeData.RuntimeScoreId; break;
+                case StatType.Collision: selectedId = _runtimeData.CollisionId; break;
+                case StatType.Deflect: selectedId = _runtimeData.DeflectId; break;
+                case StatType.Ability: selectedId = _runtimeData.AbilityUseId; break;
+                case StatType.Streak: selectedId = _runtimeData.StreakId; break;
+                default: return 0;
             }
-        }
-        
-        private void AddValueBySecureId<T>(StatType statType, GeneratedId secureId) where T : struct
-        {
-            if (SecureValueManager.GetDoesContainValue<T>(secureId, out var securedValue))
-            {
-                Internal_AddValueByStat(statType, securedValue);
-            }
+            
+            if(SecureValueManager.GetDoesContainValue<uint>(selectedId, out var runtimeScore))
+                return runtimeScore;
+            
+            return 0;
         }
 
         #endregion
+        
     }
 }

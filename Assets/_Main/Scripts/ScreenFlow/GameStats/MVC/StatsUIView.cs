@@ -97,8 +97,9 @@ namespace MeteorMadness.ScreenFlow.Stats
             UIComponents.SetGamesPlayedText("Stats.GamesPlayed", statsData.GamesPlayed);
             UIComponents.SetDeflectStreakText("Stats.DeflectStreak",statsData.DeflectStreak);
             UIComponents.SetLongestTimeText("Stats.LongestTime",statsData.LongestTime);
-            UIComponents.SetHighScoreText("Stats.HighScore", statsData.HighScore);
-            
+     
+            var finalHighScore = statsData.HighScore * GetPointsMultiplier();
+            UIComponents.SetHighScoreText("Stats.HighScore", finalHighScore);
 
             var finalScore = statsData.TotalScore * GetPointsMultiplier();
             UIComponents.SetAllScoreText("Stats.HistoricScore",finalScore);

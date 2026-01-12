@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Contracts.Events;
+using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.BaseSingleton;
 using MeteorMadness.Managers;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace MeteorMadness.Vibration
         {
             
 #if UNITY_EDITOR
-            _canVibrate = true;
+            _canVibrate = GameParameters.DevelopmentValues.VibrationEnabled;
 #else
             _canVibrate = SettingsManager.Instance.GetVibration();
 #endif

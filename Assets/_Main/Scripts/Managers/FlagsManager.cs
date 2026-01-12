@@ -95,11 +95,11 @@ namespace MeteorMadness.Managers
 
         #region Setters
 
-        private void Internal_SetHasPlayed() => SetTrue( 0);
-        private void Internal_SetHasCompletedTutorial() => SetTrue( 1);
-        private void Internal_SetHasOpenedCosmetics() => SetTrue( 2);
-        private void Internal_SetHasOpenedStats() => SetTrue( 3);
-        private void Internal_SetHasOpenedLore() => SetTrue( 4);
+        private void Internal_SetHasPlayed() => SetTrue(0);
+        private void Internal_SetHasCompletedTutorial() => SetTrue(1);
+        private void Internal_SetHasOpenedCosmetics() => SetTrue(2);
+        private void Internal_SetHasOpenedStats() => SetTrue(3);
+        private void Internal_SetHasOpenedLore() => SetTrue(4);
 
         #endregion
 
