@@ -51,6 +51,7 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         [SerializeField] private float travelRatioToTriggerSpawn;
         [Space(2)]
         [Header("Spawn Data")]
+        [Min(0)]
         [SerializeField] private float spawnDelay;
         [Min(0)]
         [SerializeField] private float spawnDelayVariation;

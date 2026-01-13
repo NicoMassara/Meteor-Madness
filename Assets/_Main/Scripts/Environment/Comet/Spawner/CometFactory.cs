@@ -120,10 +120,9 @@ namespace _Main.Scripts.Environment.Comet.Spawner
                         debugComet.Distance = currentDistance;
                     }
 #endif
-                    var hasReached = data.LastDistance - currentDistance <= 0f;
-                    
-                    if (hasReached)
+                    if (data.LastDistance - currentDistance <= 0f)
                     {
+                        Debug.Log("Reached Target");
                         OnTargetReached?.Invoke(data.Comet);
                         RemoveCometData(data);
                     }
@@ -215,59 +214,10 @@ namespace _Main.Scripts.Environment.Comet.Spawner
 
             public CometSpawner(CometView cometPrefab, ICometData data , int startCapacity = 3)
             {
-                _pool = new GenericPool<CometView>(cometPrefab, startCapacity);
+                _pool = new GenericPool<CometView>(cometPrefab, startCapacity, 10, "Comet");
                 _spawnData = data;
             }
-
-            private Vector2 GetSpawnWorldPosition(SpawnPosition spawnPos, Camera worldCamera)
-            {
-                var screenX = spawnPos switch
-                {
-                    SpawnPosition.BottomRight or SpawnPosition.TopRight => Random.Range(Screen.width/2, Screen.width),
-                    SpawnPosition.BottomLeft or SpawnPosition.TopLeft => Random.Range(0,Screen.width/2),
-                    SpawnPosition.UpperLeft or SpawnPosition.LowerLeft => 0,
-                    SpawnPosition.UpperRight or SpawnPosition.LowerRight => Screen.width,
-                    _ =>  Random.Range(Screen.width/2, Screen.width)
-                };
-                var screenY = spawnPos switch
-                {
-                    SpawnPosition.BottomRight or SpawnPosition.BottomLeft => 0,
-                    SpawnPosition.TopRight or SpawnPosition.TopLeft => Screen.height,
-                    SpawnPosition.UpperLeft or SpawnPosition.UpperRight => Random.Range(Screen.height/2, Screen.height),
-                    SpawnPosition.LowerLeft or SpawnPosition.LowerRight => Random.Range(0, Screen.height/2),
-                    _ =>  0
-                };
-                
-                return GetPositionInWorld(worldCamera, screenX, screenY);
-            }
             
-            private Vector2 GetTargetPosition(SpawnPosition spawnPos, Camera worldCamera)
-            {
-                var screenX = spawnPos switch
-                {
-                    SpawnPosition.BottomRight or SpawnPosition.TopRight => Random.Range(0, Screen.width/2),
-                    SpawnPosition.BottomLeft or SpawnPosition.TopLeft => Random.Range(Screen.width/2, Screen.width),
-                    SpawnPosition.UpperLeft or SpawnPosition.LowerLeft => Screen.width,
-                    SpawnPosition.UpperRight or SpawnPosition.LowerRight => 0,
-                    _ =>  Random.Range(0, Screen.width/2)
-                };
-                var screenY = spawnPos switch
-                {
-                    SpawnPosition.BottomRight or SpawnPosition.BottomLeft => Screen.height,
-                    SpawnPosition.TopRight or SpawnPosition.TopLeft => 0,
-                    SpawnPosition.UpperLeft or SpawnPosition.LowerLeft => Random.Range(0, Screen.height/2),
-                    SpawnPosition.UpperRight or SpawnPosition.LowerRight => Random.Range(Screen.height/2, Screen.height),
-                    _ =>  Screen.height
-                };
-                
-                return GetPositionInWorld(worldCamera, screenX, screenY);
-            }
-
-            private Vector2 GetPositionInWorld(Camera worldCamera, float screenX, float screenY)
-            {
-                return worldCamera.ScreenToWorldPoint(new Vector3(screenX + XOffset, screenY + YOffset, -10f));
-            }
-
             public IComet SpawnComet(Camera worldCamera, out Vector2 targetPosition)
             {
                 var spawnState = GetSpawnPosition();
@@ -325,6 +275,8 @@ namespace _Main.Scripts.Environment.Comet.Spawner
                 return _spawnData.ScaleRange.x + value * (_spawnData.ScaleRange.y - _spawnData.ScaleRange.x);
             }
 
+            #region Position
+
             private SpawnPosition GetSpawnPosition()
             {
                 bool isUpperBottom = Random.Range(0,1) < 0.75f;
@@ -332,6 +284,57 @@ namespace _Main.Scripts.Environment.Comet.Spawner
                 
                 return (SpawnPosition)(isUpperBottom ? value : 4 + value);
             }
+            
+            private Vector2 GetSpawnWorldPosition(SpawnPosition spawnPos, Camera worldCamera)
+            {
+                var screenX = spawnPos switch
+                {
+                    SpawnPosition.BottomRight or SpawnPosition.TopRight => Random.Range(Screen.width/2, Screen.width),
+                    SpawnPosition.BottomLeft or SpawnPosition.TopLeft => Random.Range(0,Screen.width/2),
+                    SpawnPosition.UpperLeft or SpawnPosition.LowerLeft => 0,
+                    SpawnPosition.UpperRight or SpawnPosition.LowerRight => Screen.width,
+                    _ =>  Random.Range(Screen.width/2, Screen.width)
+                };
+                var screenY = spawnPos switch
+                {
+                    SpawnPosition.BottomRight or SpawnPosition.BottomLeft => 0,
+                    SpawnPosition.TopRight or SpawnPosition.TopLeft => Screen.height,
+                    SpawnPosition.UpperLeft or SpawnPosition.UpperRight => Random.Range(Screen.height/2, Screen.height),
+                    SpawnPosition.LowerLeft or SpawnPosition.LowerRight => Random.Range(0, Screen.height/2),
+                    _ =>  0
+                };
+                
+                return GetPositionInWorld(worldCamera, screenX, screenY);
+            }
+            
+            private Vector2 GetTargetPosition(SpawnPosition spawnPos, Camera worldCamera)
+            {
+                var screenX = spawnPos switch
+                {
+                    SpawnPosition.BottomRight or SpawnPosition.TopRight => Random.Range(0, Screen.width/2),
+                    SpawnPosition.BottomLeft or SpawnPosition.TopLeft => Random.Range(Screen.width/2, Screen.width),
+                    SpawnPosition.UpperLeft or SpawnPosition.LowerLeft => Screen.width,
+                    SpawnPosition.UpperRight or SpawnPosition.LowerRight => 0,
+                    _ =>  Random.Range(0, Screen.width/2)
+                };
+                var screenY = spawnPos switch
+                {
+                    SpawnPosition.BottomRight or SpawnPosition.BottomLeft => Screen.height,
+                    SpawnPosition.TopRight or SpawnPosition.TopLeft => 0,
+                    SpawnPosition.UpperLeft or SpawnPosition.LowerLeft => Random.Range(0, Screen.height/2),
+                    SpawnPosition.UpperRight or SpawnPosition.LowerRight => Random.Range(Screen.height/2, Screen.height),
+                    _ =>  Screen.height
+                };
+                
+                return GetPositionInWorld(worldCamera, screenX, screenY);
+            }
+
+            private Vector2 GetPositionInWorld(Camera worldCamera, float screenX, float screenY)
+            {
+                return worldCamera.ScreenToWorldPoint(new Vector3(screenX + XOffset, screenY + YOffset, -10f));
+            }
+            
+            #endregion
         }
         
         #endregion

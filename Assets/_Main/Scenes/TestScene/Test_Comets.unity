@@ -406,6 +406,7 @@ MonoBehaviour:
   cometPrefab: {fileID: 7952563521024469194, guid: 8fdf74aa3f376ad43b20343164a269ee, type: 3}
   gameCamera: {fileID: 1442004542}
   spawnData: {fileID: 11400000, guid: 4d888d815a1cfdb4ba6c19bfcc8b0d92, type: 2}
+  debugEnable: 1
 --- !u!4 &1514824037
 Transform:
   m_ObjectHideFlags: 0

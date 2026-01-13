@@ -9,18 +9,21 @@ namespace MeteorMadness.GlobalValues.Tools
     {
         private readonly ObjectPool<T> _pool;
         private readonly List<T> _active = new List<T>();
-
-        public GenericPool(T prefab, int defaultCapacity = 20, int maxSize = 100)
+        private readonly string _itemName;
+        
+        public GenericPool(T prefab, int defaultCapacity = 20, int maxSize = 100, string itemName = "Pool Object")
         {
             _pool = new ObjectPool<T>(
                 createFunc: () =>  CreateObject(prefab),
-                actionOnGet: OnGet,
+                actionOnGet: OnGet, 
                 actionOnRelease: OnRelease,
                 actionOnDestroy: b => UnityEngine.Object.Destroy(b.gameObject),
                 collectionCheck: true,
                 defaultCapacity: defaultCapacity,
                 maxSize: maxSize
             );
+            
+            _itemName = itemName;
 
             for (int i = 0; i < defaultCapacity; i++)
             { 
@@ -32,11 +35,13 @@ namespace MeteorMadness.GlobalValues.Tools
 
         private T CreateObject(T prefab)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             var item = UnityEngine.Object.Instantiate(prefab);
-            item.name = item.name.Replace("(Clone)", "");
-            item.name = $"{item.name} - {_active.Count+1}";
-
+            item.name = $"{_itemName} - {_active.Count+1}";
             return item;
+#else
+            return UnityEngine.Object.Instantiate(prefab);
+#endif
         }
 
         private void OnGet(T meteor)
