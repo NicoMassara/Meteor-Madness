@@ -205,6 +205,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             _fsmController = new MediatorFsmController(this);
             Disable();
         }
+        
 
         #region Private Methods
 
@@ -216,6 +217,10 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             {
                 var targetSlot = _movementCorrection.GetAngleSlotFromTarget(_currentTarget);
                 _inputMovement.SetCorrectionData(targetSlot);
+            }
+            else
+            {
+                ClearTarget();
             }
         }
 
@@ -259,6 +264,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             if(_currentTarget == null) return;
             
             _currentTarget.OnTargetDeath -= Target_OnDeath;
+            _currentTarget.EnableTargetable();
             _currentTarget = null;
         }
 
@@ -370,6 +376,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         // === Target === //
         private void Target_OnDeath(ITargetable targetable)
         {
+            Debug.Log("Target_OnDeath");
             targetable.OnTargetDeath -= Target_OnDeath;
             _currentTarget = null;
             
@@ -444,6 +451,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         
         private void IAutomaticMovement_OnCheckForTargetHandler()
         {
+            Debug.Log("IAutomaticMovement_OnCheckForTargetHandler");
             TrySetTargetToAutomatic(); 
         }
         

@@ -210,6 +210,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             if (FlagsManager.GetHasPlayed() == false)
             {
                 FlagsManager.SetHasPlayed();
+                FlagsManager.SaveFlags();
             }
 
             GameConfigManager.Instance.SetDamage(DamageTypes.Standard);

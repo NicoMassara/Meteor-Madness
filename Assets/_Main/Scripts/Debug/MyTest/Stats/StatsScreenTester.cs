@@ -14,50 +14,23 @@ namespace _Main.Scripts.MyTest.Stats
         [Serializable]
         private class StatsData
         {
-            [Range(0, 1)]
-            [SerializeField] private float deflectCount;
-            //
-            [Range(0, 1)]
-            [SerializeField] private float collisionCount;
-            //
-            [Range(0, 1)]
-            [SerializeField] private float abilityUseCount;
-            //
-            [Range(0, 1)]
-            [SerializeField] private float timesPlayed;
-            //
-            [Range(0, 1)]
-            [SerializeField] private float maxStreak;
-            //
-            [Range(0, 1)]
-            [SerializeField] private float longestTime;
-            //
-            [Range(0, 1)]
-            [SerializeField] private float highScore;
-            //
-            [Range(0, 1)]
-            [SerializeField] private float historicalScore;
+            [Min(0)]
+            public uint DeflectCount;
+            [Min(0)]
+            public uint CollisionCount;
+            [Min(0)]
+            public uint AbilityUseCount;
+            [Min(0)]
+            public uint TimesPlayed;
+            [Min(0)]
+            public uint MaxStreak;
+            [Min(0)]
+            public uint LongestTime;
+            [Min(0)]
+            public uint HighScore;
+            [Min(0)]
+            public uint HistoricalScore;
 
-
-            public uint DeflectCount => LerpFullRangeUInt(deflectCount);
-            public uint CollisionCount => LerpFullRangeUInt(collisionCount);
-            public uint AbilityUseCount => LerpFullRangeUInt(abilityUseCount);
-            public uint TimesPlayed => LerpFullRangeUInt(timesPlayed);
-            public uint MaxStreak => LerpFullRangeUInt(maxStreak);
-            public uint LongestTime => LerpFullRangeUInt(longestTime, uint.MaxValue-1);
-            public uint HighScore => LerpFullRangeUInt(highScore);
-            public uint HistoricalScore => LerpFullRangeUInt(historicalScore);
-            
-            
-            public static uint LerpFullRangeUInt(float t,  uint max = uint.MaxValue)
-            {
-                t = Math.Clamp(t, 0f, 1f);
-
-                uint min = uint.MinValue;
-                
-                return (uint)Math.Round(min + (max - min) * t);
-            }
-            
         }
         
         [SerializeField] private StatsData statsData;

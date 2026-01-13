@@ -6,7 +6,7 @@ namespace MeteorMadness.Gameplay.Abilities.So
     [CreateAssetMenu(fileName = "SO_AbilityTimeData_[ABILITYNAME]_Default", menuName = "Scriptable Objects/Ability/Time Data", order = 0)]
     public class AbilityTimeDataSo : ScriptableObject, IAbilityTimeData
     {
-        [Range(1,15)]
+        [Min(1)]
         [SerializeField] private float activeTime;
         [Space]
         [Header("Zooming")]

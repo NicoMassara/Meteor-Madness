@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Contracts.Events;
+﻿using DG.Tweening;
+using MeteorMadness.Contracts.Events;
 using UnityEngine.SceneManagement;
 
 namespace MeteorMadness.Managers
@@ -9,6 +10,8 @@ namespace MeteorMadness.Managers
         {
             SingletonEvents.DestroySingleton();
             SceneManager.LoadScene(0);
+            DOTween.Clear();
+            DOTween.ClearCachedTweens();
         }
     }
 }

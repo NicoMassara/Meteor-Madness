@@ -130,8 +130,8 @@ namespace MeteorMadness.Gameplay.Shield
             OnAbilitySetActive?.Invoke(AbilityType.Automatic, isActive);
             if (isActive)
             {
+                _shieldMovement.OnStopSnapping += AutomaticTargetFound;
                 _shieldMovement.EnableAutomatic();
-                ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Automatic);
                 OnAbilityRunning?.Invoke(AbilityType.Automatic);
             }
             else
@@ -140,6 +140,12 @@ namespace MeteorMadness.Gameplay.Shield
                 ShieldEventCaller.NotifyShieldTypeDisabled(ShieldType.Automatic);
                 OnAbilityFinished?.Invoke();
             }
+        }
+
+        private void AutomaticTargetFound()
+        {
+            _shieldMovement.OnStopSnapping -= AutomaticTargetFound;
+            ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Automatic);
         }
 
         private void HandleSetGold(bool isActive)

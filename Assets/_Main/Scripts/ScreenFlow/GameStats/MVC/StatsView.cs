@@ -71,7 +71,7 @@ namespace MeteorMadness.ScreenFlow.Stats
                 CollisionAmount = (uint)StatsManager.GetValueByStat(StatType.Collision),
                 AbilityUseAmount = (uint)StatsManager.GetValueByStat(StatType.Ability),
                 GamesPlayed = (uint)StatsManager.GetValueByStat(StatType.TimesPlayed),
-                DeflectStreak = (uint)StatsManager.GetValueByStat(StatType.Deflect),
+                DeflectStreak = (uint)StatsManager.GetValueByStat(StatType.Streak),
                 HighScore = (uint)StatsManager.GetValueByStat(StatType.HighScore),
                 TotalScore = (uint)StatsManager.GetValueByStat(StatType.TotalScored),
                 LongestTime = (uint)StatsManager.GetValueByStat(StatType.LongestTime)

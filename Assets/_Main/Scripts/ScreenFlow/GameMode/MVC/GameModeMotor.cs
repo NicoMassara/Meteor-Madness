@@ -155,7 +155,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         public void SaveScore()
         {
-            // The View receives this data and stores it in the GameManager
+            // The View receives this data and stores it in the StatsManager
             // So the DefeatScreen can use it 
             NotifyAll(GameModeObserverMessage.SaveScore, _stats.CreateGameplayStatsData());
         }

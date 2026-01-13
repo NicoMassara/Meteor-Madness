@@ -59,7 +59,9 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         public DataManagerTools.GameplayStatsIdData CreateGameplayStatsData()
         {
-            return new DataManagerTools.GameplayStatsIdData
+            Debug.Log($"Collisions: {GetValueById<uint>(_collisionId)}");
+            
+            var data =  new DataManagerTools.GameplayStatsIdData
             {
                 RuntimeScoreId = _currentScoreId,
                 CollisionId = _collisionId,
@@ -68,6 +70,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 StreakId = _maxStreakId,
                 TimeId = _timeId,
             };
+            
+            return data;
         }
 
         #region Score
@@ -91,6 +95,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
             var current = GetValueById<uint>(_collisionId);
             current++;
             UpdateValueById(_collisionId,current);
+            
+            Debug.Log($"Collisions: {current}");
             ClearStreak();
         }
 

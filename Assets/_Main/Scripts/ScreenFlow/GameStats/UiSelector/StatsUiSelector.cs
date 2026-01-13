@@ -43,7 +43,7 @@ namespace _Main.Scripts.GameStats
             => SetText(deflectStreakText, $"{GetLocalizedString(langKey)}: {value:D8}");
         public void SetLongestTimeText(string langKey, uint value) 
             => SetText(longestTimeText, $"{GetLocalizedString(langKey)}: {FormatToHms(value)}");
-        public void SetHighScoreText(string langKey, uint value) 
+        public void SetHighScoreText(string langKey, long value) 
             => SetText(highScoreText, $"{GetLocalizedString(langKey)}: {value:D8}");
         public void SetAllScoreText(string langKey, long value) 
             => SetText(allScoreText, $"{GetLocalizedString(langKey)}: {value:D8}");

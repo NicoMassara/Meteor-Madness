@@ -954,9 +954,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9cb7a7315bb4f23b15aab1f2b9ca59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startLevel: 0
+  startLevel: 9
   startMeteorsEnable: 1
   timeScale:
+    isEnable: 0
     globalTimeScale: 1
     gameplayTimeScale: 1
     shieldTimeScale: 1

@@ -84,9 +84,9 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
         {
             public override void Awake()
             {
+                Controller.DisableCheck();
                 Controller.TriggerOnStartSnapping();
                 Controller.CalculateAngleData();
-                Controller.DisableCheck();
             }
 
             public override void Execute(float deltaTime)
@@ -102,6 +102,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
 
             public override void Sleep()
             {
+                Debug.Log("Automatic - CheckingState::Sleep");
                 Controller.TriggerOnStopSnapping();
                 Controller.ClearAngleData();
             }
@@ -199,7 +200,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
             }
 
             _hasTargetAngle = true;
-            _targetAngle = AngleHelper.GetAngleFromSlot(targetSlot,_angleSlots, 180f);
+            _targetAngle = AngleHelper.GetAngleFromSlot(targetSlot,_angleSlots, 0);
         }
 
         public void EnableCheck()
@@ -224,7 +225,10 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
         // === Actions === // 
         #region Actions
 
-        public void DisableCheck() => _canCheck = false;
+        public void DisableCheck()
+        {
+            _canCheck = false;
+        }
 
         public void CheckForTarget(float deltaTime)
         {

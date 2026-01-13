@@ -29,11 +29,16 @@ namespace MeteorMadness.Gameplay.Abilities.Sphere
         {
             CanBeTargeted = false;
         }
+        
+        public void EnableTargetable()
+        {
+            CanBeTargeted = true;
+        }
 
         public override void SetValues(AbilitySphereValues data)
         {
             base.SetValues(data);
-            CanBeTargeted = true;
+            EnableTargetable();
             OnStartSound?.Invoke();
         }
 
