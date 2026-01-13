@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63cf8c771d684c47979a621f40ca38ee, type: 3}
   m_Name: SO_AbilityTimeData_Automatic_Default
   m_EditorClassIdentifier: 
-  activeTime: 15
+  activeTime: 10
   zoomOut: 0.75
   zoomIn: 0.75
   startAction: 0.25

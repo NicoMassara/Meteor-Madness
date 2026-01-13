@@ -107,5 +107,6 @@ namespace _Main.Scripts.ShieldRotation.Contracts
         public bool CanBeTargeted { get;}
         public event Action<ITargetable> OnTargetDeath;
         public void DisableTargetable();
+        public void EnableTargetable();
     }
 }

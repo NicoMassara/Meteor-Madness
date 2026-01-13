@@ -259,6 +259,9 @@ namespace MeteorMadness.Gameplay.Abilities
         
         private event Action OnSuperShieldFinished;
         private event Action OnSuperShieldStarted;
+        
+        private event Action OnAutomaticShieldFinished;
+        private event Action OnAutomaticShieldStarted;
 
         #region Commands/Actions
 
@@ -342,6 +345,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
             
             
+            
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(start))
                 .Then(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
@@ -405,14 +409,28 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void OnShieldTypeDisabled(ShieldEvents.NotifyShieldTypeDisabled input)
         {
-            if(input.Type == ShieldType.Super)
-                OnSuperShieldFinished?.Invoke();
+            switch (input.Type)
+            {
+                case ShieldType.Super:
+                    OnSuperShieldFinished?.Invoke();
+                    break;
+                case ShieldType.Automatic:
+                    OnAutomaticShieldFinished?.Invoke();
+                    break;
+            }
         }
         
         private void OnShieldTypeEnabled(ShieldEvents.NotifyShieldTypeEnabled input)
         {
-            if(input.Type == ShieldType.Super)
-                OnSuperShieldStarted?.Invoke();
+            switch (input.Type)
+            {
+                case ShieldType.Super:
+                    OnSuperShieldStarted?.Invoke();
+                    break;
+                case ShieldType.Automatic:
+                    OnAutomaticShieldStarted?.Invoke();
+                    break;
+            }
         }
 
         #endregion
@@ -708,6 +726,7 @@ namespace MeteorMadness.Gameplay.Abilities
             
             return ActionBuilder.Start()
                 .Do(new SimpleCommandAction(startSequence))
+                .Then(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
                 .Then(new PublishAbilityActiveAction(AbilityType.Automatic, true))
                 .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
                 .Then(_cameraZoomIn)
@@ -716,8 +735,13 @@ namespace MeteorMadness.Gameplay.Abilities
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StartAction))
                 .Then(new EnableShieldTypeAction(ShieldType.Automatic))
-                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
                 .Then(_cameraZoomOut)
+                .Then(new WaitForEventAction(
+                    subscribe: callback => OnAutomaticShieldStarted += callback,
+                    unsubscribe: callback => OnAutomaticShieldStarted -= callback))
+                .Then(new InstantAction(()=> ShieldEventUnSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
+                .Then(new LogDebugAction("Automatic Shield Active"))
+                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
                 .Then(_playSpeedTimeSound)
                 .Then(new RunAbilityTimerAction(AbilityType.Automatic, RunActiveTimer))
                 .Then(_enableAbilityUI)
@@ -762,7 +786,7 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateAutomaticData(IAbilityTimeConfigData configData)
         {
-            float targetTimeScale = 0.025f;
+            float targetTimeScale = 0f;
             var selectedAbility = AbilityType.Automatic;
             var timeData = configData.GetAbilityTimeData(selectedAbility);
             

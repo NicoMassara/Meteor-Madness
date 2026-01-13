@@ -24,13 +24,20 @@ namespace _Main.Scripts.Meteor
         
         public void DisableTargetable()
         {
+            Debug.Log("Meteor Targetable Disabled");
             CanBeTargeted = false;
+        }
+
+        public void EnableTargetable()
+        {
+            Debug.Log("Meteor Targetable Enable");
+            CanBeTargeted = true;
         }
 
         public override void SetValues(MeteorValuesData data)
         {
             base.SetValues(data);
-            CanBeTargeted = true;
+            EnableTargetable();
         }
         
         public void SetEnableMovement(bool enable)
@@ -93,6 +100,31 @@ namespace _Main.Scripts.Meteor
         {
             OnDeath?.Invoke();
             OnTargetDeath?.Invoke(this);
+        }
+
+        private void OnGUI()
+        {
+            Camera cam = Camera.main;
+            if (cam == null) return;
+
+            // World → Screen
+            Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
+
+            // Tamaño del panel
+            float width = 140f;
+            float height = 50f;
+
+            // Convertir a coordenadas GUI (Y invertida)
+            float x = screenPos.x - width * 0.5f;
+            float y = Screen.height - screenPos.y - height - 10f;
+
+            Rect rect = new Rect(x, y, width, height);
+            GUIStyle style = new GUIStyle(GUI.skin.box);
+            style.alignment = TextAnchor.MiddleCenter;
+            style.fontSize = 14;
+            style.normal.textColor = CanBeTargeted ? Color.green : Color.red;
+            
+            GUI.Box(rect, $"Targetable: {CanBeTargeted}",style);
         }
     }
 

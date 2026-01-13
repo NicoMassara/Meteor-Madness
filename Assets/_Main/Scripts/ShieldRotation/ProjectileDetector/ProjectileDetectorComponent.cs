@@ -27,7 +27,7 @@ namespace _Main.Scripts.ShieldRotation.ProjectileDetector
 
             if (hitCount == 0)
             {
-                //Debug.Log("No Hit");
+                Debug.Log("No Hit");
                 return null;
             }
 
@@ -35,13 +35,15 @@ namespace _Main.Scripts.ShieldRotation.ProjectileDetector
             
             if (collisionIndex == -1)
             {
-                //Debug.Log("No Hit");
+                //Debug.Log("No near projectile");
                 return null;
             }
             
             var target = _colliders[collisionIndex].GetComponent<ITargetable>();
 
             target.DisableTargetable();
+            
+            Debug.Log($"Near Target Found");
             
             return target; 
         }
@@ -54,10 +56,15 @@ namespace _Main.Scripts.ShieldRotation.ProjectileDetector
             for (int i = 0; i < hitCount; i++)
             {
                 var item = _colliders[i].GetComponent<ITargetable>();
-                if (item == null) continue;
+                if (item == null)
+                {
+                    Debug.Log("Collider is null");
+                    continue;
+                }
+                
                 if (item.CanBeTargeted == false)
                 {
-                    //Debug.Log("Target can't be targeted");
+                    Debug.Log("Target can't be targeted");
                     continue;
                 }
 

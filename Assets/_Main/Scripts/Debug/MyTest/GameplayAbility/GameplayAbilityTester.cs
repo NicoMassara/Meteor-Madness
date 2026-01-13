@@ -27,6 +27,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         [Serializable]
         private class TimeScales
         {
+            public bool isEnable;
             [Range(0,1)]
             public float globalTimeScale;
             [Range(0,1)]
@@ -57,6 +58,8 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
 
         private void Update()
         {
+            if(timeScale.isEnable == false) return;
+            
             CustomTime.GlobalTimeScale = timeScale.globalTimeScale;
             CustomTime.GlobalFixedTimeScale = timeScale.globalTimeScale;
             CustomTime.SetChannelTimeScale(UpdateGroup.Gameplay, timeScale.gameplayTimeScale);

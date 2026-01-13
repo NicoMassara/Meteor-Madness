@@ -18,6 +18,11 @@ namespace _Main.Scripts.ShieldRotation.Mediator.Test
             canBeTargeted = false;
         }
 
+        public void EnableTargetable()
+        {
+            canBeTargeted = true;
+        }
+
         public void TriggerDeath()
         {
             OnTargetDeath?.Invoke(this);
