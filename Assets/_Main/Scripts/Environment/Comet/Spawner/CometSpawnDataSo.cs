@@ -20,7 +20,6 @@ namespace _Main.Scripts.Environment.Comet.Spawner
     {
         public float SpawnDelay { get; }
         public float SpawnDelayVariation { get; }
-        public float FirstSpawnDelay { get; }
     }
 
     [CreateAssetMenu(fileName = "So_CometSpawn_Default", menuName = "Comet/Spawn Data", order = 0)]
@@ -56,7 +55,6 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         [SerializeField] private float spawnDelay;
         [Min(0)]
         [SerializeField] private float spawnDelayVariation;
-        [SerializeField] private float firstSpawnDelay;
 
         public float MovementSpeed => movementSpeed;
 
@@ -69,6 +67,5 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         public float SpawnDelay => spawnDelay;
 
         public float SpawnDelayVariation => spawnDelayVariation;
-        public float FirstSpawnDelay => firstSpawnDelay;
     }
 }

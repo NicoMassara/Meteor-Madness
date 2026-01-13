@@ -1,10 +1,12 @@
 ﻿using System;
+using _Main.Scripts.Core.FlyingObject.Components;
 using MeteorMadness.Core.FlyingObject;
 using UnityEngine;
 
 namespace _Main.Scripts.Environment.Comet
 {
     [RequireComponent(typeof(CometView))]
+    [RequireComponent(typeof(FlyingObjectTrail))]
     public class CometSetup : MonoBehaviour
     {
         private CometController _controller;

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Main.Scripts.EventBus;
+using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Core.FlyingObject;
 using MeteorMadness.GlobalValues.Tools;
@@ -38,6 +40,17 @@ namespace _Main.Scripts.Environment.Comet.Spawner
                 _hasComet = true;
             }
 
+            public void ClearComets()
+            {
+                foreach (var data in _trackedComets)
+                {
+                    data.Comet.Recycle();
+                }
+                
+                _trackedComets.Clear();
+                _hasComet = false;
+            }
+
             private void RemoveCometData(CometData data)
             {
                 _trackedComets.Remove(data);
@@ -48,7 +61,7 @@ namespace _Main.Scripts.Environment.Comet.Spawner
             {
                 if(_hasComet == false) return;
 
-                foreach (var data in _trackedComets)
+                /*foreach (var data in _trackedComets)
                 {
                     var currentDistance = Vector2.Distance(data.TargetPosition, data.Comet.Position);
 
@@ -57,18 +70,23 @@ namespace _Main.Scripts.Environment.Comet.Spawner
                         OnTargetReached?.Invoke(data.Comet);
                         RemoveCometData(data);
                     }
-                }
+                }*/
             }
         }
         private class CometRatioDistanceTracker
         {
+            private readonly IDistanceData _spawnData;
             private IComet _comet;
-            private IDistanceData _spawnData;
             private bool _hasComet;
             private Vector2 _startPosition;
             private Vector2 _targetPosition;
 
             public event Action<IComet> OnDistanceReached;
+
+            public CometRatioDistanceTracker(IDistanceData spawnData)
+            {
+                _spawnData = spawnData;
+            }
 
             public void SetCometToTrack(IComet comet, Vector2 targetPosition)
             {
@@ -101,16 +119,17 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         private class CometSpawner
         {
             private readonly GenericPool<CometView> _pool;
+            private readonly ICometData _spawnData;
             
-            private ICometData _spawnData;
             private bool _isBottomSpawn;
 
             private float XOffset => _spawnData.SpawnOffset.x;
             private float YOffset => _spawnData.SpawnOffset.x;
 
-            public CometSpawner(CometView cometPrefab, int startCapacity = 3)
+            public CometSpawner(CometView cometPrefab, ICometData data , int startCapacity = 3)
             {
                 _pool = new GenericPool<CometView>(cometPrefab, startCapacity);
+                _spawnData = data;
             }
 
             private Vector2 GetSpawnWorldPosition(Camera worldCamera)
@@ -151,6 +170,10 @@ namespace _Main.Scripts.Environment.Comet.Spawner
                 });
                 comet.OnRecycle += Comet_OnRecycleHandler;
 
+#if UNITY_EDITOR
+                Debug.DrawLine(spawnPosition, targetPosition, Color.magenta, 5f);
+#endif
+                
                 return comet;
             }
 
@@ -188,13 +211,13 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         {            
             BootEvents.OnSubSystemRequestInitialize -= Initialize;
 
-            _spawner = new CometSpawner(cometPrefab);
-            _ratioTracker = new CometRatioDistanceTracker();
+            _spawner = new CometSpawner(cometPrefab, spawnData);
+            _ratioTracker = new CometRatioDistanceTracker(spawnData);
             _ratioTracker.OnDistanceReached += RatioTracker_OnDistanceReached;
             _distanceTracker = new CometDistanceTracker();
             _distanceTracker.OnTargetReached += DistanceTracker_OnTargerReached;
-
-            SetFirstSpawnTimer();
+            
+            SubscribeToEventBus();
             
             BootEvents.SubSystemInitialized();
         }
@@ -213,11 +236,6 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         }
 
         #region Timer
-
-        private void SetFirstSpawnTimer()
-        {
-            _spawnTimerId = TimerManager.Add(new TimerData(spawnData.FirstSpawnDelay, SpawnComet));
-        }
         
         private void SetTimerToSpawn()
         {
@@ -229,6 +247,7 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         private void PauseTimer() => TimerManager.Pause(_spawnTimerId);
 
         private void ResumeTimer() => TimerManager.Resume(_spawnTimerId);
+        private void RemoveTimer() => TimerManager.Remove(_spawnTimerId);
 
         #endregion
 
@@ -245,6 +264,40 @@ namespace _Main.Scripts.Environment.Comet.Spawner
             comet.Recycle();
         }
         
+        #endregion
+
+        #region Event Bus
+
+        private void SubscribeToEventBus()
+        {
+            CometSpawnEventSubscriber.Enable(EventBus_Comet_Enable);
+            CometSpawnEventSubscriber.Disable(EventBus_Comet_Disable);
+            CometSpawnEventSubscriber.Pause(EventBus_Comet_Pause);
+            CometSpawnEventSubscriber.Resume(EventBus_Comet_Resume);
+        }
+
+        private void EventBus_Comet_Enable(CometSpawnEvents.Enable input)
+        {
+            SetTimerToSpawn();
+        }
+        
+        private void EventBus_Comet_Disable(CometSpawnEvents.Disable input)
+        {
+            _ratioTracker.ClearComet();
+            _distanceTracker.ClearComets();
+            RemoveTimer();
+        }
+        
+        private void EventBus_Comet_Pause(CometSpawnEvents.Pause input)
+        {
+            PauseTimer();
+        }
+        
+        private void EventBus_Comet_Resume(CometSpawnEvents.Resume input)
+        {
+            ResumeTimer();
+        }
+
         #endregion
     }
 }

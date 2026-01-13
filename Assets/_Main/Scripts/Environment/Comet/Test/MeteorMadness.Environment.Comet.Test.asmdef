@@ -1,13 +1,9 @@
 {
-    "name": "MeteorMadness.Environment.Comet",
+    "name": "MeteorMadness.Environment.Comet.Test",
     "rootNamespace": "",
     "references": [
-        "MeteorMadness.Core.FlyingObject",
-        "MeteorMadness.Contracts",
-        "MeteorMadness.GlobalValues",
-        "NicolasMassara.CustomUpdateManager",
-        "NicolasMassara.CustomTimerManager",
-        "MeteorMadness.EventBus"
+        "GUID:7383e56d37c04177bd5dbfee101ce49c",
+        "GUID:080f653a58f74254bcaf4ef0dbe0adf7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

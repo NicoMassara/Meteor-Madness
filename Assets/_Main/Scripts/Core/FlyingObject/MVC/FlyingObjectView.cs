@@ -13,7 +13,8 @@ namespace MeteorMadness.Core.FlyingObject
         IPoolable<FlyingObjectView<T>>,
         IFlyingObject,
         IFlyingObjectWithValues<T>,
-        IObserver
+        IObserver,
+        IDebugFlyingObject
         where T : FlyingObjectValues
     {
         #region Interfaces
@@ -58,6 +59,13 @@ namespace MeteorMadness.Core.FlyingObject
 
         #endregion
 
+        #region IDebugFlyingObject
+        
+        public float Speed { get; private set; }
+        public float Position { get; private set; }
+
+        #endregion
+
         private void Awake()
         {
             var rb2d = GetComponent<Rigidbody2D>();
@@ -90,6 +98,11 @@ namespace MeteorMadness.Core.FlyingObject
             _movement.SetRigidbodyData(data.MovementSpeed, data.Rotation, data.Position);
             _canMove = true;
             OnObjectEnabled?.Invoke();
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            
+            Speed = data.MovementSpeed;
+#endif
         }
         
         protected virtual void HandleCollision(T data)

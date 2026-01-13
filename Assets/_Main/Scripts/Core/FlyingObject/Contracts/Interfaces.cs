@@ -8,6 +8,12 @@ namespace MeteorMadness.Core.FlyingObject.Contracts
         public event Action OnObjectDisabled;
     }
 
+    public interface IDebugFlyingObject
+    {
+        public float Speed { get; }
+        public float Position { get; }
+    }
+
     public interface IFlyingObjectWithValues<T> 
         where T : FlyingObjectValues
     {
