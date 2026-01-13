@@ -284,4 +284,12 @@ namespace MeteorMadness.Contracts
             public ulong CreateId;
         }
     }
+
+    public struct CometSpawnEvents
+    {
+        public struct Enable { }
+        public struct Disable { }
+        public struct Pause { }
+        public struct Resume { }
+    }
 }
