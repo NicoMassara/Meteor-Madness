@@ -3,7 +3,10 @@
     "rootNamespace": "",
     "references": [
         "GUID:7383e56d37c04177bd5dbfee101ce49c",
-        "GUID:080f653a58f74254bcaf4ef0dbe0adf7"
+        "GUID:080f653a58f74254bcaf4ef0dbe0adf7",
+        "MeteorMadness.Environment.Comet",
+        "MeteorMadness.Core.FlyingObject",
+        "NicolasMassara.CustomUpdateManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

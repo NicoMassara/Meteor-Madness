@@ -13,7 +13,7 @@ namespace MeteorMadness.GlobalValues.Tools
         public GenericPool(T prefab, int defaultCapacity = 20, int maxSize = 100)
         {
             _pool = new ObjectPool<T>(
-                createFunc: () =>  UnityEngine.Object.Instantiate(prefab),
+                createFunc: () =>  CreateObject(prefab),
                 actionOnGet: OnGet,
                 actionOnRelease: OnRelease,
                 actionOnDestroy: b => UnityEngine.Object.Destroy(b.gameObject),
@@ -28,6 +28,15 @@ namespace MeteorMadness.GlobalValues.Tools
             }
             
             RecycleAll();
+        }
+
+        private T CreateObject(T prefab)
+        {
+            var item = UnityEngine.Object.Instantiate(prefab);
+            item.name = item.name.Replace("(Clone)", "");
+            item.name = $"{item.name} - {_active.Count+1}";
+
+            return item;
         }
 
         private void OnGet(T meteor)

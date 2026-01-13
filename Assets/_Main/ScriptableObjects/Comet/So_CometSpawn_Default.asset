@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0abece4d3eaf46d79de4c939138c0652, type: 3}
   m_Name: So_CometSpawn_Default
   m_EditorClassIdentifier: 
-  movementSpeed: 0
-  speedVariation: 0
+  movementSpeed: 75
+  speedVariation: 30
   spawnXOffset: 0
-  spawnYOffset: 0
+  spawnYOffset: -250
   scaleRange:
-    min: 0
-    max: 0
-  travelRatioToTriggerSpawn: 0
-  spawnDelay: 0
-  spawnDelayVariation: 0
+    min: 0.25
+    max: 0.75
+  travelRatioToTriggerSpawn: 1
+  spawnDelay: 1
+  spawnDelayVariation: 0.25

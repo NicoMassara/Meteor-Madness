@@ -70,6 +70,14 @@
     {
         public const ulong SetValues = 0xA3001;
         public const ulong HandleCollision = 0xA3002;
+        public const ulong UpdatePosition = 0xA3003;
+        public const ulong Empty3 = 0xA3004;
+        public const ulong Empty4 = 0xA3005;
+        public const ulong Empty5 = 0xA3006;
+        public const ulong Empty6 = 0xA3007;
+        public const ulong Empty7 = 0xA3008;
+        public const ulong Empty8 = 0xA3009;
+        public const ulong Empty9 = 0xA3010;
     }
 
     public struct MeteorObserverMessage

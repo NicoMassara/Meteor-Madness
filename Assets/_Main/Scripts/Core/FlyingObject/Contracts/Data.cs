@@ -1,4 +1,5 @@
 ﻿using System;
+using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace MeteorMadness.Core.FlyingObject.Contracts
@@ -11,21 +12,29 @@ namespace MeteorMadness.Core.FlyingObject.Contracts
         public Quaternion Rotation;
     }
     
-    public class FlyingObjectMovement
+    public class FlyingObjectMovement : ManagedComponent, IFixedUpdatable
     {
         private readonly Rigidbody2D _rigidbody;
         private event Action<Vector2> _onPositionChanged;
         private float _movementSpeed;
 
-        public FlyingObjectMovement(Rigidbody2D rigidbody, Action<Vector2> onPositionChanged)
+        public bool CanMove { get; set; }
+
+        public UpdateGroup SelfUpdateGroup { get; private set;}
+        public TickGroup SelfTickGroup { get; private set; }
+
+        public FlyingObjectMovement(Rigidbody2D rigidbody, 
+            UpdateGroup selfUpdateGroup, TickGroup selfTickGroup, 
+            Action<Vector2> onPositionChanged) : base()
         {
             _rigidbody = rigidbody;
+            SelfUpdateGroup = selfUpdateGroup;
+            SelfTickGroup = selfTickGroup;
             _onPositionChanged += onPositionChanged;
-                
             Initialize();
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.simulated = true;
@@ -33,6 +42,7 @@ namespace MeteorMadness.Core.FlyingObject.Contracts
             _rigidbody.drag = 0f;
             _rigidbody.angularDrag = 0.05f;
             _rigidbody.gravityScale = 0f;
+            InitializeUpdatable();
 
         }
 
@@ -44,8 +54,10 @@ namespace MeteorMadness.Core.FlyingObject.Contracts
                 
         }
 
-        public void Update(float fixedDeltaTime)
+        public void ExecuteFixedUpdate(float fixedDeltaTime)
         {
+            if(_rigidbody == null) return;
+            
             _rigidbody.transform.Translate(Vector2.right * (_movementSpeed * fixedDeltaTime));
             _onPositionChanged?.Invoke(_rigidbody.position);
         }

@@ -21,12 +21,10 @@ namespace _Main.Scripts.Environment.Comet
             
             _view = view;
             _controller = new CometController(motor);
-        }
-
-        private void Start()
-        {
+            
             SetViewHandlers();
         }
+        
         
         #region ViewHandlers
 

@@ -12,7 +12,6 @@ namespace MeteorMadness.Core.FlyingObject
         public virtual void SetValues(T data)
         {
             _data = data;
-            
             NotifyAll(FlyingObjectObserverMessage.SetValues, _data);
         }
 
@@ -21,9 +20,12 @@ namespace MeteorMadness.Core.FlyingObject
             NotifyAll(FlyingObjectObserverMessage.HandleCollision, _data);
         }
 
-        public void UpdatePosition(Vector2 position)
+        public virtual void UpdatePosition(Vector2 position)
         {
+            if(_data == null) return;
+            
             _data.Position = position;
+            NotifyAll(FlyingObjectObserverMessage.UpdatePosition, _data.Position);
         }
     }
 }

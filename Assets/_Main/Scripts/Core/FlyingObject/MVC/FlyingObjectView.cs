@@ -8,7 +8,6 @@ using UnityEngine;
 namespace MeteorMadness.Core.FlyingObject
 {
     public abstract class FlyingObjectView<T> : ManagedBehavior, 
-        IFixedUpdatable,
         FlyingObjectView<T>.IFlyingObjectView<T>,
         IPoolable<FlyingObjectView<T>>,
         IFlyingObject,
@@ -29,8 +28,6 @@ namespace MeteorMadness.Core.FlyingObject
         #endregion
         
         private FlyingObjectMovement _movement;
-        private bool _canMove;
-
         #region IFlyingObjectView
 
         public event Action<Vector2> OnPositionChanged;
@@ -54,28 +51,23 @@ namespace MeteorMadness.Core.FlyingObject
 
         #region IFixedUpdatable
 
-        public abstract UpdateGroup SelfUpdateGroup { get; }
-        public abstract TickGroup SelfTickGroup { get; }
+        public abstract UpdateGroup MovementUpdateGroup { get; }
+        public abstract TickGroup MovementTickGroup { get; }
 
         #endregion
 
         #region IDebugFlyingObject
         
         public float Speed { get; private set; }
-        public float Position { get; private set; }
+        public Vector2 Position { get; private set; }
 
         #endregion
 
-        private void Awake()
+        protected virtual void Awake()
         {
             var rb2d = GetComponent<Rigidbody2D>();
-            _movement = new FlyingObjectMovement(rb2d,OnPositionChanged);
-        }
-
-        public void ExecuteFixedUpdate(float fixedDeltaTime)
-        {
-            if(_canMove)
-                _movement?.Update(fixedDeltaTime);
+            _movement = new FlyingObjectMovement(rb2d,MovementUpdateGroup,MovementTickGroup,
+                (pos)=> OnPositionChanged?.Invoke(pos));
         }
 
         #region Observer
@@ -90,24 +82,33 @@ namespace MeteorMadness.Core.FlyingObject
                 case FlyingObjectObserverMessage.HandleCollision:
                     HandleCollision((T)args[0]);
                     break;
+                case FlyingObjectObserverMessage.UpdatePosition:
+                    HandleUpdatePosition((Vector2)args[0]);
+                    break;
             }
         }
-        
+
         protected virtual void HandleSetValues(T data)
         {
             _movement.SetRigidbodyData(data.MovementSpeed, data.Rotation, data.Position);
-            _canMove = true;
+            _movement.CanMove = true;
             OnObjectEnabled?.Invoke();
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
             Speed = data.MovementSpeed;
+            Position = transform.position;
 #endif
         }
         
         protected virtual void HandleCollision(T data)
         {
             Recycle();
+        }
+        
+        protected virtual void HandleUpdatePosition(Vector2 position)
+        {
+            Position = position;
         }
         
         #endregion
@@ -119,6 +120,7 @@ namespace MeteorMadness.Core.FlyingObject
 
         protected void DisableObject()
         {
+            _movement.CanMove = false;
             OnObjectDisabled?.Invoke();
         }
 

@@ -4,7 +4,7 @@ namespace _Main.Scripts.Environment.Comet.Spawner
 {
     internal interface ICometData
     {
-        public float MovementSpeed { get; }
+        public Vector2 SpeedRange { get; }
         public float SpeedVariation { get; }
 
         public Vector2 SpawnOffset { get; }
@@ -37,9 +37,8 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         [Header("Comet Data")]
         [Space]
         [Header("Movement")]
-        [Min(1)]
-        [SerializeField] private float movementSpeed;
-        [Min(0)]
+        [SerializeField] private RangeData speedRange;
+        [Range(0,0.5f)]
         [SerializeField] private float speedVariation;
         [Header("Offset")]
         [SerializeField] private float spawnXOffset;
@@ -56,7 +55,7 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         [Min(0)]
         [SerializeField] private float spawnDelayVariation;
 
-        public float MovementSpeed => movementSpeed;
+        public Vector2 SpeedRange => speedRange.Range();
 
         public float SpeedVariation => speedVariation;
 

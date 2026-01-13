@@ -25,7 +25,7 @@ namespace MeteorMadness.Gameplay.FlyingObject
 
         public void InitializeValues(Rigidbody2D rigidbody, Action<Vector2> onPositionChanged)
         {
-            Initialize();
+            InitializeUpdatable();
             _rigidbody = rigidbody;
             _onPositionChanged += onPositionChanged;
         }

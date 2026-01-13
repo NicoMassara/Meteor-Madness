@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace MeteorMadness.Core.FlyingObject.Contracts
 {
@@ -11,7 +12,7 @@ namespace MeteorMadness.Core.FlyingObject.Contracts
     public interface IDebugFlyingObject
     {
         public float Speed { get; }
-        public float Position { get; }
+        public Vector2 Position { get; }
     }
 
     public interface IFlyingObjectWithValues<T> 

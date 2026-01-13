@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts.Events;
+using NicolasMassara.CustomUpdateManager;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace _Main.Scripts.Environment.Comet.Test
 {
     public class CometSpawnTester : MonoBehaviour
     {
+        [Range(0,1f)]
+        [SerializeField] private float timeScale;
         private bool _isEnable;
         private bool _isPaused;
         internal bool IsEnable => _isEnable;
@@ -22,7 +25,13 @@ namespace _Main.Scripts.Environment.Comet.Test
         {
             BootEvents.InitializeSubSystems();
         }
-        
+
+        private void Update()
+        {
+            CustomTime.GlobalFixedTimeScale = timeScale;
+            CustomTime.GlobalTimeScale = timeScale;
+        }
+
         private void Initialized()
         {
             CometSpawnEventCaller.Enable();
