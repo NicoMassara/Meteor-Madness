@@ -1,0 +1,21 @@
+{
+    "name": "MeteorMadness.Environment.Comet",
+    "rootNamespace": "",
+    "references": [
+        "MeteorMadness.Core.FlyingObject",
+        "MeteorMadness.Contracts",
+        "MeteorMadness.GlobalValues",
+        "NicolasMassara.CustomUpdateManager",
+        "NicolasMassara.CustomTimerManager",
+        "MeteorMadness.EventBus"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

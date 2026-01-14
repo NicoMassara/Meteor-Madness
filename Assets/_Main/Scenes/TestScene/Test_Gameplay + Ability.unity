@@ -954,12 +954,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9cb7a7315bb4f23b15aab1f2b9ca59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startLevel: 9
+  startLevel: 0
   startMeteorsEnable: 1
   timeScale:
-    isEnable: 0
+    isEnable: 1
     globalTimeScale: 1
-    gameplayTimeScale: 1
+    gameplayTimeScale: 0.5
     shieldTimeScale: 1
     effectsTimeScale: 1
 --- !u!4 &322886392
@@ -2121,11 +2121,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 709288247}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4f6fe9300544defab1c575a4180e854, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e5f723a40114135b0a5b577b592c119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spawnSettings: {fileID: 12163667}
-  meteorPrefab: {fileID: 7980529498143047617, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
+  meteorPrefab: {fileID: 4360489399066249571, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
+  doesDebug: 1
 --- !u!1 &724356219
 GameObject:
   m_ObjectHideFlags: 0
@@ -2464,7 +2465,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!58 &870347182
 CircleCollider2D:
   m_ObjectHideFlags: 0

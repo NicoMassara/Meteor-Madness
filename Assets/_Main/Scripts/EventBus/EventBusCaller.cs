@@ -21,6 +21,25 @@ namespace _Main.Scripts.EventBus
             EventBusManager.Instance.Unsubscribe(listener);
         }
     }
+
+    #region Template
+
+    public static class TemplateEventCaller
+    {
+        
+    }
+
+    public static class TemplatEventSubscriber
+    {
+        
+    }
+    
+    public static class TemplateEventUnSubscriber
+    {
+        
+    }
+
+    #endregion
     
     #region GameMode
     
@@ -1096,6 +1115,35 @@ namespace _Main.Scripts.EventBus
         }
     }
     
+    #endregion
+
+    #region Comet Spawner
+
+    public static class CometSpawnEventCaller
+    {
+        public static void Enable() => EventBusCaller.Publish(new CometSpawnEvents.Enable());
+        public static void Disable() => EventBusCaller.Publish(new CometSpawnEvents.Disable());
+        public static void Pause() => EventBusCaller.Publish(new CometSpawnEvents.Pause());
+        public static void Resume() => EventBusCaller.Publish(new CometSpawnEvents.Resume());
+    }
+
+    public static class CometSpawnEventSubscriber
+    {
+        public static void Enable(Action<CometSpawnEvents.Enable> action) => EventBusCaller.Subscribe(action);
+        public static void Disable(Action<CometSpawnEvents.Disable> action) => EventBusCaller.Subscribe(action);
+        public static void Pause(Action<CometSpawnEvents.Pause> action) => EventBusCaller.Subscribe(action);
+        public static void Resume(Action<CometSpawnEvents.Resume> action) => EventBusCaller.Subscribe(action);
+        
+    }
+    
+    public static class CometSpawnEventUnSubscriber
+    {
+        public static void Enable(Action<CometSpawnEvents.Enable> action) => EventBusCaller.Unsubscribe(action);
+        public static void Disable(Action<CometSpawnEvents.Disable> action) => EventBusCaller.Unsubscribe(action);
+        public static void Pause(Action<CometSpawnEvents.Pause> action) => EventBusCaller.Unsubscribe(action);
+        public static void Resume(Action<CometSpawnEvents.Resume> action) => EventBusCaller.Unsubscribe(action);
+    }
+
     #endregion
     
 }

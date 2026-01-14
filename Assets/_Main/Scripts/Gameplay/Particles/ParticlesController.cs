@@ -18,7 +18,7 @@ namespace MeteorMadness.Gameplay.Particles
 
         private void Awake()
         {
-            _pool = new GenericPool<ParticleBehaviour>(particlePrefab, 100, 300);
+            _pool = new GenericPool<ParticleBehaviour>(particlePrefab, 35, 300, "Particle");
         }
 
         private void Start()

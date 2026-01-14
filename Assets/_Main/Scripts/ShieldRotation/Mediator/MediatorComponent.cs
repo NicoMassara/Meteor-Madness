@@ -206,7 +206,6 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             Disable();
         }
         
-
         #region Private Methods
 
         private void TrySetCorrectionToInput()
@@ -316,6 +315,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
 
         public void EnableAutomatic()
         {
+            ClearTarget();
             TransitionToAutomatic();
             _automaticMovement.EnableCheck();
         }

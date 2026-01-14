@@ -548,18 +548,21 @@ namespace _Main.Scripts.MyCommands
         {
             timeScale = Mathf.Clamp01(timeScale);
             CustomTime.GlobalTimeScale = timeScale;
+            CustomTime.GlobalFixedTimeScale = timeScale;
         }
         
         [ConsoleMethod("time_pause", "Pauses Global Time")]
         public static void SetPause()
         {
             CustomTime.GlobalTimeScale = 0f;
+            CustomTime.GlobalFixedTimeScale = 0f;
         }
         
         [ConsoleMethod("time_resume", "Resumes Global Time")]
         public static void SetResume()
         {
             CustomTime.GlobalTimeScale = 1f;
+            CustomTime.GlobalFixedTimeScale = 1f;
         }
     }
     

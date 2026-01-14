@@ -14,7 +14,8 @@
         "MeteorMadness.Contracts",
         "MeteorMadness.EventBus",
         "MeteorMadness.ShieldRotation.Contracts",
-        "MeteorMadness.ShieldRotation.Mediator"
+        "MeteorMadness.ShieldRotation.Mediator",
+        "MeteorMadness.Core.FlyingObject"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

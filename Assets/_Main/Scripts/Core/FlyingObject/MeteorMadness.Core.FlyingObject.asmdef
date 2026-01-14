@@ -1,0 +1,18 @@
+{
+    "name": "MeteorMadness.Core.FlyingObject",
+    "rootNamespace": "",
+    "references": [
+        "GUID:080f653a58f74254bcaf4ef0dbe0adf7",
+        "GUID:c86df55943534d8e992b0a5e142eef8a",
+        "GUID:cbcefa849418cda42a15b4f089dcf60b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
