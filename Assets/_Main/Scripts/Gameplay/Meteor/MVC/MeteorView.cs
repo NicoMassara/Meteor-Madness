@@ -20,7 +20,7 @@ namespace _Main.Scripts.Meteor
         public bool EnableMovement { get; set; }
 
         public event Action<ITargetable> OnTargetDeath;
-        public event Action OnDeath;
+        public event Action OnObjectDisabled;
         
         public void DisableTargetable()
         {
@@ -98,7 +98,7 @@ namespace _Main.Scripts.Meteor
         
         private void DestroyMeteor()
         {
-            OnDeath?.Invoke();
+            OnObjectDisabled?.Invoke();
             OnTargetDeath?.Invoke(this);
         }
 

@@ -16,7 +16,7 @@ namespace _Main.Scripts.Projectile
             _projectile = projectile;
             _targetPosition = targetPosition;
             _totalDistance = Vector2.Distance(_projectile.Position, targetPosition);
-            projectile.OnDeath += OnDeathHandler;
+            projectile.OnObjectDisabled += OnDeathHandler;
         }
 
         private void OnDeathHandler()
@@ -28,7 +28,7 @@ namespace _Main.Scripts.Projectile
         {
             if (_projectile != null)
             {
-                _projectile.OnDeath -= OnDeathHandler;
+                _projectile.OnObjectDisabled -= OnDeathHandler;
             }
             
             _projectile = null;

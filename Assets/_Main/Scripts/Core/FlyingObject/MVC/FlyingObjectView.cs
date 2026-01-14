@@ -28,6 +28,7 @@ namespace MeteorMadness.Core.FlyingObject
         #endregion
         
         private FlyingObjectMovement _movement;
+        
         #region IFlyingObjectView
 
         public event Action<Vector2> OnPositionChanged;

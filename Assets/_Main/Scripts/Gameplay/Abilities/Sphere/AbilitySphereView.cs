@@ -21,7 +21,7 @@ namespace MeteorMadness.Gameplay.Abilities.Sphere
         public bool EnableMovement { get; set; }
 
         public event Action<ITargetable> OnTargetDeath;
-        public event Action OnDeath;
+        public event Action OnObjectDisabled;
         public event Action OnStartSound;
         public event Action OnStopSound;
         
@@ -101,7 +101,7 @@ namespace MeteorMadness.Gameplay.Abilities.Sphere
 
         private void DestroySphere()
         {
-            OnDeath?.Invoke();
+            OnObjectDisabled?.Invoke();
             OnStopSound?.Invoke();
             OnTargetDeath?.Invoke(this);
         }
