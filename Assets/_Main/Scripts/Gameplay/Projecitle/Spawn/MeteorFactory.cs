@@ -8,7 +8,6 @@ using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile;
 using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.Meteor;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.Managers.GameConfig;
-using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace _Main.Scripts.Projectile
@@ -116,7 +115,8 @@ namespace _Main.Scripts.Projectile
             
             if (meteor is IProjectile projectile)
             {
-                ProjectileEventCaller.Add((projectile));
+                //Debug.Log("Projectile Sent");
+                ProjectileEventCaller.Add(projectile);
             }
             else
             {
@@ -161,13 +161,12 @@ namespace _Main.Scripts.Projectile
                 {
                     for (int j = 0; j < amountToSpawn; j++)
                     {
-                        yield return new WaitForSeconds(0.1f);
-                        
                         var finalValue = j % 2 == 0 ? valuePerMeteor : 0;
 
-                        spawnData.Position = spawnSettings.GetPositionByAngle(currAngle);
+                        var spawnPosition = spawnSettings.GetPositionByAngle(currAngle);
+                        spawnData.Position = spawnPosition;
+                        spawnData.Direction = (spawnSettings.GetCenterOfGravity() - spawnPosition);
                         spawnData.Value = finalValue;
-                        spawnData.Direction = (spawnSettings.GetCenterOfGravity() - spawnData.Direction).normalized;
                         
                        CreateMeteor(spawnData).SetEnableMovement(true);
                         

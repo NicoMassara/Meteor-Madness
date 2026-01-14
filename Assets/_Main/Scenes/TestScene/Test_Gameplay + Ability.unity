@@ -959,7 +959,7 @@ MonoBehaviour:
   timeScale:
     isEnable: 1
     globalTimeScale: 1
-    gameplayTimeScale: 1
+    gameplayTimeScale: 0.5
     shieldTimeScale: 1
     effectsTimeScale: 1
 --- !u!4 &322886392
@@ -2465,7 +2465,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!58 &870347182
 CircleCollider2D:
   m_ObjectHideFlags: 0

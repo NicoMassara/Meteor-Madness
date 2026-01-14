@@ -10,14 +10,11 @@ namespace _Main.Scripts.Cosmetics.SkinControllers
     where T : SkinData
     {
         [SerializeField] private Renderer spriteRenderer;
-
-        private IFlyingObjectSkin _flyingObject;
         protected SkinManager SkinManager { get; private set; }
 
         private void Awake()
         {
             SkinManager = SkinManager.Instance;
-            _flyingObject = GetComponent<IFlyingObjectSkin>();
         }
 
         private void OnEnable()

@@ -43,7 +43,7 @@ Material:
     - _FlowSpeed: 0.1
     - _HoloIntensity: 1
     - _InnerMask: 0
-    - __dirty: 0
+    - __dirty: 1
     m_Colors:
     - _FlowDirection: {r: 0.5, g: 0.35, b: 0, a: 0}
     - _HoloColor: {r: 1, g: 0, b: 0, a: 0}

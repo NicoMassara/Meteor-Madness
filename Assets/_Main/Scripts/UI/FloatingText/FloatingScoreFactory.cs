@@ -8,7 +8,7 @@ namespace MeteorMadness.UI.FloatingText
         
         public FloatingScoreFactory(FloatingTextBehaviour prefab)
         {
-            _pool = new GenericPool<FloatingTextBehaviour>(prefab, 50, 100);
+            _pool = new GenericPool<FloatingTextBehaviour>(prefab, 35, 100, "Floating Text");
         }
 
         public IFloatingText Get()

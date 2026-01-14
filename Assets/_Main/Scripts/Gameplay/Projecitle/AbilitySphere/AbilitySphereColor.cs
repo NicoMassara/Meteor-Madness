@@ -8,6 +8,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.AbilitySphere
     public class AbilitySphereColor : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer sphereRenderer;
+        [SerializeField] private TrailRenderer trailRenderer;
         
         private IAbilitySphereColor _abilitySphereColor;
 
@@ -22,6 +23,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.AbilitySphere
         {
             var color = AbilityColorHelper.GetColor(ability);
             sphereRenderer.material.SetColor("_AbilityColor", color);
+            trailRenderer.material.SetColor("_AbilityColor", color);
         }
 
         private void OnAbilitySetHandler(AbilityType ability)

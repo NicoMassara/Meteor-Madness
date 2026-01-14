@@ -29,7 +29,7 @@ namespace _Main.Scripts.Projectile
 
             public Spawner(AbilitySphereView meteorPrefab, int startCapacity = 3)
             {
-                _pool = new GenericPool<AbilitySphereView>(meteorPrefab, startCapacity, 10, "Meteor");
+                _pool = new GenericPool<AbilitySphereView>(meteorPrefab, startCapacity, 10, "Ability Sphere");
             }
 
             public IAbilitySphere Spawn()
