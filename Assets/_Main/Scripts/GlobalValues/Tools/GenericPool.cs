@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using MeteorMadness.Contracts.Interfaces;
 using UnityEngine;
 using UnityEngine.Pool;
 

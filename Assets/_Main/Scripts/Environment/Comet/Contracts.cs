@@ -10,13 +10,7 @@ namespace _Main.Scripts.Environment.Comet
         public Vector2 Scale;
     }
     
-    public interface IComet
-    {
-        public Vector2 Position { get; }
-
-        public void SetValues(CometValues data);
-        public void Recycle();
-    }
+    public interface IComet : IFlyingObject<CometValues> { }
 
     public interface IDebugComet : IDebugFlyingObject
     {

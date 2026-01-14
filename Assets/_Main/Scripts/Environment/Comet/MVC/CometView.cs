@@ -1,5 +1,6 @@
 ﻿using System;
 using MeteorMadness.Core.FlyingObject;
+using MeteorMadness.Core.FlyingObject.Contracts;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 

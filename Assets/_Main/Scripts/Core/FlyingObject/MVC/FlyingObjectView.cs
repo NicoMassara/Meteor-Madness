@@ -8,32 +8,19 @@ using UnityEngine;
 namespace MeteorMadness.Core.FlyingObject
 {
     public abstract class FlyingObjectView<T> : ManagedBehavior, 
-        FlyingObjectView<T>.IFlyingObjectView<T>,
+        IFlyingObjectView<T>,
         IPoolable<FlyingObjectView<T>>,
-        IFlyingObject,
-        IFlyingObjectWithValues<T>,
+        IFlyingObject<T>,
         IObserver,
         IDebugFlyingObject
         where T : FlyingObjectValues
     {
-        #region Interfaces
-
-        public interface IFlyingObjectView<T>
-        {
-            public event Action<Vector2> OnPositionChanged;
-            public event Action<T> OnValuesSet;
-            public event Action<Collider2D> OnTriggerEnter;
-        }
-
-        #endregion
-        
         private FlyingObjectMovement _movement;
         
         #region IFlyingObjectView
 
         public event Action<Vector2> OnPositionChanged;
         public event Action<T> OnValuesSet;
-        public event Action<Collider2D> OnTriggerEnter;
 
         #endregion
 
@@ -80,9 +67,6 @@ namespace MeteorMadness.Core.FlyingObject
                 case FlyingObjectObserverMessage.SetValues:
                     HandleSetValues((T)args[0]);
                     break;
-                case FlyingObjectObserverMessage.HandleCollision:
-                    HandleCollision((T)args[0]);
-                    break;
                 case FlyingObjectObserverMessage.UpdatePosition:
                     HandleUpdatePosition((Vector2)args[0]);
                     break;
@@ -92,7 +76,7 @@ namespace MeteorMadness.Core.FlyingObject
         protected virtual void HandleSetValues(T data)
         {
             _movement.SetRigidbodyData(data.MovementSpeed, data.Rotation, data.Position);
-            _movement.CanMove = true;
+            SetEnableMovement(true);
             OnObjectEnabled?.Invoke();
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -100,11 +84,6 @@ namespace MeteorMadness.Core.FlyingObject
             Speed = data.MovementSpeed;
             Position = transform.position;
 #endif
-        }
-        
-        protected virtual void HandleCollision(T data)
-        {
-            Recycle();
         }
         
         protected virtual void HandleUpdatePosition(Vector2 position)
@@ -119,21 +98,21 @@ namespace MeteorMadness.Core.FlyingObject
             OnValuesSet?.Invoke(data);
         }
 
+        public void SetEnableMovement(bool enable)
+        {
+            _movement.CanMove = enable;
+        }
+
         protected void DisableObject()
         {
-            _movement.CanMove = false;
+            SetEnableMovement(false);
             OnObjectDisabled?.Invoke();
         }
 
         public void Recycle()
         {
-            OnRecycle?.Invoke(this);
             DisableObject();
-        }
-        
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            OnTriggerEnter?.Invoke(other);
+            OnRecycle?.Invoke(this);
         }
     }
 }

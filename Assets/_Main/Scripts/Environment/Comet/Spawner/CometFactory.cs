@@ -17,7 +17,6 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         #region Distance Tracker
         private class CometDistanceTracker
         {
-            private const float DistanceThreshold = 0.5f;
             private bool _hasComet;
 
             public event Action<IComet> OnTargetReached;

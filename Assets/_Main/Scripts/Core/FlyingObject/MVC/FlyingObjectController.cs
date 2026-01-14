@@ -3,12 +3,13 @@ using UnityEngine;
 
 namespace MeteorMadness.Core.FlyingObject
 {
-    public abstract class FlyingObjectController<T>
+    public abstract class FlyingObjectController<T,TS> : IFlyingObjectController<T>
         where T : FlyingObjectValues
+        where TS : FlyingObjectMotor<T>
     {
-        protected readonly FlyingObjectMotor<T> Motor;
+        protected readonly TS Motor;
 
-        public FlyingObjectController(FlyingObjectMotor<T> motor)
+        public FlyingObjectController(TS motor)
         {
             Motor = motor;
         }

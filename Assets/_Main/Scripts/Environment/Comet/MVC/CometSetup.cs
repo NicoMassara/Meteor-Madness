@@ -1,58 +1,36 @@
 ﻿using System;
 using _Main.Scripts.Core.FlyingObject.Components;
 using MeteorMadness.Core.FlyingObject;
+using MeteorMadness.Core.FlyingObject.Contracts;
 using UnityEngine;
 
 namespace _Main.Scripts.Environment.Comet
 {
     [RequireComponent(typeof(CometView))]
     [RequireComponent(typeof(FlyingObjectTrail))]
-    public class CometSetup : MonoBehaviour
+    internal class CometSetup : FlyingObjectSetup<CometValues, CometView.ICometView, CometController.ICometController>
     {
-        private CometController _controller;
-        private CometView.ICometView _view;
-        
-        private void Awake()
+        protected override void Awake()
         {
             var view = GetComponent<CometView>();
             var motor = new CometMotor();
             
             motor.Subscribe(view);
             
-            _view = view;
-            _controller = new CometController(motor);
+            base.View = view;
+            base.Controller  = new CometController(motor);
             
-            SetViewHandlers();
+            InitializeViewHandlers();
         }
-        
-        
-        #region ViewHandlers
-
-        private void SetViewHandlers()
-        {
-            _view.OnPositionChanged += View_OnPositionChangedHandler;
-            _view.OnValuesSet += View_OnValuesSetHandler;
-        }
-
-        private void View_OnValuesSetHandler(CometValues values)
-        {
-            _controller.SetValues(values);
-        }
-
-        private void View_OnPositionChangedHandler(Vector2 position)
-        {
-            _controller.UpdatePosition(position);
-        }
-
-        #endregion
     }
     
-    public class CometController : FlyingObjectController<CometValues>
+    internal class CometController : FlyingObjectController<CometValues, CometMotor>,
+        CometController.ICometController
     {
-        public CometController(FlyingObjectMotor<CometValues> motor)
-            : base(motor)
-        {
-        }
+        internal interface ICometController : IFlyingObjectController<CometValues> { }
+        
+        internal CometController(CometMotor motor)
+            : base(motor) { }
     }
-    public class CometMotor : FlyingObjectMotor<CometValues> { }
+    internal class CometMotor : FlyingObjectMotor<CometValues> { }
 }

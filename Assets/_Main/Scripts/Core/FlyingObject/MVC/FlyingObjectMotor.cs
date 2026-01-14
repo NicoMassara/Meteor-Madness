@@ -7,25 +7,25 @@ namespace MeteorMadness.Core.FlyingObject
     public abstract class FlyingObjectMotor<T> : ObservableComponent
     where T : FlyingObjectValues
     {
-        private T _data;
-        
+        protected T Data { get; private set; }
+
         public virtual void SetValues(T data)
         {
-            _data = data;
-            NotifyAll(FlyingObjectObserverMessage.SetValues, _data);
+            Data = data;
+            NotifyAll(FlyingObjectObserverMessage.SetValues, Data);
         }
 
         public virtual void HandleCollision()
         {
-            NotifyAll(FlyingObjectObserverMessage.HandleCollision, _data);
+            NotifyAll(FlyingObjectObserverMessage.HandleCollision, Data);
         }
 
         public virtual void UpdatePosition(Vector2 position)
         {
-            if(_data == null) return;
+            if(Data == null) return;
             
-            _data.Position = position;
-            NotifyAll(FlyingObjectObserverMessage.UpdatePosition, _data.Position);
+            Data.Position = position;
+            NotifyAll(FlyingObjectObserverMessage.UpdatePosition, Data.Position);
         }
     }
 }

@@ -79,17 +79,31 @@
         public const ulong Empty8 = 0xA3009;
         public const ulong Empty9 = 0xA3010;
     }
-
-    public struct MeteorObserverMessage
+    
+    public struct ProjectileObserverMessage
     {
         public const ulong ShieldDeflection = 0xB3001;
         public const ulong EarthCollision = 0xB3002;
+        public const ulong Empty2 = 0xB3003;
+        public const ulong Empty3 = 0xB3004;
+        public const ulong Empty4 = 0xB3005;
+        public const ulong Empty5 = 0xB3006;
+        public const ulong Empty6 = 0xB3007;
+        public const ulong Empty7 = 0xB3008;
+        public const ulong Empty8 = 0xB3009;
+        public const ulong Empty9 = 0xB3010;
+    }
+
+    public struct MeteorObserverMessage
+    {
+        public const ulong ShieldDeflection = 0xD001;
+        public const ulong EarthCollision = 0xD3002;
     }
     
     public struct AbilitySphereObserverMessage
     {
-        public const ulong ShieldDeflection = 0xC3001;
-        public const ulong EarthCollision = 0xC3002;
+        public const ulong ShieldDeflection = 0xD3001;
+        public const ulong EarthCollision = 0xD3002;
     }
 
     public struct AbilityObserverMessage
