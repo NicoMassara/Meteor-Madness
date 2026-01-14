@@ -1,9 +1,10 @@
 ﻿using _Main.Scripts.Core.FlyingObject.Debug;
+using MeteorMadness.GlobalValues.Utilities;
 using UnityEngine;
 
-namespace _Main.Scripts.Environment.Comet.Test
+namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.Debug
 {
-    public class CometDebug : FlyingObjectDebug<IDebugComet>
+    internal class AbilityDebug : FlyingObjectDebug<IDebugAbilitySphere>
     {
         protected override string[] GetLines()
         {
@@ -11,23 +12,20 @@ namespace _Main.Scripts.Environment.Comet.Test
             {
                 $"Pos: {DebugObject.Position}",
                 $"Speed: {DebugObject.Speed:F2}",
-                $"Ratio: {DebugObject.TravelRatio:F3}",
-                $"Dist: {DebugObject.Distance:F3}",
-                $"Scale: {DebugObject.Scale}",
+                $"Targetable: {DebugObject.CanBeTargeted}",
+                $"Ability: {DebugObject.DebugAbility}"
             };
         }
-        
+
         protected override Color[] GetLineColors()
         {
             return new Color[]
             {
                 Color.white, // Pos
                 Color.white, // Speed
-                Color.white, // Ratio
-                Color.white, // Dist
-                Color.white, // Scale
+                DebugObject.CanBeTargeted ? Color.green : Color.red, // Targetable
+                AbilityColorHelper.GetColor(DebugObject.DebugAbility), // Ability
             };
         }
-
     }
 }

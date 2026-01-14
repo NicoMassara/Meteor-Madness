@@ -47,8 +47,9 @@ GameObject:
   - component: {fileID: 1753296651558247800}
   - component: {fileID: 4257660083932381848}
   - component: {fileID: 5616651916108659227}
+  - component: {fileID: 2721688282292075509}
   m_Layer: 10
-  m_Name: CometV2
+  m_Name: Comet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,6 +149,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d99417beafd4e1f9713f7ba0edcbd37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2721688282292075509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4732004088864625325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f00eb1c4436d440f88c0f5cf8ddf9603, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movement: {fileID: 11400000, guid: 96a99704f26373a4b81586b4008cd5aa, type: 2}
 --- !u!1 &6191557560812045889
 GameObject:
   m_ObjectHideFlags: 0

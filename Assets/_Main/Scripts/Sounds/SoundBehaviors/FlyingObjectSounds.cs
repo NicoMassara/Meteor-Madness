@@ -3,9 +3,9 @@ using MeteorMadness.Sounds.BaseBehaviors;
 using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEngine;
 
-namespace MeteorMadness.Sounds.SoundBehaviors
+namespace _Main.Scripts.Sounds.Components
 {
-    public class AbilitySphereSounds : SoundBehaviour<IAbilitySphereSounds>
+    public class FlyingObjectSounds : SoundBehaviour<IFlyingObjectSounds>
     {
         [SerializeField] private SoundSourceDataSo movement;
 
@@ -13,13 +13,14 @@ namespace MeteorMadness.Sounds.SoundBehaviors
 
         private void Start()
         {
-            ComponentToSound.OnStartSound += () =>
+            ComponentToSound.OnStart += () =>
             {
                 _movementSoundId = PlaySound(movement);
             };
 
-            ComponentToSound.OnStopSound += () =>
+            ComponentToSound.OnStop += () =>
             {
+                DeathFromParent(_movementSoundId);
                 StopSound(_movementSoundId);
             };
         }

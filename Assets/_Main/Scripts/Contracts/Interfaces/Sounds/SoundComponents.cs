@@ -10,7 +10,7 @@ namespace MeteorMadness.Contracts.Interfaces.Sounds
         public event Action OnStop;
     }
 
-    public interface IFlyingObjectSounds
+    public interface IFlyingObjectSounds : ISoundComponent
     {
         public event Action OnStart;
         public event Action OnStop;

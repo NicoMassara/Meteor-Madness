@@ -49,6 +49,11 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
         public void HandleOnTriggerEnter(Collider2D other);
     }
 
+    internal interface IDebugProjectile : IDebugFlyingObject
+    {
+        public bool CanBeTargeted { get; }
+    }
+
     #endregion
 
     #region Meteor
@@ -61,6 +66,11 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
     }
 
     public interface IMeteor : IDestructibleProjectile<MeteorData,MeteorCollisionData> { }
+
+    internal interface IDebugMeteor : IDebugProjectile
+    {
+        
+    }
 
     #endregion
 
@@ -77,6 +87,17 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
     }
 
     public interface IAbilitySphere : IDestructibleProjectile<AbilitySphereData,AbilitySphereCollisionData>{ }
+
+    public interface IAbilitySphereColor
+    {
+        public event Action<AbilityType> OnAbilitySet;
+    }
+    
+    internal interface IDebugAbilitySphere : IDebugProjectile
+    {
+        public AbilityType DebugAbility { get; set; }
+    }
+    
 
     #endregion
     

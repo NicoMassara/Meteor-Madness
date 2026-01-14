@@ -205,6 +205,8 @@ namespace _Main.Scripts.Projectile
         [Header("Values")] 
         [Range(5, 15f)] 
         [SerializeField] private float spawnDelay = 5f;
+        [Header("Debug")] 
+        [SerializeField] private bool doesDebug;
         
         private bool _hasTimerEnable;
         private bool _isGameplayActive;
@@ -263,6 +265,11 @@ namespace _Main.Scripts.Projectile
             tempSphere.SetEnableMovement(true);
             
             Debug.LogWarning(ability);
+            
+            if (tempSphere is IDebugAbilitySphere debug)
+            {
+                debug.DebugEnable = doesDebug;
+            }
 
             if (tempSphere is IProjectile projectile)
             {

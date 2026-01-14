@@ -5,10 +5,11 @@ using UnityEngine;
 
 namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.ProjectileObject
 {
-    public abstract class ProjectileObjectController<T,TS> : FlyingObjectController<T,TS>,
+    public abstract class ProjectileObjectController<T,TS,TB> : FlyingObjectController<T,TS>,
         IProjectileObjectController<T>
         where T : ProjectileData
-        where TS : ProjectileObjectMotor<T>
+        where TS : ProjectileObjectMotor<T,TB>
+        where TB : ProjectileCollisionData
     {
         
         private readonly LayerMask _shieldLayerMask;
@@ -34,17 +35,21 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.ProjectileObject
         }
     }
     
-    public abstract class ProjectileObjectMotor<T> : FlyingObjectMotor<T>
+    public abstract class ProjectileObjectMotor<T,TB> : FlyingObjectMotor<T>
         where T : ProjectileData
+        where TB : ProjectileCollisionData
+
     {
+        protected abstract TB GetCollisionData();
+        
         public void HandleShieldDeflection()
         {
-            NotifyAll(ProjectileObserverMessage.ShieldDeflection);
+            NotifyAll(ProjectileObserverMessage.ShieldDeflection, GetCollisionData());
         }
 
         public void HandleEarthCollision()
         {
-            NotifyAll(ProjectileObserverMessage.EarthCollision);
+            NotifyAll(ProjectileObserverMessage.EarthCollision, GetCollisionData());
         }
     }
 }

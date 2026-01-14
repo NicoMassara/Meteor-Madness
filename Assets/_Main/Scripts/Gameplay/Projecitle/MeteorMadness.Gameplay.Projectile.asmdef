@@ -1,3 +1,24 @@
-﻿{
-  "name": "MeteorMadness.Gameplay.Projectile"
+{
+    "name": "MeteorMadness.Gameplay.Projectile",
+    "rootNamespace": "",
+    "references": [
+        "GUID:080f653a58f74254bcaf4ef0dbe0adf7",
+        "GUID:34415c6415454e528c2e8d40dff19d82",
+        "GUID:c86df55943534d8e992b0a5e142eef8a",
+        "GUID:e08fa67259954393b2af28d04456e77d",
+        "GUID:cbcefa849418cda42a15b4f089dcf60b",
+        "GUID:70a9fd56345a44ff9c4c50a2162ef4df",
+        "GUID:7383e56d37c04177bd5dbfee101ce49c",
+        "GUID:47a70d1f9c6c9c14e9bd7f0d7fbc68d1",
+        "GUID:72999fc0cb6d47409e53a0030917cc84"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -17,6 +17,6 @@ namespace _Main.Scripts.Environment.Comet
         public float TravelRatio { get; set; }
         public float Distance { get; set; }
         public float Scale { get; set; }
-        public bool DebugEnable { get; set; }
+
     }
 }

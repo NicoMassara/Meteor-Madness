@@ -43,7 +43,7 @@ namespace _Main.Scripts.ShieldRotation.ProjectileDetector
 
             target.DisableTargetable();
             
-            Debug.Log($"Near Target Found");
+            //Debug.Log($"Near Target Found");
             
             return target; 
         }
@@ -58,13 +58,13 @@ namespace _Main.Scripts.ShieldRotation.ProjectileDetector
                 var item = _colliders[i].GetComponent<ITargetable>();
                 if (item == null)
                 {
-                    Debug.Log("Collider is null");
+                    //Debug.Log("Collider is null");
                     continue;
                 }
                 
                 if (item.CanBeTargeted == false)
                 {
-                    Debug.Log("Target can't be targeted");
+                    //Debug.Log("Target can't be targeted");
                     continue;
                 }
 

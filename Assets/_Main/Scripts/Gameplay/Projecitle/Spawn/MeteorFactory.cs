@@ -35,8 +35,8 @@ namespace _Main.Scripts.Projectile
                 var meteor = _pool.Get();
 
                 ActiveMeteorCount++;
-
                 meteor.OnRecycle += OnRecycleHandler;
+                meteor.SetEnableMovement(false);
                 
                 return meteor;
             }
@@ -61,12 +61,12 @@ namespace _Main.Scripts.Projectile
         [Header("Components")]
         [SerializeField] private ProjectileSpawnSettings spawnSettings;
         [SerializeField] private MeteorView meteorPrefab;
+        [Header("Debug")] 
+        [SerializeField] private bool doesDebug;
         
         private Spawner _spawner;
         private bool _isSpawningRing;
         
-        
-
         private void Awake()
         {
             _spawner = new Spawner(meteorPrefab, 5);
@@ -102,6 +102,10 @@ namespace _Main.Scripts.Projectile
             meteor.OnDeflection += Meteor_OnDeflectionHandler;
             meteor.OnEarthCollision += Meteor_OnCollisionHandler;
             
+            if (meteor is IDebugMeteor debug)
+            {
+                debug.DebugEnable = doesDebug;
+            }
             
             return meteor;
         }
@@ -165,7 +169,7 @@ namespace _Main.Scripts.Projectile
                         spawnData.Value = finalValue;
                         spawnData.Direction = (spawnSettings.GetCenterOfGravity() - spawnData.Direction).normalized;
                         
-                        CreateMeteor(spawnData);
+                       CreateMeteor(spawnData).SetEnableMovement(true);
                         
                         currAngle += angleOffset;
                         currAngle = Mathf.Repeat(currAngle, 360f);

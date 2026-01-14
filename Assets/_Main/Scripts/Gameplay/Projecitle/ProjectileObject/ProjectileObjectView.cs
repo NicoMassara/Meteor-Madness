@@ -15,11 +15,11 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.ProjectileObject
         IParticleProjectile<TS>,
         IDestructibleProjectile<T,TS>, 
         IProjectile,
-        ITargetable
+        ITargetable,
+        IDebugProjectile
         where T : ProjectileData
         where TS : ProjectileCollisionData
     {
-
         public override UpdateGroup MovementUpdateGroup { get; } = UpdateGroup.Gameplay;
         public override TickGroup MovementTickGroup { get; } = TickGroup.EveryFrame;
         public event Action<Collider2D> OnTriggerEnter;
@@ -88,10 +88,18 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.ProjectileObject
         }
         
         #endregion
-        
+
+        public override void SetValues(T data)
+        {
+            base.SetValues(data);
+            EnableTargetable();
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             OnTriggerEnter?.Invoke(other);
         }
+
+
     }
 }

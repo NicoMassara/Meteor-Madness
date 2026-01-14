@@ -18,6 +18,7 @@ namespace MeteorMadness.Core.FlyingObject.Contracts
     {
         public float Speed { get; }
         public Vector2 Position { get; }
+        public bool DebugEnable { get; set; }
     }
     
     public interface IFlyingObjectView<T>

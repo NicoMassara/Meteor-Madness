@@ -1,5 +1,6 @@
 ﻿using System;
 using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Core.FlyingObject.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using NicolasMassara.CustomUpdateManager;
@@ -12,7 +13,8 @@ namespace MeteorMadness.Core.FlyingObject
         IPoolable<FlyingObjectView<T>>,
         IFlyingObject<T>,
         IObserver,
-        IDebugFlyingObject
+        IDebugFlyingObject,
+        IFlyingObjectSounds
         where T : FlyingObjectValues
     {
         private FlyingObjectMovement _movement;
@@ -48,6 +50,14 @@ namespace MeteorMadness.Core.FlyingObject
         
         public float Speed { get; private set; }
         public Vector2 Position { get; private set; }
+        public bool DebugEnable { get; set; }
+
+        #endregion
+
+        #region IFlyingObjectSounds
+
+        public event Action OnStart;
+        public event Action OnStop;
 
         #endregion
 
@@ -78,6 +88,7 @@ namespace MeteorMadness.Core.FlyingObject
             _movement.SetRigidbodyData(data.MovementSpeed, data.Rotation, data.Position);
             SetEnableMovement(true);
             OnObjectEnabled?.Invoke();
+            OnStart?.Invoke();
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
@@ -106,6 +117,7 @@ namespace MeteorMadness.Core.FlyingObject
         protected void DisableObject()
         {
             SetEnableMovement(false);
+            OnStop?.Invoke();
             OnObjectDisabled?.Invoke();
         }
 
@@ -114,5 +126,7 @@ namespace MeteorMadness.Core.FlyingObject
             DisableObject();
             OnRecycle?.Invoke(this);
         }
+
+
     }
 }
