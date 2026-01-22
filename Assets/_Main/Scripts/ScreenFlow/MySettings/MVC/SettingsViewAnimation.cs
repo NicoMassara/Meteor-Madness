@@ -1,6 +1,7 @@
 ﻿using System;
 using DG.Tweening;
 using MeteorMadness.Animations;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.ScreenFlow.Base;
 using UnityEngine;
@@ -11,8 +12,7 @@ namespace MeteorMadness.ScreenFlow.Settings
         SettingsViewAnimation.IPauseViewAnimation
     {
         
-        public interface IPauseViewAnimation : 
-            BaseViewAnimation<SettingsUiAnimationSelector,SettingsUiAnimationComponents>.IBaseViewAnimation
+        public interface IPauseViewAnimation : IBaseViewAnimation
         {
             
         }

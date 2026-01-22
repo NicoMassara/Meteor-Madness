@@ -1,4 +1,0 @@
-﻿{
-  "name": "MeteorMadness.ShieldRotation.Movement",
-  "references":["MeteorMadness.ShieldRotation.Contracts", "MeteorMadness.ShieldRotation.Tools" ]
-}

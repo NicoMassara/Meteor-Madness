@@ -55,8 +55,9 @@ namespace MeteorMadness.ScreenFlow.Menu
         private void SetViewHandlers()
         {
             _view.OnMainMenuEnable += () => _controller.TransitionToMenu();
-            _view.OnFirstGame += (value) => _controller.SetHasPlayed(value);
             //
+            
+            //Old - Remove Someday
             _ui.OnFirstPlayScreenPlay += () =>
             {
                 _controller.SetHasPlayed(true);

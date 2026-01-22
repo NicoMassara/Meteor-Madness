@@ -1,5 +1,6 @@
-﻿using MeteorMadness.Contracts;
-using MeteorMadness.GlobalValues;
+﻿using System;
+using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.ScreenFlow.Base;
 using UnityEngine;
@@ -8,27 +9,29 @@ namespace MeteorMadness.Gameplay.Abilities
 {
     public class AbilityUIView : BaseViewUI<AbilityUiPanelSelector,AbilityUIComponents>, 
         IObserver,
-        AbilityUIView.IAbilityUIView
+        IAbilityUIView
     {
-        public interface IAbilityUIView
-        {
-            
-        }
-        
         [SerializeField] private AbilityUIData abilityUIData;
         
+        public event Action OnTriggerButtonPressed;
+
+        private void Start()
+        {
+            UIComponents.AddListenerToTriggerButton(OnTriggerButtonPressedHandler);
+        }
+
         public override void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
-                case AbilityUIObserverMessage.Add:
+                case AbilityObserverMessage.AddAbility:
                     HandleAddAbility((int)args[0]);
                     break;
-                case AbilityUIObserverMessage.Select:
-                    HandleSelectAbility();
-                    break;
-                case AbilityUIObserverMessage.Restart:
+                case AbilityObserverMessage.RestartAbilities:
                     HandleRestartAbilities();
+                    break;
+                case AbilityObserverMessage.TriggerAbility:
+                    HandleTriggerAbilityI();
                     break;
             }
         }
@@ -43,9 +46,14 @@ namespace MeteorMadness.Gameplay.Abilities
             abilityUIData.AddAbility((AbilityType)abilityTypeIndex);
         }
         
-        private void HandleSelectAbility()
+        private void HandleTriggerAbilityI()
         {
             abilityUIData.RemoveAbility();
+        }
+        
+        private void OnTriggerButtonPressedHandler()
+        {
+            OnTriggerButtonPressed?.Invoke();
         }
     }
 }

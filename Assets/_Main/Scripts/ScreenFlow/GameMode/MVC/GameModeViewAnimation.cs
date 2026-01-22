@@ -1,6 +1,7 @@
 ﻿using System;
 using DG.Tweening;
 using MeteorMadness.Animations;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
 using MeteorMadness.ScreenFlow.Base;
@@ -12,7 +13,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
     public class GameModeViewAnimation : BaseViewAnimation<GameModeUIAnimationSelector,GameModeUIAnimationComponents>,
         GameModeViewAnimation.IGameModeViewAnimation
     {
-        public interface IGameModeViewAnimation : BaseViewAnimation<GameModeUIAnimationSelector,GameModeUIAnimationComponents>.IBaseViewAnimation
+        public interface IGameModeViewAnimation : IBaseViewAnimation
         {
             public event Action OnUiClosed;
             public event Action OnCountdownFinished;

@@ -2,13 +2,9 @@
     "name": "MeteorMadness.Inputs",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:cbcefa849418cda42a15b4f089dcf60b",
-        "GUID:c86df55943534d8e992b0a5e142eef8a",
-        "GUID:72999fc0cb6d47409e53a0030917cc84",
-        "MeteorMadness.Contracts",
-        "GUID:47a70d1f9c6c9c14e9bd7f0d7fbc68d1",
-        "GUID:7383e56d37c04177bd5dbfee101ce49c"
+        "Unity.InputSystem",
+        "MeteorMadness.EventBus",
+        "MeteorMadness.Contracts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

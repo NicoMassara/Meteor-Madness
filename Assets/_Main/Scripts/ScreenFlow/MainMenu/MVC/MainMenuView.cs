@@ -21,8 +21,6 @@ namespace MeteorMadness.ScreenFlow.Menu
 
         public event Action OnLoreOpened;
         public event Action OnLoreClosed;
-        public event Action<bool> OnFirstGame;
-
         #endregion
         
 
@@ -144,7 +142,6 @@ namespace MeteorMadness.ScreenFlow.Menu
         {
             OnMainMenuEnable?.Invoke();
             var hasPlayed = FlagsManager.GetHasPlayed();
-            OnFirstGame?.Invoke(hasPlayed);
             CameraEventCaller.ZoomIn(0.5f);
             EarthEventCaller.DisableDamage();
         }

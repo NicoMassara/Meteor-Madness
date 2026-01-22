@@ -1,6 +1,7 @@
 ﻿using System;
 using DG.Tweening;
 using MeteorMadness.Animations;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.ScreenFlow.Base;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace _Main.Scripts.Cosmetics.MVC
         CosmeticViewAnimation.ICosmeticViewAnimation
     {
         
-        public interface ICosmeticViewAnimation : BaseViewAnimation<CosmeticUiAnimationSelector,CosmeticUiAnimationComponents>.IBaseViewAnimation
+        public interface ICosmeticViewAnimation : IBaseViewAnimation
         {
             
         }

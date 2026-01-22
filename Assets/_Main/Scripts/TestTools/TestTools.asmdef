@@ -1,0 +1,4 @@
+{
+  "name": "TestTools",
+  "references":[ "ShieldMovement.Contracts", "MeteorMadness.Contracts" ]
+}

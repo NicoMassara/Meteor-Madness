@@ -2,6 +2,7 @@
 using DG.Tweening;
 using MeteorMadness.Animations;
 using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.GlobalValues.Tools.Observer;
@@ -18,8 +19,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
     public class DefeatViewAnimation : BaseViewAnimation<DefeatUiAnimationSelector,DefeatUiAnimationComponents>,
         DefeatViewAnimation.IDefeatViewAnimation, IDefeatAnimationSounds, IDefeatAnimationVibration, DefeatViewAnimation.IVibrationCaller
     {
-        public interface IDefeatViewAnimation : 
-            BaseViewAnimation<DefeatUiAnimationSelector,DefeatUiAnimationComponents>.IBaseViewAnimation
+        public interface IDefeatViewAnimation : IBaseViewAnimation
         {
             public event Action OnScoreFinished;
             public event Action OnHighScoreFinished;

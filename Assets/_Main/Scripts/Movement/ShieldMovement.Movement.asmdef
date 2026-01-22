@@ -1,0 +1,17 @@
+{
+    "name": "ShieldMovement.Movement",
+    "rootNamespace": "",
+    "references": [
+        "MeteorMadness.Contracts",
+        "MeteorMadness.GlobalValues"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

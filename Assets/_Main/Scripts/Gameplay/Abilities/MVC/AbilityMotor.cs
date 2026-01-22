@@ -92,6 +92,19 @@ namespace MeteorMadness.Gameplay.Abilities
             NotifyAll(AbilityObserverMessage.RestartAbilities);
         }
         
+        public void RunActiveTimer() => NotifyAll(AbilityObserverMessage.RunActiveTimer,_currentAbilityIndex);
+
+        public void ForceFinishAbility()
+        {
+            if(_hasAbilityRunning == false) return;
+            
+            NotifyAll(AbilityObserverMessage.ForceFinish);
+        }
+
+        public void InitializeData() => NotifyAll(AbilityObserverMessage.Initialize);
+        
+        public void RemoveAbilityFromUI() => NotifyAll(AbilityObserverMessage.RemoveAbiltiyFromUI);
+
         #region Handlers
 
         private void Storage_OnAbilityAddedHandler(int abilityTypeIndex)
@@ -115,15 +128,6 @@ namespace MeteorMadness.Gameplay.Abilities
 
         #endregion
 
-        public void RunActiveTimer() => NotifyAll(AbilityObserverMessage.RunActiveTimer,_currentAbilityIndex);
 
-        public void ForceFinishAbility()
-        {
-            if(_hasAbilityRunning == false) return;
-            
-            NotifyAll(AbilityObserverMessage.ForceFinish);
-        }
-
-        public void InitializeData() => NotifyAll(AbilityObserverMessage.Initialize);
     }
 }

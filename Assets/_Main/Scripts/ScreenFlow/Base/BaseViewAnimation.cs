@@ -10,12 +10,6 @@ namespace MeteorMadness.ScreenFlow.Base
     where TS : UiComponentsData
     where T : UiComponentsSelector<TS>
     {
-        public interface IBaseViewAnimation
-        {
-            public event Action OnPanelOpened;
-            public event Action OnPanelClosed;
-        }
-        
         [SerializeField] private T uiPanelSelector;
         private IUiAnimation _currentAnimation;
         

@@ -31,7 +31,7 @@ namespace MeteorMadness.Vibration.Behaviours
                 Vibrate(deflectData);
             };
             
-            ComponentToVibrate.OnDirectionChange += (value) =>
+            ComponentToVibrate.OnDirectionChanged += () =>
             {
                 Vibrate(directionChangeData);
             };

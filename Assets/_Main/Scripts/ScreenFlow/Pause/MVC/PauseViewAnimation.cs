@@ -1,6 +1,7 @@
 ﻿using System;
 using DG.Tweening;
 using MeteorMadness.Animations;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.ScreenFlow.Base;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace MeteorMadness.ScreenFlow.Pause
     public class PauseViewAnimation : BaseViewAnimation<PauseUiAnimationSelector,PauseUIAnimationComponents>,
         PauseViewAnimation.IPauseViewAnimation
     {
-        public interface IPauseViewAnimation : BaseViewAnimation<PauseUiAnimationSelector,PauseUIAnimationComponents>.IBaseViewAnimation
+        public interface IPauseViewAnimation : IBaseViewAnimation
         {
             
         }

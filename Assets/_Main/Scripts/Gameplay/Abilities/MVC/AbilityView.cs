@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.Gameplay.Abilities.So;
@@ -15,7 +16,9 @@ using UnityEngine;
 namespace MeteorMadness.Gameplay.Abilities
 {
     public class AbilityView : ManagedBehavior, IObserver, IAbilitySounds,
-        AbilityView.IAbilityView, IAbilityVibration
+        AbilityView.IAbilityView, 
+        IAbilityVibration,
+        IAbilityButtonUpdater
     {
         public interface IAbilityView
         {
@@ -30,12 +33,16 @@ namespace MeteorMadness.Gameplay.Abilities
         
         private AbilityStoredData currentAbilityStored;
         private AbilityDataController abilityDataController;
-        
+            
+        #region IAbilityView
+
         public event Action OnAbilitySelected;
         public event Action OnAbilityFinished;
         
         public event Action OnAbilityTriggered;
         public event Action OnAbilityAdded;
+
+        #endregion
         public event Action OnTimeSlowDown;
         public event Action OnTimeSpeedUp;
 
@@ -75,31 +82,8 @@ namespace MeteorMadness.Gameplay.Abilities
                 case AbilityObserverMessage.ForceFinish:
                     HandleForceFinish();
                     break;
-                
-                // === UI === //
-                case AbilityObserverMessage.Initialize:
-                    HandleInitialize();
-                    break;
-                
-                case AbilityObserverMessage.EnableUI:
-                    HandleEnableUI();
-                    break;
-                
-                case AbilityObserverMessage.DisableUI:
-                    HandleDisableUI();
-                    break;
-                
-                case AbilityObserverMessage.RestartAbilities:
-                    HandleRestartAbilities();
-                    break;
             }
         }
-
-        private void HandleRestartAbilities() => AbilitiesUIEventCaller.Restart();
-        private void HandleDisableUI() => AbilitiesUIEventCaller.DisableUI();
-        private void HandleEnableUI() => AbilitiesUIEventCaller.EnableUI();
-        private void HandleInitialize() => AbilitiesUIEventCaller.Initialize();
-
 
         private void HandleAddAbility(int index, Vector2 position)
         {
@@ -115,7 +99,6 @@ namespace MeteorMadness.Gameplay.Abilities
                 DoesMove = true
             });
             
-            AbilitiesUIEventCaller.Add(index);
             OnAbilityAdded?.Invoke();
         }
 
@@ -144,19 +127,16 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void HandleTriggerAbility(int abilityIndex)
         {
-            
             _actionId = ActionManager.Add(abilityDataController.GetAbilityStartQueue(
                 (AbilityType)abilityIndex),ActionManager.UpdateType.Update);
             
             GameModeEventCaller.SetEnablePause(false);
             
-            AbilitiesUIEventCaller.SelectAbility();
             OnAbilityTriggered?.Invoke();
         }
 
         private void HandleFinishAbility(int abilityIndex)
         {
-            
             if (abilityDataController.GetHasInstantEffect((AbilityType)abilityIndex))
             {
                 GameModeEventCaller.SetEnablePause(true);

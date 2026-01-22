@@ -12,6 +12,7 @@
         public const ulong RestartPosition = 0xA0008;
         public const ulong SetAutomatic = 0xA0009;
         public const ulong SetSlow = 0xA0010;
+        public const ulong ChangeMagnitude = 0xA0011;
     }
 
     public struct EarthObserverMessage
@@ -120,7 +121,7 @@
         public const ulong SetStorageFull = 0xA4010;
         public const ulong DisableUI = 0xA4011;
         public const ulong Initialize = 0xA4012;
-        public const ulong Empty2 = 0xA4013;
+        public const ulong RemoveAbiltiyFromUI = 0xA4013;
         public const ulong Empty3 = 0xA4014;
         public const ulong Empty4 = 0xA4015;
         public const ulong Empty5 = 0xA4016;
@@ -297,14 +298,14 @@
         public const ulong Empty10 = 0xA140A;
     }
 
-    public struct AbilityUIObserverMessage
+    public struct InputPanelObserverMessage
     {
-        public const ulong Initialize  = 0xA1501;
-        public const ulong Enable  = 0xA1502;
-        public const ulong Disable  = 0xA1503;
-        public const ulong Restart  = 0xA1504;
-        public const ulong Add  = 0xA1505;
-        public const ulong Select  = 0xA1506;
+        public const ulong Enable  = 0xA1501;
+        public const ulong Disable = 0xA1502;
+        public const ulong Empty2  = 0xA1503;
+        public const ulong Empty3  = 0xA1504;
+        public const ulong Empty4 = 0xA1505;
+        public const ulong Empty5  = 0xA1506;
         public const ulong Empty7  = 0xA1507;
         public const ulong Empty8  = 0xA1508;
         public const ulong Empty9  = 0xA1509;

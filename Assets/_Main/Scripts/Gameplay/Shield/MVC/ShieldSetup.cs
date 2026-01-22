@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
-using MeteorMadness.Gameplay.Shield;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -14,6 +14,7 @@ namespace MeteorMadness.Gameplay.Shield
         private ShieldMotor _motor;
         private ShieldController.IShieldController _controller;
         private ShieldView _view;
+        private IInputReader _inputReader;
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Gameplay;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
@@ -21,10 +22,9 @@ namespace MeteorMadness.Gameplay.Shield
         private void Awake()
         {
             _view = GetComponent<ShieldView>();
-
             _motor = new ShieldMotor();
             _controller = new ShieldController(_motor);
-            
+            _inputReader = GetComponent<IInputReader>();
             _motor.Subscribe(_view);
             
             SetEventBus();
@@ -36,17 +36,35 @@ namespace MeteorMadness.Gameplay.Shield
         {
             BootEvents.OnSubSystemRequestInitialize -= Initialize;
             _controller.Initialize();
-            GameManager.Instance.InputReader.OnMovementDirectionChanged += Input_OnMovementDirectionChangedHandler;
+            _inputReader.OnMagnitudeChanged += InputReader_OnMagnitudeChangedHandler;
+            _inputReader.OnStopInput += InputReader_OnStopInputHandler;
+            _inputReader.OnMoved += InputReader_OnMovedHandler;
             
             BootEvents.SubSystemInitialized();
         }
-        
-        private void Input_OnMovementDirectionChangedHandler(int direction)
+
+        #region Handlers
+
+        private void InputReader_OnMagnitudeChangedHandler(float magnitude)
         {
             if (GameManager.Instance.CanPlay == false) return;
-            
-            _controller.TryRotate(direction);
+            _controller.ChangeInputMagnitude(magnitude);
         }
+        
+        private void InputReader_OnMovedHandler(float inputAngle)
+        {
+            if (GameManager.Instance.CanPlay == false) return;
+            _controller.TryRotate(inputAngle);
+        }
+
+        private void InputReader_OnStopInputHandler()
+        {
+            if (GameManager.Instance.CanPlay == false) return;
+
+            _controller.StopInput();
+        }
+
+        #endregion
 
         public void ExecuteUpdate(float deltaTime)
         {

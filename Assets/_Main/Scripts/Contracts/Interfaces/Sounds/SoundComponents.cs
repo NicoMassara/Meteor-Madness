@@ -74,7 +74,7 @@ namespace MeteorMadness.Contracts.Interfaces.Sounds
         public event Action<bool> OnShieldActivated;
         public event Action OnRotate;
         public event Action OnStopped;
-        public event Action<int> OnDirectionChange;
+        public event Action OnDirectionChanged;
         public event Action OnDeflect;
         public event Action<AbilityType> OnAbilityStarted;
         public event Action<AbilityType> OnAbilityRunning;

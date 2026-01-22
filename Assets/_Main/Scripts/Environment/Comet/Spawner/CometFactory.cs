@@ -374,8 +374,8 @@ namespace _Main.Scripts.Environment.Comet.Spawner
 
         public void ExecuteUpdate(float deltaTime)
         {
-            _ratioTracker.Update();
-            _distanceTracker.Update();
+            _ratioTracker?.Update();
+            _distanceTracker?.Update();
         }
 
         private void SpawnComet()

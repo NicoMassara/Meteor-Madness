@@ -14,10 +14,12 @@ namespace MeteorMadness.Gameplay.Shield
         public void Rotate(float direction = 1) 
             => NotifyAll(ShieldObserverMessage.Rotate, direction);
 
-        public void StopRotate() 
+        public void StopInput() 
             => NotifyAll(ShieldObserverMessage.StopRotate);
 
         #endregion
+        public void ChangeInputMagnitude(float magnitude) => NotifyAll(ShieldObserverMessage.ChangeMagnitude, magnitude);
+
 
         #region Enable/Disable
         
@@ -70,5 +72,8 @@ namespace MeteorMadness.Gameplay.Shield
         }
         
         #endregion
+
+
+
     }
 }

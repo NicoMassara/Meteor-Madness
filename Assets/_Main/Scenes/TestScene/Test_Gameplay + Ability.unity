@@ -1073,12 +1073,14 @@ MonoBehaviour:
     - {fileID: 756244594}
     - {fileID: 1835271395}
     - {fileID: 611700852}
+    triggerButton: {fileID: 0}
   desktopData:
     MainPanel: {fileID: 414862131}
     AbilitySprites:
     - {fileID: 141729794}
     - {fileID: 164714402}
     - {fileID: 906696075}
+    triggerButton: {fileID: 0}
 --- !u!114 &356169431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2858,94 +2860,6 @@ MonoBehaviour:
   grayScaleStencil: {fileID: 558497712}
   horizontalLookOffset: 0.39
   verticalLookOffset: 0.3
---- !u!1 &1083896841
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1083896846}
-  - component: {fileID: 1083896845}
-  - component: {fileID: 1083896844}
-  - component: {fileID: 1083896843}
-  - component: {fileID: 1083896842}
-  m_Layer: 0
-  m_Name: AbilityUIController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1083896842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083896841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc74487f5e2944cb9474d421ad4141ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiSelector: {fileID: 356169430}
---- !u!114 &1083896843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083896841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aa9673ddef249c1a30334a003e514bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiPanelSelector: {fileID: 356169431}
-  animData: {fileID: 11400000, guid: bdfa1edf11cafcc46bd49151500f4d94, type: 2}
---- !u!114 &1083896844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083896841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b57142d84174a4da318c7c6d633b3a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiPanelSelector: {fileID: 356169430}
-  abilityUIData: {fileID: 1083896842}
---- !u!114 &1083896845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083896841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d8db9ba530e498383d54b0058ca7d52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1083896846
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083896841}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.413296, y: 2.6273723, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1133430233
 GameObject:
   m_ObjectHideFlags: 0
@@ -4138,6 +4052,9 @@ GameObject:
   - component: {fileID: 1859037547}
   - component: {fileID: 1859037546}
   - component: {fileID: 1859037545}
+  - component: {fileID: 1859037552}
+  - component: {fileID: 1859037551}
+  - component: {fileID: 1859037550}
   m_Layer: 0
   m_Name: AbilityController
   m_TagString: Untagged
@@ -4216,6 +4133,47 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1859037550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859037544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc74487f5e2944cb9474d421ad4141ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiSelector: {fileID: 356169430}
+--- !u!114 &1859037551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859037544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aa9673ddef249c1a30334a003e514bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiPanelSelector: {fileID: 356169431}
+  animData: {fileID: 11400000, guid: bdfa1edf11cafcc46bd49151500f4d94, type: 2}
+--- !u!114 &1859037552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859037544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b57142d84174a4da318c7c6d633b3a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiPanelSelector: {fileID: 356169430}
+  abilityUIData: {fileID: 1859037550}
 --- !u!1 &1988988153
 GameObject:
   m_ObjectHideFlags: 0
@@ -4589,7 +4547,6 @@ SceneRoots:
   - {fileID: 709288248}
   - {fileID: 1988988154}
   - {fileID: 356169433}
-  - {fileID: 1083896846}
   - {fileID: 1135847070}
   - {fileID: 11396368}
   - {fileID: 1477593724}

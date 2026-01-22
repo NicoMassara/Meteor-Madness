@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Main.Scripts.Movement;
 using _Main.Scripts.ShieldRotation.AutomaticMovement;
 using _Main.Scripts.ShieldRotation.Contracts;
-using _Main.Scripts.ShieldRotation.Movement;
-using _Main.Scripts.ShieldRotation.MovementCorrection;
 using _Main.Scripts.ShieldRotation.ProjectileDetector;
 using _Main.Scripts.ShieldRotation.RotationSpeeder;
 using _Main.Scripts.ShieldRotation.TargetSnapper;
 using _Main.Scripts.ShieldRotation.Tools;
 using UnityEngine;
+using IMovement = _Main.Scripts.Movement.IMovement;
 
 namespace _Main.Scripts.ShieldRotation.Mediator
 {
@@ -130,7 +130,6 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         // === Movement === //
         private readonly IMovement _inputMovement;
         private readonly IAutomaticMovement _automaticMovement;
-        private readonly IMovementCorrection _movementCorrection;
         private readonly IRotationSpeeder _rotationSpeeder;
         private readonly ITargetSnapper _targetSnapper;
         
@@ -138,14 +137,14 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         private readonly IProjectileDetector _projectileDetector;
         
         // === Values === // 
+        private int _angleSlots;
         private bool _shouldStopAutomatic;
         private ITargetable _currentTarget;
         
         // === Events === //
-        public event Action<int> OnStartMoving;
-        public event Action OnStartStop;
-        public event Action<int> OnDirectionChange;
+        public event Action OnDirectionChanged;
         public event Action OnStopped;  
+        public event Action OnMoved;  
         public event Action OnStartSnapping;  
         public event Action OnStopSnapping;  
         public event Action OnSpeedIncreased;  
@@ -163,9 +162,9 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             
             _mediatorData = mediatorData;
             _objectToRotate = objectToRotate;
-            _inputMovement = new MovementComponent(_mediatorData.MovementData, objectToRotate, angleSlots);
+            
+            _inputMovement = new MovementComponent(objectToRotate, _mediatorData.MovementData);
             _automaticMovement = new AutomaticMovementComponent(objectToRotate, _mediatorData.AutomaticData, angleSlots);
-            _movementCorrection = new MovementCorrectionComponent(_mediatorData.CorrectionData, _inputMovement, objectToRotate, angleSlots);
             _rotationSpeeder = new RotationSpeederController(_mediatorData.SpeederData, objectToRotate);
             _targetSnapper = new TargetSnapperComponent(objectToRotate,_mediatorData.SnapperData, angleSlots);
             
@@ -176,12 +175,9 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             // / / / / / / / / / / / / / //
             
             // === IMovement === //
-            _inputMovement.OnStartMoving += IMovement_OnStartMovingHandler;
-            _inputMovement.OnStartStop += IMovement_OnStartStopHandler;
-            _inputMovement.OnDirectionChange += IMovement_OnDirectionChangeHandler;
-            _inputMovement.OnSnapCorrected += IMovement_OnSnapCorrectedHandler;
+            _inputMovement.OnMoved += IMovement_OnMovedHandler;
+            _inputMovement.OnDirectionChanged += IMovement_OnDirectionChanged;
             _inputMovement.OnStopped += IMovement_OnStoppedHandler;
-            _inputMovement.OnCheckForCorrection += IMovement_OnCheckForCorrectionHandler;
             
             // === IAutomaticMovement === //
             _automaticMovement.OnStartSnapping += IAutomaticMovement_OnStartSnappingHandler;
@@ -205,29 +201,14 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             _fsmController = new MediatorFsmController(this);
             Disable();
         }
-        
+
         #region Private Methods
-
-        private void TrySetCorrectionToInput()
-        {
-            if (SetTarget() == false) return;
-
-            if (_movementCorrection.GetTargetIsInRange(_currentTarget))
-            {
-                var targetSlot = _movementCorrection.GetAngleSlotFromTarget(_currentTarget);
-                _inputMovement.SetCorrectionData(targetSlot);
-            }
-            else
-            {
-                ClearTarget();
-            }
-        }
 
         private bool CheckForTargetToSnapper()
         {
             if (SetTarget() == false) return false;
             
-            var targetSlot = _movementCorrection.GetAngleSlotFromTarget(_currentTarget);
+            var targetSlot = GetAngleSlotFromTarget(_currentTarget);
             _targetSnapper.SetTargetSlot(targetSlot);
             return true;
         }
@@ -239,7 +220,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
                 return false;
             }
 
-            var targetSlot = _movementCorrection.GetAngleSlotFromTarget(_currentTarget);
+            var targetSlot = GetAngleSlotFromTarget(_currentTarget);
             _automaticMovement.SetTargetAngle(targetSlot);
             
             return true;
@@ -247,7 +228,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
 
         private bool SetTarget()
         {
-            _currentTarget = _projectileDetector.GetNearestTarget(_inputMovement.Position);
+            _currentTarget = _projectileDetector.GetNearestTarget(_objectToRotate.position);
             if (_currentTarget == null)
             {
                 return false;
@@ -265,6 +246,16 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             _currentTarget.OnTargetDeath -= Target_OnDeath;
             _currentTarget.EnableTargetable();
             _currentTarget = null;
+        }
+        
+        private int GetAngleSlotFromTarget(ITargetable target)
+        {
+            if (target == null) return -1;
+            
+            return AngleHelper.GetAngleSlotFromPosition(
+                _currentTarget.Position, 
+                _objectToRotate.position, 
+                _angleSlots, 0f);
         }
 
         #endregion
@@ -289,9 +280,14 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             _inputMovement.ForceStop();
         }
 
-        public void SetInputDirection(float direction)
+        public void SetInputDirection(float inputAngle)
         {
-            _inputMovement.SetDirection(direction);
+            _inputMovement.SetInputAngle(inputAngle);
+        }
+        
+        public void SetInputMagnitude(float magnitude)
+        {
+            _inputMovement.SetInputMagnitude(magnitude);
         }
 
         #endregion
@@ -389,38 +385,20 @@ namespace _Main.Scripts.ShieldRotation.Mediator
                 case States.TargetSnapping:
                     ITargetSnapper_OnSnappedHandler();
                     break;
-                case States.Inputs:
-                    _inputMovement.ClearCorrectionData();
-                    break;
             }
         }
         
         // === IMovement === //
         #region IMovement
         
-        private void IMovement_OnCheckForCorrectionHandler()
+        private void IMovement_OnMovedHandler()
         {
-            TrySetCorrectionToInput();
+            OnMoved?.Invoke();
         }
         
-        private void IMovement_OnSnapCorrectedHandler()
+        private void IMovement_OnDirectionChanged()
         {
-            _inputMovement.ClearCorrectionData();
-        }
-
-        private void IMovement_OnDirectionChangeHandler(int direction)
-        {
-            OnDirectionChange?.Invoke(direction);
-        }
-
-        private void IMovement_OnStartStopHandler()
-        {
-            OnStartStop?.Invoke();
-        }
-
-        private void IMovement_OnStartMovingHandler(int direction)
-        {
-            OnStartMoving?.Invoke(direction);
+            OnDirectionChanged?.Invoke();
         }
         
         private void IMovement_OnStoppedHandler()

@@ -1,7 +1,7 @@
 ﻿using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
-using MeteorMadness.Managers;
+using MeteorMadness.GlobalValues.Tools.Observer;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ namespace MeteorMadness.Gameplay.Abilities
     {
         private AbilityMotor _motor;
         private AbilityController.IAbilityController _controller;
-        private IInputReader _inputReader;
+        private IAbilityUIView _ui;
         
         private AbilityView.IAbilityView _view;
         
@@ -20,32 +20,41 @@ namespace MeteorMadness.Gameplay.Abilities
         {
             _motor = new AbilityMotor();
             _controller = new AbilityController(_motor);
+
+            #region View
             
-            var view = GetComponent<AbilityView>();
+            _view = GetComponent<AbilityView>();
+            if (_view == null)
+            {
+                Debug.LogWarning("No IAbilityController component attached to Ability Setup");
+            }
+            else if (_view is IObserver viewObserver)
+            {
+                _motor.Subscribe(viewObserver);
+                SetViewHandlers();
+            }
+            #endregion
+
+            #region UI
             
-            _motor.Subscribe(view);
+            _ui = GetComponent<IAbilityUIView>();
+            if (_ui == null)
+            {
+                Debug.LogWarning("No IAbilityUIView component attached to Ability Setup");
+            }
+            else if (_ui is IObserver uiObserver)
+            {
+                _motor.Subscribe(uiObserver);
+                SetViewUIHandlers();
+            }
+            #endregion
             
-            _view = view;
-            
-            SetViewHandlers();
             EventBusSetup();
         }
 
         private void Start()
         {
             _controller.Initialize();
-            _inputReader = GameManager.Instance.InputReader;
-
-            if (_inputReader != null)
-            {
-                _inputReader.OnAbilityTriggered += (isPressed) =>
-                {
-                    if (isPressed)
-                    {           
-                        _controller.SelectAbility();
-                    }
-                };
-            }
         }
 
         #region View Handlers
@@ -54,6 +63,11 @@ namespace MeteorMadness.Gameplay.Abilities
         {
             _view.OnAbilityFinished += _controller.TryEnableAbility;
             _view.OnAbilitySelected += _controller.TryTriggerAbility;
+        }
+
+        private void SetViewUIHandlers()
+        {
+            _ui.OnTriggerButtonPressed += _controller.SelectAbility;
         }
 
         #endregion
@@ -69,17 +83,11 @@ namespace MeteorMadness.Gameplay.Abilities
             AbilitiesEventSubscriber.SetCanUse(EventBus_Ability_CanUse);
             AbilitiesEventSubscriber.Add(EventBus_Ability_Add);
             AbilitiesEventSubscriber.RunTimer(EventBus_Ability_RunTimer);
-            AbilitiesEventSubscriber.UiInitialized(EventBus_Ability_UI_Initialized);
-            
             //
         }
 
 
         #region Ability
-        private void EventBus_Ability_UI_Initialized(AbilitiesEvents.UIInitialized input)
-        {
-            _controller.TryEnableAbility();
-        }
 
         private void EventBus_Ability_Enable(AbilitiesEvents.Enable input)
         {

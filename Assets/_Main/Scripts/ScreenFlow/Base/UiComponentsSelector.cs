@@ -65,10 +65,21 @@ namespace MeteorMadness.ScreenFlow.Base
         protected void SetTextColor(TMP_Text text, Color color) => text.color = color;
         
         // === Buttons === //
-        protected void AddListenerToButton(Button button, UnityAction onClick) => button.onClick.AddListener(onClick);
-        protected void RemoveListenerFromButton(Button button, UnityAction onClick) => button.onClick.RemoveListener(onClick);
-        protected void SetButtonInteractable(Button button, bool interactable) => button.interactable = interactable;
-        
+        protected void AddListenerToButton(Button button, UnityAction onClick)
+        {
+            if (button) button.onClick.AddListener(onClick);
+        }
+
+        protected void RemoveListenerFromButton(Button button, UnityAction onClick)
+        {
+            if (button) button.onClick.RemoveListener(onClick);
+        }
+
+        protected void SetButtonInteractable(Button button, bool interactable)
+        {
+            if (button) button.interactable = interactable;
+        }
+
         // === Game Objects === //
         
         protected void SetActiveObject(GameObject obj, bool active) => obj.SetActive(active);

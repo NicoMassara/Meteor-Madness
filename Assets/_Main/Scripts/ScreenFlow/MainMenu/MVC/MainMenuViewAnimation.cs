@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using MeteorMadness.Animations;
+using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.ScreenFlow.Base;
 using MeteorMadness.Systems;
@@ -12,7 +13,7 @@ namespace MeteorMadness.ScreenFlow.Menu
     public class MainMenuViewAnimation : BaseViewAnimation<MainMenuUiAnimationSelector,MainMenuUiAnimationComponents>,
     MainMenuViewAnimation.IAnimator, MainMenuViewAnimation.IMainMenuViewAnimation
     {
-        public interface IMainMenuViewAnimation : BaseViewAnimation<MainMenuUiAnimationSelector,MainMenuUiAnimationComponents>.IBaseViewAnimation
+        public interface IMainMenuViewAnimation : IBaseViewAnimation
         {
             public event Action OnMainPanelOpened;
         }

@@ -9,7 +9,6 @@ using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.Gameplay.Particles;
 using MeteorMadness.Gameplay.Shaker;
 using MeteorMadness.GlobalValues.Tools.Observer;
-using MeteorMadness.Managers;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -45,8 +44,7 @@ namespace MeteorMadness.Gameplay.Shield
         public event Action<bool> OnShieldActivated;
         public event Action OnRotate;
         public event Action OnStopped;
-        public event Action OnStartStop;
-        public event Action<int> OnDirectionChange;
+        public event Action OnDirectionChanged;
         public event Action OnDeflect;
         public event Action<AbilityType> OnAbilityStarted;
         public event Action<AbilityType> OnAbilityRunning;
@@ -70,9 +68,9 @@ namespace MeteorMadness.Gameplay.Shield
 
         private void Start()
         {
-            _shieldMovement.OnStartMoving += Movement_OnStartMovingHandler;
-            _shieldMovement.OnStartStop += Movement_OnStartStopHandler;
-            _shieldMovement.OnDirectionChange += Movement_OnDirectionChangeHandler;
+            _shieldMovement.OnMoved += Movement_OnMovedHandler;
+            _shieldMovement.OnStopped += Movement_OnStoppedHandler;
+            _shieldMovement.OnDirectionChanged += MovementOnDirectionChangedHandler;
             _shieldMovement.OnStopped += Movement_OnStoppedHandler;
             _shieldMovement.OnStartSnapping += Movement_OnStartSnappingHandler;
             _shieldMovement.OnStopSnapping += Movement_OnStopSnappingHandler;
@@ -120,11 +118,19 @@ namespace MeteorMadness.Gameplay.Shield
                 case ShieldObserverMessage.SetSlow:
                     HandleSetSlow((bool)args[0]);
                     break;
+                case ShieldObserverMessage.ChangeMagnitude:
+                    HandleChangeMagnitude((float)args[0]);
+                    break;
             }
         }
 
         #region ObserverHandlers
 
+        private void HandleChangeMagnitude(float magnitude)
+        {
+            _shieldMovement.SetInputMagnitude(magnitude);
+        }
+        
         private void HandleSetAutomatic(bool isActive)
         {
             OnAbilitySetActive?.Invoke(AbilityType.Automatic, isActive);
@@ -360,22 +366,14 @@ namespace MeteorMadness.Gameplay.Shield
             OnStopped?.Invoke();
         }
 
-        private void Movement_OnDirectionChangeHandler(int direction)
+        private void MovementOnDirectionChangedHandler()
         {
-            OnDirectionChange?.Invoke(direction);
-            ShieldEventCaller.NotifyMovement(direction);
+            OnDirectionChanged?.Invoke();
         }
 
-        private void Movement_OnStartStopHandler()
-        {
-            OnStartStop?.Invoke();
-            ShieldEventCaller.NotifyMovement(0);
-        }
-
-        private void Movement_OnStartMovingHandler(int direction)
+        private void Movement_OnMovedHandler()
         {
             _colliderExtender.Extend();
-            ShieldEventCaller.NotifyMovement(direction);
             OnRotate?.Invoke();
         }
 

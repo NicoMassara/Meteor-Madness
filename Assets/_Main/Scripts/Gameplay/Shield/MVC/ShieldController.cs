@@ -18,11 +18,12 @@ namespace MeteorMadness.Gameplay.Shield
             public void Execute(float deltaTime);
             public void TryRotate(float direction);
             public void TryEnableType(ShieldType type);
-
             public void TryEnable();
             public void TryDisable();
             public void TryHit(Vector3 inputPosition, Quaternion inputRotation, Vector2 inputDirection);
             public void TryDisableShieldType();
+            public void ChangeInputMagnitude(float magnitude);
+            public void StopInput();
         }
 
         #region Private Classes
@@ -370,9 +371,9 @@ namespace MeteorMadness.Gameplay.Shield
                 _motor.Rotate(_pendingActionData.Direction.Value);
         }
 
-        public void StopRotate()
+        public void StopInput()
         {
-            _motor.StopRotate();
+            _motor.StopInput();
         }
 
         #region IShieldController
@@ -437,6 +438,11 @@ namespace MeteorMadness.Gameplay.Shield
         public void TryDisableShieldType()
         {
             _ability.TransitionToNone();
+        }
+
+        public void ChangeInputMagnitude(float magnitude)
+        {
+            _motor.ChangeInputMagnitude(magnitude);
         }
 
         public void TryHit(Vector3 inputPosition, Quaternion inputRotation, Vector2 inputDirection)

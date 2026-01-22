@@ -14,7 +14,6 @@ namespace MeteorMadness.Gameplay.Abilities
         public interface IAbilityController
         {
             public void Initialize();
-            public void TryInitialize();
             public void SelectAbility();
             public void TryAddAbility(int inputAbilityType, Vector2 inputPosition);
             public void SetCanUse(bool inputCanUse);

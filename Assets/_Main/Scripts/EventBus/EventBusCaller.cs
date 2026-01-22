@@ -268,77 +268,44 @@ namespace _Main.Scripts.EventBus
     
     public static class ShieldEventCaller
     {
-        public static void RequestEnableShieldType(ShieldType type)
-        {
-            EventBusCaller.Publish(new ShieldEvents.RequestEnableShieldType{Type = type});
-        }
-        
-        public static void RequestDisableShieldType(ShieldType type)
-        {
-            EventBusCaller.Publish(new ShieldEvents.RequestDisableShieldType{Type = type});
-        }
-        
-        public static void NotifyShieldTypeEnabled(ShieldType type)
-        {
-            EventBusCaller.Publish(new ShieldEvents.NotifyShieldTypeEnabled{Type = type});
-        }
-        
-        public static void NotifyShieldTypeDisabled(ShieldType type)
-        {
-            EventBusCaller.Publish(new ShieldEvents.NotifyShieldTypeDisabled{Type = type});
-        }
-        
-        public static void Enable()
-        {
-            EventBusCaller.Publish(new ShieldEvents.Enable());
-        }
-        public static void Disable()
-        {
-            EventBusCaller.Publish(new ShieldEvents.Disable());
-        }
-
-        public static void NotifyMovement(int value)
-        {
-            EventBusCaller.Publish(new ShieldEvents.NotifyMovement{Direction = value});
-        }
+        public static void RequestEnableShieldType(ShieldType type) 
+            => EventBusCaller.Publish(new ShieldEvents.RequestEnableShieldType{Type = type});
+        public static void RequestDisableShieldType(ShieldType type) 
+            => EventBusCaller.Publish(new ShieldEvents.RequestDisableShieldType{Type = type});
+        public static void NotifyShieldTypeEnabled(ShieldType type) 
+            => EventBusCaller.Publish(new ShieldEvents.NotifyShieldTypeEnabled{Type = type});
+        public static void NotifyShieldTypeDisabled(ShieldType type) 
+            => EventBusCaller.Publish(new ShieldEvents.NotifyShieldTypeDisabled{Type = type});
+        public static void Enable() 
+            => EventBusCaller.Publish(new ShieldEvents.Enable());
+        public static void Disable() 
+            => EventBusCaller.Publish(new ShieldEvents.Disable());
+        public static void NotifyMovement(int value) 
+            => EventBusCaller.Publish(new ShieldEvents.NotifyMovement{Direction = value});
     }
     
     public static class ShieldEventSubscriber
     {
-        public static void RequestEnableShieldType(Action<ShieldEvents.RequestEnableShieldType> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void RequestDisableShieldType(Action<ShieldEvents.RequestDisableShieldType> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void NotifyShieldTypeEnabled(Action<ShieldEvents.NotifyShieldTypeEnabled> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void NotifyShieldTypeDisabled(Action<ShieldEvents.NotifyShieldTypeDisabled> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void Enable(Action<ShieldEvents.Enable> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void Disable(Action<ShieldEvents.Disable> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void NotifyMovement(Action<ShieldEvents.NotifyMovement> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
+        public static void RequestEnableShieldType(Action<ShieldEvents.RequestEnableShieldType> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void RequestDisableShieldType(Action<ShieldEvents.RequestDisableShieldType> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void NotifyShieldTypeEnabled(Action<ShieldEvents.NotifyShieldTypeEnabled> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void NotifyShieldTypeDisabled(Action<ShieldEvents.NotifyShieldTypeDisabled> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void Enable(Action<ShieldEvents.Enable> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void Disable(Action<ShieldEvents.Disable> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void NotifyMovement(Action<ShieldEvents.NotifyMovement> action) 
+            => EventBusCaller.Subscribe(action);
     }
     
     public static class ShieldEventUnSubscriber
@@ -973,73 +940,6 @@ namespace _Main.Scripts.EventBus
         public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
         public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action) => EventBusCaller.Unsubscribe(action);
         public static void UiInitialized(Action<AbilitiesEvents.UIInitialized> action) => EventBusCaller.Unsubscribe(action);
-    }
-
-    #endregion
-
-    #region Abilities UI
-
-    public static class AbilitiesUIEventCaller
-    {
-        public static void Add(int index) 
-            => EventBusCaller.Publish(new AbilitiesUIEvents.Add{AbilityIndex = index});
-        
-        public static void Initialize()
-            => EventBusCaller.Publish(new AbilitiesUIEvents.Initialize());
-
-        public static void SelectAbility()
-            => EventBusCaller.Publish(new AbilitiesUIEvents.SelectAbility());
-
-        public static void Restart()
-            => EventBusCaller.Publish(new AbilitiesUIEvents.Restart());
-
-        public static void EnableUI()
-            => EventBusCaller.Publish(new AbilitiesUIEvents.EnableUI());
-
-        public static void DisableUI()
-            => EventBusCaller.Publish(new AbilitiesUIEvents.DisableUI());
-    }
-    
-    public static class AbilitiesUISubscriber
-    {
-        public static void Add(Action<AbilitiesUIEvents.Add> action)
-            => EventBusCaller.Subscribe(action);
-
-        public static void Initialize(Action<AbilitiesUIEvents.Initialize> action)
-            => EventBusCaller.Subscribe(action);
-
-        public static void SelectAbility(Action<AbilitiesUIEvents.SelectAbility> action)
-            => EventBusCaller.Subscribe(action);
-
-        public static void Restart(Action<AbilitiesUIEvents.Restart> action)
-            => EventBusCaller.Subscribe(action);
-
-        public static void EnableUI(Action<AbilitiesUIEvents.EnableUI> action)
-            => EventBusCaller.Subscribe(action);
-
-        public static void DisableUI(Action<AbilitiesUIEvents.DisableUI> action)
-            => EventBusCaller.Subscribe(action);
-    }
-
-    public static class AbilitiesUIUnSubscriber
-    {
-        public static void Add(Action<AbilitiesUIEvents.Add> action)
-            => EventBusCaller.Unsubscribe(action);
-
-        public static void Initialize(Action<AbilitiesUIEvents.Initialize> action)
-            => EventBusCaller.Unsubscribe(action);
-
-        public static void SelectAbility(Action<AbilitiesUIEvents.SelectAbility> action)
-            => EventBusCaller.Unsubscribe(action);
-
-        public static void Restart(Action<AbilitiesUIEvents.Restart> action)
-            => EventBusCaller.Unsubscribe(action);
-
-        public static void EnableUI(Action<AbilitiesUIEvents.EnableUI> action)
-            => EventBusCaller.Unsubscribe(action);
-
-        public static void DisableUI(Action<AbilitiesUIEvents.DisableUI> action)
-            => EventBusCaller.Unsubscribe(action);
     }
 
     #endregion
