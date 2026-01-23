@@ -269,6 +269,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Back
+  prefix: 
+  suffix: 
 --- !u!1 &9451944
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,6 +422,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: FirstOpen.Play.Text
+  prefix: 
+  suffix: 
 --- !u!1 &36206396
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,10 +457,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2103393672}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.83231896}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -3.4001465}
-  m_SizeDelta: {x: 0, y: -9}
+  m_AnchorMin: {x: 0.024255516, y: 0.8610262}
+  m_AnchorMax: {x: 0.57922095, y: 0.9851216}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0.0000076293945, y: -0.000015258789}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &36206399
 MonoBehaviour:
@@ -505,12 +509,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 119.2
+  m_fontSize: 256.59
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 119.2
+  m_fontSizeMax: 256.59
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -570,6 +574,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Lore.Title
+  prefix: 
+  suffix: 
 --- !u!1 &42252347
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,6 +801,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: 
+  prefix: 
+  suffix: 
 --- !u!1 &61911574
 GameObject:
   m_ObjectHideFlags: 0
@@ -1079,6 +1087,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Back
+  prefix: 
+  suffix: 
 --- !u!1 &120037249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1332,8 +1342,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 96.59302, y: -460.48535}
-  m_SizeDelta: {x: 193.186, y: 150}
+  m_AnchoredPosition: {x: 250.703, y: -1191.9813}
+  m_SizeDelta: {x: 501.406, y: 252.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &128353393
 MonoBehaviour:
@@ -1667,8 +1677,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 496.73975, y: -466.21414}
-  m_SizeDelta: {x: 993.4795, y: 174.48566}
+  m_AnchoredPosition: {x: 856.7413, y: -1196.9858}
+  m_SizeDelta: {x: 1713.4825, y: 466.79434}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &225367526
 MonoBehaviour:
@@ -1872,6 +1882,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Cosmetic
+  prefix: 
+  suffix: 
 --- !u!1 &240161012
 GameObject:
   m_ObjectHideFlags: 0
@@ -1905,8 +1917,8 @@ RectTransform:
   - {fileID: 1523791668}
   m_Father: {fileID: 359252952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.8658203, y: 0.04612001}
-  m_AnchorMax: {x: 0.9830078, y: 0.12257759}
+  m_AnchorMin: {x: 0.7541388, y: 0.04612001}
+  m_AnchorMax: {x: 0.9499992, y: 0.12257759}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1997,8 +2009,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 496.73975, y: -87.24283}
-  m_SizeDelta: {x: 993.4795, y: 174.48566}
+  m_AnchoredPosition: {x: 856.7413, y: -233.39717}
+  m_SizeDelta: {x: 1713.4825, y: 466.79434}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &248378019
 MonoBehaviour:
@@ -2085,10 +2097,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 566992571}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.83231896}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -3.4001465}
-  m_SizeDelta: {x: 0, y: -9}
+  m_AnchorMin: {x: 0.024255516, y: 0.8610262}
+  m_AnchorMax: {x: 0.57922095, y: 0.9851216}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0.0000076293945, y: -0.000015258789}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &257188821
 MonoBehaviour:
@@ -2139,12 +2151,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 119.2
+  m_fontSize: 304.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 119.2
+  m_fontSizeMax: 304.3
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -2204,6 +2216,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Credits.Title
+  prefix: 
+  suffix: 
 --- !u!1 &284876885
 GameObject:
   m_ObjectHideFlags: 0
@@ -2239,8 +2253,8 @@ RectTransform:
   - {fileID: 128353392}
   m_Father: {fileID: 359252952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.8854742, y: 0.24669662}
-  m_AnchorMax: {x: 0.9609375, y: 0.67840165}
+  m_AnchorMin: {x: 0.7541383, y: 0.14382945}
+  m_AnchorMax: {x: 0.95, y: 0.4581214}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 0.5}
@@ -2736,10 +2750,10 @@ RectTransform:
   - {fileID: 1903596667}
   m_Father: {fileID: 2103393672}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.8308089, y: 0.045901384}
+  m_AnchorMin: {x: 0.7125792, y: 0.045901384}
   m_AnchorMax: {x: 0.9653581, y: 0.12224869}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -0.000061035156, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &379400878
 MonoBehaviour:
@@ -3273,6 +3287,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Play
+  prefix: 
+  suffix: 
 --- !u!1 &492391702
 GameObject:
   m_ObjectHideFlags: 0
@@ -3423,6 +3439,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: FirstOpen.Play.Title
+  prefix: 
+  suffix: 
 --- !u!1 &551609579
 GameObject:
   m_ObjectHideFlags: 0
@@ -3819,6 +3837,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Play
+  prefix: 
+  suffix: 
 --- !u!1 &605107038
 GameObject:
   m_ObjectHideFlags: 0
@@ -4786,6 +4806,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Tutorial.Button
+  prefix: 
+  suffix: 
 --- !u!1 &867641690
 GameObject:
   m_ObjectHideFlags: 0
@@ -5117,6 +5139,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: FirstOpen.Play.Text
+  prefix: 
+  suffix: 
 --- !u!1 &887024996
 GameObject:
   m_ObjectHideFlags: 0
@@ -5591,6 +5615,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Credits.Title
+  prefix: 
+  suffix: 
 --- !u!1 &986852271
 GameObject:
   m_ObjectHideFlags: 0
@@ -5808,12 +5834,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 49.7
+  m_fontSize: 92.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 50
+  m_fontSizeMax: 92.5
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -5873,6 +5899,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Lore.Text
+  prefix: 
+  suffix: 
 --- !u!1 &1003712726
 GameObject:
   m_ObjectHideFlags: 0
@@ -6023,6 +6051,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Tutorial.Button
+  prefix: 
+  suffix: 
 --- !u!1 &1013583306
 GameObject:
   m_ObjectHideFlags: 0
@@ -6173,6 +6203,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Tutorial.Button
+  prefix: 
+  suffix: 
 --- !u!1 &1014773035
 GameObject:
   m_ObjectHideFlags: 0
@@ -6463,6 +6495,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Stats.Title
+  prefix: 
+  suffix: 
 --- !u!1 &1077354734
 GameObject:
   m_ObjectHideFlags: 0
@@ -6613,6 +6647,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Tutorial.StartButton
+  prefix: 
+  suffix: 
 --- !u!1 &1127432694
 GameObject:
   m_ObjectHideFlags: 0
@@ -6698,12 +6734,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 149.1
+  m_fontSize: 300
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 149.1
+  m_fontSizeMax: 300
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -6763,6 +6799,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Stats.Title
+  prefix: 
+  suffix: 
 --- !u!1 &1130515201
 GameObject:
   m_ObjectHideFlags: 0
@@ -7015,6 +7053,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Lore.Title
+  prefix: 
+  suffix: 
 --- !u!1 &1148071970
 GameObject:
   m_ObjectHideFlags: 0
@@ -7165,6 +7205,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: FirstOpen.Play.Title
+  prefix: 
+  suffix: 
 --- !u!1 &1157024786
 GameObject:
   m_ObjectHideFlags: 0
@@ -7315,6 +7357,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Tutorial.StartButton
+  prefix: 
+  suffix: 
 --- !u!1 &1177523544
 GameObject:
   m_ObjectHideFlags: 0
@@ -7350,8 +7394,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 96.59302, y: -276.2912}
-  m_SizeDelta: {x: 193.186, y: 150}
+  m_AnchoredPosition: {x: 250.703, y: -715.18884}
+  m_SizeDelta: {x: 501.406, y: 252.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1177523546
 MonoBehaviour:
@@ -7727,6 +7771,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Back
+  prefix: 
+  suffix: 
 --- !u!1 &1243656841
 GameObject:
   m_ObjectHideFlags: 0
@@ -7877,6 +7923,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Quit
+  prefix: 
+  suffix: 
 --- !u!1 &1295387526
 GameObject:
   m_ObjectHideFlags: 0
@@ -8052,12 +8100,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 90
+  m_fontSize: 167.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 90
+  m_fontSizeMax: 167.9
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -8117,6 +8165,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Back
+  prefix: 
+  suffix: 
 --- !u!1 &1371139049
 GameObject:
   m_ObjectHideFlags: 0
@@ -8396,12 +8446,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 149.1
+  m_fontSize: 300
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 149.1
+  m_fontSizeMax: 300
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -8461,6 +8511,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Cosmetic
+  prefix: 
+  suffix: 
 --- !u!1 &1452950442
 GameObject:
   m_ObjectHideFlags: 0
@@ -8623,6 +8675,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Lore.Text
+  prefix: 
+  suffix: 
 --- !u!1 &1521186687
 GameObject:
   m_ObjectHideFlags: 0
@@ -8773,6 +8827,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Tutorial.Button
+  prefix: 
+  suffix: 
 --- !u!1 &1523791667
 GameObject:
   m_ObjectHideFlags: 0
@@ -8858,12 +8914,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 90
+  m_fontSize: 200
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 90
+  m_fontSizeMax: 200
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -8923,6 +8979,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Quit
+  prefix: 
+  suffix: 
 --- !u!1 &1541532455
 GameObject:
   m_ObjectHideFlags: 0
@@ -9133,12 +9191,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
+  m_fontSize: 188.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 80
+  m_fontSizeMax: 188.8
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -9697,8 +9755,8 @@ RectTransform:
   - {fileID: 909634948}
   m_Father: {fileID: 359252952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.043359596, y: 0.07785647}
-  m_AnchorMax: {x: 0.43143755, y: 0.65828043}
+  m_AnchorMin: {x: 0.035347298, y: 0.14382862}
+  m_AnchorMax: {x: 0.70467645, y: 0.45812175}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9886,6 +9944,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Play
+  prefix: 
+  suffix: 
 --- !u!1 &1714214082
 GameObject:
   m_ObjectHideFlags: 0
@@ -10011,8 +10071,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 96.59302, y: -92.09707}
-  m_SizeDelta: {x: 193.18604, y: 150}
+  m_AnchoredPosition: {x: 250.703, y: -238.39627}
+  m_SizeDelta: {x: 501.406, y: 252.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1723883463
 MonoBehaviour:
@@ -10322,8 +10382,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 359252952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.109375, y: 0.70625}
-  m_AnchorMax: {x: 0.890625, y: 0.94930553}
+  m_AnchorMin: {x: 0.05, y: 0.76766485}
+  m_AnchorMax: {x: 0.95, y: 0.9750488}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -10374,12 +10434,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 292.5
+  m_fontSize: 443.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 300
+  m_fontSizeMax: 500
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -10616,12 +10676,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 149.1
+  m_fontSize: 300
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 149.1
+  m_fontSizeMax: 300
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -10681,6 +10741,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Play
+  prefix: 
+  suffix: 
 --- !u!1 &1885841660
 GameObject:
   m_ObjectHideFlags: 0
@@ -11040,6 +11102,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Tutorial.Title
+  prefix: 
+  suffix: 
 --- !u!1 &1903596666
 GameObject:
   m_ObjectHideFlags: 0
@@ -11125,12 +11189,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 90
+  m_fontSize: 167.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 90
+  m_fontSizeMax: 167.9
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -11190,6 +11254,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Back
+  prefix: 
+  suffix: 
 --- !u!1 &1909401574
 GameObject:
   m_ObjectHideFlags: 0
@@ -11756,6 +11822,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Back
+  prefix: 
+  suffix: 
 --- !u!1 &1980381643
 GameObject:
   m_ObjectHideFlags: 0
@@ -11820,10 +11888,10 @@ RectTransform:
   - {fileID: 1324254543}
   m_Father: {fileID: 566992571}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.8308089, y: 0.045901384}
+  m_AnchorMin: {x: 0.7125792, y: 0.045901384}
   m_AnchorMax: {x: 0.9653581, y: 0.12224869}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -0.000061035156, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1998267745
 MonoBehaviour:
@@ -12887,6 +12955,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Back
+  prefix: 
+  suffix: 
 --- !u!1 &2129584354
 GameObject:
   m_ObjectHideFlags: 0
@@ -13037,6 +13107,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Tutorial.Title
+  prefix: 
+  suffix: 
 --- !u!1 &2143541166
 GameObject:
   m_ObjectHideFlags: 0
@@ -13072,8 +13144,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 496.73975, y: -276.7285}
-  m_SizeDelta: {x: 993.4795, y: 174.48566}
+  m_AnchoredPosition: {x: 856.7413, y: -715.1915}
+  m_SizeDelta: {x: 1713.4825, y: 466.79434}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2143541168
 MonoBehaviour:

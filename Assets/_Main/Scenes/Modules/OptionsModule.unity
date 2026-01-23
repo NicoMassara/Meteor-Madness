@@ -798,7 +798,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Version: 0.0.9.1'
+  m_text: 'Version: 0.0.13.0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0161d805a3764c089bef00bfe00793f5, type: 2}
   m_sharedMaterial: {fileID: 2147374, guid: 0161d805a3764c089bef00bfe00793f5, type: 2}
@@ -914,10 +914,10 @@ RectTransform:
   - {fileID: 1815006427653199050}
   m_Father: {fileID: 4176050913183703706}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -73.325}
-  m_SizeDelta: {x: 0, y: -146.65}
+  m_AnchorMin: {x: 0, y: 0.09069388}
+  m_AnchorMax: {x: 1, y: 0.37842372}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: -0.0000076293945}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &102656092972284094
 GameObject:
@@ -1434,10 +1434,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4176050913183703706}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000030518, y: 49.473}
-  m_SizeDelta: {x: 2160, y: 132.634}
+  m_AnchorMin: {x: 0.000018762395, y: 0.4511768}
+  m_AnchorMax: {x: 1.0000015, y: 0.8356232}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1355512361738280926
 CanvasRenderer:
@@ -1916,7 +1916,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 2560, y: 1440}
+  m_ReferenceResolution: {x: 1080, y: 1920}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -2047,12 +2047,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 119.2
+  m_fontSize: 120
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 119.2
+  m_fontSizeMax: 120
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -2213,7 +2213,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 86.75
+  m_fontSize: 84.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2607,11 +2607,11 @@ RectTransform:
   - {fileID: 65972796638800987}
   m_Father: {fileID: 5933482497147496143}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.09768519, y: 0.57466024}
-  m_AnchorMax: {x: 0.90231484, y: 0.83838964}
+  m_AnchorMin: {x: 0.028793737, y: 0.7360993}
+  m_AnchorMax: {x: 0.96231866, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &4193174937216154783
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3094,6 +3094,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Settings.Title
+  prefix: 
+  suffix: 
 --- !u!114 &5319811685257095757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3267,10 +3269,10 @@ RectTransform:
   - {fileID: 1215352585854043527}
   m_Father: {fileID: 5933482497147496143}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.138772, y: 0.17304745}
-  m_AnchorMax: {x: 0.46493173, y: 0.43726185}
+  m_AnchorMin: {x: 0.028791174, y: 0.4208846}
+  m_AnchorMax: {x: 0.9623144, y: 0.685099}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0.0000038146973, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &5746773945835450412
 RectTransform:
@@ -3319,10 +3321,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1534123888}
-  - {fileID: 5731331471861086830}
   - {fileID: 4176050913183703706}
+  - {fileID: 5731331471861086830}
   - {fileID: 9048165660511693062}
+  - {fileID: 1534123888}
   m_Father: {fileID: 415486581}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.078125, y: 0.1514283}
@@ -3847,6 +3849,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Back
+  prefix: 
+  suffix: 
 --- !u!1 &7475462905857694401
 GameObject:
   m_ObjectHideFlags: 0
@@ -3917,8 +3921,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.83231896}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -3.4001465}
-  m_SizeDelta: {x: 0, y: -9}
+  m_AnchoredPosition: {x: -277.6868, y: -3.4001465}
+  m_SizeDelta: {x: -555.3736, y: -9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7671560062636873685
 MonoBehaviour:
@@ -3933,6 +3937,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Settings.Title
+  prefix: 
+  suffix: 
 --- !u!1 &7749276836404449116
 GameObject:
   m_ObjectHideFlags: 0
@@ -4123,6 +4129,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Settings.Items.Language
+  prefix: 
+  suffix: 
 --- !u!224 &8081927164251045640
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4176,6 +4184,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: UIButton.Back
+  prefix: 
+  suffix: 
 --- !u!114 &8213985435189495410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4317,6 +4327,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Settings.Items.Volume
+  prefix: 
+  suffix: 
 --- !u!222 &8564664439991766691
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4503,6 +4515,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Settings.Items.Vibration
+  prefix: 
+  suffix: 
 --- !u!222 &8894760384950673222
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4543,6 +4557,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Settings.Items.Volume
+  prefix: 
+  suffix: 
 --- !u!1 &9025146115248359784
 GameObject:
   m_ObjectHideFlags: 0
@@ -4575,6 +4591,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textKey: Menu.Settings.Items.Language
+  prefix: 
+  suffix: 
 --- !u!224 &9048165660511693062
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4591,8 +4609,8 @@ RectTransform:
   - {fileID: 4407475239818338895}
   m_Father: {fileID: 5933482497147496143}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5807447, y: 0.17304745}
-  m_AnchorMax: {x: 0.9023148, y: 0.43726185}
+  m_AnchorMin: {x: 0.02879953, y: 0.10496873}
+  m_AnchorMax: {x: 0.96232027, y: 0.36918312}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

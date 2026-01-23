@@ -27,8 +27,32 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ElectricityTex:
+        m_Texture: {fileID: 2800000, guid: fedd01dbfddf60f46bfcd09f17d03aa5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ElectricityTex1:
+        m_Texture: {fileID: 2800000, guid: fedd01dbfddf60f46bfcd09f17d03aa5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ElectricityTex2:
+        m_Texture: {fileID: 2800000, guid: fedd01dbfddf60f46bfcd09f17d03aa5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlassText:
+        m_Texture: {fileID: 2800000, guid: df5b689992f22f348b1260cd1bdbd7f6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlassTexture:
+        m_Texture: {fileID: 2800000, guid: 76f8b8cb72087c54787a914e581ac660, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RingText:
+        m_Texture: {fileID: 2800000, guid: 6e300eb9af4803f4db59476bc27deb38, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -37,13 +61,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AbilityColorToggle: 1
+    - _AbilityColorToggle: 0
     - _ColorMask: 15
-    - _Float0: 1
-    - _Float1: -0.21
-    - _Float2: 0.42
+    - _ElectricityIntensity: 0.5
+    - _Float0: 0.48
+    - _Float1: 0.35
+    - _Float2: 1.32
+    - _Float3: 0.47
+    - _GlassIntensity: 0.31031197
     - _NoiseIntensity: 0.35
-    - _NoiseScale: 4
+    - _NoiseScale: 6.76
     - _NoiseSpeed: 0.25
     - _NoiseTilng: 0.23
     - _Opacity: 0.75
@@ -55,9 +82,11 @@ Material:
     - _StencilWriteMask: 255
     - _UseUIAlphaClip: 0
     m_Colors:
-    - _AbilityColor: {r: 0, g: 0, b: 1, a: 1}
+    - _AbilityColor: {r: 1, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _RingColor: {r: 0.38679248, g: 0.38679248, b: 0.38679248, a: 1}
+    - _DefaultColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ElectricityScale: {r: 0.25, g: 0.25, b: 0, a: 0}
+    - _RingColor: {r: 1, g: 1, b: 1, a: 1}
     - _Vector0: {r: -0.15, g: 0.27, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
