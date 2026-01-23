@@ -85,7 +85,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
                     .Join(UIComponents.PauseButton.DOAnchorPos(_pausePanel.StartPos, AnimationData.MovementDuration));
             }
         }
-
         private class Animation_UI_Close : SequenceUIAnimation<GameModeUIAnimationComponents.IGameplayPanel, IGameplayPanelData>
         {
             private readonly AnimationHelper.PanelPosition _scorePanel;
@@ -113,7 +112,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
                     .AppendCallback(() => UIComponents.GameplayPanel.gameObject.SetActive(false));
             }
         }
-
         private class Animation_Score_FinishAdding : SequenceUIAnimation<GameModeUIAnimationComponents.IGameplayPanel, IScoreFinishAdding>
         {
             public Animation_Score_FinishAdding(GameModeUIAnimationComponents.IGameplayPanel components, IScoreFinishAdding animationData)
@@ -126,7 +124,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
                     .Append(UIComponents.ScoreText.DOScale(1, AnimationData.BounceReturnTime));
             }
         }
-
         private class Animation_Streak_Failed : SequenceUIAnimation<GameModeUIAnimationComponents.IGameplayPanel, IStreakFailed>
         {
             private readonly float _horizontalPos;
@@ -152,7 +149,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
                     ;
             }
         }
-        
         private class Animation_Streak_Notify : SequenceUIAnimation<GameModeUIAnimationComponents.INotifyPanel, IStreakNotify>
         {
             private readonly AnimationHelper.PanelPosition _startNotifyPanel;
@@ -177,6 +173,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
             protected override void Initialize()
             {
+                UIComponents.NotifyPanel.gameObject.SetActive(false);
+                
                 if (_isLeft)
                 {
                     _startPosition = _startNotifyPanel.StartPos;

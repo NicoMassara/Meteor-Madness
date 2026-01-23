@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e076ef2fade4bada9587cba54bd24fa, type: 3}
   m_Name: So_ShieldRotation_Mediator_Default
   m_EditorClassIdentifier: 
-  movementData: {fileID: 11400000, guid: 5049f59902f1672419cbab090b86fbf3, type: 2}
+  movementData: {fileID: 11400000, guid: 0d367a0c12d44a9899fc9d8323447d66, type: 2}
   automaticData: {fileID: 11400000, guid: a1afdd6ca9ca8a6449e22987a5f42988, type: 2}
-  movementCorrectionData: {fileID: 11400000, guid: c8efb2302eca8764fb80a284ecf0acd6, type: 2}
   rotationSpeeder: {fileID: 11400000, guid: ceddf53cb662d3548ab692bd8e57bc25, type: 2}
   snapperData: {fileID: 11400000, guid: b88354054435cb542981bf5b08bc2823, type: 2}

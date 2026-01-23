@@ -32,6 +32,7 @@ namespace _Main.Scripts.Inputs
 
         #endregion
         
+        [SerializeField] private Camera gameCamera;
         [SerializeField] private TouchInputData touchInputData;
         [SerializeField] private bool debugEnable = true;
         private IDeviceInput _deviceInput;
@@ -64,7 +65,7 @@ namespace _Main.Scripts.Inputs
         {
             IDeviceInput deviceInput = null;
             
-            deviceInput = new TouchInput(touchInputData, Camera.main);
+            deviceInput = new TouchInput(touchInputData, gameCamera);
             
             _deviceInput = deviceInput;
             _deviceInput.OnPressingToMove += OnPressingToMoveHandler;

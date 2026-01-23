@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "MeteorMadness.Contracts",
-        "MeteorMadness.GlobalValues"
+        "MeteorMadness.GlobalValues",
+        "TestTools"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -2,6 +2,7 @@
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces;
+using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield;
 using MeteorMadness.Managers;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace MeteorMadness.Gameplay.Shield
     [RequireComponent(typeof(ShieldView))]
     public class ShieldSetup : ManagedBehavior, IUpdatable
     {
+        [SerializeField] private ShieldInput inputReader;
         private ShieldMotor _motor;
         private ShieldController.IShieldController _controller;
         private ShieldView _view;
@@ -24,7 +26,13 @@ namespace MeteorMadness.Gameplay.Shield
             _view = GetComponent<ShieldView>();
             _motor = new ShieldMotor();
             _controller = new ShieldController(_motor);
-            _inputReader = GetComponent<IInputReader>();
+            _inputReader = inputReader.GetInputReader();
+
+            if (_inputReader == null)
+            {
+                Debug.LogWarning("No IInputReader component found");
+            }
+
             _motor.Subscribe(_view);
             
             SetEventBus();

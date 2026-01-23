@@ -46,11 +46,10 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
         public class PanelCloseAnimData : IPanelClose
         {
             [Header("Positions")]
-            public AnimationHelper.Direction currentScoreOffscreenPosition = AnimationHelper.Direction.UpRight;
-            public AnimationHelper.Direction highScoreOffscreenPosition = AnimationHelper.Direction.UpLeft;
             public AnimationHelper.Direction titleOffscreenPosition = AnimationHelper.Direction.Up;
-            public AnimationHelper.Direction buttonsOffscreenPosition = AnimationHelper.Direction.Down;
+            public AnimationHelper.Direction currentScoreOffscreenPosition = AnimationHelper.Direction.UpRight;
             public AnimationHelper.Direction coinsOffscreenPosition = AnimationHelper.Direction.Left;
+            public AnimationHelper.Direction buttonsOffscreenPosition = AnimationHelper.Direction.Down;
             
             [Space]
             [Header("Time Values")]
@@ -61,15 +60,15 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
             
             [Space]
             [Header("Offsets")]
-            public Vector2 buttonsOffScreenOffset;
             public Vector2 titleOffScreenOffset;
+            public Vector2 pointsOffScreenOffset;
             public Vector2 coinsOffScreenOffset;
+            public Vector2 buttonsOffScreenOffset;
 
             // Interface properties
             public float MovementDelay => movementDelay;
             public float MovementDuration => movementDuration;
             public AnimationHelper.Direction CurrentScoreOffscreenPosition => currentScoreOffscreenPosition;
-            public AnimationHelper.Direction HighScoreOffscreenPosition => highScoreOffscreenPosition;
             public AnimationHelper.Direction TitleOffscreenPosition => titleOffscreenPosition;
             public AnimationHelper.Direction ButtonsOffscreenPosition => buttonsOffscreenPosition;
 
@@ -81,6 +80,7 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
             public Vector2 TitleOffScreenOffset => titleOffScreenOffset;
 
             public Vector2 CoinsOffScreenOffset => coinsOffScreenOffset;
+            public Vector2 PointsOffScreenOffset => pointsOffScreenOffset;
         }
         
         #endregion
@@ -92,6 +92,7 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
         {
             [Header("Positions")]
             public AnimationHelper.Direction offscreenPosition = AnimationHelper.Direction.UpRight;
+            public Vector2 offscreenOffset;
             [Space]
             [Header("Time Values")]
             public float moveDuration = 0.3f;
@@ -99,26 +100,18 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
 
             // Interface properties
             public AnimationHelper.Direction OffscreenPosition => offscreenPosition;
+            public Vector2 OffscreenOffset => offscreenOffset;
             public float MoveDuration => moveDuration;
             public float FinishDelay => finishDelay;
         }
 
         
- 
-        
         [Serializable]
         public class HighScoreIncrement : IHighScoreIncrement
         {
-            [Header("Positions")]
-            public AnimationHelper.Direction offscreenPosition = AnimationHelper.Direction.UpLeft;
-
             [Space]
             [Header("Time Values")]
-            public float moveDuration = 0.3f;
             public float finishDelay = 0.5f;
-
-            [Space] 
-            [Header("New High Score Values")]
             public float scaleDuration = 0.75f;
             public float bounceDelay = 0.05f;
             public float bounceScale = 1.25f;
@@ -130,10 +123,7 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
             public float newScoreBounceReturnTime = 0.2f;
 
             // Interface properties
-            public AnimationHelper.Direction OffscreenPosition => offscreenPosition;
-            public float MoveDuration => moveDuration;
             public float FinishDelay => finishDelay;
-
             public float ScaleDuration => scaleDuration;
             public float BounceDelay => bounceDelay;
             public float BounceScale => bounceScale;
@@ -179,9 +169,9 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
         {
             [Header("Positions")]
             public AnimationHelper.Direction offscreenPosition = AnimationHelper.Direction.Down;
+            public Vector2 offscreenOffset;
             [Space]
             [Header("Time Values")]
-            public Vector2 offscreenOffset;
             [Range(0,1)]
             public float moveDuration = 0.3f;
             [Range(0,1)]
@@ -208,11 +198,11 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
         [Space]
         [SerializeField] private HighScoreIncrement highScoreData;
         [Space(2)]
-        [Header("Buttons")]
-        [SerializeField] private ButtonsOpen buttonsOpenData;
-        [Space(2)]
         [Header("Coins")]
         [SerializeField] private CoinsOpen coinsOpenData;
+        [Space(2)]
+        [Header("Buttons")]
+        [SerializeField] private ButtonsOpen buttonsOpenData;
 
         public IPanelOpen PanelOpenData => panelOpenData;
         public IPanelClose PanelCloseData => panelCloseData;

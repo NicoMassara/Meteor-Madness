@@ -236,6 +236,8 @@ namespace _Main.Scripts.Projectile
                 meteor.OnEarthCollision -= Meteor_OnCollisionHandler;
             }
             
+            Debug.Log($"Deflection: {data.Value}");
+            
             ProjectileEventCaller.Deflected(new DeflectData
             {
                 Position = data.Position,
@@ -277,7 +279,8 @@ namespace _Main.Scripts.Projectile
                 {
                     Position = input.Position,
                     Direction = input.Direction,
-                    MovementMultiplier = input.MovementMultiplier
+                    MovementMultiplier = input.MovementMultiplier,
+                    Value = GameParameters.GameplayValues.BaseMeteorValue
                 });
             }
         }

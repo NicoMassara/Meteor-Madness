@@ -54,9 +54,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 
                 // Texts
                 UIComponents.Title.gameObject.SetActive(false);
-                UIComponents.HighScorePanel.gameObject.SetActive(false);
-                UIComponents.HighScoreText.gameObject.SetActive(false);
-                UIComponents.Score.gameObject.SetActive(false);
+                UIComponents.ScorePanel.gameObject.SetActive(false);
                 UIComponents.SubHighScoreText.gameObject.SetActive(false);
                 
                 // Buttons
@@ -85,9 +83,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 
                 // Texts
                 UIComponents.Title.gameObject.SetActive(false);
-                UIComponents.HighScorePanel.gameObject.SetActive(false);
-                UIComponents.HighScoreText.gameObject.SetActive(false);
-                UIComponents.Score.gameObject.SetActive(false);
+                UIComponents.ScorePanel.gameObject.SetActive(false);
                 UIComponents.SubHighScoreText.gameObject.SetActive(false);
                 
                 // Buttons
@@ -131,11 +127,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 IVibrationCaller vibrationComponent)
                 : base(components, animationData, vibrationComponent)
             {
-                _scorePanel = new AnimationHelper.PanelPosition(UIComponents.Score,
-                    AnimationData.CurrentScoreOffscreenPosition);
-                
-                _highScorePanel = new AnimationHelper.PanelPosition(UIComponents.HighScoreText, 
-                    AnimationData.HighScoreOffscreenPosition);
+                _scorePanel = new AnimationHelper.PanelPosition(UIComponents.ScorePanel,
+                    AnimationData.CurrentScoreOffscreenPosition, AnimationData.PointsOffScreenOffset);
                 
                 _titlePanel = new AnimationHelper.PanelPosition(UIComponents.Title,
                     AnimationData.TitleOffscreenPosition, AnimationData.TitleOffScreenOffset);
@@ -160,9 +153,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 
                 return DOTween.Sequence()
                         .AppendInterval(AnimationData.MovementDelay)
-                        .Append(UIComponents.Score.DOAnchorPos(_scorePanel.OffScreenPos, movementDuration))
+                        .Append(UIComponents.ScorePanel.DOAnchorPos(_scorePanel.OffScreenPos, movementDuration))
                         .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.ClosePanel))
-                        .Join(UIComponents.HighScorePanel.DOAnchorPos(_highScorePanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.Title.DOAnchorPos(_titlePanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.ButtonsPanel.DOAnchorPos(_buttonsPanel.OffScreenPos, movementDuration))
                         .Join(UIComponents.CoinsPanel.DOAnchorPos(_coinsPanel.OffScreenPos, movementDuration))
@@ -190,10 +182,10 @@ namespace MeteorMadness.ScreenFlow.Defeat
                 : base(components, animationData, vibrationComponent)
             {
                 _handleText = handleText;
-                _panelPosition = new AnimationHelper.PanelPosition(UIComponents.Score,
-                    AnimationData.OffscreenPosition);
+                _panelPosition = new AnimationHelper.PanelPosition(UIComponents.ScorePanel,
+                    AnimationData.OffscreenPosition, AnimationData.OffscreenOffset);
 
-                UIComponents.Score.anchoredPosition = _panelPosition.OffScreenPos;
+                UIComponents.ScorePanel.anchoredPosition = _panelPosition.OffScreenPos;
             }
 
             public void SetTargetScore(uint targetScore)
@@ -203,16 +195,16 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
             protected override void Initialize()
             {
-                UIComponents.Score.anchoredPosition = _panelPosition.OffScreenPos;
+                UIComponents.ScorePanel.anchoredPosition = _panelPosition.OffScreenPos;
             }
 
             protected override Sequence CreateAnimation()
             {
-                var text = UIComponents.Score.GetComponent<TMP_Text>();
+                var text = UIComponents.ScoreText.GetComponent<TMP_Text>();
                 
                 return DOTween.Sequence()
-                        .AppendCallback(()=> UIComponents.Score.gameObject.SetActive(true))
-                        .Append(UIComponents.Score.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
+                        .AppendCallback(()=> UIComponents.ScorePanel.gameObject.SetActive(true))
+                        .Append(UIComponents.ScorePanel.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
                         .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TextAppear))
                         .Append(TweenUtils.AnimateScore(_handleText, text, _targetScore, TweenUtils.GetDurationLog(_targetScore)))
                         .AppendInterval(AnimationData.FinishDelay)
@@ -221,63 +213,27 @@ namespace MeteorMadness.ScreenFlow.Defeat
         }
         private class Animation_HighScore_Increment : SequenceUIAnimationVibration<DefeatUiAnimationComponents.IHighScore,IHighScoreIncrement,IVibrationCaller>
         {
-            private readonly Action<TMP_Text,long> _handleText;
-            private uint _targetScore;
-            private bool _hasNewHighScore;
-            private readonly AnimationHelper.PanelPosition _panelPosition;
             
-            public Animation_HighScore_Increment(DefeatUiAnimationComponents.IHighScore components, IHighScoreIncrement animationData, 
-                Action<TMP_Text,long> handleText,
+            public Animation_HighScore_Increment(DefeatUiAnimationComponents.IHighScore components, IHighScoreIncrement animationData,
                 IVibrationCaller vibrationComponent)
                 : base(components, animationData, vibrationComponent)
             {
-                _handleText = handleText;
-                _panelPosition = new AnimationHelper.PanelPosition(UIComponents.HighScorePanel,
-                    AnimationData.OffscreenPosition);
-            }
-            
-            public void SetTargetScore(uint targetScore, bool hasNewHighScore)
-            {
-                _targetScore = targetScore;
-                _hasNewHighScore = hasNewHighScore;
             }
 
             protected override void Initialize()
             {
-                UIComponents.HighScorePanel.anchoredPosition = _panelPosition.OffScreenPos;
+                UIComponents.SubHighScoreText.gameObject.SetActive(false);
             }
 
             protected override Sequence CreateAnimation()
             {
-                var text = UIComponents.HighScoreText.GetComponent<TMP_Text>();
-
-                var sequence = DOTween.Sequence()
-                    .AppendCallback(() => UIComponents.HighScorePanel.gameObject.SetActive(true))
-                    .AppendCallback(() => UIComponents.HighScoreText.gameObject.SetActive(true))
-                    .Append(UIComponents.HighScorePanel.DOAnchorPos(_panelPosition.StartPos, AnimationData.MoveDuration))
-                    .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TextAppear))
-                    .Append(TweenUtils.AnimateScore(_handleText, text, (long)_targetScore, TweenUtils.GetDurationLog(_targetScore)))
-                    ;
-
-                if (_hasNewHighScore)
-                {
-                    sequence
-                        .Append(UIComponents.HighScoreText.DOScale(1, AnimationData.ScaleDuration))
-                        .AppendInterval(AnimationData.BounceDelay)
-                        .Append(UIComponents.HighScoreText.DOScale(AnimationData.BounceScale, AnimationData.BounceDuration))
-                        .Append(UIComponents.HighScoreText.DOScale(1, AnimationData.BounceReturnTime))
-                        .Append(UIComponents.SubHighScoreText.DOScale(0,0))
+                return DOTween.Sequence()
                         .AppendInterval(AnimationData.NewScoreTextDelay)
                         .AppendCallback(()=> UIComponents.SubHighScoreText.gameObject.SetActive(true))
                         .AppendCallback(() => VibrationComponent.TriggerVibration(DefeatAnimationVibrationType.TitleBounce))
                         .Append(UIComponents.SubHighScoreText.DOScale(AnimationData.NewScoreBounceScale, AnimationData.NewScoreBounceDuration))
                         .Append(UIComponents.SubHighScoreText.DOScale(1, AnimationData.NewScoreBounceReturnTime))
-                        ;
-                }
-                
-                sequence.AppendInterval(AnimationData.FinishDelay);
-                
-                return sequence;
+                        .AppendInterval(AnimationData.FinishDelay);
             }
         }
         
@@ -361,10 +317,6 @@ namespace MeteorMadness.ScreenFlow.Defeat
         //
         private IUiAnimation _animationOpenCoinsPanel;
         
-        
-        private string _currentScoreLocalizedText;
-        private string _highScoreLocalizedText;
-        
         #region IDefeatViewAnimation
 
         public event Action OnScoreFinished;
@@ -394,8 +346,6 @@ namespace MeteorMadness.ScreenFlow.Defeat
         
         private void Start()
         {
-            InitializeScoreTexts();
-            
             _animationInitializer = new AnimationInitializer(UIComponents);
             //
             _animationMainOpen = new Animation_Main_Open(UIComponents,animationData.PanelOpenData, this);
@@ -404,7 +354,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
             _animationButtonsOpen = new Animation_Buttons_Open(UIComponents, animationData.ButtonsOpenData, this);
             _animationScoreCurrent = new Animation_CurrentScore_Increment(UIComponents,animationData.CurrentScoreData,HandleCurrentScoreText, this);
             //
-            _animationScoreHigh = new Animation_HighScore_Increment(UIComponents,animationData.HighScoreData,HandleHighScoreText, this);
+            _animationScoreHigh = new Animation_HighScore_Increment(UIComponents,animationData.HighScoreData, this);
             //
             _animationOpenCoinsPanel = new Animation_Coins_OpenPanel(UIComponents, animationData.CoinsOpenData, this);
         }
@@ -462,7 +412,6 @@ namespace MeteorMadness.ScreenFlow.Defeat
         
         private void HandleEnable()
         {
-            InitializeScoreTexts();
             //
             PlayAnimation(_animationMainOpen, () =>
             {
@@ -498,33 +447,26 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         private void HandleSendHighScore(uint highScore, bool hasHighScore)
         {
-            uint finalScore = (uint)(highScore * GetPointsMultiplier());
-            
-            //Debug.Log($"Target High Score: {finalScore}, Inner: {highScore}");
 
-            var sendScore = (Animation_HighScore_Increment)_animationScoreHigh;
-            sendScore.SetTargetScore(finalScore, hasHighScore);
-            PlayAnimation(sendScore,OnHighScoreFinished);
+            if (hasHighScore)
+            {
+                PlayAnimation(_animationScoreHigh,OnHighScoreFinished);
+            }
+            else
+            {
+                OnHighScoreFinished?.Invoke();
+            }
         }
         
 
         private void HandleCurrentScoreText(TMP_Text text, long score)
         {
-            text.text = $"{_currentScoreLocalizedText}:{score:D6}";
+            text.text = $"{score:D6}";
         }
         
         private void HandleHighScoreText(TMP_Text text, long score)
         {
-            text.text = $"{_highScoreLocalizedText}:{score:D6}";
-        }
-
-        private void InitializeScoreTexts()
-        {
-            _currentScoreLocalizedText = GetLocalizedString("Gameplay.Score");
-            _highScoreLocalizedText = GetLocalizedString("Gameplay.HighScore");
-            
-            HandleCurrentScoreText(UIComponents.Score.GetComponent<TMP_Text>(),0);
-            HandleHighScoreText(UIComponents.HighScoreText.GetComponent<TMP_Text>(),0);
+            text.text = $"{score:D6}";
         }
 
         private int GetPointsMultiplier()

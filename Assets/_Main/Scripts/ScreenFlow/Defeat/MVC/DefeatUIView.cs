@@ -69,8 +69,6 @@ namespace MeteorMadness.ScreenFlow.Defeat
                     .Then(new InstantAction(()=> OnCoinsStarted?.Invoke()))
                     .Then(new IncrementCoinsAction(0.75f, 0, gained,(value)=> UpdateNewCoinsText(value)))
                     .Then(new WaitSecondsAction(0.5f))
-                    .Then(new IncrementCoinsAction(0.5f, stored, (stored+gained),(value)=> UpdateStoredCoinsText(value)))
-                    .Then(new WaitSecondsAction(0.5f))
                     .Then(new InstantAction(()=> OnCoinsFinished?.Invoke()))
                     .Build();
             
@@ -135,16 +133,16 @@ namespace MeteorMadness.ScreenFlow.Defeat
 
         private void UpdateNewCoinsText(uint amount, bool isSilent = false)
         {
-            UIComponents.SetNewCoinsText("Cosmetic.GainedCoins", amount);
+            UIComponents.SetNewCoinsText(amount);
             if(isSilent) return;
             OnCoinsUpdated?.Invoke();
         }
 
         private void UpdateStoredCoinsText(uint amount, bool isSilent = false)
         {
-            UIComponents.SetStoredCoinsText("Cosmetic.StoredCoins", amount);
+            /*UIComponents.SetStoredCoinsText("Cosmetic.StoredCoins", amount);
             if(isSilent) return;
-            OnCoinsUpdated?.Invoke();
+            OnCoinsUpdated?.Invoke();*/
         }
 
         #endregion

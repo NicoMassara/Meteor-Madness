@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.Movement;
 using _Main.Scripts.ShieldRotation.Contracts;
 using _Main.Scripts.ShieldRotation.Mediator;
 using MeteorMadness.Contracts;
@@ -38,9 +39,11 @@ namespace MeteorMadness.Gameplay.Shield
         [SerializeField] private Transform normalShieldContainer;
         [SerializeField] private MediatorDataSo mediatorData;
         [SerializeField] private LayerMask projectileLayerMask;
+        
         private IMediator _shieldMovement;
         private ComponentShaker _shakerController;
         private ShieldColliderExtender _colliderExtender;
+        
         public event Action<bool> OnShieldActivated;
         public event Action OnRotate;
         public event Action OnStopped;

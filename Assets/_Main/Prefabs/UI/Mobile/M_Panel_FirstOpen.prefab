@@ -102,7 +102,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2208411506705678051}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -190,8 +190,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7c20026e1454422ac4aa21057fdb048, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titleCode: FirstOpen.Stats.Title
-  descriptionCode: FirstOpen.Stats.Text
+  titleCode: FirstOpen.Cosmetic.Title
+  descriptionCode: FirstOpen.Cosmetic.Text
   titleText: {fileID: 830115923756259628}
   descriptionText: {fileID: 5662773726178309042}
   closeButton: {fileID: 800572603041308756}
@@ -214,7 +214,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4216118215444131877
 RectTransform:
   m_ObjectHideFlags: 0

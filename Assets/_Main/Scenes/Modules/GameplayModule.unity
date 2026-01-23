@@ -1605,7 +1605,7 @@ MonoBehaviour:
     StreakText: {fileID: 927989790}
     notifyText: {fileID: 639530336}
     PauseButton: {fileID: 1874520946}
-    notifyPanel: {fileID: 1516608930}
+    notifyPanel: {fileID: 639530334}
   desktopData:
     CountdownText: {fileID: 1016699662}
     ScoreText: {fileID: 1285684197}

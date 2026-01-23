@@ -351,14 +351,8 @@ namespace MeteorMadness.Gameplay.Abilities
 
         public void TryEnableAbility()
         {
-            if (_mainController.GetIsInitialized())
-            {
-                _mainController.TransitionToEnable();
-            }
-            else
-            {
-                _mainController.TransitionToInitialize();
-            }
+            _mainController.TransitionToInitialize();
+            _mainController.TransitionToEnable();
         }
         public void TryDisableAbility() => _mainController.TransitionToDisable();
         public void TryTriggerAbility()

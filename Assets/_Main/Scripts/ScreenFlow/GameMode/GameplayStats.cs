@@ -96,7 +96,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             current++;
             UpdateValueById(_collisionId,current);
             
-            Debug.Log($"Collisions: {current}");
             ClearStreak();
         }
 

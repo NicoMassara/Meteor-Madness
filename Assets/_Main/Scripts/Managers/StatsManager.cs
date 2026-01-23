@@ -141,7 +141,7 @@ namespace MeteorMadness.Managers
             }
             else
             {
-                Debug.Log("Stats saved data was not found!");
+                //Debug.Log("Stats saved data was not found!");
             }
             
             //
@@ -191,7 +191,7 @@ namespace MeteorMadness.Managers
             {
                 _uintDic.ModifyValue(statType, (uint)newValue);
                 
-                Debug.Log($"{statType} stat was set to: {newValue}");
+                //Debug.Log($"{statType} stat was set to: {newValue}");
                 return;
             }
             
@@ -268,8 +268,6 @@ namespace MeteorMadness.Managers
             // Adds to the total ability use count
             Internal_AddValueByStat(StatType.Ability, GetRuntimeValue(StatType.Ability));
             statsData.AbilityUseAmount = (uint)Internal_GetValueByStat(StatType.Ability);
-            
-            Debug.Log($"Collisions: {statsData.CollisionAmount}\n");
             
             DataManager.Instance.SaveGameData(statsData, DataManager.SaveDataType.Stats);
         }

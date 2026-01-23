@@ -22,7 +22,6 @@ namespace MeteorMadness.ScreenFlow.Defeat
         public float MovementDelay { get; }
         public float MovementDuration { get; }
         public AnimationHelper.Direction CurrentScoreOffscreenPosition { get; }
-        public AnimationHelper.Direction HighScoreOffscreenPosition { get; }
         public AnimationHelper.Direction TitleOffscreenPosition { get; }
         public AnimationHelper.Direction CoinsOffscreenPosition { get; }
         public AnimationHelper.Direction ButtonsOffscreenPosition { get; }
@@ -31,19 +30,17 @@ namespace MeteorMadness.ScreenFlow.Defeat
         public Vector2 ButtonsOffScreenOffset { get; }
         public Vector2 CoinsOffScreenOffset { get; }
         public Vector2 TitleOffScreenOffset { get; }
+        public Vector2 PointsOffScreenOffset { get; }
     }
     public interface ICurrentScoreIncrement : IUiAnimationData
     {
         public AnimationHelper.Direction OffscreenPosition { get; }
+        public Vector2 OffscreenOffset { get; }
         public float MoveDuration { get; }
         public float FinishDelay { get; }
     }
     public interface IHighScoreIncrement : IUiAnimationData
     {
-        public AnimationHelper.Direction OffscreenPosition { get; }
-        public float MoveDuration { get; }
-        public float FinishDelay { get; }
-
         public float ScaleDuration { get; }
         public float BounceDelay { get; }
         public float BounceScale { get; }
@@ -54,6 +51,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
         public float NewScoreBounceScale { get; }
         public float NewScoreBounceDuration { get; }
         public float NewScoreBounceReturnTime { get; }
+        public float FinishDelay { get;}
     }
     public interface IButtonsOpen : IUiAnimationData
     {

@@ -2,13 +2,13 @@
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
-using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;
 using MeteorMadness.Managers.Localization;
 using MeteorMadness.ScreenFlow.Base;
 using NicolasMassara.CustomUpdateManager;
+using UnityEngine;
 
 namespace MeteorMadness.ScreenFlow.GameMode
 {
@@ -119,7 +119,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
                     break;
             }
         }
-        
 
         #region Data
 

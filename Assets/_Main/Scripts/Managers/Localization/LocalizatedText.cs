@@ -8,6 +8,8 @@ namespace MeteorMadness.Managers.Localization
     public class LocalizatedText : ManagedBehavior
     {
         [SerializeField] private string textKey;
+        [SerializeField] private string prefix;
+        [SerializeField] private string suffix;
         private TMP_Text _text;
 
         private void Awake()
@@ -21,7 +23,9 @@ namespace MeteorMadness.Managers.Localization
         {
             if(string.IsNullOrEmpty(textKey)) return;
             
-            _text.text = LocalizationManager.Instance.GetText(textKey);
+            var localizedText = LocalizationManager.Instance.GetText(textKey);
+            
+            _text.text = $"{prefix}{localizedText}{suffix}";
         }
 
         private void OnDestroy()

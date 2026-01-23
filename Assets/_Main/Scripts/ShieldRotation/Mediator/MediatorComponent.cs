@@ -125,8 +125,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
 
         private readonly MediatorFsmController _fsmController;
         private readonly Transform _objectToRotate;
-        private readonly IMediatorData _mediatorData;
-        
+
         // === Movement === //
         private readonly IMovement _inputMovement;
         private readonly IAutomaticMovement _automaticMovement;
@@ -156,17 +155,12 @@ namespace _Main.Scripts.ShieldRotation.Mediator
 
         public MediatorComponent(Transform objectToRotate, int angleSlots, IMediatorData mediatorData, LayerMask projectileLayerMask)
         {
-            // / / / / / / / / / / / / / / / //
-            // === Components Initialize === // 
-            // / / / / / / / / / / / / / / / //
-            
-            _mediatorData = mediatorData;
             _objectToRotate = objectToRotate;
             
-            _inputMovement = new MovementComponent(objectToRotate, _mediatorData.MovementData);
-            _automaticMovement = new AutomaticMovementComponent(objectToRotate, _mediatorData.AutomaticData, angleSlots);
-            _rotationSpeeder = new RotationSpeederController(_mediatorData.SpeederData, objectToRotate);
-            _targetSnapper = new TargetSnapperComponent(objectToRotate,_mediatorData.SnapperData, angleSlots);
+            _inputMovement = new MovementComponent(objectToRotate, mediatorData.MovementData);
+            _automaticMovement = new AutomaticMovementComponent(objectToRotate, mediatorData.AutomaticData, angleSlots);
+            _rotationSpeeder = new RotationSpeederController(mediatorData.SpeederData, objectToRotate);
+            _targetSnapper = new TargetSnapperComponent(objectToRotate,mediatorData.SnapperData, angleSlots);
             
             _projectileDetector = new ProjectileDetectorComponent(projectileLayerMask);
             
@@ -175,6 +169,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator
             // / / / / / / / / / / / / / //
             
             // === IMovement === //
+            _inputMovement.Initialize();
             _inputMovement.OnMoved += IMovement_OnMovedHandler;
             _inputMovement.OnDirectionChanged += IMovement_OnDirectionChanged;
             _inputMovement.OnStopped += IMovement_OnStoppedHandler;

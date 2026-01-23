@@ -28,8 +28,8 @@ namespace MeteorMadness.ScreenFlow.Menu
         
         private readonly MainMenuMotor _motor;
         private FSM<States> _fsm;
-        
-        private bool _hasPlayed;
+
+        private bool _hasPlayed = true;
         
         #region States
     

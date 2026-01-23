@@ -24,25 +24,24 @@ MonoBehaviour:
     bounceReturnTime: 0.32
     finishDelay: 0.5
   panelCloseData:
-    currentScoreOffscreenPosition: 5
-    highScoreOffscreenPosition: 4
     titleOffscreenPosition: 2
-    buttonsOffscreenPosition: 3
+    currentScoreOffscreenPosition: 1
     coinsOffscreenPosition: 0
+    buttonsOffscreenPosition: 3
     movementDelay: 0.5
     movementDuration: 0.25
     fadeDelay: 0.25
     backgroundFadeDuration: 0.3
-    buttonsOffScreenOffset: {x: 0, y: -250}
     titleOffScreenOffset: {x: 0, y: 250}
+    pointsOffScreenOffset: {x: 1000, y: 0}
     coinsOffScreenOffset: {x: -1000, y: 0}
+    buttonsOffScreenOffset: {x: 0, y: -250}
   currentScoreData:
-    offscreenPosition: 5
+    offscreenPosition: 0
+    offscreenOffset: {x: -1000, y: 0}
     moveDuration: 0.3
     finishDelay: 0.5
   highScoreData:
-    offscreenPosition: 4
-    moveDuration: 0.3
     finishDelay: 0.5
     scaleDuration: 0.75
     bounceDelay: 0.05
@@ -53,13 +52,13 @@ MonoBehaviour:
     newScoreBounceScale: 2
     newScoreBounceDuration: 0.5
     newScoreBounceReturnTime: 0.2
-  buttonsOpenData:
-    offscreenPosition: 3
-    offscreenOffset: {x: 0, y: -250}
-    moveDuration: 0.3
-    finishDelay: 0.5
   coinsOpenData:
     offscreenPosition: 1
     offscreenOffset: {x: 1000, y: 0}
+    moveDuration: 0.3
+    finishDelay: 0.5
+  buttonsOpenData:
+    offscreenPosition: 3
+    offscreenOffset: {x: 0, y: -250}
     moveDuration: 0.3
     finishDelay: 0.5

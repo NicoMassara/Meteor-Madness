@@ -304,6 +304,7 @@ namespace _Main.Scripts.Movement
         
         public void SetInputMagnitude(float inputMagnitude)
         {
+            
             if (Mathf.Approximately(_inputMagnitude, inputMagnitude))
             {
                 return;
@@ -327,7 +328,6 @@ namespace _Main.Scripts.Movement
             {
                 OnStopped?.Invoke();
             }
-
             _lastSpeedRatio = GetSpeedRatio();
         }
 

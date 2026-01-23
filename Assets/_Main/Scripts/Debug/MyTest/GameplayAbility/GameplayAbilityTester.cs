@@ -80,9 +80,10 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.Enable();
             AbilitiesEventCaller.Enable();
-            AbilitiesEventCaller.EnableUI();
+            AbilitiesEventCaller.SetCanUse(true);
             EarthEventCaller.EnableDamage();
             InputsEventCaller.SetEnable(true);
+            InputsEventCaller.SetUIEnable(true);
             CameraEventCaller.ZoomOut();
             ProjectileEventCaller.UpdateLevel(_currentLevel);
             if (startMeteorsEnable)

@@ -127,7 +127,5 @@ namespace MeteorMadness.Gameplay.Abilities
         
 
         #endregion
-
-
     }
 }

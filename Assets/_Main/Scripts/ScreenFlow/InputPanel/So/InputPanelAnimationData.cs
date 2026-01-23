@@ -5,7 +5,7 @@ using UnityEngine;
 namespace MeteorMadness.ScreenFlow._Main.Scripts.ScreenFlow.InputPanel.So
 {
     [CreateAssetMenu(fileName = "So_Animation_UI_InputPanel", menuName = "Scriptable Objects/Animation Data/UI/Input Panel", order = 0)]
-    public class InputPanelAnimationData : MonoBehaviour
+    public class InputPanelAnimationData : ScriptableObject
     {
         #region Animation Data
 

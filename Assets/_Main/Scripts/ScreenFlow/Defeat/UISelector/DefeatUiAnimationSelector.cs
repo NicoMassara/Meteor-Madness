@@ -20,9 +20,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
             public Image BackgroundImage { get; }
             public RectTransform MainPanel { get; }
             public RectTransform Title { get; }
-            public RectTransform Score { get; }
-            public RectTransform HighScorePanel { get; }
-            public RectTransform HighScoreText { get; }
+            public RectTransform ScorePanel { get; }
+            public RectTransform ScoreText { get; }
             public RectTransform CoinsPanel { get; }
             public RectTransform ButtonsPanel { get; }
             public RectTransform SubHighScoreText { get;}
@@ -30,13 +29,12 @@ namespace MeteorMadness.ScreenFlow.Defeat
         
         public interface IScore : IUiAnimationComponent
         {
-            public RectTransform Score { get; }
+            public RectTransform ScorePanel { get; }
+            public RectTransform ScoreText { get; }
         }
         
         public interface IHighScore : IUiAnimationComponent
         {
-            public RectTransform HighScorePanel { get; }
-            public RectTransform HighScoreText { get; }
             public RectTransform SubHighScoreText { get; }
         }
         
@@ -55,8 +53,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
         [SerializeField] private RectTransform mainPanel;
         [SerializeField] private RectTransform titleText;
         [SerializeField] private RectTransform scoreText;
-        [SerializeField] private RectTransform highScoreText;
-        [SerializeField] private RectTransform highScorePanel;
+        [SerializeField] private RectTransform scorePanel;
         [SerializeField] private RectTransform subHighScoreText;
         [SerializeField] private RectTransform coinsPanel;
         [SerializeField] private RectTransform buttonsPanel;
@@ -66,9 +63,8 @@ namespace MeteorMadness.ScreenFlow.Defeat
         public Image BackgroundImage => backgroundImage;
         public RectTransform MainPanel => mainPanel;
         public RectTransform Title => titleText;
-        public RectTransform Score => scoreText;
-        public RectTransform HighScorePanel => highScorePanel;
-        public RectTransform HighScoreText => highScoreText;
+        public RectTransform ScoreText => scoreText;
+        public RectTransform ScorePanel => scorePanel;
         public RectTransform SubHighScoreText => subHighScoreText;
         public RectTransform CoinsPanel => coinsPanel;
         public RectTransform ButtonsPanel => buttonsPanel;

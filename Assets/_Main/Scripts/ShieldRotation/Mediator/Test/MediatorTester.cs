@@ -15,7 +15,7 @@ namespace _Main.Scripts.ShieldRotation.Mediator.Test
 
         private void Awake()
         {
-            _shieldMediator = new MediatorComponent(shieldTransform, 32, mediatorData, projectileLayerMask);
+            //_shieldMediator = new MediatorComponent(shieldTransform, 32, mediatorData, projectileLayerMask, ref null);
         }
 
         private void Start()

@@ -26,13 +26,35 @@ namespace _Main.Scripts.ShieldRotation.Tools
             return Mathf.Repeat(target - origin + 180f, 360f) - 180f;
         }
         
-        public static int GetAngleSlotFromPosition(Vector2 originPosition, Vector2 targetPosition, int slotCount = 32, float angleOffset = 180f)
+        /*public static int GetAngleSlotFromPosition(Vector2 originPosition, Vector2 targetPosition, int slotCount = 32, float angleOffset = 180f)
         {
             var dir = targetPosition - originPosition;
             float angle = (Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg) - angleOffset;
             angle = (angle + 360f) % 360f;
             
             int slot = Mathf.FloorToInt(angle / (360f / slotCount)) % slotCount;
+            return slot;
+        }*/
+        
+        public static int GetAngleSlotFromPosition(
+            Vector2 originPosition,
+            Vector2 targetPosition,
+            int slotCount = 32,
+            float angleOffset = 180f)
+        {
+            Vector2 dir = targetPosition - originPosition;
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            angle = Mathf.Repeat(angle - angleOffset, 360f);
+
+            float step = 360f / slotCount;
+
+            // epsilon para evitar que 0 caiga en el slot incorrecto
+            int slot = Mathf.FloorToInt((angle - 0.0001f) / step);
+
+            if (slot < 0)
+                slot += slotCount;
+
             return slot;
         }
         

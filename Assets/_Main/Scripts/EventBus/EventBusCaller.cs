@@ -476,132 +476,39 @@ namespace _Main.Scripts.EventBus
                 MovementMultiplier = data.MovementMultiplier
             });
         }
-
-        public static void ClearQueue()
-        {
-            EventBusCaller.Publish(new ProjectileEvents.ClearQueue());
-        }
+        public static void ClearQueue() => EventBusCaller.Publish(new ProjectileEvents.ClearQueue());
+        public static void DisableSpawn() => EventBusCaller.Publish(new ProjectileEvents.DisableSpawn());
+        public static void EnableSpawn() => EventBusCaller.Publish(new ProjectileEvents.EnableSpawn());
+        public static void UpdateLevel(int level) => EventBusCaller.Publish(new ProjectileEvents.UpdateLevel{Level = level});
         
-        public static void DisableSpawn()
-        {
-            EventBusCaller.Publish(new ProjectileEvents.DisableSpawn());
-        }
-        
-        public static void EnableSpawn()
-        {
-            EventBusCaller.Publish(new ProjectileEvents.EnableSpawn());
-        }
-        
-        public static void UpdateLevel(int level)
-        {
-            EventBusCaller.Publish(new ProjectileEvents.UpdateLevel{Level = level});
-        }
     }
     
     public static class ProjectileEventSubscriber
     {
-        public static void Collision(Action<ProjectileEvents.Collision> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void Deflected(Action<ProjectileEvents.Deflected> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-
-        public static void Add(Action<ProjectileEvents.Add> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-
-        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-
-        public static void Spawn(Action<ProjectileEvents.Spawn> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-
-        public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
+        public static void Collision(Action<ProjectileEvents.Collision> action) => EventBusCaller.Subscribe(action);
+        public static void Deflected(Action<ProjectileEvents.Deflected> action) => EventBusCaller.Subscribe(action);
+        public static void Add(Action<ProjectileEvents.Add> action) => EventBusCaller.Subscribe(action);
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
+        public static void Spawn(Action<ProjectileEvents.Spawn> action) => EventBusCaller.Subscribe(action);
+        public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action) => EventBusCaller.Subscribe(action);
+        public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Subscribe(action);
+        public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Subscribe(action);
+        public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action) => EventBusCaller.Subscribe(action);
     }
     
     public static class ProjectileEventUnSubscriber
     {
-        public static void Collision(Action<ProjectileEvents.Collision> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void Deflected(Action<ProjectileEvents.Deflected> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-
-        public static void Add(Action<ProjectileEvents.Add> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-
-        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-
-        public static void Spawn(Action<ProjectileEvents.Spawn> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-
-        public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
+        public static void Collision(Action<ProjectileEvents.Collision> action) => EventBusCaller.Unsubscribe(action);
+        public static void Deflected(Action<ProjectileEvents.Deflected> action) => EventBusCaller.Unsubscribe(action);
+        public static void Add(Action<ProjectileEvents.Add> action) => EventBusCaller.Unsubscribe(action);
+        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
+        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
+        public static void Spawn(Action<ProjectileEvents.Spawn> action) => EventBusCaller.Unsubscribe(action);
+        public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action) => EventBusCaller.Unsubscribe(action);
+        public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Unsubscribe(action);
+        public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Unsubscribe(action);
+        public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action) => EventBusCaller.Unsubscribe(action);
     }
     
     #endregion

@@ -1,4 +1,16 @@
 {
-  "name": "TestTools",
-  "references":[ "ShieldMovement.Contracts", "MeteorMadness.Contracts" ]
+    "name": "TestTools",
+    "rootNamespace": "",
+    "references": [
+        "MeteorMadness.Contracts"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
