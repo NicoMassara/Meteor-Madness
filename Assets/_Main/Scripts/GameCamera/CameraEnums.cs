@@ -1,4 +1,4 @@
-﻿namespace _Main.Scripts.MyCamera
+﻿namespace _Main.Scripts.GameCamera
 {
 
     public enum CameraLookPosition

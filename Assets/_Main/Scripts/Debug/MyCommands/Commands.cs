@@ -166,57 +166,8 @@ namespace _Main.Scripts.MyCommands
         public static void CameraHelp()
         {
             Debug.Log(
-                "=== CAMERA COMMANDS ===\n" +
-                "cam_zoomin <time>\n" +
-                "cam_zoomout <time>\n" +
-                "cam_center <time>\n" +
-                "cam_right <time>\n" +
-                "cam_left <time>\n" +
-                "cam_up <time>\n" +
-                "cam_down <time>"
+                "=== CAMERA COMMANDS ===\n"
             );
-        }
-        
-        [ConsoleMethod("cam_zoomin", "Zoom in")]
-        public static void CamZoomIn(float time = 0.5f)
-        {
-            CameraEventCaller.ZoomIn(time);
-        }
-
-        [ConsoleMethod("cam_zoomout", "Zoom out")]
-        public static void CamZoomOut(float time = 0.5f)
-        {
-            CameraEventCaller.ZoomOut(time);
-        }
-
-        [ConsoleMethod("cam_center", "Look center")]
-        public static void CamCenter(float time = 0.5f)
-        {
-            CameraEventCaller.LookCenter(time);
-        }
-
-        [ConsoleMethod("cam_right", "Look right")]
-        public static void CamRight(float time = 0.5f)
-        {
-            CameraEventCaller.LookRight(time);
-        }
-
-        [ConsoleMethod("cam_left", "Look left")]
-        public static void CamLeft(float time = 0.5f)
-        {
-            CameraEventCaller.LookLeft(time);
-        }
-
-        [ConsoleMethod("cam_up", "Look up")]
-        public static void CamUp(float time = 0.5f)
-        {
-            CameraEventCaller.LookUp(time);
-        }
-
-        [ConsoleMethod("cam_down", "Look down")]
-        public static void CamDown(float time = 0.5f)
-        {
-            CameraEventCaller.LookDown(time);
         }
     }
     public static class InputCommands

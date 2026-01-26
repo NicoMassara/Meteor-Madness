@@ -1,7 +1,7 @@
 ﻿using MeteorMadness.Contracts.Interfaces;
 using UnityEngine;
 
-namespace MeteorMadness.Gameplay.Shaker
+namespace MeteorMadness.Common.Shaker
 {
     [CreateAssetMenu(fileName = "SO_ShakeData_Name", menuName = "Scriptable Objects/Shaker/Shake Data", order = 0)]
     public class ShakeDataSo : ScriptableObject, IShakeData

@@ -119,8 +119,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             ProjectileEventSubscriber.RequestSpawn(EventBus_Projectile_RequestSpawn);
             ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
             //
-            CameraEventSubscriber.ZoomIn(EventBus_Camera_ZoomIn);
-            CameraEventSubscriber.ZoomOut(EventBus_Camera_ZoomOut);
+
             //
             GameModeEventSubscriber.SetEnablePause(EventBus_GameMode_SetEnablePause);
             //
@@ -136,8 +135,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             ProjectileEventUnSubscriber.Deflected(EventBus_Meteor_Deflected);
             ProjectileEventUnSubscriber.RequestSpawn(EventBus_Projectile_RequestSpawn);
             //
-            CameraEventUnSubscriber.ZoomIn(EventBus_Camera_ZoomIn);
-            CameraEventUnSubscriber.ZoomOut(EventBus_Camera_ZoomOut);
+
             //
             GameModeEventUnSubscriber.SetEnablePause(EventBus_GameMode_SetEnablePause);
             //
@@ -231,20 +229,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             _controller.HandleMeteorDeflect(input.Position, input.Value);
             _controller.IncreaseDeflectCount();
-        }
-
-        #endregion
-        
-        #region Camera
-
-        private void EventBus_Camera_ZoomIn(CameraEvents.ZoomIn input)
-        {
-            _controller.DisableGameplayUI();
-        }
-
-        private void EventBus_Camera_ZoomOut(CameraEvents.ZoomOut input)
-        {
-            _controller.EnableGameplayUI();
         }
 
         #endregion

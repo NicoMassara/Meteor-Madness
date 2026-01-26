@@ -1,0 +1,23 @@
+{
+    "name": "MeteorMadness.GameCamera",
+    "rootNamespace": "",
+    "references": [
+        "GUID:080f653a58f74254bcaf4ef0dbe0adf7",
+        "GUID:c86df55943534d8e992b0a5e142eef8a",
+        "GUID:7383e56d37c04177bd5dbfee101ce49c",
+        "GUID:72999fc0cb6d47409e53a0030917cc84",
+        "GUID:a9780fc765d265e41acfd82fbdcfd238",
+        "GUID:cbcefa849418cda42a15b4f089dcf60b",
+        "GUID:22d2c5cd51bc48f18281207f88845669",
+        "GUID:853cda6c6d5d4136a8cc20e8dff3d6d1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

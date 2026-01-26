@@ -95,12 +95,12 @@ namespace _Main.Scripts.MyTest.GameMode
         {
             if (_isZoomIn == false)  
             {
-                CameraEventCaller.ZoomIn();
+                //CameraEventCaller.ZoomIn();
                 _isZoomIn = true;
             }
             else
             {
-                CameraEventCaller.ZoomOut();
+                //CameraEventCaller.ZoomOut();
                 _isZoomIn = false;
             }
         }

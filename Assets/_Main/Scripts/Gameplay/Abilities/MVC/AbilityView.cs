@@ -48,10 +48,10 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void Start()
         {
-            abilityDataController = new AbilityDataController(OnTimeSpeedUp, OnTimeSlowDown);
+            //abilityDataController = new AbilityDataController(OnTimeSpeedUp, OnTimeSlowDown);
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
-            abilityDataController.Initialize(abilityTimeData);
+            //abilityDataController.Initialize(abilityTimeData);
 
             GameManager.Instance.OnPaused += GM_OnPausedHandler;
             GameManager.Instance.OnResumed += GM_OnResumedHandler;

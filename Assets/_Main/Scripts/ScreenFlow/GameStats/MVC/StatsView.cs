@@ -80,12 +80,12 @@ namespace MeteorMadness.ScreenFlow.Stats
         
         private void HandleEnable()
         {
-            CameraEventCaller.LookRight();
+
         }
         
         private void HandleExecuteDisable()
         {
-            CameraEventCaller.LookCenter();
+
             GameScreenEventCaller.DisableScreen(ScreenType.Stats, EventRequestType.Granted);
         }
     }

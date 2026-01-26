@@ -57,7 +57,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay
             ShieldEventCaller.Enable();
             EarthEventCaller.EnableDamage();
             InputsEventCaller.SetEnable(true);
-            CameraEventCaller.ZoomOut();
+            //CameraEventCaller.ZoomOut();
             ProjectileEventCaller.EnableSpawn();
             ProjectileEventCaller.UpdateLevel(_currentLevel);
         }

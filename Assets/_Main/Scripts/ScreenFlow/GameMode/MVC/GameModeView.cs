@@ -238,7 +238,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             EarthEventCaller.DisableDamage();
             AbilitiesEventCaller.DisableUI();
             SetEnableInputs(false);
-            CameraEventCaller.ZoomIn(0.5F);
             OnGameStopped?.Invoke();
             
 #if UNITY_ANDROID || UNITY_IOS
@@ -297,7 +296,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             SetEnableInputs(false);
             AbilitiesEventCaller.DisableUI();
             GameModeEventCaller.SetPause(true);
-            CameraEventCaller.ZoomIn(0.5f);
             OnPaused?.Invoke();
                 
 #if UNITY_ANDROID || UNITY_IOS
@@ -391,7 +389,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
         private void HandleStartCountdown(int countdown)
         {
             AdsEvents.Banner_TriggerHide();
-            CameraEventCaller.ZoomOut(0.5f);
             OnCountDownStarted?.Invoke();
         }
         

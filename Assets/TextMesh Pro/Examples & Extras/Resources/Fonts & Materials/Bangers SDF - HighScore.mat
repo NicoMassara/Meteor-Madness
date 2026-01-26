@@ -12,6 +12,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - BEVEL_ON
   - GLOW_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 5
@@ -108,10 +109,10 @@ Material:
     m_Colors:
     - _ClipRect: {r: -10000, g: -10000, b: 10000, a: 10000}
     - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
-    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _GlowColor: {r: 0.2094253, g: 0.25, b: 0, a: 1}
+    - _FaceColor: {r: 1.7019608, g: 1.3647059, b: 0.05490191, a: 1}
+    - _GlowColor: {r: 0.48235294, g: 0.3268806, b: 0, a: 1}
     - _MaskCoord: {r: 0, g: 0, b: 100000, a: 100000}
-    - _OutlineColor: {r: 0.53588676, g: 0.53588676, b: 0, a: 1}
+    - _OutlineColor: {r: 0.5660378, g: 0.23412402, b: 0, a: 1}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}

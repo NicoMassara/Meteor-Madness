@@ -1,4 +1,5 @@
-﻿using MeteorMadness.Contracts.Interfaces;
+﻿using _Main.Scripts.Contracts.Interfaces;
+using MeteorMadness.Contracts.Interfaces;
 using UnityEngine;
 
 namespace MeteorMadness.Contracts
@@ -154,43 +155,16 @@ namespace MeteorMadness.Contracts
 
     public struct CameraEvents
     {
+        public struct Transport
+        {
+            public ICameraTransportData Data;
+        }
+
         public struct Shake
         {
             public IShakeData ShakeData;
         }
-
-        public struct ZoomIn
-        {
-            public float TimeToZoom;
-        }
-        public struct ZoomOut
-        {
-            public float TimeToZoom;
-        }
         
-        public struct LookCenter
-        {
-            public float TimeToLook;
-        }
-        public struct LookRight
-        {
-            public float TimeToLook;
-        }
-        public struct LookLeft
-        {
-            public float TimeToLook;
-        }
-        
-        public struct LookUp
-        {
-            public float TimeToLook;
-        }
-        
-        public struct LookDown
-        {
-            public float TimeToLook;
-        }
-
         public struct ZoomFinished { }
         public struct LookFinished { }
         public struct ShakeFinished { }

@@ -1,0 +1,16 @@
+{
+    "name": "MeteorMadness.Common.ScriptableObjects",
+    "rootNamespace": "",
+    "references": [
+        "GUID:080f653a58f74254bcaf4ef0dbe0adf7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

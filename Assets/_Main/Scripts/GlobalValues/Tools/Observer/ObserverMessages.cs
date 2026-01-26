@@ -225,14 +225,14 @@
     
     public struct CameraObserverMessage
     {
-        public const ulong ZoomIn = 0xA1101;
-        public const ulong ZoomOut = 0xA1102;
+        public const ulong Move = 0xA1101;
+        public const ulong Zoom = 0xA1102;
         public const ulong Shake = 0xA1103;
-        public const ulong LookCenter = 0xA1104;
-        public const ulong LookRight = 0xA1105;
-        public const ulong LookLeft = 0xA1106;
-        public const ulong LookTop = 0xA1107;
-        public const ulong LookBottom = 0xA1108;
+        public const ulong Empty3 = 0xA1104;
+        public const ulong Empty4 = 0xA1105;
+        public const ulong Empty5 = 0xA1106;
+        public const ulong Empty6 = 0xA1107;
+        public const ulong Empty7 = 0xA1108;
         public const ulong EnableGrayscale = 0xA1109;
         public const ulong DisableGrayscale = 0xA1110;
     }

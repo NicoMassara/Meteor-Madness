@@ -38,7 +38,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         private void HandleZoomIn()
         {
-            CameraEventCaller.ZoomIn(1f);
+
         }
 
         private void HandleDisableScreen(int currentScreenIndex)

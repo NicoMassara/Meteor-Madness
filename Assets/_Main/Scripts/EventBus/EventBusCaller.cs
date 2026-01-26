@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Contracts.Interfaces;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 
@@ -627,22 +628,10 @@ namespace _Main.Scripts.EventBus
     
     public static class CameraEventCaller
     {
-        public static void ZoomIn(float timeToZoom = 0.5f) 
-            => EventBusCaller.Publish(new CameraEvents.ZoomIn{TimeToZoom = timeToZoom});
-        public static void ZoomOut(float timeToZoom = 0.5f) 
-            => EventBusCaller.Publish(new CameraEvents.ZoomOut{TimeToZoom = timeToZoom});
+        public static void Transport(ICameraTransportData data)
+            => EventBusCaller.Publish(new CameraEvents.Transport{Data = data});
         public static void Shake(IShakeData shake) 
             => EventBusCaller.Publish(new CameraEvents.Shake{ShakeData = shake});
-        public static void LookCenter(float timeToLook = 0.5f) 
-            => EventBusCaller.Publish(new CameraEvents.LookCenter{TimeToLook = timeToLook});
-        public static void LookRight(float timeToLook = 0.5f) 
-            => EventBusCaller.Publish(new CameraEvents.LookRight{TimeToLook = timeToLook});
-        public static void LookLeft(float timeToLook = 0.5f) 
-            => EventBusCaller.Publish(new CameraEvents.LookLeft{TimeToLook = timeToLook});
-        public static void LookUp(float timeToLook = 0.5f) 
-            => EventBusCaller.Publish(new CameraEvents.LookUp{TimeToLook = timeToLook});
-        public static void LookDown(float timeToLook = 0.5f) 
-            => EventBusCaller.Publish(new CameraEvents.LookDown{TimeToLook = timeToLook});
         public static void NotifyZoomFinished() 
             => EventBusCaller.Publish(new CameraEvents.ZoomFinished());
         public static void NotifyLookFinished() 
@@ -657,21 +646,9 @@ namespace _Main.Scripts.EventBus
     
     public static class CameraEventSubscriber
     {
-        public static void ZoomIn(Action<CameraEvents.ZoomIn> action) 
-            => EventBusCaller.Subscribe(action);
-        public static void ZoomOut(Action<CameraEvents.ZoomOut> action) 
+        public static void Transport(Action<CameraEvents.Transport> action) 
             => EventBusCaller.Subscribe(action);
         public static void Shake(Action<CameraEvents.Shake> action) 
-            => EventBusCaller.Subscribe(action);
-        public static void LookCenter(Action<CameraEvents.LookCenter> action) 
-            => EventBusCaller.Subscribe(action);
-        public static void LookRight(Action<CameraEvents.LookRight> action) 
-            => EventBusCaller.Subscribe(action);
-        public static void LookLeft(Action<CameraEvents.LookLeft> action) 
-            => EventBusCaller.Subscribe(action);
-        public static void LookUp(Action<CameraEvents.LookUp> action) 
-            => EventBusCaller.Subscribe(action);
-        public static void LookDown(Action<CameraEvents.LookDown> action) 
             => EventBusCaller.Subscribe(action);
         public static void NotifyZoomFinished(Action<CameraEvents.ZoomFinished> action) 
             => EventBusCaller.Subscribe(action);
@@ -687,21 +664,9 @@ namespace _Main.Scripts.EventBus
     
     public static class CameraEventUnSubscriber
     {
-        public static void ZoomIn(Action<CameraEvents.ZoomIn> action) 
-            => EventBusCaller.Unsubscribe(action);
-        public static void ZoomOut(Action<CameraEvents.ZoomOut> action) 
+        public static void Transport(Action<CameraEvents.Transport> action) 
             => EventBusCaller.Unsubscribe(action);
         public static void Shake(Action<CameraEvents.Shake> action) 
-            => EventBusCaller.Unsubscribe(action);
-        public static void LookCenter(Action<CameraEvents.LookCenter> action) 
-            => EventBusCaller.Unsubscribe(action);
-        public static void LookRight(Action<CameraEvents.LookRight> action) 
-            => EventBusCaller.Unsubscribe(action);
-        public static void LookLeft(Action<CameraEvents.LookLeft> action) 
-            => EventBusCaller.Unsubscribe(action);
-        public static void LookUp(Action<CameraEvents.LookUp> action) 
-            => EventBusCaller.Unsubscribe(action);
-        public static void LookDown(Action<CameraEvents.LookDown> action) 
             => EventBusCaller.Unsubscribe(action);
         public static void NotifyZoomFinished(Action<CameraEvents.ZoomFinished> action) 
             => EventBusCaller.Unsubscribe(action);

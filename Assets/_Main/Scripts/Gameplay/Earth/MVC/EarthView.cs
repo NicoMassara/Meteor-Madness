@@ -7,10 +7,8 @@ using MeteorMadness.Contracts.Interfaces.Skins;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.Gameplay.Particles;
-using MeteorMadness.Gameplay.Shaker;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.GlobalValues.Tools.Observer;
-using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
@@ -27,9 +25,9 @@ namespace _Main.Scripts.Earth
         [Space]
         [Header("Shake Values")]
         [SerializeField] private AnimationCurve shakeMultiplier;
-        [SerializeField] private ShakeDataSo healthShakeData;
+        /*[SerializeField] private ShakeDataSo healthShakeData;
         [SerializeField] private ShakeDataSo deathShakeData;
-        [SerializeField] private ShakeDataSo cameraShakeData;
+        [SerializeField] private ShakeDataSo cameraShakeData;*/
         [Space]
         [Header("Values")] 
         [Range(0, 100)] 
@@ -38,7 +36,7 @@ namespace _Main.Scripts.Earth
         [SerializeField] private ParticleDataSo collisionParticleData;
         
         private EarthSlicer _slicer;
-        private ComponentShaker _shakerController;
+        //private ComponentShaker _shakerController;
         private Rotator _planeRotator;
         private IEarthRestart _restartTimeValues;
         private bool _isDead;
@@ -67,34 +65,34 @@ namespace _Main.Scripts.Earth
         
         private void Awake()
         {
-            BootEvents.OnSubSystemRequestInitialize += Initialize;
+            /*BootEvents.OnSubSystemRequestInitialize += Initialize;
             _slicer = GetComponent<EarthSlicer>();
             _planeRotator = new Rotator(destroyedEarthContainer.transform, Vector3.forward, rotationSpeed/2);
-            _shakerController = new ComponentShaker(planeMeshContainer.transform);
+            _shakerController = new ComponentShaker(planeMeshContainer.transform);*/
         }
 
         private void Initialize()
         {
-            BootEvents.OnSubSystemRequestInitialize -= Initialize;
+            /*BootEvents.OnSubSystemRequestInitialize -= Initialize;
             //
             
             _restartTimeValues = GameConfigManager.Instance.GetGameplayData().EarthTimeData.Restart;
             _shakerController.SetShakeData(healthShakeData);
             SetShakeMultiplier(1f);
             
-            BootEvents.SubSystemInitialized();
+            BootEvents.SubSystemInitialized();*/
         }
 
         public void ExecuteUpdate(float deltaTime)
         {
-            _deltaTime = deltaTime;
+            /*_deltaTime = deltaTime;
             //
             _shakerController.HandleShake(_deltaTime);
             
             if (_isDead)
             {
                 _planeRotator.Rotate(_deltaTime);
-            }
+            }*/
         }
 
         public void OnNotify(ulong message, params object[] args)
@@ -160,7 +158,7 @@ namespace _Main.Scripts.Earth
                 MoveDirection = -direction
             });
             
-            CameraEventCaller.Shake(cameraShakeData);
+            //CameraEventCaller.Shake(cameraShakeData);
             OnCollision?.Invoke();
         }
         
@@ -403,7 +401,7 @@ namespace _Main.Scripts.Earth
                         .Then(new SetFloatAction(1, SetShakeMultiplier))
                         .Then(new InstantAction(() =>
                         {
-                            _shakerController.SetShakeData(healthShakeData);
+                            //_shakerController.SetShakeData(healthShakeData);
                         }))
                         .Then(new WaitSecondsAction(_restartTimeValues.FinishRestart));
                 }
@@ -428,12 +426,12 @@ namespace _Main.Scripts.Earth
         {
             if (isShaking)
             {
-                _shakerController.SetMultiplier(1);
+                //_shakerController.SetMultiplier(1);
                 EarthEventCaller.ShakeStart();
             }
             else
             {
-                _shakerController.SetMultiplier(0);
+                //_shakerController.SetMultiplier(0);
             }
         }
 
@@ -449,8 +447,8 @@ namespace _Main.Scripts.Earth
         private void HandleDeath()
         {
             UpdateHealth(0);
-            _shakerController.SetMultiplier(0);
-            _shakerController.SetShakeData(deathShakeData);
+            /*_shakerController.SetMultiplier(0);
+            _shakerController.SetShakeData(deathShakeData);*/
             OnPreDestruction?.Invoke();
             EarthEventCaller.Death();
         }
@@ -465,7 +463,7 @@ namespace _Main.Scripts.Earth
         private void SetShakeMultiplier(float currentHealth)
         {
             var multiplier = shakeMultiplier.Evaluate(currentHealth);
-            _shakerController.SetMultiplier(multiplier);
+            //_shakerController.SetMultiplier(multiplier);
         }
 
         private void UpdateHealth(float currentHealth)

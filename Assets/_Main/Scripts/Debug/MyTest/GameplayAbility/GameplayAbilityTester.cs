@@ -84,7 +84,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             EarthEventCaller.EnableDamage();
             InputsEventCaller.SetEnable(true);
             InputsEventCaller.SetUIEnable(true);
-            CameraEventCaller.ZoomOut();
+            //CameraEventCaller.ZoomOut();
             ProjectileEventCaller.UpdateLevel(_currentLevel);
             if (startMeteorsEnable)
             {

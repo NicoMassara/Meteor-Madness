@@ -8,7 +8,6 @@ using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.Gameplay.Particles;
-using MeteorMadness.Gameplay.Shaker;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
@@ -32,8 +31,8 @@ namespace MeteorMadness.Gameplay.Shield
         [Header("Sounds")]
         [Space] 
         [Header("Scriptable Objects")]
-        [SerializeField] private ShakeDataSo hitShakeData;
-        [SerializeField] private ShakeDataSo cameraShakeData;
+        /*[SerializeField] private ShakeDataSo hitShakeData;
+        [SerializeField] private ShakeDataSo cameraShakeData;*/
         [SerializeField] private ParticleDataSo deflectParticleData;
         [Header("Movement")]
         [SerializeField] private Transform normalShieldContainer;
@@ -41,7 +40,7 @@ namespace MeteorMadness.Gameplay.Shield
         [SerializeField] private LayerMask projectileLayerMask;
         
         private IMediator _shieldMovement;
-        private ComponentShaker _shakerController;
+        //private ComponentShaker _shakerController;
         private ShieldColliderExtender _colliderExtender;
         
         public event Action<bool> OnShieldActivated;
@@ -63,7 +62,7 @@ namespace MeteorMadness.Gameplay.Shield
         private void Awake()
         {
             superShieldCollider.enabled = false;
-            _shakerController = new ComponentShaker(normalShieldSprite.transform,hitShakeData);
+            //_shakerController = new ComponentShaker(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
             _shieldMovement = new MediatorComponent(normalShieldContainer, GameParameters.GameplayValues.AngleSlots,
                 mediatorData, projectileLayerMask);
@@ -226,7 +225,7 @@ namespace MeteorMadness.Gameplay.Shield
                 MoveDirection = direction
             });
             
-            CameraEventCaller.Shake(cameraShakeData);
+            //CameraEventCaller.Shake(cameraShakeData);
             OnDeflect?.Invoke();
         }
 
@@ -309,14 +308,16 @@ namespace MeteorMadness.Gameplay.Shield
         
         private IEnumerator Coroutine_Shake()
         {
-            _shakerController.StartShake();
+            /*//_shakerController.StartShake();
             
             while (_shakerController.IsShaking == true)
             {
-                _shakerController.HandleShake(CustomTime.GetDeltaTimeByChannel(UpdateGroup.Shield));
+               // _shakerController.HandleShake(CustomTime.GetDeltaTimeByChannel(UpdateGroup.Shield));
                 
                 yield return null;
-            }
+            }*/
+            
+            yield return null;
         }
 
         #endregion

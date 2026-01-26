@@ -100,7 +100,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
 
         private void HandleLeftMovement()
         {
-            CameraEventCaller.ZoomOut(ZoomOutTime);
+            //CameraEventCaller.ZoomOut(ZoomOutTime);
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.Enable();
             InputsEventCaller.SetEnable(true);
@@ -115,7 +115,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
 
         private void HandleRightMovement()
         {
-            CameraEventCaller.ZoomOut(ZoomOutTime);
+            //CameraEventCaller.ZoomOut(ZoomOutTime);
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.Enable();
             InputsEventCaller.SetEnable(true);
@@ -167,7 +167,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
             ProjectileEventCaller.UpdateLevel(0);
             AbilitiesEventCaller.Disable();
             ShieldEventCaller.Disable();
-            CameraEventCaller.ZoomIn();
+            //CameraEventCaller.ZoomIn();
             OnTutorialFinished?.Invoke();
         }
 
@@ -178,7 +178,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         private void HandleAbility()
         {
             ShieldEventCaller.Enable();
-            CameraEventCaller.ZoomOut(ZoomOutTime);
+            //CameraEventCaller.ZoomOut(ZoomOutTime);
             AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
             AbilitiesEventCaller.Enable();
             AbilitiesEventCaller.DisableUI();
@@ -217,7 +217,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
 
         private void HandleMeteor()
         {
-            CameraEventCaller.ZoomOut(ZoomOutTime);
+            //CameraEventCaller.ZoomOut(ZoomOutTime);
             ProjectileEventCaller.UpdateLevel(0);
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.Enable();
@@ -253,7 +253,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         private void HandleMultiPage()
         {
             ShieldEventCaller.Disable();
-            CameraEventCaller.ZoomIn();
+            //CameraEventCaller.ZoomIn();
             
 #if UNITY_ANDROID || UNITY_IOS
             

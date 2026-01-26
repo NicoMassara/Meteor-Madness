@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
-using MeteorMadness.Managers;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
@@ -278,13 +278,14 @@ namespace MeteorMadness.Gameplay.Abilities
 
         #endregion
 
-        public AbilityDataController(Action speedTimeSound, Action slowTimeSound)
+        public AbilityDataController(Action speedTimeSound, Action slowTimeSound,
+            ICameraTransportData zoomInData, ICameraTransportData zoomOutData)
         {
             _playSpeedTimeSound = new InstantAction(speedTimeSound);
             _playSlowTimeSound = new InstantAction(slowTimeSound);
             
-            _cameraZoomIn = new InstantAction(()=> CameraEventCaller.ZoomIn(0.1f));
-            _cameraZoomOut = new InstantAction(()=> CameraEventCaller.ZoomOut(0.1f));
+            _cameraZoomIn = new InstantAction(() => CameraEventCaller.Transport(zoomInData));
+            _cameraZoomOut = new InstantAction(() => CameraEventCaller.Transport(zoomOutData));
             
             _enableInputs = new SetBoolAction(true,SetInputsEnable);
             _disableInputs = new SetBoolAction(false,SetInputsEnable);

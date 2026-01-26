@@ -141,7 +141,6 @@ namespace MeteorMadness.ScreenFlow.Menu
         private void HandleEnable()
         {
             OnMainMenuEnable?.Invoke();
-            CameraEventCaller.ZoomIn(0.5f);
             EarthEventCaller.DisableDamage();
         }
     }
