@@ -339,8 +339,8 @@ namespace _Main.Scripts.Environment.Comet.Spawner
         #endregion
 
         [SerializeField] private CometView cometPrefab;
-        [SerializeField] private Camera gameCamera;
         [SerializeField] private CometSpawnDataSo spawnData;
+        private Camera _gameCamera;
         public bool debugEnable;
 
         private CometSpawner _spawner;
@@ -354,6 +354,7 @@ namespace _Main.Scripts.Environment.Comet.Spawner
 
         private void Awake()
         {
+            _gameCamera = Camera.main;
             BootEvents.OnSubSystemRequestInitialize += Initialize;
         }
         
@@ -380,7 +381,7 @@ namespace _Main.Scripts.Environment.Comet.Spawner
 
         private void SpawnComet()
         {
-            var comet = _spawner.SpawnComet(gameCamera, out Vector2 targetPosition);
+            var comet = _spawner.SpawnComet(_gameCamera, out Vector2 targetPosition);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             

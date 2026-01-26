@@ -237,6 +237,29 @@ namespace MeteorMadness.ScreenFlow.Defeat
             }
         }
         
+        private class Animation_HighScore_Bounce: SequenceUIAnimationVibration<DefeatUiAnimationComponents.IHighScore,IHighScoreBounce,IVibrationCaller>
+        {
+            private readonly float _startScale;
+            
+            public Animation_HighScore_Bounce(DefeatUiAnimationComponents.IHighScore components, IHighScoreBounce animationData,
+                IVibrationCaller vibrationComponent)
+                : base(components, animationData, vibrationComponent)
+            {
+                _startScale = components.SubHighScoreText.localScale.x;
+            }
+
+            protected override Sequence CreateAnimation()
+            {
+                return DOTween.Sequence()
+                    .Append(UIComponents.SubHighScoreText.DOScale(AnimationData.TargetScale, AnimationData.ScaleDuration))
+                    .Append(UIComponents.SubHighScoreText.DOScale(AnimationData.MinScale, AnimationData.BounceDuration/2))
+                    .Append(UIComponents.SubHighScoreText.DOScale(_startScale,AnimationData.BounceDuration/2))
+                    .AppendInterval(AnimationData.LoopDelay)
+                    .SetLoops(-1, LoopType.Restart)
+                    ;
+            }
+        }
+        
         #endregion
 
         #region Buttons
@@ -312,6 +335,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
         //
         private IUiAnimation _animationScoreCurrent;
         private IUiAnimation _animationScoreHigh;
+        private IUiAnimation _animationBounceHighScore;
         //
         private IUiAnimation _animationButtonsOpen;
         //
@@ -353,10 +377,13 @@ namespace MeteorMadness.ScreenFlow.Defeat
             //
             _animationButtonsOpen = new Animation_Buttons_Open(UIComponents, animationData.ButtonsOpenData, this);
             _animationScoreCurrent = new Animation_CurrentScore_Increment(UIComponents,animationData.CurrentScoreData,HandleCurrentScoreText, this);
+            _animationBounceHighScore = new Animation_HighScore_Bounce(UIComponents,animationData.HighScoreBounceData, this);
             //
             _animationScoreHigh = new Animation_HighScore_Increment(UIComponents,animationData.HighScoreData, this);
             //
             _animationOpenCoinsPanel = new Animation_Coins_OpenPanel(UIComponents, animationData.CoinsOpenData, this);
+
+            OnButtonsFinished += StartHighScoreBounce;
         }
 
         public override void OnNotify(ulong message, params object[] args)
@@ -422,11 +449,12 @@ namespace MeteorMadness.ScreenFlow.Defeat
         
         private void HandleStartDisable()
         {
+            StopAnimation(_animationBounceHighScore);
             PlayAnimation(_animationMainClose, () =>
             {
                 TriggerOnPanelClosed();
                 OnStopMusic?.Invoke();
-            });
+            }, true);
         }
         
         #endregion
@@ -484,17 +512,17 @@ namespace MeteorMadness.ScreenFlow.Defeat
         }
 
         #endregion
-        
-        private string GetLocalizedString(string key)
-        {
-            return LocalizationManager.Instance.GetText(key);
-        }
 
         #region IVibrationCaller
         
         public void TriggerVibration(DefeatAnimationVibrationType vibrationType) => OnVibration?.Invoke(vibrationType);
 
         #endregion
+        
+        private void StartHighScoreBounce()
+        {
+            PlayAnimation(_animationBounceHighScore);
+        }
 
     }
     

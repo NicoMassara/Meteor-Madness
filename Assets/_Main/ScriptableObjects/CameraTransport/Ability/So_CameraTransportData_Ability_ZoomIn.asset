@@ -38,9 +38,9 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    doesChange: 0
+    doesChange: 1
   zoomValues:
-    value: 3
+    value: 3.5
     curve:
       serializedVersion: 2
       m_Curve:

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acceleration: 1800
   deAcceleration: 1200
-  maxSpeed: 600
+  maxSpeed: 700
   minInputAngle: 12.5
-  maxTravelDistanceRatioToDeAccelerate: 0.85
+  maxTravelDistanceRatioToDeAccelerate: 0.95
   minDistanceRatioToSnap: 0.95
   magnitudeCurve:
     serializedVersion: 2

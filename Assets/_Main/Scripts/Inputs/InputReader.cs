@@ -32,9 +32,9 @@ namespace _Main.Scripts.Inputs
 
         #endregion
         
-        [SerializeField] private Camera gameCamera;
         [SerializeField] private TouchInputData touchInputData;
         [SerializeField] private bool debugEnable = true;
+        private Camera _gameCamera;
         private IDeviceInput _deviceInput;
         private bool _isEnable;
 
@@ -63,9 +63,11 @@ namespace _Main.Scripts.Inputs
 
         private void Awake()
         {
+            _gameCamera = Camera.main;
+            
             IDeviceInput deviceInput = null;
             
-            deviceInput = new TouchInput(touchInputData, gameCamera);
+            deviceInput = new TouchInput(touchInputData, _gameCamera);
             
             _deviceInput = deviceInput;
             _deviceInput.OnPressingToMove += OnPressingToMoveHandler;

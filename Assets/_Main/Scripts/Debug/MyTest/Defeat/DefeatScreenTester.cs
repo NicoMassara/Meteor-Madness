@@ -26,6 +26,7 @@ namespace _Main.Scripts.MyTest.Defeat
             [SerializeField] private uint scoreAmount;
             [Range(0,1000)]
             [SerializeField] private uint storedHighScore;
+            [SerializeField] private bool doesRestart;
             
             private bool _hasInitializedAds;
             private bool _hasInitializedManager;
@@ -88,6 +89,8 @@ namespace _Main.Scripts.MyTest.Defeat
 
             private IEnumerator Coroutine_DisableDefeatScreen()
             {
+                yield return new WaitUntil(()=> doesRestart);
+                
                 yield return new WaitForEndOfFrame();
                 
                 GameManager.Instance.LoadGameMode();

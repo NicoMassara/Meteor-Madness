@@ -61,6 +61,7 @@ namespace MeteorMadness.Gameplay.Shield
 
         private void Awake()
         {
+            spriteContainer.SetActive(false);
             superShieldCollider.enabled = false;
             _shakerController = new ComponentShaker(normalShieldSprite.transform,hitShakeData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);

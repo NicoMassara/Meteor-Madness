@@ -1,5 +1,7 @@
-﻿using _Main.Scripts.Contracts.Interfaces;
+﻿using System;
+using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.GameCamera;
 using MeteorMadness.Common.Shaker;
 using UnityEditor;
 using UnityEngine;
@@ -61,22 +63,26 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Camera
         
         #endregion
         
-        [SerializeField] private TransportData zoomInData;
+        [SerializeField] private CameraTransportDataSo targetTransportData;
         [SerializeField] private TransportData zoomOutData;
 
         public bool IsGrayscaleEnable { get; private set; }
         public bool IsZoomingIn { get; private set; }
+        
 
         public void Shake()
         {
             CameraEventCaller.Shake(shakeData);
         }
 
-        public void ToggleMovement()
+        public void MoveToTarget()
         {
-            IsZoomingIn = !IsZoomingIn;
-            
-            CameraEventCaller.Transport(IsZoomingIn ? zoomInData : zoomOutData);
+            CameraEventCaller.Transport(targetTransportData);
+        }
+
+        public void RemoveTarget()
+        {
+            CameraEventCaller.Transport(zoomOutData);
         }
 
         public void ToggleGrayscale()
@@ -99,8 +105,8 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Camera
             DrawDefaultInspector();
             CameraTester script = (CameraTester)target;
             if (GUILayout.Button("Shake")) script.Shake();
-            if (GUILayout.Button("Toggle Movement")) 
-                script.ToggleMovement();
+            if (GUILayout.Button("Move to Target")) script.MoveToTarget();
+            if (GUILayout.Button("Remove Target")) script.RemoveTarget();
             if (GUILayout.Button(script.IsGrayscaleEnable ? "Disable Grayscale" : "Enable Grayscale")) 
                 script.ToggleGrayscale();
         }

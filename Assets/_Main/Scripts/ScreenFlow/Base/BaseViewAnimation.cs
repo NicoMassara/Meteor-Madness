@@ -32,7 +32,6 @@ namespace MeteorMadness.ScreenFlow.Base
             OnPanelClosed?.Invoke();
         }
         
-        
         protected void PlayAnimation(IUiAnimation animator, Action onFinished = null, bool doesOverride = false)
         {
             if (doesOverride)
@@ -47,6 +46,11 @@ namespace MeteorMadness.ScreenFlow.Base
                 onFinished?.Invoke();
                 ClearAnimation();
             });
+        }
+
+        protected void StopAnimation(IUiAnimation animator)
+        {
+            animator?.Kill();
         }
 
         private void ClearAnimation()

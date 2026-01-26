@@ -40,7 +40,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     doesChange: 1
   zoomValues:
-    value: 15
+    value: 18
     curve:
       serializedVersion: 2
       m_Curve:

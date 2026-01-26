@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace MeteorMadness.ScreenFlow.Defeat
 {
+
     public interface IPanelOpen : IUiAnimationData
     {
         float FadeInDelay { get; }
@@ -41,18 +42,23 @@ namespace MeteorMadness.ScreenFlow.Defeat
     }
     public interface IHighScoreIncrement : IUiAnimationData
     {
-        public float ScaleDuration { get; }
-        public float BounceDelay { get; }
-        public float BounceScale { get; }
-        public float BounceDuration { get; }
-        public float BounceReturnTime { get; }
-
         public float NewScoreTextDelay { get; }
         public float NewScoreBounceScale { get; }
         public float NewScoreBounceDuration { get; }
         public float NewScoreBounceReturnTime { get; }
         public float FinishDelay { get;}
     }
+    
+    public interface IHighScoreBounce : IUiAnimationData
+    {
+        public float LoopDelay { get; }
+        public float ScaleDuration { get; }
+        public float TargetScale { get; }
+        public float BounceDelay { get; }
+        public float BounceDuration { get; }
+        public float MinScale { get; }
+    }
+    
     public interface IButtonsOpen : IUiAnimationData
     {
         public AnimationHelper.Direction OffscreenPosition { get; }

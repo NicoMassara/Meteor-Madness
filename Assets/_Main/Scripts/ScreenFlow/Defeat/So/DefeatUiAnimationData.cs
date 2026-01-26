@@ -112,10 +112,6 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
             [Space]
             [Header("Time Values")]
             public float finishDelay = 0.5f;
-            public float scaleDuration = 0.75f;
-            public float bounceDelay = 0.05f;
-            public float bounceScale = 1.25f;
-            public float bounceDuration = 0.1f;
             public float bounceReturnTime = 0.35f;
             public float newScoreTextDelay = 0.25f;
             public float newScoreBounceScale = 2f;
@@ -124,16 +120,40 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
 
             // Interface properties
             public float FinishDelay => finishDelay;
-            public float ScaleDuration => scaleDuration;
-            public float BounceDelay => bounceDelay;
-            public float BounceScale => bounceScale;
-            public float BounceDuration => bounceDuration;
             public float BounceReturnTime => bounceReturnTime;
 
             public float NewScoreTextDelay => newScoreTextDelay;
             public float NewScoreBounceScale => newScoreBounceScale;
             public float NewScoreBounceDuration => newScoreBounceDuration;
             public float NewScoreBounceReturnTime => newScoreBounceReturnTime;
+        }
+
+        [Serializable]
+        private class HighScoreBounce : IHighScoreBounce
+        {
+            [Space]
+            [Header("Time Values")]
+            [Min(0)]
+            public float loopDelay = 2f;
+            [Min(0)]
+            public float scaleDuration = 0.5f;
+            [Min(0)]
+            public float bounceDelay = 0.15f;
+            [Min(0)]
+            public float bounceDuration = 0.5F;
+            [Space]
+            [Header("Scale Values")]
+            [Min(0)]
+            public float targetScale = 2f;
+            [Min(0)]
+            public float minScale = 0.75f;
+
+            public float LoopDelay => loopDelay;
+            public float ScaleDuration => scaleDuration;
+            public float TargetScale => targetScale;
+            public float BounceDelay => bounceDelay;
+            public float BounceDuration => bounceDuration;
+            public float MinScale => minScale;
         }
 
         #endregion
@@ -197,6 +217,7 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
         [SerializeField] private CurrentScoreIncrement currentScoreData;
         [Space]
         [SerializeField] private HighScoreIncrement highScoreData;
+        [SerializeField] private HighScoreBounce highScoreBounceData;
         [Space(2)]
         [Header("Coins")]
         [SerializeField] private CoinsOpen coinsOpenData;
@@ -208,6 +229,7 @@ namespace MeteorMadness.ScreenFlow.Defeat.So
         public IPanelClose PanelCloseData => panelCloseData;
         public ICurrentScoreIncrement CurrentScoreData => currentScoreData;
         public IHighScoreIncrement HighScoreData => highScoreData;
+        public IHighScoreBounce HighScoreBounceData => highScoreBounceData;
         public IButtonsOpen ButtonsOpenData => buttonsOpenData;
         public ICoinsOpen CoinsOpenData => coinsOpenData;
     }

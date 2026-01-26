@@ -88,6 +88,7 @@ namespace _Main.Scripts.Earth
         {
             _deltaTime = deltaTime;
             //
+            
             _shakerController.HandleShake(_deltaTime);
             
             if (_isDead)

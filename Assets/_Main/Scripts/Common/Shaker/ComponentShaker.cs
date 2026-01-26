@@ -29,8 +29,6 @@ namespace MeteorMadness.Common.Shaker
         public void SetShakeData(IShakeData data)
         {
             _shakeData = data;
-
-            FinishShake();
             
             _startPosition = _transform.localPosition;
         }
@@ -38,8 +36,6 @@ namespace MeteorMadness.Common.Shaker
         public void HandleShake(float deltaTime)
         {
             if(_shakeData == null) return;
-            if(_isShaking == false) return;
-            
             
             if (_shakeData.DoesLoop)
             {
@@ -62,7 +58,6 @@ namespace MeteorMadness.Common.Shaker
         {
             if(_shakeData == null) return;
             
-            _isShaking = true;
             _shakeTimer = _shakeData.ShakeTime;
         }
         
@@ -77,15 +72,6 @@ namespace MeteorMadness.Common.Shaker
             float offsetX = Mathf.Sin(angle) * (_shakeData.XShakeMagnitude * _multiplier);
             float offsetY = Mathf.Cos(angle) * (_shakeData.YShakeMagnitude * _multiplier);
             return new Vector3(offsetX, offsetY, 0f);
-        }
-
-        private void FinishShake()
-        {
-            if (_isShaking)
-            {
-                _isShaking = false;
-                _transform.localPosition = _startPosition;
-            }
         }
     }
 }

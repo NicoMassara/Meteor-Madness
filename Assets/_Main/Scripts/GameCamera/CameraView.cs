@@ -80,7 +80,7 @@ namespace _Main.Scripts.GameCamera
             private readonly IZoomData _zoomData;
             private readonly float _targetTime;
             
-            private float _currentZoom;
+            private float _startZoom;
             private float _elapsedTime;
             
             public ActionStatus CurrentStatus { get; private set; }
@@ -94,7 +94,7 @@ namespace _Main.Scripts.GameCamera
 
             public void OnStart()
             {
-                _currentZoom = _gameCamera.orthographicSize;
+                _startZoom = _gameCamera.orthographicSize;
                 
                 CurrentStatus = ActionStatus.Running;
             }
@@ -105,7 +105,7 @@ namespace _Main.Scripts.GameCamera
                 
                 float ratio = Mathf.Clamp01(_elapsedTime / _targetTime);
                 var curveValue = _zoomData.Curve.Evaluate(ratio);
-                float currentValue = Mathf.Lerp(_currentZoom, _zoomData.Value, curveValue);
+                float currentValue = Mathf.LerpUnclamped(_startZoom, _zoomData.Value, curveValue);
 
                 if (ratio >= 1f)
                 {
@@ -162,7 +162,7 @@ namespace _Main.Scripts.GameCamera
             {
                 _gameCamera = gameCamera;
                 _movementData = movementData;
-                _targetTime  = targetTime;
+                _targetTime = targetTime;
             }
 
             public void OnStart()
@@ -177,7 +177,7 @@ namespace _Main.Scripts.GameCamera
                 
                 float ratio = Mathf.Clamp01(_elapsedTime / _targetTime);
                 var curveValue = _movementData.Curve.Evaluate(ratio);
-                var currentPosition = Vector3.Lerp(_startPos, _movementData.Position, curveValue);
+                var currentPosition = Vector3.LerpUnclamped(_startPos, _movementData.Position, curveValue);
 
                 if (ratio >= 1)
                 {
