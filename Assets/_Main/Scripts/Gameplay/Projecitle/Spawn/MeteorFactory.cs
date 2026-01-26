@@ -236,8 +236,6 @@ namespace _Main.Scripts.Projectile
                 meteor.OnEarthCollision -= Meteor_OnCollisionHandler;
             }
             
-            Debug.Log($"Deflection: {data.Value}");
-            
             ProjectileEventCaller.Deflected(new DeflectData
             {
                 Position = data.Position,

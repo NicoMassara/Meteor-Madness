@@ -18,6 +18,7 @@ namespace MeteorMadness.Managers.Boostrap
 {
     public interface IBoostrap
     {
+        public event Action OnStartLoading;
         public event Action<string> OnLoadingAsset;
     }
 
@@ -25,6 +26,7 @@ namespace MeteorMadness.Managers.Boostrap
     {
         [SerializeField] private string coreScene = "MainMenu";
         [SerializeField] private string[] additiveScenes;
+        [SerializeField] private string cameraModule;
         [SerializeField] private float delayBeforeLoad = 0.1f;
         [SerializeField] private Image progressBar;
 
@@ -48,6 +50,8 @@ namespace MeteorMadness.Managers.Boostrap
 #endif
         
         public event Action<string> OnLoadingAsset;
+        public event Action OnStartLoading;
+        
         private void Awake()
         {
             LocalizationEvents.OnLocalizationLoaded += () =>
@@ -110,8 +114,19 @@ namespace MeteorMadness.Managers.Boostrap
         {
             var boostrapScene = SceneManager.GetActiveScene();
             
+            AsyncOperation cameraSceneAsync = SceneManager.LoadSceneAsync(cameraModule, LoadSceneMode.Additive);
+            cameraSceneAsync.allowSceneActivation = false;
+            
+            while (cameraSceneAsync.progress < 0.9f)
+            {
+                yield return null;
+            }
+            
+            cameraSceneAsync.allowSceneActivation = true;
+            
             yield return new WaitForSeconds(delayBeforeLoad);
             
+            OnStartLoading?.Invoke();
             // Save Data
             OnLoadingAsset?.Invoke("Loading Saves");
             DataManager.LoadInstance();

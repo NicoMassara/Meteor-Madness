@@ -108,6 +108,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 
                 public override void Awake()
                 {
+                    _elapsedTime = 0;
                     _currentCount = _timerCount;
                     Controller.StartCountdown();
                     Controller.UpdateCountdown(_currentCount);

@@ -1,6 +1,5 @@
 ﻿using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
-using MeteorMadness.Managers;
 using UnityEngine;
 
 namespace _Main.Scripts.GameCamera
@@ -18,16 +17,9 @@ namespace _Main.Scripts.GameCamera
             _motor = new CameraMotor();
             _controller = new CameraController(_motor);
             _motor.Subscribe(_view);
-            
-            _controller.Initialize();
-            _controller.TransitionToIdle();
+            _controller.Initialize(_view.GetCameraData());
             
             SetEventBus();
-        }
-
-        private void Start()
-        {
-            
         }
         
         #region Event Bus

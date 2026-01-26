@@ -1842,6 +1842,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3442adcd1a84c33b88522047d7c5d75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  countdownTransportData: {fileID: 11400000, guid: b526c2cd6cd9bb647a3e9579c7082d9e, type: 2}
+  stopGameplayTransportData: {fileID: 11400000, guid: 16a2811509874ab40a9469a4d3cd8a92, type: 2}
+  pauseGameplayTransportData: {fileID: 11400000, guid: fda8d8ef3dd8e8b4a95420f559996028, type: 2}
+  startGameplayTransportData: {fileID: 11400000, guid: 25548d5d405373c479564880441a1fab, type: 2}
 --- !u!114 &1024740942
 MonoBehaviour:
   m_ObjectHideFlags: 0

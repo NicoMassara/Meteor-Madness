@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.GameCamera;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces.Analytics;
 using MeteorMadness.GlobalValues.Tools.Observer;
@@ -21,6 +22,8 @@ namespace _Main.Scripts.Cosmetics.MVC
             public event Action OnFailedToUnlock;
         }
 
+        [SerializeField] private CameraTransportDataSo cameraTransportData;
+        
         #region ICosmeticView
 
         
@@ -110,6 +113,7 @@ namespace _Main.Scripts.Cosmetics.MVC
 
         private void HandleEnable()
         {
+            CameraEventCaller.Transport(cameraTransportData);
         }
         
         private void HandleStartDisable()

@@ -1,4 +1,5 @@
 ﻿using _Main.Scripts.EventBus;
+using _Main.Scripts.GameCamera;
 using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
@@ -9,9 +10,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
 {
     public class GameScreenView : ManagedBehavior, IObserver
     {
+        [SerializeField] private CameraTransportDataSo cameraTransportData;
         
-        
-
         private void Start()
         {
             if (GameManager.Instance.HadCorruptedSaveData)
@@ -38,7 +38,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         private void HandleZoomIn()
         {
-
+            CameraEventCaller.Transport(cameraTransportData);
         }
 
         private void HandleDisableScreen(int currentScreenIndex)

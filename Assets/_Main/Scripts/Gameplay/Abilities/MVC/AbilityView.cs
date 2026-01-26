@@ -1,5 +1,7 @@
 ﻿using System;
+using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.GameCamera;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Contracts.Interfaces.Sounds;
@@ -26,7 +28,9 @@ namespace MeteorMadness.Gameplay.Abilities
             public event Action OnAbilityFinished;
 
         }
-        
+
+        [SerializeField] private CameraTransportDataSo zoomInData;
+        [SerializeField] private CameraTransportDataSo zoomOutData;
         [SerializeField] private AbilityConfigTimeDataSo abilityTimeData;
         private TimerManager.GeneratedId _finishAbilityTimerId;
         private ActionManager.GeneratedId _actionId;
@@ -48,10 +52,13 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void Start()
         {
-            //abilityDataController = new AbilityDataController(OnTimeSpeedUp, OnTimeSlowDown);
+            abilityDataController = new AbilityDataController(
+                OnTimeSpeedUp, OnTimeSlowDown,
+                zoomInData,zoomOutData);
+            
             abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
             abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
-            //abilityDataController.Initialize(abilityTimeData);
+            abilityDataController.Initialize(abilityTimeData);
 
             GameManager.Instance.OnPaused += GM_OnPausedHandler;
             GameManager.Instance.OnResumed += GM_OnResumedHandler;

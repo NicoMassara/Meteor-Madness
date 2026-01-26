@@ -11,8 +11,7 @@ namespace _Main.Scripts.GameCamera
 
         internal interface ICameraController
         {
-            public void Initialize();
-            public void TransitionToIdle();
+            public void Initialize(InitialCameraData data);
             public void TryShake(IShakeData shakeData);
             public void TryTransport(ICameraTransportData transportData);
             public void SetActiveGrayscale(bool isActive);
@@ -25,7 +24,7 @@ namespace _Main.Scripts.GameCamera
 
         #endregion
         
-        private CameraMotor _motor;
+        private readonly CameraMotor _motor;
 
         public CameraController(CameraMotor motor)
         {
@@ -34,14 +33,9 @@ namespace _Main.Scripts.GameCamera
 
         #region ICameraController
 
-        public void Initialize()
+        public void Initialize(InitialCameraData data)
         {
-            
-        }
-
-        public void TransitionToIdle()
-        {
-            
+            _motor.Initialize(data);
         }
 
         public void TryShake(IShakeData shakeData) 

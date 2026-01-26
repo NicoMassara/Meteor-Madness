@@ -6,11 +6,11 @@ namespace _Main.Scripts.Contracts.Interfaces
     {
         public IZoomData  CameraZoomData { get; }
         public IMovementData  CameraMovementData { get; }
+        public float Time { get; }
     }
 
     public interface IZoomData
     {
-        public float Time { get; }
         public float Value { get; }
         public AnimationCurve Curve { get; }
         public bool DoesChange { get; }
@@ -18,9 +18,7 @@ namespace _Main.Scripts.Contracts.Interfaces
     
     public interface IMovementData
     {
-        
-        public float Time { get; }
-        public Vector2 Position { get; }
+        public Vector3 Position { get; }
         public AnimationCurve Curve { get; }
         public bool DoesChange { get; }
     }

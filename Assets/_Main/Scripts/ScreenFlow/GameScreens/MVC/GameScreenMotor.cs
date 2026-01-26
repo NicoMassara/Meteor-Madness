@@ -49,9 +49,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
         }
 
-        public void ZoomIn()
-        {
-            NotifyAll(GameScreenObserverMessage.ZoomIn);
-        }
+        public void ZoomIn() => NotifyAll(GameScreenObserverMessage.ZoomIn);
     }
 }

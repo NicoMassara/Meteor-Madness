@@ -7,12 +7,20 @@ namespace MeteorMadness.Managers.Boostrap
 {
     public class BoostrapUI : MonoBehaviour
     {
+        [SerializeField] private GameObject canvasObject;
         [SerializeField] private TMP_Text loadingText;
         [SerializeField] private TMP_Text assetsLoadingText;
         
         private void Awake()
         {
+            canvasObject.SetActive(false);
+            
             var boostrap = GetComponent<IBoostrap>();
+
+            boostrap.OnStartLoading += () =>
+            {
+                canvasObject.SetActive(true);
+            };
 
             boostrap.OnLoadingAsset += value =>
             {

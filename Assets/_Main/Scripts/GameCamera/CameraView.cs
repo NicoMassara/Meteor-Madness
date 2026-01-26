@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Contracts.Interfaces;
+﻿using System;
+using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Common.Shaker;
@@ -13,7 +14,6 @@ namespace _Main.Scripts.GameCamera
     {
         [Header("Components")]
         [SerializeField] private Camera mainCamera;
-        [SerializeField] private Camera dummyCamera;
         [SerializeField] private GameObject grayScaleStencil;
         
         private ComponentShaker _shakerController;
@@ -22,6 +22,7 @@ namespace _Main.Scripts.GameCamera
         
         public UpdateGroup SelfUpdateGroup { get; } = UpdateGroup.Camera;
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
+        
         
         private void Start()
         {
@@ -53,12 +54,12 @@ namespace _Main.Scripts.GameCamera
                 
                 // === Move === // 
                 case CameraObserverMessage.Move:
-                    HandleMove((IMovementData)args[0]);
+                    HandleMove((IMovementData)args[0],(float)args[1]);
                     break;
                 
                 // === Zoom === // 
                 case CameraObserverMessage.Zoom:
-                    HandleZoom((IZoomData)args[0]);
+                    HandleZoom((IZoomData)args[0],(float)args[1]);
                     break;
                 
                 // === Grayscale === //
@@ -77,16 +78,18 @@ namespace _Main.Scripts.GameCamera
         {
             private readonly Camera _gameCamera;
             private readonly IZoomData _zoomData;
+            private readonly float _targetTime;
             
             private float _currentZoom;
             private float _elapsedTime;
             
             public ActionStatus CurrentStatus { get; private set; }
 
-            public ZoomAction(Camera gameCamera, IZoomData zoomData)
+            public ZoomAction(Camera gameCamera, IZoomData zoomData, float targetTime)
             {
                 _gameCamera = gameCamera;
                 _zoomData = zoomData;
+                _targetTime = targetTime;
             }
 
             public void OnStart()
@@ -100,7 +103,7 @@ namespace _Main.Scripts.GameCamera
             {
                 _elapsedTime += deltaTime;
                 
-                float ratio = Mathf.Clamp01(_elapsedTime / _zoomData.Time);
+                float ratio = Mathf.Clamp01(_elapsedTime / _targetTime);
                 var curveValue = _zoomData.Curve.Evaluate(ratio);
                 float currentValue = Mathf.Lerp(_currentZoom, _zoomData.Value, curveValue);
 
@@ -124,14 +127,14 @@ namespace _Main.Scripts.GameCamera
             public IQueueAction Copy() => null;
         }
 
-        private void HandleZoom(IZoomData zoomData)
+        private void HandleZoom(IZoomData zoomData, float targetTime)
         {
-            if (_zoomActionId.IsActive)
+            if (_zoomActionId is { IsActive: true })
             {
                 ActionManager.Remove(_zoomActionId);
             }
 
-            var zoomAction = new ZoomAction(mainCamera, zoomData);
+            var zoomAction = new ZoomAction(mainCamera, zoomData, targetTime);
             var actions = ActionBuilder.Start()
                 .Do(zoomAction)
                 .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
@@ -148,16 +151,18 @@ namespace _Main.Scripts.GameCamera
         {
             private readonly Camera _gameCamera;
             private readonly IMovementData _movementData;
+            private readonly float _targetTime;
 
-            private Vector2 _startPos;
+            private Vector3 _startPos;
             private float _elapsedTime;
 
             public ActionStatus CurrentStatus { get; private set; }
 
-            public MoveAction(Camera gameCamera, IMovementData movementData)
+            public MoveAction(Camera gameCamera, IMovementData movementData, float targetTime)
             {
                 _gameCamera = gameCamera;
                 _movementData = movementData;
+                _targetTime  = targetTime;
             }
 
             public void OnStart()
@@ -170,7 +175,7 @@ namespace _Main.Scripts.GameCamera
             {
                 _elapsedTime += deltaTime;
                 
-                float ratio = Mathf.Clamp01(_elapsedTime / _movementData.Time);
+                float ratio = Mathf.Clamp01(_elapsedTime / _targetTime);
                 var curveValue = _movementData.Curve.Evaluate(ratio);
                 var currentPosition = Vector3.Lerp(_startPos, _movementData.Position, curveValue);
 
@@ -195,14 +200,14 @@ namespace _Main.Scripts.GameCamera
             public IQueueAction Copy() => null;
         }
         
-        private void HandleMove(IMovementData movementData)
+        private void HandleMove(IMovementData movementData, float targetTime)
         {
-            if (_moveActionId.IsActive)
+            if (_moveActionId is { IsActive: true })
             {
                 ActionManager.Remove(_moveActionId);
             }
             
-            var zoomAction = new MoveAction(mainCamera, movementData);
+            var zoomAction = new MoveAction(mainCamera, movementData,targetTime);
             var actions = ActionBuilder.Start()
                 .Do(zoomAction)
                 .Then(new InstantAction(CameraEventCaller.NotifyLookFinished))
@@ -227,6 +232,15 @@ namespace _Main.Scripts.GameCamera
         {
             _shakerController.SetShakeData(shakeData);
             _shakerController.StartShake();
+        }
+
+        public InitialCameraData GetCameraData()
+        {
+            return new InitialCameraData
+            {
+                Position = mainCamera.transform.position,
+                Zoom = mainCamera.orthographicSize
+            };
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.GameCamera;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces.Analytics;
@@ -33,6 +34,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
             public event Action OnScoreSaved;
             public event Action OnGameModeDisable;
         }
+
+        [SerializeField] private CameraTransportDataSo countdownTransportData;
+        [SerializeField] private CameraTransportDataSo stopGameplayTransportData;
+        [SerializeField] private CameraTransportDataSo pauseGameplayTransportData;
+        [SerializeField] private CameraTransportDataSo startGameplayTransportData;
         
         #region IGameModeView
         
@@ -172,9 +178,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                     break;
             }
         }
-
-
-
+        
         #region Streak
 
         private void HandleUpdateStreak(uint streakAmount) => OnStreakUpdated?.Invoke(streakAmount);
@@ -224,13 +228,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             AbilitiesEventCaller.EnableUI();
             EarthEventCaller.EnableDamage();
             SetEnableInputs(true);
-            
-            
-#if UNITY_ANDROID || UNITY_IOS
-
-            SetEnableUIInputs(true);
-                
-#endif
         }
         
         private void HandleStopGameplay()
@@ -238,6 +235,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             EarthEventCaller.DisableDamage();
             AbilitiesEventCaller.DisableUI();
             SetEnableInputs(false);
+            CameraEventCaller.Transport(stopGameplayTransportData);
             OnGameStopped?.Invoke();
             
 #if UNITY_ANDROID || UNITY_IOS
@@ -296,6 +294,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             SetEnableInputs(false);
             AbilitiesEventCaller.DisableUI();
             GameModeEventCaller.SetPause(true);
+            CameraEventCaller.Transport(pauseGameplayTransportData);
             OnPaused?.Invoke();
                 
 #if UNITY_ANDROID || UNITY_IOS
@@ -389,17 +388,31 @@ namespace MeteorMadness.ScreenFlow.GameMode
         private void HandleStartCountdown(int countdown)
         {
             AdsEvents.Banner_TriggerHide();
+            CameraEventCaller.Transport(countdownTransportData);
             OnCountDownStarted?.Invoke();
         }
         
         private void HandleUpdateCountdown(float time)
         {
             OnCountdownUpdated?.Invoke(time);
+
+            switch (time)
+            {
+                case 1:
+                    CameraEventCaller.Transport(startGameplayTransportData);
+                    break;
+                
+            }
         }
         
         private void HandleFinishCountdown()
         {
             OnCountDownFinished?.Invoke();
+#if UNITY_ANDROID || UNITY_IOS
+
+            SetEnableUIInputs(true);
+                
+#endif
         }
 
         #endregion

@@ -7,7 +7,14 @@ namespace _Main.Scripts.GameCamera
 {
     public class CameraMotor : ObservableComponent
     {
-        private ICameraTransportData _transportData;
+        private float _zoom;
+        private Vector2 _position;
+        
+        public void Initialize(InitialCameraData data)
+        {
+            _zoom = data.Zoom;
+            _position = data.Position;
+        }
         
         public void ShakeCamera(IShakeData shakeData)
         {
@@ -24,23 +31,36 @@ namespace _Main.Scripts.GameCamera
         public void TransportCamera(ICameraTransportData transportData)
         {
             var cameraZoom = transportData.CameraZoomData;
-            
-            if(GetDoesZoom(cameraZoom))
-                NotifyAll(CameraObserverMessage.Zoom,cameraZoom);
+            var targetTime = transportData.Time;
+
+            if (GetDoesZoom(cameraZoom))
+            {
+                _zoom = cameraZoom.Value;
+                NotifyAll(CameraObserverMessage.Zoom,cameraZoom,targetTime);
+            }
+            else
+            {
+                //Debug.Log("Same Zoom");
+            }
             
             var cameraMovement = transportData.CameraMovementData;
-            
-            if(GetDoesMove(cameraMovement))
-                NotifyAll(CameraObserverMessage.Move,cameraMovement);
-            
-            _transportData = transportData;
+
+            if (GetDoesMove(cameraMovement))
+            {
+                _position = cameraMovement.Position;
+                NotifyAll(CameraObserverMessage.Move,cameraMovement,targetTime);
+            }
+            else
+            {
+                Debug.Log("Distance is not enough or does not change");
+            }
         }
 
         private bool GetDoesZoom(IZoomData zoomData)
         {
             if (zoomData.DoesChange)
             {
-                if(!Mathf.Approximately(_transportData.CameraZoomData.Value, zoomData.Value))
+                if(!Mathf.Approximately(_zoom, zoomData.Value))
                     return true;
             }
 
@@ -51,9 +71,7 @@ namespace _Main.Scripts.GameCamera
         {
             if (movementData.DoesChange)
             {
-                var distance = Vector2.Distance(
-                    movementData.Position, 
-                    _transportData.CameraMovementData.Position);
+                var distance = Vector2.Distance(movementData.Position, _position);
                 
                 if (distance > 0)
                 {

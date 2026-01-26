@@ -16,7 +16,10 @@
         "MeteorMadness.ShieldRotation.Contracts",
         "MeteorMadness.ShieldRotation.Mediator",
         "MeteorMadness.Core.FlyingObject",
-        "ShieldMovement.Movement"
+        "MeteorMadness.GameCamera",
+        "ShieldMovement.Movement",
+        "MeteorMadness.Common.ScriptableObjects",
+        "MeteorMadness.Common"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

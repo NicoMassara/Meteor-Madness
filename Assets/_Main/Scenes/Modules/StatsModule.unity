@@ -914,6 +914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9224b862ad3345daa843bce32ef35385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraTransportData: {fileID: 11400000, guid: 234bb104da857eb48ac9787fbb5d3a52, type: 2}
 --- !u!1 &744939314
 GameObject:
   m_ObjectHideFlags: 0

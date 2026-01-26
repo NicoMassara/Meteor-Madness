@@ -93,7 +93,7 @@ namespace _Main.Scripts.Cosmetics
         {
             if (SecureValueManager.GetDoesContainValue(_secureId, out int skinIndex) == false)
             {
-                Debug.LogWarning("Skin save data not found");
+                //Debug.LogWarning("Skin save data not found");
                 return SkinType.Default;
             }
             

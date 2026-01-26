@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.GameCamera;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces.Analytics;
@@ -15,6 +16,8 @@ namespace MeteorMadness.ScreenFlow.Menu
         IMainMenuSounds,
         IMainMenuAnalytics
     {
+        [SerializeField] private CameraTransportDataSo cameraTransportData;
+        
         public event Action OnMainMenuEnable;
 
         #region IMainMenuAnalytics
@@ -22,7 +25,6 @@ namespace MeteorMadness.ScreenFlow.Menu
         public event Action OnLoreOpened;
         public event Action OnLoreClosed;
         #endregion
-        
 
         public void OnNotify(ulong message, params object[] args)
         {
@@ -113,7 +115,6 @@ namespace MeteorMadness.ScreenFlow.Menu
 
         #endregion
         
-
         private void HandleMainPanelOpened()
         {
             AdsEvents.Banner_TriggerShow();
@@ -141,6 +142,7 @@ namespace MeteorMadness.ScreenFlow.Menu
         private void HandleEnable()
         {
             OnMainMenuEnable?.Invoke();
+            CameraEventCaller.Transport(cameraTransportData);
             EarthEventCaller.DisableDamage();
         }
     }

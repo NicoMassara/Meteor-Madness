@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.GameCamera;
 using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers;
@@ -15,6 +16,8 @@ namespace MeteorMadness.ScreenFlow.Stats
             public event Action<StatsData> OnInitialize;
             public event Action OnFirstOpen;
         }
+        
+        [SerializeField] private CameraTransportDataSo cameraTransportData;
         
         #region IStatsView
         public event Action OnFirstOpen;
@@ -80,7 +83,7 @@ namespace MeteorMadness.ScreenFlow.Stats
         
         private void HandleEnable()
         {
-
+            CameraEventCaller.Transport(cameraTransportData);
         }
         
         private void HandleExecuteDisable()

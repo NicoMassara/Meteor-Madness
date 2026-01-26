@@ -379,6 +379,7 @@ MonoBehaviour:
   - StatsModule
   - TutorialModule
   - OptionsModule
+  cameraModule: CameraModule
   delayBeforeLoad: 0.25
   progressBar: {fileID: 0}
 --- !u!4 &388010119
@@ -408,77 +409,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c886708272994ae38771107c940fd1d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasObject: {fileID: 2097873726}
   loadingText: {fileID: 165087982}
   assetsLoadingText: {fileID: 1219644742}
---- !u!1001 &789429841
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 67955041490137537, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7755820402423392348, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 7755820402423392348, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 350
-      objectReference: {fileID: 0}
-    - target: {fileID: 7755820402423392348, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 8970443425136408093, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
-      propertyPath: m_Name
-      value: GameBackground
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c3c9271906cdc8947ae56f6fc7581dfe, type: 3}
 --- !u!1 &1119957689
 GameObject:
   m_ObjectHideFlags: 0
@@ -747,7 +680,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2097873727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -838,7 +771,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 293650932}
   - {fileID: 2097873730}
-  - {fileID: 789429841}
   - {fileID: 388010119}
   - {fileID: 1119957691}
   - {fileID: 1461295523}
