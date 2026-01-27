@@ -3,6 +3,7 @@ using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Common.Shaker;
+using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
@@ -59,7 +60,7 @@ namespace _Main.Scripts.GameCamera
                 
                 // === Zoom === // 
                 case CameraObserverMessage.Zoom:
-                    HandleZoom((IZoomData)args[0],(float)args[1]);
+                    HandleZoom((IZoomData)args[0],(float)args[1],(bool)args[2]);
                     break;
                 
                 // === Grayscale === //
@@ -127,17 +128,20 @@ namespace _Main.Scripts.GameCamera
             public IQueueAction Copy() => null;
         }
 
-        private void HandleZoom(IZoomData zoomData, float targetTime)
+        private void HandleZoom(IZoomData zoomData, float targetTime, bool doesZoomIn)
         {
             if (_zoomActionId is { IsActive: true })
             {
                 ActionManager.Remove(_zoomActionId);
             }
 
+            var transportType = doesZoomIn ?  CameraTransportType.ZoomIn : CameraTransportType.ZoomOut;
+            
             var zoomAction = new ZoomAction(mainCamera, zoomData, targetTime);
             var actions = ActionBuilder.Start()
-                .Do(zoomAction)
-                .Then(new InstantAction(CameraEventCaller.NotifyZoomFinished))
+                .Do(new InstantAction(()=> CameraEventCaller.NotifyTransportStarted(transportType)))
+                .Then(zoomAction)
+                .Then(new InstantAction(()=> CameraEventCaller.NotifyTransportFinished(transportType)))
                 .Build();
             
             _zoomActionId = ActionManager.Add(actions, ActionManager.UpdateType.Late);
@@ -207,10 +211,11 @@ namespace _Main.Scripts.GameCamera
                 ActionManager.Remove(_moveActionId);
             }
             
-            var zoomAction = new MoveAction(mainCamera, movementData,targetTime);
+            var action = new MoveAction(mainCamera, movementData,targetTime);
             var actions = ActionBuilder.Start()
-                .Do(zoomAction)
-                .Then(new InstantAction(CameraEventCaller.NotifyLookFinished))
+                .Do(new InstantAction(()=> CameraEventCaller.NotifyTransportStarted(CameraTransportType.Movement)))
+                .Then(action)
+                .Then(new InstantAction(()=> CameraEventCaller.NotifyTransportFinished(CameraTransportType.Movement)))
                 .Build();
             
             _moveActionId = ActionManager.Add(actions, ActionManager.UpdateType.Late);

@@ -57,13 +57,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AtmosphereIntensity: 1
+    - _AtmosphereIntensity2: 1
     - _Cutoff: 0.5
     - _FlowIntensity: 1
     - _HealthAmount: 1
     - _Opacity: 1
     - _WaterTiling1: 2.75
-    - __dirty: 0
+    - __dirty: 1
     m_Colors:
+    - _AtmosphereColor: {r: 0.9771981, g: 0.5098926, b: 0, a: 0}
+    - _AtmosphereColor_Damaged: {r: 1.849696, g: 0, b: 0.0362239, a: 0}
     - _Vector0: {r: 0.35, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

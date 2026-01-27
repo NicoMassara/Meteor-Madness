@@ -170,4 +170,12 @@
         //
         DEFAULT_MAX
     }
+
+    public enum CameraTransportType
+    {
+        None,
+        Movement,
+        ZoomIn,
+        ZoomOut
+    }
 }

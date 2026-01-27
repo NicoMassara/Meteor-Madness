@@ -3,6 +3,7 @@ using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.GameCamera;
 using MeteorMadness.Common.Shaker;
+using MeteorMadness.Contracts;
 using UnityEditor;
 using UnityEngine;
 
@@ -68,7 +69,27 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Camera
 
         public bool IsGrayscaleEnable { get; private set; }
         public bool IsZoomingIn { get; private set; }
+
+
+        private void Start()
+        {
+            CameraEventSubscriber.NotifyTransportStarted(EventBus_Camera_Transport_Started);
+            CameraEventSubscriber.NotifyTransportFinished(EventBus_Camera_Transport_Finished);
+        }
+
+        #region Event Bus
         
+
+        private void EventBus_Camera_Transport_Started(CameraEvents.TransportStarted input)
+        {
+            UnityEngine.Debug.Log($"{input.Type} Started");
+        }
+        private void EventBus_Camera_Transport_Finished(CameraEvents.TransportFinished input)
+        {
+            UnityEngine.Debug.Log($"{input.Type} Finished");
+        }
+        
+        #endregion
 
         public void Shake()
         {

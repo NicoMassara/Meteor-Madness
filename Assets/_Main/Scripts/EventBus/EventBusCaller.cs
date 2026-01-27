@@ -632,10 +632,10 @@ namespace _Main.Scripts.EventBus
             => EventBusCaller.Publish(new CameraEvents.Transport{Data = data});
         public static void Shake(IShakeData shake) 
             => EventBusCaller.Publish(new CameraEvents.Shake{ShakeData = shake});
-        public static void NotifyZoomFinished() 
-            => EventBusCaller.Publish(new CameraEvents.ZoomFinished());
-        public static void NotifyLookFinished() 
-            => EventBusCaller.Publish(new CameraEvents.LookFinished());
+        public static void NotifyTransportStarted(CameraTransportType type) 
+            => EventBusCaller.Publish(new CameraEvents.TransportStarted{Type = type});
+        public static void NotifyTransportFinished(CameraTransportType type) 
+            => EventBusCaller.Publish(new CameraEvents.TransportFinished{Type = type});
         public static void NotifyShakeFinished() 
             => EventBusCaller.Publish(new CameraEvents.ShakeFinished());
         public static void EnableGrayscale() 
@@ -650,11 +650,9 @@ namespace _Main.Scripts.EventBus
             => EventBusCaller.Subscribe(action);
         public static void Shake(Action<CameraEvents.Shake> action) 
             => EventBusCaller.Subscribe(action);
-        public static void NotifyZoomFinished(Action<CameraEvents.ZoomFinished> action) 
+        public static void NotifyTransportStarted(Action<CameraEvents.TransportStarted> action) 
             => EventBusCaller.Subscribe(action);
-        public static void NotifyLookFinished(Action<CameraEvents.LookFinished> action) 
-            => EventBusCaller.Subscribe(action);
-        public static void NotifyShakeFinished(Action<CameraEvents.ShakeFinished> action) 
+        public static void NotifyTransportFinished(Action<CameraEvents.TransportFinished> action) 
             => EventBusCaller.Subscribe(action);
         public static void EnableGrayscale(Action<CameraEvents.GrayscaleEnable> action) 
             => EventBusCaller.Subscribe(action);
@@ -668,9 +666,9 @@ namespace _Main.Scripts.EventBus
             => EventBusCaller.Unsubscribe(action);
         public static void Shake(Action<CameraEvents.Shake> action) 
             => EventBusCaller.Unsubscribe(action);
-        public static void NotifyZoomFinished(Action<CameraEvents.ZoomFinished> action) 
+        public static void NotifyTransportStarted(Action<CameraEvents.TransportStarted> action) 
             => EventBusCaller.Unsubscribe(action);
-        public static void NotifyLookFinished(Action<CameraEvents.LookFinished> action)
+        public static void NotifyTransportFinished(Action<CameraEvents.TransportFinished> action) 
             => EventBusCaller.Unsubscribe(action);
         public static void NotifyShakeFinished(Action<CameraEvents.ShakeFinished> action) 
             => EventBusCaller.Unsubscribe(action);

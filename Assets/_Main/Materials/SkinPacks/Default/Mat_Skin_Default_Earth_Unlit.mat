@@ -23,6 +23,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _Cloud:
+        m_Texture: {fileID: 2800000, guid: f137c1d9d8420604798c48cbdd6b5c6e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EarthMap_tIL:
         m_Texture: {fileID: 2800000, guid: d40864d99dd8121429c2fc384f12c7af, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -56,7 +60,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureSample0:
-        m_Texture: {fileID: 2800000, guid: c036000bb622eae43b6b10cd89a3a25d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Water:
@@ -86,20 +90,33 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.5
+    - _AtmosphereIntensity: 0.2635617
+    - _AtmosphereIntensity2: 1
     - _AtmosphereSize: 3.73
-    - _BottomFadeLenght: 0.80137295
+    - _BottomFadeLenght: 0.8013729
     - _Cutoff: 0.5
-    - _Float0: 1
+    - _DeformedEdge: 0.9211963
+    - _Depth: 0.42
+    - _DepthAmplitude: 2.5
+    - _DepthMultiplier: 15
+    - _Depth_SmoothStep_Max: 0.5
+    - _Depth_SmoothStep_Min: 0.5
+    - _Float0: 0.8669193
+    - _Float1: 0.58
+    - _Float2: 0.74
     - _FlowIntensity: 1
     - _HealthAmount: 1
+    - _MagmaTiling: 1.5
     - _MinToIncreasePannerSpeed: 0.35
     - _Opacity: 1
+    - _Opacity1: 1
     - _PannerSpeedMultiplier: 10
     - _QueueControl: -1
     - _QueueOffset: 0
     - _SmoothFactor: 0.1
     - _SolidBottom: 0.4006471
-    - _SolidTop: 0.94156134
+    - _SolidTop: 0.9415613
+    - _Strenght: 0.35
     - _TimeScale: 1
     - _TopFadeLenght: 1
     - _TransAmbient: 0.2
@@ -108,13 +125,19 @@ Material:
     - _TransScattering: 2
     - _TransShadow: 0.9
     - _Translucency: 1
-    - _WaterTiling1: 2.7424326
-    - __dirty: 0
+    - _WaterTiling1: 2.742433
+    - __dirty: 1
     m_Colors:
-    - _AtmosphereColor: {r: 0, g: 0.8062606, b: 1, a: 1}
+    - _AtmosphereColor: {r: 0, g: 0.7798894, b: 1.385459, a: 0}
+    - _AtmosphereColor_Damaged: {r: 1.849696, g: 0, b: 0.0362239, a: 0}
     - _Color0: {r: 1, g: 0, b: 0, a: 0}
+    - _Color_Atmosphere_Damaged: {r: 1024, g: 0, b: 0, a: 0}
+    - _Color_Atmosphere_Normal: {r: 0, g: 188.63947, b: 1367.1202, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Offset: {r: 0.72, g: 1.29, b: 0, a: 0}
     - _RotationSpeed: {r: 0.61, g: 0, b: 0, a: 0}
     - _Vector0: {r: 0.35, g: 0, b: 0, a: 0}
+    - _Vector1: {r: -0.35, g: -0.02, b: 0, a: 0}
+    - _Vector2: {r: 0.1, g: 1.36, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

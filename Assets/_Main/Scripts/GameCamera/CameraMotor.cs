@@ -35,8 +35,13 @@ namespace _Main.Scripts.GameCamera
 
             if (GetDoesZoom(cameraZoom))
             {
-                _zoom = cameraZoom.Value;
-                NotifyAll(CameraObserverMessage.Zoom,cameraZoom,targetTime);
+                var zoomValue = cameraZoom.Value;
+                // If the current zoom is greater than the input zoomValue then
+                // is zooming in
+                var doesZoomIn = _zoom > zoomValue;
+                
+                _zoom = zoomValue;
+                NotifyAll(CameraObserverMessage.Zoom,cameraZoom,targetTime,doesZoomIn);
             }
             else
             {

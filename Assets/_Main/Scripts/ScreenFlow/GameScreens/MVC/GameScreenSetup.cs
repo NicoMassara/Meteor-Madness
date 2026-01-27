@@ -59,16 +59,19 @@ namespace _Main.Scripts.GameScreens
             GameScreenEventSubscriber.EnableScreen(EventBus_GameScreen_Enable);
             GameScreenEventSubscriber.DisableScreen(EventBus_GameScreen_Disable);
             GameScreenEventSubscriber.GoToLastScreen(EventBus_GameScreen_GoToLastScreen);
-            CameraEventSubscriber.NotifyZoomFinished(EventBus_Camera_ZoomFinished);
+            CameraEventSubscriber.NotifyTransportFinished(EventBus_Camera_Transport_Finished);
         }
 
-        private void EventBus_Camera_ZoomFinished(CameraEvents.ZoomFinished input)
+        private void EventBus_Camera_Transport_Finished(CameraEvents.TransportFinished input)
         {
-            CameraEventUnSubscriber.NotifyZoomFinished(EventBus_Camera_ZoomFinished);
+            CameraEventUnSubscriber.NotifyTransportFinished(EventBus_Camera_Transport_Finished);
             //
             
-            TimerManager.Add(new TimerData(0.25f, 
-                () => { _motor.LoadScreenByIndex((int)defaultScreen); }));
+            if (input.Type == CameraTransportType.ZoomIn)
+            {
+                TimerManager.Add(new TimerData(0.25f, 
+                    () => { _motor.LoadScreenByIndex((int)defaultScreen); }));
+            }
         }
 
         private void EventBus_GameScreen_GoToLastScreen(GameScreenEvents.LastScreen input)

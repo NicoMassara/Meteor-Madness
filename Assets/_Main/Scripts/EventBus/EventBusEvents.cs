@@ -164,9 +164,17 @@ namespace MeteorMadness.Contracts
         {
             public IShakeData ShakeData;
         }
+
+        public struct TransportStarted
+        {
+            public CameraTransportType Type;
+        }
+
+        public struct TransportFinished
+        {
+            public CameraTransportType Type;
+        }
         
-        public struct ZoomFinished { }
-        public struct LookFinished { }
         public struct ShakeFinished { }
         public struct GrayscaleEnable { }
         public struct GrayscaleDisable { }
@@ -221,20 +229,6 @@ namespace MeteorMadness.Contracts
         public struct RunTimer { }
         
         public struct UIInitialized { }
-    }
-
-    public struct AbilitiesUIEvents
-    {
-        public struct Add
-        {
-            public int AbilityIndex;
-        }
-        
-        public struct Initialize { }
-        public struct SelectAbility { }
-        public struct Restart { }
-        public struct EnableUI { }
-        public struct DisableUI { }
     }
 
     public struct FloatingTextEvents
