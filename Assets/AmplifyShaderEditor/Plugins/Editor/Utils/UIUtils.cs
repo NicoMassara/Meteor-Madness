@@ -2386,6 +2386,14 @@ namespace AmplifyShaderEditor
 			EditorGUIUtility.labelWidth = labelWidth;
 		}
 
+		public static void DrawInt( UndoParentNode owner , ref Rect propertyDrawPos , ref int value , float newLabelWidth = 8 )
+		{
+			float labelWidth = EditorGUIUtility.labelWidth;
+			EditorGUIUtility.labelWidth = newLabelWidth;
+			value = owner.EditorGUIIntField( propertyDrawPos , "  " , value , UIUtils.MainSkin.textField );
+			EditorGUIUtility.labelWidth = labelWidth;
+		}
+
 		public static GUIStyle GetCustomStyle( CustomStyle style )
 		{
 			return ( Initialized ) ? MainSkin.customStyles[ (int)style ] : null;

@@ -8,7 +8,7 @@ using UnityEditor;
 namespace AmplifyShaderEditor
 {
 	[Serializable]
-	[NodeAttributes( "Indirect Diffuse Light", "Lighting", "Indirect Lighting", NodeAvailabilityFlags = (int)( NodeAvailability.CustomLighting | NodeAvailability.TemplateShader ) )]
+	[NodeAttributes( "Indirect Diffuse Light", "Lighting", "Indirect Lighting" )]
 	public sealed class IndirectDiffuseLighting : ParentNode
 	{
 		[SerializeField]

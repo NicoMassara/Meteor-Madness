@@ -144,8 +144,100 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		public void AddHDLightInfo()
+		public void AddMainLightShadowAttenuationDependsURP( int UniqueId )
 		{
+			bool isForward = this.m_currentDataCollector.CurrentPassName.Contains( "Forward" );
+			bool isGBuffer = this.m_currentDataCollector.CurrentPassName.Contains( "GBuffer" );
+
+			// Pragmas
+			var pragmas = new List<string>();
+			if ( ASEPackageManagerHelper.CurrentSRPVersion >= 170100 )
+			{
+				if ( isForward || isGBuffer )
+				{
+					pragmas.Add( "multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN" );
+					pragmas.Add( "multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH" );
+				}
+			}
+			else if ( ASEPackageManagerHelper.CurrentSRPVersion >= 140009 )
+			{
+				if ( isForward || isGBuffer )
+				{
+					pragmas.Add( "multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN" );
+					pragmas.Add( "multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH" );
+				}
+			}
+			else if ( ASEPackageManagerHelper.CurrentURPBaseline >= ASESRPBaseline.ASE_SRP_14_X )
+			{
+				if ( isForward || isGBuffer )
+				{
+					pragmas.Add( "multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN" );
+					pragmas.Add( "multi_compile_fragment _ _SHADOWS_SOFT" );
+				}
+			}
+			else if ( ASEPackageManagerHelper.CurrentURPBaseline >= ASESRPBaseline.ASE_SRP_12_X )
+			{
+				if ( isForward || isGBuffer )
+				{
+					pragmas.Add( "multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN" );
+					pragmas.Add( "multi_compile_fragment _ _SHADOWS_SOFT" );
+				}
+			}
+			else if ( ASEPackageManagerHelper.CurrentURPBaseline >= ASESRPBaseline.ASE_SRP_11_X )
+			{
+				if ( isForward || isGBuffer )
+				{
+					pragmas.Add( "multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN" );
+					pragmas.Add( "multi_compile_fragment _ _SHADOWS_SOFT" );
+				}
+			}
+			else
+			{
+				if ( isForward || isGBuffer )
+				{
+					pragmas.Add( "multi_compile _ _MAIN_LIGHT_SHADOWS" );
+					pragmas.Add( "multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE" );
+					pragmas.Add( "multi_compile_fragment _ _SHADOWS_SOFT" );
+				}
+			}
+
+			for ( int i = 0; i < pragmas.Count; i++ )
+			{
+				m_currentDataCollector.AddToPragmas( UniqueId, pragmas[ i ] );
+			}
+		}
+
+		public void AddMainLightShadowAttenuationDependsHDRP( int UniqueId )
+		{
+			m_currentDataCollector.AddToIncludes( UniqueId, "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/LightLoop/HDShadow.hlsl" );
+
+			if ( ASEPackageManagerHelper.CurrentHDRPBaseline >= ASESRPBaseline.ASE_SRP_16_X )
+			{
+				m_currentDataCollector.AddToDirectives(
+					"#if !defined( PUNCTUAL_SHADOW_LOW ) && !defined( PUNCTUAL_SHADOW_MEDIUM ) && !defined( PUNCTUAL_SHADOW_HIGH )\n" +
+					"\t#define PUNCTUAL_SHADOW_LOW\n" +
+					"#endif\n" );
+
+				m_currentDataCollector.AddToPragmas( UniqueId, "multi_compile_fragment DIRECTIONAL_SHADOW_LOW DIRECTIONAL_SHADOW_MEDIUM DIRECTIONAL_SHADOW_HIGH" );
+			}
+			else
+			{
+				m_currentDataCollector.AddToDirectives(
+					"#if !defined( SHADOW_LOW ) && !defined( SHADOW_MEDIUM ) && !defined( SHADOW_HIGH )\n" +
+						"\t#define SHADOW_LOW\n" +
+					"#endif\n" );
+
+				m_currentDataCollector.AddToPragmas( UniqueId, "multi_compile_fragment SHADOW_LOW SHADOW_MEDIUM SHADOW_HIGH" );
+			}
+
+			m_currentDataCollector.AddToDirectives(
+				"#if !defined( AREA_SHADOW_MEDIUM ) && !defined( AREA_SHADOW_HIGH )\n" +
+				"\t#define AREA_SHADOW_MEDIUM\n" +
+				"#endif\n" +
+
+				// @diogo: these are necessary here because HDRP defines a dummy one if these are not included earlier, causing a duplicated declaration
+				"#include \"Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl\"\n" +
+				"#include \"Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/Shadow/HDShadowContext.hlsl\"\n" );
 		}
 
 		public void AddLateDirective( AdditionalLineType type, string value )
@@ -1417,14 +1509,15 @@ namespace AmplifyShaderEditor
 			//return varName;
 
 			m_currentDataCollector.AddToIncludes( uniqueId, Constants.UnityAutoLightLib );
-			m_currentDataCollector.AddToDefines( uniqueId, "ASE_SHADOWS 1" );
+			m_currentDataCollector.AddToDefines( uniqueId, "ASE_SHADOWS" );
 			RequestMacroInterpolator( "UNITY_SHADOW_COORDS" );
+			m_currentDataCollector.AddToPragmas( uniqueId, "multi_compile_fwdbase" );
 
 			//string vOutName = CurrentTemplateData.VertexFunctionData.OutVarName;
 			string fInName = CurrentTemplateData.FragmentFunctionData.InVarName;
 			string worldPos = GetWorldPos();
-			m_currentDataCollector.AddLocalVariable( uniqueId, "UNITY_LIGHT_ATTENUATION( ase_atten, " + fInName + ", " + worldPos + " )" );
-			return "ase_atten";
+			m_currentDataCollector.AddLocalVariable( uniqueId, "UNITY_LIGHT_ATTENUATION( ase_lightAtten, " + fInName + ", " + worldPos + " )" );
+			return "ase_lightAtten";
 
 		}
 
@@ -2111,8 +2204,7 @@ namespace AmplifyShaderEditor
 				string lightVar;
 				if( m_currentSRPType == TemplateSRPType.HDRP )
 				{
-					AddHDLightInfo();
-					lightVar = "-" + string.Format( TemplateHelperFunctions.HDLightInfoFormat, "0", "forward" );
+					lightVar = "-" + string.Format( TemplateHelperFunctions.LightDataFormatHDRP, "0", "forward" );
 				}
 				else
 				{
@@ -2428,7 +2520,7 @@ namespace AmplifyShaderEditor
 		public int MultipassPassIdx { get { return m_multipassPassIdx; } }
 		public TemplateSRPType CurrentSRPType { get { return m_currentSRPType; } set { m_currentSRPType = value; } }
 		public bool IsHDRP { get { return m_currentSRPType == TemplateSRPType.HDRP; } }
-		public bool IsLWRP { get { return m_currentSRPType == TemplateSRPType.URP; } }
+		public bool IsURP { get { return m_currentSRPType == TemplateSRPType.URP; } }
 		public bool IsSRP { get { return ( m_currentSRPType == TemplateSRPType.URP || m_currentSRPType == TemplateSRPType.HDRP ); } }
 		public TemplateInterpData InterpData { get { return m_interpolatorData; } }
 		public List<PropertyDataCollector> LateDirectivesList { get { return m_lateDirectivesList; } }
