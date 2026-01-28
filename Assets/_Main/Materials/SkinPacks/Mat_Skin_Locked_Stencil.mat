@@ -33,7 +33,7 @@ Material:
     - _Float0: 0.8881504
     - _Float1: 0.42
     - _GrayscaleMultiplayer: 0.5
-    - __dirty: 0
+    - __dirty: 1
     m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1

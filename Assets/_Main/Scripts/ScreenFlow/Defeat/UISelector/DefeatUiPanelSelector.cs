@@ -24,7 +24,7 @@ namespace MeteorMadness.ScreenFlow.Defeat
             => SetText(storedCoinsText, $"{GetLocalizedString(textCode)}: {coinsAmount:D4}");
         
         public void SetNewCoinsText(uint coinsAmount)
-            => SetText(newCoinsText, $"{coinsAmount:D2}");
+            => SetText(newCoinsText, $"{coinsAmount:D2} <sprite name=\"coin\">");
 
         public void SetDeathTitle(string textCode) 
             => SetText(deathTitle, GetLocalizedString(textCode));

@@ -109,7 +109,7 @@ namespace _Main.Scripts.Cosmetics
         
         public void SetCoinsText(string textCode, uint coinsAmount)
         {
-            SetText(coinsText, $"{GetLocalizedString(textCode)}:{coinsAmount:D6}");
+            SetText(coinsText, $"{GetLocalizedString(textCode)}:{coinsAmount:D6} <sprite name=\"coin\">");
         }
         
         #endregion
