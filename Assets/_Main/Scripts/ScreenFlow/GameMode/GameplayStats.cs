@@ -59,8 +59,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         public DataManagerTools.GameplayStatsIdData CreateGameplayStatsData()
         {
-            Debug.Log($"Collisions: {GetValueById<uint>(_collisionId)}");
-            
             var data =  new DataManagerTools.GameplayStatsIdData
             {
                 RuntimeScoreId = _currentScoreId,

@@ -47,6 +47,12 @@ namespace MeteorMadness.Gameplay.Abilities
         public event Action OnAbilityAdded;
 
         #endregion
+
+        #region IAbilityButtonUpdater
+
+        public event Action OnRestart;
+
+        #endregion
         public event Action OnTimeSlowDown;
         public event Action OnTimeSpeedUp;
 
@@ -89,7 +95,15 @@ namespace MeteorMadness.Gameplay.Abilities
                 case AbilityObserverMessage.ForceFinish:
                     HandleForceFinish();
                     break;
+                case AbilityObserverMessage.RestartAbilities:
+                    HandleRestartAbilities();
+                    break;
             }
+        }
+
+        private void HandleRestartAbilities()
+        {
+            OnRestart?.Invoke();
         }
 
         private void HandleAddAbility(int index, Vector2 position)

@@ -25,11 +25,18 @@ namespace MeteorMadness.UI._Main.Scripts.UI
             _buttonUpdater.OnAbilityAdded += OnAbilityAddedHandler;
             _buttonUpdater.OnAbilityTriggered += OnAbilityTriggeredHandler;
             _buttonUpdater.OnAbilityFinished += OnAbilityFinishedHandler;
+            _buttonUpdater.OnRestart += OnRestartHandler;
 
             UpdateAbilityCount(0);
             UpdateIsAbilityInUse(false);
         }
-        
+
+        private void OnRestartHandler()
+        {
+            UpdateAbilityCount(0);
+            UpdateIsAbilityInUse(false);
+        }
+
         private void UpdateAbilityCount(int abilityCount)
         {
             buttonImage.material.SetFloat(AbilityCount, abilityCount);

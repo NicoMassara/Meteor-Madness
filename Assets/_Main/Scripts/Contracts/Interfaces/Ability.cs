@@ -17,6 +17,7 @@ namespace MeteorMadness.Contracts.Interfaces
         public event Action OnAbilityAdded;
         public event Action OnAbilityTriggered;
         public event Action OnAbilityFinished;
+        public event Action OnRestart;
     }
 
 }
