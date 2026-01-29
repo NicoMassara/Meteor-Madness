@@ -6,7 +6,8 @@
         "GUID:080f653a58f74254bcaf4ef0dbe0adf7",
         "MeteorMadness.Environment.Comet",
         "MeteorMadness.Core.FlyingObject",
-        "NicolasMassara.CustomUpdateManager"
+        "NicolasMassara.CustomUpdateManager",
+        "GUID:6f153d6ddbe9d704b9c46d65edb727e0"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -2,6 +2,7 @@
 using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts.Events;
 using NicolasMassara.CustomUpdateManager;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,12 +19,17 @@ namespace _Main.Scripts.Environment.Comet.Test
 
         private void Awake()
         {
+            SoundManager.LoadInstance();
             BootEvents.OnSubSystemInitialized += Initialized;
+            SoundEvents.OnSoundManagerInitialized += () =>
+            {
+                BootEvents.InitializeSubSystems();
+            };
         }
 
         private void Start()
         {
-            BootEvents.InitializeSubSystems();
+            SoundEvents.InitializeSoundManager();
         }
 
         private void Update()
