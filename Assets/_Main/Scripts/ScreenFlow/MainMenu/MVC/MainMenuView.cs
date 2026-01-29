@@ -94,6 +94,7 @@ namespace MeteorMadness.ScreenFlow.Menu
         
         private void HandleGameMode()
         {
+            CometSpawnEventCaller.Disable();
             AdsEvents.Banner_TriggerHide();
             GameManager.Instance.LoadGameMode();
         }
@@ -117,6 +118,7 @@ namespace MeteorMadness.ScreenFlow.Menu
         
         private void HandleMainPanelOpened()
         {
+            CometSpawnEventCaller.Enable();
             AdsEvents.Banner_TriggerShow();
         }
         
