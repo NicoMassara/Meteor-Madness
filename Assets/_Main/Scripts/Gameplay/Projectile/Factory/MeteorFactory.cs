@@ -58,7 +58,7 @@ namespace _Main.Scripts.Projectile
         #endregion
         
         [Header("Components")]
-        [SerializeField] private ProjectileSpawnSettings spawnSettings;
+        //[SerializeField] private ProjectileSpawnSettings spawnSettings;
         [SerializeField] private MeteorView meteorPrefab;
         [Header("Debug")] 
         [SerializeField] private bool doesDebug;
@@ -70,6 +70,21 @@ namespace _Main.Scripts.Projectile
         {
             _spawner = new Spawner(meteorPrefab, 5);
             SetEventBus();
+        }
+
+        private Vector2 GetPositionByAngle(float angle)
+        {
+            return Vector2.zero;
+        }
+
+        private Vector2 GetCenterOfGravity()
+        {
+            return Vector2.zero;
+        }
+
+        private Vector2 GetDirection(Vector2 spawnPos)
+        {
+            return GetCenterOfGravity() - spawnPos;
         }
 
         #region Spawn
@@ -163,9 +178,9 @@ namespace _Main.Scripts.Projectile
                     {
                         var finalValue = j % 2 == 0 ? valuePerMeteor : 0;
 
-                        var spawnPosition = spawnSettings.GetPositionByAngle(currAngle);
+                        var spawnPosition = GetPositionByAngle(currAngle);
                         spawnData.Position = spawnPosition;
-                        spawnData.Direction = (spawnSettings.GetCenterOfGravity() - spawnPosition);
+                        spawnData.Direction = GetDirection(spawnPosition);
                         spawnData.Value = finalValue;
                         
                        CreateMeteor(spawnData).SetEnableMovement(true);
