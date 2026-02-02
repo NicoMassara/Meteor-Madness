@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Contracts.Interfaces;
+﻿using _Main.Scripts.Common;
+using _Main.Scripts.Contracts.Interfaces;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace _Main.Scripts.GameCamera
             _position = data.Position;
         }
         
-        public void ShakeCamera(IShakeData shakeData)
+        public void ShakeCamera(ShakeData shakeData)
         {
             NotifyAll(CameraObserverMessage.Shake,shakeData);
         }

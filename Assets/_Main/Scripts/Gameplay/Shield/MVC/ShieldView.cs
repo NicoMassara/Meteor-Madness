@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.Common;
+using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.ShieldRotation.Contracts;
 using _Main.Scripts.ShieldRotation.Mediator;
-using MeteorMadness.Common.Shaker;
+using MeteorMadness.Common.OldShaker;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
@@ -27,12 +29,14 @@ namespace MeteorMadness.Gameplay.Shield
         [SerializeField] private GameObject normalShieldSprite;
         [SerializeField] private CapsuleCollider2D shieldCollider;
         [SerializeField] private Collider2D superShieldCollider;
-        [Space]
-        [Header("Sounds")]
+
         [Space] 
+        [Header("Sounds")] [Space] 
+        [Header("Shield Shaker")] 
+        [SerializeField] private ShakerCapDataSo shakerCapData;
+        [SerializeField] private DirectionalShakeData deflectShakeData;
         [Header("Scriptable Objects")]
-        [SerializeField] private ShakeDataSo hitShakeData;
-        [SerializeField] private ShakeDataSo cameraShakeData;
+        [SerializeField] private DirectionalShakeData cameraShakeData;
         [SerializeField] private ParticleDataSo deflectParticleData;
         [Header("Movement")]
         [SerializeField] private Transform normalShieldContainer;
@@ -40,7 +44,7 @@ namespace MeteorMadness.Gameplay.Shield
         [SerializeField] private LayerMask projectileLayerMask;
         
         private IMediator _shieldMovement;
-        private ComponentShaker _shakerController;
+        private IShaker _shakerController;
         private ShieldColliderExtender _colliderExtender;
         
         public event Action<bool> OnShieldActivated;
@@ -63,7 +67,7 @@ namespace MeteorMadness.Gameplay.Shield
         {
             spriteContainer.SetActive(false);
             superShieldCollider.enabled = false;
-            _shakerController = new ComponentShaker(normalShieldSprite.transform,hitShakeData);
+            _shakerController = new ShakerController(normalShieldSprite.transform,shakerCapData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
             _shieldMovement = new MediatorComponent(normalShieldContainer, GameParameters.GameplayValues.AngleSlots,
                 mediatorData, projectileLayerMask);
@@ -88,6 +92,7 @@ namespace MeteorMadness.Gameplay.Shield
         public void ExecuteUpdate(float deltaTime)
         {
             _shieldMovement?.Update(deltaTime);
+            _shakerController.Execute(deltaTime);
         }
         
         public void OnNotify(ulong message, params object[] args)
@@ -216,7 +221,12 @@ namespace MeteorMadness.Gameplay.Shield
         
         private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
         {
-            StartCoroutine(Coroutine_Shake());
+            _shakerController.AddShake(new ShakeData
+            {
+                Data = deflectShakeData.Data,
+                Direction = -direction,
+                DirectionBias = deflectShakeData.DirectionBias
+            });
             
             ParticleEventCaller.Spawn(new ParticleSpawnData
             {
@@ -226,7 +236,12 @@ namespace MeteorMadness.Gameplay.Shield
                 MoveDirection = direction
             });
             
-            CameraEventCaller.Shake(cameraShakeData);
+            CameraEventCaller.Shake(new ShakeData
+            {
+                Data = cameraShakeData.Data,
+                Direction = direction,
+                DirectionBias = cameraShakeData.DirectionBias
+            });
             OnDeflect?.Invoke();
         }
 
@@ -304,24 +319,7 @@ namespace MeteorMadness.Gameplay.Shield
         #endregion
         
         #endregion
-
-        #region Coroutine
         
-        private IEnumerator Coroutine_Shake()
-        {
-            _shakerController.StartShake();
-            
-            while (_shakerController.IsShaking == true)
-            {
-               _shakerController.HandleShake(CustomTime.GetDeltaTimeByChannel(UpdateGroup.Shield));
-                
-                yield return null;
-            }
-            
-            yield return null;
-        }
-
-        #endregion
 
         #region Handlers
 

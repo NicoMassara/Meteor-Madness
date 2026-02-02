@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36047a9f45d5405a895686776d7a0699, type: 3}
-  m_Name: SO_ShakeData_ShieldHit
+  m_Script: {fileID: 11500000, guid: e59339f7e1514a90822d432585894db6, type: 3}
+  m_Name: SO_ShakerCap_Shield
   m_EditorClassIdentifier: 
-  shakeTime: 0
-  shakeIntensity: 20
-  xShakeMagnitude: 0.075
-  yShakeMagnitude: 0.075
+  smoothCap: 1
+  maxOffset: 0.6
+  softCapStrength: 1.5

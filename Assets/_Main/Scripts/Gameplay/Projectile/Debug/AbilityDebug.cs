@@ -8,11 +8,14 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.Debug
     {
         protected override string[] GetLines()
         {
+            string targetRatio = DebugObject.TargetRatio > 0 ? $"Target R: {DebugObject.TargetRatio}" : "Target R: ---";
+            
             return new string[]
             {
                 $"Pos: {DebugObject.Position}",
                 $"Speed: {DebugObject.Speed:F2}",
                 $"Targetable: {DebugObject.CanBeTargeted}",
+                $"{targetRatio}",
                 $"Ability: {DebugObject.DebugAbility}"
             };
         }

@@ -466,17 +466,7 @@ namespace _Main.Scripts.EventBus
                 RequestType = EventRequestType.Granted
             });
         }
-
-        public static void Spawn(ProjectileSpawnData data)
-        {
-            EventBusCaller.Publish(new ProjectileEvents.Spawn
-            {
-                ProjectileType = data.ProjectileType,
-                Position = data.Position,
-                Direction = data.Direction,
-                MovementMultiplier = data.MovementMultiplier
-            });
-        }
+        
         public static void ClearQueue() => EventBusCaller.Publish(new ProjectileEvents.ClearQueue());
         public static void DisableSpawn() => EventBusCaller.Publish(new ProjectileEvents.DisableSpawn());
         public static void EnableSpawn() => EventBusCaller.Publish(new ProjectileEvents.EnableSpawn());
@@ -491,7 +481,6 @@ namespace _Main.Scripts.EventBus
         public static void Add(Action<ProjectileEvents.Add> action) => EventBusCaller.Subscribe(action);
         public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
         public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
-        public static void Spawn(Action<ProjectileEvents.Spawn> action) => EventBusCaller.Subscribe(action);
         public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action) => EventBusCaller.Subscribe(action);
         public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Subscribe(action);
         public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Subscribe(action);
@@ -505,7 +494,6 @@ namespace _Main.Scripts.EventBus
         public static void Add(Action<ProjectileEvents.Add> action) => EventBusCaller.Unsubscribe(action);
         public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
         public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
-        public static void Spawn(Action<ProjectileEvents.Spawn> action) => EventBusCaller.Unsubscribe(action);
         public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action) => EventBusCaller.Unsubscribe(action);
         public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Unsubscribe(action);
         public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Unsubscribe(action);
@@ -630,7 +618,7 @@ namespace _Main.Scripts.EventBus
     {
         public static void Transport(ICameraTransportData data)
             => EventBusCaller.Publish(new CameraEvents.Transport{Data = data});
-        public static void Shake(IShakeData shake) 
+        public static void Shake(ShakeData shake) 
             => EventBusCaller.Publish(new CameraEvents.Shake{ShakeData = shake});
         public static void NotifyTransportStarted(CameraTransportType type) 
             => EventBusCaller.Publish(new CameraEvents.TransportStarted{Type = type});
@@ -685,42 +673,24 @@ namespace _Main.Scripts.EventBus
 
     public static class InputsEventCaller
     {
-        public static void SetEnable(bool enable)
-        {
-            EventBusCaller.Publish(new InputsEvents.SetEnable{IsEnable = enable});
-        }
-
-        public static void SetUIEnable(bool enable)
-        {
-            EventBusCaller.Publish(new InputsEvents.SetUIEnable{IsEnable = enable});
-        }
+        public static void SetEnable(bool enable) => EventBusCaller.Publish(new InputsEvents.SetEnable{IsEnable = enable});
+        public static void SetUIEnable(bool enable) => EventBusCaller.Publish(new InputsEvents.SetUIEnable{IsEnable = enable});
+        public static void ShakeUI(float healthRatio) => EventBusCaller.Publish(new InputsEvents.ShakeUI{HealthRatio = healthRatio});
     }
     
     
     public static class InputsEventSubscriber
     {
-        public static void SetEnable(Action<InputsEvents.SetEnable> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-
-        public static void SetUIEnable(Action<InputsEvents.SetUIEnable> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
+        public static void SetEnable(Action<InputsEvents.SetEnable> action) => EventBusCaller.Subscribe(action);
+        public static void SetUIEnable(Action<InputsEvents.SetUIEnable> action) => EventBusCaller.Subscribe(action);
+        public static void ShakeUI(Action<InputsEvents.ShakeUI> action) => EventBusCaller.Subscribe(action);
     }
     
     public static class InputsEventUnSubscriber
     {
-        public static void SetEnable(Action<InputsEvents.SetEnable> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-
-        public static void SetUIEnable(Action<InputsEvents.SetUIEnable> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
+        public static void SetEnable(Action<InputsEvents.SetEnable> action) => EventBusCaller.Unsubscribe(action);
+        public static void SetUIEnable(Action<InputsEvents.SetUIEnable> action) => EventBusCaller.Unsubscribe(action);
+        public static void ShakeUI(Action<InputsEvents.ShakeUI> action) => EventBusCaller.Unsubscribe(action);
     }
     
 

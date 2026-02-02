@@ -249,7 +249,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e0450187064563a43b923dcf511275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shakeData: {fileID: 11400000, guid: a2cb4840d9987234b807ad2dc1f975f6, type: 2}
+  shakeData:
+    Data: {fileID: 11400000, guid: 6fcf047123881334a90226f66167f467, type: 2}
+    Direction: {x: 0, y: 0}
+    Bias: 0
   targetTransportData: {fileID: 11400000, guid: c80cf3cb7302f1841936c9a5a93d96fb, type: 2}
   zoomOutData:
     movementValues:
@@ -604,6 +607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1442004542}
   grayScaleStencil: {fileID: 241806998}
+  shakerCapData: {fileID: 11400000, guid: 6b358eeee1299cd46a302c675cef6a73, type: 2}
 --- !u!1 &1901725822
 GameObject:
   m_ObjectHideFlags: 0

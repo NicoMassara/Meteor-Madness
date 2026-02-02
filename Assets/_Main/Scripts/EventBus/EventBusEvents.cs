@@ -113,14 +113,6 @@ namespace MeteorMadness.Contracts
             public ProjectileType ProjectileType;
             public EventRequestType RequestType;
         }
-
-        public struct Spawn
-        {
-            public ProjectileType ProjectileType;
-            public Vector2 Position;
-            public Vector2 Direction;
-            public float MovementMultiplier;
-        }
         
         public struct UpdateLevel
         {
@@ -128,7 +120,12 @@ namespace MeteorMadness.Contracts
         }
         
         public struct ClearQueue {}
-        public struct DisableSpawn {}
+
+        public struct DisableSpawn
+        {
+            public bool DoesClearProjectiles;
+        }
+        
         public struct EnableSpawn {}
         
     }
@@ -162,7 +159,7 @@ namespace MeteorMadness.Contracts
 
         public struct Shake
         {
-            public IShakeData ShakeData;
+            public ShakeData ShakeData;
         }
 
         public struct TransportStarted
@@ -190,6 +187,11 @@ namespace MeteorMadness.Contracts
         public struct SetUIEnable
         {
             public bool IsEnable;
+        }
+        
+        public struct ShakeUI
+        {
+            public float HealthRatio;
         }
     }
 

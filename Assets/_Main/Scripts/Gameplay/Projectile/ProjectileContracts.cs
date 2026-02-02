@@ -52,6 +52,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
     internal interface IDebugProjectile : IDebugFlyingObject
     {
         public bool CanBeTargeted { get; }
+        public float TargetRatio { get; set; }
     }
 
     #endregion

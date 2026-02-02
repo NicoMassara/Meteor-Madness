@@ -54,6 +54,7 @@ namespace MeteorMadness.GlobalValues.Tools
         private void OnRelease(T meteor)
         {
             meteor.gameObject.SetActive(false);
+            meteor.transform.position = new Vector2(150f,150f);
             _active.Remove(meteor);
         }
 

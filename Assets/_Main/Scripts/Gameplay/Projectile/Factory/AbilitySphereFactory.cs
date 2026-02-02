@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
-using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Core.FlyingObject;
-using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile;
 using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.AbilitySphere;
 using MeteorMadness.Gameplay.Abilities.So;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.Managers.GameConfig;
-using NicolasMassara.CustomTimerManager;
 using UnityEngine;
 
-namespace _Main.Scripts.Projectile
+namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
 {
-    public class AbilitySphereFactory : MonoBehaviour
+    public class AbilitySphereFactory
     {
         #region Components
         
@@ -199,53 +197,21 @@ namespace _Main.Scripts.Projectile
         
         #endregion
         
-        [Header("Components")]
-        [SerializeField] private AbilitySphereView prefab;
-        [SerializeField] private AbilitySelectorDataSo selectorData;
-        [Header("Values")] 
-        [Range(5, 15f)] 
-        [SerializeField] private float spawnDelay = 5f;
-        [Header("Debug")] 
-        [SerializeField] private bool doesDebug;
-        
-        private bool _hasTimerEnable;
-        private bool _isGameplayActive;
+        private readonly AbilitySelector _selector;
+        private readonly Spawner _spawner;
+        private readonly Func<bool> _doesDebugFunc;
         private bool _isStorageFull;
-        private bool _isTimerRunning;
-        private int _minUnlockLevel;
         private int _currentLevel;
-        private TimerManager.GeneratedId _spawnTimerId;
-        private AbilitySelector _selector;
-        private Spawner _spawner;
         
-        private void Awake()
+        public AbilitySphereFactory(AbilitySphereView prefab, AbilitySelectorDataSo selectorData, Func<bool> doesDebugFunc)
         {
-            SetEventBus();
-
-            BootEvents.OnSubSystemRequestInitialize += Initialize;
-        }
-        
-        private void Initialize()
-        {
-            BootEvents.OnSubSystemRequestInitialize -= Initialize;
-            //
-            _minUnlockLevel = selectorData.MinUnlockLevel;
-            
+            _doesDebugFunc = doesDebugFunc;
             _selector = new AbilitySelector(selectorData.GetRarityValues,selectorData.GetUnlockLevelValues);
             _spawner = new Spawner(prefab, 1);
-            
-            
-            BootEvents.SubSystemInitialized();
-        }
-        private void SendAbility()
-        {
-            AbilitiesEventCaller.RequestSpawn();
         }
         
-        private void CreateAbilitySphere(ProjectileSpawnData data)
+        private IAbilitySphere CreateAbilitySphere(ProjectileSpawnValues data)
         {
-            var movementSpeed = GameConfigManager.Instance.GetGameplayData().ProjectileData.MaxProjectileSpeed 
-                                * data.MovementMultiplier;
             var tempSphere = _spawner.Spawn();
             
             float angle = Mathf.Atan2(data.Direction.y, data.Direction.x) * Mathf.Rad2Deg;
@@ -254,7 +220,7 @@ namespace _Main.Scripts.Projectile
             
             tempSphere.SetValues(new AbilitySphereData()
             {
-                MovementSpeed = movementSpeed,
+                MovementSpeed = data.MovementSpeed,
                 Rotation = tempRot,
                 Position = data.Position,
                 Direction = data.Direction.normalized,
@@ -264,23 +230,32 @@ namespace _Main.Scripts.Projectile
             tempSphere.OnEarthCollision += OnEarthCollisionHandler;
             tempSphere.SetEnableMovement(true);
             
-            Debug.LogWarning(ability);
             
             if (tempSphere is IDebugAbilitySphere debug)
             {
-                debug.DebugEnable = doesDebug;
+                debug.DebugEnable = _doesDebugFunc.Invoke();
             }
 
-            if (tempSphere is IProjectile projectile)
-            {
-                ProjectileEventCaller.Add((projectile));
-            }
-            else
-            {
-                Debug.LogWarning($"Projectile type {tempSphere} does not implement {nameof(IProjectile)}");
-                tempSphere.Recycle();
-            }
+            return tempSphere;
         }
+        
+        private AbilityType GetAbilityToAdd()
+        {
+            return _selector.GetAbilityToAdd();
+        }
+
+        public IAbilitySphere SpawnAbility(ProjectileSpawnValues data)
+        {
+            return CreateAbilitySphere(data);
+        }
+
+        public void RecycleAll()
+        {
+            _spawner.RecycleAll();
+        }
+
+        #region Handlers
+
         private void DeflectionHandler(IProjectile projectile, AbilitySphereCollisionData data)
         {
             if (projectile is IAbilitySphere sphere)
@@ -302,12 +277,8 @@ namespace _Main.Scripts.Projectile
                 Direction = data.Direction,
                 Type = ProjectileType.AbilitySphere
             });
-            
-            var temp = UnityEngine.Random.Range(spawnDelay, spawnDelay * 1.15f);
-            temp = _isStorageFull ? temp/2 : temp;
-            
-            TryRunTimer(temp);
         }
+        
         private void OnEarthCollisionHandler(IProjectile projectile, AbilitySphereCollisionData data)
         {
             if (projectile is IAbilitySphere sphere)
@@ -323,175 +294,7 @@ namespace _Main.Scripts.Projectile
                 Direction = data.Direction,
                 Type = ProjectileType.AbilitySphere
             });
-            
-            var temp = UnityEngine.Random.Range(spawnDelay * 0.75f, spawnDelay);
-            temp = _isStorageFull ? temp/2 : temp;
-            TryRunTimer(temp);
         }
-        private void SetTimer(float time)
-        {
-            _isTimerRunning = true;
-            _spawnTimerId = TimerManager.Add(new TimerData(time,() =>
-            {
-                SendAbility();
-                _isTimerRunning = false;
-            }));
-        }
-        private void RemoveTimer(TimerManager.GeneratedId timerId)
-        {
-            if(timerId == null) return;   
-            
-            if (timerId.IsActive)
-            {
-                TimerManager.Remove(timerId);
-            }
-        }
-        private void PauseTimer(TimerManager.GeneratedId timerId)
-        {
-            if(timerId == null) return;   
-            
-            if (timerId.IsActive)
-            {
-                TimerManager.Pause(timerId);
-            }
-        }
-        private void ResumeTimer(TimerManager.GeneratedId timerId)
-        {
-            if(timerId == null) return;   
-            
-            if (timerId.IsActive)
-            {
-                TimerManager.Resume(timerId);
-            }
-        }
-
-        private void TryRunTimer(float time)
-        {
-            if (_isTimerRunning)
-            {
-                Debug.Log("Ability Timer already running");
-            }
-            else
-            {
-                Debug.Log($"Ability Timer Set To: {time}");
-                SetTimer(time);
-            }
-        }
-        
-        private AbilityType GetAbilityToAdd()
-        {
-            return _selector.GetAbilityToAdd();
-        }
-        
-
-        #region EventBus
-
-        private void SetEventBus()
-        {
-            ProjectileEventSubscriber.Spawn(EventBus_Projectile_Spawn);
-            ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_DisableSpawn);
-            ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_EnableSpawn);
-            ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
-            //
-            AbilitiesEventSubscriber.SetStorageFull(EventBus_Ability_StorageFull);
-            AbilitiesEventSubscriber.NotifyIsActive(EventBus_Ability_SetActive);
-            AbilitiesEventSubscriber.Add(EventBus_Ability_Add);
-            AbilitiesEventSubscriber.SetNextSpawn(EventBus_Ability_NextSpawn);
-            //
-            GameModeEventSubscriber.SetPause(EventBus_GameMode_SetPause);
-        }
-
-        private void EventBus_GameMode_SetPause(GameModeEvents.SetPause input)
-        {
-            if (input.IsPaused)
-            {
-                PauseTimer(_spawnTimerId);
-            }
-            else
-            {
-                ResumeTimer(_spawnTimerId);
-            }
-        }
-
-        #region Ability
-
-        private void EventBus_Ability_NextSpawn(AbilitiesEvents.SetNextSpawn input)
-        {
-            _selector.SetAbilityToDrop(input.AbilityType);
-        }
-
-        private void EventBus_Ability_StorageFull(AbilitiesEvents.SetStorageFull input)
-        {
-            _selector.IsStorageFull = input.IsFull;
-        }
-        
-        private void EventBus_Ability_Add(AbilitiesEvents.Add input)
-        {
-            if (_isGameplayActive)
-            {
-                _selector.DecreaseValue(input.AbilityType);
-            }
-        }
-        
-        private void EventBus_Ability_SetActive(AbilitiesEvents.NotifyIsActive input)
-        {
-            if (_isGameplayActive == false) return;
-            
-            if (input.IsActive)
-            {
-                _selector.IncreaseValue(input.AbilityType);
-                _isTimerRunning = false;
-                RemoveTimer(_spawnTimerId);
-            }
-            else
-            {
-                TryRunTimer(spawnDelay);
-            }
-        }
-
-        #endregion
-
-        #region Projectile
-
-        private void EventBus_Projectile_Spawn(ProjectileEvents.Spawn input)
-        {
-            if (input.ProjectileType == ProjectileType.AbilitySphere)
-            {
-                CreateAbilitySphere(new ProjectileSpawnData
-                {
-                    Position = input.Position,
-                    Direction = input.Direction,
-                    MovementMultiplier = input.MovementMultiplier
-                });
-            }
-        }
-        
-        private void EventBus_Projectile_DisableSpawn(ProjectileEvents.DisableSpawn input)
-        {
-            _isGameplayActive = false;
-            RemoveTimer(_spawnTimerId);
-            _selector.Reset();
-            _spawner.RecycleAll();
-        }
-        
-        private void EventBus_Projectile_EnableSpawn(ProjectileEvents.EnableSpawn input)
-        {
-            _isGameplayActive = true;
-        }
-        
-        private void EventBus_Projectile_UpdateLevel(ProjectileEvents.UpdateLevel input)
-        {
-            _currentLevel = input.Level;
-            _selector.UpdateLevel(_currentLevel);
-            if (_currentLevel >= _minUnlockLevel &&
-                _hasTimerEnable == false)
-            {
-                _hasTimerEnable = true;
-                TryRunTimer(spawnDelay);
-            }
-        }
-
-        #endregion
 
         #endregion
     }

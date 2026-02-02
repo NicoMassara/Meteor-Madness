@@ -1,8 +1,8 @@
 ﻿using System;
+using _Main.Scripts.Common;
 using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.GameCamera;
-using MeteorMadness.Common.Shaker;
 using MeteorMadness.Contracts;
 using UnityEditor;
 using UnityEngine;
@@ -11,7 +11,24 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Camera
 {
     public class CameraTester : MonoBehaviour
     {
-        [SerializeField] private ShakeDataSo shakeData;
+        [System.Serializable]
+        private class TestShake
+        {
+            public ShakerDataSo Data;
+            public Vector2 Direction;
+            [Range(0,1)]
+            public float Bias;
+            
+            public ShakeData GetData()
+            {
+                return new ShakeData
+                {
+                    Data = this.Data,
+                    Direction = this.Direction,
+                    DirectionBias = this.Bias,
+                };
+            }
+        }
 
         #region Private Class
         
@@ -64,7 +81,10 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Camera
         
         #endregion
         
+        [SerializeField] private TestShake shakeData;
+        [Space]
         [SerializeField] private CameraTransportDataSo targetTransportData;
+        [Space]
         [SerializeField] private TransportData zoomOutData;
 
         public bool IsGrayscaleEnable { get; private set; }
@@ -93,7 +113,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Camera
 
         public void Shake()
         {
-            CameraEventCaller.Shake(shakeData);
+            CameraEventCaller.Shake(shakeData.GetData());
         }
 
         public void MoveToTarget()

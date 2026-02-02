@@ -13,6 +13,7 @@ using NicolasMassara.CustomUpdateManager;
 using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
 {
@@ -153,7 +154,28 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
                 ProjectileEventCaller.DisableSpawn();
         }
 
+        public void SimulateDeflect()
+        {
+            ProjectileEventCaller.Deflected(new DeflectData()
+            {
+                Direction = GetRandomDirection()
+            });
+        }
+        
+        public void SimulateCollision()
+        {
+            ProjectileEventCaller.Collision(new CollisionData
+            {
+                Direction = GetRandomDirection()
+            });
+        }
+
         #endregion
+
+        private Vector2 GetRandomDirection()
+        {
+            return new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        }
 
         #region Level
 
@@ -223,6 +245,10 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             if (GUILayout.Button("Increase Level")) script.IncreaseLevel();
             if (GUILayout.Button("Decrease Level")) script.DecreaseLevel();
             if (GUILayout.Button("Toggle Meteor Spawn")) script.ToggleMeteorSpawn();
+            
+            GUILayout.Space(10f);
+            if (GUILayout.Button("Simulate Deflect")) script.SimulateDeflect();
+            if (GUILayout.Button("Simulate Collision")) script.SimulateCollision();
             
             GUILayout.Space(10f);
             GUILayout.Label("Abilities");

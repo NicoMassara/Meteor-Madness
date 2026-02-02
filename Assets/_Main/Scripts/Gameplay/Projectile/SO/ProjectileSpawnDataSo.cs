@@ -2,8 +2,8 @@
 
 namespace _Main.Scripts.Gameplay.Projectile.SO
 {
-    [CreateAssetMenu(fileName = "FILENAME", menuName = "MENUNAME", order = 0)]
-    public class ProjectileDataSo : ScriptableObject
+    [CreateAssetMenu(fileName = "So_ProjectileSpawnData_Default", menuName = "Scriptable Objects/Projectile Spawn Data", order = 0)]
+    public class ProjectileSpawnDataSo : ScriptableObject
     {
         
     }

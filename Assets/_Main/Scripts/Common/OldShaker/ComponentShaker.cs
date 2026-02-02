@@ -1,7 +1,7 @@
 ﻿using MeteorMadness.Contracts.Interfaces;
 using UnityEngine;
 
-namespace MeteorMadness.Common.Shaker
+namespace MeteorMadness.Common.OldShaker
 {
     public class ComponentShaker
     {

@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Contracts.Interfaces;
+﻿using _Main.Scripts.Common;
+using _Main.Scripts.Contracts.Interfaces;
 using MeteorMadness.Contracts.Interfaces;
 
 namespace _Main.Scripts.GameCamera
@@ -12,7 +13,7 @@ namespace _Main.Scripts.GameCamera
         internal interface ICameraController
         {
             public void Initialize(InitialCameraData data);
-            public void TryShake(IShakeData shakeData);
+            public void TryShake(ShakeData shakeData);
             public void TryTransport(ICameraTransportData transportData);
             public void SetActiveGrayscale(bool isActive);
         }
@@ -38,7 +39,7 @@ namespace _Main.Scripts.GameCamera
             _motor.Initialize(data);
         }
 
-        public void TryShake(IShakeData shakeData) 
+        public void TryShake(ShakeData shakeData) 
             => _motor.ShakeCamera(shakeData);
 
         public void TryTransport(ICameraTransportData transportData) 

@@ -66,6 +66,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.ProjectileObject
         #region ITargetable
 
         public bool CanBeTargeted { get; private set; }
+        public float TargetRatio { get; set; }
         public event Action<ITargetable> OnTargetDeath;
 
         public void DisableTargetable()

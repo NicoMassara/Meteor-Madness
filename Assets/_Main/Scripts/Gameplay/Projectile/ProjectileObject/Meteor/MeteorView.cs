@@ -9,6 +9,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.Meteor
         IMeteor
     {
         internal interface IMeteorView : IProjectileObjectView<MeteorData> { }
+        
     }
     
 }
