@@ -46,6 +46,12 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_Enable);
             ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_Disable);
+            ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
+        }
+
+        private void EventBus_Projectile_UpdateLevel(ProjectileEvents.UpdateLevel input)
+        {
+            _controller.UpdateLevel(input.Level);
         }
 
         private void EventBus_Projectile_Enable(ProjectileEvents.EnableSpawn input)

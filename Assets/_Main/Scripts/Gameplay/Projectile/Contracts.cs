@@ -31,11 +31,6 @@ namespace _Main.Scripts.Projectile
 
     #region Interfaces
 
-    public interface IProjectileMilestoneData
-    {
-        public IIntRangeData GetMilestoneByIndex(int index);
-    }
-
     public interface IProjectileSpawnData
     {
         public IBatchSpawnData GetDataByIndex(int index);
@@ -73,6 +68,7 @@ namespace _Main.Scripts.Projectile
         public IFloatRangeData InnerBatchDistanceRange { get; }
         public IFloatRangeData NextBatchDistanceRange { get; }
         public IFloatRangeData NextBatchDelayRange { get; }
+        public ISlotRangeData  NextBatchSlotRange { get; }
         public IEnumRangeData<SpawnType> SpawnTypeRange { get; }
     }
 

@@ -1,12 +1,22 @@
 ﻿using System;
-using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Gameplay.Projectile.SO
 {
-    [CreateAssetMenu(fileName = "So_ProjectileMilestoneData_Default", menuName = "Scriptable Objects/Projectile Spawn/Milestone Data", order = 0)]
+    public interface IProjectileMilestoneData
+    {
+        public IIntRangeData GetMilestoneByIndex(int index);
+    }
+    
+    public interface IIntRangeData
+    {
+        public Vector2Int Range { get; }
+        public int RandomRange { get; }
+    }
+    
+    [CreateAssetMenu(fileName = "So_GameModeMilestoneData_Default", menuName = "Scriptable Objects/Game Mode/Milestone Data", order = 0)]
     public class ProjectileMilestoneDataSo : ScriptableObject, IProjectileMilestoneData
     {
         [System.Serializable]

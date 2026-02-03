@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Main.Scripts.GlobalValues.Tools;
-using MeteorMadness.GlobalValues._Main.Scripts.GlobalValues.Tools;
-using MeteorMadness.GlobalValues.Tools;
-using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 {
@@ -18,6 +14,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             public void EnableSpawn();
             public void DisableSpawn(bool doesClear);
+            public void UpdateLevel(int currentLevel);
 
             public void NotifyBatchSpawned();
             public void NotifyProjectileHasReachedTargetRatio();
@@ -243,6 +240,12 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 _spawnFsm.TransitionToSpawn();
             }
         }
+
+        public void UpdateLevel(int currentLevel)
+        {
+            _motor.UpdateLevel(currentLevel);
+        }
+
         #endregion
         
         #region ISpawnController

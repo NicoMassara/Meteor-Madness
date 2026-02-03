@@ -112,6 +112,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             [Tooltip("0f - Spawn Point / 1f - Shield")]
             [SerializeField] private DistanceRatioRangeData nextBatchDistanceRange;
             [SerializeField] private FloatRangeData nextBatchDelayRange;
+            [SerializeField] private SlotRangeData nextBatchSlotRange;
             [SerializeField] private EnumRangeData<SpawnType> spawnTypeRange;
 
             public IIntRangeData AmountRange => amountRange;
@@ -119,6 +120,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             public IFloatRangeData InnerBatchDistanceRange => innerBatchDistanceRange;
             public IFloatRangeData NextBatchDistanceRange => nextBatchDistanceRange;
             public IFloatRangeData NextBatchDelayRange => nextBatchDelayRange;
+            public ISlotRangeData NextBatchSlotRange => nextBatchSlotRange;
             public IEnumRangeData<SpawnType> SpawnTypeRange => spawnTypeRange;
         }
         

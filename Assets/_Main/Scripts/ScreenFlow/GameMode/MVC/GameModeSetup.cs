@@ -1,9 +1,8 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.Gameplay.Projectile.SO;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomUpdateManager;
@@ -16,6 +15,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
     [RequireComponent(typeof(GameModeViewAnimation))]
     public class GameModeSetup : ManagedBehavior, IUpdatable
     {
+        [SerializeField] private ProjectileMilestoneDataSo milestoneData;
+        
         private GameModeController.IGameModeController _controller;
         private GameModeView.IGameModeView _view;
         private GameModeUIView.IGameModeUIView _ui;
@@ -39,9 +40,16 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             BootEvents.OnSubSystemRequestInitialize -= Initialize;
             //
+
             var gameplayData = GameConfigManager.Instance.GetGameplayData();
             
-            var motor = new GameModeMotor(gameplayData.LevelData.GetGameplayLevelRequierment());
+            if (milestoneData == null)
+            {
+                Debug.LogWarning("MilestoneData is null in GameModeSetup");
+                return;
+            }
+
+            var motor = new GameModeMotor(milestoneData);
             _controller = new GameModeController(motor);
             
             var view = GetComponent<GameModeView>();

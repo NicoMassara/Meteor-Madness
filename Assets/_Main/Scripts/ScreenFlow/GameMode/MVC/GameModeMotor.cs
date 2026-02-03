@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.Projectile.SO;
 using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
@@ -57,9 +58,9 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         private readonly StreakMilestoneNotifier _streakNotifier;
 
-        public GameModeMotor(int[] levelStreakAmount)
+        public GameModeMotor(IProjectileMilestoneData milestoneData)
         {
-            _levelController = new(levelStreakAmount);
+            _levelController = new(milestoneData);
             _levelController.OnLevelChange += UpdateCurrentLevel;
             
             _stats = new GameplayStats();
@@ -150,6 +151,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         public void InitializeData()
         {
             _stats.InitializeValues();
+            _levelController.InitializeData();
             NotifyAll(GameModeObserverMessage.InitializeData);
         }
 

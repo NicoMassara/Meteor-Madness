@@ -1,27 +1,50 @@
 ﻿using System;
+using _Main.Scripts.Gameplay.Projectile.SO;
+using MeteorMadness.Contracts;
 
 namespace MeteorMadness.ScreenFlow.GameMode
 {
     public class GameLevelController
     {
+        private const int LevelAmount = GameParameters.GameplayValues.SpawnLevelAmount;
+        private readonly IProjectileMilestoneData _milestoneData;
+        private readonly int[] _milestones;
         private int _currentLevel;
         private int _currentStreak;
-        private readonly int[] levelStreakAmount;
-        private int LevelLength => levelStreakAmount.Length-1;
 
         public event Action OnLevelChange;
 
-        public GameLevelController(int[] levelStreakAmount)
+        public GameLevelController(IProjectileMilestoneData data)
         {
-            this.levelStreakAmount = levelStreakAmount;
+            _milestoneData = data;
+            _milestones = new[] { LevelAmount };
         }
 
+        public void InitializeData()
+        {
+            for (int i = 0; i < _milestones.Length; i++)
+            {
+                var sqrRange = _milestoneData.GetMilestoneByIndex(i).Range.sqrMagnitude;
+                var milestoneAmount = 0;
+
+                if (sqrRange == 0)
+                {
+                    milestoneAmount = i;
+                }
+                else
+                {
+                    milestoneAmount = _milestoneData.GetMilestoneByIndex(i).RandomRange;
+                }
+                ;
+                _milestones[i] = milestoneAmount;
+            }
+        }
 
         public void CheckForNextLevel()
         {
-            if(_currentLevel == LevelLength) return;
+            if(_currentLevel == LevelAmount) return;
 
-            if (_currentStreak >= levelStreakAmount[_currentLevel])
+            if (_currentStreak >= _milestones[_currentLevel])
             {
                 _currentLevel++;
                 _currentStreak = 0;
