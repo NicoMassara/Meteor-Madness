@@ -5,56 +5,97 @@ namespace MeteorMadness.Vibration
 {
     public class VibrationTools
     {
-        public static long GetDuration(VibrationDurationType duration)
+        public static long GetDuration(DurationType duration)
         {
             return duration switch
             {
-                VibrationDurationType.ExtraShort => 50,
-                VibrationDurationType.MediumShort => 75,
-                VibrationDurationType.Short => 100,
-                VibrationDurationType.Medium => 250,
-                VibrationDurationType.MediumLong => 500,
-                VibrationDurationType.Long => 750,
-                VibrationDurationType.ExtraLong => 850,
-                VibrationDurationType.SuperLong => 1000,
-                _ => GetDuration(VibrationDurationType.Medium)
+                DurationType.None => 0,
+                DurationType.ExtraShort => 50,
+                DurationType.MediumShort => 75,
+                DurationType.Short => 100,
+                DurationType.Medium => 250,
+                DurationType.MediumLong => 500,
+                DurationType.Long => 750,
+                DurationType.ExtraLong => 850,
+                DurationType.SuperLong => 1000,
+                _ => GetDuration(DurationType.Medium)
             };
         }
         
-        public static int GetIntensity(VibrationIntensityType intensity)
+        public static int GetIntensity(IntensityType intensity)
         {
 
             return intensity switch
             {
-                VibrationIntensityType.ExtraLight => 10,
-                VibrationIntensityType.Light => 25,
-                VibrationIntensityType.MediumLight => 40,
-                VibrationIntensityType.Medium => 50,
-                VibrationIntensityType.MediumHeavy => 75,
-                VibrationIntensityType.Heavy => 128,
-                VibrationIntensityType.ExtraHeavy => 200,
-                VibrationIntensityType.FullHard => 255,
-                _ => GetIntensity(VibrationIntensityType.Medium)
+                IntensityType.None => 0,
+                IntensityType.ExtraLight => 10,
+                IntensityType.Light => 25,
+                IntensityType.MediumLight => 40,
+                IntensityType.Medium => 50,
+                IntensityType.MediumHeavy => 75,
+                IntensityType.Heavy => 128,
+                IntensityType.ExtraHeavy => 200,
+                IntensityType.FullHard => 255,
+                _ => GetIntensity(IntensityType.Medium)
             };
         }
         
-        public static VibrationData GetType(VibrationType type)
+        public static VibrationData GetUIVibration(UIVibrationType type)
         {
             return type switch
             {
-                VibrationType.UIButtonAccept => new VibrationData
+                UIVibrationType.UIButtonAccept => new VibrationData
                 {
-                    Duration = GetDuration(VibrationDurationType.Short),
-                    Intensity = GetIntensity(VibrationIntensityType.Light)
+                    Duration = GetDuration(DurationType.Short),
+                    Intensity = GetIntensity(IntensityType.Light)
                 },
-                VibrationType.UIButtonCancel => new VibrationData
+                UIVibrationType.UIButtonCancel => new VibrationData
                 {
-                    Duration = GetDuration(VibrationDurationType.Short),
-                    Intensity = GetIntensity(VibrationIntensityType.MediumLight)
+                    Duration = GetDuration(DurationType.Short),
+                    Intensity = GetIntensity(IntensityType.MediumLight)
                 },
-                _ => GetType(VibrationType.UIButtonAccept)
+                _ => GetUIVibration(UIVibrationType.UIButtonAccept)
             };
         }
+
+
+        public static Tuple<long[], int[]> CreateWaveformData(VibrationData[] data)
+        {
+            if (data == null || data.Length == 0)
+            {
+                return new Tuple<long[], int[]>( new long[]{0}, new int[]{0});
+            }
+            
+            int offset = 1;
+            long[] duration = new long[data.Length + 1];
+
+            duration[0] = 0;
+
+            for (int i = 1; i < duration.Length; i++)
+            {
+                duration[i] = Math.Max(0, data[i].Duration);
+            }
+            
+            int[] intensity = new int[data.Length + 1];
+
+            intensity[0] = 0;
+
+            for (int i = 1; i < duration.Length; i++)
+            {
+                intensity[i] = Math.Max(0, data[i].Intensity);
+            }
+            
+            return new Tuple<long[], int[]>(duration, intensity);
+        }
+        
+        public static long GetTotalDuration(long[] timings)
+        {
+            long total = 0;
+            for (int i = 0; i < timings.Length; i++)
+                total += timings[i];
+            return total;
+        }
+
     }
     
     [Serializable]

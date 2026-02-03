@@ -9,6 +9,9 @@ namespace MeteorMadness.Vibration
     {
         private AndroidJavaObject _vibrator;
         private TimerManager.GeneratedId _timerId;
+        private AndroidJavaClass _vibrationEffectClass;
+        private int _apiLevel;
+        private int _defaultAmplitude;
 
         public event Action OnVibrate;
         public event Action OnStopVibration;
@@ -27,6 +30,15 @@ namespace MeteorMadness.Vibration
                 AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
                 AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
                 _vibrator = currentActivity.Call<AndroidJavaObject>("getSystemService", "vibrator");
+                
+                using var version = new AndroidJavaClass("android.os.Build$VERSION");
+                _apiLevel = version.GetStatic<int>("SDK_INT");
+
+                if (_apiLevel >= 26)
+                {
+                    _vibrationEffectClass = new AndroidJavaClass("android.os.VibrationEffect");
+                    _defaultAmplitude = _vibrationEffectClass.GetStatic<int>("DEFAULT_AMPLITUDE");
+                }
             }
             catch (System.Exception e)
             {
@@ -34,58 +46,107 @@ namespace MeteorMadness.Vibration
                 _vibrator = null;
             }
         }
-
-        public void Vibrate(long milliseconds = 100, int amplitude = -1)
+        
+        public void VibrateInternal(AndroidJavaObject effect, long fallbackDurationMs)
         {
-            if (_vibrator == null) return;
+            _vibrator.Call("cancel");
+
+            if (_apiLevel >= 26 && effect != null)
+                _vibrator.Call("vibrate", effect);
+            else
+                _vibrator.Call("vibrate", fallbackDurationMs);
+
+            StartTimer(fallbackDurationMs);
+        }
+
+        private void StartTimer(long durationMs)
+        {
+            if (_timerId != null && _timerId.IsActive)
+            {
+                TimerManager.Remove(_timerId);
+                IsVibrating = false;
+            }
+
+            _timerId = TimerManager.Add(new TimerData
+            (
+                durationMs / 1000f,
+                onStartAction: () =>
+                {
+                    IsVibrating = true;
+                    OnVibrate?.Invoke();
+                },
+                onEndAction: () =>
+                {
+                    IsVibrating = false;
+                    OnStopVibration?.Invoke();
+                }
+            ));
+        }
+
+        public void Vibrate(long[] timings, int[] amplitudes)
+        {
+            if (_vibrator == null || timings == null || timings.Length == 0)
+                return;
+
+            if (_apiLevel >= 26 &&
+                amplitudes != null &&
+                amplitudes.Length != timings.Length)
+            {
+                Debug.LogWarning("Timings and amplitudes length mismatch");
+                return;
+            }
+
+            long totalDuration = VibrationTools.GetTotalDuration(timings);
 
             try
             {
-                AndroidJavaClass version = new AndroidJavaClass("android.os.Build$VERSION");
-                int apiLevel = version.GetStatic<int>("SDK_INT");
+                AndroidJavaObject effect = null;
 
-                if (apiLevel >= 26) // Android O y superiores
+                if (_apiLevel >= 26)
                 {
-                    AndroidJavaClass vibrationEffectClass = new AndroidJavaClass("android.os.VibrationEffect");
+                    effect = _vibrationEffectClass.CallStatic<AndroidJavaObject>(
+                        "createWaveform",
+                        timings,
+                        amplitudes,
+                        -1
+                    );
+                }
 
-                    // Usar DEFAULT_AMPLITUDE si el valor de amplitude es -1
-                    int useAmplitude = (amplitude < 0) 
-                        ? vibrationEffectClass.GetStatic<int>("DEFAULT_AMPLITUDE") 
+                VibrateInternal(effect, totalDuration);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Waveform vibration failed: {e.Message}");
+            }
+        }
+        
+        public void Vibrate(long milliseconds = 100, int amplitude = -1)
+        {
+            if (_vibrator == null)
+                return;
+
+            try
+            {
+                AndroidJavaObject effect = null;
+
+                if (_apiLevel >= 26)
+                {
+                    int useAmplitude = amplitude < 0
+                        ? _defaultAmplitude
                         : amplitude;
 
-                    AndroidJavaObject vibrationEffect = vibrationEffectClass.CallStatic<AndroidJavaObject>(
+                    effect = _vibrationEffectClass.CallStatic<AndroidJavaObject>(
                         "createOneShot",
                         milliseconds,
                         useAmplitude
                     );
-
- 
-                    _vibrator.Call("vibrate", vibrationEffect);
                 }
-                else
-                {
 
-                    _vibrator.Call("vibrate", milliseconds);
-                }
-                
-                _timerId = TimerManager.Add(new TimerData
-                (
-                    milliseconds / 1000f,
-                    onStartAction: () =>
-                    {
-                        IsVibrating = true;
-                        OnVibrate?.Invoke();
-                    },
-                    onEndAction: () =>
-                    {
-                        IsVibrating = false;
-                        OnStopVibration?.Invoke();
-                    }
-                ));
+                VibrateInternal(effect, milliseconds);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
-                Debug.LogWarning("Vibration failed: " + e.Message);
+                Debug.LogWarning($"OneShot vibration failed: {e.Message}");
             }
         }
 

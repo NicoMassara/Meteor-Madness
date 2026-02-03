@@ -35,18 +35,18 @@ namespace MeteorMadness.Vibration.BaseBehaviours
 
         #region Vibration Actions
 
-        protected virtual void Vibrate(VibrationDataSo soData)
+        protected virtual void Vibrate(IVibrationData data)
         {
-            if (soData == null)
+            if (data == null)
             {
                 Debug.LogWarning($"Vibration data is null in {gameObject.name}");
                 return;
             }
 
-            Vibrate(soData.Data);
+            _vibration.Vibrate(data);
         }
 
-        public void Vibrate(VibrationData data)
+        public void Vibrate(VibrationData data, VibrationPriority priority)
         {
             if (data == null)
             {
@@ -54,15 +54,15 @@ namespace MeteorMadness.Vibration.BaseBehaviours
                 return;
             }
             
-            _vibration.Vibrate(data);
+            _vibration.Vibrate(data, priority);
         }
 
-        public void Vibrate(VibrationDurationType duration, VibrationIntensityType intensity)
+        public void Vibrate(DurationType duration, IntensityType intensity, VibrationPriority priority)
         {
-            _vibration.Vibrate(duration, intensity);
+            _vibration.Vibrate(duration, intensity,priority);
         }
 
-        public void Vibrate(VibrationType type)
+        public void Vibrate(UIVibrationType type)
         {
             _vibration.Vibrate(type);
         }
