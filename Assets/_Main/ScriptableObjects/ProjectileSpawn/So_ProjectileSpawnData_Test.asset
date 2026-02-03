@@ -413,14 +413,14 @@ MonoBehaviour:
       minRange: 0
       maxRange: 0
   - projectileAmountRange:
-      minRange: 10
-      maxRange: 15
-    slotRange:
       minRange: 4
-      maxRange: 12
+      maxRange: 4
+    slotRange:
+      minRange: 1
+      maxRange: 1
     innerBatchDistanceRange:
-      minRange: 0.15
-      maxRange: 0.35
+      minRange: 0
+      maxRange: 0
     nextBatchDistanceRange:
       minRange: 0.45
       maxRange: 0.6
@@ -432,4 +432,4 @@ MonoBehaviour:
       maxRange: 18
     spawnTypeRange:
       minRange: 1
-      maxRange: 3
+      maxRange: 1
