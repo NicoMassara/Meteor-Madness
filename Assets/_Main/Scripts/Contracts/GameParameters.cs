@@ -16,6 +16,7 @@ namespace MeteorMadness.Contracts
             public const bool HasInfiniteCoins = false;
             public const bool HasAllSkinsUnlocked = false;
             public const float BaseMeteorValue = 10f;
+            public const int SpawnLevelAmount = 20;
         }
         
         public struct DevelopmentValues

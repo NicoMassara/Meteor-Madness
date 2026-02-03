@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.Gameplay.Projectile.SO;
 using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
@@ -8,12 +9,19 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 {
     internal class ProjectileSpawnerSetup : MonoBehaviour
     {
+        [SerializeField] private ProjectileSpawnDataSo spawnData;
         private ProjectileSpawnerController.IProjectileSpawnerController _controller;
         private ProjectileSpawnerView.IProjectileSpawnerView _view;
 
         private void Awake()
         {
-            var motor = new ProjectileSpawnerMotor();
+            if (spawnData == null)
+            {
+                Debug.LogError($"Spawn Data So not selected.");
+                return;
+            }
+
+            var motor = new ProjectileSpawnerMotor(spawnData);
             _controller = new ProjectileSpawnerController(motor);
             
             _view = GetComponentInChildren<ProjectileSpawnerView.IProjectileSpawnerView>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using _Main.Scripts.Projectile;
+using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -13,9 +14,9 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private int _meteorAmountToSpawn;
         private bool _isSpawningBatch;
 
-        public ProjectileSpawnerMotor()
+        public ProjectileSpawnerMotor(IProjectileSpawnData spawnData)
         {
-            _projectileSlotSelector = new ProjectileSlotSelector();
+            _projectileSlotSelector = new ProjectileSlotSelector(spawnData);
         }
 
         public void DoStartMeteorBatch()
@@ -69,29 +70,13 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
     internal class ProjectileSlotSelector
     {
-        private readonly ISpawnSlotData _data;
-        private readonly int _slotsAmount;
+        private const int SlotsAmount = GameParameters.GameplayValues.SpawnLevelAmount;
+        private readonly IProjectileSpawnData _data;
         private SlotData[] _currentBatch;
         private int _currentBatchIndex;
         private int _currentLevel;
-
-
-        private enum SpawnType
-        {
-            Random,
-            Ascendent,
-            Descendent,
-            //SamePosition
-            
-            DEFAULT_MAX
-        }
-
-        public ProjectileSlotSelector()
-        {
-            _slotsAmount = 32;
-        }
-
-        public ProjectileSlotSelector(ISpawnSlotData data)
+        
+        public ProjectileSlotSelector(IProjectileSpawnData data)
         {
             _data = data;
         }
@@ -103,27 +88,20 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         public int CreateBatchData()
         {
-            const int minAmount = 1;
-            const int maxAmount = 16; // max EXCLUSIVO
-            const float currentDistance = 0.35f;
-            const float distanceToNextBatch = 0.90f; 
-            // 0 - Spawn Point
-            // 1 - Shield
+            var spawnData = _data.GetDataByIndex(_currentLevel);
 
-            var spawnType = (SpawnType)Random.Range(0, (int)SpawnType.DEFAULT_MAX);
-            var selectedSlot = Random.Range(0, _slotsAmount);
-            var selectedAmount = Random.Range(minAmount, maxAmount);
+            var selectedSlot = Random.Range(0, SlotsAmount);
+            var spawnType = spawnData.SpawnTypeRange.RandomRange;
+            var selectedAmount = spawnData.AmountRange.RandomRange;
+            var innerBatchDistance = spawnData.InnerBatchDistanceRange.RandomRange;
 
             _currentBatch = new SlotData[selectedAmount];
 
-            const int minSlotRange = 1;
-            const int maxSlotRange = 3;
-
-            for (int i = selectedAmount - 1; i >= 0; i--)
+            for (var i = selectedAmount - 1; i >= 0; i--)
             {
                 if (i != selectedAmount - 1)
                 {
-                    var offset = Random.Range(minSlotRange, maxSlotRange);
+                    var offset = spawnData.SlotRange.RandomRange;
 
                     switch (spawnType)
                     {
@@ -141,13 +119,15 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                             break;
                     }
 
-                    selectedSlot = (int)Mathf.Repeat(selectedSlot, _slotsAmount);
+                    selectedSlot = (int)Mathf.Repeat(selectedSlot, SlotsAmount);
                 }
 
                 _currentBatch[i] = new SlotData
                 {
                     Slot = selectedSlot,
-                    DistanceRatio = (i == 0) ? distanceToNextBatch : currentDistance
+                    DistanceRatio = (i == 0) ? 
+                        spawnData.NextBatchDistanceRange.RandomRange : 
+                        innerBatchDistance
                 };
             }
 
