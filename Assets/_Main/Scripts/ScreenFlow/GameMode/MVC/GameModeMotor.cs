@@ -166,6 +166,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         #region Meteor 
         
+        public void NotifyBatchDeflected()
+        {
+            _levelController.IncreaseStreak();
+            _levelController.CheckForNextLevel();
+        }
+        
         public void HandleMeteorDeflect(Vector2 position, float projectileValue)
         {
             var multiplier = _hasDoublePoints ? 2 : 1;
@@ -179,8 +185,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             
             if (isFullValue)
             {
-                _levelController.IncreaseStreak();
-                _levelController.CheckForNextLevel();
                 _stats.IncreaseDeflectStreak();
             }
             
@@ -297,6 +301,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             => NotifyAll(GameModeObserverMessage.NotifyStreak, streak);
 
         #endregion
-        
+
+
     }
 }

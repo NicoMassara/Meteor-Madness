@@ -102,7 +102,9 @@ namespace MeteorMadness.Contracts
             public float Value;
             public ProjectileType Type;
         }
-        
+
+        public struct BatchDeflected { }
+
         public struct Add
         {
             public IProjectile Projectile;

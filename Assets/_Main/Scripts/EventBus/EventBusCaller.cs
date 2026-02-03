@@ -443,11 +443,9 @@ namespace _Main.Scripts.EventBus
                 Type = data.Type
             });
         }
-
-        public static void Add(IProjectile projectile)
-        {
-            EventBusCaller.Publish(new ProjectileEvents.Add{Projectile = projectile});
-        }
+        
+        public static void BatchDeflected() => EventBusCaller.Publish(new ProjectileEvents.BatchDeflected());
+        public static void Add(IProjectile projectile) => EventBusCaller.Publish(new ProjectileEvents.Add{Projectile = projectile});
 
         public static void RequestSpawn(ProjectileType projectileType)
         {
@@ -468,7 +466,7 @@ namespace _Main.Scripts.EventBus
         }
         
         public static void ClearQueue() => EventBusCaller.Publish(new ProjectileEvents.ClearQueue());
-        public static void DisableSpawn() => EventBusCaller.Publish(new ProjectileEvents.DisableSpawn());
+        public static void DisableSpawn(bool doesClear = false) => EventBusCaller.Publish(new ProjectileEvents.DisableSpawn{DoesClearProjectiles = doesClear});
         public static void EnableSpawn() => EventBusCaller.Publish(new ProjectileEvents.EnableSpawn());
         public static void UpdateLevel(int level) => EventBusCaller.Publish(new ProjectileEvents.UpdateLevel{Level = level});
         
@@ -478,6 +476,7 @@ namespace _Main.Scripts.EventBus
     {
         public static void Collision(Action<ProjectileEvents.Collision> action) => EventBusCaller.Subscribe(action);
         public static void Deflected(Action<ProjectileEvents.Deflected> action) => EventBusCaller.Subscribe(action);
+        public static void BatchDeflected(Action<ProjectileEvents.BatchDeflected> action) => EventBusCaller.Subscribe(action);
         public static void Add(Action<ProjectileEvents.Add> action) => EventBusCaller.Subscribe(action);
         public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
         public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
@@ -491,6 +490,7 @@ namespace _Main.Scripts.EventBus
     {
         public static void Collision(Action<ProjectileEvents.Collision> action) => EventBusCaller.Unsubscribe(action);
         public static void Deflected(Action<ProjectileEvents.Deflected> action) => EventBusCaller.Unsubscribe(action);
+        public static void BatchDeflected(Action<ProjectileEvents.BatchDeflected> action) => EventBusCaller.Unsubscribe(action);
         public static void Add(Action<ProjectileEvents.Add> action) => EventBusCaller.Unsubscribe(action);
         public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
         public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);

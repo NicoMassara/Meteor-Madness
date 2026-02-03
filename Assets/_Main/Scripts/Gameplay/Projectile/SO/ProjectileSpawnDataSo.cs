@@ -1,8 +1,8 @@
 ﻿using System;
+using _Main.Scripts.Common.MyRandom;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Gameplay.Projectile.SO
 {
@@ -23,15 +23,15 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             private float GetRandomRange()
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                return minRange == maxRange ? minRange : Random.Range(minRange, maxRange + 1);
+                return minRange == maxRange ? minRange : RandomService.Range(minRange, maxRange);
             }
         }
         
         [System.Serializable]
         private class DistanceRatioRangeData : IFloatRangeData
         {
-            [Range(0,1)] public float minRange = 0;
-            [Range(0,1)] public float maxRange = 0;
+            [Range(0, 1)] public float minRange = 1;
+            [Range(0, 1)] public float maxRange = 1;
             
             public Vector2 Range => new Vector2(minRange, maxRange);
             public float RandomRange => GetRandomRange();
@@ -39,7 +39,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             private float GetRandomRange()
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                return minRange == maxRange ? minRange : Random.Range(minRange, maxRange + 1);
+                return minRange == maxRange ? minRange : RandomService.Range(minRange, maxRange);
             }
         }
         
@@ -55,7 +55,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             private int GetRandomRange()
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                return minRange == maxRange ? minRange : Random.Range(minRange, maxRange + 1);
+                return minRange == maxRange ? minRange : RandomService.Range(minRange, maxRange + 1);
             }
         }
         
@@ -74,7 +74,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             private int GetRandomRange()
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                return minRange == maxRange ? minRange : Random.Range(minRange, maxRange + 1);
+                return minRange == maxRange ? minRange : RandomService.Range(minRange, maxRange + 1);
             }
         }
         
@@ -96,7 +96,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
                 
                 if (min == max) return minRange;
                 
-                return (T)(object)Random.Range(min, max + 1);
+                return (T)(object)RandomService.Range(min, max);
             }
         }
         
@@ -105,7 +105,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
         [System.Serializable]
         private class BatchData : IBatchSpawnData
         {
-            [SerializeField] private AmountRangeData amountRange;
+            [SerializeField] private AmountRangeData projectileAmountRange;
             [SerializeField] private SlotRangeData slotRange;
             [Tooltip("0f - Spawn Point / 1f - Shield")]
             [SerializeField] private DistanceRatioRangeData innerBatchDistanceRange;
@@ -115,7 +115,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             [SerializeField] private SlotRangeData nextBatchSlotRange;
             [SerializeField] private EnumRangeData<SpawnType> spawnTypeRange;
 
-            public IIntRangeData AmountRange => amountRange;
+            public IIntRangeData ProjectileAmountRange => projectileAmountRange;
             public ISlotRangeData SlotRange => slotRange;
             public IFloatRangeData InnerBatchDistanceRange => innerBatchDistanceRange;
             public IFloatRangeData NextBatchDistanceRange => nextBatchDistanceRange;

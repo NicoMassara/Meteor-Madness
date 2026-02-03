@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using _Main.Scripts.Common.MyRandom;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.GlobalValues.Events;
@@ -112,6 +113,8 @@ namespace MeteorMadness.Managers.Boostrap
 
         private IEnumerator LoadCoreScene()
         {
+            RandomService.Initialize();
+            
             var boostrapScene = SceneManager.GetActiveScene();
             
             AsyncOperation cameraSceneAsync = SceneManager.LoadSceneAsync(cameraModule, LoadSceneMode.Additive);

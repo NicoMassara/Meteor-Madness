@@ -1,7 +1,7 @@
 ﻿using System;
+using _Main.Scripts.Common.MyRandom;
 using MeteorMadness.Contracts;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace _Main.Scripts.Gameplay.Projectile.SO
 {
@@ -31,7 +31,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             private int GetRandomRange()
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                return minRange == maxRange ? minRange : Random.Range(minRange, maxRange + 1);
+                return minRange == maxRange ? minRange : RandomService.Range(minRange, maxRange + 1);
             }
         }
         

@@ -28,7 +28,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         private void SpawnMeteor()
         {
-            var isAbility = false;
             
             var slotData = _projectileSlotSelector.GetNextSlotData();
             
@@ -41,7 +40,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 NotifyAll(ProjectileSpawnerObserverMessage.BatchSpawned);
             }
             
-            NotifyAll(ProjectileSpawnerObserverMessage.SpawnMeteor,isAbility, slotData.Slot,slotData.DistanceRatio, isLastMeteor);
+            NotifyAll(ProjectileSpawnerObserverMessage.SpawnMeteor,slotData.IsAbility, slotData.Slot,slotData.DistanceRatio, isLastMeteor);
         }
 
         public void DoSpawnMeteorRing()

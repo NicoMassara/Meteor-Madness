@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.EventBus;
 using _Main.Scripts.Gameplay.Projectile.Components;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
@@ -91,10 +92,20 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 case ProjectileSpawnerObserverMessage.Clear:
                     HandleClear();
                     break;
+                case ProjectileSpawnerObserverMessage.BatchDeflected:
+                    HandleBatchDeflected();
+                    break;
             }
         }
 
+
+
         #region Observer Handlers
+        
+        private void HandleBatchDeflected()
+        {
+            ProjectileEventCaller.BatchDeflected();
+        }
         
         private void HandleClear()
         {

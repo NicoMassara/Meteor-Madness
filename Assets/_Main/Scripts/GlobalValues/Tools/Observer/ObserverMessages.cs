@@ -318,7 +318,7 @@
         public const ulong SpawnRing  = 0xA1602;
         public const ulong BatchSpawned  = 0xA1603;
         public const ulong Clear  = 0xA1604;
-        public const ulong Empty5  = 0xA1605;
+        public const ulong BatchDeflected  = 0xA1605;
         public const ulong Empty6  = 0xA1606;
         public const ulong Empty7  = 0xA1607;
         public const ulong Empty8  = 0xA1608;

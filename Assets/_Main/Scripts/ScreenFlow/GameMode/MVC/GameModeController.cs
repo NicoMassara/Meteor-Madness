@@ -38,6 +38,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             public void TriggerPauseMenu();
             public void NotifyAbilityActive(AbilityType abilityType);
             public void SetHasLoseFocus(bool hasFocus);
+            public void NotifyBatchDeflected();
         }
         
         #region Private Classes
@@ -498,6 +499,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
         }
 
         public void SetDoublePoints(bool isActive) => _motor.SetDoublePoints(isActive);
+
+        public void NotifyBatchDeflected()
+        {
+            if (_mainController.GetIsInGameplay())
+                _motor.NotifyBatchDeflected();
+        }
 
         #region Stats
 

@@ -25,6 +25,20 @@ namespace _Main.Scripts.Projectile
     {
         public int Slot;
         public float DistanceRatio;
+        public bool IsAbility;
+    }
+
+    public struct BatchDebugData
+    {
+        public int Level;
+        public int Amount;
+        public int StartSlot;
+        public int Offset;
+        public float InnerDist;
+        public float NextDist;
+        public int LastSlot;
+        public SpawnType SpawnType;
+        
     }
 
     #endregion
@@ -63,7 +77,7 @@ namespace _Main.Scripts.Projectile
     
     public interface IBatchSpawnData
     {
-        public IIntRangeData AmountRange { get; }
+        public IIntRangeData ProjectileAmountRange { get; }
         public ISlotRangeData  SlotRange { get; }
         public IFloatRangeData InnerBatchDistanceRange { get; }
         public IFloatRangeData NextBatchDistanceRange { get; }
