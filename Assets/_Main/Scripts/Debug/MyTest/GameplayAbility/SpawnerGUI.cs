@@ -21,7 +21,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         [Space(5)]
         [SerializeField] private ScreenPosition guiPosition;
 
-        private BatchDebugData _batchData;
+        private BatchDebugData _batchData = new BatchDebugData();
         private float _batchTime;
 
         private void Awake()
