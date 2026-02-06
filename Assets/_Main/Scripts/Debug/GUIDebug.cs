@@ -25,11 +25,13 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug
         
         private GUIStyle _titleStyle;
         private GUIStyle _lineStyle;
+        private bool _hasStarted;
         
         
         private void Start()
         {
             _mainCamera = Camera.main;
+            _hasStarted = true;
         }
         
         protected abstract string[] GetLines();
@@ -40,6 +42,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug
         
         private void OnGUI()
         {
+            if(_hasStarted == false) return; 
             if (_mainCamera == null) return;
             if (IsDebugEnable() == false) return;
 

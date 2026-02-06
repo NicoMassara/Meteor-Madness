@@ -41,6 +41,19 @@ namespace _Main.Scripts.Projectile
         
     }
 
+    public struct HistoryDebugData
+    {
+        public int Amount;
+        public SpawnType[] History;
+        public HistoryWeightData[] Weights;
+    }
+
+    public struct HistoryWeightData
+    {
+        public int[] Values;
+    }
+
+
     #endregion
 
     #region Interfaces
@@ -75,7 +88,7 @@ namespace _Main.Scripts.Projectile
 
     public interface IEnumWeight
     {
-        public float Weight { get; }
+        public int Weight { get; }
         public SpawnType SpawnType { get; }
     }
 
@@ -89,7 +102,7 @@ namespace _Main.Scripts.Projectile
         public ISlotRangeData  NextBatchSlotRange { get; }
         public IEnumRangeData SpawnTypeRange { get; }
     }
-
+    
     #endregion
     
     #region Enums

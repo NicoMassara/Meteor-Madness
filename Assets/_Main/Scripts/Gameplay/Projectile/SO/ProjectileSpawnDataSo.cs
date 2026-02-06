@@ -87,10 +87,10 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             private class EnumData : IEnumWeight
             {
                 public SpawnType spawnType;
-                [Range(0, 1)] public float weight;
+                [Range(0, 100)] public int weight = 100;
 
                 public SpawnType SpawnType => spawnType;
-                public float Weight => weight;
+                public int Weight => weight;
             }
 
             [SerializeField] private EnumData[] weightData;
@@ -107,6 +107,23 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
                 }
 
                 return _runtimeArray;
+            }
+
+            internal void CreateRangeArray()
+            {
+                int lenght = (int)SpawnType.SamePosition;
+                
+                if (weightData == null || weightData.Length != lenght)
+                {
+                    weightData = new EnumData[lenght];
+                
+                    for (int i = 0; i < lenght; i++)
+                    {
+                        var item = new EnumData();
+                        item.spawnType = (SpawnType)i + 1;
+                        weightData[i] = item;
+                    }
+                }
             }
         }
         
@@ -133,6 +150,11 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             public IFloatRangeData NextBatchDelayRange => nextBatchDelayRange;
             public ISlotRangeData NextBatchSlotRange => nextBatchSlotRange;
             public IEnumRangeData SpawnTypeRange => spawnTypeRange;
+
+            public void CreateRangeArray()
+            {
+                spawnTypeRange.CreateRangeArray();
+            }
         }
         
         [SerializeField] private BatchData[] batchData;
@@ -154,6 +176,12 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             if (batchData == null || batchData.Length != GameParameters.GameplayValues.SpawnLevelAmount)
             {
                 batchData = new BatchData[GameParameters.GameplayValues.SpawnLevelAmount];
+            }
+            
+            for (int i = 0; i < batchData.Length; i++)
+            {
+                var item =  batchData[i];
+                item.CreateRangeArray();
             }
         }
     }

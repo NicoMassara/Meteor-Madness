@@ -28,7 +28,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         private void SpawnMeteor()
         {
-            
             var slotData = _projectileSlotSelector.GetNextSlotData();
             
             _meteorAmountToSpawn--;
