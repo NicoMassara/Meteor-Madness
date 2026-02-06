@@ -5,7 +5,7 @@ namespace MeteorMadness.GlobalValues.Tools
 {
     public class Roulette
     {
-        public T Run<T>(Dictionary<T, int> items)
+        public static T Run<T>(Dictionary<T, int> items)
         {
             int total = 0;
             foreach (var item in items)

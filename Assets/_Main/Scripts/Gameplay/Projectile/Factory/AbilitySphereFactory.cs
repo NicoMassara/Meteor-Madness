@@ -61,8 +61,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
         private class AbilitySelector
         {
             public bool IsStorageFull { get; set; }
-
-            private readonly Roulette _roulette = new Roulette();
+            
             private readonly Func<Tuple<AbilityType[], int[]>> _getValuesAction;
             private readonly Func<Tuple<int[],AbilityType[]>> _getUnlockAction;
             private readonly Dictionary<AbilityType, ActionValue> _multipliers = new Dictionary<AbilityType, ActionValue>();
@@ -179,7 +178,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
                         tempDic.Add(ability, finalValue);
                     }
 
-                    _abilityToDrop = _roulette.Run(tempDic);
+                    _abilityToDrop = Roulette.Run(tempDic);
 
                     return _abilityToDrop;
                 }

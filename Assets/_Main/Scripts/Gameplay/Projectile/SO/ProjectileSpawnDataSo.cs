@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using _Main.Scripts.Common.MyRandom;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
@@ -78,27 +79,37 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             }
         }
         
+
         [System.Serializable]
-        public class EnumRangeData<T> : IEnumRangeData<T> 
-            where T : Enum 
+        public class EnumRangeData : IEnumRangeData
         {
-            public T minRange;
-            public T maxRange;
-
-            public Vector2Int Range => new (Convert.ToInt32(minRange), Convert.ToInt32(maxRange));
-
-            public T RandomRange => GetRandomRange();
-
-            private T GetRandomRange()
+            [System.Serializable]
+            private class EnumData : IEnumWeight
             {
-                int min = Convert.ToInt32(minRange);
-                int max = Convert.ToInt32(maxRange);
-                
-                if (min == max) return minRange;
-                
-                return (T)(object)RandomService.Range(min, max);
+                public SpawnType spawnType;
+                [Range(0, 1)] public float weight;
+
+                public SpawnType SpawnType => spawnType;
+                public float Weight => weight;
+            }
+
+            [SerializeField] private EnumData[] weightData;
+
+            private IEnumWeight[] _runtimeArray;
+            public IEnumWeight[] WeightData => GetArray();
+
+            private IEnumWeight[] GetArray()
+            {
+                if (_runtimeArray == null)
+                {
+                    _runtimeArray = new IEnumWeight[weightData.Length];
+                    weightData.CopyTo(_runtimeArray, 0);
+                }
+
+                return _runtimeArray;
             }
         }
+        
         
         #endregion
 
@@ -113,7 +124,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             [SerializeField] private DistanceRatioRangeData nextBatchDistanceRange;
             [SerializeField] private FloatRangeData nextBatchDelayRange;
             [SerializeField] private SlotRangeData nextBatchSlotRange;
-            [SerializeField] private EnumRangeData<SpawnType> spawnTypeRange;
+            [SerializeField] private EnumRangeData spawnTypeRange;
 
             public IIntRangeData ProjectileAmountRange => projectileAmountRange;
             public ISlotRangeData SlotRange => slotRange;
@@ -121,7 +132,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             public IFloatRangeData NextBatchDistanceRange => nextBatchDistanceRange;
             public IFloatRangeData NextBatchDelayRange => nextBatchDelayRange;
             public ISlotRangeData NextBatchSlotRange => nextBatchSlotRange;
-            public IEnumRangeData<SpawnType> SpawnTypeRange => spawnTypeRange;
+            public IEnumRangeData SpawnTypeRange => spawnTypeRange;
         }
         
         [SerializeField] private BatchData[] batchData;

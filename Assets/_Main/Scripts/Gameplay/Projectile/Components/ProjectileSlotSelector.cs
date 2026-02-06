@@ -1,20 +1,126 @@
-﻿using _Main.Scripts.Common.MyRandom;
+﻿using System;
+using System.Collections.Generic;
+using _Main.Scripts.Common.MyRandom;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
+using MeteorMadness.GlobalValues.Tools;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile.Components
 {
     internal class ProjectileSlotSelector
     {
+        private class SpawnTypeSelector
+        {
+            /// <summary>
+            /// Weight Data from a spawn type to another
+            /// </summary>
+            private class SpawnTypeWeight
+            {
+                private readonly Dictionary<SpawnType, int> _weightsValues;
+                
+                public SpawnTypeWeight(Dictionary<SpawnType, int> weightsValues)
+                {
+                    _weightsValues = weightsValues;
+                }
+
+                public float GetWeightToSpawnType(SpawnType spawnType)
+                {
+                    return _weightsValues[spawnType];
+                }
+            }
+
+            /// <summary>
+            /// Weight Value between each spawn type
+            /// </summary>
+            private Dictionary<SpawnType, SpawnTypeWeight> _weightsValues;
+            
+            private const int HistoryLenght = 10;
+            private readonly SpawnType[] _spawnTypeHistory;
+            private int _currentHistoryCount;
+            
+            private SpawnType _lastSpawnType;
+            
+            public SpawnTypeSelector()
+            {
+                InitializeWeights();
+                _spawnTypeHistory = new SpawnType[HistoryLenght];
+            }
+
+            private void InitializeWeights()
+            {
+                // Weights should be from 0 to 1
+                _weightsValues = new Dictionary<SpawnType, SpawnTypeWeight>
+                {
+                    { SpawnType.Random, new SpawnTypeWeight(new()
+                    {
+                        {SpawnType.Random, 25},
+                        {SpawnType.Ascendent, 100},
+                        {SpawnType.Descendent, 100},
+                        {SpawnType.SamePosition, 100},
+                    }) },
+                    { SpawnType.Ascendent, new SpawnTypeWeight(new()
+                    {
+                        {SpawnType.Random, 25},
+                        {SpawnType.Ascendent, 50},
+                        {SpawnType.Descendent, 75},
+                        {SpawnType.SamePosition, 50},
+                    }) },
+                    { SpawnType.Descendent, new SpawnTypeWeight(new()
+                    {
+                        {SpawnType.Random, 25},
+                        {SpawnType.Ascendent, 75},
+                        {SpawnType.Descendent, 50},
+                        {SpawnType.SamePosition, 50},
+                    }) } ,
+                    { SpawnType.SamePosition, new SpawnTypeWeight(new()
+                    {
+                        {SpawnType.Random, 50},
+                        {SpawnType.Ascendent, 50},
+                        {SpawnType.Descendent, 75},
+                        {SpawnType.SamePosition, 25},
+                    }) } 
+                };
+            }
+
+            private void AddToHistory(SpawnType spawnType)
+            {
+                if (_currentHistoryCount == 0)
+                {
+                    _spawnTypeHistory[0] = spawnType;
+                    _currentHistoryCount++;
+                    return;
+                }
+                
+                var temp1 = spawnType;
+                
+                for (int i = 0; i < _currentHistoryCount; i++)
+                {
+                    // ReSharper disable once SwapViaDeconstruction
+                    var temp2 = _spawnTypeHistory[i];
+                    _spawnTypeHistory[i] = temp1;
+                    temp1 = temp2;
+                }
+                
+                if (_currentHistoryCount < HistoryLenght)
+                    _currentHistoryCount++;
+            }
+
+            public SpawnType GetSpawnType(IEnumRangeData weightData)
+            {
+                
+                
+                return SpawnType.Ascendent;
+            }
+        }
+
         private const int SlotsAmount = GameParameters.GameplayValues.AngleSlots;
         private readonly IProjectileSpawnData _data;
+        private readonly SpawnTypeSelector _spawnTypeSelector;
         private SlotData[] _currentBatch;
         private int _currentBatchIndex;
         private int _currentLevel;
         private int _lastSelectedSlot = -1;
-        
-        //TODO: Try Pre Cache the data before every level
         
         public ProjectileSlotSelector(IProjectileSpawnData data)
         {
@@ -58,7 +164,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 selectedSlot = _lastSelectedSlot + slotRange;
             }
             
-            var spawnType = spawnData.SpawnTypeRange.RandomRange;
+            var spawnType = _spawnTypeSelector.GetSpawnType(spawnData.SpawnTypeRange);
             var selectedAmount = spawnData.ProjectileAmountRange.RandomRange;
             var innerBatchDistance = spawnData.InnerBatchDistanceRange.RandomRange;
 

@@ -68,13 +68,17 @@ namespace _Main.Scripts.Projectile
         public int RandomRange { get; }
     }
     
-    public interface IEnumRangeData<T>
-        where T : Enum 
+    public interface IEnumRangeData
     {
-        public Vector2Int Range { get; }
-        public T RandomRange { get; }
+        public IEnumWeight[] WeightData { get; }
     }
-    
+
+    public interface IEnumWeight
+    {
+        public float Weight { get; }
+        public SpawnType SpawnType { get; }
+    }
+
     public interface IBatchSpawnData
     {
         public IIntRangeData ProjectileAmountRange { get; }
@@ -83,7 +87,7 @@ namespace _Main.Scripts.Projectile
         public IFloatRangeData NextBatchDistanceRange { get; }
         public IFloatRangeData NextBatchDelayRange { get; }
         public ISlotRangeData  NextBatchSlotRange { get; }
-        public IEnumRangeData<SpawnType> SpawnTypeRange { get; }
+        public IEnumRangeData SpawnTypeRange { get; }
     }
 
     #endregion
@@ -92,12 +96,11 @@ namespace _Main.Scripts.Projectile
 
     public enum SpawnType
     {
+        None,
         Random,
         Ascendent,
         Descendent,
-        //SamePosition
-            
-        DEFAULT_MAX
+        SamePosition
     }
 
     #endregion
