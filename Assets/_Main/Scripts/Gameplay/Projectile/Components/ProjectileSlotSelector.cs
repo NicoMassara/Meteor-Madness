@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Main.Scripts.Common;
 using _Main.Scripts.Common.MyRandom;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
-using MeteorMadness.GlobalValues.Tools;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile.Components
@@ -38,8 +38,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             private const int HistoryLenght = 10;
             private readonly SpawnType[] _spawnTypeHistory;
             private int _currentHistoryCount;
-            
-            private SpawnType _lastSpawnType;
+            private bool _isFirstSpawn;
             
             public SpawnTypeSelector()
             {
@@ -106,11 +105,45 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     _currentHistoryCount++;
             }
 
+            private Dictionary<SpawnType, int> GetSpawnWeights(IEnumRangeData weightData)
+            {
+                var tempDic = new Dictionary<SpawnType, int>();
+
+                var lastSpawn = _spawnTypeHistory[0];
+                var lastSpawnWeights = _weightsValues[lastSpawn];
+                //TODO: Use full History to calculate weights
+                //TODO: Create another Dic using the History
+
+                for (int i = 0; i < weightData.WeightData.Length; i++)
+                {
+                    var item = weightData.WeightData[i];
+                    var value = item.Weight + lastSpawnWeights.GetWeightToSpawnType(item.SpawnType);
+                    var rounded = (int)Math.Round(value * 0.5f, MidpointRounding.AwayFromZero);
+                    var finalWeight = Math.Max(0, rounded);
+
+                    tempDic[item.SpawnType] = finalWeight;
+                }
+                
+                return tempDic;
+            }
+
             public SpawnType GetSpawnType(IEnumRangeData weightData)
             {
+                var selectedSpawn = SpawnType.None;
                 
+                if (_isFirstSpawn)
+                {
+                    selectedSpawn = (SpawnType)RandomService.Range(0,4);
+                    _isFirstSpawn = false;
+                }
+                else
+                {
+                    selectedSpawn = Roulette.Run(GetSpawnWeights(weightData));
+                }
                 
-                return SpawnType.Ascendent;
+                AddToHistory(selectedSpawn);
+                
+                return selectedSpawn;
             }
         }
 
