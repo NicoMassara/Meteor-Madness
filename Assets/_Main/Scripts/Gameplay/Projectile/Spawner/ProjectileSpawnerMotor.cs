@@ -39,7 +39,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 NotifyAll(ProjectileSpawnerObserverMessage.BatchSpawned);
             }
             
-            NotifyAll(ProjectileSpawnerObserverMessage.SpawnMeteor,slotData.IsAbility, slotData.Slot,slotData.DistanceRatio, isLastMeteor);
+            NotifyAll(ProjectileSpawnerObserverMessage.SpawnMeteor,slotData, isLastMeteor);
         }
 
         public void DoSpawnMeteorRing()

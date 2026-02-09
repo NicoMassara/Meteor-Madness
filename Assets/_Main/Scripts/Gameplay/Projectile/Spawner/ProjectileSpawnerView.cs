@@ -81,7 +81,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             switch (message)
             {
                 case ProjectileSpawnerObserverMessage.SpawnMeteor:
-                    HandleSpawnMeteor((bool)args[0],(int)args[1], (float)args[2], (bool)args[3]);
+                    HandleSpawnMeteor((SlotData)args[0],(bool)args[1]);
                     break;
                 case ProjectileSpawnerObserverMessage.SpawnRing:
                     HandleSpawnRing();
@@ -113,18 +113,17 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _abilityFactory.RecycleAll();
         }
 
-        private void HandleSpawnMeteor(bool isAbility, int spawnSlot, float targetDistanceRatio, bool isLastMeteor)
+        private void HandleSpawnMeteor(SlotData slotData, bool isLastMeteor)
         {
-            var spawnPosition = GetSpawnPosition(spawnSlot);
+            var spawnPosition = GetSpawnPosition(slotData.Slot);
             var direction = (Vector2)centerOfGravity.position - spawnPosition;
-            var finalSpeed = 30;
-            var finalValue = isAbility ? 0 : GameParameters.GameplayValues.BaseMeteorValue;
+            var finalValue = slotData.IsAbility ? 0 : GameParameters.GameplayValues.BaseMeteorValue;
             
-            var projectile = DoSpawnProjectile(isAbility, new ProjectileSpawnValues
+            var projectile = DoSpawnProjectile(slotData.IsAbility, new ProjectileSpawnValues
             {
                 Position = spawnPosition,
                 Direction = direction,
-                MovementSpeed = finalSpeed,
+                MovementSpeed = slotData.MovementSpeed,
                 Value = finalValue
             });
             
@@ -133,9 +132,9 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             OnProjectileSpawned?.Invoke();
             
             
-            if (targetDistanceRatio > 0)
+            if (slotData.DistanceRatio > 0)
             {
-                _distanceTracker.SetProjectile(projectile,targetDistanceRatio);
+                _distanceTracker.SetProjectile(projectile,slotData.DistanceRatio);
             }
             else
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.Gameplay.Projectile.SO;
 using MeteorMadness.Contracts;
+using UnityEngine;
 
 namespace MeteorMadness.ScreenFlow.GameMode
 {
@@ -11,6 +12,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         private readonly int[] _milestones;
         private int _currentLevel;
         private int _currentStreak;
+        private int _currentMilestone;
 
         public event Action OnLevelChange;
 
@@ -38,17 +40,34 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 ;
                 _milestones[i] = milestoneAmount;
             }
+
+            _currentMilestone = _milestones[0];
         }
 
         public void CheckForNextLevel()
         {
-            if(_currentLevel == LevelAmount) return;
-
-            if (_currentStreak >= _milestones[_currentLevel])
+            if (_currentStreak >= _currentMilestone)
             {
                 _currentLevel++;
+                
+                _currentLevel = Math.Clamp(_currentLevel, 0, LevelAmount);
                 _currentStreak = 0;
+                
+                SetTargetMilestone();
+                
                 OnLevelChange?.Invoke();
+            }
+        }
+
+        private void SetTargetMilestone()
+        {
+            if (_currentLevel < LevelAmount)
+            {
+                _currentMilestone = _milestones[_currentLevel];
+            }
+            else
+            {
+                _currentMilestone += _milestoneData.GetMilestoneByIndex(_currentLevel).RandomRange;
             }
         }
 

@@ -127,12 +127,12 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             }
         }
         
-        
         #endregion
 
         [System.Serializable]
         private class BatchData : IBatchSpawnData
         {
+            [SerializeField] private FloatRangeData speedMultiplierRange;
             [SerializeField] private AmountRangeData projectileAmountRange;
             [SerializeField] private SlotRangeData slotRange;
             [Tooltip("0f - Spawn Point / 1f - Shield")]
@@ -143,6 +143,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
             [SerializeField] private SlotRangeData nextBatchSlotRange;
             [SerializeField] private EnumRangeData spawnTypeRange;
 
+            public IFloatRangeData SpeedMultiplierRange => speedMultiplierRange;
             public IIntRangeData ProjectileAmountRange => projectileAmountRange;
             public ISlotRangeData SlotRange => slotRange;
             public IFloatRangeData InnerBatchDistanceRange => innerBatchDistanceRange;
@@ -156,8 +157,15 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
                 spawnTypeRange.CreateRangeArray();
             }
         }
-        
+
+        [Min(1)] 
+        [SerializeField] private float projectileSpeed = 30f;
         [SerializeField] private BatchData[] batchData;
+        [SerializeField] private BatchData offsetData;
+
+        public float ProjectileSpeed => projectileSpeed;
+
+        public IBatchSpawnData OffsetData => offsetData;
 
         public IBatchSpawnData GetDataByIndex(int index) => batchData[index];
 

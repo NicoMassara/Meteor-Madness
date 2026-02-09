@@ -25,6 +25,7 @@ namespace _Main.Scripts.Projectile
     {
         public int Slot;
         public float DistanceRatio;
+        public float MovementSpeed;
         public bool IsAbility;
     }
 
@@ -60,6 +61,8 @@ namespace _Main.Scripts.Projectile
 
     public interface IProjectileSpawnData
     {
+        public float ProjectileSpeed { get; }
+        public IBatchSpawnData OffsetData { get; }
         public IBatchSpawnData GetDataByIndex(int index);
     }
     
@@ -94,6 +97,7 @@ namespace _Main.Scripts.Projectile
 
     public interface IBatchSpawnData
     {
+        public IFloatRangeData SpeedMultiplierRange { get; }
         public IIntRangeData ProjectileAmountRange { get; }
         public ISlotRangeData  SlotRange { get; }
         public IFloatRangeData InnerBatchDistanceRange { get; }

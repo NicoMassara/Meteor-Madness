@@ -34,10 +34,11 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
                 return minRange == maxRange ? minRange : RandomService.Range(minRange, maxRange + 1);
             }
         }
-        
+
         [SerializeField] private IntRangeData[] milestonePerLevel;
         
         public IIntRangeData GetMilestoneByIndex(int index) => milestonePerLevel[index];
+
 
         private void OnValidate()
         {
@@ -56,7 +57,5 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
                 milestonePerLevel = new IntRangeData[GameParameters.GameplayValues.SpawnLevelAmount];
             }
         }
-
-
     }
 }

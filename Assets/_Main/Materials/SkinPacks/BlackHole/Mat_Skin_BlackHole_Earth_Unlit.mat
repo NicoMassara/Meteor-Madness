@@ -98,7 +98,7 @@ Material:
     - _Strength: 1.52
     - _UVSec: 0
     - _ZWrite: 1
-    - __dirty: 0
+    - __dirty: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color0: {r: 0.754717, g: 0.754717, b: 0.754717, a: 1}

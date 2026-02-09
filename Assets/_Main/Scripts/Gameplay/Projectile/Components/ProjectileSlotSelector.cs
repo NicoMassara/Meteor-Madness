@@ -11,7 +11,19 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 {
     internal class ProjectileSlotSelector
     {
+        private struct BatchSpawnData
+        {
+            public float SpeedMultiplier;
+            public int Amount;
+            public int SlotRange;
+            public float InnerDistance;
+            public float NextDistance;
+            public float Delay;
+            public int NextSlotRange;
+            public SpawnType SpawnType;
 
+            public int MinSlotRange;
+        }
 
         private const int SlotsAmount = GameParameters.GameplayValues.AngleSlots;
         private readonly IProjectileSpawnData _data;
@@ -43,8 +55,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             _lastSelectedSlot = -1;
             _spawnTypeSelector.RestartData();
             InitializeData();
-            
-            Debug.Log("Restarted");
         }
 
         public void SetLevel(int level)
@@ -64,17 +74,16 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             }
             else if (_lastSelectedSlot > -1)
             {
-                var slotRange = GetRandomDirection() * spawnData.NextBatchSlotRange.RandomRange;
+                var slotRange = GetRandomDirection() * spawnData.NextSlotRange;
                 selectedSlot = _lastSelectedSlot + slotRange;
             }
             
-            var spawnType = _spawnTypeSelector.GetSpawnType(spawnData.SpawnTypeRange);
-            var selectedAmount = spawnData.ProjectileAmountRange.RandomRange;
-            var innerBatchDistance = spawnData.InnerBatchDistanceRange.RandomRange;
+            var selectedAmount = spawnData.Amount;
+            var innerBatchDistance = spawnData.InnerDistance;
 
             _currentBatch = new SlotData[selectedAmount];
             var currentOffset = 0;
-            var nextBatchDistance =  spawnData.NextBatchDistanceRange.RandomRange;
+            var nextBatchDistance =  spawnData.NextDistance;
             
             if (selectedAmount == 1)
             {
@@ -89,13 +98,13 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             }
             else
             {
-                if (spawnType is SpawnType.Ascendent or SpawnType.Descendent)
+                if (spawnData.SpawnType is SpawnType.Ascendent or SpawnType.Descendent)
                 {
-                    currentOffset = spawnData.SlotRange.Range.x;
+                    currentOffset = spawnData.MinSlotRange;
                 }
                 else
                 {
-                    currentOffset = spawnData.SlotRange.RandomRange;;
+                    currentOffset = spawnData.SlotRange;
                 }
 
                 var currentSlot = selectedSlot;
@@ -104,7 +113,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 {
                     if (i != selectedAmount - 1)
                     {
-                        switch (spawnType)
+                        switch (spawnData.SpawnType)
                         {
                             case SpawnType.Random:
                                 currentSlot += currentOffset * GetRandomDirection();
@@ -127,7 +136,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                         Slot = currentSlot,
                         DistanceRatio = (i == 0) ? 
                             nextBatchDistance : 
-                            innerBatchDistance
+                            innerBatchDistance,
+                        MovementSpeed = _data.ProjectileSpeed * spawnData.SpeedMultiplier
                     };
                 }
 
@@ -144,7 +154,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 InnerDist = innerBatchDistance,
                 NextDist = nextBatchDistance,
                 LastSlot = _lastSelectedSlot,
-                SpawnType  = spawnType
+                SpawnType  = spawnData.SpawnType
             });
             
             return selectedAmount;
@@ -158,7 +168,29 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             return value;
         }
 
-        private IBatchSpawnData GetCurrentSpawnData() => _data.GetDataByIndex(_currentLevel);
+        private BatchSpawnData GetCurrentSpawnData()
+        {
+            return _currentLevel < GameParameters.GameplayValues.SpawnLevelAmount ? 
+                CreateBatchSpawnData(_currentLevel) : 
+                CreateBatchSpawnData(GameParameters.GameplayValues.SpawnLevelAmount-1);
+        }
+
+        private BatchSpawnData CreateBatchSpawnData(int index)
+        {
+            var temp = _data.GetDataByIndex(index);
+            
+            return new BatchSpawnData
+            {
+                SpeedMultiplier = temp.SpeedMultiplierRange.RandomRange,
+                Amount = temp.ProjectileAmountRange.RandomRange,
+                SlotRange = temp.SlotRange.RandomRange,
+                NextDistance = temp.NextBatchDistanceRange.RandomRange,
+                Delay = temp.NextBatchDelayRange.RandomRange,
+                NextSlotRange = temp.NextBatchSlotRange.RandomRange,
+                SpawnType = _spawnTypeSelector.GetSpawnType(temp.SpawnTypeRange),
+                MinSlotRange = temp.SlotRange.Range.x
+            };
+        }
 
         private int GetRandomDirection() => RandomService.Value() > 0.5f ? -1 : 1;
     }
