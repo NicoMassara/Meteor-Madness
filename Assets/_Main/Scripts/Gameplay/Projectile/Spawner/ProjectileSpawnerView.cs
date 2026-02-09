@@ -1,6 +1,7 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.Gameplay.Projectile.Components;
+using _Main.Scripts.Gameplay.Projectile.SO;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
@@ -117,20 +118,18 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             var spawnPosition = GetSpawnPosition(slotData.Slot);
             var direction = (Vector2)centerOfGravity.position - spawnPosition;
-            var finalValue = slotData.IsAbility ? 0 : GameParameters.GameplayValues.BaseMeteorValue;
             
             var projectile = DoSpawnProjectile(slotData.IsAbility, new ProjectileSpawnValues
             {
                 Position = spawnPosition,
                 Direction = direction,
                 MovementSpeed = slotData.MovementSpeed,
-                Value = finalValue
+                Value = slotData.FinalValue
             });
             
             if(projectile == null) return;
             
             OnProjectileSpawned?.Invoke();
-            
             
             if (slotData.DistanceRatio > 0)
             {

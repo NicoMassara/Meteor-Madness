@@ -18,6 +18,8 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
             public void NotifyBatchSpawned();
             public void NotifyProjectileHasReachedTargetRatio();
+            public void NotifyProjectileDeflected();
+            public void NotifyProjectileCollision();
         }
         
         private interface IBaseController
@@ -246,6 +248,16 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _motor.UpdateLevel(currentLevel);
         }
 
+        public void NotifyProjectileDeflected()
+        {
+            _motor.NotifyProjectileDeflected();
+        }
+
+        public void NotifyProjectileCollision()
+        {
+            _motor.NotifyProjectileCollision();
+        }
+
         #endregion
         
         #region ISpawnController
@@ -258,7 +270,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         public void DoSpawnProjectile()
         {
             _hasProjectileReachedTarget = false;
-            _motor.SpawnNextMeteorFromBatch();
+            _motor.SpawnNextProjectileFromDefaultBatch();
         }
 
         public void TransitionToIdle() => _spawnFsm.TransitionToIdle();

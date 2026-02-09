@@ -27,6 +27,7 @@ namespace _Main.Scripts.Projectile
         public float DistanceRatio;
         public float MovementSpeed;
         public bool IsAbility;
+        public float FinalValue;
     }
 
     public struct BatchDebugData
@@ -58,6 +59,11 @@ namespace _Main.Scripts.Projectile
     #endregion
 
     #region Interfaces
+
+    public interface IProjectileRingData
+    {
+        
+    }
 
     public interface IProjectileSpawnData
     {

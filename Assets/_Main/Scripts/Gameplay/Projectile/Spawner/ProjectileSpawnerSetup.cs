@@ -10,6 +10,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
     internal class ProjectileSpawnerSetup : MonoBehaviour
     {
         [SerializeField] private ProjectileSpawnDataSo spawnData;
+        [SerializeField] private ProjectileRingDataSo ringData;
         private ProjectileSpawnerController.IProjectileSpawnerController _controller;
         private ProjectileSpawnerView.IProjectileSpawnerView _view;
 
@@ -21,7 +22,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 return;
             }
 
-            var motor = new ProjectileSpawnerMotor(spawnData);
+            var motor = new ProjectileSpawnerMotor(spawnData,ringData);
             _controller = new ProjectileSpawnerController(motor);
             
             _view = GetComponentInChildren<ProjectileSpawnerView.IProjectileSpawnerView>();
@@ -47,6 +48,18 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_Enable);
             ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_Disable);
             ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
+            ProjectileEventSubscriber.Deflected(EventBus_Projectile_Deflected);
+            ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
+        }
+
+        private void EventBus_Projectile_Collision(ProjectileEvents.Collision obj)
+        {
+            _controller.NotifyProjectileCollision();
+        }
+
+        private void EventBus_Projectile_Deflected(ProjectileEvents.Deflected input)
+        {
+            _controller.NotifyProjectileDeflected();
         }
 
         private void EventBus_Projectile_UpdateLevel(ProjectileEvents.UpdateLevel input)
