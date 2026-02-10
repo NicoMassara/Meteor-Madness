@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Projectile;
+﻿using System;
+using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 
 namespace _Main.Scripts.Gameplay.Projectile.Components
@@ -6,8 +7,11 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
     public class ProjectileRingController : ProjectileBatchBase
     {
         private readonly IProjectileRingData _data;
-        private SlotData[] _currentBatch;
-        private int _currentBatchIndex;
+        private bool _hasStarted; 
+        
+        private int _targetBatches;
+
+        public event Action OnLastBatchedCreated;
         
 
         public ProjectileRingController(IProjectileRingData data, ProjectileBatchData batchData) 
@@ -15,6 +19,20 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         {
             _data = data;
         }
+
+        public override void Restart()
+        {
+            base.Restart();
+            _hasStarted = false;
+            _targetBatches = int.MaxValue;
+        }
+
+        public void Initialize()
+        {
+            _hasStarted = true;
+            _targetBatches = _data.BatchAmountRange.RandomRange;
+        }
+
 
         protected override SlotData OverrideSlotData(SlotData data, int index, int batchAmount)
         {
@@ -26,6 +44,16 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         protected override BatchSpawnData GetSpawnData()
         {
+            if (_hasStarted)
+            {
+                _targetBatches--;
+
+                if (_targetBatches <= 0)
+                {
+                    OnLastBatchedCreated?.Invoke();
+                }
+            }
+
             var temp = _data.RingData;
             
             return new BatchSpawnData

@@ -157,9 +157,13 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
         }
 
         [Min(1)] 
+        [Space]
         [SerializeField] private float projectileSpeed = 30f;
+        [Space] 
+        [SerializeField] private AmountRangeData batchAmount;
         [SerializeField] private BatchData batchData;
         public float ProjectileSpeed => projectileSpeed;
         public IBatchSpawnData RingData => batchData;
+        public IIntRangeData BatchAmountRange => batchAmount;
     }
 }

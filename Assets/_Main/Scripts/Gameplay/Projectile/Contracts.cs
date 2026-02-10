@@ -64,6 +64,7 @@ namespace _Main.Scripts.Projectile
     {
         public float ProjectileSpeed { get; }
         public IBatchSpawnData RingData { get; }
+        public IIntRangeData BatchAmountRange { get; }
     }
 
     public interface IProjectileSpawnData

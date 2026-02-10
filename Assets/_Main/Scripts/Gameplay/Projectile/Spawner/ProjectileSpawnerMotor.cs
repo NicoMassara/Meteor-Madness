@@ -16,6 +16,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private bool _isSpawningRing;
         private int _currentLevel;
         private int _currentBatchDeflected;
+        private bool _isLastRingBatch;
         
         //TO REMOVE
         private const int MaxRingBatches = 5;
@@ -31,6 +32,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _projectileBatchController = new ProjectileBatchController(spawnData,batchData,GameParameters.GameplayValues.SpawnLevelAmount);
             _ringController = new ProjectileRingController(projectileRingData,batchData);
             _batchTracker = new ProjectileBatchTracker();
+            _ringController.OnLastBatchedCreated += RingController_OnLastBatchedCreatedHandler;
             _batchTracker.OnBatchDeflected += OnBatchDeflectedHandler;
             _batchTracker.OnBatchFinished += OnBatchFinishedHandler;
         }
@@ -68,7 +70,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             if (_isSpawningRing == false)
             {
                 NotifyAll(ProjectileSpawnerObserverMessage.RingStarted);
-                _currentRingBatches = 0;
                 _isSpawningRing = true;
             }
 
@@ -89,9 +90,10 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 _isSpawningBatch = false;
                 NotifyAll(ProjectileSpawnerObserverMessage.BatchSpawned);
 
-                if (_currentRingBatches >= MaxRingBatches)
+                if (_isLastRingBatch)
                 {
                     _isSpawningRing = false;
+                    _isLastRingBatch = false;
                     NotifyAll(ProjectileSpawnerObserverMessage.RingFinished);
                 }
             }
@@ -141,6 +143,11 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             {
                 NotifyAll(ProjectileSpawnerObserverMessage.BatchDeflected);
             }
+        }
+        
+        private void RingController_OnLastBatchedCreatedHandler()
+        {
+            _isLastRingBatch = true;
         }
     }
 }

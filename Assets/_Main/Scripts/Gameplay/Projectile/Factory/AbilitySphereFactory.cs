@@ -13,6 +13,11 @@ using UnityEngine;
 
 namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
 {
+    //TODO: Ability Selector must be INDEPENDENT from the Level.
+    //TODO: Ability Selector must be similar to spawn selector, having weights between abilities
+    //TODO: Each time an ability is selected new weights are set
+    //TODO: SO data must be re done, having base weights and  weights between abilities
+    
     public class AbilitySphereFactory
     {
         #region Components

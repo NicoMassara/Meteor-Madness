@@ -27,6 +27,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             public event Action OnProjectileReachedTargetRatio;
             public event Action OnBatchSpawned;
             public event Action OnRingFinished;
+            public event Action OnRingStarted;
         }
 
 
@@ -54,6 +55,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         public event Action OnProjectileReachedTargetRatio;
         public event Action OnProjectileSpawned;
         public event Action OnRingFinished;
+        public event Action OnRingStarted;
         
         #endregion
 
@@ -105,10 +107,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                     break;
             }
         }
-
-
-
-
+        
         #region Observer Handlers
         
         private void HandleBatchDeflected()
@@ -171,6 +170,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private void HandleRingStarted()
         {
             MeteorEventCaller.RingActive(true);
+            OnRingStarted?.Invoke();
         }
         
         #endregion

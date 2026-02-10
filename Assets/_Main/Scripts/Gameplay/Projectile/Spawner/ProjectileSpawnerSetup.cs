@@ -40,6 +40,12 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             _view.OnBatchSpawned += () => _controller.NotifyBatchSpawned();
             _view.OnProjectileReachedTargetRatio += () => _controller.NotifyProjectileHasReachedTargetRatio();
+            _view.OnRingStarted += () => _controller.SetHasToSpawnRingBatch(true);
+            _view.OnRingFinished += () =>
+            {
+                _controller.SetIsRingActive(false);
+                _controller.SetHasToSpawnRingBatch(false);
+            };
         }
 
 
