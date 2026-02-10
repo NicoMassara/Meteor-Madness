@@ -129,6 +129,11 @@ namespace MeteorMadness.Contracts
         }
         
         public struct EnableSpawn {}
+
+        public struct SetRingActive
+        {
+            public bool IsActive;
+        }
         
     }
     

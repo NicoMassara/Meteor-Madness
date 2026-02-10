@@ -26,6 +26,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             public event Action OnProjectileSpawned;
             public event Action OnProjectileReachedTargetRatio;
             public event Action OnBatchSpawned;
+            public event Action OnRingFinished;
         }
 
 
@@ -52,6 +53,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         
         public event Action OnProjectileReachedTargetRatio;
         public event Action OnProjectileSpawned;
+        public event Action OnRingFinished;
         
         #endregion
 
@@ -82,10 +84,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             switch (message)
             {
                 case ProjectileSpawnerObserverMessage.SpawnMeteor:
-                    HandleSpawnMeteor((SlotData)args[0],(bool)args[1]);
-                    break;
-                case ProjectileSpawnerObserverMessage.SpawnRing:
-                    HandleSpawnRing();
+                    HandleSpawnMeteor((SlotData)args[0]);
                     break;
                 case ProjectileSpawnerObserverMessage.BatchSpawned:
                     HandleBatchSpawned();
@@ -96,8 +95,17 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 case ProjectileSpawnerObserverMessage.BatchDeflected:
                     HandleBatchDeflected();
                     break;
+                
+                // === Ring === //
+                case ProjectileSpawnerObserverMessage.RingStarted:
+                    HandleRingStarted();
+                    break;
+                case ProjectileSpawnerObserverMessage.RingFinished:
+                    HandleRingFinished();
+                    break;
             }
         }
+
 
 
 
@@ -114,7 +122,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _abilityFactory.RecycleAll();
         }
 
-        private void HandleSpawnMeteor(SlotData slotData, bool isLastMeteor)
+        private void HandleSpawnMeteor(SlotData slotData)
         {
             var spawnPosition = GetSpawnPosition(slotData.Slot);
             var direction = (Vector2)centerOfGravity.position - spawnPosition;
@@ -126,9 +134,13 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 MovementSpeed = slotData.MovementSpeed,
                 Value = slotData.FinalValue
             });
-            
-            if(projectile == null) return;
-            
+
+            if (projectile == null)
+            {
+                Debug.LogError("Spawn Failed");
+                return;
+            }
+
             OnProjectileSpawned?.Invoke();
             
             if (slotData.DistanceRatio > 0)
@@ -142,14 +154,23 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             }
         }
         
-        private void HandleSpawnRing()
-        {
-            //TODO: Spawn Ring from factory
-        }
-        
         private void HandleBatchSpawned()
         {
             OnBatchSpawned?.Invoke();
+        }
+        
+        private void HandleRingFinished()
+        {
+            OnRingFinished?.Invoke();
+            MeteorEventCaller.RingActive(false);
+            
+            //Ability Setup should listen to RingActive and then start the timer
+            AbilitiesEventCaller.RunTimer();
+        }
+
+        private void HandleRingStarted()
+        {
+            MeteorEventCaller.RingActive(true);
         }
         
         #endregion

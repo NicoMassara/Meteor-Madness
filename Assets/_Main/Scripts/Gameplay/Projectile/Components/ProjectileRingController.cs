@@ -19,18 +19,30 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         protected override SlotData OverrideSlotData(SlotData data, int index, int batchAmount)
         {
             data.FinalValue = index % 2 == 0 ? CalculateValuePerMeteor(batchAmount) : 0;
-            data.MovementSpeed *= 60; 
+            data.MovementSpeed *= _data.ProjectileSpeed; 
             
             return data;
         }
 
         protected override BatchSpawnData GetSpawnData()
         {
-            //TODO: Generate Data using SO and Interface
-            return new BatchSpawnData();
+            var temp = _data.RingData;
+            
+            return new BatchSpawnData
+            {
+                SpeedMultiplier = temp.SpeedMultiplierRange.RandomRange,
+                Amount = temp.ProjectileAmountRange.RandomRange,
+                SlotRange = temp.SlotRange.RandomRange,
+                InnerDistance = temp.InnerBatchDistanceRange.RandomRange,
+                NextDistance = temp.NextBatchDistanceRange.RandomRange,
+                Delay = temp.NextBatchDelayRange.RandomRange,
+                NextSlotRange = temp.NextBatchSlotRange.RandomRange,
+                SpawnType = GetSpawnType(temp.SpawnTypeRange),
+                MinSlotRange = temp.SlotRange.Range.x
+            };
         }
 
-        private int CalculateValuePerMeteor(int batchAmount)
+        private float CalculateValuePerMeteor(int batchAmount)
         {
             var batchValue = GetBatchData().ProjectileValue * 5;
             var finalValue = batchValue / batchAmount;

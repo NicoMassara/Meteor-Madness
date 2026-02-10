@@ -20,6 +20,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             public void NotifyProjectileHasReachedTargetRatio();
             public void NotifyProjectileDeflected();
             public void NotifyProjectileCollision();
+            public void SetIsRingActive(bool isActive);
         }
         
         private interface IBaseController
@@ -181,6 +182,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         private bool _hasSpawnedBatch;
         private bool _hasProjectileReachedTarget;
+        private bool _isRingActive;
 
         public ProjectileSpawnerController(ProjectileSpawnerMotor motor)
         {
@@ -258,19 +260,36 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _motor.NotifyProjectileCollision();
         }
 
+        public void SetIsRingActive(bool isActive) => _isRingActive = true;
+
         #endregion
         
         #region ISpawnController
         public void DoCreateBatch()
         {
             _hasSpawnedBatch = false;
-            _motor.DoStartMeteorBatch();
+
+            if (_isRingActive)
+            {
+                _motor.DoStartRingBatches();
+            }
+            else
+            {
+                _motor.DoStartMeteorBatch();
+            }
         }
 
         public void DoSpawnProjectile()
         {
             _hasProjectileReachedTarget = false;
-            _motor.SpawnNextProjectileFromDefaultBatch();
+            if (_isRingActive)
+            {
+                _motor.SpawnNextProjectileFromRingBatch();
+            }
+            else
+            {
+                _motor.SpawnNextProjectileFromDefaultBatch();
+            }
         }
 
         public void TransitionToIdle() => _spawnFsm.TransitionToIdle();

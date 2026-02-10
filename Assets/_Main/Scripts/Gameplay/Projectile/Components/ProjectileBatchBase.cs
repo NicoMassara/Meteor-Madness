@@ -16,6 +16,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             public float Delay;
             public int NextSlotRange;
             public SpawnType SpawnType;
+            public bool HasAbility;
 
             public int MinSlotRange;
         }
@@ -23,10 +24,11 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         public struct ProjectileBatchData
         {
             public int SlotAmount;
-            public int ProjectileValue;
+            public float ProjectileValue;
         }
 
         protected readonly ProjectileBatchData _batchData;
+        private readonly SpawnTypeSelector _spawnTypeSelector;
         private SlotData[] _currentBatch;
         private int _lastSelectedSlot;
         private int _currentBatchIndex;
@@ -37,6 +39,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         public ProjectileBatchBase(ProjectileBatchData data)
         {
             _lastSelectedSlot = -1;
+            _spawnTypeSelector = new SpawnTypeSelector();
         }
 
         public virtual void Restart()
@@ -48,6 +51,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         {
             var spawnData = GetSpawnData();
             var selectedSlot = 0;
+            var hasSpawnedAbility = false;
             
             if (_lastSelectedSlot == -1)
             {
@@ -93,7 +97,25 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 for (var i = selectedAmount - 1; i >= 0; i--)
                 {
                     var isAbility = false;
-                    
+
+                    if (spawnData.HasAbility && hasSpawnedAbility == false)
+                    {
+                        if (i == spawnData.Amount - 1)
+                        {
+                            isAbility = true;
+                            hasSpawnedAbility = true;
+                        }
+                        else
+                        {
+                            var value = RandomService.Value();
+                            if (value >= 0.45f)
+                            {
+                                isAbility = true;
+                                hasSpawnedAbility = true;
+                            }
+                        }
+                    }
+
                     if (i != selectedAmount - 1)
                     {
                         switch (spawnData.SpawnType)
@@ -118,7 +140,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     {
                         Slot = currentSlot,
                         DistanceRatio = (i == 0) ? nextBatchDistance : innerBatchDistance,
-                        MovementSpeed = spawnData.SpeedMultiplier
+                        MovementSpeed = spawnData.SpeedMultiplier,
+                        IsAbility = isAbility
                     };
                     
                     _currentBatch[i] = OverrideSlotData(slotData, i + 1, selectedAmount);
@@ -138,6 +161,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             
             return value;
         }
+        
+        protected SpawnType GetSpawnType(IEnumRangeData baseWeights) => _spawnTypeSelector.GetSpawnType(baseWeights);
 
         protected abstract SlotData OverrideSlotData(SlotData data,int index, int batchAmount);
 

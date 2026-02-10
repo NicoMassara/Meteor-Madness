@@ -50,9 +50,16 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
             ProjectileEventSubscriber.Deflected(EventBus_Projectile_Deflected);
             ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
+            //
+            MeteorEventSubscriber.SpawnRing(EnventBus_Meteor_SpawnRing);
         }
 
-        private void EventBus_Projectile_Collision(ProjectileEvents.Collision obj)
+        private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
+        {
+            _controller.SetIsRingActive(true);
+        }
+
+        private void EventBus_Projectile_Collision(ProjectileEvents.Collision input)
         {
             _controller.NotifyProjectileCollision();
         }

@@ -161,11 +161,8 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
         [Min(1)] 
         [SerializeField] private float projectileSpeed = 30f;
         [SerializeField] private BatchData[] batchData;
-        [SerializeField] private BatchData offsetData;
 
         public float ProjectileSpeed => projectileSpeed;
-
-        public IBatchSpawnData OffsetData => offsetData;
 
         public IBatchSpawnData GetDataByIndex(int index) => batchData[index];
 

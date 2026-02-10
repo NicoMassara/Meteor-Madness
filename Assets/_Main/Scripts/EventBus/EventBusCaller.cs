@@ -469,6 +469,7 @@ namespace _Main.Scripts.EventBus
         public static void DisableSpawn(bool doesClear = false) => EventBusCaller.Publish(new ProjectileEvents.DisableSpawn{DoesClearProjectiles = doesClear});
         public static void EnableSpawn() => EventBusCaller.Publish(new ProjectileEvents.EnableSpawn());
         public static void UpdateLevel(int level) => EventBusCaller.Publish(new ProjectileEvents.UpdateLevel{Level = level});
+        public static void SetRingActive(bool isActive) => EventBusCaller.Publish(new ProjectileEvents.SetRingActive{IsActive = isActive});
         
     }
     
@@ -484,6 +485,7 @@ namespace _Main.Scripts.EventBus
         public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Subscribe(action);
         public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Subscribe(action);
         public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action) => EventBusCaller.Subscribe(action);
+        public static void SetRingActive(Action<ProjectileEvents.SetRingActive> action) => EventBusCaller.Subscribe(action);
     }
     
     public static class ProjectileEventUnSubscriber
@@ -498,6 +500,7 @@ namespace _Main.Scripts.EventBus
         public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Unsubscribe(action);
         public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Unsubscribe(action);
         public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action) => EventBusCaller.Unsubscribe(action);
+        public static void SetRingActive(Action<ProjectileEvents.SetRingActive> action) => EventBusCaller.Unsubscribe(action);
     }
     
     #endregion
@@ -506,71 +509,26 @@ namespace _Main.Scripts.EventBus
 
     public static class MeteorEventCaller
     {
-        public static void GrantSpawnSingle()
-        {
-            ProjectileEventCaller.GrantSpawn(ProjectileType.Meteor);
-        }
-        
-        public static void RequestSpawnSingle()
-        {
-            ProjectileEventCaller.RequestSpawn(ProjectileType.Meteor);
-        }
-        
-        public static void SpawnRing()
-        {
-            EventBusCaller.Publish(new MeteorEvents.SpawnRing());
-        }
-
-        public static void RingActive(bool isActive)
-        {
-            EventBusCaller.Publish(new MeteorEvents.RingActive{IsActive = isActive});
-        }
+        public static void GrantSpawnSingle() => ProjectileEventCaller.GrantSpawn(ProjectileType.Meteor);
+        public static void RequestSpawnSingle() => ProjectileEventCaller.RequestSpawn(ProjectileType.Meteor);
+        public static void SpawnRing() => EventBusCaller.Publish(new MeteorEvents.SpawnRing());
+        public static void RingActive(bool isActive) => EventBusCaller.Publish(new MeteorEvents.RingActive{IsActive = isActive});
     }
     
     public static class MeteorEventSubscriber
     {
-        public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            ProjectileEventSubscriber.GrantSpawn(action);
-        }
-        
-        public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            ProjectileEventSubscriber.RequestSpawn(action);
-        }
-        
-        public static void SpawnRing(Action<MeteorEvents.SpawnRing> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-
-        public static void RingActive(Action<MeteorEvents.RingActive> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
+        public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action) => ProjectileEventSubscriber.GrantSpawn(action);
+        public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action) => ProjectileEventSubscriber.RequestSpawn(action);
+        public static void SpawnRing(Action<MeteorEvents.SpawnRing> action) => EventBusCaller.Subscribe(action);
+        public static void RingActive(Action<MeteorEvents.RingActive> action) => EventBusCaller.Subscribe(action);
     }
     
     public static class MeteorEventUnSubscriber
     {
-        public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            ProjectileEventUnSubscriber.GrantSpawn(action);
-        }
-        
-        public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action)
-        {
-            ProjectileEventUnSubscriber.RequestSpawn(action);
-        }
-        
-        public static void SpawnRing(Action<MeteorEvents.SpawnRing> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-
-        public static void RingActive(Action<MeteorEvents.RingActive> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
+        public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action) => ProjectileEventUnSubscriber.GrantSpawn(action);
+        public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action) => ProjectileEventUnSubscriber.RequestSpawn(action);
+        public static void SpawnRing(Action<MeteorEvents.SpawnRing> action) => EventBusCaller.Unsubscribe(action);
+        public static void RingActive(Action<MeteorEvents.RingActive> action) => EventBusCaller.Unsubscribe(action);
     }
     
     #endregion

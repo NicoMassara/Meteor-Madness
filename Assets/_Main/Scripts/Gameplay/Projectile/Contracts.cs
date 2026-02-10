@@ -62,13 +62,13 @@ namespace _Main.Scripts.Projectile
 
     public interface IProjectileRingData
     {
-        
+        public float ProjectileSpeed { get; }
+        public IBatchSpawnData RingData { get; }
     }
 
     public interface IProjectileSpawnData
     {
         public float ProjectileSpeed { get; }
-        public IBatchSpawnData OffsetData { get; }
         public IBatchSpawnData GetDataByIndex(int index);
     }
     
