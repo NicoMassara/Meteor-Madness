@@ -69,6 +69,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
             if (_isSpawningRing == false)
             {
+                _ringController.Initialize();
                 NotifyAll(ProjectileSpawnerObserverMessage.RingStarted);
                 _isSpawningRing = true;
             }
@@ -94,6 +95,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 {
                     _isSpawningRing = false;
                     _isLastRingBatch = false;
+                    _ringController.Restart();
                     NotifyAll(ProjectileSpawnerObserverMessage.RingFinished);
                 }
             }

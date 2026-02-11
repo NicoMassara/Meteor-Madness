@@ -73,9 +73,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         {
             data.MovementSpeed *= _data.ProjectileSpeed; 
             data.FinalValue = GetBatchData().ProjectileValue;
-            data.IsAbility = false;
-            //TODO: Set ability Random
-            
+
             return data;
         }
 
