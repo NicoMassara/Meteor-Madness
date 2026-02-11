@@ -9,6 +9,7 @@ namespace _Main.Scripts.Projectile
     {
         public Vector2 Position;
         public Vector2 Direction;
+        public int Slot;
         public float MovementSpeed;
         public float Value;
     }

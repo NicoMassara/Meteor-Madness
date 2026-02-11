@@ -222,13 +222,14 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
             var tempRot = Quaternion.AngleAxis(angle, Vector3.forward);
             var ability = GetAbilityToAdd();
             
-            tempSphere.SetValues(new AbilitySphereData()
+            tempSphere.SetValues(new AbilitySphereData
             {
                 MovementSpeed = data.MovementSpeed,
                 Rotation = tempRot,
                 Position = data.Position,
                 Direction = data.Direction.normalized,
-                Ability = ability
+                Ability = ability,
+                Slot = data.Slot,
             });
             tempSphere.OnDeflection += DeflectionHandler;
             tempSphere.OnEarthCollision += OnEarthCollisionHandler;

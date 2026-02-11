@@ -329,7 +329,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteContainer: {fileID: 1661175756}
-  normalShieldSprite: {fileID: 1661175756}
+  normalShieldSprite: {fileID: 1250290975}
+  superShieldSprite: {fileID: 256456274}
   shieldCollider: {fileID: 1250290977}
   superShieldCollider: {fileID: 870347182}
   shakerCapData: {fileID: 11400000, guid: d9df0328fbb036746b4f0bee39a9bef2, type: 2}
@@ -340,8 +341,8 @@ MonoBehaviour:
     Data: {fileID: 11400000, guid: 6fcf047123881334a90226f66167f467, type: 2}
     DirectionBias: 0.25
   deflectParticleData: {fileID: 11400000, guid: ec9c18003e0f32f46beeae28490ffe51, type: 2}
-  normalShieldContainer: {fileID: 1139865875}
-  mediatorData: {fileID: 11400000, guid: d36edb9a1d4806c4caad96d818aa435e, type: 2}
+  angularRotationData: {fileID: 11400000, guid: 33e71440741cdb447a84694f97a03e7f, type: 2}
+  normalShieldContainer: {fileID: 1661175757}
   projectileLayerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -639,9 +640,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startLevel: 7
-  startMeteorsEnable: 1
+  startMeteorsEnable: 0
   timeScale:
-    isEnable: 1
+    isEnable: 0
     globalTimeScale: 1
     gameplayTimeScale: 1
     shieldTimeScale: 1
@@ -716,7 +717,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -25}
+  m_AnchoredPosition: {x: 0, y: -25.00003}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &336280030

@@ -1,5 +1,4 @@
 ﻿using System;
-using _Main.Scripts.ShieldRotation.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Core.FlyingObject;
 using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile;
@@ -65,6 +64,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.ProjectileObject
 
         #region ITargetable
 
+        public int Slot { get; private set; }
         public bool CanBeTargeted { get; private set; }
         public float TargetRatio { get; set; }
         public event Action<ITargetable> OnTargetDeath;
@@ -100,7 +100,5 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.ProjectileObject
         {
             OnTriggerEnter?.Invoke(other);
         }
-
-
     }
 }

@@ -131,7 +131,8 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 Position = spawnPosition,
                 Direction = direction,
                 MovementSpeed = slotData.MovementSpeed,
-                Value = slotData.FinalValue
+                Value = slotData.FinalValue,
+                Slot = slotData.Slot
             });
 
             if (projectile == null)
