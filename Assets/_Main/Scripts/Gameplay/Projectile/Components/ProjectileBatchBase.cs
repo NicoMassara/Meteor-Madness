@@ -49,7 +49,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         public virtual void Restart()
         {
-            Debug.Log("Here");
             _lastSelectedSlot = -1;
         }
         

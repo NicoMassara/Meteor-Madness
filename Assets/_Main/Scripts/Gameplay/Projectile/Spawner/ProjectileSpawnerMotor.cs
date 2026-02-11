@@ -66,7 +66,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         
         public void DoStartRingBatches()
         {
-            _meteorAmountToSpawn = _projectileBatchController.CreateBatchData();
+            _meteorAmountToSpawn = _ringController.CreateBatchData();
             _batchTracker.CreateBatchData(_meteorAmountToSpawn);
 
             if (_isSpawningRing == false)

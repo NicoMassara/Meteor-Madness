@@ -31,6 +31,12 @@ namespace _Main.Scripts.GameCamera
 
         public void TransportCamera(ICameraTransportData transportData)
         {
+            if (transportData == null)
+            {
+                Debug.Log("TransportData is null");
+                return;
+            }
+
             var cameraZoom = transportData.CameraZoomData;
             var targetTime = transportData.Time;
 

@@ -148,7 +148,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             }
             else
             {
-                Debug.Log("Instant");
                 OnProjectileReachedTargetRatio?.Invoke();
             }
         }

@@ -367,7 +367,6 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         // === Target === //
         private void Target_OnDeath(ITargetable targetable)
         {
-            Debug.Log("Target_OnDeath");
             targetable.OnTargetDeath -= Target_OnDeath;
             _currentTarget = null;
             
