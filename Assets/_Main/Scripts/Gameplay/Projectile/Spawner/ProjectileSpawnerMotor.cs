@@ -2,6 +2,7 @@
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 {
@@ -9,8 +10,8 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
     {
         private const int MaxLevelToCheckDeflected = 4;
         private readonly ProjectileBatchController _projectileBatchController;
-        private readonly ProjectileBatchTracker _batchTracker;
         private readonly ProjectileRingController _ringController;
+        private readonly ProjectileBatchTracker _batchTracker;
         private int _meteorAmountToSpawn;
         private bool _isSpawningBatch;
         private bool _isSpawningRing;
@@ -42,6 +43,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _meteorAmountToSpawn = _projectileBatchController.CreateBatchData();
             _batchTracker.CreateBatchData(_meteorAmountToSpawn);
             _isSpawningBatch = true;
+
         }
 
         public void SpawnNextProjectileFromDefaultBatch()
@@ -51,7 +53,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             var slotData = _projectileBatchController.GetNextSlotData();
             
             _meteorAmountToSpawn--;
-
+            
             var isLastMeteor = _meteorAmountToSpawn == 0;
             if (isLastMeteor)
             {
@@ -123,6 +125,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             _isSpawningBatch = false;
             _projectileBatchController.Restart();
+            _batchTracker.RestartData();
             NotifyAll(ProjectileSpawnerObserverMessage.Clear);
         }
         

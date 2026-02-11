@@ -21,7 +21,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         [Space(5)]
         [SerializeField] private ScreenPosition guiPosition;
 
-        private BatchDebugData _batchData = new BatchDebugData();
+        private DefaultBatchDebugData _defaultBatchData = new DefaultBatchDebugData();
         private float _batchTime;
 
         private void Awake()
@@ -29,7 +29,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             ProjectileDebugEvents.OnBatchCreated += data =>
             {
                 _batchTime = Time.realtimeSinceStartup;
-                _batchData = data;
+                _defaultBatchData = data;
             };
         }
 
@@ -38,14 +38,14 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             return new string[]
             {
                 $"Time: {_batchTime:F2}",
-                $"Level: {_batchData.Level+1}",
-                $"Amount: {_batchData.Amount}",
-                $"Start Slot: {_batchData.StartSlot}",
-                $"Offset: {_batchData.Offset}",
-                $"Inner Dist: {_batchData.InnerDist:F2}",
-                $"Next Dist: {_batchData.NextDist:F2}",
-                $"Last Slot: {_batchData.LastSlot}", 
-                $"Type: {_batchData.SpawnType}"
+                $"Level: {_defaultBatchData.Level+1}",
+                $"Amount: {_defaultBatchData.Amount}",
+                $"Start Slot: {_defaultBatchData.StartSlot}",
+                $"Offset: {_defaultBatchData.Offset}",
+                $"Inner Dist: {_defaultBatchData.InnerDist:F2}",
+                $"Next Dist: {_defaultBatchData.NextDist:F2}",
+                $"Last Slot: {_defaultBatchData.LastSlot}", 
+                $"Type: {_defaultBatchData.SpawnType}"
             };
         }
 

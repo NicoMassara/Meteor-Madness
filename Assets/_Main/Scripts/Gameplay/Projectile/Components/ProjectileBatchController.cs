@@ -50,6 +50,20 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             _levelAmount =  levelAmount;
             _abilityCountdown =  new AbilityCountdown();
             InitializeData();
+            OnDebugBatchCreated += debugData =>
+            {
+                ProjectileDebugEvents.TriggerBatchCreated(new DefaultBatchDebugData
+                {
+                    Level = _currentLevel,
+                    Amount = debugData.Amount,
+                    StartSlot = debugData.StartSlot,
+                    Offset =  debugData.Offset,
+                    InnerDist = debugData.InnerDist,
+                    NextDist =  debugData.NextDist,
+                    LastSlot =  debugData.LastSlot,
+                    SpawnType =  debugData.SpawnType
+                });
+            };
         }
 
         private void InitializeData()
@@ -92,7 +106,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 if (_abilityCountdown.HasReachedTarget)
                 {
                     _abilityCountdown.Restart();
-                    hasAbility = true;
+                    //hasAbility = true;
                 }
             }
             
@@ -104,19 +118,21 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         private BatchSpawnData CreateBatchSpawnData(int index, bool hasAbility)
         {
             var temp = _data.GetDataByIndex(index);
-            
+            var amount = temp.ProjectileAmountRange.RandomRange;
+
             return new BatchSpawnData
             {
                 SpeedMultiplier = temp.SpeedMultiplierRange.RandomRange,
-                Amount = temp.ProjectileAmountRange.RandomRange,
+                Amount = amount,
                 SlotRange = temp.SlotRange.RandomRange,
                 InnerDistance = temp.InnerBatchDistanceRange.RandomRange,
                 NextDistance = temp.NextBatchDistanceRange.RandomRange,
                 Delay = temp.NextBatchDelayRange.RandomRange,
                 NextSlotRange = temp.NextBatchSlotRange.RandomRange,
-                SpawnType = GetSpawnType(temp.SpawnTypeRange),
+                SpawnType = amount == 1 ? SpawnType.None : GetSpawnType(temp.SpawnTypeRange),
                 MinSlotRange = temp.SlotRange.Range.x,
-                HasAbility = hasAbility
+                HasAbility = hasAbility,
+                SlotRangeData = temp.SlotRange
             };
         }
     }

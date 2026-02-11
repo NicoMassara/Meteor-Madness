@@ -4,6 +4,7 @@ using System.Linq;
 using _Main.Scripts.Common;
 using _Main.Scripts.Common.MyRandom;
 using _Main.Scripts.Projectile;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile.Components
 {
@@ -25,13 +26,12 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         
             public Dictionary<SpawnType, int> GetSpawnHistoryWeight(Dictionary<SpawnType, SpawnTypeWeight> weightsData)
             {
-                var temp = new Dictionary<SpawnType, int>
+                var temp = new Dictionary<SpawnType, int>();
+
+                for (int i = 1; i < (int)SpawnType.DEFAULT_MAX; i++)
                 {
-                    { SpawnType.Random,0},
-                    { SpawnType.Ascendent,0},
-                    { SpawnType.Descendent,0},
-                    { SpawnType.SamePosition,0},
-                };
+                    temp[(SpawnType)i] = 0;
+                }
                 
                 var lastSpawn = SpawnType.None;
                 int sameSpawnCount = 0;
@@ -189,6 +189,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     {SpawnType.Ascendent, 75},
                     {SpawnType.Descendent, 75},
                     {SpawnType.SamePosition, 50},
+                    {SpawnType.UpAndDown, 50},
                 }) },
                 { SpawnType.Ascendent, new SpawnTypeWeight(new()
                 {
@@ -196,6 +197,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     {SpawnType.Ascendent, 75},
                     {SpawnType.Descendent, 100},
                     {SpawnType.SamePosition, 50},
+                    {SpawnType.UpAndDown, 50},
                 }) },
                 { SpawnType.Descendent, new SpawnTypeWeight(new()
                 {
@@ -203,6 +205,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     {SpawnType.Ascendent, 100},
                     {SpawnType.Descendent, 75},
                     {SpawnType.SamePosition, 50},
+                    {SpawnType.UpAndDown, 50},
                 }) } ,
                 { SpawnType.SamePosition, new SpawnTypeWeight(new()
                 {
@@ -210,7 +213,17 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     {SpawnType.Ascendent, 75},
                     {SpawnType.Descendent, 75},
                     {SpawnType.SamePosition, 50},
+                    {SpawnType.UpAndDown, 50},
+                }) },
+                { SpawnType.UpAndDown, new SpawnTypeWeight(new()
+                {
+                    {SpawnType.Random, 50},
+                    {SpawnType.Ascendent, 75},
+                    {SpawnType.Descendent, 75},
+                    {SpawnType.SamePosition, 50},
+                    {SpawnType.UpAndDown, 50},
                 }) } 
+                
             };
         }
         
@@ -239,10 +252,10 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             
             if (_isFirstSpawn)
             {
-                selectedSpawn = (SpawnType)RandomService.Range(1,5);
+                selectedSpawn = (SpawnType)RandomService.Range(1,(int)SpawnType.DEFAULT_MAX);
                 _isFirstSpawn = false;
                 
-                debugWeights.Values = new[] { 1,1,1,1};
+                debugWeights.Values = new[] { 1,1,1,1,1};
             }
             else
             {
@@ -254,7 +267,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     finalWeights[SpawnType.Random],
                     finalWeights[SpawnType.Ascendent],
                     finalWeights[SpawnType.Descendent],
-                    finalWeights[SpawnType.SamePosition]
+                    finalWeights[SpawnType.SamePosition],
+                    finalWeights[SpawnType.UpAndDown]
                 };
             }
             

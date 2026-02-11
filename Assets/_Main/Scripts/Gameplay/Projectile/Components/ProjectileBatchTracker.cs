@@ -8,8 +8,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
     internal class ProjectileBatchTracker
     {
         private const float MinDeflectRatio = 0.5f;
-        private CustomIdGenerator _idGenerator;
-        private Queue<BatchData> _batchQueue;
+        private readonly Queue<BatchData> _batchQueue;
         private BatchData _currentBatch;
 
         public event Action OnBatchFinished;
@@ -17,7 +16,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         public ProjectileBatchTracker()
         {
-            _idGenerator = new CustomIdGenerator(100);
+            _batchQueue = new Queue<BatchData>();
         }
 
         public void RestartData()

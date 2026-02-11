@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbd005fa8feb44aaa48174442de6322e, type: 3}
   m_Name: So_ProjectileSpawnData_Test
   m_EditorClassIdentifier: 
+  projectileSpeed: 60
   batchData:
-  - projectileAmountRange:
+  - speedMultiplierRange:
+      minRange: 1
+      maxRange: 1
+    projectileAmountRange:
       minRange: 1
       maxRange: 1
     slotRange:
@@ -41,7 +45,12 @@ MonoBehaviour:
         weight: 100
       - spawnType: 4
         weight: 100
-  - projectileAmountRange:
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
+      minRange: 1
+      maxRange: 1
+    projectileAmountRange:
       minRange: 1
       maxRange: 1
     slotRange:
@@ -69,7 +78,12 @@ MonoBehaviour:
         weight: 100
       - spawnType: 4
         weight: 100
-  - projectileAmountRange:
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
+      minRange: 1
+      maxRange: 1
+    projectileAmountRange:
       minRange: 1
       maxRange: 1
     slotRange:
@@ -97,7 +111,12 @@ MonoBehaviour:
         weight: 100
       - spawnType: 4
         weight: 100
-  - projectileAmountRange:
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
+      minRange: 1
+      maxRange: 1
+    projectileAmountRange:
       minRange: 1
       maxRange: 1
     slotRange:
@@ -125,7 +144,12 @@ MonoBehaviour:
         weight: 100
       - spawnType: 4
         weight: 100
-  - projectileAmountRange:
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
+      minRange: 1
+      maxRange: 1
+    projectileAmountRange:
       minRange: 1
       maxRange: 1
     slotRange:
@@ -153,7 +177,12 @@ MonoBehaviour:
         weight: 100
       - spawnType: 4
         weight: 100
-  - projectileAmountRange:
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
+      minRange: 1
+      maxRange: 1
+    projectileAmountRange:
       minRange: 1
       maxRange: 1
     slotRange:
@@ -181,7 +210,12 @@ MonoBehaviour:
         weight: 100
       - spawnType: 4
         weight: 100
-  - projectileAmountRange:
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
+      minRange: 1
+      maxRange: 1
+    projectileAmountRange:
       minRange: 1
       maxRange: 1
     slotRange:
@@ -209,18 +243,23 @@ MonoBehaviour:
         weight: 100
       - spawnType: 4
         weight: 100
-  - projectileAmountRange:
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
       minRange: 1
       maxRange: 1
+    projectileAmountRange:
+      minRange: 8
+      maxRange: 15
     slotRange:
-      minRange: 1
-      maxRange: 1
+      minRange: 2
+      maxRange: 4
     innerBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
+      minRange: 0.378
+      maxRange: 0.151
     nextBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
+      minRange: 0.5
+      maxRange: 0.2
     nextBatchDelayRange:
       minRange: 0
       maxRange: 0
@@ -236,4 +275,6 @@ MonoBehaviour:
       - spawnType: 3
         weight: 100
       - spawnType: 4
+        weight: 100
+      - spawnType: 5
         weight: 100

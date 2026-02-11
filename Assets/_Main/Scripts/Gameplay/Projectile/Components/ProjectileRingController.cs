@@ -66,7 +66,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 Delay = temp.NextBatchDelayRange.RandomRange,
                 NextSlotRange = temp.NextBatchSlotRange.RandomRange,
                 SpawnType = GetSpawnType(temp.SpawnTypeRange),
-                MinSlotRange = temp.SlotRange.Range.x
+                MinSlotRange = temp.SlotRange.Range.x,
+                SlotRangeData = temp.SlotRange
             };
         }
 

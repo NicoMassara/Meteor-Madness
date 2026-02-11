@@ -638,7 +638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9cb7a7315bb4f23b15aab1f2b9ca59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startLevel: 19
+  startLevel: 7
   startMeteorsEnable: 1
   timeScale:
     isEnable: 1
@@ -2376,7 +2376,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 30
-  doesDebug: 1
+  doesDebug: 0
   meteorPrefab: {fileID: 4360489399066249571, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
   abilityPrefab: {fileID: 3446774074668800784, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
   abilitySelectorData: {fileID: 11400000, guid: 4ecea22b7640c414dace2b0e8ec03413, type: 2}
@@ -2394,6 +2394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnData: {fileID: 11400000, guid: b3b14b2c721cb5e49a67c9255cecdf77, type: 2}
+  ringData: {fileID: 11400000, guid: 43477eaee10296649ae3b74157462b3f, type: 2}
 --- !u!4 &1339401652
 Transform:
   m_ObjectHideFlags: 0

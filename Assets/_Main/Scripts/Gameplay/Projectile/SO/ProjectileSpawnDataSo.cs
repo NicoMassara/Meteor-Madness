@@ -111,7 +111,7 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
 
             internal void CreateRangeArray()
             {
-                int lenght = (int)SpawnType.SamePosition;
+                int lenght = (int)SpawnType.DEFAULT_MAX-1;
                 
                 if (weightData == null || weightData.Length != lenght)
                 {

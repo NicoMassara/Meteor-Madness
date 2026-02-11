@@ -30,7 +30,7 @@ namespace _Main.Scripts.Projectile
         public float FinalValue;
     }
 
-    public struct BatchDebugData
+    public struct DefaultBatchDebugData
     {
         public int Level;
         public int Amount;
@@ -40,8 +40,19 @@ namespace _Main.Scripts.Projectile
         public float NextDist;
         public int LastSlot;
         public SpawnType SpawnType;
-        
     }
+    
+    public struct BatchDebugData
+    {
+        public int Amount;
+        public int StartSlot;
+        public int Offset;
+        public float InnerDist;
+        public float NextDist;
+        public int LastSlot;
+        public SpawnType SpawnType;
+    }
+    
 
     public struct HistoryDebugData
     {
@@ -124,7 +135,10 @@ namespace _Main.Scripts.Projectile
         Random,
         Ascendent,
         Descendent,
-        SamePosition
+        SamePosition,
+        UpAndDown,
+        
+        DEFAULT_MAX
     }
 
     #endregion
