@@ -215,7 +215,9 @@ namespace _Main.Scripts.ShieldRotation.Mediator
                 return false;
             }
 
+            Debug.Log(_currentTarget);
             var targetSlot = GetAngleSlotFromTarget(_currentTarget);
+            
             _automaticMovement.SetTargetAngle(targetSlot);
             
             return true;
@@ -423,7 +425,6 @@ namespace _Main.Scripts.ShieldRotation.Mediator
         
         private void IAutomaticMovement_OnCheckForTargetHandler()
         {
-            Debug.Log("IAutomaticMovement_OnCheckForTargetHandler");
             TrySetTargetToAutomatic(); 
         }
         

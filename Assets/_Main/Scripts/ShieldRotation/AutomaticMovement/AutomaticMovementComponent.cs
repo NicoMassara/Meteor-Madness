@@ -66,6 +66,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
         {
             public override void Awake()
             {
+                Debug.Log("Automatic - CheckingState::Awake");
                 Controller.ClearCheckTimer();
             }
             
@@ -84,6 +85,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
         {
             public override void Awake()
             {
+                Debug.Log("Automatic - SnappingState::Awake");
                 Controller.DisableCheck();
                 Controller.TriggerOnStartSnapping();
                 Controller.CalculateAngleData();
@@ -102,7 +104,7 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
 
             public override void Sleep()
             {
-                Debug.Log("Automatic - CheckingState::Sleep");
+                Debug.Log("Automatic - SnappingState::Sleep");
                 Controller.TriggerOnStopSnapping();
                 Controller.ClearAngleData();
             }
@@ -177,7 +179,11 @@ namespace _Main.Scripts.ShieldRotation.AutomaticMovement
             => _angularSpeed = Mathf.Clamp(_angularSpeed, -_data.MaxVel, _data.MaxVel);
         
         private float GetSignedDistanceToTarget() => AngleHelper.SignedAngularDistance(GetCurrentAngle(), _targetAngle);
-        private float GetAbsoluteDistanceToTarget() => Mathf.Abs(AngleHelper.SignedAngularDistance(GetCurrentAngle(), _targetAngle));
+        private float GetAbsoluteDistanceToTarget()
+        {
+            var dist = Mathf.Abs(AngleHelper.SignedAngularDistance(GetCurrentAngle(), _targetAngle));
+            return dist;
+        }
 
         #region IAutomaticMovement
 
