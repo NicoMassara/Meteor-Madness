@@ -35,7 +35,24 @@ namespace MeteorMadness.GlobalValues.Utilities
             return Math.Sign(diff);
         }
         
+        public static int GetDirectionFromAngleToSlot(int target, float origin, int slotCount = 32, float angleOffset = 0)
+        {
+            int originSlot = GetSlotFromAngle(origin, slotCount, angleOffset);
+            return GetDirectionFromSlotToTargetSlot(target,originSlot,slotCount);
+        }
+
         public static float GetSlotSize(int angleSlots = 32) => (360f) / angleSlots;
+
+        public static int GetSlotFromAngle(float angle, int angleSlots = 32, float angleOffset = 0f)
+        {
+            if (angleSlots <= 0)
+                throw new ArgumentException("angleSlots must be greater than 0");
+
+            float normalized = Mathf.Repeat(angle + angleOffset, 360f);
+            float step = 360f / angleSlots;
+
+            return Mathf.FloorToInt(normalized / step);
+        }
         
         public static float GetAngleFromSlot(int slot, int angleSlots = 32, float angleOffset = 0)
         {

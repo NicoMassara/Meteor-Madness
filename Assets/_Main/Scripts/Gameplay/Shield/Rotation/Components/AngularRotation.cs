@@ -3,131 +3,86 @@ using UnityEngine;
 
 namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Components
 {
-    public class AngularRotation : IAngularRotation, AngularRotation.IRotation
+    public class AngularRotation : IAngularRotation, AngularRotation.IController
     {
-        private interface IRotation
-        {
-            public void DisableRotation();
-            public void EnableRotation();
-            public void Accelerate(float deltaTime);
-            public bool GetHasReachedMaxSpeed();
-            public bool GetHasReachedTargetAngle();
-            public void SnapToTargetAngle();
-            public bool GetHasTargetAngle();
-            public void StopRotation();
-            public void TriggerStartMoving();
-            public void TriggerStopMoving();
-        }
-        
         private enum States
         {
             Disabled,
             Idle,
-            Moving,
-            Snapping,
-            Stop
+            Rotating,
+            Snapping
+        }
+        
+        private interface IController : IFsmController
+        {
+            public bool GetHasTargetAngle();
+            public void Rotate(float deltaTime);
+            public void SnapToTargetAngle();
+            public void FinishRotation();
+            public bool GetHasReachedTargetAngle();
+            public void DisableRotation();
+            public void TriggerOnStartRotation();
+            public void TriggerOnTargetReached();
         }
 
-        private class RotationController
+        private class Controller : SimpleFsm<IController, States>
         {
-            private readonly IRotation _rotation;
-            private States _currentState;
-
-            public RotationController(IRotation rotation)
+            public Controller(IController controller) : base(controller) { }
+            protected override void AwakeState(States state)
             {
-                _rotation = rotation;
-            }
-
-            public void Execute(float deltaTime)
-            {
-                switch (_currentState)
+                switch (state)
                 {
-                    case States.Idle:
-                        
-                        if (_rotation.GetHasTargetAngle())
-                        {
-                            ChangeState(States.Moving);
-                        }
-
+                    case States.Disabled:
+                        FsmController.DisableRotation();
                         break;
                     
-                    case States.Moving:
-                        
-                        if(_rotation.GetHasReachedMaxSpeed() == false)
-                            _rotation.Accelerate(deltaTime);
-
-                        if (_rotation.GetHasReachedTargetAngle())
-                        {
-                            ChangeState(States.Snapping);
-                        }
-
+                    case States.Rotating:
+                        FsmController.TriggerOnStartRotation();
                         break;
                     
                     case States.Snapping:
                         
+                        FsmController.SnapToTargetAngle();
+                        FsmController.TriggerOnTargetReached();
                         ChangeState(States.Idle);
                         
                         break;
                 }
             }
-            
-            public void ChangeState(States newState)
-            {
-                if(_currentState == newState) return;
-                
-                // Sleep
-                SleepState(_currentState);
-                
-                _currentState = newState;
 
-                // Awake
-                AwakeState(_currentState);
-                
-                Debug.Log("Current State: " + _currentState);
-            }
-
-            private void SleepState(States state)
+            protected override void ExecuteState(float deltaTime)
             {
-                switch (state)
+                switch (CurrentState)
                 {
-                    case States.Moving:
-                        
-                        _rotation.TriggerStopMoving();
-                        
+                    case States.Idle:
+
+                        if (FsmController.GetHasTargetAngle())
+                        {
+                            ChangeState(States.Rotating);
+                        }
+
                         break;
                     
-                    case States.Disabled:
-                        
-                        _rotation.EnableRotation();
-                        
+                    case States.Rotating:
+
+                        FsmController.Rotate(deltaTime);
+
+                        if (FsmController.GetHasReachedTargetAngle())
+                        {
+                            ChangeState(States.Snapping);
+                        }
+
                         break;
                 }
             }
 
-            private void AwakeState(States state)
+            protected override void SleepState(States state)
             {
                 switch (state)
                 {
-                    case States.Disabled:
-                        _rotation.DisableRotation();
-                        break;
-                    
-                    case States.Moving:
-                        
-                        _rotation.TriggerStartMoving();
-                        
-                        break;
-                    
-                    case States.Snapping:
+                    case States.Rotating:
 
-                        _rotation.StopRotation();
-                        _rotation.SnapToTargetAngle();
-                        
-                        break;
-                    
-                    case  States.Stop:
-
-                        _rotation.StopRotation();
+                        FsmController.FinishRotation();
                         
                         break;
                 }
@@ -135,144 +90,104 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
         }
 
         private readonly Transform _objectToRotate;
-        private readonly IAngularRotationData _data;
-        private readonly RotationController _controller;
-        private float _inputAngle;
-        private float _inputMagnitude;
-        private float _targetAngle;
-        private float _currentAcc;
+        private readonly Controller _controller;
+        private IRotationData _rotationData;
         private bool _hasTargetAngle;
-        private bool _isInputEnable;
-        private int _targetSlot;
+        private float _targetAngle;
+        private float _speedMultiplier;
+        private float _currentAcceleration;
         
-        public event Action OnStopped;
-        public event Action OnMoved;
+        public event Action OnTargetReached;
+        public event Action OnStartRotation;
 
-        public AngularRotation(Transform objectToRotate, IAngularRotationData data)
+        public AngularRotation(Transform objectToRotate)
         {
             _objectToRotate = objectToRotate;
-            _data = data;
-            _controller = new RotationController(this);
-            _controller.ChangeState(States.Disabled);
+            _controller = new Controller(this);
         }
 
         #region Private API
+
+        private float GetMaxSpeed() => _rotationData.MaxSpeed * _speedMultiplier;
+        private float GetSpeedRatio() => Mathf.Clamp01(_currentAcceleration / GetMaxSpeed());
+        private float GetCurrentAngle() => _objectToRotate.rotation.eulerAngles.z;
+
+        #endregion
+
+        #region IAngularRotation
         
-        private float GetMaxSpeed() => _data.MaxSpeed * GetSpeedMagnitudeCurve();
-        private float GetSpeedMagnitudeCurve() => _data.MagnitudeCurve.Evaluate(_inputMagnitude);
-        private void ClampAngularVelocity() => _currentAcc = Mathf.Clamp(_currentAcc, 0, GetMaxSpeed());
-        
-        private void RotateObject(float deltaTime)
+        public void Execute(float deltaTime) => _controller.Update(deltaTime);
+        public void SetEnable(bool isEnabled) => _controller.ChangeState(isEnabled ? States.Idle : States.Disabled);
+        public void SetRotationData(IRotationData rotationData) => _rotationData = rotationData;
+        public void SetTargetAngle(float targetAngle)
         {
+            _targetAngle = targetAngle;
+            _hasTargetAngle = true;
+        }
+        
+        public void SetSpeedMultiplier(float speedMultiplier = 1) => _speedMultiplier = Mathf.Max(speedMultiplier, 0f);
+
+        public void StopRotation()
+        {
+            _targetAngle = 0;
+            _hasTargetAngle = false;
+        }
+
+        public void RestartRotation()
+        {
+            _targetAngle = 0;
+            SnapToTargetAngle();
+        }
+
+        #endregion
+        
+        #region IController
+
+        public void DisableRotation()
+        {
+            FinishRotation();
+            _rotationData = null;
+        }
+
+        public bool GetHasTargetAngle()
+        {
+            if (_rotationData == null)
+            {
+                Debug.LogWarning("No rotation data found");
+                return false;
+            }
+            
+            return _hasTargetAngle;
+        }
+
+        public void Rotate(float deltaTime)
+        {
+            var finalAcc = _rotationData.Acceleration * _speedMultiplier;
+            _currentAcceleration += finalAcc * deltaTime;
+            
+            var finalSpeed = finalAcc * deltaTime;
             var targetAngle = Quaternion.Euler(0, 0, _targetAngle);
             var currentAngle = _objectToRotate.rotation;
-            var finalSpeed = _currentAcc * deltaTime;
             var finalRotation = Quaternion.RotateTowards(currentAngle ,targetAngle, finalSpeed);
             _objectToRotate.rotation = finalRotation;
         }
 
-        #endregion
-
-        #region Public Shared
-
-        public void StopRotation()
+        public void SnapToTargetAngle() => _objectToRotate.rotation = Quaternion.Euler(0, 0, _targetAngle);
+        public void FinishRotation()
         {
-            _currentAcc = 0;
+            _currentAcceleration = 0;
             _hasTargetAngle = false;
-            Debug.Log("Rotation Stopped");
         }
-
-        #endregion
-        
-        #region IAngularRotation
-
-        public void Execute(float deltaTime)
-        {
-            _controller.Execute(deltaTime);
-            ClampAngularVelocity();
-            RotateObject(deltaTime);
-        }
-        
-        public void SetInputAngle(float inputAngle)
-        {
-            if(_isInputEnable == false) return;
-            
-            var temp = Mathf.Abs(inputAngle - _inputAngle);
-            
-            if (temp < _data.MinInputAngle)
-            {
-                return;
-            }
-
-            _hasTargetAngle = true;
-            _inputAngle = inputAngle;
-            _targetAngle = inputAngle;
-        }
-        
-        public void SetInputMagnitude(float inputMagnitude)
-        {
-            if(_isInputEnable == false) return;
-            
-            if (Mathf.Approximately(_inputMagnitude, inputMagnitude))
-            {
-                return;
-            }
-            
-            _inputMagnitude = inputMagnitude;
-        }
-
-        public void SetEnable(bool isEnabled)
-        {
-            _controller.ChangeState(isEnabled ? States.Idle : States.Disabled);
-        }
-
-        public void RestartPosition()
-        {
-            _objectToRotate.rotation = Quaternion.Euler(0, 0, 0);
-        }
-
-        public void SetActiveInput(bool isActive)
-        {
-            _isInputEnable = isActive;
-        }
-
-        #endregion
-
-        #region IRotation
-
-        public bool GetHasTargetAngle() => _hasTargetAngle;
-        public bool GetHasReachedMaxSpeed() => GetSpeedRatio() >= 1;
-        public float GetSpeedRatio() => Mathf.Clamp01(_currentAcc / GetMaxSpeed());
-        public float GetCurrentAngle() => _objectToRotate.rotation.eulerAngles.z;
         
         public bool GetHasReachedTargetAngle()
         {
-            const float angleThreshold = 0.5f;
+            const float angleThreshold = 0.1f;
             return Mathf.Abs(GetCurrentAngle() - _targetAngle) <= angleThreshold;
         }
-
-        public void DisableRotation()
-        {
-            StopRotation();
-            SetActiveInput(false);
-        }
-
-        public void EnableRotation()
-        {
-            SetActiveInput(true);
-            _inputAngle = float.MaxValue;
-        }
-
-        public void Accelerate(float deltaTime)
-        {
-            var finalAcceleration = _data.Acceleration * GetSpeedMagnitudeCurve();
-            _currentAcc += finalAcceleration * deltaTime;
-        }
         
-        public void SnapToTargetAngle() => _objectToRotate.rotation = Quaternion.Euler(0, 0, _targetAngle);
-
-        public void TriggerStartMoving() => OnMoved?.Invoke();
-        public void TriggerStopMoving() => OnStopped?.Invoke();
+        public void TriggerOnStartRotation() => OnStartRotation?.Invoke();
+        public void TriggerOnTargetReached() => OnTargetReached?.Invoke();
+        
 
         #endregion
     }
