@@ -199,6 +199,12 @@ namespace AmplifyShaderEditor
 			var port = OutputPortDesc[ outputPortID ];
 			string varValue = string.Empty;
 
+			if ( outputPortID == OutputPortID.SHADOW_ATTENUATION && !dataCollector.IsFragmentCategory )
+			{
+				UIUtils.ShowMessage( UniqueId, "Main Light node Shadow Attenuation output not supported on Vertex or Tessellation stages." );
+				return m_outputPorts[0].ErrorValue;
+			}
+
 			if ( !dataCollector.HasLocalVariable( port.varName ) )
 			{
 				if ( !dataCollector.IsTemplate )

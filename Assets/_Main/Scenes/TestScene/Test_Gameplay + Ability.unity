@@ -667,7 +667,7 @@ MonoBehaviour:
     gameplayTimeScale: 1
     shieldTimeScale: 1
     effectsTimeScale: 1
-  gameplayZoom: {fileID: 11400000, guid: 25548d5d405373c479564880441a1fab, type: 2}
+  gameplayZoom: {fileID: 11400000, guid: 3d3383e51c3cee246a539218cc8d39ab, type: 2}
 --- !u!4 &322886392
 Transform:
   m_ObjectHideFlags: 0
@@ -1353,6 +1353,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collisionData: {fileID: 11400000, guid: 9db3fd3fc0c071346a3c4ebf978de66f, type: 2}
+  preDeath: {fileID: 0}
+  death: {fileID: 0}
+  reconstruction: {fileID: 0}
 --- !u!114 &593039202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2709,7 +2712,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1556733838}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -3497,7 +3500,7 @@ Canvas:
   m_GameObject: {fileID: 1938801812}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -3632,7 +3635,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 2542717572689714522, guid: 1b68872a63720194c8b46cc2d9f26b13, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

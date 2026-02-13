@@ -1303,17 +1303,39 @@ namespace AmplifyShaderEditor
 			return varName;
 		}
 
-		public string GetWorldNormal( int uniqueId, PrecisionType precisionType, string normal, string outputId )
+		public string GetWorldNormal( int uniqueId, PrecisionType precisionType, string normal, string outputId, ViewSpace normalSpace = ViewSpace.Tangent )
 		{
-			string tanToWorld0 = string.Empty;
-			string tanToWorld1 = string.Empty;
-			string tanToWorld2 = string.Empty;
+			if ( normalSpace == ViewSpace.Tangent )
+			{
+				string tanToWorld0 = string.Empty;
+				string tanToWorld1 = string.Empty;
+				string tanToWorld2 = string.Empty;
 
-			GetWorldTangentTf( precisionType, out tanToWorld0, out tanToWorld1, out tanToWorld2, true );
+				GetWorldTangentTf( precisionType, out tanToWorld0, out tanToWorld1, out tanToWorld2, true );
 
-			string tanNormal = "tanNormal" + outputId;
-			m_currentDataCollector.AddLocalVariable( uniqueId, "float3 " + tanNormal + " = " + normal + ";" );
-			return string.Format( "float3( dot( {1}, {0} ), dot( {2}, {0} ), dot( {3}, {0} ) )", tanNormal, tanToWorld0, tanToWorld1, tanToWorld2 );
+				string tanNormal = "tanNormal" + outputId;
+				m_currentDataCollector.AddLocalVariable( uniqueId, "float3 " + tanNormal + " = " + normal + ";" );
+				return string.Format( "float3( dot( {1}, {0} ), dot( {2}, {0} ), dot( {3}, {0} ) )", tanNormal, tanToWorld0, tanToWorld1, tanToWorld2 );
+			}
+			else if ( normalSpace == ViewSpace.World )
+			{
+				return normal;
+			}
+			else if ( normalSpace == ViewSpace.Object )
+			{
+				string formatStr = IsSRP ? "TransformObjectToWorldNormal( {0} )" : "UnityObjectToWorldNormal( {0} )";
+				return string.Format( formatStr, normal );
+			}
+			else if ( normalSpace == ViewSpace.View )
+			{
+				string formatStr = IsSRP ? "TransformViewToWorldNormal( {0} )" : "mul( ( float3x3 )UNITY_MATRIX_I_V, {0} )";
+				return string.Format( formatStr, normal );
+			}
+			else
+			{
+				// unsupported
+				return "float3( 0, 0, 0 )";
+			}
 		}
 
 		public string GetVertexTangent( WirePortDataType type, PrecisionType precisionType, bool useMasterNodeCategory = true, MasterNodePortCategory customCategory = MasterNodePortCategory.Fragment )
@@ -1975,7 +1997,7 @@ namespace AmplifyShaderEditor
 			}
 
 			string worldPos = GetWorldPos();
-			string viewVectorWS = "( _WorldSpaceCameraPos.xyz - " + worldPos + " )";
+			string viewVectorWS = string.Format( "( ( unity_OrthoParams.w == 0 ) ? _WorldSpaceCameraPos - {0} : UNITY_MATRIX_V[ 2 ].xyz )", worldPos );
 
 			string viewVector;
 			if ( space == ViewSpace.Tangent )

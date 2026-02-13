@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0792800bf4481fbdb7c858765d206f, type: 3}
   m_Name: SO_VibrationData_Shield_Deflect
   m_EditorClassIdentifier: 
-  data:
-    Duration: 75
+  vibrationData:
+  - Duration: 150
     Intensity: 50
-  duration: 0
-  intensity: 0
-  type: 0
+  - Duration: 50
+    Intensity: 25
+  priority: 150

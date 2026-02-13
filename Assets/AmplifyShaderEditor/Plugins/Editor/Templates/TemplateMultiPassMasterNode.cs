@@ -217,6 +217,28 @@ namespace AmplifyShaderEditor
 		[NonSerialized]
 		private double m_refreshLODValueMasterNodesTimestamp;
 
+		// Template Bridges => Transition templates that are used to fix ase_pass or metadata issues
+		struct TemplateBridge
+		{
+			public string originalGUID; // original template we need to workaround
+			public string bridgeGUID;	// temporary template used for safe swap
+			public int versionMin;		// inclusive
+			public int versionMax;		// inclusive
+		};
+
+		private static TemplateBridge[] TemplateBriges = new[]
+		{
+			new TemplateBridge
+			{
+				// ** "Universal/2D Custom Lit" => Bridge1 **
+				// Workadround to solve errors in versions v1.9.9.6 to v1.9.9.7
+				originalGUID = "ece0159bad6633944bf6b818f4dd296c",
+				bridgeGUID = "25ed3094b38eca84ba6e6529789a1455",
+				versionMin = 19906,
+				versionMax = 19907
+			}
+		};
+
 		//////////////////////////////////////////////////////////////////////////
 		protected override void CommonInit( int uniqueId )
 		{
@@ -3111,9 +3133,9 @@ namespace AmplifyShaderEditor
 
 		public override void ReadFromString( ref string[] nodeParams )
 		{
-
 			base.ReadFromString( ref nodeParams );
 
+			string revertTemplate = string.Empty;
 			string currShaderName = string.Empty;
 			try
 			{
@@ -3122,6 +3144,18 @@ namespace AmplifyShaderEditor
 					currShaderName = UIUtils.RemoveShaderInvalidCharacters( currShaderName );
 
 				m_templateGUID = GetCurrentParam( ref nodeParams );
+
+				// Handle template bridges
+				int currentShaderVersion = UIUtils.CurrentShaderVersion();
+				foreach ( TemplateBridge bridge in TemplateBriges )
+				{
+					if ( m_templateGUID == bridge.originalGUID && currentShaderVersion >= bridge.versionMin && currentShaderVersion <= bridge.versionMax )
+					{
+						revertTemplate = m_templateGUID;
+						m_templateGUID = bridge.bridgeGUID;
+						break;
+					}
+				}
 
 				bool hasUniqueName = false;
 				if( UIUtils.CurrentShaderVersion() > PASS_UNIQUE_ID_VERSION )
@@ -3233,6 +3267,12 @@ namespace AmplifyShaderEditor
 			catch( Exception e )
 			{
 				Debug.LogException( e , this );
+			}
+
+			if ( !string.IsNullOrEmpty( revertTemplate ) )
+			{
+				EditorApplication.delayCall += () => m_containerGraph.ParentWindow.DelayedReplaceMasterNode( this, revertTemplate );
+
 			}
 
 			m_containerGraph.CurrentCanvasMode = NodeAvailability.TemplateShader;

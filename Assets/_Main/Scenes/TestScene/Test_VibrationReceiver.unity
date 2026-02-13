@@ -449,6 +449,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: VibrationSender
       objectReference: {fileID: 0}
+    - target: {fileID: 7623018332192735118, guid: feb119225a1aa8042add1aeb7c472a73, type: 3}
+      propertyPath: Duration
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7623018332192735118, guid: feb119225a1aa8042add1aeb7c472a73, type: 3}
+      propertyPath: Intensity
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

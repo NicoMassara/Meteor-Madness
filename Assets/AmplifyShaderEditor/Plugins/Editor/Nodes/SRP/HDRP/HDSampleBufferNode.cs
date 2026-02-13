@@ -301,7 +301,11 @@ namespace AmplifyShaderEditor
 		{
 			const string subTitleFormat = "Source( {0} )";
 			SetAdditonalTitleTextOnCallback( SourceBufferToConfig[ m_sourceBuffer ].optionName, subTitleFormat, ( instance, newSubTitle ) => instance.AdditonalTitleContent.text = string.Format( subTitleFormat, newSubTitle ) );
-			GUI.Label( titlePos, HDSampleBufferTitle, UIUtils.GetCustomStyle( CustomStyle.NodeTitle ) );
+
+			if ( ContainerGraph.LodLevel <= ParentGraph.NodeLOD.LOD3 )
+			{
+				GUI.Label( titlePos, HDSampleBufferTitle, UIUtils.GetCustomStyle( CustomStyle.NodeTitle ) );
+			}
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
@@ -336,6 +340,11 @@ namespace AmplifyShaderEditor
 				{
 					dataCollector.AddToUniforms( -1, "TEXTURE2D_X( _CustomPostProcessInput );" );
 				}
+				else if ( m_sourceBuffer == SourceBufferOption.NormalWS || m_sourceBuffer == SourceBufferOption.Smoothness )
+				{
+					dataCollector.AddToIncludes( UniqueId, "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/NormalBuffer.hlsl" );
+				}
+
 				dataCollector.AddFunction( source.function[ 0 ], source.function, false );
 
 				dataCollector.AddLocalVariable( UniqueId, CurrentPrecisionType, source.functionReturnFormat, sampleVarName, sampleVarValue );
@@ -351,11 +360,13 @@ namespace AmplifyShaderEditor
 		{
 			base.OnNodeLogicUpdate( drawInfo );
 
-			bool isHDRP =	( ContainerGraph.CurrentCanvasMode != NodeAvailability.SurfaceShader ) &&
-							( ContainerGraph.CurrentCanvasMode == NodeAvailability.TemplateShader && ContainerGraph.CurrentSRPType == TemplateSRPType.HDRP );
+			bool isHDRP = ( ContainerGraph.CurrentCanvasMode == NodeAvailability.TemplateShader && ContainerGraph.CurrentSRPType == TemplateSRPType.HDRP );
 			bool isWrongHDRP = isHDRP && ( ASEPackageManagerHelper.PackageSRPVersion < ( int )ASESRPBaseline.ASE_SRP_14_X );
 
-			m_showErrorMessage = !isHDRP || isWrongHDRP;
+			m_showErrorMessage = ( ContainerGraph.CurrentCanvasMode == NodeAvailability.SurfaceShader ) ||
+								 ( ContainerGraph.CurrentCanvasMode == NodeAvailability.TemplateShader && ContainerGraph.CurrentSRPType != TemplateSRPType.HDRP ) ||
+								 isWrongHDRP;
+
 			if ( m_showErrorMessage )
 			{
 				if ( isWrongHDRP )

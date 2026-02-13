@@ -13,7 +13,7 @@ namespace MeteorMadness.Contracts
             public const bool AnalyticsDebugEnable = true;
             public const bool DoesSendAnalytics = false;
             public const bool DoesSaveProgress = true;
-            public const bool HasInfiniteCoins = false;
+            public const bool HasInfiniteCoins = true;
             public const bool HasAllSkinsUnlocked = false;
             public const float BaseMeteorValue = 10f;
             public const int SpawnLevelAmount = 5;

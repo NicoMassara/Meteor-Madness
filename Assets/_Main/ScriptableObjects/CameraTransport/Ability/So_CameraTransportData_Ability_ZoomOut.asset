@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: So_CameraTransportData_Ability_ZoomOut
   m_EditorClassIdentifier: 
   movementValues:
-    position: {x: 0, y: -3.25}
+    position: {x: 0, y: -7}
     curve:
       serializedVersion: 2
       m_Curve:
@@ -40,7 +40,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     doesChange: 1
   zoomValues:
-    value: 18
+    value: 30
     curve:
       serializedVersion: 2
       m_Curve:

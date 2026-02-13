@@ -1,3 +1,34 @@
+v1.9.9.8
+
+   Editor
+      * Optimized node previews by skipping more work on "Disable Previews"
+      * Optimized node previews by skipping editor updates when canvas not focused
+      * Fixed TemplateMenuItems not always matching known templates
+      * Fixed Built-In example scenes missing prefab
+      * Fixed node error/warning/info labels turning black when hovering the mouse cursor
+      * Fixed package request error raised in Multiplayer PlayMode
+      * Fixed node error/warning/info labels still visible when maxing out zoom
+      * Fixed handling of platform enums throwing exceptions when not recognized
+      * Fixed unused _texcoord property being added to template-based shaders
+
+   Templates
+      * Updated URP Decal templates for Unity 6000.0.67+ and 6000.3.4+
+      * Renamed all "Universal/2D *" templates to "Universal/Sprite *"
+      * Fixed URP "2D Custom Lit" templates 14x to 17.3 (Please Re-save)
+      * Fixed URP 14x 2D template errors on versions below 14.0.12
+
+   Nodes
+      * Added warning using "Main Light Attenuation" with VertexToFrag (#571)
+      * Added warning using "Main Light" Shadow Att output with VertexToFrag (#571)
+      * Renamed "Switch by Pipeline" node to "Function Switch by Pipeline"
+      * Fixed "HD Sample Buffer" errors on HDRP/Unlit using NormalWS or Smoothness
+      * Fixed "Switch by Pipeline" node preview not working properly
+      * Fixed View Dir/Vector code generation for Orthographic cameras
+      * Fixed "Indirect Diffuse Light" code generation using VertexToFrag on BIRP (#572)
+      * Fixed "Indirect Diffuse Light" generating SampleBakedGI error on HDRP 14 to 16
+      * Fixed "HD Sample Buffer" node title label too large when zooming out
+      * Fixed "HD Sample Buffer" showing error when used inside a Shader Function
+
 v1.9.9.7
 
    Editor

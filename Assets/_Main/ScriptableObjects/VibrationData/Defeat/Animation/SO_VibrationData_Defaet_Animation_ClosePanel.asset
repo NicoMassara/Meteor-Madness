@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0792800bf4481fbdb7c858765d206f, type: 3}
   m_Name: SO_VibrationData_Defaet_Animation_ClosePanel
   m_EditorClassIdentifier: 
-  data:
-    Duration: 100
-    Intensity: 75
-  duration: 2
-  intensity: 5
-  type: 0
+  vibrationData:
+  - Duration: 100
+    Intensity: 50
+  - Duration: 50
+    Intensity: 0
+  - Duration: 100
+    Intensity: 50
+  priority: 120

@@ -703,6 +703,17 @@ namespace AmplifyShaderEditor
 			}
 		}
 
+		public HashSet<string> ExtractTemplateMenuItems()
+		{
+			var regex = new Regex( @"\b[a-fA-F0-9]{32}\b" );
+			var set = new HashSet<string>();
+			foreach ( Match m in regex.Matches( File.ReadAllText( AssetDatabase.GUIDToAssetPath( TemplateMenuItemsFileGUID ) ) ) )
+			{
+				set.Add( m.Value );
+			}
+			return set;
+		}
+
 		public void CreateTemplateMenuItems()
 		{
 			if ( m_sortedTemplates == null || m_sortedTemplates.Count == 0 )
@@ -732,13 +743,6 @@ namespace AmplifyShaderEditor
 				}
 			}
 
-			// Sort templates by name
-			var sorted = new SortedDictionary<string, string>();
-			for ( int i = 0; i < m_sortedTemplates.Count; i++ )
-			{
-				sorted.Add( m_sortedTemplates[ i ].Name, m_sortedTemplates[ i ].GUID );
-			}
-
 			System.Text.StringBuilder fileContents = new System.Text.StringBuilder();
 			fileContents.Append( "// Amplify Shader Editor - Visual Shader Editing Tool\n" );
 			fileContents.Append( "// Copyright (c) Amplify Creations, Lda <info@amplify.pt>\n" );
@@ -749,22 +753,24 @@ namespace AmplifyShaderEditor
 			fileContents.Append( "\tpublic class TemplateMenuItems\n" );
 			fileContents.Append( "\t{\n" );
 			int fixedPriority = 85;
-			foreach ( var pair in sorted )
+			foreach ( var template in m_sortedTemplates )
 			{
-				fileContents.AppendFormat( "\t\t[MenuItem( \"Assets/Create/Amplify Shader/{0}\", false, {1} )]\n", pair.Key, fixedPriority );
-				string itemName = UIUtils.RemoveInvalidCharacters( pair.Key );
-				fileContents.AppendFormat( "\t\tpublic static void ApplyTemplate{0}()\n", itemName/*i*/ );
-				fileContents.Append( "\t\t{\n" );
-				//fileContents.AppendFormat( "\t\t\tAmplifyShaderEditorWindow.CreateNewTemplateShader( \"{0}\" );\n", m_sortedTemplates[ i ].GUID );
-				fileContents.AppendFormat( "\t\t\tAmplifyShaderEditorWindow.CreateConfirmationTemplateShader( \"{0}\" );\n", pair.Value );
-				fileContents.Append( "\t\t}\n" );
+				string itemName = UIUtils.RemoveInvalidCharacters( template.Name );
+
+				// Comment bridge templates as they're supposed to be invisible; however, ExtractTemplateMenuItems still needs to find it via regex
+				string comment = template.Name.Contains( "/ASEBridgeTemplates/" ) ? "//" : "";
+
+				fileContents.AppendFormat( "\t\t{0}[MenuItem( \"Assets/Create/Amplify Shader/{1}\", false, {2} )]\n", comment, template.Name, fixedPriority );
+				fileContents.AppendFormat( "\t\t{0}public static void ApplyTemplate{1}()\n", comment, itemName );
+				fileContents.AppendFormat( "\t\t{0}{{\n", comment );
+				fileContents.AppendFormat( "\t\t{0}\tAmplifyShaderEditorWindow.CreateConfirmationTemplateShader( \"{1}\" );\n", comment, template.GUID );
+				fileContents.AppendFormat( "\t\t{0}}}\n", comment );
 			}
 			fileContents.Append( "\t}\n" );
 			fileContents.Append( "}\n" );
 			string filePath = AssetDatabase.GUIDToAssetPath( TemplateMenuItemsFileGUID );
 			IOUtils.SaveTextfileToDisk( fileContents.ToString(), filePath, false );
 			m_filepath = filePath;
-			//AssetDatabase.ImportAsset( filePath );
 
 			DebugMessage( "Updated Template Menu Items" );
 		}
@@ -878,12 +884,18 @@ namespace AmplifyShaderEditor
 		public void AddTemplate( TemplateDataParent templateData )
 		{
 			if ( templateData == null || !templateData.IsValid )
+			{
 				return;
+			}
+
 			RefreshAvailableTemplates();
+
 			if ( !m_availableTemplates.ContainsKey( templateData.GUID ) )
 			{
-				m_sortedTemplates.Add( templateData );
 				m_availableTemplates.Add( templateData.GUID, templateData );
+
+				m_sortedTemplates.Add( templateData );
+				m_sortedTemplates.Sort( ( a, b ) => string.Compare( a.Name, b.Name, StringComparison.Ordinal ) );
 			}
 		}
 

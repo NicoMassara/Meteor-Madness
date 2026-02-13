@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0792800bf4481fbdb7c858765d206f, type: 3}
   m_Name: SO_VibrationData_Ability_Triggered
   m_EditorClassIdentifier: 
-  data:
-    Duration: 250
-    Intensity: 128
-  duration: 0
-  intensity: 0
-  type: 0
+  vibrationData:
+  - Duration: 200
+    Intensity: 65
+  - Duration: 50
+    Intensity: 0
+  - Duration: 200
+    Intensity: 65
+  priority: 120

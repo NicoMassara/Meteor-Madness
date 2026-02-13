@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
@@ -399,6 +400,15 @@ namespace AmplifyShaderEditor
 			TemplatesManager.Instance.FlushRegisterTemplateQueue();
 
 			EditorUtility.ClearProgressBar();
+
+			if ( !refreshMenuItems )
+			{
+				// diogo: double check current menu templates, to see if they match the current known templates
+				var templateMenuItems = TemplatesManager.Instance.ExtractTemplateMenuItems();
+				var knownTemplates = new HashSet<string>( s_knownTemplates.Keys );
+
+				refreshMenuItems = !templateMenuItems.SetEquals( knownTemplates );
+			}
 
 			if ( refreshMenuItems )
 			{

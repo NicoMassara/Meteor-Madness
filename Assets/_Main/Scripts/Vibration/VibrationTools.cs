@@ -104,7 +104,7 @@ namespace MeteorMadness.Vibration
         [Tooltip("In ms")]
         [Range(10,3000)]
         public long Duration;
-        [Range(1,255)]
+        [Range(0,255)]
         public int Intensity;
     }
     

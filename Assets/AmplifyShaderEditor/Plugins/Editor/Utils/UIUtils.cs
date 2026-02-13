@@ -1066,12 +1066,15 @@ namespace AmplifyShaderEditor
 
 			BoldErrorStyle = new GUIStyle( (GUIStyle)"BoldLabel" );
 			BoldErrorStyle.normal.textColor = Color.red;
+			BoldErrorStyle.hover.textColor = Color.red;
 			BoldErrorStyle.alignment = TextAnchor.MiddleCenter;
 			BoldWarningStyle = new GUIStyle( (GUIStyle)"BoldLabel" );
 			BoldWarningStyle.normal.textColor = Color.yellow;
+			BoldWarningStyle.hover.textColor = Color.yellow;
 			BoldWarningStyle.alignment = TextAnchor.MiddleCenter;
 			BoldInfoStyle = new GUIStyle( (GUIStyle)"BoldLabel" );
 			BoldInfoStyle.normal.textColor = Color.white;
+			BoldInfoStyle.hover.textColor = Color.white;
 			BoldInfoStyle.alignment = TextAnchor.MiddleCenter;
 
 			ToolbarMainTitle = new GUIStyle( MainSkin.customStyles[ (int)CustomStyle.MainCanvasTitle ] );

@@ -36,7 +36,7 @@ namespace _Main.Scripts.Inputs
             return RectTransformUtility.RectangleContainsScreenPoint(
                 InputData.LimitedZone,
                 screenPos,
-                null
+                Camera.main
             );
         }
 

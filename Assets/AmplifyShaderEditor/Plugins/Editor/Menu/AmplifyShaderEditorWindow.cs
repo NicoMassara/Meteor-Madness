@@ -4052,7 +4052,6 @@ namespace AmplifyShaderEditor
 												else
 													newNode.ReadFromString( ref parameters );
 
-
 												if( oldType == type )
 												{
 													newNode.ReadInputDataFromString( ref parameters );
@@ -4381,7 +4380,6 @@ namespace AmplifyShaderEditor
 												}
 												else
 													newNode.ReadFromString( ref parameters );
-
 
 												if( oldType == type )
 												{
@@ -5542,7 +5540,12 @@ namespace AmplifyShaderEditor
 
 		public void UpdateNodePreviewListAndTime()
 		{
-			if( UIUtils.CurrentWindow != this )
+		#if UNITY_2020_1_OR_NEWER
+			bool hasFocus = UIUtils.CurrentWindow.hasFocus;
+		#else
+			bool hasFocus = ( EditorWindow.focusedWindow == UIUtils.CurrentWindow );
+		#endif
+			if( UIUtils.CurrentWindow != this || !hasFocus )
 				return;
 
 			double deltaTime = Time.realtimeSinceStartup - m_time;
@@ -5641,27 +5644,30 @@ namespace AmplifyShaderEditor
 			}
 			m_previewUpdateLimiterTime = 0;
 
-			/////////// UPDATE PREVIEWS //////////////
-			UIUtils.CheckNullMaterials();
-			UIUtils.SetPreviewShaderConstants();
-			//CurrentGraph.AllNodes.Sort( ( x, y ) => { return x.Depth.CompareTo( y.Depth ); } );
-			int nodeCount = CurrentGraph.AllNodes.Count;
-			for( int i = nodeCount - 1; i >= 0; i-- )
+			if ( !Preferences.User.DisablePreviews )
 			{
-				ParentNode node = CurrentGraph.AllNodes[ i ];
-				if( node != null && !VisitedChanged.ContainsKey( node.OutputId ) )
+				/////////// UPDATE PREVIEWS //////////////
+				UIUtils.CheckNullMaterials();
+				UIUtils.SetPreviewShaderConstants();
+				//CurrentGraph.AllNodes.Sort( ( x, y ) => { return x.Depth.CompareTo( y.Depth ); } );
+				int nodeCount = CurrentGraph.AllNodes.Count;
+				for( int i = nodeCount - 1; i >= 0; i-- )
 				{
-					bool result = node.RecursivePreviewUpdate();
-					if( result )
-						m_repaintIsDirty = true;
+					ParentNode node = CurrentGraph.AllNodes[ i ];
+					if( node != null && !VisitedChanged.ContainsKey( node.OutputId ) )
+					{
+						bool result = node.RecursivePreviewUpdate();
+						if( result )
+							m_repaintIsDirty = true;
+					}
 				}
-			}
 
-			VisitedChanged.Clear();
-			if( m_repaintIsDirty )
-			{
-				m_repaintIsDirty = false;
-				Repaint();
+				VisitedChanged.Clear();
+				if( m_repaintIsDirty )
+				{
+					m_repaintIsDirty = false;
+					Repaint();
+				}
 			}
 		}
 
@@ -5794,6 +5800,11 @@ namespace AmplifyShaderEditor
 		public void SetOutdatedShaderFromTemplate()
 		{
 			m_outdatedShaderFromTemplateLoaded = true;
+		}
+
+		public void DelayedReplaceMasterNode( TemplateMultiPassMasterNode masterNode, string newTemplateGUID )
+		{
+			ReplaceMasterNode( new MasterNodeCategoriesData( AvailableShaderTypes.Template, newTemplateGUID ), false );
 		}
 
 		public void ReplaceMasterNode( MasterNodeCategoriesData data, bool cacheMasterNodes )

@@ -42,6 +42,12 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
+			if ( !dataCollector.IsFragmentCategory )
+			{
+				UIUtils.ShowMessage( UniqueId, "Main Light Attenuation node not supported on Vertex or Tessellation stages." );
+				return m_outputPorts[0].ErrorValue;
+			}
+
 			if( dataCollector.IsTemplate  )
 			{
 				if( !dataCollector.IsSRP )
