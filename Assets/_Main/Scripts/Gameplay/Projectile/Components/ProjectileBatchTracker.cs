@@ -76,7 +76,11 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 }
 
                 OnBatchFinished?.Invoke();
-                PrepareNewBatch();
+                
+                if (_batchQueue.Count > 0)
+                {
+                    PrepareNewBatch();
+                }
             }
         }
     }
