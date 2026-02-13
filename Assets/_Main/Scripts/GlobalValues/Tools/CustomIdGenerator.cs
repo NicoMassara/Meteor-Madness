@@ -72,6 +72,11 @@ namespace MeteorMadness.GlobalValues.Tools
             idData.Reset();
         }
         
+        public void Clear()
+        {
+            _inUseId.Clear();
+        }
+        
     }
     
 }

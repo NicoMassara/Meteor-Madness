@@ -1,8 +1,7 @@
 ﻿using System;
+using _Main.Scripts.Common;
 using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
-using MeteorMadness.Contracts.Interfaces;
-using MeteorMadness.Common.Shaker;
 using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using NicolasMassara.CustomActionManager;
@@ -16,8 +15,11 @@ namespace _Main.Scripts.GameCamera
         [Header("Components")]
         [SerializeField] private Camera mainCamera;
         [SerializeField] private GameObject grayScaleStencil;
+
+        [Header("Shaker Data")]
+        [SerializeField] private ShakerCapDataSo shakerCapData;
         
-        private ComponentShaker _shakerController;
+        private IShaker _shakerController;
         private ActionManager.GeneratedId _moveActionId;
         private ActionManager.GeneratedId _zoomActionId;
         
@@ -27,21 +29,14 @@ namespace _Main.Scripts.GameCamera
         
         private void Start()
         {
-            _shakerController = new ComponentShaker(mainCamera.transform);
+            _shakerController = new ShakerController(mainCamera.transform,shakerCapData);
+            _shakerController.OnShakeFinished += OnShakeFinishedHandler;
             HandleDisableGrayscale();
         }
-        
+
         public void ExecuteLateUpdate(float deltaTime)
         {
-            if (_shakerController.IsShaking)
-            {
-                _shakerController.HandleShake(deltaTime);
-                
-                if (_shakerController.IsShaking == false)
-                {
-                    CameraEventCaller.NotifyShakeFinished();
-                }
-            }
+            _shakerController.Execute(deltaTime);
         }
         
         public void OnNotify(ulong message, params object[] args)
@@ -50,7 +45,7 @@ namespace _Main.Scripts.GameCamera
             {
                 // === Shake === //
                 case CameraObserverMessage.Shake:
-                    HandleShake((IShakeData)args[0]);
+                    HandleShake((ShakeData)args[0]);
                     break;
                 
                 // === Move === // 
@@ -233,10 +228,9 @@ namespace _Main.Scripts.GameCamera
 
         #endregion
         
-        private void HandleShake(IShakeData shakeData)
+        private void HandleShake(ShakeData shakeData)
         {
-            _shakerController.SetShakeData(shakeData);
-            _shakerController.StartShake();
+            _shakerController.AddShake(shakeData);
         }
 
         public InitialCameraData GetCameraData()
@@ -246,6 +240,11 @@ namespace _Main.Scripts.GameCamera
                 Position = mainCamera.transform.position,
                 Zoom = mainCamera.orthographicSize
             };
+        }
+        
+        private void OnShakeFinishedHandler()
+        {
+            CameraEventCaller.NotifyShakeFinished();
         }
     }
 }

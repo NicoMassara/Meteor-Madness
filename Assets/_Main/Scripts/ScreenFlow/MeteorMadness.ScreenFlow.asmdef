@@ -15,10 +15,12 @@
         "GUID:0678ac3b19084e37b0eb687012d5cb7e",
         "GUID:f41d70007b812924daeea491665ac32d",
         "GUID:420b34b0a7084b92a4a9dd53f7729d18",
-        "MeteorMadness.Contracts",
+        "GUID:080f653a58f74254bcaf4ef0dbe0adf7",
         "GUID:a76180531f6e4921a44c7524f2605ca5",
         "GUID:7383e56d37c04177bd5dbfee101ce49c",
-        "GUID:853cda6c6d5d4136a8cc20e8dff3d6d1"
+        "GUID:853cda6c6d5d4136a8cc20e8dff3d6d1",
+        "GUID:22d2c5cd51bc48f18281207f88845669",
+        "GUID:fb272c4c25fe4a3c97e567297c3df1c1"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

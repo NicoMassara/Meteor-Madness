@@ -1,6 +1,8 @@
 ﻿using System;
+using _Main.Scripts.Common;
+using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
-using MeteorMadness.Common.Shaker;
+using MeteorMadness.Common.OldShaker;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Contracts.Interfaces.GameplayData.Earth;
@@ -8,6 +10,7 @@ using MeteorMadness.Contracts.Interfaces.Skins;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.Gameplay.Particles;
+using MeteorMadness.GlobalValues._Main.Scripts.GlobalValues.Tools;
 using MeteorMadness.GlobalValues.Tools;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.Managers.GameConfig;
@@ -28,7 +31,7 @@ namespace _Main.Scripts.Earth
         [SerializeField] private AnimationCurve shakeMultiplier;
         [SerializeField] private ShakeDataSo healthShakeData;
         [SerializeField] private ShakeDataSo deathShakeData;
-        [SerializeField] private ShakeDataSo cameraShakeData;
+        [SerializeField] private DirectionalShakeData cameraShakeData;
         [Space]
         [Header("Values")] 
         [Range(0, 100)] 
@@ -160,7 +163,15 @@ namespace _Main.Scripts.Earth
                 MoveDirection = -direction
             });
             
-            CameraEventCaller.Shake(cameraShakeData);
+            CameraEventCaller.Shake(new ShakeData
+            {
+                Data = cameraShakeData.Data,
+                Direction = direction,
+                DirectionBias = cameraShakeData.DirectionBias,
+                Multiplier =  EarthShakerMultiplier.Get(healthAmount)
+            });
+            
+            InputsEventCaller.ShakeUI(healthAmount);
             OnCollision?.Invoke();
         }
         

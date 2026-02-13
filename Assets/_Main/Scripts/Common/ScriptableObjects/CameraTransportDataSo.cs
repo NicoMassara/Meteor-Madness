@@ -41,7 +41,7 @@ namespace _Main.Scripts.GameCamera
             [SerializeField] private AnimationCurve curve;
             [Space]
             [SerializeField] private bool doesChange = true;
-            
+
             public float Value => value;
             public AnimationCurve Curve => curve;
             public bool DoesChange => doesChange;

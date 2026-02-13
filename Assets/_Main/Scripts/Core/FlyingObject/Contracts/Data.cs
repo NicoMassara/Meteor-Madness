@@ -16,7 +16,11 @@ namespace MeteorMadness.Core.FlyingObject.Contracts
     {
         private readonly Rigidbody2D _rigidbody;
         private event Action<Vector2> _onPositionChanged;
+        private Vector2 _movementDirection;
         private float _movementSpeed;
+        private bool _isDeactivated;
+        private bool _hasPendingActivation;
+        private bool _justActivated;
 
         public bool CanMove { get; set; }
 
@@ -36,29 +40,68 @@ namespace MeteorMadness.Core.FlyingObject.Contracts
 
         public void Initialize()
         {
-            _rigidbody.bodyType = RigidbodyType2D.Dynamic;
-            _rigidbody.simulated = true;
-            _rigidbody.mass = 0.0001f;
+            _rigidbody.mass = 0.001f;
             _rigidbody.drag = 0f;
             _rigidbody.angularDrag = 0.05f;
             _rigidbody.gravityScale = 0f;
-            InitializeUpdatable();
-
+            _isDeactivated = true;
         }
 
-        public void SetRigidbodyData(float speed, Quaternion rotation, Vector2 position)
+        public void DeactivateBody()
         {
+            Dispose();
+            _isDeactivated = true;
+            
+            _rigidbody.bodyType = RigidbodyType2D.Kinematic;
+            
+            _rigidbody.velocity = Vector2.zero;
+            _rigidbody.angularVelocity = 0f;
+            
+            _rigidbody.simulated = false;
+        }
+
+        private void ActivateBody()
+        {
+            _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+            _rigidbody.simulated = true;
+            
+            _isDeactivated = false;
+            _justActivated = true;
+        }
+
+        public void SetRigidbodyData(float speed, 
+            Quaternion rotation, 
+            Vector2 position, Vector2 direction)
+        {
+            Register();
+            ActivateBody();
+            _movementDirection = direction;
             _movementSpeed = speed;
-            _rigidbody.transform.rotation = rotation;
-            _rigidbody.transform.position = new Vector3(position.x,position.y);
-                
+            _rigidbody.SetRotation(rotation.eulerAngles.z);
+            _rigidbody.position = position;
+            
+            _onPositionChanged?.Invoke(_rigidbody.position);
         }
 
         public void ExecuteFixedUpdate(float fixedDeltaTime)
         {
             if(_rigidbody == null) return;
             
-            _rigidbody.transform.Translate(Vector2.right * (_movementSpeed * fixedDeltaTime));
+            if (_justActivated)
+            {
+                _justActivated = false;
+                return;
+            }
+
+            if (_isDeactivated)
+            {
+                return;
+            }
+
+            var finalDirection = _movementDirection * (_movementSpeed * fixedDeltaTime);
+            
+            _rigidbody.MovePosition(_rigidbody.position + finalDirection);
+
             _onPositionChanged?.Invoke(_rigidbody.position);
         }
     }

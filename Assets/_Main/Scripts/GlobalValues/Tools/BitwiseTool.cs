@@ -27,6 +27,14 @@ namespace MeteorMadness.GlobalValues.Tools
             ValidateRange(n);
             return ((word >> n) & 1) != 0;
         }
+        
+        public static byte Write(byte word, int n, bool value)
+        {
+            ValidateRange(n);
+            return value
+                ? (byte)(word | (1 << n))
+                : (byte)(word & ~(1 << n));
+        }
 
         private static void ValidateRange(int n)
         {

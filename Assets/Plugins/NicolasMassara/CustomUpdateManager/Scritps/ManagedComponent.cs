@@ -12,12 +12,13 @@ namespace NicolasMassara.CustomUpdateManager
         private bool _disposed;
         
 
-        protected void InitializeUpdatable()
+        public void Register()
         {
             if (!_isRegistered)
             {
                 this.RegisterInManager();
                 _isRegistered = true;
+                _disposed = false;
             }
         }
 
@@ -26,6 +27,7 @@ namespace NicolasMassara.CustomUpdateManager
             if (_disposed) return;
             if (disposing && _isRegistered)
             {
+                _isRegistered = false;
                 this.UnregisterInManager();
             }
             _disposed = true;

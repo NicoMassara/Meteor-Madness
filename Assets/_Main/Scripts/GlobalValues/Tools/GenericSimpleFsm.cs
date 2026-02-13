@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace _Main.Scripts.GlobalValues.Tools
 {
+    
     public abstract class GenericSimpleFsm<T>
     {
         private readonly Dictionary<T, IFsmState> _states = new Dictionary<T, IFsmState>();
@@ -74,7 +75,19 @@ namespace _Main.Scripts.GlobalValues.Tools
         public virtual void Awake() { }
         public virtual void Execute(float deltaTime) { }
         public virtual void Sleep() { }
-            
+    }
+    
+    public abstract class FsmState<T> : IFsmState
+    {
+        protected T Controller { get; private set; }
+        public void InitializeState(T controller)
+        {
+            Controller = controller;
+        }
+
+        public virtual void Awake() { }
+        public virtual void Execute(float deltaTime) { }
+        public virtual void Sleep() { }
     }
     
     public interface IFsmState
@@ -85,4 +98,14 @@ namespace _Main.Scripts.GlobalValues.Tools
     }
 
     public interface IFsmControllerTransitions { }
+
+    public abstract class GenericFsmActionGate<T>
+    {
+        protected GenericFsmActionGate(GenericSimpleFsm<T> fsm)
+        {
+            fsm.OnStateChanged += OnStateChanged;
+        }
+
+        protected abstract void OnStateChanged(T newState);
+    }
 }

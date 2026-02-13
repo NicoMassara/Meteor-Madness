@@ -1803,6 +1803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0993f031855b45c882144ffd95ab0d66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  milestoneData: {fileID: 11400000, guid: e36c754a304c2b54891448e43a5831d4, type: 2}
 --- !u!114 &1024740939
 MonoBehaviour:
   m_ObjectHideFlags: 0

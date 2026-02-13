@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a47175830304b73be27eb225a4588da, type: 3}
+  m_Name: SO_ShakerData_Camera_Hit_Shield
+  m_EditorClassIdentifier: 
+  magnitude: 0.06
+  duration: 0.4
+  frequency: 35
+  intensityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.14049172
+      outSlope: 0.14049172
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.04915912
+    - serializedVersion: 3
+      time: 0.2302002
+      value: 0.6061096
+      inSlope: 0.1979096
+      outSlope: 0.1979096
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  priority: 25
+  doesCancelAll: 0

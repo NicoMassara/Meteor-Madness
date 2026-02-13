@@ -302,7 +302,7 @@
     {
         public const ulong Enable  = 0xA1501;
         public const ulong Disable = 0xA1502;
-        public const ulong Empty2  = 0xA1503;
+        public const ulong Collision  = 0xA1503;
         public const ulong Empty3  = 0xA1504;
         public const ulong Empty4 = 0xA1505;
         public const ulong Empty5  = 0xA1506;
@@ -312,15 +312,15 @@
         public const ulong Empty10 = 0xA150A;
     }
 
-    public struct EmptyObserverMessage4
+    public struct ProjectileSpawnerObserverMessage
     {
-        public const ulong Empty1  = 0xA1601;
-        public const ulong Empty2  = 0xA1602;
-        public const ulong Empty3  = 0xA1603;
-        public const ulong Empty4  = 0xA1604;
-        public const ulong Empty5  = 0xA1605;
-        public const ulong Empty6  = 0xA1606;
-        public const ulong Empty7  = 0xA1607;
+        public const ulong SpawnMeteor  = 0xA1601;
+        public const ulong InitializeFactory  = 0xA1602;
+        public const ulong BatchSpawned  = 0xA1603;
+        public const ulong Clear  = 0xA1604;
+        public const ulong BatchDeflected  = 0xA1605;
+        public const ulong RingFinished  = 0xA1606;
+        public const ulong RingStarted  = 0xA1607;
         public const ulong Empty8  = 0xA1608;
         public const ulong Empty9  = 0xA1609;
         public const ulong Empty10 = 0xA160A;

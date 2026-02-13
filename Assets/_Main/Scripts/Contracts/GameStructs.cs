@@ -31,14 +31,6 @@ namespace MeteorMadness.Contracts
         public ProjectileType Type;
     }
     
-    public struct ProjectileSpawnData
-    {
-        public ProjectileType ProjectileType;
-        public Vector2 Position;
-        public Vector2 Direction;
-        public float MovementMultiplier;
-    }
-    
     public struct ParticleSpawnData
     {
         public IParticleData ParticleData; 

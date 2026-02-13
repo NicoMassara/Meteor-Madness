@@ -212,6 +212,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 838285081}
   grayScaleStencil: {fileID: 475875519}
+  shakerCapData: {fileID: 11400000, guid: 6b358eeee1299cd46a302c675cef6a73, type: 2}
 --- !u!114 &290727255
 MonoBehaviour:
   m_ObjectHideFlags: 0

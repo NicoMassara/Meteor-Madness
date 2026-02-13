@@ -19,6 +19,8 @@ namespace MeteorMadness.Core.FlyingObject
     {
         private FlyingObjectMovement _movement;
         
+        public Vector2 Position { get; private set; }
+        
         #region IFlyingObjectView
 
         public event Action<Vector2> OnPositionChanged;
@@ -49,7 +51,6 @@ namespace MeteorMadness.Core.FlyingObject
         #region IDebugFlyingObject
         
         public float Speed { get; private set; }
-        public Vector2 Position { get; private set; }
         public bool DebugEnable { get; set; }
 
         #endregion
@@ -85,7 +86,7 @@ namespace MeteorMadness.Core.FlyingObject
 
         protected virtual void HandleSetValues(T data)
         {
-            _movement.SetRigidbodyData(data.MovementSpeed, data.Rotation, data.Position);
+            _movement.SetRigidbodyData(data.MovementSpeed, data.Rotation, data.Position, data.Direction);
             SetEnableMovement(true);
             OnObjectEnabled?.Invoke();
             OnStart?.Invoke();
@@ -93,7 +94,6 @@ namespace MeteorMadness.Core.FlyingObject
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             
             Speed = data.MovementSpeed;
-            Position = transform.position;
 #endif
         }
         
@@ -116,6 +116,7 @@ namespace MeteorMadness.Core.FlyingObject
 
         protected void DisableObject()
         {
+            _movement.DeactivateBody();
             SetEnableMovement(false);
             OnStop?.Invoke();
             OnObjectDisabled?.Invoke();
@@ -126,7 +127,5 @@ namespace MeteorMadness.Core.FlyingObject
             DisableObject();
             OnRecycle?.Invoke(this);
         }
-
-
     }
 }

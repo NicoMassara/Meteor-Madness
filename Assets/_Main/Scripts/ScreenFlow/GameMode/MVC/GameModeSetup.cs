@@ -1,9 +1,8 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.Gameplay.Projectile.SO;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
-using MeteorMadness.GlobalValues;
-using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomUpdateManager;
@@ -16,6 +15,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
     [RequireComponent(typeof(GameModeViewAnimation))]
     public class GameModeSetup : ManagedBehavior, IUpdatable
     {
+        [SerializeField] private ProjectileMilestoneDataSo milestoneData;
+        
         private GameModeController.IGameModeController _controller;
         private GameModeView.IGameModeView _view;
         private GameModeUIView.IGameModeUIView _ui;
@@ -39,9 +40,16 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             BootEvents.OnSubSystemRequestInitialize -= Initialize;
             //
+
             var gameplayData = GameConfigManager.Instance.GetGameplayData();
             
-            var motor = new GameModeMotor(gameplayData.LevelData.GetGameplayLevelRequierment());
+            if (milestoneData == null)
+            {
+                Debug.LogWarning("MilestoneData is null in GameModeSetup");
+                return;
+            }
+
+            var motor = new GameModeMotor(milestoneData);
             _controller = new GameModeController(motor);
             
             var view = GetComponent<GameModeView>();
@@ -117,6 +125,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             //
             ProjectileEventSubscriber.Deflected(EventBus_Meteor_Deflected);
             ProjectileEventSubscriber.RequestSpawn(EventBus_Projectile_RequestSpawn);
+            ProjectileEventSubscriber.BatchDeflected(EventBus_Meteor_BatchDeflected);
             ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
             //
 
@@ -133,6 +142,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             AbilitiesEventUnSubscriber.NotifyIsActive(EventBus_Abilities_SetActive);
             //
             ProjectileEventUnSubscriber.Deflected(EventBus_Meteor_Deflected);
+            ProjectileEventUnSubscriber.BatchDeflected(EventBus_Meteor_BatchDeflected);
             ProjectileEventUnSubscriber.RequestSpawn(EventBus_Projectile_RequestSpawn);
             //
             CameraEventSubscriber.NotifyTransportStarted(EventBus_Camera_Transport_Started);
@@ -142,6 +152,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
             //
             AbilitiesEventUnSubscriber.NotifyIsActive(EventBus_Abilities_IsActive);
         }
+
+
 
         #region GameScreen
 
@@ -212,6 +224,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
         #endregion
         
         #region Projectile
+        
+        private void EventBus_Meteor_BatchDeflected(ProjectileEvents.BatchDeflected obj)
+        {
+            _controller.NotifyBatchDeflected();
+        }
 
         private void EventBus_Projectile_RequestSpawn(ProjectileEvents.RequestSpawn input)
         {
