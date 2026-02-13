@@ -9,7 +9,6 @@
         "GUID:d5cb6d89101b407482273865bc03376b",
         "GUID:70a9fd56345a44ff9c4c50a2162ef4df",
         "GUID:c86df55943534d8e992b0a5e142eef8a",
-        "GUID:f643500ca3ff4dea801e9bbc01ef5979",
         "GUID:2e79e901c5774d499c3e06c668d21c7b",
         "GUID:72999fc0cb6d47409e53a0030917cc84",
         "GUID:b09b6ab16ad74a8bbd7ddfdb1a76b3a7",
@@ -30,7 +29,6 @@
         "GUID:4c6980595afb418cab2b64240f07f56e"
     ],
     "includePlatforms": [
-        "Android",
         "Editor"
     ],
     "excludePlatforms": [],

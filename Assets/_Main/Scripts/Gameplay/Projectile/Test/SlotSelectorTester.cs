@@ -104,6 +104,9 @@ namespace _Main.Scripts.Gameplay.Projectile.Test
             _spawnSelector.RestartData();
         }
     }
+
+#if UNITY_EDITOR
+
     
     [CustomEditor(typeof(SlotSelectorTester))]
     public class SkinChangerEditor : Editor
@@ -122,4 +125,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Test
             if (GUILayout.Button("Decrease")) script.DecreaseLevel();
         }
     }
+    
+#endif
 }

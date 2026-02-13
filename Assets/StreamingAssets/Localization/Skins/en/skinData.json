@@ -27,5 +27,11 @@
     "Name" : "Meteor",
     "Description" : "A METEOR?! Huh...",
     "DeathTitle" : "Humanity is saved!"
+  },
+
+  "BlackHole" : {
+    "Name" : "Black Hole",
+    "Description" : "Black hole?! We're gonna die!",
+    "DeathTitle" : "Space-Time is saved!"
   }
 }

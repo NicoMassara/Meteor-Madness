@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbd005fa8feb44aaa48174442de6322e, type: 3}
   m_Name: So_ProjectileSpawnData_Test
   m_EditorClassIdentifier: 
-  projectileSpeed: 45
+  projectileSpeed: 60
   batchData:
   - speedMultiplierRange:
-      minRange: 1
-      maxRange: 1
+      minRange: 0.2
+      maxRange: 0.2
     projectileAmountRange:
       minRange: 1
       maxRange: 1
@@ -34,7 +34,7 @@ MonoBehaviour:
       maxRange: 0
     nextBatchSlotRange:
       minRange: 1
-      maxRange: 1
+      maxRange: 4
     spawnTypeRange:
       weightData:
       - spawnType: 1
@@ -48,224 +48,125 @@ MonoBehaviour:
       - spawnType: 5
         weight: 100
   - speedMultiplierRange:
-      minRange: 1
-      maxRange: 1
+      minRange: 0.3
+      maxRange: 0.3
     projectileAmountRange:
       minRange: 2
-      maxRange: 2
-    slotRange:
-      minRange: 1
-      maxRange: 1
-    innerBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDelayRange:
-      minRange: 0
-      maxRange: 0
-    nextBatchSlotRange:
-      minRange: 1
-      maxRange: 1
-    spawnTypeRange:
-      weightData:
-      - spawnType: 1
-        weight: 100
-      - spawnType: 2
-        weight: 100
-      - spawnType: 3
-        weight: 100
-      - spawnType: 4
-        weight: 100
-      - spawnType: 5
-        weight: 100
-  - speedMultiplierRange:
-      minRange: 1
-      maxRange: 1
-    projectileAmountRange:
-      minRange: 1
-      maxRange: 1
-    slotRange:
-      minRange: 1
-      maxRange: 1
-    innerBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDelayRange:
-      minRange: 0
-      maxRange: 0
-    nextBatchSlotRange:
-      minRange: 1
-      maxRange: 1
-    spawnTypeRange:
-      weightData:
-      - spawnType: 1
-        weight: 100
-      - spawnType: 2
-        weight: 100
-      - spawnType: 3
-        weight: 100
-      - spawnType: 4
-        weight: 100
-      - spawnType: 5
-        weight: 100
-  - speedMultiplierRange:
-      minRange: 1
-      maxRange: 1
-    projectileAmountRange:
-      minRange: 1
-      maxRange: 1
-    slotRange:
-      minRange: 1
-      maxRange: 1
-    innerBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDelayRange:
-      minRange: 0
-      maxRange: 0
-    nextBatchSlotRange:
-      minRange: 1
-      maxRange: 1
-    spawnTypeRange:
-      weightData:
-      - spawnType: 1
-        weight: 100
-      - spawnType: 2
-        weight: 100
-      - spawnType: 3
-        weight: 100
-      - spawnType: 4
-        weight: 100
-      - spawnType: 5
-        weight: 100
-  - speedMultiplierRange:
-      minRange: 1
-      maxRange: 1
-    projectileAmountRange:
-      minRange: 1
-      maxRange: 1
-    slotRange:
-      minRange: 1
-      maxRange: 1
-    innerBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDelayRange:
-      minRange: 0
-      maxRange: 0
-    nextBatchSlotRange:
-      minRange: 1
-      maxRange: 1
-    spawnTypeRange:
-      weightData:
-      - spawnType: 1
-        weight: 100
-      - spawnType: 2
-        weight: 100
-      - spawnType: 3
-        weight: 100
-      - spawnType: 4
-        weight: 100
-      - spawnType: 5
-        weight: 100
-  - speedMultiplierRange:
-      minRange: 1
-      maxRange: 1
-    projectileAmountRange:
-      minRange: 1
-      maxRange: 1
-    slotRange:
-      minRange: 1
-      maxRange: 1
-    innerBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDelayRange:
-      minRange: 0
-      maxRange: 0
-    nextBatchSlotRange:
-      minRange: 1
-      maxRange: 1
-    spawnTypeRange:
-      weightData:
-      - spawnType: 1
-        weight: 100
-      - spawnType: 2
-        weight: 100
-      - spawnType: 3
-        weight: 100
-      - spawnType: 4
-        weight: 100
-      - spawnType: 5
-        weight: 100
-  - speedMultiplierRange:
-      minRange: 1
-      maxRange: 1
-    projectileAmountRange:
-      minRange: 1
-      maxRange: 1
-    slotRange:
-      minRange: 1
-      maxRange: 1
-    innerBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDistanceRange:
-      minRange: 1
-      maxRange: 1
-    nextBatchDelayRange:
-      minRange: 0
-      maxRange: 0
-    nextBatchSlotRange:
-      minRange: 1
-      maxRange: 1
-    spawnTypeRange:
-      weightData:
-      - spawnType: 1
-        weight: 100
-      - spawnType: 2
-        weight: 100
-      - spawnType: 3
-        weight: 100
-      - spawnType: 4
-        weight: 100
-      - spawnType: 5
-        weight: 100
-  - speedMultiplierRange:
-      minRange: 1
-      maxRange: 1
-    projectileAmountRange:
-      minRange: 8
-      maxRange: 15
+      maxRange: 3
     slotRange:
       minRange: 2
       maxRange: 4
     innerBatchDistanceRange:
-      minRange: 0.378
-      maxRange: 0.151
+      minRange: 0.306
+      maxRange: 0.38
     nextBatchDistanceRange:
       minRange: 0.5
-      maxRange: 0.2
+      maxRange: 0.5
     nextBatchDelayRange:
       minRange: 0
       maxRange: 0
     nextBatchSlotRange:
       minRange: 1
       maxRange: 1
+    spawnTypeRange:
+      weightData:
+      - spawnType: 1
+        weight: 100
+      - spawnType: 2
+        weight: 23
+      - spawnType: 3
+        weight: 35
+      - spawnType: 4
+        weight: 82
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
+      minRange: 0.5
+      maxRange: 0.55
+    projectileAmountRange:
+      minRange: 3
+      maxRange: 5
+    slotRange:
+      minRange: 2
+      maxRange: 4
+    innerBatchDistanceRange:
+      minRange: 0.35
+      maxRange: 0.45
+    nextBatchDistanceRange:
+      minRange: 0.45
+      maxRange: 0.65
+    nextBatchDelayRange:
+      minRange: 0
+      maxRange: 0
+    nextBatchSlotRange:
+      minRange: 1
+      maxRange: 1
+    spawnTypeRange:
+      weightData:
+      - spawnType: 1
+        weight: 100
+      - spawnType: 2
+        weight: 100
+      - spawnType: 3
+        weight: 100
+      - spawnType: 4
+        weight: 100
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
+      minRange: 0.65
+      maxRange: 0.7
+    projectileAmountRange:
+      minRange: 3
+      maxRange: 8
+    slotRange:
+      minRange: 3
+      maxRange: 5
+    innerBatchDistanceRange:
+      minRange: 0.25
+      maxRange: 0.35
+    nextBatchDistanceRange:
+      minRange: 0.15
+      maxRange: 0.25
+    nextBatchDelayRange:
+      minRange: 0
+      maxRange: 0
+    nextBatchSlotRange:
+      minRange: 1
+      maxRange: 1
+    spawnTypeRange:
+      weightData:
+      - spawnType: 1
+        weight: 100
+      - spawnType: 2
+        weight: 100
+      - spawnType: 3
+        weight: 100
+      - spawnType: 4
+        weight: 100
+      - spawnType: 5
+        weight: 100
+  - speedMultiplierRange:
+      minRange: 1
+      maxRange: 1.15
+    projectileAmountRange:
+      minRange: 3
+      maxRange: 15
+    slotRange:
+      minRange: 1
+      maxRange: 8
+    innerBatchDistanceRange:
+      minRange: 0.15
+      maxRange: 0.35
+    nextBatchDistanceRange:
+      minRange: 0.35
+      maxRange: 0.45
+    nextBatchDelayRange:
+      minRange: 0
+      maxRange: 0
+    nextBatchSlotRange:
+      minRange: 3
+      maxRange: 8
     spawnTypeRange:
       weightData:
       - spawnType: 1
