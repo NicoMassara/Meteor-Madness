@@ -1,6 +1,5 @@
 ﻿using MeteorMadness.Contracts.Interfaces.Vibration;
 using MeteorMadness.Vibration.BaseBehaviours;
-using MeteorMadness.Vibration;
 using UnityEngine;
 
 namespace MeteorMadness.Vibration.Behaviours
@@ -15,28 +14,28 @@ namespace MeteorMadness.Vibration.Behaviours
             {
                 
                 var vibrationForce = (int)Mathf.Lerp(
-                    VibrationTools.GetIntensity(VibrationIntensityType.ExtraLight),
-                    VibrationTools.GetIntensity(VibrationIntensityType.MediumHeavy),value);
+                    VibrationTools.GetIntensity(IntensityType.ExtraLight),
+                    VibrationTools.GetIntensity(IntensityType.MediumHeavy),value);
                 Vibrate(new VibrationData
                 {
                     Intensity = vibrationForce,
-                    Duration = VibrationTools.GetDuration(VibrationDurationType.Short),
-                });
+                    Duration = VibrationTools.GetDuration(DurationType.Short),
+                }, VibrationPriority.Low);
             };
             
             ComponentToVibrate.OnLanguageChanged += (value) =>
             {
-                Vibrate(VibrationType.UIButtonAccept);
+                Vibrate(UIVibrationType.UIButtonAccept);
             };
             
             ComponentToVibrate.OnVibrationChanged += (value) =>
             {
-                Vibrate(value ? VibrationType.UIButtonAccept : VibrationType.UIButtonCancel);
+                Vibrate(value ? UIVibrationType.UIButtonAccept : UIVibrationType.UIButtonCancel);
             };
             
             ComponentToVibrate.OnBackButtonPressed += () =>
             {
-                Vibrate(VibrationType.UIButtonCancel);
+                Vibrate(UIVibrationType.UIButtonCancel);
             };
             
         }

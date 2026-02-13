@@ -24,7 +24,7 @@ namespace MeteorMadness.Vibration.BaseBehaviours
             Vibrate(SelectVibration(vibrationType));
         }
 
-        private VibrationDataSo SelectVibration(DefeatAnimationVibrationType vibrationType)
+        private IVibrationData SelectVibration(DefeatAnimationVibrationType vibrationType)
         {
             return vibrationType switch
             {

@@ -12,12 +12,12 @@ namespace MeteorMadness.Vibration.Behaviours
             base.Start();
             ComponentToVibrate.OnBackButtonPressed += () =>
             {
-                Vibrate(VibrationType.UIButtonCancel);
+                Vibrate(UIVibrationType.UIButtonCancel);
             };
             
             ComponentToVibrate.OnCloseFirstButtonPressed += () =>
             {
-                Vibrate(VibrationType.UIButtonAccept);
+                Vibrate(UIVibrationType.UIButtonAccept);
             };
         }
 #endif

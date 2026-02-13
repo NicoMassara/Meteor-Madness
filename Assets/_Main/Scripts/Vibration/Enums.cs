@@ -1,6 +1,6 @@
 ﻿namespace MeteorMadness.Vibration
 {
-    public enum VibrationDurationType
+    public enum DurationType
     {
         None,
         ExtraShort,
@@ -13,7 +13,7 @@
         SuperLong
     }
 
-    public enum VibrationIntensityType
+    public enum IntensityType
     {
         None,
         ExtraLight,
@@ -26,10 +26,28 @@
         FullHard
     }
     
-    public enum VibrationType
+    public enum UIVibrationType
     {
         None,
         UIButtonAccept,
         UIButtonCancel
+    }
+    
+    public enum VibrationApiType
+    {
+        None,
+        OneShot,
+        Waveform
+    }
+
+    public enum VibrationPriority
+    {
+        None = -1,
+        Low = 1, // UI
+        Medium = 120, // Minor Gameplay
+        High = 150, // Damage
+        Critical = 200, // Notifications
+        SuperCritical = 255 
+        
     }
 }

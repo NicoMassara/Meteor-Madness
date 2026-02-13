@@ -12,38 +12,38 @@ namespace MeteorMadness.Vibration.Behaviours
             base.Start();
             ComponentToVibrate.OnMainMenuButtonPressed += () =>
             {
-                Vibrate(VibrationType.UIButtonCancel);
+                Vibrate(UIVibrationType.UIButtonCancel);
             };
             ComponentToVibrate.OnSkinSelected += (value) =>
             {
-                Vibrate(VibrationType.UIButtonAccept);
+                Vibrate(UIVibrationType.UIButtonAccept);
             };
 
             ComponentToVibrate.OnScroll += (value) =>
             {
                 if (value == 1)
                 {
-                    Vibrate(VibrationType.UIButtonAccept);
+                    Vibrate(UIVibrationType.UIButtonAccept);
                 }
                 else
                 {
-                    Vibrate(VibrationType.UIButtonCancel);
+                    Vibrate(UIVibrationType.UIButtonCancel);
                 }
             };
             
             ComponentToVibrate.OnCoinsFinishedDecrement += () =>
             {
-                Vibrate(VibrationType.UIButtonAccept);
+                Vibrate(UIVibrationType.UIButtonAccept);
             };
             
             ComponentToVibrate.OnUnlockFailed += () =>
             {
-                Vibrate(VibrationType.UIButtonCancel);
+                Vibrate(UIVibrationType.UIButtonCancel);
             };
             
             ComponentToVibrate.OnUnlocked += () =>
             {
-                Vibrate(VibrationType.UIButtonAccept);
+                Vibrate(UIVibrationType.UIButtonAccept);
             };
         }
 #endif
