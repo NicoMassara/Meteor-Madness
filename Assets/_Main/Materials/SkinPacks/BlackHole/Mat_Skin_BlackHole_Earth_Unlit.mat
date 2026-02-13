@@ -86,6 +86,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _Opacity: 1
     - _Opacity1: 1
     - _Outter: 0.45
     - _Parallax: 0.02

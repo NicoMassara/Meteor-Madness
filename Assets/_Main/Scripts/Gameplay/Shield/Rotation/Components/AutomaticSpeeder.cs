@@ -193,8 +193,6 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
 
         public void SpeedDown(float targetSpeed)
         {
-            Debug.Log("Target Speed: " + targetSpeed);
-            Debug.Log("De Acc Rate: " + GetAngularDeAcceleration());
             _targetMinSpeed = targetSpeed;
             _controller.ChangeState(States.SpeedDown);
         }

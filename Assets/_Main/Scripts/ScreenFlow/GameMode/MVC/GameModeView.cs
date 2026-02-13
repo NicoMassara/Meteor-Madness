@@ -235,8 +235,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
             EarthEventCaller.DisableDamage();
             AbilitiesEventCaller.DisableUI();
             SetEnableInputs(false);
-            CameraEventCaller.Transport(stopGameplayTransportData);
             OnGameStopped?.Invoke();
+
+            if (GameManager.Instance.IsPaused == false)
+            {
+                CameraEventCaller.Transport(stopGameplayTransportData);
+            }
             
 #if UNITY_ANDROID || UNITY_IOS
 
@@ -373,11 +377,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             if (canSpawn)
             {
-                ProjectileEventCaller.EnableSpawn();
+                //HACK
+                TimerManager.Add(new TimerData(1, ProjectileEventCaller.EnableSpawn));
             }
             else
             {
-                ProjectileEventCaller.DisableSpawn();
+                ProjectileEventCaller.DisableSpawn(true);
             }
         }
 

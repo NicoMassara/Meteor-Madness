@@ -11,9 +11,21 @@ namespace MeteorMadness.ScreenFlow._Main.Scripts.ScreenFlow.InputPanel
     {
         private class Motor : ObservableComponent
         {
-            public void EnableUI() => NotifyAll(InputPanelObserverMessage.Enable);
+            private bool _isEnable;
+            
+            public void EnableUI()
+            {
+                if(_isEnable) return;
+                _isEnable = true;
+                NotifyAll(InputPanelObserverMessage.Enable);
+            }
 
-            public void DisableUI() => NotifyAll(InputPanelObserverMessage.Disable);
+            public void DisableUI()
+            {
+                if(_isEnable == false) return;
+                _isEnable = false;
+                NotifyAll(InputPanelObserverMessage.Disable);
+            }
 
             public void Collision(float inputHealthRatio) => NotifyAll(InputPanelObserverMessage.Collision,inputHealthRatio);
         }

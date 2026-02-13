@@ -2,6 +2,7 @@
 using System.Collections;
 using _Main.Scripts.Common.MyRandom;
 using _Main.Scripts.EventBus;
+using _Main.Scripts.GameCamera;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay;
@@ -25,6 +26,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         [SerializeField] private bool startMeteorsEnable;
         [Space(5)]
         [SerializeField] private TimeScales timeScale;
+        [SerializeField] private CameraTransportDataSo gameplayZoom;
 
         [Serializable]
         private class TimeScales
@@ -59,6 +61,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             _currentLevel = startLevel;
             OnLevelUpdated?.Invoke(_currentLevel+1);
             Initialize();
+            
         }
 
         private void Update()
@@ -76,6 +79,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         
         private void Initialize()
         {
+            CameraEventCaller.Transport(gameplayZoom);
             StartCoroutine(Coroutine_Initialize());
         }
 

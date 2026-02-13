@@ -332,7 +332,6 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
         #region Speeder
         private void Speeder_OnReachedMinSpeedHandler()
         {
-            Debug.Log("Min Speed Reached");
             OnSpeederReachedMinSpeed?.Invoke();
         }
         private void Speeder_OnReachedMaxSpeedHandler()
@@ -359,7 +358,6 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
         
         private void Finder_OnTargetNotFoundHandler()
         {
-            Debug.Log("Finder Couldn't Find Target");
             OnFinderFinish?.Invoke();
         }
             
@@ -369,7 +367,6 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
             switch (_controller.CurrentState)
             {
                 case States.Finder:
-                    Debug.Log("Finder Has Reached Target");
                     OnFinderFinish?.Invoke();
                     break;
             }

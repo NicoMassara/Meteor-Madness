@@ -138,10 +138,10 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                         });
                         break;
                 }
-                
-                _lastSelectedSlot = _currentBatch[0].Slot;
-                _currentBatchIndex = selectedAmount - 1;
             }
+            
+            _lastSelectedSlot = _currentBatch[0].Slot;
+            _currentBatchIndex = selectedAmount - 1;
             
             OnDebugBatchCreated?.Invoke(new BatchDebugData
             {

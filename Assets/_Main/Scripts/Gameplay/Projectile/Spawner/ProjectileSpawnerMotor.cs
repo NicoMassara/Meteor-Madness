@@ -50,7 +50,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             if (_isSpawningBatch == false) return;
             
             var slotData = _projectileBatchController.GetNextSlotData();
-            
             _meteorAmountToSpawn--;
             
             var isLastMeteor = _meteorAmountToSpawn == 0;
@@ -152,6 +151,11 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private void RingController_OnLastBatchedCreatedHandler()
         {
             _isLastRingBatch = true;
+        }
+
+        public void InitializeSpawner()
+        {
+            NotifyAll(ProjectileSpawnerObserverMessage.InitializeFactory);
         }
     }
 }

@@ -9,7 +9,6 @@ Shader "Mat_Skin_Default_Earth_Unlit"
 		_FlowMap( "FlowMap", 2D ) = "white" {}
 		_HealthAmount( "HealthAmount", Range( 0, 1 ) ) = 0
 		_Water( "Water", 2D ) = "white" {}
-		_Opacity1( "Opacity", Range( 0, 1 ) ) = 0
 		_AtmosphereIntensity2( "AtmosphereIntensity", Range( 0, 2 ) ) = 0.5
 		_Lava( "Lava", 2D ) = "white" {}
 		_Surface( "Surface", 2D ) = "white" {}
@@ -17,6 +16,7 @@ Shader "Mat_Skin_Default_Earth_Unlit"
 		_FlowIntensity( "Flow Intensity", Range( 0, 1 ) ) = 0
 		_SolidTop( "_SolidTop", Range( 0, 1 ) ) = 0.1373401
 		_WaterTiling1( "WaterTiling", Range( 0.1, 10 ) ) = 5.06
+		_Opacity( "_Opacity", Range( 0, 1 ) ) = 0
 		_TopFadeLenght( "_TopFadeLenght", Range( 0, 1 ) ) = 0.3475586
 		_Vector0( "Vector 0", Vector ) = ( 1, -1.31, 0, 0 )
 		_BottomFadeLenght( "_BottomFadeLenght", Range( 0, 1 ) ) = 0
@@ -70,7 +70,7 @@ Shader "Mat_Skin_Default_Earth_Unlit"
 		uniform float4 _AtmosphereColor_Damaged;
 		uniform float4 _AtmosphereColor;
 		uniform float _AtmosphereIntensity2;
-		uniform float _Opacity1;
+		uniform float _Opacity;
 		uniform float _Cutoff = 0.5;
 
 		inline half4 LightingUnlit( SurfaceOutput s, half3 lightDir, half atten )
@@ -126,7 +126,7 @@ Shader "Mat_Skin_Default_Earth_Unlit"
 			float4 Atmosphere_Color650 = lerpResult652;
 			float4 Emission373 = saturate( ( ( ( Surface908 * Depth14_g77 ) * ( 1.0 - smoothstepResult3_g76 ) ) + ( pow( temp_output_1_15_g76 , 4.0 ) * Atmosphere_Color650 * _AtmosphereIntensity2 * smoothstepResult3_g76 ) ) );
 			o.Emission = Emission373.xyz;
-			o.Alpha = _Opacity1;
+			o.Alpha = _Opacity;
 			float2 uv_TexCoord2_g61 = i.uv_texcoord * float2( 1,1 ) + float2( 0,0 );
 			float smoothstepResult3_g60 = smoothstep( 1.0 , 0.98 , length(  (float2( -1,-1 ) + ( uv_TexCoord2_g61 - float2( 0,0 ) ) * ( float2( 1,1 ) - float2( -1,-1 ) ) / ( float2( 1,1 ) - float2( 0,0 ) ) ) ));
 			float Circular_Mask7_g60 = sqrt( ( 1.0 - pow( ( 1.0 - smoothstepResult3_g60 ) , 2.0 ) ) );
@@ -317,8 +317,8 @@ Node;AmplifyShaderEditor.FunctionNode, AmplifyShaderEditor, Version=0.0.0.0, Cul
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;527;-4480,-1152;Inherit;True;CircularMask;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;373;-3328,-1360;Inherit;True;Emission;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;536;-1280,240;Inherit;True;527;CircularMask;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;599;-1152,96;Inherit;False;Property;_Opacity1;Opacity;5;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;372;-1136,-128;Inherit;True;373;Emission;1;0;OBJECT;;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.RangedFloatNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;911;-1136,112;Inherit;False;Property;_Opacity;_Opacity;12;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.StandardSurfaceOutputNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;98;-640,-112;Float;False;True;-1;2;AmplifyShaderEditor.MaterialInspector;0;0;Unlit;Mat_Skin_Default_Earth_Unlit;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;Back;0;False;;0;False;;False;0;False;;0;False;;False;0;0;False;;0;Custom;0.5;True;True;0;True;TransparentCutout;;Transparent;All;12;all;True;True;True;False;0;False;;True;1;False;;255;False;;255;False;;7;False;;3;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;2;15;10;25;False;0.5;True;2;5;False;;10;False;;0;0;False;;0;False;;0;False;;0;False;;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;True;Relative;0;;0;-1;-1;-1;0;False;0;0;False;;-1;0;False;;0;0;0;False;0.1;False;;0;False;;False;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;16;FLOAT4;0,0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
 WireConnection;893;0;894;0
 WireConnection;892;0;893;0
@@ -413,7 +413,7 @@ WireConnection;906;15;905;0
 WireConnection;527;0;886;0
 WireConnection;373;0;906;10
 WireConnection;98;2;372;0
-WireConnection;98;9;599;0
+WireConnection;98;9;911;0
 WireConnection;98;10;536;0
 ASEEND*/
-//CHKSM=BF4211BAB70CE53E2E6706008FAED29E6658F3F5
+//CHKSM=67047183B991B3494CDE3B1FE1F20F3B28F5F02C

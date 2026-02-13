@@ -63,24 +63,19 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
         #endregion
-        
-
-        private void Start()
-        {
-            _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
-            _abilityFactory = new AbilitySphereFactory(abilityPrefab, abilitySelectorData, ()=> doesDebug);
-            _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
-        }
 
         public void ExecuteUpdate(float deltaTime)
         {
-            _distanceTracker.Execute();
+            _distanceTracker?.Execute();
         }
         
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
+                case ProjectileSpawnerObserverMessage.InitializeFactory:
+                    HandleInitializeFactory();
+                    break;
                 case ProjectileSpawnerObserverMessage.SpawnMeteor:
                     HandleSpawnMeteor((SlotData)args[0]);
                     break;
@@ -103,8 +98,17 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                     break;
             }
         }
-        
+
+
+
         #region Observer Handlers
+        
+        private void HandleInitializeFactory()
+        {
+            _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
+            _abilityFactory = new AbilitySphereFactory(abilityPrefab, abilitySelectorData, ()=> doesDebug);
+            _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
+        }
         
         private void HandleBatchDeflected()
         {
@@ -146,7 +150,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             }
             else
             {
-                Debug.Log("Instant");
+                //Debug.Log("Instant");
                 OnProjectileReachedTargetRatio?.Invoke();
             }
         }
@@ -195,6 +199,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         private void DistanceTracker_OnTargetDistanceReachedHandler()
         {
+            //Debug.Log("Target Distance Reached");
             _distanceTracker.OnTargetDistanceReached -= DistanceTracker_OnTargetDistanceReachedHandler;
             OnProjectileReachedTargetRatio?.Invoke();
         }

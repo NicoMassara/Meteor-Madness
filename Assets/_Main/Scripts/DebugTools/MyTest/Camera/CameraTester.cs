@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections;
 using _Main.Scripts.Common;
 using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.GameCamera;
+using _Main.Scripts.MyTest.CosmeticUI;
 using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
+using MeteorMadness.Managers;
+using Plugins.NicolasMassara.CustomSoundManager;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Camera
 {
@@ -87,14 +93,35 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Camera
         [Space]
         [SerializeField] private TransportData zoomOutData;
 
+        private bool _isLoading;
+        
         public bool IsGrayscaleEnable { get; private set; }
         public bool IsZoomingIn { get; private set; }
 
 
-        private void Start()
+        private void Awake()
         {
             CameraEventSubscriber.NotifyTransportStarted(EventBus_Camera_Transport_Started);
             CameraEventSubscriber.NotifyTransportFinished(EventBus_Camera_Transport_Finished);
+        }
+
+        private void Start()
+        {
+            StartCoroutine(Coroutine_LoadCoreScene());
+        }
+
+        private IEnumerator Coroutine_LoadCoreScene()
+        {
+            _isLoading = true;
+            
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("CameraModule", LoadSceneMode.Additive);
+                
+            while (!asyncLoad.isDone)
+            {
+                yield return null;
+            }
+            
+            _isLoading = false;
         }
 
         #region Event Bus
