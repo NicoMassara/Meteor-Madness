@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a05e63e8c31e43c6b15660f3363fb887, type: 3}
+  m_Name: So_ShieldRotation_Default
+  m_EditorClassIdentifier: 
+  speederData: {fileID: 11400000, guid: f62deb1c613bb5844938d19b04cdb93a, type: 2}
+  automaticData: {fileID: 11400000, guid: 72a20e584731741468a9b3a16f0041db, type: 2}
+  inputRotationData: {fileID: 11400000, guid: 3b40d1cacdaff5e458ec1b82d03ab940, type: 2}
+  targetFinderData: {fileID: 11400000, guid: 4bccdd647d77aef42be9cb3f46d45c4e, type: 2}
+  detectorData: {fileID: 11400000, guid: 814918175586cae49a23fdc1081d2976, type: 2}

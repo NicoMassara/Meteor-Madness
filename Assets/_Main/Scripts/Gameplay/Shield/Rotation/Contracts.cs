@@ -9,7 +9,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
     {
         public event Action OnSpeederReachedMaxSpeed;
         public event Action OnSpeederReachedMinSpeed;
-        public event Action OnFinderReachedTarget;
+        public event Action OnFinderFinish;
         public event Action OnRotationStopped;
         public event Action OnRotationStarted;
         public void TransitionToDisable();

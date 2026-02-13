@@ -142,5 +142,13 @@ namespace _Main.Scripts.Projectile
         DEFAULT_MAX
     }
 
+    public enum BatchType
+    {
+        Default,
+        Ring,
+        SlowedDown,
+        Automatic
+    }
+
     #endregion
 }

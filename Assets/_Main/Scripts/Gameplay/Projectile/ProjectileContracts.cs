@@ -54,6 +54,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
     {
         public bool CanBeTargeted { get; }
         public float TargetRatio { get; set; }
+        public int Slot { get;}
     }
 
     #endregion

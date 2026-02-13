@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 168416680}
   - component: {fileID: 168416679}
   - component: {fileID: 168416678}
+  - component: {fileID: 168416684}
   m_Layer: 0
   m_Name: ShieldController
   m_TagString: Untagged
@@ -341,11 +342,30 @@ MonoBehaviour:
     Data: {fileID: 11400000, guid: 6fcf047123881334a90226f66167f467, type: 2}
     DirectionBias: 0.25
   deflectParticleData: {fileID: 11400000, guid: ec9c18003e0f32f46beeae28490ffe51, type: 2}
-  angularRotationData: {fileID: 11400000, guid: 33e71440741cdb447a84694f97a03e7f, type: 2}
+  rotatorData: {fileID: 11400000, guid: 28f5812a9e48b3e49aae313a620d6053, type: 2}
   normalShieldContainer: {fileID: 1661175757}
   projectileLayerMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &168416684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168416674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9003a0721a1e4857959b534ac587ce0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guiConfig:
+    PositionOffset: {x: 500, y: 1500}
+    Width: 320
+    LineHeight: 50
+    TitleSize: 30
+    LineSize: 24
+  isDebugEnable: 1
 --- !u!1 &208616928
 GameObject:
   m_ObjectHideFlags: 0
@@ -639,8 +659,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9cb7a7315bb4f23b15aab1f2b9ca59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startLevel: 7
-  startMeteorsEnable: 0
+  startLevel: 0
+  startMeteorsEnable: 1
   timeScale:
     isEnable: 0
     globalTimeScale: 1
@@ -2377,7 +2397,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 30
-  doesDebug: 0
+  doesDebug: 1
   meteorPrefab: {fileID: 4360489399066249571, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
   abilityPrefab: {fileID: 3446774074668800784, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
   abilitySelectorData: {fileID: 11400000, guid: 4ecea22b7640c414dace2b0e8ec03413, type: 2}
@@ -3314,8 +3334,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74dd2eb23c7f49f7bcb518e26ee40f6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zoomInData: {fileID: 0}
-  zoomOutData: {fileID: 0}
+  zoomInData: {fileID: 11400000, guid: b1f36e981ab671a47a73b5260211a1a2, type: 2}
+  zoomOutData: {fileID: 11400000, guid: 3d3383e51c3cee246a539218cc8d39ab, type: 2}
   abilityTimeData: {fileID: 11400000, guid: ce4bcdecd89003b44a8bd6aa137b27e6, type: 2}
 --- !u!4 &1859037549
 Transform:

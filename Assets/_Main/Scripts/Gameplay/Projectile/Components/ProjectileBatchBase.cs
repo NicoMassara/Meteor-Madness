@@ -88,7 +88,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 switch (spawnData.SpawnType)
                 {
                     case SpawnType.Random:
-                        
                         CreateRandomBatch(ref _currentBatch, new RandomBatchData
                         {
                             SelectedSlot = selectedSlot,
@@ -100,8 +99,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                             SlotRangeData = spawnData.SlotRangeData
                         });
                         break;
+                    
                     case SpawnType.Ascendent or SpawnType.Descendent:
-                            
                         CreateAscendentBatchData(ref _currentBatch, new AscendentBatchData
                         {
                             SlotOffset =  spawnData.MinSlotRange,
@@ -114,8 +113,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                             SpeedMultiplier = spawnData.SpeedMultiplier,
                         });
                         break;
+                    
                     case SpawnType.SamePosition:
-                        
                         CreateSamePositionBatch(ref _currentBatch, new SamePositionBatchData
                         {
                             SelectedSlot = selectedSlot,
@@ -125,8 +124,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                             SpeedMultiplier = spawnData.SpeedMultiplier,
                         });
                         break;
+                    
                     case SpawnType.UpAndDown:
-                        
                         CreateUpAndDownBatchBatch(ref _currentBatch, new UpAndDownBatchData
                         {
                             SelectedSlot = selectedSlot,
@@ -168,12 +167,13 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         private void CreateAscendentBatchData(ref SlotData[] batchData, AscendentBatchData data)
         {
-            var isAbility = false;
             var hasSpawnedAbility = false;
             var currentSlot = data.SelectedSlot;
+            var slotAmount = GetBatchData().SlotAmount;
 
-            for (int i = 0; i < data.SelectedAmount - 1; i++)
+            for (int i = 0; i < data.SelectedAmount; i++)
             {
+                var isAbility = false;
                 // Set if current projectile is ability
                 if (data.HasAbility && hasSpawnedAbility == false)
                 {
@@ -182,14 +182,10 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                         isAbility = true;
                         hasSpawnedAbility = true;
                     }
-                    else
+                    else if (RandomService.Value() >= 0.45f)
                     {
-                        var value = RandomService.Value();
-                        if (value >= 0.45f)
-                        {
-                            isAbility = true;
-                            hasSpawnedAbility = true;
-                        }
+                        isAbility = true;
+                        hasSpawnedAbility = true;
                     }
                 }
                 
@@ -204,7 +200,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 }
                 
                 //Clamps Slot
-                var slotAmount = GetBatchData().SlotAmount;
                 currentSlot = ((currentSlot % slotAmount) + slotAmount) % slotAmount;
                 
                 //Sets Slot Data
@@ -234,11 +229,11 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         private void CreateSamePositionBatch(ref SlotData[] batchData, SamePositionBatchData data)
         {
-            var isAbility = false;
             var hasSpawnedAbility = false;
 
-            for (int i = 0; i < data.SelectedAmount - 1; i++)
+            for (int i = 0; i < data.SelectedAmount; i++)
             {
+                var isAbility = false;
                 // Set if current projectile is ability
                 if (data.HasAbility && hasSpawnedAbility == false)
                 {
@@ -247,14 +242,10 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                         isAbility = true;
                         hasSpawnedAbility = true;
                     }
-                    else
+                    else if (RandomService.Value() >= 0.45f)
                     {
-                        var value = RandomService.Value();
-                        if (value >= 0.45f)
-                        {
-                            isAbility = true;
-                            hasSpawnedAbility = true;
-                        }
+                        isAbility = true;
+                        hasSpawnedAbility = true;
                     }
                 }
                 
@@ -282,12 +273,13 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         
         private void CreateRandomBatch(ref SlotData[] batchData, RandomBatchData data)
         {
-            var isAbility = false;
             var hasSpawnedAbility = false;
             var currentSlot = data.SelectedSlot;
+            var slotAmount = GetBatchData().SlotAmount;
 
-            for (int i = 0; i < data.SelectedAmount - 1; i++)
+            for (int i = 0; i < data.SelectedAmount; i++)
             {
+                var isAbility = false;
                 // Set if current projectile is ability
                 if (data.HasAbility && hasSpawnedAbility == false)
                 {
@@ -296,21 +288,16 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                         isAbility = true;
                         hasSpawnedAbility = true;
                     }
-                    else
+                    else if (RandomService.Value() >= 0.45f)
                     {
-                        var value = RandomService.Value();
-                        if (value >= 0.45f)
-                        {
-                            isAbility = true;
-                            hasSpawnedAbility = true;
-                        }
+                        isAbility = true;
+                        hasSpawnedAbility = true;
                     }
                 }
 
                 currentSlot += data.SlotRangeData.RandomRange * GetRandomDirection();
                 
                 //Clamps Slot
-                var slotAmount = GetBatchData().SlotAmount;
                 currentSlot = ((currentSlot % slotAmount) + slotAmount) % slotAmount;
                 
                 //Sets Slot Data
@@ -339,29 +326,27 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         
         private void CreateUpAndDownBatchBatch(ref SlotData[] batchData, UpAndDownBatchData data)
         {
-            var isAbility = false;
+
             var hasSpawnedAbility = false;
             var direction = GetRandomDirection();
             var currentSlot =  data.SelectedSlot;
+            var slotAmount = GetBatchData().SlotAmount;
             
-            for (int i = data.SelectedAmount - 1; i >= 0; i--)
+            for (int i = 0; i < data.SelectedAmount; i++)
             {
+                var isAbility = false;
                 // Set if current projectile is ability
                 if (data.HasAbility && hasSpawnedAbility == false)
                 {
-                    if (i == 0)
+                    if (i == data.SelectedAmount - 1)
                     {
                         isAbility = true;
                         hasSpawnedAbility = true;
                     }
-                    else
+                    else if (RandomService.Value() >= 0.45f)
                     {
-                        var value = RandomService.Value();
-                        if (value >= 0.45f)
-                        {
-                            isAbility = true;
-                            hasSpawnedAbility = true;
-                        }
+                        isAbility = true;
+                        hasSpawnedAbility = true;
                     }
                 }
 
@@ -372,7 +357,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 }
                 
                 //Clamps Slot
-                var slotAmount = GetBatchData().SlotAmount;
                 currentSlot = ((currentSlot % slotAmount) + slotAmount) % slotAmount;
                 
                 //Sets Slot Data

@@ -124,21 +124,78 @@ namespace MeteorMadness.Gameplay.Shield
 
         #region ObserverHandlers
         
+        private void HandleSetActiveShield(bool isActive)
+        {
+            spriteContainer.SetActive(isActive);
+            
+            OnShieldActivated?.Invoke(isActive);
+            if (isActive)
+            {
+                _shieldRotator.TransitionToManualInput();
+            }
+            else
+            {
+                _shieldRotator.TransitionToDisable();
+                OnDisableAbility?.Invoke();
+            }
+        }
+        
+        private void HandleChangeMagnitude(float magnitude) => _shieldRotator.SetInputMagnitude(magnitude);
+        private void HandleRotation(float inputAngle) => _shieldRotator.SetInputAngle(inputAngle);
+        private void HandleRestartPosition() => _shieldRotator.RestartAngularRotation();
+        private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
+        {
+            _shakerController.AddShake(new ShakeData
+            {
+                Data = deflectShakeData.Data,
+                Direction = -direction,
+                DirectionBias = deflectShakeData.DirectionBias
+            });
+            
+            ParticleEventCaller.Spawn(new ParticleSpawnData
+            {
+                ParticleData = deflectParticleData,
+                Position = position,
+                Rotation = rotation,
+                MoveDirection = direction
+            });
+            
+            CameraEventCaller.Shake(new ShakeData
+            {
+                Data = cameraShakeData.Data,
+                Direction = direction,
+                DirectionBias = cameraShakeData.DirectionBias
+            });
+            
+            OnDeflect?.Invoke();
+        }
+        
         private void HandleSetAutomatic(bool isActive)
         {
             OnAbilitySetActive?.Invoke(AbilityType.Automatic, isActive);
             if (isActive)
             {
-                _shieldRotator.TransitionToAutomaticInput();
-                ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Automatic);
+                _shieldRotator.OnFinderFinish += OnAutomaticEnable;
+                _shieldRotator.TransitionToFinder();
                 OnAbilityRunning?.Invoke(AbilityType.Automatic);
             }
             else
             {
+                OnDeflect -= _shieldRotator.CheckForTarget;
+                _shieldRotator.OnFinderFinish += Rotation_OnFinderFinishHandler;
                 _shieldRotator.TransitionToFinder();
                 ShieldEventCaller.NotifyShieldTypeDisabled(ShieldType.Automatic);
                 OnAbilityFinished?.Invoke();
             }
+        }
+
+        private void OnAutomaticEnable()
+        {
+            Debug.Log("OnAutomaticEnable");
+            _shieldRotator.OnFinderFinish -= OnAutomaticEnable;
+            OnDeflect += _shieldRotator.CheckForTarget;
+            _shieldRotator.TransitionToAutomaticInput();
+            ShieldEventCaller.NotifyShieldTypeEnabled(ShieldType.Automatic);
         }
 
         private void HandleSetGold(bool isActive)
@@ -172,49 +229,6 @@ namespace MeteorMadness.Gameplay.Shield
             }
         }
         
-        private void HandleSetActiveShield(bool isActive)
-        {
-            spriteContainer.SetActive(isActive);
-
-            _shieldRotator.TransitionToManualInput();
-
-            OnShieldActivated?.Invoke(isActive);
-            if (isActive == false)
-            {
-                OnDisableAbility?.Invoke();
-            }
-        }
-        
-        private void HandleChangeMagnitude(float magnitude) => _shieldRotator.SetInputMagnitude(magnitude);
-        private void HandleRotation(float inputAngle) => _shieldRotator.SetInputAngle(inputAngle);
-        private void HandleRestartPosition() => _shieldRotator.RestartAngularRotation();
-
-        private void HandleDeflect(Vector3 position, Quaternion rotation, Vector2 direction)
-        {
-            _shakerController.AddShake(new ShakeData
-            {
-                Data = deflectShakeData.Data,
-                Direction = -direction,
-                DirectionBias = deflectShakeData.DirectionBias
-            });
-            
-            ParticleEventCaller.Spawn(new ParticleSpawnData
-            {
-                ParticleData = deflectParticleData,
-                Position = position,
-                Rotation = rotation,
-                MoveDirection = direction
-            });
-            
-            CameraEventCaller.Shake(new ShakeData
-            {
-                Data = cameraShakeData.Data,
-                Direction = direction,
-                DirectionBias = cameraShakeData.DirectionBias
-            });
-            OnDeflect?.Invoke();
-        }
-
         #endregion
         
         #region Change Form
@@ -273,10 +287,11 @@ namespace MeteorMadness.Gameplay.Shield
                     unsubscribe: callback => _shieldRotator.OnSpeederReachedMinSpeed -= callback))
                 .Then(new InstantAction(()=> _shieldRotator.TransitionToFinder()))
                 .Then(new WaitForEventAction(
-                    subscribe: callback => _shieldRotator.OnFinderReachedTarget += callback,
-                    unsubscribe: callback => _shieldRotator.OnFinderReachedTarget -= callback))
+                    subscribe: callback => _shieldRotator.OnFinderFinish += callback,
+                    unsubscribe: callback => _shieldRotator.OnFinderFinish -= callback))
                 .Then(new InstantAction(() =>
                 {
+                    _shieldRotator.TransitionToManualInput();
                     OnAbilitySetActive?.Invoke(AbilityType.SuperShield, false);
                     superShieldCollider.enabled = false;
                     _isSuperShieldSpriteActive = false;
@@ -309,6 +324,12 @@ namespace MeteorMadness.Gameplay.Shield
         {
             _colliderExtender.Retract();
             OnStopped?.Invoke();
+        }
+        
+        private void Rotation_OnFinderFinishHandler()
+        {
+            _shieldRotator.OnFinderFinish -= Rotation_OnFinderFinishHandler;
+            _shieldRotator.TransitionToManualInput();
         }
 
         #endregion

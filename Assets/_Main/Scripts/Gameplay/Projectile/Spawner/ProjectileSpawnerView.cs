@@ -1,7 +1,6 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.Gameplay.Projectile.Components;
-using _Main.Scripts.Gameplay.Projectile.SO;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
@@ -11,7 +10,6 @@ using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.Meteor;
 using MeteorMadness.Gameplay.Abilities.So;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.GlobalValues.Utilities;
-using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -72,8 +70,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
             _abilityFactory = new AbilitySphereFactory(abilityPrefab, abilitySelectorData, ()=> doesDebug);
             _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
-            
-            _distanceTracker.OnTargetDistanceReached += DistanceTracker_OnTargetDistanceReachedHandler;
         }
 
         public void ExecuteUpdate(float deltaTime)
@@ -145,10 +141,12 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             
             if (slotData.DistanceRatio > 0)
             {
+                _distanceTracker.OnTargetDistanceReached += DistanceTracker_OnTargetDistanceReachedHandler;
                 _distanceTracker.SetProjectile(projectile,slotData.DistanceRatio);
             }
             else
             {
+                Debug.Log("Instant");
                 OnProjectileReachedTargetRatio?.Invoke();
             }
         }
@@ -186,7 +184,8 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             var slotAmount = GameParameters.GameplayValues.AngleSlots;
 
-            var angle = AngleCalculations.GetAngleBySlot(selectedAngle, slotAmount);
+            // I don't know why needs a 180 offset when the shield does not needed it, and I don't want to know it. 
+            var angle = AngleCalculations.GetAngleFromSlot(selectedAngle, slotAmount, 180f);
             var position = AngleCalculations.GetPositionByAngle(angle, spawnRadius);
 
             return position;
@@ -196,6 +195,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         private void DistanceTracker_OnTargetDistanceReachedHandler()
         {
+            _distanceTracker.OnTargetDistanceReached -= DistanceTracker_OnTargetDistanceReachedHandler;
             OnProjectileReachedTargetRatio?.Invoke();
         }
 

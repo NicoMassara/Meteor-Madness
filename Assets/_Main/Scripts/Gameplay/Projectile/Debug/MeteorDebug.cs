@@ -13,6 +13,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.Debug
             {
                 $"Pos: {DebugObject.Position}",
                 $"Speed: {DebugObject.Speed:F2}",
+                $"Slot: {DebugObject.Slot}",
                 $"Targetable: {DebugObject.CanBeTargeted}",
                 $"{targetRatio}",
             };
@@ -24,6 +25,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.Debug
             {
                 Color.white, // Pos
                 Color.white, // Speed
+                Color.white, // Slot
                 DebugObject.CanBeTargeted ? Color.green : Color.red, // Targetable
                 Color.yellow, // Ratio
             };

@@ -55,7 +55,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
                 switch (CurrentState)
                 {
                     case States.Idle:
-
+                        
                         if (FsmController.GetHasTargetAngle())
                         {
                             ChangeState(States.Rotating);
@@ -64,7 +64,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
                         break;
                     
                     case States.Rotating:
-
+                        
                         FsmController.Rotate(deltaTime);
 
                         if (FsmController.GetHasReachedTargetAngle())

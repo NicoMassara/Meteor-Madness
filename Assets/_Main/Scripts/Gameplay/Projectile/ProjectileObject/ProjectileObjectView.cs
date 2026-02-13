@@ -64,7 +64,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.ProjectileObject
 
         #region ITargetable
 
-        public int Slot { get; private set; }
+        public int Slot { get; private set; } = -1;
         public bool CanBeTargeted { get; private set; }
         public float TargetRatio { get; set; }
         public event Action<ITargetable> OnTargetDeath;
@@ -90,9 +90,10 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.ProjectileObject
         
         #endregion
 
-        public override void SetValues(T data)
+        protected override void HandleSetValues(T data)
         {
-            base.SetValues(data);
+            base.HandleSetValues(data);
+            Slot = data.Slot;
             EnableTargetable();
         }
 

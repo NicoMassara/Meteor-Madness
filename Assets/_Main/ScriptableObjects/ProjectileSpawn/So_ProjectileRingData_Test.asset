@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce227a580f70489c9e2225637b118f23, type: 3}
   m_Name: So_ProjectileRingData_Test
   m_EditorClassIdentifier: 
-  projectileSpeed: 45
+  projectileSpeed: 120
   batchAmount:
-    minRange: 5
-    maxRange: 7
+    minRange: 1
+    maxRange: 1
   batchData:
     speedMultiplierRange:
       minRange: 1
       maxRange: 1
     projectileAmountRange:
-      minRange: 3
-      maxRange: 6
+      minRange: 2
+      maxRange: 2
     slotRange:
       minRange: 2
       maxRange: 3
@@ -47,4 +47,6 @@ MonoBehaviour:
       - spawnType: 3
         weight: 56
       - spawnType: 4
+        weight: 47
+      - spawnType: 5
         weight: 47

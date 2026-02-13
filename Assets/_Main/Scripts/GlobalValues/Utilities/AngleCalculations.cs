@@ -5,12 +5,6 @@ namespace MeteorMadness.GlobalValues.Utilities
 {
     public struct AngleCalculations
     {
-        public static float GetAngleBySlot(int selectedSlot, int slotAmount)
-        {
-            float anglePerSlot = 360f / slotAmount;
-            return selectedSlot * anglePerSlot;
-        }
-        
         public static Vector2 GetPositionByAngle(float angle, float radius)
         {
             float radians = angle * Mathf.Deg2Rad;

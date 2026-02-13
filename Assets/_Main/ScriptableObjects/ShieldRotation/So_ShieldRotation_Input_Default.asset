@@ -9,33 +9,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96e67243d8964461bd495a62974506df, type: 3}
-  m_Name: So_AngularRotation_Default
+  m_Script: {fileID: 11500000, guid: eb888e8bedd2465e82f0acd8484197ad, type: 3}
+  m_Name: So_ShieldRotation_Input_Default
   m_EditorClassIdentifier: 
-  acceleration: 5000
-  maxSpeed: 5000
-  minInputAngle: 1
+  minInputAngle: 7.5
+  rotationData:
+    acceleration: 6000
+    maxSpeed: 8000
   magnitudeCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 3.2572458
-      outSlope: 3.2572458
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.018111255
-    - serializedVersion: 3
-      time: 0.5303445
-      value: 0.7527464
-      inSlope: 0.94410527
-      outSlope: 0.94410527
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1

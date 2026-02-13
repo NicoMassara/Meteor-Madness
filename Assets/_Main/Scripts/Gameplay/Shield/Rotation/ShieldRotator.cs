@@ -50,7 +50,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
                 switch (state)
                 {
                     case States.Disabled:
-                        FsmController.EnableRotator();
+                        FsmController.DisableRotator();
                         break;
                     
                     case States.Input:
@@ -96,7 +96,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
                 switch (state)
                 {
                     case States.Disabled:
-                        FsmController.DisableRotator();
+                        FsmController.EnableRotator();
                         break;
                     
                     case States.Input:
@@ -129,11 +129,13 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
         
         public event Action OnSpeederReachedMaxSpeed;
         public event Action OnSpeederReachedMinSpeed;
-        public event Action OnFinderReachedTarget;
+        public event Action OnFinderFinish;
         public event Action OnRotationStopped;
         public event Action OnRotationStarted;
 
         #endregion
+
+        private ShieldRotationDebugData _debugData;
 
         public ShieldRotator(Transform objectToRotate, IShieldRotatorData data)
         {
@@ -146,6 +148,12 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
             _targetFinder = new TargetFinder(data.TargetFinderData, detector);
 
             _controller = new Controller(this);
+            _controller.OnStateChange += (lastState, newState) =>
+            {
+                _debugData.State = newState.ToString();
+                _debugData.LastState = lastState.ToString();
+            };
+            TransitionToDisable();
         }
 
         #region IShieldRotator
@@ -164,10 +172,24 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
         }
 
         public void SlowSpeederDown() => _speeder.SpeedDown(_targetFinder.GetRotationData().MaxSpeed);
-        public void SetInputAngle(float angle) => _inputRotation.SetInputAngle(angle);
-        public void SetInputMagnitude(float magnitude) => _inputRotation.SetInputMagnitude(magnitude);
+        public void SetInputAngle(float angle)
+        {
+            _debugData.InputAngle = angle;
+            _inputRotation.SetInputAngle(angle);
+        }
+
+        public void SetInputMagnitude(float magnitude)
+        {
+            _debugData.InputMagnitude = magnitude;
+            _inputRotation.SetInputMagnitude(magnitude);
+        }
+
         public void RestartAngularRotation() => _angularRotation.RestartRotation();
-        public void Execute(float deltaTime) => _controller.Update(deltaTime);
+        public void Execute(float deltaTime)
+        {
+            ShieldRotationDebugEvents.TriggerOnDebug(_debugData);
+            _controller.Update(deltaTime);
+        }
 
         #endregion
         
@@ -235,6 +257,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
             _angularRotation.SetEnable(false);
 
             _speeder.OnReachedMaxSpeed += Speeder_OnReachedMaxSpeedHandler;
+            _speeder.OnReachedMinSpeed += Speeder_OnReachedMinSpeedHandler;
             _speeder.OnSpeedIncreased += Speeder_OnSpeedIncreasedHandler;
             _speeder.OnSpeedDecreased += Speeder_OnSpeedDecreasedHandler;
             
@@ -243,6 +266,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
         public void Speeder_Disable()
         {
             _speeder.OnReachedMaxSpeed -= Speeder_OnReachedMaxSpeedHandler;
+            _speeder.OnReachedMinSpeed -= Speeder_OnReachedMinSpeedHandler;
             _speeder.OnSpeedIncreased -= Speeder_OnSpeedIncreasedHandler;
             _speeder.OnSpeedDecreased -= Speeder_OnSpeedDecreasedHandler;
             _angularRotation.SetEnable(true);
@@ -293,6 +317,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
 
         private void Input_OnInputChangedHandler(float input)
         {
+            _debugData.TargetAngle = input;
             _angularRotation.SetTargetAngle(input);
         }
         
@@ -307,11 +332,12 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
         #region Speeder
         private void Speeder_OnReachedMinSpeedHandler()
         {
-            
+            Debug.Log("Min Speed Reached");
+            OnSpeederReachedMinSpeed?.Invoke();
         }
         private void Speeder_OnReachedMaxSpeedHandler()
         {
-            //TODO: Should notify that has reached max speed
+            OnSpeederReachedMaxSpeed?.Invoke();
         }
         
         private void Speeder_OnSpeedIncreasedHandler()
@@ -327,12 +353,14 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
         // === Finder === // 
         private void Finder_OnTargetFoundHandler(float input)
         {
+            _debugData.TargetAngle = input;
             _angularRotation.SetTargetAngle(input);
         }
         
         private void Finder_OnTargetNotFoundHandler()
         {
-            _controller.ChangeState(States.Input);
+            Debug.Log("Finder Couldn't Find Target");
+            OnFinderFinish?.Invoke();
         }
             
         // === Rotator === //
@@ -341,7 +369,8 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
             switch (_controller.CurrentState)
             {
                 case States.Finder:
-                    _controller.ChangeState(States.Input);
+                    Debug.Log("Finder Has Reached Target");
+                    OnFinderFinish?.Invoke();
                     break;
             }
             

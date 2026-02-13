@@ -73,6 +73,12 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
                         }
 
                         break;
+                    
+                    case States.Rotating:
+                        
+                        //_speeder.RotateObject(deltaTime);
+                        
+                        break;
 
                     case States.SpeedDown:
                         
@@ -187,6 +193,8 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
 
         public void SpeedDown(float targetSpeed)
         {
+            Debug.Log("Target Speed: " + targetSpeed);
+            Debug.Log("De Acc Rate: " + GetAngularDeAcceleration());
             _targetMinSpeed = targetSpeed;
             _controller.ChangeState(States.SpeedDown);
         }
@@ -211,11 +219,10 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
             _lastAngle = GetCurrentAngle();
         }
         
-        // === Actions === // 
-        public void DecreaseSpeed(float deltaTime)
+        public void IncreaseSpeed(float deltaTime)
         {
             float currentAngle = GetCurrentAngle();
-            float deltaAngle = Mathf.DeltaAngle(currentAngle, _targetDegreesStep);
+            float deltaAngle = Mathf.DeltaAngle(_lastAngle, GetCurrentAngle());
             
             _angularSpeed += GetAngularAcceleration() * deltaTime;
             
@@ -225,15 +232,17 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
             if (_totalDegrees >= _targetDegreesStep)
             {
                 _targetDegreesStep += _data.DegreesStep;
-                OnSpeedIncreased?.Invoke();
+                OnSpeedDecreased?.Invoke();
             }
             
             ClampAngularSpeed();
         }
-        public void IncreaseSpeed(float deltaTime)
+        
+        // === Actions === // 
+        public void DecreaseSpeed(float deltaTime)
         {
             float currentAngle = GetCurrentAngle();
-            float deltaAngle = Mathf.DeltaAngle(_lastAngle, GetCurrentAngle());
+            float deltaAngle = Mathf.DeltaAngle(_lastAngle, currentAngle);
             
             _angularSpeed += GetAngularDeAcceleration() * deltaTime;
             
@@ -243,7 +252,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
             if (_totalDegrees >= _targetDegreesStep)
             {
                 _targetDegreesStep += _data.DegreesStep;
-                OnSpeedDecreased?.Invoke();
+                OnSpeedIncreased?.Invoke();
             }
             
             ClampAngularSpeed();

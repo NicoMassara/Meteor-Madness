@@ -10,7 +10,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield
         protected readonly T FsmController;
         public S CurrentState { get; private set; }
         
-        protected event Action<S,S> OnStateChange;
+        public event Action<S,S> OnStateChange;
 
         protected SimpleFsm(T controller)
         {
