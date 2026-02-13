@@ -42,12 +42,23 @@ namespace _Main.Scripts.Gameplay.Projectile.SO
 
         private void OnValidate()
         {
-            SetMilestoneArray();
+            if (milestonePerLevel == null || milestonePerLevel.Length != GameParameters.GameplayValues.SpawnLevelAmount)
+            {
+                ResizeArray();
+            }
         }
-        
-        private void OnEnable()
+
+        private void ResizeArray()
         {
-            SetMilestoneArray();
+            var newArray = new IntRangeData[GameParameters.GameplayValues.SpawnLevelAmount];
+
+            if (milestonePerLevel != null)
+            {
+                for (int i = 0; i < Mathf.Min(milestonePerLevel.Length, newArray.Length); i++)
+                    newArray[i] = milestonePerLevel[i];
+            }
+
+            milestonePerLevel = newArray;
         }
 
         private void SetMilestoneArray()

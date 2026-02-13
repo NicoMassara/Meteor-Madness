@@ -121,7 +121,6 @@ namespace _Main.Scripts.Environment.Comet.Spawner
 #endif
                     if (data.LastDistance - currentDistance <= 0f)
                     {
-                        Debug.Log("Reached Target");
                         OnTargetReached?.Invoke(data.Comet);
                         RemoveCometData(data);
                     }

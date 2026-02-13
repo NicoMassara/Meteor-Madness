@@ -37,9 +37,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     debug.TargetRatio = -1;
                 }
 #endif
-                _hasProjectile = false;
-                _currentProjectile = null;
-                OnTargetDistanceReached?.Invoke();
+                RemoveCurrentProjectile();
             }
         }
         
@@ -49,6 +47,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             _currentProjectile = projectile;
             _startPosition = _currentProjectile.Position;
             _targetRatio = Mathf.Clamp01(targetRatio);
+            _currentProjectile.OnObjectDisabled += OnProjectileDisabledHandler;
 
 #if UNITY_EDITOR
 
@@ -60,6 +59,14 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             
             CalculateTotalDistance();
             _hasProjectile = true;
+        }
+
+        private void RemoveCurrentProjectile()
+        {
+            _currentProjectile.OnObjectDisabled -= OnProjectileDisabledHandler;
+            _hasProjectile = false;
+            _currentProjectile = null;
+            OnTargetDistanceReached?.Invoke();
         }
 
         private void CalculateTotalDistance()
@@ -85,6 +92,11 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             if (_hasProjectile == false) return 0;
             
             return _cofOffset + (_totalDistance * (1f-_targetRatio));
+        }
+        
+        private void OnProjectileDisabledHandler()
+        {
+            RemoveCurrentProjectile();
         }
     }
 }

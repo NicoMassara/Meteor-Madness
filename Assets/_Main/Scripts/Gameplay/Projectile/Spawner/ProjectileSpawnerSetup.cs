@@ -2,6 +2,7 @@
 using _Main.Scripts.EventBus;
 using _Main.Scripts.Gameplay.Projectile.SO;
 using MeteorMadness.Contracts;
+using MeteorMadness.Contracts.Events;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
 
@@ -28,7 +29,17 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _view = GetComponentInChildren<ProjectileSpawnerView.IProjectileSpawnerView>();
             motor.Subscribe((IObserver)_view);
             
+            
+            BootEvents.OnSubSystemRequestInitialize += Initialize;
+            
             SetEventBus();
+        }
+
+        private void Initialize()
+        {
+            BootEvents.OnSubSystemRequestInitialize -= Initialize;
+            _controller.InitializeSpawner();
+            BootEvents.SubSystemInitialized();
         }
 
         private void Start()

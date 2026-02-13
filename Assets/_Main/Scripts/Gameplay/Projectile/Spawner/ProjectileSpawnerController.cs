@@ -12,6 +12,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         internal interface IProjectileSpawnerController
         {
+            public void InitializeSpawner();
             public void EnableSpawn();
             public void DisableSpawn(bool doesClear);
             public void UpdateLevel(int currentLevel);
@@ -204,6 +205,11 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         }
 
         #region IProjectileSpawnerController
+
+        public void InitializeSpawner()
+        {
+            _motor.InitializeSpawner();
+        }
 
         public void EnableSpawn()
         {

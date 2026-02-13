@@ -81,7 +81,8 @@ namespace _Main.Scripts.Projectile
                 Rotation = rotation,
                 Position = data.Position,
                 Direction = data.Direction.normalized,
-                Value = data.Value
+                Value = data.Value,
+                Slot = data.Slot
             });
 
             meteor.OnDeflection += Meteor_OnDeflectionHandler;

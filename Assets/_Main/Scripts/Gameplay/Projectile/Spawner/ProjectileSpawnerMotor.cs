@@ -43,15 +43,13 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _meteorAmountToSpawn = _projectileBatchController.CreateBatchData();
             _batchTracker.CreateBatchData(_meteorAmountToSpawn);
             _isSpawningBatch = true;
-
         }
 
         public void SpawnNextProjectileFromDefaultBatch()
         {
             if (_isSpawningBatch == false) return;
-                
-            var slotData = _projectileBatchController.GetNextSlotData();
             
+            var slotData = _projectileBatchController.GetNextSlotData();
             _meteorAmountToSpawn--;
             
             var isLastMeteor = _meteorAmountToSpawn == 0;
@@ -153,6 +151,11 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private void RingController_OnLastBatchedCreatedHandler()
         {
             _isLastRingBatch = true;
+        }
+
+        public void InitializeSpawner()
+        {
+            NotifyAll(ProjectileSpawnerObserverMessage.InitializeFactory);
         }
     }
 }

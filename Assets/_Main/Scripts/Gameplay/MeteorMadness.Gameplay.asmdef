@@ -13,11 +13,8 @@
         "MeteorMadness.Animations",
         "MeteorMadness.Contracts",
         "MeteorMadness.EventBus",
-        "MeteorMadness.ShieldRotation.Contracts",
-        "MeteorMadness.ShieldRotation.Mediator",
         "MeteorMadness.Core.FlyingObject",
         "MeteorMadness.GameCamera",
-        "ShieldMovement.Movement",
         "MeteorMadness.Common.ScriptableObjects",
         "MeteorMadness.Common"
     ],

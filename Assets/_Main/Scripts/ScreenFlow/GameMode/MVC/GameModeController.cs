@@ -198,6 +198,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 public bool IsPaused { get; private set; }
                 public bool IsPlaying { get; private set; }
                 public bool HasSavedScore { get; private set; }
+                public bool IsGoingToPause { get; private set; }
 
                 public GameModeActionGate(FSM<States> fsm) : base(fsm) { }
                 
@@ -211,6 +212,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 {
                     WasPaused = state == States.Paused;
                     HasSavedScore = state == States.SaveScore;
+                }
+
+                protected override void OnNewState(States state)
+                {
+                    IsGoingToPause = state == States.Paused;
                 }
             }
 
@@ -340,6 +346,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
             #endregion
             
             public bool GetWasFinished() => _actionGate.HasSavedScore;
+
+            public bool GetIsGoingToPause() => _actionGate.IsGoingToPause;
         }
         
         #endregion
@@ -390,7 +398,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 _mainController.TransitionToPaused();
         }
 
-        public void StopGameplay() => _motor.StopGameplay();
+        public void StopGameplay()
+        {
+            //if(_mainController.GetIsGoingToPause()) return;
+            _motor.StopGameplay();
+        }
+
         public void FinishGame() => _motor.FinishGame();
         public void StartFinish() => _motor.StartFinish();
 

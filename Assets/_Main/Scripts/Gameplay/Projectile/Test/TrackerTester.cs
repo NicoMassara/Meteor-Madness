@@ -47,7 +47,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Test
         {
             var slotAmount = GameParameters.GameplayValues.AngleSlots;
 
-            var angle = AngleCalculations.GetAngleBySlot(selectedAngle, slotAmount);
+            var angle = AngleCalculations.GetAngleFromSlot(selectedAngle, slotAmount);
             var position = AngleCalculations.GetPositionByAngle(angle, spawnRadius);
 
             return position;

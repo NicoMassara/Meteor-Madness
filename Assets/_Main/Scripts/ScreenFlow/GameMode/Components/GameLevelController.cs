@@ -19,14 +19,23 @@ namespace MeteorMadness.ScreenFlow.GameMode
         public GameLevelController(IProjectileMilestoneData data)
         {
             _milestoneData = data;
-            _milestones = new[] { LevelAmount };
+            _milestones = new int[LevelAmount];
         }
 
         public void InitializeData()
         {
+            Debug.Log(_milestoneData);
+
             for (int i = 0; i < _milestones.Length; i++)
             {
-                var sqrRange = _milestoneData.GetMilestoneByIndex(i).Range.sqrMagnitude;
+                var item = _milestoneData.GetMilestoneByIndex(i);
+                if (item == null)
+                {
+                    Debug.LogWarning("Milestone " + i + " not found");
+                    return;
+                }
+
+                var sqrRange = item.Range.sqrMagnitude;
                 var milestoneAmount = 0;
 
                 if (sqrRange == 0)
@@ -67,7 +76,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             }
             else
             {
-                _currentMilestone += _milestoneData.GetMilestoneByIndex(_currentLevel).RandomRange;
+                _currentMilestone += _milestoneData.GetMilestoneByIndex(GameParameters.GameplayValues.SpawnLevelAmount-1).RandomRange;
             }
         }
 

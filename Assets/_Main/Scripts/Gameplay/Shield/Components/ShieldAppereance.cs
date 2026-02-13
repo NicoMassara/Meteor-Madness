@@ -1,7 +1,5 @@
 ﻿using System;
 using MeteorMadness.Contracts;
-using MeteorMadness.Gameplay.Abilities;
-using MeteorMadness.GlobalValues;
 using MeteorMadness.GlobalValues.Utilities;
 using NicolasMassara.CustomActionManager;
 using UnityEngine;

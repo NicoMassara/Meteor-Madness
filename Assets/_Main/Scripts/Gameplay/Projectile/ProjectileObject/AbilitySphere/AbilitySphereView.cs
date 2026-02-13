@@ -15,9 +15,9 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.AbilitySphere
         public event Action<AbilityType> OnAbilitySet;
         public AbilityType DebugAbility { get; set; }
 
-        public override void SetValues(AbilitySphereData data)
+        protected override void HandleSetValues(AbilitySphereData data)
         {
-            base.SetValues(data);
+            base.HandleSetValues(data);
             OnAbilitySet?.Invoke(data.Ability);
             DebugAbility = data.Ability;
         }

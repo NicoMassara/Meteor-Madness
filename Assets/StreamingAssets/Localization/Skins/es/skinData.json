@@ -27,5 +27,11 @@
     "Name" : "Meteorito",
     "Description" : "UN METEORito?! Bue...",
     "DeathTitle" : "La Humanidad esta salvada!"
+  },
+
+  "BlackHole" : {
+    "Name" : "Agujero Negro",
+    "Description" : "HUYE!, NOS VA A ABSORBER!",
+    "DeathTitle" : "El espacio-tiempo esta a salvo"
   }
 }

@@ -2,8 +2,6 @@
 using _Main.Scripts.Common;
 using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
-using MeteorMadness.Contracts.Interfaces;
-using MeteorMadness.Common.OldShaker;
 using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using NicolasMassara.CustomActionManager;
@@ -39,7 +37,6 @@ namespace _Main.Scripts.GameCamera
         public void ExecuteLateUpdate(float deltaTime)
         {
             _shakerController.Execute(deltaTime);
-            
         }
         
         public void OnNotify(ulong message, params object[] args)

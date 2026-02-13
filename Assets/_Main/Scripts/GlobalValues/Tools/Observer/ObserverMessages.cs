@@ -315,7 +315,7 @@
     public struct ProjectileSpawnerObserverMessage
     {
         public const ulong SpawnMeteor  = 0xA1601;
-        public const ulong Empty1  = 0xA1602;
+        public const ulong InitializeFactory  = 0xA1602;
         public const ulong BatchSpawned  = 0xA1603;
         public const ulong Clear  = 0xA1604;
         public const ulong BatchDeflected  = 0xA1605;

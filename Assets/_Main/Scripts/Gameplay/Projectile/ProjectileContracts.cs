@@ -11,6 +11,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
     public abstract class ProjectileData : FlyingObjectValues
     {
         public float Value { get; set; }
+        public int Slot { get; set; }
     }
     
     public abstract class ProjectileCollisionData
@@ -53,6 +54,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
     {
         public bool CanBeTargeted { get; }
         public float TargetRatio { get; set; }
+        public int Slot { get;}
     }
 
     #endregion

@@ -1,7 +1,6 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.Gameplay.Projectile.Components;
-using _Main.Scripts.Gameplay.Projectile.SO;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
@@ -11,7 +10,6 @@ using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.Meteor;
 using MeteorMadness.Gameplay.Abilities.So;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.GlobalValues.Utilities;
-using MeteorMadness.Managers.GameConfig;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
@@ -65,26 +63,19 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
         #endregion
-        
-
-        private void Start()
-        {
-            _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
-            _abilityFactory = new AbilitySphereFactory(abilityPrefab, abilitySelectorData, ()=> doesDebug);
-            _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
-            
-            _distanceTracker.OnTargetDistanceReached += DistanceTracker_OnTargetDistanceReachedHandler;
-        }
 
         public void ExecuteUpdate(float deltaTime)
         {
-            _distanceTracker.Execute();
+            _distanceTracker?.Execute();
         }
         
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
             {
+                case ProjectileSpawnerObserverMessage.InitializeFactory:
+                    HandleInitializeFactory();
+                    break;
                 case ProjectileSpawnerObserverMessage.SpawnMeteor:
                     HandleSpawnMeteor((SlotData)args[0]);
                     break;
@@ -107,8 +98,17 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                     break;
             }
         }
-        
+
+
+
         #region Observer Handlers
+        
+        private void HandleInitializeFactory()
+        {
+            _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
+            _abilityFactory = new AbilitySphereFactory(abilityPrefab, abilitySelectorData, ()=> doesDebug);
+            _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
+        }
         
         private void HandleBatchDeflected()
         {
@@ -131,7 +131,8 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 Position = spawnPosition,
                 Direction = direction,
                 MovementSpeed = slotData.MovementSpeed,
-                Value = slotData.FinalValue
+                Value = slotData.FinalValue,
+                Slot = slotData.Slot
             });
 
             if (projectile == null)
@@ -144,10 +145,12 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             
             if (slotData.DistanceRatio > 0)
             {
+                _distanceTracker.OnTargetDistanceReached += DistanceTracker_OnTargetDistanceReachedHandler;
                 _distanceTracker.SetProjectile(projectile,slotData.DistanceRatio);
             }
             else
             {
+                //Debug.Log("Instant");
                 OnProjectileReachedTargetRatio?.Invoke();
             }
         }
@@ -185,7 +188,8 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             var slotAmount = GameParameters.GameplayValues.AngleSlots;
 
-            var angle = AngleCalculations.GetAngleBySlot(selectedAngle, slotAmount);
+            // I don't know why needs a 180 offset when the shield does not needed it, and I don't want to know it. 
+            var angle = AngleCalculations.GetAngleFromSlot(selectedAngle, slotAmount, 180f);
             var position = AngleCalculations.GetPositionByAngle(angle, spawnRadius);
 
             return position;
@@ -195,6 +199,8 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         private void DistanceTracker_OnTargetDistanceReachedHandler()
         {
+            //Debug.Log("Target Distance Reached");
+            _distanceTracker.OnTargetDistanceReached -= DistanceTracker_OnTargetDistanceReachedHandler;
             OnProjectileReachedTargetRatio?.Invoke();
         }
 

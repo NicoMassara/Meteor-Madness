@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MeteorMadness.GlobalValues.Tools;
-using NUnit.Framework;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile.Components
 {
@@ -21,7 +20,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         public void RestartData()
         {
-            _currentBatch =  new BatchData();
+            _currentBatch = new BatchData();
             _batchQueue.Clear();
         }
 
@@ -30,9 +29,15 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             var newBatch = new BatchData
             {
                 BathAmount = amount,
+                ActiveAmount = amount,
             };
             
             _batchQueue.Enqueue(newBatch);
+
+            if (_batchQueue.Count == 0)
+            {
+                PrepareNewBatch();
+            }
         }
 
         private void PrepareNewBatch()
@@ -59,15 +64,23 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
             _currentBatch.ActiveAmount--;
 
-            if (_currentBatch.ActiveAmount == 0)
+            if (_currentBatch.ActiveAmount <= 0)
             {
                 if (_currentBatch.GetDeflectedRatio() >= MinDeflectRatio)
                 {
                     OnBatchDeflected?.Invoke();
                 }
+                else
+                {
+                    //Debug.Log("Not enough Deflected");
+                }
 
                 OnBatchFinished?.Invoke();
-                PrepareNewBatch();
+                
+                if (_batchQueue.Count > 0)
+                {
+                    PrepareNewBatch();
+                }
             }
         }
     }

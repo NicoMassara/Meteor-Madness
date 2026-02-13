@@ -86,6 +86,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _Opacity: 1
     - _Opacity1: 1
     - _Outter: 0.45
     - _Parallax: 0.02
@@ -98,7 +99,7 @@ Material:
     - _Strength: 1.52
     - _UVSec: 0
     - _ZWrite: 1
-    - __dirty: 1
+    - __dirty: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color0: {r: 0.754717, g: 0.754717, b: 0.754717, a: 1}

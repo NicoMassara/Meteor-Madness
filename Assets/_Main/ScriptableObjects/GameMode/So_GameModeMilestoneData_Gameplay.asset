@@ -12,4 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 867ddbd86bcc41e69693563ae6a44f59, type: 3}
   m_Name: So_GameModeMilestoneData_Gameplay
   m_EditorClassIdentifier: 
-  milestonePerLevel: []
+  milestonePerLevel:
+  - minRange: 1
+    maxRange: 1
+  - minRange: 2
+    maxRange: 2
+  - minRange: 2
+    maxRange: 2
+  - minRange: 2
+    maxRange: 2
+  - minRange: 2
+    maxRange: 4
