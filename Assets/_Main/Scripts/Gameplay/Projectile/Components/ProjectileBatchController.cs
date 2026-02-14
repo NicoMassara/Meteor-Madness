@@ -106,7 +106,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 if (_abilityCountdown.HasReachedTarget)
                 {
                     _abilityCountdown.Restart();
-                    //hasAbility = true;
+                    hasAbility = true;
                 }
             }
             

@@ -24,6 +24,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         [Header("Start Values")]
         [Range(0, LevelAmount-1)] [SerializeField] private int startLevel = 1;
         [SerializeField] private bool startMeteorsEnable;
+        [SerializeField] private bool doesIncreaseLevel;
         [Space(5)]
         [SerializeField] private TimeScales timeScale;
         [SerializeField] private CameraTransportDataSo gameplayZoom;
@@ -54,8 +55,14 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         {
             RandomService.Initialize();
             ProjectileEventSubscriber.RequestSpawn(EventBus_Projectile_RequestSpawn);
+            ProjectileEventSubscriber.BatchDeflected(EventBus_Projectile_BatchDeflected);
         }
-        
+
+        private void EventBus_Projectile_BatchDeflected(ProjectileEvents.BatchDeflected input)
+        {
+            IncreaseLevel();
+        }
+
         private void Start()
         {
             _currentLevel = startLevel;

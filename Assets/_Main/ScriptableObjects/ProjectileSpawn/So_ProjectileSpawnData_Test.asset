@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbd005fa8feb44aaa48174442de6322e, type: 3}
   m_Name: So_ProjectileSpawnData_Test
   m_EditorClassIdentifier: 
-  projectileSpeed: 60
+  projectileSpeed: 45
   batchData:
   - speedMultiplierRange:
-      minRange: 0.2
-      maxRange: 0.2
+      minRange: 0.4
+      maxRange: 0.4
     projectileAmountRange:
       minRange: 1
       maxRange: 1
@@ -48,8 +48,8 @@ MonoBehaviour:
       - spawnType: 5
         weight: 100
   - speedMultiplierRange:
-      minRange: 0.3
-      maxRange: 0.3
+      minRange: 0.7
+      maxRange: 0.7
     projectileAmountRange:
       minRange: 2
       maxRange: 3
@@ -81,8 +81,8 @@ MonoBehaviour:
       - spawnType: 5
         weight: 100
   - speedMultiplierRange:
-      minRange: 0.5
-      maxRange: 0.55
+      minRange: 0.7
+      maxRange: 0.7
     projectileAmountRange:
       minRange: 3
       maxRange: 5
@@ -114,8 +114,8 @@ MonoBehaviour:
       - spawnType: 5
         weight: 100
   - speedMultiplierRange:
-      minRange: 0.65
-      maxRange: 0.7
+      minRange: 0.8
+      maxRange: 0.8
     projectileAmountRange:
       minRange: 3
       maxRange: 8
@@ -148,7 +148,7 @@ MonoBehaviour:
         weight: 100
   - speedMultiplierRange:
       minRange: 1
-      maxRange: 1.15
+      maxRange: 1
     projectileAmountRange:
       minRange: 3
       maxRange: 15
