@@ -65,137 +65,27 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
 
         private class AbilitySelector
         {
-            public bool IsStorageFull { get; set; }
-            
-            private readonly Func<Tuple<AbilityType[], int[]>> _getValuesAction;
-            private readonly Func<Tuple<int[],AbilityType[]>> _getUnlockAction;
-            private readonly Dictionary<AbilityType, ActionValue> _multipliers = new Dictionary<AbilityType, ActionValue>();
-            private AbilityType _abilityToDrop;
+            private Dictionary<AbilityType, int> _weightsDic;
 
-            private class ActionValue
+            public AbilitySelector()
             {
-                public readonly AbilityType AbilityType;
-                public int Value { get; private set; }
-
-                public ActionValue(AbilityType abilityType)
-                {
-                    AbilityType = abilityType;
-                }
-
-                public void IncreaseValue() => Value += 5;
-                public void DecreaseValue() => Value -= 5;
-                public void EnableValue() => Value = 10;
-                public void DisableValue() => Value = 0;
+                InitializeDic();
             }
 
-            public AbilitySelector(
-                Func<Tuple<AbilityType[], int[]>> getValuesAction, 
-                Func<Tuple<int[],AbilityType[]>> getUnlockAction)
+            private void InitializeDic()
             {
-                _getValuesAction = getValuesAction;
-                _getUnlockAction = getUnlockAction;
-
-                for (int i = 0; i < (int)AbilityType.Default_MAX; i++)
+                _weightsDic = new Dictionary<AbilityType, int>
                 {
-                    var ability = (AbilityType)i;
-                    _multipliers.Add(ability,new ActionValue(ability));
-                }
+                    {AbilityType.SuperShield, 50},
+                    {AbilityType.Health, 75},
+                    {AbilityType.SlowMotion, 100},
+                    {AbilityType.DoublePoints, 100},
+                    {AbilityType.Automatic, 50},
+                };
             }
 
-            private AbilityType GetAbilityToUnlock(int level)
-            {
-                var tempValues = _getUnlockAction();
-                var length = tempValues.Item1.Length;
-                
-                for (int i = 0; i < length; i++)
-                {
-                    var unlockLevel = tempValues.Item1[i];
-
-                    if (unlockLevel == level)
-                    {
-                        return tempValues.Item2[i];
-                    }
-                }
-
-                return AbilityType.None;
-            }
-
-            private void ResetMultipliers()
-            {
-                foreach (var item in _multipliers)
-                {
-                    item.Value.DisableValue();
-                }
-            }
-
-            private int GetAbilityValue(AbilityType abilityType)
-            {
-                if (_multipliers.TryGetValue(abilityType, out var multiplier))
-                {
-                    return multiplier.Value;
-                }
-
-                return 1;
-            }
-
-            public void IncreaseValue(AbilityType ability)
-            {
-                if (_multipliers.TryGetValue(ability, out var multiplier))
-                {
-                    multiplier.IncreaseValue();
-                }
-            }
-
-            public void DecreaseValue(AbilityType ability)
-            {
-                if (_multipliers.TryGetValue(ability, out var multiplier))
-                {
-                    multiplier.DecreaseValue();
-                }
-            }
-
-            public void UpdateLevel(int level)
-            {
-                var ability = GetAbilityToUnlock(level);
-                if (ability == AbilityType.None) return;
-
-                if (_multipliers.TryGetValue(ability, out var multiplier))
-                {
-                    multiplier.EnableValue();
-                }
-            }
-            
-            public void Reset() => ResetMultipliers();
-
-            public AbilityType GetAbilityToAdd()
-            {
-                if (_abilityToDrop == AbilityType.None)
-                {
-                    var tempDic = new Dictionary<AbilityType, int>();
-                    var values = _getValuesAction();
-                    var length = values.Item1.Length;
-
-                    for (int i = 0; i < length; i++)
-                    {
-                        var ability = values.Item1[i];
-                        var finalValue = values.Item2[i] * GetAbilityValue(ability);
-
-                        tempDic.Add(ability, finalValue);
-                    }
-
-                    _abilityToDrop = Roulette.Run(tempDic);
-
-                    return _abilityToDrop;
-                }
-
-                var tempValue = _abilityToDrop;
-                _abilityToDrop = AbilityType.None;
-            
-                return tempValue;
-            }
-
-        public void SetAbilityToDrop(AbilityType ability) => _abilityToDrop = ability;
-    }
+            public AbilityType GetAbilityToAdd() => Roulette.Run(_weightsDic);
+        }
 
         #endregion
         
@@ -210,7 +100,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
         public AbilitySphereFactory(AbilitySphereView prefab, AbilitySelectorDataSo selectorData, Func<bool> doesDebugFunc)
         {
             _doesDebugFunc = doesDebugFunc;
-            _selector = new AbilitySelector(selectorData.GetRarityValues,selectorData.GetUnlockLevelValues);
+            _selector = new AbilitySelector();
             _spawner = new Spawner(prefab, 1);
         }
         

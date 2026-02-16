@@ -18,10 +18,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private int _currentLevel;
         private int _currentBatchDeflected;
         private bool _isLastRingBatch;
-        
-        //TO REMOVE
-        private const int MaxRingBatches = 5;
-        private int _currentRingBatches;
 
         public ProjectileSpawnerMotor(IProjectileSpawnData spawnData, IProjectileRingData projectileRingData)
         {

@@ -614,7 +614,7 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateSlowMotionData(IAbilityTimeConfigData configData)
         {
-            var minTimeScale = 0.5f;
+            var minTimeScale = 0.1f;
             var selectedAbility = AbilityType.SlowMotion;
             var timeData = configData.GetAbilityTimeData(selectedAbility);
 

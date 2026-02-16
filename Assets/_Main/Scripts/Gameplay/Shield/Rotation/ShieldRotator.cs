@@ -220,6 +220,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation
         {
             _inputRotation.OnInputChanged += Input_OnInputChangedHandler;
             _inputRotation.OnMagnitudeChanged += Input_OnMagnitudeChangedHandler;
+            _angularRotation.SetSpeedMultiplier(1);
             _angularRotation.SetRotationData(_inputRotation.GetRotationData());
         }
 

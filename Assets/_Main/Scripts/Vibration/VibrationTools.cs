@@ -57,35 +57,32 @@ namespace MeteorMadness.Vibration
                 _ => GetUIVibration(UIVibrationType.UIButtonAccept)
             };
         }
-
-
-        public static Tuple<long[], int[]> CreateWaveformData(VibrationData[] data)
+        
+        public static WaveformData CreateWaveformData(VibrationData[] data)
         {
             if (data == null || data.Length == 0)
             {
-                return new Tuple<long[], int[]>( new long[]{0}, new int[]{0});
+                return new WaveformData();
             }
-            
-            int offset = 1;
-            long[] duration = new long[data.Length + 1];
 
-            duration[0] = 0;
+            long[] durations = new long[data.Length + 1];
+            int[] intensities = new int[data.Length + 1];
 
-            for (int i = 1; i < duration.Length; i++)
+            // Initial delay
+            durations[0] = 0;
+            intensities[0] = 0;
+
+            for (int i = 1; i <= data.Length; i++)
             {
-                duration[i] = Math.Max(0, data[i].Duration);
+                durations[i] = Math.Max(0, data[i - 1].Duration);
+                intensities[i] = Math.Max(0, data[i - 1].Intensity);
             }
-            
-            int[] intensity = new int[data.Length + 1];
 
-            intensity[0] = 0;
-
-            for (int i = 1; i < duration.Length; i++)
+            return new WaveformData
             {
-                intensity[i] = Math.Max(0, data[i].Intensity);
-            }
-            
-            return new Tuple<long[], int[]>(duration, intensity);
+                Durations = durations,
+                Intensities = intensities,
+            };
         }
         
         public static long GetTotalDuration(long[] timings)
@@ -96,6 +93,12 @@ namespace MeteorMadness.Vibration
             return total;
         }
 
+    }
+    
+    public struct WaveformData
+    {
+        public long[] Durations;
+        public int[] Intensities;
     }
     
     [Serializable]

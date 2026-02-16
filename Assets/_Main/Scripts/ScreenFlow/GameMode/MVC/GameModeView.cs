@@ -239,7 +239,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
             if (GameManager.Instance.IsPaused == false)
             {
-                CameraEventCaller.Transport(stopGameplayTransportData);
+                //CameraEventCaller.Transport(stopGameplayTransportData);
             }
             
 #if UNITY_ANDROID || UNITY_IOS

@@ -46,7 +46,13 @@ namespace MeteorMadness.Vibration
             };
 
             _vibrationController.OnVibrate += OnVibrate;
-            _vibrationController.OnStopVibration += OnStopVibration;
+            _vibrationController.OnStopVibration += OnStopVibrationHandler;
+        }
+
+        private void OnStopVibrationHandler()
+        {
+            _currentPriority = VibrationPriority.None;
+            OnStopVibration?.Invoke();
         }
 
         public void Vibrate(IVibrationData data)
@@ -62,7 +68,7 @@ namespace MeteorMadness.Vibration
                     return;
             }
 
-            if(_currentPriority < data.Priority) return;
+            if (data.Priority < _currentPriority) return;
             
             if (_currentPriority != VibrationPriority.None)
             {
@@ -72,14 +78,14 @@ namespace MeteorMadness.Vibration
             _currentPriority = data.Priority;
             
             var values = VibrationTools.CreateWaveformData(data.Data);
-            _vibrationController.Vibrate(values.Item1, values.Item2);
+            _vibrationController.Vibrate(values.Durations, values.Intensities);
         }
 
         public void Vibrate(VibrationData data, VibrationPriority priority = VibrationPriority.Medium)
         {
             if(_canVibrate == false) return;
             
-            if(_currentPriority < priority) return;
+            if (priority < _currentPriority) return;
             
             if (_currentPriority != VibrationPriority.None)
             {
@@ -98,7 +104,7 @@ namespace MeteorMadness.Vibration
         public void Vibrate(DurationType duration, IntensityType intensity, VibrationPriority priority = VibrationPriority.Medium)
         {
             if(_canVibrate == false) return;
-            if(_currentPriority < priority) return;
+            if (priority < _currentPriority) return;
             
             if (_currentPriority != VibrationPriority.None)
             {
@@ -117,6 +123,8 @@ namespace MeteorMadness.Vibration
 
         public void Vibrate(UIVibrationType type)
         {
+            if(_canVibrate == false) return;
+            
             if(_currentPriority < VibrationPriority.Low) return;
             _currentPriority = VibrationPriority.Low;
             
@@ -128,6 +136,7 @@ namespace MeteorMadness.Vibration
 #if UNITY_EDITOR
             Debug.Log("Vibration cancelled");
 #endif
+            _currentPriority = VibrationPriority.None;
             _vibrationController.CancelVibration();
             VibrationEvents.TriggerOnCancel();
         }

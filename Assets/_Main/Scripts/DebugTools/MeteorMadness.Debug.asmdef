@@ -29,7 +29,6 @@
         "GUID:4c6980595afb418cab2b64240f07f56e"
     ],
     "includePlatforms": [
-        "Android",
         "Editor"
     ],
     "excludePlatforms": [],

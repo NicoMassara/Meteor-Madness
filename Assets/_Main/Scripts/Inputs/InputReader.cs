@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Inputs
 {
-    public class InputReader : MonoBehaviour, IDebugInput, IInputReader, IInputUI
+    public class InputReader : MonoBehaviour, IInputReader, IInputUI
     {
         #region Data Classes
 
@@ -23,19 +23,13 @@ namespace _Main.Scripts.Inputs
             public float DeadZoneRadius => deadZoneRadius;
             public float SafeZoneRadius => safeZoneRadius;
         }
-        
-        [System.Serializable]
-        private class TouchInputData : InputData, ITouchInputData
-        {
-
-        }
 
         #endregion
         
-        [SerializeField] private TouchInputData touchInputData;
+        [SerializeField] private InputData touchInputData;
         [SerializeField] private bool debugEnable = true;
         private Camera _gameCamera;
-        private IDeviceInput _deviceInput;
+        private TouchInput _deviceInput;
         private bool _isEnable;
 
         #region IInputReader
@@ -54,35 +48,20 @@ namespace _Main.Scripts.Inputs
 
         #endregion
 
-        #region IDebugInput
-        public IDebugDeviceInput DebugDevice { get; private set; }
-        public string DebugName { get; } = "Input";
-        public bool IsDebugEnable => debugEnable;
-
-        #endregion
-
         private void Awake()
         {
             _gameCamera = Camera.main;
-            
-            IDeviceInput deviceInput = null;
-            
-            deviceInput = new TouchInput(touchInputData, _gameCamera);
-            
-            _deviceInput = deviceInput;
+            _deviceInput = new TouchInput(touchInputData, _gameCamera);;
             _deviceInput.OnPressingToMove += OnPressingToMoveHandler;
             _deviceInput.OnReleasedToMove += OnReleasedToMoveHandler;
             _deviceInput.OnDirectionChanged += OnDirectionChangedHandler;
-            _deviceInput.OnMagnitudeChanged += OnMagnitudeChangedHandler;
-            
-            DebugDevice = (IDebugDeviceInput)deviceInput;
             
             InputsEventSubscriber.SetEnable(EventBus_Inputs_SetEnable);
         }
-        
-        private void Update()
+
+        private void Start()
         {
-            _deviceInput?.Execute();
+            _deviceInput.Initialize();
         }
 
         #region Handlers
