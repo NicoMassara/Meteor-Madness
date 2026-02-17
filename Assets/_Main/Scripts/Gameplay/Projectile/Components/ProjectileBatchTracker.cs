@@ -7,26 +7,26 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
     internal class ProjectileBatchTracker
     {
         private const float MinDeflectRatio = 0.5f;
-        private readonly Queue<BatchData> _batchQueue;
-        private BatchData _currentBatch;
+        private readonly Queue<BatchTrackerData> _batchQueue;
+        private BatchTrackerData _currentBatch;
 
         public event Action OnBatchFinished;
         public event Action OnBatchDeflected;
 
         public ProjectileBatchTracker()
         {
-            _batchQueue = new Queue<BatchData>();
+            _batchQueue = new Queue<BatchTrackerData>();
         }
 
         public void RestartData()
         {
-            _currentBatch = new BatchData();
+            _currentBatch = new BatchTrackerData();
             _batchQueue.Clear();
         }
 
         public void CreateBatchData(int amount)
         {
-            var newBatch = new BatchData
+            var newBatch = new BatchTrackerData
             {
                 BathAmount = amount,
                 ActiveAmount = amount,
@@ -85,7 +85,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         }
     }
 
-    internal struct BatchData
+    internal struct BatchTrackerData
     {
         public int BathAmount;
         public int ActiveAmount;

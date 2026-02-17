@@ -130,11 +130,11 @@ namespace MeteorMadness.Contracts
         
         public struct EnableSpawn {}
 
-        public struct SetRingActive
+        public struct SetSpawnType
         {
-            public bool IsActive;
+            public BatchType BatchType;
         }
-        
+
     }
     
     public struct MeteorEvents

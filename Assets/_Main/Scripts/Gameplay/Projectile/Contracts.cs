@@ -1,9 +1,133 @@
 ﻿using System;
+using System.Collections.Generic;
+using _Main.Scripts.Common.MyRandom;
+using _Main.Scripts.Common.SelectorByWeight;
+using _Main.Scripts.Gameplay.Projectile.SO;
+using _Main.Scripts.Gameplay.Projectile.SO.WeightsData;
+using MeteorMadness.Contracts;
 using UnityEngine;
 
 namespace _Main.Scripts.Projectile
 {
     #region Struct
+    
+
+    [System.Serializable]
+    internal struct SpawnData
+    {
+        [SerializeField] private SpeedMultiplierRangeData speedMultiplier;
+        [SerializeField] private AmountRangeData batchAmount;
+        [SerializeField] private SpawnTypeData[] data;
+        public SpawnTypeData[] Data => data;
+
+        public SpeedMultiplierRangeData SpeedMultiplier => speedMultiplier;
+        public AmountRangeData BatchAmount => batchAmount;
+
+        public bool GetSpawnDataByType(SpawnType spawnType, out SpawnTypeData spawnData)
+        {
+            spawnData = default;
+            
+            foreach (var item in data)
+            {
+                if (item.SpawnType == spawnType)
+                {
+                    spawnData = item;
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        public Dictionary<SpawnType, int> GetWeights()
+        {
+            var temp  = new Dictionary<SpawnType, int>();
+
+            foreach (var item in data)
+            {
+                if(temp.ContainsKey(item.SpawnType)) continue;
+                
+                temp[item.SpawnType] = item.Weight;
+            }
+            return temp;
+        }
+    }
+
+    [System.Serializable]
+    internal struct SpawnTypeData
+    {
+        [SerializeField] private SpawnType spawnType;
+        [Range(0, 100)]
+        [SerializeField] private int weight;
+        [SerializeField] private AmountRangeData projectileAmount;
+        [SerializeField] private DistanceRangeData innerBatchDistance;
+        [SerializeField] private DistanceRangeData nextBatchDistance;
+        [SerializeField] private SlotRangeData nextBatchSlotRange;
+        [SerializeField] private SlotRangeData slotRange;
+
+        public int Weight => weight;
+        public SpawnType SpawnType => spawnType;
+        public AmountRangeData ProjectileAmount => projectileAmount;
+        public DistanceRangeData InnerBatchDistance => innerBatchDistance;
+        public DistanceRangeData NextBatchDistance => nextBatchDistance;
+        public SlotRangeData NextBatchSlotRange => nextBatchSlotRange;
+        public SlotRangeData SlotRange => slotRange;
+    }
+
+    #region Range Data
+    
+    [System.Serializable]
+    internal struct AmountRangeData
+    {
+        [Min(1)] 
+        [SerializeField] private int minAmount;
+        [Min(1)] 
+        [SerializeField] private int maxAmount;
+        
+        public Vector2Int GetRange() => new Vector2Int(minAmount, maxAmount);
+        public int GetRandomRange() => RandomService.Range(minAmount, maxAmount);
+    }
+    
+    
+    [System.Serializable]
+    internal struct SpeedMultiplierRangeData
+    {
+        [Range(0.01f, 2)]
+        [SerializeField] private float minSpeed;
+        [Range(0.01f, 2)] 
+        [SerializeField] private float maxSpeed;
+        
+        public Vector2 GetRange() => new Vector2(minSpeed, maxSpeed);
+        public float GetRandomRange() => RandomService.Range(minSpeed, maxSpeed);
+    }
+
+    [System.Serializable]
+    public struct SlotRangeData
+    {
+        [Range(1, GameParameters.GameplayValues.AngleSlots/2)]
+        [SerializeField] private int minRange;
+        [Range(1, GameParameters.GameplayValues.AngleSlots/2)]
+        [SerializeField] private int maxRange;
+        
+        public Vector2Int GetRange() => new Vector2Int(minRange, maxRange);
+        public int GetRandomRange() => RandomService.Range(minRange, maxRange);
+    }
+    
+    [System.Serializable]
+    internal struct DistanceRangeData
+    {
+        [Range(0, 1)]
+        [Tooltip("0f - Spawn Point / 1f - Shield")]
+        [SerializeField] private float minRange;
+        [Range(0, 1)] 
+        [Tooltip("0f - Spawn Point / 1f - Shield")]
+        [SerializeField] private float maxRange;
+        
+        public Vector2 GetRange() => new Vector2(minRange, maxRange);
+        public float GetRandomRange() => RandomService.Range(minRange, maxRange);
+    }
+    
+    #endregion
 
     public struct ProjectileSpawnValues
     {
@@ -16,10 +140,16 @@ namespace _Main.Scripts.Projectile
 
     public struct BatchSpawnData
     {
-        public Vector2 AmountRange;
-        public Vector2 SlotRange;
-        public float DistanceBetweenMeteors;
-        public float DistanceBetweenBatch;
+        public float MovementSpeed;
+        public int Amount;
+        public int SlotRange;
+        public float InnerDistance;
+        public float NextDistance;
+        public float Delay;
+        public int NextSlotRange;
+        public SpawnType SpawnType;
+        public SlotRangeData SlotRangeData;
+        public bool HasAbility;
     }
     
     public struct SlotData
@@ -67,65 +197,79 @@ namespace _Main.Scripts.Projectile
         public int[] Values;
     }
 
-
     #endregion
 
     #region Interfaces
 
-    public interface IProjectileRingData
+    public interface IBatchTypeCreator
     {
-        public float ProjectileSpeed { get; }
-        public IBatchSpawnData RingData { get; }
-        public IIntRangeData BatchAmountRange { get; }
+        public BatchSpawnData GetBatchSpawnData(SelectRandomSpawnDelegate selectRandomSpawn);
+        public float GetProjectileValue(int index, int batchAmount);
+
+        public void RestartValues();
     }
 
-    public interface IProjectileSpawnData
+    public interface ILeveledBatchTypeCreator
     {
-        public float ProjectileSpeed { get; }
-        public IBatchSpawnData GetDataByIndex(int index);
-    }
-    
-    public interface ISlotRangeData
-    {
-        public Vector2Int Range { get; }
-        public int RandomRange { get; }
+        public void SetLevel(int currentLevel);
     }
 
-    public interface IFloatRangeData
+    internal interface IBatchDataBase
     {
-        public Vector2 Range { get; }
-        public float RandomRange { get; }
-    }
-    
-    public interface IIntRangeData
-    {
-        public Vector2Int Range { get; }
-        public int RandomRange { get; }
-    }
-    
-    public interface IEnumRangeData
-    {
-        public IEnumWeight[] WeightData { get; }
+       public BatchType BatchType { get; }
+       public float ProjectileSpeed { get; }
     }
 
-    public interface IEnumWeight
+    internal interface IDefaultBatchData : IBatchDataBase
     {
-        public int Weight { get; }
-        public SpawnType SpawnType { get; }
+        public SpawnData[] FixedBatchValues { get;  }
+        public SpawnData RandomBatchValues { get;  }
     }
 
-    public interface IBatchSpawnData
+    internal interface ISingleBatchData : IBatchDataBase
     {
-        public IFloatRangeData SpeedMultiplierRange { get; }
-        public IIntRangeData ProjectileAmountRange { get; }
-        public ISlotRangeData  SlotRange { get; }
-        public IFloatRangeData InnerBatchDistanceRange { get; }
-        public IFloatRangeData NextBatchDistanceRange { get; }
-        public IFloatRangeData NextBatchDelayRange { get; }
-        public ISlotRangeData  NextBatchSlotRange { get; }
-        public IEnumRangeData SpawnTypeRange { get; }
+        public SpawnData BatchValues { get;  }
     }
     
+    [System.Serializable]
+    internal struct BatchTypeData
+    {
+        public DefaultBatchData defaultData;
+        public RingBatchData ringData;
+        public SlowMotionBatchData slowMotionData;
+        public AutomaticBatchData automaticData;
+    }
+    
+
+    [System.Serializable]
+    internal struct DefaultBatchData
+    {
+        public DefaultBatchDataSo data;
+        public SpawnWeightsDataSo weights;
+    }
+    
+    [System.Serializable]
+    internal struct RingBatchData
+    {
+        public ISingleBatchData data;
+        public SpawnWeightsDataSo weights;
+    }
+    
+    [System.Serializable]
+    internal struct SlowMotionBatchData
+    {
+        public ISingleBatchData data;
+        public SpawnWeightsDataSo weights;
+    }
+    
+    [System.Serializable]
+    internal struct AutomaticBatchData
+    {
+        public ISingleBatchData data;
+        public SpawnWeightsDataSo weights;
+    }
+    
+
     #endregion
     
     #region Enums
@@ -142,13 +286,68 @@ namespace _Main.Scripts.Projectile
         DEFAULT_MAX
     }
 
-    public enum BatchType
-    {
-        Default,
-        Ring,
-        SlowedDown,
-        Automatic
-    }
-
     #endregion
+
+    public delegate SpawnType SelectRandomSpawnDelegate(Dictionary<SpawnType, int> currWeights,
+        ISpawnBaseWeights baseWeights);
+    
+
+    [System.Serializable]
+    public class WeightsPair : WeightsPairBase<SpawnType> { }
+    [System.Serializable]
+    public class WeightsData : WeightsBaseData<SpawnType, WeightsPair>, IWeightsData { }
+    public interface IWeightsData : IWeightsBaseData<SpawnType> { }
+
+    [System.Serializable]
+    public class SpawnBaseWeights : ISpawnBaseWeights
+    {
+        public WeightsData[] weights;
+        
+        private Dictionary<SpawnType, IWeightsData> _cache;
+
+        public void BuildCache()
+        {
+            _cache = new Dictionary<SpawnType, IWeightsData>();
+            foreach (var w in weights)
+            {
+                _cache[w.itemType] = w;
+            }
+        }
+
+        public Dictionary<SpawnType, IWeightsData> GetWeights()
+        {
+            if(_cache == null)
+                BuildCache();
+            
+            return _cache;
+        }
+
+        public void TryCreateDefaultArray()
+        {
+            if (weights == null || weights.Length != (int)SpawnType.DEFAULT_MAX - 1)
+            {
+                var count = (int)SpawnType.DEFAULT_MAX - 1;
+                weights = new WeightsData[count];
+            
+                for (int i = 0; i < count; i++)
+                {
+                    var item = new WeightsData
+                    {
+                        itemType = (SpawnType)i + 1
+                    };
+                    
+                    item.CreateDefaultData();
+
+                    weights[i] = item;
+                }
+            }
+        }
+    }
+    public interface ISpawnBaseWeights : IBaseWeights<SpawnType, IWeightsData> { }
+    
+
+    public interface ISpawnWeightsData
+    {
+        public ISpawnBaseWeights GetWeights();
+    }
 }

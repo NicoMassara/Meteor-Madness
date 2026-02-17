@@ -1,65 +1,36 @@
 ﻿using System;
 using _Main.Scripts.Common.MyRandom;
 using _Main.Scripts.Projectile;
-using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile.Components
 {
-    public abstract class ProjectileBatchBase
+    public class ProjectileBatchCreator
     {
-        protected struct BatchSpawnData
-        {
-            public float SpeedMultiplier;
-            public int Amount;
-            public int SlotRange;
-            public float InnerDistance;
-            public float NextDistance;
-            public float Delay;
-            public int NextSlotRange;
-            public SpawnType SpawnType;
-            public bool HasAbility;
-
-            public int MinSlotRange;
-            public ISlotRangeData SlotRangeData;
-        }
-
-        public struct ProjectileBatchData
-        {
-            public int SlotAmount;
-            public float ProjectileValue;
-        }
-
-        private readonly ProjectileBatchData _batchData;
-        private readonly SpawnTypeSelector _spawnTypeSelector;
+        private readonly int _angleSlots;
         private SlotData[] _currentBatch;
         private int _lastSelectedSlot;
         private int _currentBatchIndex;
 
-        protected ProjectileBatchData GetBatchData() => _batchData;
-
         protected event Action<BatchDebugData> OnDebugBatchCreated;
         
-
-        public ProjectileBatchBase(ProjectileBatchData data)
+        public ProjectileBatchCreator(int angleSlots)
         {
-            _batchData = data;
+            _angleSlots = angleSlots;
             _lastSelectedSlot = -1;
-            _spawnTypeSelector = new SpawnTypeSelector();
         }
 
-        public virtual void Restart()
+        public virtual void RestartValues()
         {
             _lastSelectedSlot = -1;
         }
         
-        public int CreateBatchData()
+        public int CreateBatchData(BatchSpawnData spawnData, Func<int,int,float> getProjectileValue)
         {
-            var spawnData = GetSpawnData();
             var selectedSlot = 0;
             
             if (_lastSelectedSlot == -1)
             {
-                selectedSlot = RandomService.Range(0, GetBatchData().SlotAmount);
+                selectedSlot = RandomService.Range(0, _angleSlots);
             }
             else if (_lastSelectedSlot > -1)
             {
@@ -80,8 +51,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 {
                     SelectedSlot = selectedSlot,
                     NextBatchDistance = nextBatchDistance,
-                    SpeedMultiplier = spawnData.SpeedMultiplier,
-                });
+                    MovementSpeed = spawnData.MovementSpeed,
+                }, getProjectileValue);
             }
             else
             {
@@ -95,23 +66,23 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                             HasAbility = spawnData.HasAbility,
                             NextBatchDistance = spawnData.NextDistance,
                             InnerBatchDistance = spawnData.InnerDistance,
-                            SpeedMultiplier = spawnData.SpeedMultiplier,
+                            MovementSpeed = spawnData.MovementSpeed,
                             SlotRangeData = spawnData.SlotRangeData
-                        });
+                        }, getProjectileValue);
                         break;
                     
                     case SpawnType.Ascendent or SpawnType.Descendent:
                         CreateAscendentBatchData(ref _currentBatch, new AscendentBatchData
                         {
-                            SlotOffset =  spawnData.MinSlotRange,
+                            SlotOffset =  spawnData.SlotRange,
                             SelectedSlot = selectedSlot,
                             SelectedAmount = selectedAmount,
                             HasAbility = spawnData.HasAbility,
                             IsAscendent = spawnData.SpawnType == SpawnType.Ascendent,
                             NextBatchDistance = spawnData.NextDistance,
                             InnerBatchDistance = spawnData.InnerDistance,
-                            SpeedMultiplier = spawnData.SpeedMultiplier,
-                        });
+                            MovementSpeed = spawnData.MovementSpeed,
+                        }, getProjectileValue);
                         break;
                     
                     case SpawnType.SamePosition:
@@ -121,8 +92,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                             SelectedAmount = selectedAmount,
                             HasAbility = spawnData.HasAbility,
                             NextBatchDistance = spawnData.NextDistance,
-                            SpeedMultiplier = spawnData.SpeedMultiplier,
-                        });
+                            MovementSpeed = spawnData.MovementSpeed,
+                        }, getProjectileValue);
                         break;
                     
                     case SpawnType.UpAndDown:
@@ -133,9 +104,9 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                             HasAbility = spawnData.HasAbility,
                             NextBatchDistance = spawnData.NextDistance,
                             InnerBatchDistance = spawnData.InnerDistance,
-                            SpeedMultiplier = spawnData.SpeedMultiplier,
+                            MovementSpeed = spawnData.MovementSpeed,
                             SlotRangeData = spawnData.SlotRangeData
-                        });
+                        }, getProjectileValue);
                         break;
                 }
             }
@@ -156,7 +127,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             
             return selectedAmount;
         }
-
         public SlotData GetNextSlotData()
         {
             var value = _currentBatch[_currentBatchIndex];
@@ -165,11 +135,13 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             return value;
         }
 
-        private void CreateAscendentBatchData(ref SlotData[] batchData, AscendentBatchData data)
+        #region Ascendent/Descendent
+        
+        private void CreateAscendentBatchData(ref SlotData[] batchData, AscendentBatchData data, Func<int,int,float> getProjectileValue)
         {
             var hasSpawnedAbility = false;
             var currentSlot = data.SelectedSlot;
-            var slotAmount = GetBatchData().SlotAmount;
+            var slotAmount = _angleSlots;
 
             for (int i = 0; i < data.SelectedAmount; i++)
             {
@@ -207,11 +179,12 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 {
                     Slot = currentSlot,
                     DistanceRatio = (i == 0) ? data.NextBatchDistance : data.InnerBatchDistance,
-                    MovementSpeed = data.SpeedMultiplier,
+                    MovementSpeed = data.MovementSpeed,
+                    FinalValue = getProjectileValue.Invoke(i, data.SelectedAmount),
                     IsAbility = isAbility
                 };
-                
-                batchData[i] = OverrideSlotData(slotData, i + 1, data.SelectedAmount);
+
+                batchData[i] = slotData;
             }
         }
         
@@ -224,10 +197,15 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             public bool IsAscendent;
             public float NextBatchDistance;
             public float InnerBatchDistance;
-            public float SpeedMultiplier;
+            public float MovementSpeed;
         }
+        
+        
+        #endregion
+        
+        #region SamePosition
 
-        private void CreateSamePositionBatch(ref SlotData[] batchData, SamePositionBatchData data)
+        private void CreateSamePositionBatch(ref SlotData[] batchData, SamePositionBatchData data, Func<int,int,float> getProjectileValue)
         {
             var hasSpawnedAbility = false;
 
@@ -254,11 +232,12 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 {
                     Slot = data.SelectedSlot,
                     DistanceRatio = (i == 0) ? data.NextBatchDistance : 0,
-                    MovementSpeed = data.SpeedMultiplier,
+                    MovementSpeed = data.MovementSpeed,
+                    FinalValue = getProjectileValue.Invoke(i, data.SelectedAmount),
                     IsAbility = isAbility
                 };
-                
-                batchData[i] = OverrideSlotData(slotData, i + 1, data.SelectedAmount);
+
+                batchData[i] = slotData;
             }
         }
         
@@ -268,14 +247,18 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             public int SelectedAmount;
             public bool HasAbility;
             public float NextBatchDistance;
-            public float SpeedMultiplier;
+            public float MovementSpeed;
         }
         
-        private void CreateRandomBatch(ref SlotData[] batchData, RandomBatchData data)
+        #endregion
+        
+        #region Random
+        
+        private void CreateRandomBatch(ref SlotData[] batchData, RandomBatchData data, Func<int,int,float> getProjectileValue)
         {
             var hasSpawnedAbility = false;
             var currentSlot = data.SelectedSlot;
-            var slotAmount = GetBatchData().SlotAmount;
+            var slotAmount = _angleSlots;
 
             for (int i = 0; i < data.SelectedAmount; i++)
             {
@@ -295,7 +278,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     }
                 }
 
-                currentSlot += data.SlotRangeData.RandomRange * GetRandomDirection();
+                currentSlot += data.SlotRangeData.GetRandomRange() * GetRandomDirection();
                 
                 //Clamps Slot
                 currentSlot = ((currentSlot % slotAmount) + slotAmount) % slotAmount;
@@ -305,11 +288,12 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 {
                     Slot = currentSlot,
                     DistanceRatio = (i == 0) ? data.NextBatchDistance : data.InnerBatchDistance,
-                    MovementSpeed = data.SpeedMultiplier,
+                    MovementSpeed = data.MovementSpeed,
+                    FinalValue = getProjectileValue.Invoke(i, data.SelectedAmount),
                     IsAbility = isAbility
                 };
                 
-                batchData[i] = OverrideSlotData(slotData, i + 1, data.SelectedAmount);
+                batchData[i] = slotData;
             }
         }
         
@@ -320,17 +304,21 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             public bool HasAbility;
             public float NextBatchDistance;
             public float InnerBatchDistance;
-            public float SpeedMultiplier;
-            public ISlotRangeData SlotRangeData;
+            public float MovementSpeed;
+            public SlotRangeData SlotRangeData;
         }
         
-        private void CreateUpAndDownBatchBatch(ref SlotData[] batchData, UpAndDownBatchData data)
+        #endregion
+
+        #region UpAndDow
+
+        private void CreateUpAndDownBatchBatch(ref SlotData[] batchData, UpAndDownBatchData data, Func<int,int,float> getProjectileValue)
         {
 
             var hasSpawnedAbility = false;
             var direction = GetRandomDirection();
             var currentSlot =  data.SelectedSlot;
-            var slotAmount = GetBatchData().SlotAmount;
+            var slotAmount = _angleSlots;
             
             for (int i = 0; i < data.SelectedAmount; i++)
             {
@@ -352,7 +340,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
                 if (i < data.SelectedAmount - 1)
                 {
-                    currentSlot = data.SelectedSlot + (data.SlotRangeData.RandomRange * direction);
+                    currentSlot = data.SelectedSlot + (data.SlotRangeData.GetRandomRange() * direction);
                     direction *= -1;
                 }
                 
@@ -364,11 +352,12 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 {
                     Slot = currentSlot,
                     DistanceRatio = (i == 0) ? data.NextBatchDistance : data.InnerBatchDistance,
-                    MovementSpeed = data.SpeedMultiplier,
+                    MovementSpeed = data.MovementSpeed,
+                    FinalValue = getProjectileValue.Invoke(i, data.SelectedAmount),
                     IsAbility = isAbility
                 };
                 
-                batchData[i] = OverrideSlotData(slotData, i + 1, data.SelectedAmount);
+                batchData[i] = slotData;
             }
             
         }
@@ -380,36 +369,33 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             public bool HasAbility;
             public float NextBatchDistance;
             public float InnerBatchDistance;
-            public float SpeedMultiplier;
-            public ISlotRangeData SlotRangeData;
+            public float MovementSpeed;
+            public SlotRangeData SlotRangeData;
         }
-        
 
-        private void CreateSingleProjectileBatch(ref SlotData[] batchData, SingleProjectileBatchData data)
+        #endregion
+        
+        private void CreateSingleProjectileBatch(ref SlotData[] batchData, SingleProjectileBatchData data, Func<int,int,float> getProjectileValue)
         {
             var slotData = new SlotData
             {
                 Slot = data.SelectedSlot,
                 DistanceRatio = data.NextBatchDistance,
-                MovementSpeed = data.SpeedMultiplier,
+                MovementSpeed = data.MovementSpeed,
+                FinalValue = getProjectileValue.Invoke(0,1)
             };
-                    
-            batchData[0] = OverrideSlotData(slotData, 1, 1);
+
+            batchData[0] = slotData;
         }
 
         private struct SingleProjectileBatchData
         {
             public int SelectedSlot;
             public float NextBatchDistance;
-            public float SpeedMultiplier;
+            public float MovementSpeed;
         }
-
-        protected SpawnType GetSpawnType(IEnumRangeData baseWeights) => _spawnTypeSelector.GetSpawnType(baseWeights);
-
-        protected abstract SlotData OverrideSlotData(SlotData data,int index, int batchAmount);
 
         private int GetRandomDirection() => RandomService.Value() > 0.5f ? -1 : 1;
         
-        protected abstract BatchSpawnData GetSpawnData();
     }
 }

@@ -469,12 +469,13 @@ namespace _Main.Scripts.EventBus
         public static void DisableSpawn(bool doesClear = false) => EventBusCaller.Publish(new ProjectileEvents.DisableSpawn{DoesClearProjectiles = doesClear});
         public static void EnableSpawn() => EventBusCaller.Publish(new ProjectileEvents.EnableSpawn());
         public static void UpdateLevel(int level) => EventBusCaller.Publish(new ProjectileEvents.UpdateLevel{Level = level});
-        public static void SetRingActive(bool isActive) => EventBusCaller.Publish(new ProjectileEvents.SetRingActive{IsActive = isActive});
+        public static void SetSpawnType(BatchType spawnType) => EventBusCaller.Publish(new ProjectileEvents.SetSpawnType{BatchType = spawnType});
         
     }
     
     public static class ProjectileEventSubscriber
     {
+        public static void SetSpawnType(Action<ProjectileEvents.SetSpawnType> action) => EventBusCaller.Subscribe(action);
         public static void Collision(Action<ProjectileEvents.Collision> action) => EventBusCaller.Subscribe(action);
         public static void Deflected(Action<ProjectileEvents.Deflected> action) => EventBusCaller.Subscribe(action);
         public static void BatchDeflected(Action<ProjectileEvents.BatchDeflected> action) => EventBusCaller.Subscribe(action);
@@ -485,11 +486,11 @@ namespace _Main.Scripts.EventBus
         public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Subscribe(action);
         public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Subscribe(action);
         public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action) => EventBusCaller.Subscribe(action);
-        public static void SetRingActive(Action<ProjectileEvents.SetRingActive> action) => EventBusCaller.Subscribe(action);
     }
     
     public static class ProjectileEventUnSubscriber
     {
+        public static void SetSpawnType(Action<ProjectileEvents.SetSpawnType> action) => EventBusCaller.Unsubscribe(action);
         public static void Collision(Action<ProjectileEvents.Collision> action) => EventBusCaller.Unsubscribe(action);
         public static void Deflected(Action<ProjectileEvents.Deflected> action) => EventBusCaller.Unsubscribe(action);
         public static void BatchDeflected(Action<ProjectileEvents.BatchDeflected> action) => EventBusCaller.Unsubscribe(action);
@@ -500,7 +501,6 @@ namespace _Main.Scripts.EventBus
         public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Unsubscribe(action);
         public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Unsubscribe(action);
         public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action) => EventBusCaller.Unsubscribe(action);
-        public static void SetRingActive(Action<ProjectileEvents.SetRingActive> action) => EventBusCaller.Unsubscribe(action);
     }
     
     #endregion

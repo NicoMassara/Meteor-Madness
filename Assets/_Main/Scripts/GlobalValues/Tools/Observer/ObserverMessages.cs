@@ -319,8 +319,8 @@
         public const ulong BatchSpawned  = 0xA1603;
         public const ulong Clear  = 0xA1604;
         public const ulong BatchDeflected  = 0xA1605;
-        public const ulong RingFinished  = 0xA1606;
-        public const ulong RingStarted  = 0xA1607;
+        public const ulong SpecialFinished  = 0xA1606;
+        public const ulong SpecialStarted  = 0xA1607;
         public const ulong Empty8  = 0xA1608;
         public const ulong Empty9  = 0xA1609;
         public const ulong Empty10 = 0xA160A;

@@ -1,6 +1,5 @@
-﻿using System;
-using _Main.Scripts.EventBus;
-using _Main.Scripts.Gameplay.Projectile.SO;
+﻿using _Main.Scripts.EventBus;
+using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
 using MeteorMadness.GlobalValues.Tools.Observer;
@@ -10,20 +9,14 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 {
     internal class ProjectileSpawnerSetup : MonoBehaviour
     {
-        [SerializeField] private ProjectileSpawnDataSo spawnData;
-        [SerializeField] private ProjectileRingDataSo ringData;
+        [SerializeField] private BatchTypeData data;
+        
         private ProjectileSpawnerController.IProjectileSpawnerController _controller;
         private ProjectileSpawnerView.IProjectileSpawnerView _view;
 
         private void Awake()
         {
-            if (spawnData == null)
-            {
-                Debug.LogError($"Spawn Data So not selected.");
-                return;
-            }
-
-            var motor = new ProjectileSpawnerMotor(spawnData,ringData);
+            var motor = new ProjectileSpawnerMotor(data);
             _controller = new ProjectileSpawnerController(motor);
             
             _view = GetComponentInChildren<ProjectileSpawnerView.IProjectileSpawnerView>();
@@ -51,12 +44,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             _view.OnBatchSpawned += () => _controller.NotifyBatchSpawned();
             _view.OnProjectileReachedTargetRatio += () => _controller.NotifyProjectileHasReachedTargetRatio();
-            _view.OnRingStarted += () => _controller.SetHasToSpawnRingBatch(true);
-            _view.OnRingFinished += () =>
-            {
-                _controller.SetIsRingActive(false);
-                _controller.SetHasToSpawnRingBatch(false);
-            };
         }
 
 
@@ -67,14 +54,15 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
             ProjectileEventSubscriber.Deflected(EventBus_Projectile_Deflected);
             ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
-            //
-            MeteorEventSubscriber.SpawnRing(EnventBus_Meteor_SpawnRing);
+            ProjectileEventSubscriber.SetSpawnType(EventBus_Projectile_SetSpawnTyp);
+            
         }
 
-        private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
+        private void EventBus_Projectile_SetSpawnTyp(ProjectileEvents.SetSpawnType input)
         {
-            _controller.SetIsRingActive(true);
+            _controller.ChangeBatchType(input.BatchType);
         }
+
 
         private void EventBus_Projectile_Collision(ProjectileEvents.Collision input)
         {

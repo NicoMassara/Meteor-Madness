@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using _Main.Scripts.GlobalValues.Tools;
+using _Main.Scripts.Projectile;
+using MeteorMadness.Contracts;
 
 namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 {
@@ -21,8 +23,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             public void NotifyProjectileHasReachedTargetRatio();
             public void NotifyProjectileDeflected();
             public void NotifyProjectileCollision();
-            public void SetIsRingActive(bool isActive);
-            public void SetHasToSpawnRingBatch(bool isActive);
+            public void ChangeBatchType(BatchType batchType);
         }
         
         private interface IBaseController
@@ -184,8 +185,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         private bool _hasSpawnedBatch;
         private bool _hasProjectileReachedTarget;
-        private bool _hasToCreateRingBatch;
-        private bool _hasToSpawnRingBatch;
 
         public ProjectileSpawnerController(ProjectileSpawnerMotor motor)
         {
@@ -268,8 +267,10 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _motor.NotifyProjectileCollision();
         }
 
-        public void SetIsRingActive(bool isActive) => _hasToCreateRingBatch = isActive;
-        public void SetHasToSpawnRingBatch(bool isActive) => _hasToSpawnRingBatch = isActive;
+        public void ChangeBatchType(BatchType batchType)
+        {
+            _motor.ChangeBatchType(batchType);
+        }
 
         #endregion
         
@@ -277,29 +278,13 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         public void DoCreateBatch()
         {
             _hasSpawnedBatch = false;
-
-            if (_hasToCreateRingBatch)
-            {
-                _motor.DoStartRingBatches();
-            }
-            else
-            {
-                _motor.DoStartMeteorBatch();
-            }
+            _motor.DoStartMeteorBatch();
         }
 
         public void DoSpawnProjectile()
         {
             _hasProjectileReachedTarget = false;
-            
-            if (_hasToSpawnRingBatch)
-            {
-                _motor.SpawnNextProjectileFromRingBatch();
-            }
-            else
-            {
-                _motor.SpawnNextProjectileFromDefaultBatch();
-            }
+            _motor.SpawnNextProjectileFromBatch();
         }
 
         public void TransitionToIdle() => _spawnFsm.TransitionToIdle();

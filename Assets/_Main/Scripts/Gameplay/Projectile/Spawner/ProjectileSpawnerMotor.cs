@@ -9,96 +9,60 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
     internal class ProjectileSpawnerMotor : ObservableComponent
     {
         private const int MaxLevelToCheckDeflected = 4;
-        private readonly ProjectileBatchController _projectileBatchController;
-        private readonly ProjectileRingController _ringController;
+        private readonly ProjectileBatchSelector _batchSelector;
         private readonly ProjectileBatchTracker _batchTracker;
         private int _meteorAmountToSpawn;
         private bool _isSpawningBatch;
         private bool _isSpawningRing;
+        private bool _hasChangedLevel;
         private int _currentLevel;
-        private int _currentBatchDeflected;
-        private bool _isLastRingBatch;
+        private int _projectileCount;
 
-        public ProjectileSpawnerMotor(IProjectileSpawnData spawnData, IProjectileRingData projectileRingData)
+        public ProjectileSpawnerMotor(BatchTypeData spawnData)
         {
-            var batchData = new ProjectileBatchBase.ProjectileBatchData
+            _batchSelector = new  ProjectileBatchSelector(spawnData);
+            
+            _batchSelector.OnBatchSpawned += () =>
             {
-                SlotAmount = GameParameters.GameplayValues.AngleSlots,
-                ProjectileValue = GameParameters.GameplayValues.BaseMeteorValue
+                _isSpawningBatch = false;
+                NotifyAll(ProjectileSpawnerObserverMessage.BatchSpawned);
             };
-            _projectileBatchController = new ProjectileBatchController(spawnData,batchData,GameParameters.GameplayValues.SpawnLevelAmount);
-            _ringController = new ProjectileRingController(projectileRingData,batchData);
+            _batchSelector.OnSpecialBatchStarted += (value) =>
+            {
+                NotifyAll(ProjectileSpawnerObserverMessage.SpecialStarted, value);
+            };
+            _batchSelector.OnSpecialBatchFinished += (value) =>
+            {
+                NotifyAll(ProjectileSpawnerObserverMessage.SpecialFinished, value);
+            };
+            
             _batchTracker = new ProjectileBatchTracker();
-            _ringController.OnLastBatchedCreated += RingController_OnLastBatchedCreatedHandler;
             _batchTracker.OnBatchDeflected += OnBatchDeflectedHandler;
             _batchTracker.OnBatchFinished += OnBatchFinishedHandler;
         }
 
         public void DoStartMeteorBatch()
         {
-            _meteorAmountToSpawn = _projectileBatchController.CreateBatchData();
-            _batchTracker.CreateBatchData(_meteorAmountToSpawn);
+            if (_hasChangedLevel)
+            {
+                Debug.Log("Spawner has increased level, waiting for current batch to despawn before creating a new one");
+                return;
+            }
+
+            var amount = _batchSelector.CreateBatch();
+            _batchTracker.CreateBatchData(amount);
             _isSpawningBatch = true;
         }
 
-        public void SpawnNextProjectileFromDefaultBatch()
+        public void SpawnNextProjectileFromBatch()
         {
-            if (_isSpawningBatch == false) return;
-            
-            var slotData = _projectileBatchController.GetNextSlotData();
-            _meteorAmountToSpawn--;
-            
-            var isLastMeteor = _meteorAmountToSpawn == 0;
-            if (isLastMeteor)
-            {
-                _isSpawningBatch = false;
-                NotifyAll(ProjectileSpawnerObserverMessage.BatchSpawned);
-            }
+            var slotData = _batchSelector.GetSlotDataFromBatch();
             
             NotifyAll(ProjectileSpawnerObserverMessage.SpawnMeteor,slotData);
         }
-        
-        public void DoStartRingBatches()
-        {
-            _meteorAmountToSpawn = _ringController.CreateBatchData();
-            _batchTracker.CreateBatchData(_meteorAmountToSpawn);
 
-            if (_isSpawningRing == false)
-            {
-                _ringController.Initialize();
-                NotifyAll(ProjectileSpawnerObserverMessage.RingStarted);
-                _isSpawningRing = true;
-            }
+        public void ChangeBatchType(BatchType newBatchType) => _batchSelector.ChangeBatchType(newBatchType);
 
-            _isSpawningBatch = true;
-        }
-
-        public void SpawnNextProjectileFromRingBatch()
-        {
-            if (_isSpawningBatch == false) return;
-                
-            var slotData = _ringController.GetNextSlotData();
-            
-            _meteorAmountToSpawn--;
-
-            var isLastMeteor = _meteorAmountToSpawn == 0;
-            if (isLastMeteor)
-            {
-                _isSpawningBatch = false;
-                NotifyAll(ProjectileSpawnerObserverMessage.BatchSpawned);
-
-                if (_isLastRingBatch)
-                {
-                    _isSpawningRing = false;
-                    _isLastRingBatch = false;
-                    _ringController.Restart();
-                    NotifyAll(ProjectileSpawnerObserverMessage.RingFinished);
-                }
-            }
-            
-            NotifyAll(ProjectileSpawnerObserverMessage.SpawnMeteor,slotData, isLastMeteor);
-        }
-        
         public void NotifyProjectileDeflected()
         {
             _batchTracker.CheckForDeflectedProjectile();
@@ -112,21 +76,24 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         public void UpdateLevel(int currentLevel)
         {
             _currentLevel = currentLevel;
-            _projectileBatchController.SetLevel(_currentLevel);
+            _batchSelector.UpdateLevel(currentLevel);
+            _hasChangedLevel = true;
         }
 
         public void ClearProjectiles()
         {
             _isSpawningBatch = false;
-            _projectileBatchController.Restart();
+            _batchSelector.RestartData();
             _batchTracker.RestartData();
             NotifyAll(ProjectileSpawnerObserverMessage.Clear);
         }
-        
+
         private bool DoesCheckForDeflectMeteors()
         {
             return _currentLevel <= MaxLevelToCheckDeflected;
         }
+
+        #region Handlers
         
         private void OnBatchDeflectedHandler()
         {
@@ -142,16 +109,19 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             {
                 NotifyAll(ProjectileSpawnerObserverMessage.BatchDeflected);
             }
-        }
-        
-        private void RingController_OnLastBatchedCreatedHandler()
-        {
-            _isLastRingBatch = true;
+
+            if (_hasChangedLevel)
+            {
+                _hasChangedLevel = false;
+                DoStartMeteorBatch();
+            }
         }
 
         public void InitializeSpawner()
         {
             NotifyAll(ProjectileSpawnerObserverMessage.InitializeFactory);
         }
+        
+        #endregion
     }
 }

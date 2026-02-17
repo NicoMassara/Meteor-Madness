@@ -90,11 +90,11 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                     break;
                 
                 // === Ring === //
-                case ProjectileSpawnerObserverMessage.RingStarted:
-                    HandleRingStarted();
+                case ProjectileSpawnerObserverMessage.SpecialStarted:
+                    HandleSpecialStarted();
                     break;
-                case ProjectileSpawnerObserverMessage.RingFinished:
-                    HandleRingFinished();
+                case ProjectileSpawnerObserverMessage.SpecialFinished:
+                    HandleSpecialFinished();
                     break;
             }
         }
@@ -160,19 +160,19 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             OnBatchSpawned?.Invoke();
         }
         
-        private void HandleRingFinished()
+        private void HandleSpecialStarted()
+        {
+            MeteorEventCaller.RingActive(true);
+            OnRingStarted?.Invoke();
+        }
+        
+        private void HandleSpecialFinished()
         {
             OnRingFinished?.Invoke();
             MeteorEventCaller.RingActive(false);
             
             //Ability Setup should listen to RingActive and then start the timer
             AbilitiesEventCaller.RunTimer();
-        }
-
-        private void HandleRingStarted()
-        {
-            MeteorEventCaller.RingActive(true);
-            OnRingStarted?.Invoke();
         }
         
         #endregion
