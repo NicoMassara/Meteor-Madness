@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using _Main.Scripts.Common.MyRandom;
+using UnityEngine;
 
 namespace _Main.Scripts.Common.SelectorByWeight
 {
@@ -44,7 +45,7 @@ namespace _Main.Scripts.Common.SelectorByWeight
         
                     var divider = i + 1;
                     
-                    for (int j = 1; j < count; j++)
+                    for (int j = 1; j < count-1; j++)
                     {
                         var itemType = ItemWeightsHelper.FromInt<T>(j);
                         var weight = weightsData[item].GetWeightToSpawnType(itemType);
@@ -123,25 +124,36 @@ namespace _Main.Scripts.Common.SelectorByWeight
         public RandomSelector()
         {
             _doesHasHistory = false;
+            _isFirstSpawn = true;
         }
 
-        public RandomSelector(int historyLength = 10)
+        public RandomSelector(int historyLength)
         {
+            _isFirstSpawn = true;
             _doesHasHistory = true;
             _history = new History<T,TS>(historyLength);
         }
         
         private Dictionary<T, int> GetSpawnWeights(Dictionary<T, int> weights, IBaseWeights<T,TS> baseWeights)
         {
-            var tempDic =  new Dictionary<T, int>();
+            var tempDic = ItemWeightsHelper.CreateDefaultDictionary<T>();
             var historyWeight = _history.GetHistoryWeights(baseWeights);
             var count = ItemWeightsHelper.GetCount<T>();
             
             for (int i = 0; i < count; i++)
             {
-                var currType = ItemWeightsHelper.FromInt<T>(i);
-                var value = weights[currType];
+                var currType = ItemWeightsHelper.FromInt<T>(i+1);
+                var value = 0;
 
+                if (weights.ContainsKey(currType) == false)
+                {
+                    weights.Add(currType, 0);
+                }
+                else
+                {
+                    value = weights[currType];
+                }
+                
                 if (value > 0)
                 {
                     var historyRounded = (int)Math.Round(historyWeight[currType] * 0.5f, MidpointRounding.AwayFromZero);
@@ -162,19 +174,22 @@ namespace _Main.Scripts.Common.SelectorByWeight
         public T GetRandomItem(Dictionary<T, int> currentData, IBaseWeights<T,TS> baseWeights)
         {
             var selectedItem = default(T);
+
+            if (currentData.Count == 0)
+            {
+                throw new Exception("Weight Data is empty");
+            }
+
+
+            Dictionary<T, int> finalWeights = null;
             
             if (_isFirstSpawn)
             {
-                var lastIndex = ItemWeightsHelper.GetCount<T>();
-                var selectedIndex = RandomService.Range(1,lastIndex);
-                selectedItem = ItemWeightsHelper.FromInt<T>(selectedIndex);
-                
+                finalWeights = currentData;
                 _isFirstSpawn = false;
             }
             else
             {
-                Dictionary<T, int> finalWeights = null; 
-                
                 if (_doesHasHistory)
                 {
                     finalWeights = GetSpawnWeights(currentData, baseWeights);
@@ -183,13 +198,13 @@ namespace _Main.Scripts.Common.SelectorByWeight
                 {
                     finalWeights = currentData;
                 }
-
-                selectedItem = Roulette.Run(finalWeights);
             }
+            
+            selectedItem = Roulette.Run(finalWeights);
             
             if(_doesHasHistory)
                 _history.AddToHistory(selectedItem);
-
+            
             return selectedItem;
         }
         

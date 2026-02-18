@@ -10,9 +10,9 @@ namespace _Main.Scripts.Gameplay.Projectile
 
     public class ProjectileDebugEvents
     {
-        public static event Action<DefaultBatchDebugData> OnBatchCreated;
+        public static event Action<BatchDebugData> OnBatchCreated;
 
-        public static void TriggerBatchCreated(DefaultBatchDebugData defaultBatch) => OnBatchCreated?.Invoke(defaultBatch);
+        public static void TriggerBatchCreated(BatchDebugData defaultBatch) => OnBatchCreated?.Invoke(defaultBatch);
         
         public static event Action<HistoryDebugData> OnHistoryChanged;
 

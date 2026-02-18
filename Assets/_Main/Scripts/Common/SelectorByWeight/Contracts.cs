@@ -95,9 +95,9 @@ namespace _Main.Scripts.Common.SelectorByWeight
             var dict = new Dictionary<T, int>();
             var values = (T[])Enum.GetValues(typeof(T));
 
-            for (int i = 0; i < values.Length - 1; i++)
+            for (int i = 0; i < values.Length - 2; i++)
             {
-                dict[values[i]] = 0;
+                dict[values[i+1]] = 0;
             }
             
             return dict;

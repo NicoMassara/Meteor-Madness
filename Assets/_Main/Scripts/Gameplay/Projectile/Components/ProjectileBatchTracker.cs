@@ -9,6 +9,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         private const float MinDeflectRatio = 0.5f;
         private readonly Queue<BatchTrackerData> _batchQueue;
         private BatchTrackerData _currentBatch;
+        private bool _hasActiveBatch;
 
         public event Action OnBatchFinished;
         public event Action OnBatchDeflected;
@@ -31,18 +32,23 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 BathAmount = amount,
                 ActiveAmount = amount,
             };
-            
-            _batchQueue.Enqueue(newBatch);
 
-            if (_batchQueue.Count == 0)
+            if (_batchQueue.Count == 0 && _hasActiveBatch == false)
             {
-                PrepareNewBatch();
+                _currentBatch = newBatch;
+                _hasActiveBatch = true;
+            }
+            else
+            {
+                _batchQueue.Enqueue(newBatch);
             }
         }
 
         private void PrepareNewBatch()
         {
             _currentBatch = _batchQueue.Dequeue();
+            _hasActiveBatch = true;
+            Debug.Log($"New Batch Set, Amount: {_currentBatch.BathAmount}");
         }
 
         public void CheckForDeflectedProjectile()
@@ -76,6 +82,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 }
 
                 OnBatchFinished?.Invoke();
+                
+                _hasActiveBatch = false;
                 
                 if (_batchQueue.Count > 0)
                 {

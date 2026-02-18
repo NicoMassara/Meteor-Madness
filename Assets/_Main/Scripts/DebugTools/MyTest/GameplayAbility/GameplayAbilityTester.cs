@@ -60,7 +60,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
 
         private void EventBus_Projectile_BatchDeflected(ProjectileEvents.BatchDeflected input)
         {
-            IncreaseLevel();
+            //IncreaseLevel();
         }
 
         private void Start()

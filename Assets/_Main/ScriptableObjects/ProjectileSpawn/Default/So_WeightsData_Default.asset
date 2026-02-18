@@ -13,4 +13,64 @@ MonoBehaviour:
   m_Name: So_WeightsData_Default
   m_EditorClassIdentifier: 
   weights:
-    weights: []
+    weights:
+    - itemType: 1
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 50
+      - key: 3
+        weight: 50
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 50
+    - itemType: 2
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 0
+      - key: 3
+        weight: 100
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 50
+    - itemType: 3
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 100
+      - key: 3
+        weight: 0
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 50
+    - itemType: 4
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 50
+      - key: 3
+        weight: 50
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 50
+    - itemType: 5
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 50
+      - key: 3
+        weight: 50
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 50

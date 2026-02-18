@@ -12,11 +12,10 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private readonly ProjectileBatchSelector _batchSelector;
         private readonly ProjectileBatchTracker _batchTracker;
         private int _meteorAmountToSpawn;
-        private bool _isSpawningBatch;
         private bool _isSpawningRing;
         private bool _hasChangedLevel;
         private int _currentLevel;
-        private int _projectileCount;
+        
 
         public ProjectileSpawnerMotor(BatchTypeData spawnData)
         {
@@ -24,7 +23,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             
             _batchSelector.OnBatchSpawned += () =>
             {
-                _isSpawningBatch = false;
                 NotifyAll(ProjectileSpawnerObserverMessage.BatchSpawned);
             };
             _batchSelector.OnSpecialBatchStarted += (value) =>
@@ -43,15 +41,14 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         public void DoStartMeteorBatch()
         {
-            if (_hasChangedLevel)
+            /*if (_hasChangedLevel)
             {
                 Debug.Log("Spawner has increased level, waiting for current batch to despawn before creating a new one");
                 return;
-            }
+            }*/
 
             var amount = _batchSelector.CreateBatch();
             _batchTracker.CreateBatchData(amount);
-            _isSpawningBatch = true;
         }
 
         public void SpawnNextProjectileFromBatch()
@@ -82,9 +79,9 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         public void ClearProjectiles()
         {
-            _isSpawningBatch = false;
             _batchSelector.RestartData();
             _batchTracker.RestartData();
+            _hasChangedLevel = false;
             NotifyAll(ProjectileSpawnerObserverMessage.Clear);
         }
 
@@ -108,12 +105,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             if (DoesCheckForDeflectMeteors() == false)
             {
                 NotifyAll(ProjectileSpawnerObserverMessage.BatchDeflected);
-            }
-
-            if (_hasChangedLevel)
-            {
-                _hasChangedLevel = false;
-                DoStartMeteorBatch();
             }
         }
 

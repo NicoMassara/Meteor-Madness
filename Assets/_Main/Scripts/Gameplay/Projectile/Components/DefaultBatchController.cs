@@ -9,7 +9,7 @@ using UnityEngine;
 namespace _Main.Scripts.Gameplay.Projectile.Components
 {
     internal class DefaultBatchController : ProjectileBatchControllerBase<IDefaultBatchData>,
-        IBatchTypeCreator
+        IBatchTypeCreator, ILeveledBatchTypeCreator
     {
         private class AbilityCountdown
         {
@@ -104,8 +104,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             
             if (itemData.GetSpawnDataByType(initialSpawnType, out var spawnData) == false)
             {
-                Debug.Log("No Spawn Data found of type :{}");
-                return default;
+                throw new Exception($"No Spawn Data found of type :{initialSpawnType}");
             }
             
             var amount = spawnData.ProjectileAmount.GetRandomRange();
@@ -120,7 +119,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 NextSlotRange = spawnData.NextBatchSlotRange.GetRandomRange(),
                 SpawnType = amount == 1 ? SpawnType.None : initialSpawnType,
                 HasAbility = hasAbility,
-                SlotRangeData = spawnData.SlotRange
+                SlotRangeData = spawnData.SlotRange,
+                InnerDistanceRangeData =  spawnData.InnerBatchDistance,
             };
         }
         

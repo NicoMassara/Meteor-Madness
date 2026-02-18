@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _Main.Scripts.Common.SelectorByWeight;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
+using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile.Components
 {
@@ -15,6 +16,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         private int _amountToSpawn;
         private bool _isSpawningSpecialBatch;
         private bool _isLastSpecialBatch;
+        private int _currentLevel;
         public bool IsSpawningBatch { get; private set; }
         
         public event Action OnBatchSpawned;
@@ -24,17 +26,25 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         public event Action<BatchType> OnSpecialBatchFinished;
         
 
-
         public ProjectileBatchSelector(BatchTypeData data)
         {
             var projectileValue = GameParameters.GameplayValues.BaseMeteorValue;
             
             _batchCreator = new ProjectileBatchCreator(GameParameters.GameplayValues.AngleSlots);
+            _batchCreator.OnDebugBatchCreated += debugData =>
+            {
+                debugData.Level = _currentLevel;
+                ProjectileDebugEvents.TriggerBatchCreated(debugData);
+            };
+            
+            _spawnTypeSelector = new RandomSelector<SpawnType, IWeightsData>(10);
 
+            // === Default == //
             var defaultBatch = new DefaultBatchController(data.defaultData.data, data.defaultData.weights,
                 GameParameters.GameplayValues.SpawnLevelAmount,
                 projectileValue);
             
+            // === Ring == //
             var ringBatch = new SpecialBatchController(data.ringData.data, data.ringData.weights,
                 projectileValue);
 
@@ -43,6 +53,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 _isLastSpecialBatch = true;
             };
 
+            // === SlowMo == //
             var slowMoBatch = new SpecialBatchController(data.slowMotionData.data, data.slowMotionData.weights,
                 projectileValue);
             
@@ -51,6 +62,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 _isLastSpecialBatch = true;
             };
             
+            // === Automatic == //
             var automaticBatch = new SpecialBatchController(data.automaticData.data, data.automaticData.weights,
                 projectileValue);
             
@@ -66,6 +78,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 {BatchType.SlowedDown, slowMoBatch},
                 {BatchType.Automatic, automaticBatch},
             };
+            
+            _currentBatchType = BatchType.Default;
         }
 
         public void RestartData()
@@ -135,6 +149,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             {
                 leveledCreator.SetLevel(currentLevel);
             }
+
+            _currentLevel = currentLevel;
         }
 
         private void RestartByType(BatchType batchType) => _batchTypeDic[batchType].RestartValues();

@@ -12,13 +12,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c15d932050694431917e35648405322c, type: 3}
   m_Name: So_BatchData_Single_Ring
   m_EditorClassIdentifier: 
-  batchType: 0
-  projectileSpeed: 0
+  batchType: 1
+  projectileSpeed: 90
   batchValues:
     speedMultiplier:
-      minSpeed: 0.01
-      maxSpeed: 0.01
+      minSpeed: 1
+      maxSpeed: 1
     batchAmount:
-      minAmount: 0
-      maxAmount: 0
-    data: []
+      minAmount: 7
+      maxAmount: 10
+    data:
+    - spawnType: 1
+      weight: 50
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.036
+        maxRange: 0.795
+      nextBatchDistance:
+        minRange: 0.371
+        maxRange: 0.219
+      nextBatchSlotRange:
+        minRange: 5
+        maxRange: 6
+      slotRange:
+        minRange: 12
+        maxRange: 12
+    - spawnType: 2
+      weight: 50
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.1
+        maxRange: 0.15
+      nextBatchDistance:
+        minRange: 0.242
+        maxRange: 0.192
+      nextBatchSlotRange:
+        minRange: 5
+        maxRange: 4
+      slotRange:
+        minRange: 0
+        maxRange: 0
+    - spawnType: 3
+      weight: 50
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.1
+        maxRange: 0.15
+      nextBatchDistance:
+        minRange: 0.401
+        maxRange: 0.43
+      nextBatchSlotRange:
+        minRange: 4
+        maxRange: 4
+      slotRange:
+        minRange: 0
+        maxRange: 0
+    - spawnType: 4
+      weight: 20
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 20
+      innerBatchDistance:
+        minRange: 0
+        maxRange: 0
+      nextBatchDistance:
+        minRange: 0.75
+        maxRange: 1
+      nextBatchSlotRange:
+        minRange: 5
+        maxRange: 5
+      slotRange:
+        minRange: 1
+        maxRange: 1

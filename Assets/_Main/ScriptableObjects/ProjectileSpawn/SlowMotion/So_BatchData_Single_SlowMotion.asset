@@ -16,8 +16,8 @@ MonoBehaviour:
   projectileSpeed: 0
   batchValues:
     speedMultiplier:
-      minSpeed: 0
-      maxSpeed: 0
+      minSpeed: 0.01
+      maxSpeed: 0.01
     batchAmount:
       minAmount: 0
       maxAmount: 0

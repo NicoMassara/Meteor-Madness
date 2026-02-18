@@ -114,7 +114,7 @@ namespace _Main.Scripts.Projectile
     }
     
     [System.Serializable]
-    internal struct DistanceRangeData
+    public struct DistanceRangeData
     {
         [Range(0, 1)]
         [Tooltip("0f - Spawn Point / 1f - Shield")]
@@ -149,6 +149,7 @@ namespace _Main.Scripts.Projectile
         public int NextSlotRange;
         public SpawnType SpawnType;
         public SlotRangeData SlotRangeData;
+        public DistanceRangeData InnerDistanceRangeData;
         public bool HasAbility;
     }
     
@@ -160,8 +161,8 @@ namespace _Main.Scripts.Projectile
         public bool IsAbility;
         public float FinalValue;
     }
-
-    public struct DefaultBatchDebugData
+    
+    public struct BatchDebugData
     {
         public int Level;
         public int Amount;
@@ -170,17 +171,7 @@ namespace _Main.Scripts.Projectile
         public float InnerDist;
         public float NextDist;
         public int LastSlot;
-        public SpawnType SpawnType;
-    }
-    
-    public struct BatchDebugData
-    {
-        public int Amount;
-        public int StartSlot;
-        public int Offset;
-        public float InnerDist;
-        public float NextDist;
-        public int LastSlot;
+        public float Speed;
         public SpawnType SpawnType;
     }
     
@@ -251,21 +242,21 @@ namespace _Main.Scripts.Projectile
     [System.Serializable]
     internal struct RingBatchData
     {
-        public ISingleBatchData data;
+        public SingleBatchDataSo data;
         public SpawnWeightsDataSo weights;
     }
     
     [System.Serializable]
     internal struct SlowMotionBatchData
     {
-        public ISingleBatchData data;
+        public SingleBatchDataSo data;
         public SpawnWeightsDataSo weights;
     }
     
     [System.Serializable]
     internal struct AutomaticBatchData
     {
-        public ISingleBatchData data;
+        public SingleBatchDataSo data;
         public SpawnWeightsDataSo weights;
     }
     
