@@ -498,7 +498,7 @@ MonoBehaviour:
   doesIncreaseLevel: 0
   timeScale:
     isEnable: 1
-    globalTimeScale: 0
+    globalTimeScale: 1
     gameplayTimeScale: 1
     shieldTimeScale: 1
     effectsTimeScale: 1
@@ -2115,7 +2115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   centerOfGravity: {fileID: 854189257}
   spawnRadius: 30
-  doesDebug: 1
+  doesDebug: 0
   meteorPrefab: {fileID: 4360489399066249571, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
   abilityPrefab: {fileID: 3446774074668800784, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
   abilitySelectorData: {fileID: 11400000, guid: 4ecea22b7640c414dace2b0e8ec03413, type: 2}

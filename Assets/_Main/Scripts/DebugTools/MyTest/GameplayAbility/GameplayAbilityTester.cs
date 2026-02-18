@@ -60,7 +60,8 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
 
         private void EventBus_Projectile_BatchDeflected(ProjectileEvents.BatchDeflected input)
         {
-            //IncreaseLevel();
+            if(doesIncreaseLevel)
+                IncreaseLevel();
         }
 
         private void Start()
@@ -100,7 +101,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             EarthEventCaller.EnableDamage();
             InputsEventCaller.SetEnable(true);
             InputsEventCaller.SetUIEnable(true);
-            ProjectileEventCaller.UpdateLevel(_currentLevel);
+            //ProjectileEventCaller.UpdateLevel(_currentLevel);
             if (startMeteorsEnable)
             {
                 ToggleMeteorSpawn();
@@ -164,7 +165,6 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             MeteorActive = !MeteorActive;
             if (MeteorActive)
             {
-                UpdateLevel();
                 ProjectileEventCaller.EnableSpawn();
             }
             else
@@ -199,7 +199,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         public void IncreaseLevel()
         {
             _currentLevel++;
-            _currentLevel = Mathf.Clamp(_currentLevel, 0, LevelAmount-1);
+            _currentLevel = Mathf.Clamp(_currentLevel, 0, int.MaxValue);
             ProjectileEventCaller.UpdateLevel(_currentLevel);
             OnLevelUpdated?.Invoke(_currentLevel+1);
         }
@@ -207,7 +207,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         public void DecreaseLevel()
         {
             _currentLevel--;
-            _currentLevel = Mathf.Clamp(_currentLevel, 0, LevelAmount-1);
+            _currentLevel = Mathf.Clamp(_currentLevel, 0, int.MaxValue);
             ProjectileEventCaller.UpdateLevel(_currentLevel);
             OnLevelUpdated?.Invoke(_currentLevel+1);
         }

@@ -80,6 +80,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             };
             
             _currentBatchType = BatchType.Default;
+            
+            UpdateLevel(0);
         }
 
         public void RestartData()
@@ -87,6 +89,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             _spawnTypeSelector.RestartData();
             _batchCreator.RestartValues();
             _currentBatchType = BatchType.Default;
+            UpdateLevel(0);
 
             foreach (var item in _batchTypeDic.Values)
             {

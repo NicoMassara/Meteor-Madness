@@ -38,6 +38,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             return new string[]
             {
                 $"Time: {_batchTime:F2}",
+                $"Speed: {_defaultBatchData.Speed:F2}",
                 $"Level: {_defaultBatchData.Level+1}",
                 $"Amount: {_defaultBatchData.Amount}",
                 $"Start Slot: {_defaultBatchData.StartSlot}",
@@ -53,6 +54,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         {
             return new Color[]
             {
+                Color.white,
                 Color.white,
                 Color.white,
                 Color.white,

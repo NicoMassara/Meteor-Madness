@@ -15,6 +15,98 @@ MonoBehaviour:
   projectileSpeed: 60
   fixedBatchValues:
   - speedMultiplier:
+      minSpeed: 0.25
+      maxSpeed: 0.297
+    batchAmount:
+      minAmount: 1
+      maxAmount: 3
+    data:
+    - spawnType: 2
+      weight: 100
+      projectileAmount:
+        minAmount: 20
+        maxAmount: 30
+      innerBatchDistance:
+        minRange: 0.05
+        maxRange: 0.35
+      nextBatchDistance:
+        minRange: 1
+        maxRange: 1
+      nextBatchSlotRange:
+        minRange: 1
+        maxRange: 3
+      slotRange:
+        minRange: 1
+        maxRange: 2
+    - spawnType: 1
+      weight: 0
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.447
+        maxRange: 0.475
+      nextBatchDistance:
+        minRange: 0.418
+        maxRange: 0.384
+      nextBatchSlotRange:
+        minRange: 3
+        maxRange: 2
+      slotRange:
+        minRange: 4
+        maxRange: 1
+    - spawnType: 3
+      weight: 100
+      projectileAmount:
+        minAmount: 20
+        maxAmount: 30
+      innerBatchDistance:
+        minRange: 0.05
+        maxRange: 0.35
+      nextBatchDistance:
+        minRange: 1
+        maxRange: 1
+      nextBatchSlotRange:
+        minRange: 1
+        maxRange: 3
+      slotRange:
+        minRange: 1
+        maxRange: 2
+    - spawnType: 4
+      weight: 0
+      projectileAmount:
+        minAmount: 3
+        maxAmount: 2
+      innerBatchDistance:
+        minRange: 0.365
+        maxRange: 0.489
+      nextBatchDistance:
+        minRange: 0.483
+        maxRange: 0.47
+      nextBatchSlotRange:
+        minRange: 2
+        maxRange: 4
+      slotRange:
+        minRange: 2
+        maxRange: 4
+    - spawnType: 5
+      weight: 0
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.323
+        maxRange: 0.297
+      nextBatchDistance:
+        minRange: 0.474
+        maxRange: 0.461
+      nextBatchSlotRange:
+        minRange: 1
+        maxRange: 3
+      slotRange:
+        minRange: 1
+        maxRange: 4
+  - speedMultiplier:
       minSpeed: 1
       maxSpeed: 1
     batchAmount:
@@ -111,369 +203,277 @@ MonoBehaviour:
       maxSpeed: 1
     batchAmount:
       minAmount: 1
-      maxAmount: 1
+      maxAmount: 3
     data:
-    - spawnType: 1
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
     - spawnType: 2
       weight: 100
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 20
+        maxAmount: 30
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.05
+        maxRange: 0.35
       nextBatchDistance:
         minRange: 1
         maxRange: 1
       nextBatchSlotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 3
       slotRange:
         minRange: 1
+        maxRange: 2
+    - spawnType: 1
+      weight: 0
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.447
+        maxRange: 0.475
+      nextBatchDistance:
+        minRange: 0.418
+        maxRange: 0.384
+      nextBatchSlotRange:
+        minRange: 3
+        maxRange: 2
+      slotRange:
+        minRange: 4
         maxRange: 1
     - spawnType: 3
       weight: 100
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 20
+        maxAmount: 30
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.05
+        maxRange: 0.35
       nextBatchDistance:
         minRange: 1
         maxRange: 1
       nextBatchSlotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 3
       slotRange:
         minRange: 1
-        maxRange: 1
-    - spawnType: 5
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
+        maxRange: 2
     - spawnType: 4
-      weight: 100
+      weight: 0
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 3
+        maxAmount: 2
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.365
+        maxRange: 0.489
       nextBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.483
+        maxRange: 0.47
+      nextBatchSlotRange:
+        minRange: 2
+        maxRange: 4
+      slotRange:
+        minRange: 2
+        maxRange: 4
+    - spawnType: 5
+      weight: 0
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.323
+        maxRange: 0.297
+      nextBatchDistance:
+        minRange: 0.474
+        maxRange: 0.461
       nextBatchSlotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 3
       slotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 4
   - speedMultiplier:
       minSpeed: 1
       maxSpeed: 1
     batchAmount:
       minAmount: 1
-      maxAmount: 1
+      maxAmount: 3
     data:
-    - spawnType: 1
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
     - spawnType: 2
       weight: 100
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 20
+        maxAmount: 30
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.05
+        maxRange: 0.35
       nextBatchDistance:
         minRange: 1
         maxRange: 1
       nextBatchSlotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 3
       slotRange:
         minRange: 1
+        maxRange: 2
+    - spawnType: 1
+      weight: 0
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.447
+        maxRange: 0.475
+      nextBatchDistance:
+        minRange: 0.418
+        maxRange: 0.384
+      nextBatchSlotRange:
+        minRange: 3
+        maxRange: 2
+      slotRange:
+        minRange: 4
         maxRange: 1
     - spawnType: 3
       weight: 100
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 20
+        maxAmount: 30
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.05
+        maxRange: 0.35
       nextBatchDistance:
         minRange: 1
         maxRange: 1
       nextBatchSlotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 3
       slotRange:
         minRange: 1
-        maxRange: 1
-    - spawnType: 5
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
+        maxRange: 2
     - spawnType: 4
-      weight: 100
+      weight: 0
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 3
+        maxAmount: 2
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.365
+        maxRange: 0.489
       nextBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.483
+        maxRange: 0.47
+      nextBatchSlotRange:
+        minRange: 2
+        maxRange: 4
+      slotRange:
+        minRange: 2
+        maxRange: 4
+    - spawnType: 5
+      weight: 0
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.323
+        maxRange: 0.297
+      nextBatchDistance:
+        minRange: 0.474
+        maxRange: 0.461
       nextBatchSlotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 3
       slotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 4
   - speedMultiplier:
       minSpeed: 1
       maxSpeed: 1
     batchAmount:
       minAmount: 1
-      maxAmount: 1
+      maxAmount: 3
     data:
-    - spawnType: 1
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
     - spawnType: 2
       weight: 100
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 20
+        maxAmount: 30
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.05
+        maxRange: 0.35
       nextBatchDistance:
         minRange: 1
         maxRange: 1
       nextBatchSlotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 3
       slotRange:
         minRange: 1
+        maxRange: 2
+    - spawnType: 1
+      weight: 0
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.447
+        maxRange: 0.475
+      nextBatchDistance:
+        minRange: 0.418
+        maxRange: 0.384
+      nextBatchSlotRange:
+        minRange: 3
+        maxRange: 2
+      slotRange:
+        minRange: 4
         maxRange: 1
     - spawnType: 3
       weight: 100
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 20
+        maxAmount: 30
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.05
+        maxRange: 0.35
       nextBatchDistance:
         minRange: 1
         maxRange: 1
       nextBatchSlotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 3
       slotRange:
         minRange: 1
-        maxRange: 1
-    - spawnType: 5
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
+        maxRange: 2
     - spawnType: 4
-      weight: 100
+      weight: 0
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 3
+        maxAmount: 2
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.365
+        maxRange: 0.489
       nextBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.483
+        maxRange: 0.47
       nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
+        minRange: 2
+        maxRange: 4
       slotRange:
-        minRange: 1
-        maxRange: 1
-  - speedMultiplier:
-      minSpeed: 1
-      maxSpeed: 1
-    batchAmount:
-      minAmount: 1
-      maxAmount: 1
-    data:
-    - spawnType: 1
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
-    - spawnType: 2
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
-    - spawnType: 3
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
+        minRange: 2
+        maxRange: 4
     - spawnType: 5
-      weight: 100
+      weight: 0
       projectileAmount:
-        minAmount: 1
-        maxAmount: 1
+        minAmount: 10
+        maxAmount: 15
       innerBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.323
+        maxRange: 0.297
       nextBatchDistance:
-        minRange: 1
-        maxRange: 1
+        minRange: 0.474
+        maxRange: 0.461
       nextBatchSlotRange:
         minRange: 1
-        maxRange: 1
+        maxRange: 3
       slotRange:
         minRange: 1
-        maxRange: 1
-    - spawnType: 4
-      weight: 100
-      projectileAmount:
-        minAmount: 1
-        maxAmount: 1
-      innerBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchDistance:
-        minRange: 1
-        maxRange: 1
-      nextBatchSlotRange:
-        minRange: 1
-        maxRange: 1
-      slotRange:
-        minRange: 1
-        maxRange: 1
+        maxRange: 4
   randomBatchValues:
     speedMultiplier:
       minSpeed: 1
