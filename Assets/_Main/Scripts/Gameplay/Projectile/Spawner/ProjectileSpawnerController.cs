@@ -97,7 +97,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             _motor.OnBatchFinished -= NotifyBatchFinished;
 
-            if (_hasPendingBatch) return;
+            if (_hasPendingBatch == false) return;
             
             Debug.Log("Level Increased to Batch!");
             _hasPendingBatch = false;

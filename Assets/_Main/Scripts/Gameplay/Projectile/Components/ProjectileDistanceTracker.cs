@@ -14,9 +14,9 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         private float _totalDistance;
         private float _targetRatio;
         private bool _hasProjectile;
-        
+        private bool _isLastFromBatch;
 
-        public event Action OnTargetDistanceReached;
+        public event Action<bool> OnTargetDistanceReached;
 
         public ProjectileDistanceTracker(Transform cog, float cofOffset)
         {
@@ -30,6 +30,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             
             if (GetDistanceRatio() >= _targetRatio)
             {
+             
+                Debug.Log($"Tracker, {Time.realtimeSinceStartup}");
                 
 #if UNITY_EDITOR
 
@@ -43,12 +45,21 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         }
         
 
-        public void SetProjectile(IProjectile projectile, float targetRatio)
+        public void SetProjectile(IProjectile projectile, float targetRatio, bool isLast, Action<bool> callback)
         {
+            if (_currentProjectile != null)
+            {
+                Debug.Log($"Projectile is still active!");
+            }
+
+            OnTargetDistanceReached = callback;
+            _isLastFromBatch = isLast;
             _currentProjectile = projectile;
             _startPosition = _currentProjectile.Position;
             _targetRatio = Mathf.Clamp01(targetRatio);
             _currentProjectile.OnObjectDisabled += OnProjectileDisabledHandler;
+            
+            Debug.Log("Projectile Added At: " + Time.realtimeSinceStartup);
 
 #if UNITY_EDITOR
 
@@ -75,11 +86,12 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 Debug.Log("Projectile could not be Removed");
                 return;
             }
-            
+
+            Debug.Log("Projectile Removed At: " + Time.realtimeSinceStartup);
             _currentProjectile.OnObjectDisabled -= OnProjectileDisabledHandler;
             _hasProjectile = false;
             _currentProjectile = null;
-            OnTargetDistanceReached?.Invoke();
+            OnTargetDistanceReached?.Invoke(_isLastFromBatch);
         }
         
 
@@ -110,6 +122,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         
         private void OnProjectileDisabledHandler()
         {
+            Debug.Log("Projectile Disabled");
             RemoveCurrentProjectile();
         }
     }

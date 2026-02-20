@@ -35,7 +35,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private ProjectileDistanceTracker _distanceTracker;
         private MeteorFactory _meteorFactory;
         private AbilitySphereFactory _abilityFactory;
-        private bool _isLast;
         
         
         #region IProjectileSpawnerView
@@ -51,7 +50,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
         #endregion
-        
 
         public void ExecuteUpdate(float deltaTime)
         {
@@ -114,8 +112,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         private void HandleSpawnProjectile(SlotData slotData)
         {
-            _isLast = slotData.IsLast;
-            
             var spawnPosition = GetSpawnPosition(slotData.Slot);
             var direction = (Vector2)centerOfGravity.position - spawnPosition;
             
@@ -136,13 +132,12 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             
             if (slotData.DistanceRatio > 0)
             {
-                _distanceTracker.OnTargetDistanceReached += DistanceTracker_OnTargetDistanceReachedHandler;
-                _distanceTracker.SetProjectile(projectile,slotData.DistanceRatio);
+                _distanceTracker.SetProjectile(projectile,slotData.DistanceRatio,slotData.IsLast, DistanceTracker_OnTargetDistanceReachedHandler);
             }
             else
             {
-                OnProjectileReachedTarget?.Invoke(_isLast);
-                ProjectileSpawner.Publish.ProjectileReachedTarget(_isLast);
+                OnProjectileReachedTarget?.Invoke(slotData.IsLast);
+                ProjectileSpawner.Publish.ProjectileReachedTarget(slotData.IsLast);
             }
         }
         
@@ -194,12 +189,12 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         #region Handlers
 
-        private void DistanceTracker_OnTargetDistanceReachedHandler()
+        private void DistanceTracker_OnTargetDistanceReachedHandler(bool isLast)
         {
-            _distanceTracker.OnTargetDistanceReached -= DistanceTracker_OnTargetDistanceReachedHandler;
+            Debug.Log("Here");
             
-            OnProjectileReachedTarget?.Invoke(_isLast);
-            ProjectileSpawner.Publish.ProjectileReachedTarget(_isLast);
+            OnProjectileReachedTarget?.Invoke(isLast);
+            ProjectileSpawner.Publish.ProjectileReachedTarget(isLast);
         }
 
         #endregion

@@ -26,7 +26,7 @@ namespace _Main.Scripts.Projectile
 
             public Spawner(MeteorView meteorPrefab, int startCapacity = 3)
             {
-                _pool = new GenericPool<MeteorView>(meteorPrefab, startCapacity, 10, "Meteor");
+                _pool = new GenericPool<MeteorView>(meteorPrefab, startCapacity, 50, "Meteor");
             }
 
             public IMeteor Spawn()

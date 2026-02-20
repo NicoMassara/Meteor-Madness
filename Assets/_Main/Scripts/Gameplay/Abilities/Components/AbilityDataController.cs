@@ -25,13 +25,15 @@ namespace MeteorMadness.Gameplay.Abilities
             public WaitForBatchesToFinishAction(int targetBatches, BatchType batchType)
             {
                 // First batch is already spawned
-                _targetBatches = targetBatches - 1;
+                _targetBatches = targetBatches;
                 _batchType = batchType;
             }
 
             public void OnStart()
             {
                 _batchesLeft = _targetBatches;
+                
+                Debug.Log($"Batches Left: {_batchesLeft}");
                 ProjectileSpawner.Subscribe.BatchSpawned(OnBatchSpawnedHandler);
                 ProjectileSpawner.Subscribe.BatchFinished(OnBatchFinishedHandler);
                 ProjectileSpawner.Subscribe.ProjectileReachedTarget(OnProjectileReachedTargetHandler);
@@ -72,7 +74,6 @@ namespace MeteorMadness.Gameplay.Abilities
             private void OnBatchSpawnedHandler(ProjectileSpawnerEvents.BatchSpawned input)
             {
                 _batchesLeft--;
-                Debug.Log($"Batches Left: {_batchesLeft}");
             }
             
             private void OnBatchFinishedHandler(ProjectileSpawnerEvents.BatchFinished input)
@@ -286,6 +287,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 return new SetChannelTimeScaleAction(_targetTimeScale, _updateGroup);
             }
         }
+        
         private class PublishAbilityActiveAction : IQueueAction
         {
             private readonly AbilityType _ability;
@@ -311,6 +313,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 return new PublishAbilityActiveAction(_ability, _isActive);
             }
         }
+        
         private class TimedTimeScaleUpdateAction : IQueueAction
         {
             private readonly float _startTimeScale;
@@ -441,6 +444,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 // === Start ===
                 .Do(new LogDebugAction("Super Shield Starting"))
                 .Then(new PublishAbilityActiveAction(selectedAbility, true))
+                
                 // - Disables input, plays sounds, slows time, zooms in
                 .Then(_disableInputs)
                 .Then(_playSlowTimeSound)
@@ -463,7 +467,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 
                 // === Running ===
                 .Then(new LogDebugAction("Super Shield Running"))
-                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
+                .Then(new WaitForBatchesToFinishAction(targetBatches-1, batchType))
                 
                 // === Finish ===
                 .Then(new LogDebugAction("Super Shield Finishing"))

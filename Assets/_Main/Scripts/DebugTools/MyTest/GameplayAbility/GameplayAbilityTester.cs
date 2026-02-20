@@ -55,6 +55,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             RandomService.Initialize();
             ProjectileSpawner.Subscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
             ProjectileSpawner.Subscribe.ProjectileReachedTarget(EventBus_Projectile_ProjectileReachedTarget);
+            ProjectileSpawner.Subscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
             AbilitiesEventSubscriber.NotifyIsActive(EventBus_Ability_NotifyIsActive);
         }
 
@@ -239,7 +240,12 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         {
             if (input.IsLastFromBatch)
             {
+                UnityEngine.Debug.Log($"Tester, Spawning Batch!, {Time.realtimeSinceStartup}");
                 ProjectileSpawner.Publish.RequestSpawn(BatchType.Default);
+            }
+            else
+            {
+                UnityEngine.Debug.Log($"Tester, {Time.realtimeSinceStartup}");
             }
         }
 
@@ -253,10 +259,12 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         {
             if (input.IsActive)
             {
+                ProjectileSpawner.Unsubscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
                 ProjectileSpawner.Unsubscribe.ProjectileReachedTarget(EventBus_Projectile_ProjectileReachedTarget);
             }
             else
             {
+                ProjectileSpawner.Subscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
                 ProjectileSpawner.Subscribe.ProjectileReachedTarget(EventBus_Projectile_ProjectileReachedTarget);
             }
         }

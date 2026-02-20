@@ -581,8 +581,8 @@ MonoBehaviour:
     TitleSize: 30
     LineSize: 24
   guiPosition:
-    widthPos: 0.177
-    heightPos: 0.819
+    widthPos: 0.281
+    heightPos: 0.729
 --- !u!1 &356169429
 GameObject:
   m_ObjectHideFlags: 0
