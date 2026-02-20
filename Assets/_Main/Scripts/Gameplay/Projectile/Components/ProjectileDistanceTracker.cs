@@ -30,6 +30,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             
             if (GetDistanceRatio() >= _targetRatio)
             {
+                
 #if UNITY_EDITOR
 
                 if (_currentProjectile is IDebugProjectile debug)
@@ -61,13 +62,26 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             _hasProjectile = true;
         }
 
+        public void ClearProjectileSilently()
+        {
+            _hasProjectile = false;
+            _currentProjectile = null;
+        }
+
         private void RemoveCurrentProjectile()
         {
+            if (_currentProjectile == null)
+            {
+                Debug.Log("Projectile could not be Removed");
+                return;
+            }
+            
             _currentProjectile.OnObjectDisabled -= OnProjectileDisabledHandler;
             _hasProjectile = false;
             _currentProjectile = null;
             OnTargetDistanceReached?.Invoke();
         }
+        
 
         private void CalculateTotalDistance()
         {

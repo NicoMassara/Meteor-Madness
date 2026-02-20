@@ -198,9 +198,9 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         #region Projectile Spawn
 
-        public void GrantProjectileSpawn(int projectileTypeIndex)
+        public void GrantProjectileSpawn()
         {
-            NotifyAll(GameModeObserverMessage.GrantProjectileSpawn,projectileTypeIndex);
+            NotifyAll(GameModeObserverMessage.Empty);
         }
         
         public void EnableProjectileSpawn()

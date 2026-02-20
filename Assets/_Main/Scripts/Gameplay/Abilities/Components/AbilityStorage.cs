@@ -85,8 +85,6 @@ namespace MeteorMadness.Gameplay.Abilities
         private GeneratedId _storedAbilitiesId;
         
         public UnityAction OnStorageFilled;
-        public UnityAction<int> OnAbilityTaken;
-        public UnityAction<int> OnAbilityAdded;
 
         public AbilityStorage()
         {
@@ -106,8 +104,6 @@ namespace MeteorMadness.Gameplay.Abilities
 
         public void AddAbility(int abilityIndex)
         {
-            if(GetAbilityCount() >= MaxAbilityCount) return;
-
             var storedValue = GetStoredAbilities();
             //
             _abilityQueue.Enqueue(ref storedValue, abilityIndex);
@@ -118,19 +114,18 @@ namespace MeteorMadness.Gameplay.Abilities
             {
                 OnStorageFilled?.Invoke();
             }
-            
-            OnAbilityAdded?.Invoke(abilityIndex);
         }
 
-        public void TakeAbility()
+        public int TakeAbility()
         {
             var storedValue = GetStoredAbilities();
             //
             var index = _abilityQueue.Dequeue(ref storedValue);
             //
-            UpdateStoredAbilities(storedValue);
             
-            OnAbilityTaken?.Invoke(index);
+            UpdateStoredAbilities(storedValue);
+
+            return index;
         }
 
         public bool IsEmpty()

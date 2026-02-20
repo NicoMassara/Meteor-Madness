@@ -27,7 +27,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 case AbilityObserverMessage.AddAbility:
                     HandleAddAbility((int)args[0]);
                     break;
-                case AbilityObserverMessage.RestartAbilities:
+                case AbilityObserverMessage.RestartValues:
                     HandleRestartAbilities();
                     break;
                 case AbilityObserverMessage.TriggerAbility:

@@ -1,4 +1,5 @@
-﻿using _Main.Scripts.Gameplay.Projectile.Components;
+﻿using System;
+using _Main.Scripts.Gameplay.Projectile.Components;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using MeteorMadness.GlobalValues.Tools.Observer;
@@ -6,132 +7,108 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 {
-    internal class ProjectileSpawnerMotor : ObservableComponent
+    internal class ProjectileSpawnerMotor : ObservableComponent, IProjectileSpawnerMotor
     {
-        private const int MaxLevelToCheckDeflected = 4;
+        private readonly ProjectileBatchTracker _tracker;
         private readonly ProjectileBatchSelector _batchSelector;
-        private readonly ProjectileBatchTracker _batchTracker;
-        private int _meteorAmountToSpawn;
-        private bool _isSpawningRing;
-        private bool _hasChangedLevel;
-        private int _currentLevel;
-        private bool _isSpawningBatch;
         
+        public event Action OnBatchCreated;
+        public event Action OnBatchFinished;
 
-        public ProjectileSpawnerMotor(BatchTypeData spawnData)
+        public ProjectileSpawnerMotor(BatchTypeData batchData)
         {
-            _batchSelector = new  ProjectileBatchSelector(spawnData);
+            _tracker = new ProjectileBatchTracker();
+            _tracker.OnBatchDeflected += OnBatchDeflectedHandler;
+            _tracker.OnBatchFinished += OnBatchFinishedHandler;
             
-            _batchSelector.OnBatchSpawned += () =>
-            {
-                _isSpawningBatch = false;
-                NotifyAll(ProjectileSpawnerObserverMessage.BatchSpawned);
-            };
-            _batchSelector.OnSpecialBatchStarted += (value) =>
-            {
-                NotifyAll(ProjectileSpawnerObserverMessage.SpecialStarted, value);
-            };
-            _batchSelector.OnSpecialBatchFinished += (value) =>
-            {
-                NotifyAll(ProjectileSpawnerObserverMessage.SpecialFinished, value);
-            };
-            
-            _batchTracker = new ProjectileBatchTracker();
-            _batchTracker.OnBatchDeflected += OnBatchDeflectedHandler;
-            _batchTracker.OnBatchFinished += OnBatchFinishedHandler;
+            _batchSelector = new ProjectileBatchSelector(batchData);
+            _batchSelector.OnBatchSpawned += OnBatchSpawnedHandler;
+            _batchSelector.OnProjectileCreated += OnProjectileCreatedHandler;
         }
 
-        public void DoStartMeteorBatch()
+        public void Initialize()
         {
-            if (_hasChangedLevel)
-            {
-                Debug.Log("Spawner has increased level, waiting for current batch to despawn before creating a new one");
-                return;
-            }
-
-            var amount = _batchSelector.CreateBatch();
-            _batchTracker.CreateBatchData(amount);
-            _isSpawningBatch = true;
+            NotifyAll(ProjectileSpawnerObserverMessage.Initialize);
         }
 
-        public void SpawnNextProjectileFromBatch()
+        #region Enable / Disable
+
+        public void Clear()
         {
-            if (_isSpawningBatch == false)
-            {
-                Debug.Log("Cant spawn Batch Yet");
-                return;
-            }
-
-            var slotData = _batchSelector.GetSlotDataFromBatch();
-            
-            NotifyAll(ProjectileSpawnerObserverMessage.SpawnMeteor,slotData);
+            _tracker.ClearData();
+            _batchSelector.ClearProjectiles();
+            NotifyAll(ProjectileSpawnerObserverMessage.Clear);
         }
-
-        public void ChangeBatchType(BatchType newBatchType) => _batchSelector.ChangeBatchType(newBatchType);
+        
+        public void RestartValues()
+        {
+            _tracker.RestartData();
+            _batchSelector.RestartData();
+        }
+        
+        #endregion
 
         public void NotifyProjectileDeflected()
         {
-            _batchTracker.CheckForDeflectedProjectile();
+            _tracker.NotifyProjectileDeflected();
+        }
+        
+        public void NotifyProjectileDestroyed()
+        {
+            _tracker.NotifyProjectileDestroyed();
+        }
+        
+        public void CreateBatch(BatchType batchType)
+        {
+            var batchAmount = _batchSelector.CreateBatch(batchType);
+
+            if (batchAmount > 0)
+            {
+                _tracker.CreateBatchData(batchAmount, batchType);
+                
+                OnBatchCreated?.Invoke();
+                NotifyAll(ProjectileSpawnerObserverMessage.BatchCreated, batchType);
+            }
+            else
+            {
+                throw new Exception("Batch Cannot be Empty");
+            }
         }
 
-        public void NotifyProjectileCollision()
+        public void SpawnProjectile()
         {
-            _batchTracker.CheckForCollisionProjectile();
+            var data = _batchSelector.GetSlotDataFromBatch();
+            NotifyAll(ProjectileSpawnerObserverMessage.SpawnProjectile, data);
         }
 
-        public void UpdateLevel(int currentLevel)
+        public void UpdateLevel(int level)
         {
-            _currentLevel = currentLevel;
-            _batchSelector.UpdateLevel(currentLevel);
-            _hasChangedLevel = true;
-            Debug.Log($"Level increased to {_currentLevel}, waiting for current batch to finish");
-        }
-
-        public void ClearProjectiles()
-        {
-            _batchSelector.RestartData();
-            _batchTracker.RestartData();
-            _hasChangedLevel = false;
-            _currentLevel = 0;
-            NotifyAll(ProjectileSpawnerObserverMessage.Clear);
-        }
-
-        private bool DoesCheckForDeflectMeteors()
-        {
-            return _currentLevel <= MaxLevelToCheckDeflected;
+            _batchSelector.UpdateLevel(level);
         }
 
         #region Handlers
         
-        private void OnBatchDeflectedHandler()
+        private void OnBatchSpawnedHandler(BatchType batchType)
         {
-            if (DoesCheckForDeflectMeteors())
-            {
-                NotifyAll(ProjectileSpawnerObserverMessage.BatchDeflected);
-            }
-        }
-
-        private void OnBatchFinishedHandler()
-        {
-            if (DoesCheckForDeflectMeteors() == false)
-            {
-                NotifyAll(ProjectileSpawnerObserverMessage.BatchDeflected);
-            }
-
-            if (_hasChangedLevel)
-            {
-                _hasChangedLevel = false;
-                Debug.Log("Spawning Batch with new Level Values");
-                DoStartMeteorBatch();
-                SpawnNextProjectileFromBatch();
-            }
-        }
-
-        public void InitializeSpawner()
-        {
-            NotifyAll(ProjectileSpawnerObserverMessage.InitializeFactory);
+            NotifyAll(ProjectileSpawnerObserverMessage.BatchSpawned, batchType);
         }
         
+        private void OnProjectileCreatedHandler(BatchType batchType)
+        {
+            NotifyAll(ProjectileSpawnerObserverMessage.ProjectileSpawned, batchType);
+        }
+        
+        private void OnBatchDeflectedHandler()
+        {
+            NotifyAll(ProjectileSpawnerObserverMessage.BatchDeflected);
+        }
+        
+        private void OnBatchFinishedHandler(BatchType batchType)
+        {
+            OnBatchFinished?.Invoke();
+            NotifyAll(ProjectileSpawnerObserverMessage.BatchFinished, batchType);
+        }
+
         #endregion
     }
 }

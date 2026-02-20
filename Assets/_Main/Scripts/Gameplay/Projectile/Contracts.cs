@@ -5,12 +5,42 @@ using _Main.Scripts.Common.SelectorByWeight;
 using _Main.Scripts.Gameplay.Projectile.SO;
 using _Main.Scripts.Gameplay.Projectile.SO.WeightsData;
 using MeteorMadness.Contracts;
+using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Projectile
 {
-    #region Struct
+    #region MVC
+
+    internal interface IProjectileSpawnerView : IObserver
+    {
+        public event Action<bool> OnProjectileReachedTarget;
+        public event Action OnBatchCreated;
+    }
+
+    internal interface IProjectileSpawnerController
+    {
+        
+    }
+
+    internal interface IProjectileSpawnerMotor
+    {
+        public event Action OnBatchCreated;
+        public event Action OnBatchFinished;
+        public void Initialize();
+        public void CreateBatch(BatchType batchType);
+        public void SpawnProjectile();
+        public void UpdateLevel(int level);
+        public void RestartValues();
+        public void Clear();
+        public void NotifyProjectileDeflected();
+        public void NotifyProjectileDestroyed();
+    }
+
+
+    #endregion
     
+    #region Struct
 
     [System.Serializable]
     internal struct SpawnData
@@ -160,6 +190,7 @@ namespace _Main.Scripts.Projectile
         public float MovementSpeed;
         public bool IsAbility;
         public float FinalValue;
+        public bool IsLast;
     }
     
     public struct BatchDebugData

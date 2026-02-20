@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: So_BatchData_Single_Ring
   m_EditorClassIdentifier: 
   batchType: 1
-  projectileSpeed: 90
+  projectileSpeed: 120
   batchValues:
     speedMultiplier:
       minSpeed: 1
@@ -23,10 +23,10 @@ MonoBehaviour:
       maxAmount: 10
     data:
     - spawnType: 1
-      weight: 50
+      weight: 24
       projectileAmount:
-        minAmount: 10
-        maxAmount: 15
+        minAmount: 3
+        maxAmount: 5
       innerBatchDistance:
         minRange: 0.036
         maxRange: 0.795
@@ -54,8 +54,8 @@ MonoBehaviour:
         minRange: 5
         maxRange: 4
       slotRange:
-        minRange: 0
-        maxRange: 0
+        minRange: 1
+        maxRange: 1
     - spawnType: 3
       weight: 50
       projectileAmount:
@@ -71,13 +71,13 @@ MonoBehaviour:
         minRange: 4
         maxRange: 4
       slotRange:
-        minRange: 0
-        maxRange: 0
+        minRange: 1
+        maxRange: 1
     - spawnType: 4
-      weight: 20
+      weight: 100
       projectileAmount:
-        minAmount: 10
-        maxAmount: 20
+        minAmount: 8
+        maxAmount: 32
       innerBatchDistance:
         minRange: 0
         maxRange: 0

@@ -125,9 +125,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
                     break;
                 
                 //=== Projectile ===//
-                case GameModeObserverMessage.GrantProjectileSpawn:
-                    HandleGrantProjectileSpawn((int)args[0]);
-                    break;
                 case GameModeObserverMessage.SetEnableSpawnMeteor:
                     HandleSetEnableMeteorSpawn((bool)args[0]);
                     break;
@@ -225,15 +222,14 @@ namespace MeteorMadness.ScreenFlow.GameMode
             ShieldEventCaller.Enable();
             AbilitiesEventCaller.Enable();
             AbilitiesEventCaller.SetCanUse(true);
-            AbilitiesEventCaller.EnableUI();
             EarthEventCaller.EnableDamage();
             SetEnableInputs(true);
+            ProjectileSpawner.Publish.RequestSpawn(BatchType.Default);
         }
         
         private void HandleStopGameplay()
         {
             EarthEventCaller.DisableDamage();
-            AbilitiesEventCaller.DisableUI();
             SetEnableInputs(false);
             OnGameStopped?.Invoke();
 
@@ -296,7 +292,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
         private void HandleGamePaused()
         {
             SetEnableInputs(false);
-            AbilitiesEventCaller.DisableUI();
             GameModeEventCaller.SetPause(true);
             CameraEventCaller.Transport(pauseGameplayTransportData);
             OnPaused?.Invoke();
@@ -313,9 +308,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             OnResume?.Invoke();
             GameModeEventCaller.SetPause(false);
-            AbilitiesEventCaller.EnableUI();
             EarthEventCaller.EnableDamage();
-            AbilitiesEventCaller.EnableUI();
             GameManager.Instance.ResumeGame();
             SetEnableInputs(true);
             
@@ -368,21 +361,17 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         #region Projectile
 
-        private void HandleGrantProjectileSpawn(int typeIndex)
-        {
-            ProjectileEventCaller.GrantSpawn((ProjectileType)typeIndex);
-        }
-
         private void HandleSetEnableMeteorSpawn(bool canSpawn)
         {
             if (canSpawn)
             {
                 //HACK
-                TimerManager.Add(new TimerData(1, ProjectileEventCaller.EnableSpawn));
+                TimerManager.Add(new TimerData(1, ProjectileSpawner.Publish.Enable));
             }
             else
             {
-                ProjectileEventCaller.DisableSpawn(true);
+                ProjectileSpawner.Publish.Disable();
+                ProjectileSpawner.Publish.Clear();
             }
         }
 
@@ -426,7 +415,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         private void HandleUpdateGameLevel(int currentLevel)
         {
-            ProjectileEventCaller.UpdateLevel(currentLevel);
+            ProjectileSpawner.Publish.SetLevel(currentLevel);
             OnLevelUpdate?.Invoke(currentLevel);
         }
 

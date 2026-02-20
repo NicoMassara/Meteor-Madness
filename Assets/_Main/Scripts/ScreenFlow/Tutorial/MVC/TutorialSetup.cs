@@ -92,7 +92,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
             //
             AbilitiesEventSubscriber.NotifyIsActive(EventBus_Abilities_Active);
             //
-            MeteorEventSubscriber.RingActive(EventBus_Meteor_RingActive);
+            //MeteorEventSubscriber.RingActive(EventBus_Meteor_RingActive);
             //
             MultiPageUIEventSubscriber.Finished(EventBus_MultiPage_Finished);
             //
@@ -106,7 +106,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
             //
             AbilitiesEventUnSubscriber.NotifyIsActive(EventBus_Abilities_Active);
             //
-            MeteorEventUnSubscriber.RingActive(EventBus_Meteor_RingActive);
+            //MeteorEventUnSubscriber.RingActive(EventBus_Meteor_RingActive);
             //
             MultiPageUIEventUnSubscriber.Finished(EventBus_MultiPage_Finished);
             //

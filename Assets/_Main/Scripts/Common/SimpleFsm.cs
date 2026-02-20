@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield
+namespace MeteorMadness.Common
 {
     public abstract class SimpleFsm<T,S>
     where T : IFsmController
@@ -35,9 +34,9 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield
             AwakeState(CurrentState);
         }
 
-        protected abstract void AwakeState(S state);
-        protected abstract void ExecuteState(float deltaTime);
-        protected abstract void SleepState(S state);
+        protected virtual void AwakeState(S state){}
+        protected virtual void ExecuteState(float deltaTime){}
+        protected virtual void SleepState(S state){}
         
         private bool AreEqual(S a, S b)
         {

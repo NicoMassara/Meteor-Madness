@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile.Components
 {
-    public class ProjectileBatchCreator
+    public sealed class ProjectileBatchCreator
     {
         private readonly int _angleSlots;
         private SlotData[] _currentBatch;
@@ -21,8 +21,10 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             _lastSelectedSlot = -1;
         }
 
-        public virtual void RestartValues()
+        public void RestartValues()
         {
+            _currentBatchIndex = -1;
+            _currentBatch = Array.Empty<SlotData>();
             _lastSelectedSlot = -1;
         }
         
@@ -48,7 +50,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             
             if (selectedAmount == 1)
             {
-                CreateSingleProjectileBatch(ref _currentBatch, new SingleProjectileBatchData
+                CreateSingleProjectileBatch(_currentBatch, new SingleProjectileBatchData
                 {
                     SelectedSlot = selectedSlot,
                     NextBatchDistance = nextBatchDistance,
@@ -60,7 +62,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 switch (spawnData.SpawnType)
                 {
                     case SpawnType.Random:
-                        CreateRandomBatch(ref _currentBatch, new RandomBatchData
+                        CreateRandomBatch(_currentBatch, new RandomBatchData
                         {
                             SelectedSlot = selectedSlot,
                             SelectedAmount = selectedAmount,
@@ -73,7 +75,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                         break;
                     
                     case SpawnType.Ascendent or SpawnType.Descendent:
-                        CreateAscendentBatchData(ref _currentBatch, new AscendentBatchData
+                        CreateAscendentBatchData(_currentBatch, new AscendentBatchData
                         {
                             SlotOffset =  spawnData.SlotRange,
                             SelectedSlot = selectedSlot,
@@ -88,7 +90,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                         break;
                     
                     case SpawnType.SamePosition:
-                        CreateSamePositionBatch(ref _currentBatch, new SamePositionBatchData
+                        CreateSamePositionBatch(_currentBatch, new SamePositionBatchData
                         {
                             SelectedSlot = selectedSlot,
                             SelectedAmount = selectedAmount,
@@ -100,7 +102,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                         break;
                     
                     case SpawnType.UpAndDown:
-                        CreateUpAndDownBatchBatch(ref _currentBatch, new UpAndDownBatchData
+                        CreateUpAndDownBatchBatch(_currentBatch, new UpAndDownBatchData
                         {
                             SelectedSlot = selectedSlot,
                             SelectedAmount = selectedAmount,
@@ -136,15 +138,32 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         }
         public SlotData GetNextSlotData()
         {
+            if (_currentBatchIndex < 0)
+                throw new InvalidOperationException("No more slot data available.");
+            
             var value = _currentBatch[_currentBatchIndex];
             _currentBatchIndex--;
             
             return value;
         }
 
+        private bool TryAssignAbility(bool hasAbility, ref bool hasSpawnedAbility, int index)
+        {
+            if (hasAbility && hasSpawnedAbility == false)
+            {
+                if (index == 0 || RandomService.Value() >= 0.45f)
+                {
+                    hasSpawnedAbility = true;
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
         #region Ascendent/Descendent
         
-        private void CreateAscendentBatchData(ref SlotData[] batchData, AscendentBatchData data, Func<int,int,float> getProjectileValue)
+        private void CreateAscendentBatchData(SlotData[] batchData, AscendentBatchData data, Func<int,int,float> getProjectileValue)
         {
             var hasSpawnedAbility = false;
             var slotAmount = _angleSlots;
@@ -154,21 +173,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
             for (int i = data.SelectedAmount - 1; i >= 0; i--)
             {
-                var isAbility = false;
                 // Set if current projectile is ability
-                if (data.HasAbility && hasSpawnedAbility == false)
-                {
-                    if (i == 0)
-                    {
-                        isAbility = true;
-                        hasSpawnedAbility = true;
-                    }
-                    else if (RandomService.Value() >= 0.45f)
-                    {
-                        isAbility = true;
-                        hasSpawnedAbility = true;
-                    }
-                }
+                var isAbility = TryAssignAbility(data.HasAbility, ref hasSpawnedAbility, i);
                 
                 var distanceRatio = 1f;
 
@@ -224,28 +230,15 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         #region SamePosition
 
         // ReSharper disable once RedundantAssignment
-        private void CreateSamePositionBatch(ref SlotData[] batchData, SamePositionBatchData data, Func<int,int,float> getProjectileValue)
+        private void CreateSamePositionBatch(SlotData[] batchData, SamePositionBatchData data, Func<int,int,float> getProjectileValue)
         {
             var hasSpawnedAbility = false;
             var slotAmount = _angleSlots;
 
             for (int i = data.SelectedAmount - 1; i >= 0; i--)
             {
-                var isAbility = false;
                 // Set if current projectile is ability
-                if (data.HasAbility && hasSpawnedAbility == false)
-                {
-                    if (i == data.SelectedAmount - 1)
-                    {
-                        isAbility = true;
-                        hasSpawnedAbility = true;
-                    }
-                    else if (RandomService.Value() >= 0.45f)
-                    {
-                        isAbility = true;
-                        hasSpawnedAbility = true;
-                    }
-                }
+                var isAbility = TryAssignAbility(data.HasAbility, ref hasSpawnedAbility, i);
                 
                 var step = (i + 1) / 2;             
                 var direction = (i % 2 == 0) ? 1 : -1; 
@@ -283,7 +276,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         
         #region Random
         
-        private void CreateRandomBatch(ref SlotData[] batchData, RandomBatchData data, Func<int,int,float> getProjectileValue)
+        private void CreateRandomBatch(SlotData[] batchData, RandomBatchData data, Func<int,int,float> getProjectileValue)
         {
             var hasSpawnedAbility = false;
             var currentSlot = data.SelectedSlot;
@@ -292,21 +285,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
             for (int i = data.SelectedAmount - 1; i >= 0; i--)
             {
-                var isAbility = false;
                 // Set if current projectile is ability
-                if (data.HasAbility && hasSpawnedAbility == false)
-                {
-                    if (i == 0)
-                    {
-                        isAbility = true;
-                        hasSpawnedAbility = true;
-                    }
-                    else if (RandomService.Value() >= 0.45f)
-                    {
-                        isAbility = true;
-                        hasSpawnedAbility = true;
-                    }
-                }
+                var isAbility = TryAssignAbility(data.HasAbility, ref hasSpawnedAbility, i);
                 
                 if (isFirstProjectile == false)
                 {
@@ -347,7 +327,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         #region UpAndDow
 
-        private void CreateUpAndDownBatchBatch(ref SlotData[] batchData, UpAndDownBatchData data, Func<int,int,float> getProjectileValue)
+        private void CreateUpAndDownBatchBatch(SlotData[] batchData, UpAndDownBatchData data, Func<int,int,float> getProjectileValue)
         {
             var hasSpawnedAbility = false;
             var direction = GetRandomDirection();
@@ -357,21 +337,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
             for (int i = data.SelectedAmount - 1; i >= 0; i--)
             {
-                var isAbility = false;
                 // Set if current projectile is ability
-                if (data.HasAbility && hasSpawnedAbility == false)
-                {
-                    if (i == 0)
-                    {
-                        isAbility = true;
-                        hasSpawnedAbility = true;
-                    }
-                    else if (RandomService.Value() >= 0.45f)
-                    {
-                        isAbility = true;
-                        hasSpawnedAbility = true;
-                    }
-                }
+                var isAbility = TryAssignAbility(data.HasAbility, ref hasSpawnedAbility, i);
 
                 if (isFirstProjectile == false)
                 {
@@ -411,7 +378,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         #endregion
         
-        private void CreateSingleProjectileBatch(ref SlotData[] batchData, SingleProjectileBatchData data, Func<int,int,float> getProjectileValue)
+        private void CreateSingleProjectileBatch(SlotData[] batchData, SingleProjectileBatchData data, Func<int,int,float> getProjectileValue)
         {
             var slotData = new SlotData
             {

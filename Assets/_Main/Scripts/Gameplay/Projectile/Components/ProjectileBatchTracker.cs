@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MeteorMadness.Contracts;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projectile.Components
@@ -11,7 +12,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         private BatchTrackerData _currentBatch;
         private bool _hasActiveBatch;
 
-        public event Action OnBatchFinished;
+        public event Action<BatchType> OnBatchFinished;
         public event Action OnBatchDeflected;
 
         public ProjectileBatchTracker()
@@ -21,16 +22,29 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         public void RestartData()
         {
+            ClearData();
+        }
+
+        public void ClearData()
+        {
+            _hasActiveBatch = false;
             _currentBatch = new BatchTrackerData();
             _batchQueue.Clear();
         }
 
-        public void CreateBatchData(int amount)
+        public void CreateBatchData(int amount, BatchType batchType)
         {
+            if (amount == 0)
+            {
+                Debug.LogWarning($"Batch Amount is Zero");
+                return;
+            }
+
             var newBatch = new BatchTrackerData
             {
                 BathAmount = amount,
                 ActiveAmount = amount,
+                BatchType = batchType
             };
 
             if (_batchQueue.Count == 0 && _hasActiveBatch == false)
@@ -48,21 +62,21 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         {
             _currentBatch = _batchQueue.Dequeue();
             _hasActiveBatch = true;
-            Debug.Log($"New Batch Set, Amount: {_currentBatch.BathAmount}");
         }
 
-        public void CheckForDeflectedProjectile()
+        public void NotifyProjectileDeflected()
         {
             CheckForProjectile(true);
         }
         
-        public void CheckForCollisionProjectile()
+        public void NotifyProjectileDestroyed()
         {
             CheckForProjectile(false);
         }
 
         private void CheckForProjectile(bool isDeflected)
         {
+            
             if (isDeflected)
             {
                 _currentBatch.DeflectedAmount++;
@@ -80,8 +94,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 {
                     //Debug.Log("Not enough Deflected");
                 }
-
-                OnBatchFinished?.Invoke();
+                
+                OnBatchFinished?.Invoke(_currentBatch.BatchType);
                 
                 _hasActiveBatch = false;
                 
@@ -98,6 +112,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         public int BathAmount;
         public int ActiveAmount;
         public int DeflectedAmount;
+        public BatchType BatchType;
 
         public float GetDeflectedRatio() => (float)DeflectedAmount / BathAmount;
     }

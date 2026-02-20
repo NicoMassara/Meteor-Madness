@@ -1,6 +1,6 @@
 ﻿using _Main.Scripts.Projectile;
 
-namespace _Main.Scripts.Gameplay.Projecitle.Spawner
+namespace _Main.Scripts.Gameplay.Projectile.Components
 {
     internal abstract class ProjectileBatchControllerBase<T> : IBatchTypeCreator
     where T : IBatchDataBase

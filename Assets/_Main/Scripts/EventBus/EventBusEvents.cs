@@ -102,44 +102,10 @@ namespace MeteorMadness.Contracts
             public float Value;
             public ProjectileType Type;
         }
-
-        public struct BatchDeflected { }
-
-        public struct Add
-        {
-            public IProjectile Projectile;
-        }
-
-        public struct RequestSpawn
-        {
-            public ProjectileType ProjectileType;
-            public EventRequestType RequestType;
-        }
-        
-        public struct UpdateLevel
-        {
-            public int Level;
-        }
-        
-        public struct ClearQueue {}
-
-        public struct DisableSpawn
-        {
-            public bool DoesClearProjectiles;
-        }
-        
-        public struct EnableSpawn {}
-
-        public struct SetSpawnType
-        {
-            public BatchType BatchType;
-        }
-
     }
     
     public struct MeteorEvents
     {
-        public struct SpawnRing {}
         public struct RingActive
         {
             public bool IsActive;
@@ -214,11 +180,6 @@ namespace MeteorMadness.Contracts
             public AbilityType AbilityType;
             public Vector2 Position;
         }
-
-        public struct SetStorageFull
-        {
-            public bool IsFull;
-        }
         
         public struct NotifyIsActive
         {
@@ -226,18 +187,8 @@ namespace MeteorMadness.Contracts
             public bool IsActive;
         }
         
-        public struct SetNextSpawn
-        {
-            public AbilityType AbilityType;
-        }
-        public struct EnableUI { }
-        public struct DisableUI { }
-        
         public struct Enable { }
         public struct Disable { }
-        public struct RunTimer { }
-        
-        public struct UIInitialized { }
     }
 
     public struct FloatingTextEvents
@@ -268,5 +219,56 @@ namespace MeteorMadness.Contracts
         public struct Disable { }
         public struct Pause { }
         public struct Resume { }
+    }
+
+    public struct ProjectileSpawnerEvents
+    {
+        public struct Enable {}
+        public struct Disable {}
+        public struct Clear {}
+        public struct RestartValues {}
+
+        public struct SetLevel
+        {
+            public int Level;
+        }
+
+        // Request a spawn of the given batch type
+        public struct RequestSpawn 
+        {
+            public BatchType BatchType;
+        }
+        
+        // When a batch is created
+        public struct BatchCreated 
+        {
+            public BatchType BatchType;
+        }
+        
+        // When a projectile is spawned
+        public struct ProjectileSpawned 
+        {
+            public BatchType BatchType;
+        }
+        
+        // When a batch is fully spawned
+        public struct BatchSpawned 
+        {
+            public BatchType BatchType;
+        }
+        
+        // When the projectiles from a batch are destroyed
+        public struct BatchFinished 
+        {
+            public BatchType BatchType;
+        }
+        
+        // When a batch is considered deflected
+        public struct BatchDeflected { }
+
+        public struct ProjectileReachedTarget
+        {
+            public bool IsLastFromBatch;
+        }
     }
 }

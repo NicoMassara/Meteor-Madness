@@ -124,8 +124,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             AbilitiesEventSubscriber.NotifyIsActive(EventBus_Abilities_SetActive);
             //
             ProjectileEventSubscriber.Deflected(EventBus_Meteor_Deflected);
-            ProjectileEventSubscriber.RequestSpawn(EventBus_Projectile_RequestSpawn);
-            ProjectileEventSubscriber.BatchDeflected(EventBus_Meteor_BatchDeflected);
+            ProjectileSpawner.Subscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
             ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
             //
 
@@ -142,8 +141,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             AbilitiesEventUnSubscriber.NotifyIsActive(EventBus_Abilities_SetActive);
             //
             ProjectileEventUnSubscriber.Deflected(EventBus_Meteor_Deflected);
-            ProjectileEventUnSubscriber.BatchDeflected(EventBus_Meteor_BatchDeflected);
-            ProjectileEventUnSubscriber.RequestSpawn(EventBus_Projectile_RequestSpawn);
+            ProjectileSpawner.Unsubscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
             //
             CameraEventSubscriber.NotifyTransportStarted(EventBus_Camera_Transport_Started);
             CameraEventSubscriber.NotifyTransportFinished(EventBus_Camera_Transport_Finished);
@@ -225,17 +223,9 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         #region Projectile
         
-        private void EventBus_Meteor_BatchDeflected(ProjectileEvents.BatchDeflected obj)
+        private void EventBus_Projectile_BatchDeflected(ProjectileSpawnerEvents.BatchDeflected input)
         {
             _controller.NotifyBatchDeflected();
-        }
-
-        private void EventBus_Projectile_RequestSpawn(ProjectileEvents.RequestSpawn input)
-        {
-            if (input.RequestType == EventRequestType.Requested)
-            {
-                _controller.GrantProjectileSpawn((int)input.ProjectileType);
-            }
         }
         
         private void EventBus_Projectile_Collision(ProjectileEvents.Collision input)

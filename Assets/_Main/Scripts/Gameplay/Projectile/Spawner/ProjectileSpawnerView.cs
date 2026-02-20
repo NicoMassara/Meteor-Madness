@@ -15,20 +15,10 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 {
-    internal class ProjectileSpawnerView : ManagedBehavior, IObserver,
-        ProjectileSpawnerView.IProjectileSpawnerView,
+    internal class ProjectileSpawnerView : ManagedBehavior,
+        IProjectileSpawnerView,
         IUpdatable
     {
-        internal interface IProjectileSpawnerView
-        {
-            public event Action OnProjectileSpawned;
-            public event Action OnProjectileReachedTargetRatio;
-            public event Action OnBatchSpawned;
-            public event Action OnRingFinished;
-            public event Action OnRingStarted;
-        }
-
-
         [Header("Spawn Data")]
         [SerializeField] private Transform centerOfGravity;
         [SerializeField] private float spawnRadius;
@@ -45,16 +35,14 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private ProjectileDistanceTracker _distanceTracker;
         private MeteorFactory _meteorFactory;
         private AbilitySphereFactory _abilityFactory;
+        private bool _isLast;
+        
         
         #region IProjectileSpawnerView
         
-        public event Action OnBatchSpawned;
-        
-        public event Action OnProjectileReachedTargetRatio;
-        public event Action OnProjectileSpawned;
-        public event Action OnRingFinished;
-        public event Action OnRingStarted;
-        
+        public event Action<bool> OnProjectileReachedTarget;
+        public event Action OnBatchCreated;
+
         #endregion
 
         #region IUpdatable
@@ -63,6 +51,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         public TickGroup SelfTickGroup { get; } = TickGroup.EveryFrame;
 
         #endregion
+        
 
         public void ExecuteUpdate(float deltaTime)
         {
@@ -73,56 +62,60 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             switch (message)
             {
-                case ProjectileSpawnerObserverMessage.InitializeFactory:
-                    HandleInitializeFactory();
+                case ProjectileSpawnerObserverMessage.Initialize:
+                    HandleInitialize();
                     break;
-                case ProjectileSpawnerObserverMessage.SpawnMeteor:
-                    HandleSpawnMeteor((SlotData)args[0]);
-                    break;
-                case ProjectileSpawnerObserverMessage.BatchSpawned:
-                    HandleBatchSpawned();
-                    break;
+                
                 case ProjectileSpawnerObserverMessage.Clear:
                     HandleClear();
                     break;
+                
+                case ProjectileSpawnerObserverMessage.SpawnProjectile:
+                    HandleSpawnProjectile((SlotData)args[0]);
+                    break;
+                
+                case ProjectileSpawnerObserverMessage.BatchCreated:
+                    HandleBatchCreated((BatchType)args[0]);
+                    break;
+                
+                case ProjectileSpawnerObserverMessage.ProjectileSpawned:
+                    HandleProjectileSpawned((BatchType)args[0]);
+                    break;
+                
                 case ProjectileSpawnerObserverMessage.BatchDeflected:
                     HandleBatchDeflected();
                     break;
                 
-                // === Ring === //
-                case ProjectileSpawnerObserverMessage.SpecialStarted:
-                    HandleSpecialStarted();
+                case ProjectileSpawnerObserverMessage.BatchFinished:
+                    HandleBatchFinished((BatchType)args[0]);
                     break;
-                case ProjectileSpawnerObserverMessage.SpecialFinished:
-                    HandleSpecialFinished();
+                
+                case ProjectileSpawnerObserverMessage.BatchSpawned:
+                    HandleBatchSpawned((BatchType)args[0]);
                     break;
             }
         }
 
-
-
         #region Observer Handlers
         
-        private void HandleInitializeFactory()
+        private void HandleInitialize()
         {
             _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
             _abilityFactory = new AbilitySphereFactory(abilityPrefab, abilitySelectorData, ()=> doesDebug);
             _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
         }
         
-        private void HandleBatchDeflected()
-        {
-            ProjectileEventCaller.BatchDeflected();
-        }
-        
         private void HandleClear()
         {
             _meteorFactory.RecycleAll();
             _abilityFactory.RecycleAll();
+            _distanceTracker.ClearProjectileSilently();
         }
 
-        private void HandleSpawnMeteor(SlotData slotData)
+        private void HandleSpawnProjectile(SlotData slotData)
         {
+            _isLast = slotData.IsLast;
+            
             var spawnPosition = GetSpawnPosition(slotData.Slot);
             var direction = (Vector2)centerOfGravity.position - spawnPosition;
             
@@ -140,8 +133,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 Debug.LogError("Spawn Failed");
                 return;
             }
-
-            OnProjectileSpawned?.Invoke();
             
             if (slotData.DistanceRatio > 0)
             {
@@ -150,29 +141,35 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             }
             else
             {
-                //Debug.Log("Instant");
-                OnProjectileReachedTargetRatio?.Invoke();
+                OnProjectileReachedTarget?.Invoke(_isLast);
+                ProjectileSpawner.Publish.ProjectileReachedTarget(_isLast);
             }
         }
         
-        private void HandleBatchSpawned()
+        private void HandleBatchCreated(BatchType batchType)
         {
-            OnBatchSpawned?.Invoke();
+            ProjectileSpawner.Publish.BatchCreated(batchType);
+            OnBatchCreated?.Invoke();
         }
         
-        private void HandleSpecialStarted()
+        private void HandleBatchSpawned(BatchType batchType)
         {
-            MeteorEventCaller.RingActive(true);
-            OnRingStarted?.Invoke();
+            ProjectileSpawner.Publish.BatchSpawned(batchType);
         }
         
-        private void HandleSpecialFinished()
+        private void HandleProjectileSpawned(BatchType batchType)
         {
-            OnRingFinished?.Invoke();
-            MeteorEventCaller.RingActive(false);
-            
-            //Ability Setup should listen to RingActive and then start the timer
-            AbilitiesEventCaller.RunTimer();
+            ProjectileSpawner.Publish.ProjectileSpawned(batchType);
+        }
+        
+        private void HandleBatchDeflected()
+        {
+            ProjectileSpawner.Publish.BatchDeflected();
+        }
+        
+        private void HandleBatchFinished(BatchType batchType)
+        {
+            ProjectileSpawner.Publish.BatchFinished(batchType);
         }
         
         #endregion
@@ -199,9 +196,10 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         private void DistanceTracker_OnTargetDistanceReachedHandler()
         {
-            //Debug.Log("Target Distance Reached");
             _distanceTracker.OnTargetDistanceReached -= DistanceTracker_OnTargetDistanceReachedHandler;
-            OnProjectileReachedTargetRatio?.Invoke();
+            
+            OnProjectileReachedTarget?.Invoke(_isLast);
+            ProjectileSpawner.Publish.ProjectileReachedTarget(_isLast);
         }
 
         #endregion

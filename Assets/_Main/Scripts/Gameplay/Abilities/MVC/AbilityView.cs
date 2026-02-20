@@ -1,46 +1,36 @@
 ﻿using System;
-using _Main.Scripts.Contracts.Interfaces;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.GameCamera;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Contracts.Interfaces.Sounds;
 using MeteorMadness.Contracts.Interfaces.Vibration;
+using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Abilities;
 using MeteorMadness.Gameplay.Abilities.So;
 using MeteorMadness.GlobalValues.Tools.Observer;
 using MeteorMadness.GlobalValues.Utilities;
-using MeteorMadness.Managers;
 using NicolasMassara.CustomActionManager;
-using NicolasMassara.CustomTimerManager;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
 namespace MeteorMadness.Gameplay.Abilities
 {
-    public class AbilityView : ManagedBehavior, IObserver, IAbilitySounds,
-        AbilityView.IAbilityView, 
+    public class AbilityView : ManagedBehavior, IAbilitySounds,
+        IAbilityView, 
         IAbilityVibration,
         IAbilityButtonUpdater
     {
-        public interface IAbilityView
-        {
-            public event Action OnAbilitySelected;
-            public event Action OnAbilityFinished;
-
-        }
-
         [SerializeField] private CameraTransportDataSo zoomInData;
         [SerializeField] private CameraTransportDataSo zoomOutData;
         [SerializeField] private AbilityConfigTimeDataSo abilityTimeData;
-        private TimerManager.GeneratedId _finishAbilityTimerId;
+        
         private ActionManager.GeneratedId _actionId;
         
-        private AbilityStoredData currentAbilityStored;
-        private AbilityDataController abilityDataController;
+        private AbilityStoredData _currentAbilityStored;
+        private AbilityDataController _abilityDataController;
             
         #region IAbilityView
-
-        public event Action OnAbilitySelected;
+        
         public event Action OnAbilityFinished;
         
         public event Action OnAbilityTriggered;
@@ -53,23 +43,21 @@ namespace MeteorMadness.Gameplay.Abilities
         public event Action OnRestart;
 
         #endregion
+        
         public event Action OnTimeSlowDown;
         public event Action OnTimeSpeedUp;
 
         private void Start()
         {
-            abilityDataController = new AbilityDataController(
+            _abilityDataController = new AbilityDataController(
                 OnTimeSpeedUp, OnTimeSlowDown,
                 zoomInData,zoomOutData);
+            _abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
+            _abilityDataController.OnSequenceEnd += AbilitiesData_OnEndQueueFinished;
             
-            abilityDataController.OnAbilityStarted += AbilitiesData_OnAbilityStartedHandler;
-            abilityDataController.OnEndQueueFinished += AbilitiesData_OnEndQueueFinished;
-            abilityDataController.Initialize(abilityTimeData);
-
-            GameManager.Instance.OnPaused += GM_OnPausedHandler;
-            GameManager.Instance.OnResumed += GM_OnResumedHandler;
+            _abilityDataController.Initialize(abilityTimeData);
         }
-
+        
         public void OnNotify(ulong message, params object[] args)
         {
             switch (message)
@@ -77,34 +65,19 @@ namespace MeteorMadness.Gameplay.Abilities
                 case AbilityObserverMessage.AddAbility:
                     HandleAddAbility((int)args[0],(Vector2)args[1]);
                     break;
-                case AbilityObserverMessage.SelectAbility:
-                    HandleSelectAbility((int)args[0]);
-                    break;
                 case AbilityObserverMessage.TriggerAbility:
                     HandleTriggerAbility((int)args[0]);
-                    break;
-                case AbilityObserverMessage.FinishAbility:
-                    HandleFinishAbility((int)args[0]);
-                    break;
-                case AbilityObserverMessage.RunActiveTimer:
-                    HandleRunActiveTimer((int)args[0]);
-                    break;
-                case AbilityObserverMessage.SetStorageFull:
-                    HandleSetStorageFull((bool)args[0]);
                     break;
                 case AbilityObserverMessage.ForceFinish:
                     HandleForceFinish();
                     break;
-                case AbilityObserverMessage.RestartAbilities:
-                    HandleRestartAbilities();
+                case AbilityObserverMessage.RestartValues:
+                    HandleRestartValues();
                     break;
             }
         }
 
-        private void HandleRestartAbilities()
-        {
-            OnRestart?.Invoke();
-        }
+        #region Observer Handlers
 
         private void HandleAddAbility(int index, Vector2 position)
         {
@@ -123,92 +96,47 @@ namespace MeteorMadness.Gameplay.Abilities
             OnAbilityAdded?.Invoke();
         }
 
-        private void HandleSetStorageFull(bool isFull)
-        {
-            AbilitiesEventCaller.SetStorageFull(isFull);
-        }
-
-        private void HandleRunActiveTimer(int abilityIndex)
-        {
-            abilityDataController.RunActiveTimer((AbilityType)abilityIndex);
-        }
-
-        #region Ability
-
-        private void HandleSelectAbility(int abilityIndex)
-        {
-            if (!abilityDataController.HasAbilityData((AbilityType)abilityIndex))
-            {
-                Debug.LogWarning("AbilityData Does not exist");
-                return;
-            }
-            
-            OnAbilitySelected?.Invoke();
-        }
-
+        
         private void HandleTriggerAbility(int abilityIndex)
         {
-            _actionId = ActionManager.Add(abilityDataController.GetAbilityStartQueue(
-                (AbilityType)abilityIndex),ActionManager.UpdateType.Update);
+            var abilityType =  (AbilityType)abilityIndex;
             
-            GameModeEventCaller.SetEnablePause(false);
-            
-            OnAbilityTriggered?.Invoke();
-        }
-
-        private void HandleFinishAbility(int abilityIndex)
-        {
-            if (abilityDataController.GetHasInstantEffect((AbilityType)abilityIndex))
+            if (_abilityDataController.HasAbilityData(abilityType) == false)
             {
-                GameModeEventCaller.SetEnablePause(true);
-                return;
+                throw new Exception("Ability data does not exists");
             }
 
-            _actionId = ActionManager.Add(abilityDataController.GetAbilityEndQueue(
-                (AbilityType)abilityIndex),ActionManager.UpdateType.Update,ActionManager.PriorityTick.EveryFrame);
+            var abilitySequence = _abilityDataController.GetActionQueue(abilityType);
+            _actionId = ActionManager.Add(abilitySequence,ActionManager.UpdateType.Update);
+            
+            OnAbilityTriggered?.Invoke();
         }
         
         private void HandleForceFinish()
         {
-            if (_actionId != null
-                && _actionId.IsActive)
+            if (_actionId != null && _actionId.IsActive)
             {
                 ActionManager.Remove(_actionId);
             }
-            else if(_finishAbilityTimerId != null 
-                    && _finishAbilityTimerId.IsActive)
-            {
-                TimerManager.Remove(_finishAbilityTimerId);
-            }
-            
+        }
+        
+        private void HandleRestartValues()
+        {
+            OnRestart?.Invoke();
+        }
+
+        #endregion
+        
+
+        private void AbilitiesData_OnEndQueueFinished(AbilityType abilityType)
+        {
             OnAbilityFinished?.Invoke();
         }
 
-        #endregion
-        
-        #region Handler
-
-        private void AbilitiesData_OnAbilityStartedHandler(float activeTime)
+        private void AbilitiesData_OnAbilityStartedHandler(float time)
         {
-            _finishAbilityTimerId = TimerManager.Add(new TimerData(activeTime, 
-                ()=> OnAbilityFinished?.Invoke()));
+            
         }
         
-        private void AbilitiesData_OnEndQueueFinished(AbilityType abilityType)
-        {
-            GameModeEventCaller.SetEnablePause(true);
-        }
-        
-        private void GM_OnResumedHandler()
-        {
-            TimerManager.Resume(_finishAbilityTimerId);
-        }
-
-        private void GM_OnPausedHandler()
-        {
-            TimerManager.Pause(_finishAbilityTimerId);
-        }
-
-        #endregion
     }
 }
