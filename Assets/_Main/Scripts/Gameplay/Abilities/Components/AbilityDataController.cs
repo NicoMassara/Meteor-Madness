@@ -35,7 +35,6 @@ namespace MeteorMadness.Gameplay.Abilities
             public void OnStart()
             {
                 _batchesLeft = _hasBatchSpawned ? _targetBatches - 1 : _targetBatches;
-                //_activeBatches = _hasBatchSpawned ? 1 : 0;
                 _activeBatches = 0;
 
                 if (_hasBatchSpawned == false)
@@ -67,7 +66,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 if (input.IsLastFromBatch && _batchesLeft > 0)
                 {
                     _batchesLeft--;
-                    Debug.Log($"Batch Spawned, Left: {_batchesLeft}");
+                    //Debug.Log($"Batch Spawned, Left: {_batchesLeft}");
                     ProjectileSpawner.Publish.RequestSpawn(_batchType);
                 }
             }
@@ -75,18 +74,18 @@ namespace MeteorMadness.Gameplay.Abilities
             private void OnBatchSpawnedHandler(ProjectileSpawnerEvents.BatchSpawned input)
             {
                 _activeBatches++;
-                Debug.Log($"Batch Added, Active: {_activeBatches}");
+                //Debug.Log($"Batch Added, Active: {_activeBatches}");
             }
     
             private void OnBatchFinishedHandler(ProjectileSpawnerEvents.BatchFinished input)
             {
                 _activeBatches--;
         
-                Debug.Log($"Batch Removed, Active: {_activeBatches}");
+                //Debug.Log($"Batch Removed, Active: {_activeBatches}");
                 
                 if (_batchesLeft <= 0 && _activeBatches <= 0)
                 {
-                    Debug.Log("Finished");
+                    //Debug.Log("Finished");
                     Cleanup();
                     CurrentStatus = ActionStatus.Success;
                 }
@@ -539,7 +538,6 @@ namespace MeteorMadness.Gameplay.Abilities
             var selectedAbility = AbilityType.Health;
             var timeData = configData.GetAbilityTimeData(AbilityType.Health);
             
-            
             var healData = new AbilityStoredData
             {
                 AbilityType = selectedAbility,
@@ -594,7 +592,7 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateSlowMotionData(IAbilityTimeConfigData configData)
         {
-            var targetBatches = 10;
+            var targetBatches = configData.GetBatchAmount();
             var shieldType = ShieldType.Slow;
             var batchType = BatchType.SlowedDown;
             var selectedAbility = AbilityType.SlowMotion;
@@ -668,7 +666,7 @@ namespace MeteorMadness.Gameplay.Abilities
         
         private void CreateDoublePointsData(IAbilityTimeConfigData configData)
         {
-            var targetBatches = 10;
+            var targetBatches = configData.GetBatchAmount();
             var shieldType = ShieldType.Gold;
             var batchType = BatchType.Ring;
             var selectedAbility = AbilityType.DoublePoints;
@@ -733,7 +731,7 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateAutomaticData(IAbilityTimeConfigData configData)
         {
-            var targetBatches = 10;
+            var targetBatches = configData.GetBatchAmount();
             var shieldType = ShieldType.Automatic;
             var batchType = BatchType.Automatic;
             var selectedAbility = AbilityType.Automatic;
