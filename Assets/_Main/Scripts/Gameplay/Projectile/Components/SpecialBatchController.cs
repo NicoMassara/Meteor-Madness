@@ -7,11 +7,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 {
     internal class SpecialBatchController : ProjectileBatchControllerBase<ISingleBatchData>
     {
-        private int _targetBatches;
-        private bool _hasStarted;
-        
-        public event Action OnLastBatchedCreated;
-        
         public SpecialBatchController(ISingleBatchData data, ISpawnWeightsData spawnWeights, float projectileBaseValue) 
             : base(data, spawnWeights, projectileBaseValue)
         {
@@ -20,16 +15,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
 
         public override BatchSpawnData GetBatchSpawnData(SelectRandomSpawnDelegate selectRandomSpawn)
         {
-            if (_hasStarted)
-            {
-                _targetBatches--;
-
-                if (_targetBatches <= 0)
-                {
-                    OnLastBatchedCreated?.Invoke();
-                }
-            }
-
             var itemData = BatchData.BatchValues;
             var initialSpawnType = selectRandomSpawn.Invoke(itemData.GetWeights(), SpawnWeights.GetWeights());
             
@@ -50,7 +35,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 NextDistance = spawnData.NextBatchDistance.GetRandomRange(),
                 NextSlotRange = spawnData.NextBatchSlotRange.GetRandomRange(),
                 SpawnType = amount == 1 ? SpawnType.None : initialSpawnType,
-                SlotRangeData = spawnData.SlotRange
+                SlotRangeData = spawnData.SlotRange,
+                InnerDistanceRangeData =  spawnData.InnerBatchDistance,
             };
         }
 

@@ -35,6 +35,7 @@ namespace _Main.Scripts.Projectile
         public void Clear();
         public void NotifyProjectileDeflected();
         public void NotifyProjectileDestroyed();
+
     }
 
 
@@ -46,12 +47,10 @@ namespace _Main.Scripts.Projectile
     internal struct SpawnData
     {
         [SerializeField] private SpeedMultiplierRangeData speedMultiplier;
-        [SerializeField] private AmountRangeData batchAmount;
         [SerializeField] private SpawnTypeData[] data;
         public SpawnTypeData[] Data => data;
 
         public SpeedMultiplierRangeData SpeedMultiplier => speedMultiplier;
-        public AmountRangeData BatchAmount => batchAmount;
 
         public bool GetSpawnDataByType(SpawnType spawnType, out SpawnTypeData spawnData)
         {

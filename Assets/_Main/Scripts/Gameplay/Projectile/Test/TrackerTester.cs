@@ -29,8 +29,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Test
         {
             _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
             _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
-            
-            _distanceTracker.OnTargetDistanceReached += DistanceTracker_OnTargetDistanceReachedHandler;
         }
 
         private void Update()

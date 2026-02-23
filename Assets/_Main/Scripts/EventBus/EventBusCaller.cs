@@ -67,57 +67,33 @@ namespace _Main.Scripts.EventBus
     
     public static class GameModeEventCaller
     {
-        public static void InitializeValues()
-        {
-            EventBusCaller.Publish(new GameModeEvents.InitializeValues());
-        }
-        
-        public static void SetPause(bool isPaused)
-        {
-            EventBusCaller.Publish(new GameModeEvents.SetPause{IsPaused = isPaused});
-        }
 
-        public static void SetEnablePause(bool isEnable)
-        {
-            EventBusCaller.Publish(new GameModeEvents.SetEnablePause{CanPause = isEnable});
-        }
+        public static void SetPause(bool isPaused) 
+            => EventBusCaller.Publish(new GameModeEvents.SetPause{IsPaused = isPaused});
 
+        public static void SetEnablePause(bool isEnable) 
+            => EventBusCaller.Publish(new GameModeEvents.SetEnablePause{CanPause = isEnable});
+
+        public static void SetEnableUI(bool isEnable) 
+            => EventBusCaller.Publish(new GameModeEvents.SetEnableUI{IsEnable = isEnable});
     }
 
     public static class GameModeEventSubscriber
     {
-        public static void InitializeValues(Action<GameModeEvents.InitializeValues> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void SetPause(Action<GameModeEvents.SetPause> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
+        public static void SetPause(Action<GameModeEvents.SetPause> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void SetEnableUI(Action<GameModeEvents.SetEnableUI> action) 
+            => EventBusCaller.Subscribe(action);
     }
     
     public static class GameModeEventUnSubscriber
     {
-        public static void InitializeValues(Action<GameModeEvents.InitializeValues> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void SetPause(Action<GameModeEvents.SetPause> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
+        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action) => EventBusCaller.Unsubscribe(action);
+        public static void SetEnableUI(Action<GameModeEvents.SetEnableUI> action) => EventBusCaller.Unsubscribe(action);
     }
     
     

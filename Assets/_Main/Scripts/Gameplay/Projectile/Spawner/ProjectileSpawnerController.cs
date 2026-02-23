@@ -109,6 +109,8 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             if(!_hasActiveBatch) return;
             
+            //Debug.Log("Spawning Next Projectile!");
+            
             _motor.SpawnProjectile();
         }
         

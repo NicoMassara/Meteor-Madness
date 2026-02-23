@@ -43,7 +43,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
             //target.DisableTargetable();
 
             targetSlot = target.Slot;
-            Debug.Log($"Target Found, Slot: {targetSlot}");
+            //Debug.Log($"Target Found, Slot: {targetSlot}");
             return true;
         }
         

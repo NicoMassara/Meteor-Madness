@@ -240,12 +240,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         {
             if (input.IsLastFromBatch)
             {
-                UnityEngine.Debug.Log($"Tester, Spawning Batch!, {Time.realtimeSinceStartup}");
                 ProjectileSpawner.Publish.RequestSpawn(BatchType.Default);
-            }
-            else
-            {
-                UnityEngine.Debug.Log($"Tester, {Time.realtimeSinceStartup}");
             }
         }
 

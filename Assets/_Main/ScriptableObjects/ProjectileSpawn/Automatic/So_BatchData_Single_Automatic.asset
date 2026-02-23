@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15d932050694431917e35648405322c, type: 3}
+  m_Name: So_BatchData_Single_Automatic
+  m_EditorClassIdentifier: 
+  batchType: 0
+  projectileSpeed: 120
+  batchValues:
+    speedMultiplier:
+      minSpeed: 1
+      maxSpeed: 1
+    batchAmount:
+      minAmount: 0
+      maxAmount: 0
+    data:
+    - spawnType: 1
+      weight: 100
+      projectileAmount:
+        minAmount: 5
+        maxAmount: 8
+      innerBatchDistance:
+        minRange: 0.416
+        maxRange: 0.67
+      nextBatchDistance:
+        minRange: 0.327
+        maxRange: 0.749
+      nextBatchSlotRange:
+        minRange: 3
+        maxRange: 9
+      slotRange:
+        minRange: 2
+        maxRange: 8
+    - spawnType: 2
+      weight: 100
+      projectileAmount:
+        minAmount: 5
+        maxAmount: 8
+      innerBatchDistance:
+        minRange: 0.416
+        maxRange: 0.67
+      nextBatchDistance:
+        minRange: 0.327
+        maxRange: 0.749
+      nextBatchSlotRange:
+        minRange: 3
+        maxRange: 9
+      slotRange:
+        minRange: 2
+        maxRange: 8
+    - spawnType: 3
+      weight: 100
+      projectileAmount:
+        minAmount: 5
+        maxAmount: 8
+      innerBatchDistance:
+        minRange: 0.416
+        maxRange: 0.67
+      nextBatchDistance:
+        minRange: 0.327
+        maxRange: 0.749
+      nextBatchSlotRange:
+        minRange: 3
+        maxRange: 9
+      slotRange:
+        minRange: 2
+        maxRange: 8
+    - spawnType: 4
+      weight: 100
+      projectileAmount:
+        minAmount: 3
+        maxAmount: 3
+      innerBatchDistance:
+        minRange: 0.416
+        maxRange: 0.67
+      nextBatchDistance:
+        minRange: 0.327
+        maxRange: 0.749
+      nextBatchSlotRange:
+        minRange: 3
+        maxRange: 9
+      slotRange:
+        minRange: 2
+        maxRange: 8
+    - spawnType: 5
+      weight: 100
+      projectileAmount:
+        minAmount: 5
+        maxAmount: 8
+      innerBatchDistance:
+        minRange: 0.416
+        maxRange: 0.67
+      nextBatchDistance:
+        minRange: 0.327
+        maxRange: 0.749
+      nextBatchSlotRange:
+        minRange: 3
+        maxRange: 9
+      slotRange:
+        minRange: 2
+        maxRange: 8

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.Gameplay.Projectile.Components;
 using _Main.Scripts.Projectile;
@@ -123,21 +124,19 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 Value = slotData.FinalValue,
                 Slot = slotData.Slot
             });
-
+            
             if (projectile == null)
             {
                 Debug.LogError("Spawn Failed");
-                return;
             }
             
             if (slotData.DistanceRatio > 0)
             {
-                _distanceTracker.SetProjectile(projectile,slotData.DistanceRatio,slotData.IsLast, DistanceTracker_OnTargetDistanceReachedHandler);
+                _distanceTracker.SetProjectile(projectile,slotData.DistanceRatio,slotData.IsLast, OnTargetReached);
             }
             else
             {
-                OnProjectileReachedTarget?.Invoke(slotData.IsLast);
-                ProjectileSpawner.Publish.ProjectileReachedTarget(slotData.IsLast);
+                OnTargetReached(slotData.IsLast);
             }
         }
         
@@ -180,7 +179,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             var slotAmount = GameParameters.GameplayValues.AngleSlots;
 
-            // I don't know why needs a 180 offset when the shield does not needed it, and I don't want to know it. 
+            // The offset is based on the shield position in the editor
             var angle = AngleCalculations.GetAngleFromSlot(selectedAngle, slotAmount, 180f);
             var position = AngleCalculations.GetPositionByAngle(angle, spawnRadius);
 
@@ -189,15 +188,25 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         #region Handlers
 
-        private void DistanceTracker_OnTargetDistanceReachedHandler(bool isLast)
+        private void OnTargetReached(bool isLast)
         {
-            Debug.Log("Here");
+            // Avoids execution-order trap 
+            if (isLast)
+            {
+                OnProjectileReachedTarget?.Invoke(true);
+                ProjectileSpawner.Publish.ProjectileReachedTarget(true);
+            }
+            else
+            {
+                ProjectileSpawner.Publish.ProjectileReachedTarget(false);
+                OnProjectileReachedTarget?.Invoke(false);
+            }
             
-            OnProjectileReachedTarget?.Invoke(isLast);
-            ProjectileSpawner.Publish.ProjectileReachedTarget(isLast);
         }
-
+        
         #endregion
+        
+        
 
         private void OnDrawGizmos()
         {

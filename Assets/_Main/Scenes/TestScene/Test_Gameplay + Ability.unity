@@ -2184,11 +2184,11 @@ MonoBehaviour:
       data: {fileID: 11400000, guid: f8441fe5f113c8a4080e437d9fb0df8f, type: 2}
       weights: {fileID: 11400000, guid: 3bd3279d37f4782498d06599fdca8f9e, type: 2}
     slowMotionData:
-      data: {fileID: 11400000, guid: 00ed519172e65e044a6993a23202f099, type: 2}
-      weights: {fileID: 11400000, guid: 1e1774f7abce3d142a28fca3fcd1f870, type: 2}
+      data: {fileID: 11400000, guid: 62b51dbdf13b0a74e9a1166523737666, type: 2}
+      weights: {fileID: 11400000, guid: f7453cf0b16ef5545a3eac5e87c5cd1e, type: 2}
     automaticData:
-      data: {fileID: 11400000, guid: 00ed519172e65e044a6993a23202f099, type: 2}
-      weights: {fileID: 11400000, guid: 1e1774f7abce3d142a28fca3fcd1f870, type: 2}
+      data: {fileID: 11400000, guid: bb97e99c441cbfe429d0f140521e2ccd, type: 2}
+      weights: {fileID: 11400000, guid: 3ab9423d15ef8904ba44bc296529804b, type: 2}
 --- !u!4 &1339401652
 Transform:
   m_ObjectHideFlags: 0
@@ -3105,6 +3105,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 177872736500439817, guid: 253be70ff159d50489646e85ba73e467, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -25
+      objectReference: {fileID: 0}
     - target: {fileID: 5107775025369215878, guid: 253be70ff159d50489646e85ba73e467, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3221,6 +3225,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 6964405344004932698, guid: 253be70ff159d50489646e85ba73e467, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7526046675585299776, guid: 253be70ff159d50489646e85ba73e467, type: 3}
       propertyPath: m_Name
       value: M_Canvas_ControlPanel

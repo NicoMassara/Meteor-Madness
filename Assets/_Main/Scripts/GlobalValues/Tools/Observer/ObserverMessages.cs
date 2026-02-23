@@ -320,7 +320,7 @@
         public const ulong Initialize  = 0xA1604;
         public const ulong BatchDeflected  = 0xA1605;
         public const ulong Clear  = 0xA1606;
-        public const ulong Empty5  = 0xA1607;
+        public const ulong Empty2  = 0xA1607;
         public const ulong BatchCreated  = 0xA1608;
         public const ulong BatchFinished  = 0xA1609;
         public const ulong Empty6 = 0xA160A;

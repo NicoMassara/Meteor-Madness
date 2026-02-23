@@ -71,8 +71,12 @@ namespace MeteorMadness.Contracts
 
     public struct GameModeEvents
     {
-        public struct InitializeValues { }
-    
+        
+        public struct SetEnableUI
+        {
+            public bool IsEnable;
+        }
+
         public struct SetPause
         {
             public bool IsPaused;

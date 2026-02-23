@@ -20,68 +20,97 @@ namespace MeteorMadness.Gameplay.Abilities
             public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
             private readonly int _targetBatches;
             private readonly BatchType _batchType;
+            private readonly bool _hasBatchSpawned;
             private int _batchesLeft;
+            private int _activeBatches;
 
-            public WaitForBatchesToFinishAction(int targetBatches, BatchType batchType)
+            public WaitForBatchesToFinishAction(int targetBatches, BatchType batchType, bool hasBatchSpawned = true)
             {
                 // First batch is already spawned
                 _targetBatches = targetBatches;
                 _batchType = batchType;
+                _hasBatchSpawned = hasBatchSpawned;
             }
 
             public void OnStart()
             {
-                _batchesLeft = _targetBatches;
-                
-                Debug.Log($"Batches Left: {_batchesLeft}");
-                ProjectileSpawner.Subscribe.BatchSpawned(OnBatchSpawnedHandler);
-                ProjectileSpawner.Subscribe.BatchFinished(OnBatchFinishedHandler);
-                ProjectileSpawner.Subscribe.ProjectileReachedTarget(OnProjectileReachedTargetHandler);
+                _batchesLeft = _hasBatchSpawned ? _targetBatches - 1 : _targetBatches;
+                //_activeBatches = _hasBatchSpawned ? 1 : 0;
+                _activeBatches = 0;
+
+                if (_hasBatchSpawned == false)
+                {
+                    ProjectileSpawner.Publish.RequestSpawn(_batchType);
+                }
+
+                ToggleSubscriptions(true);
                 
                 CurrentStatus = ActionStatus.Running;
             }
 
-            public ActionStatus OnUpdate(float deltaTime)
-            {
-                if (CurrentStatus == ActionStatus.Success)
-                {
-                    ProjectileSpawner.Unsubscribe.BatchSpawned(OnBatchSpawnedHandler);
-                    ProjectileSpawner.Unsubscribe.BatchFinished(OnBatchFinishedHandler);
-                    ProjectileSpawner.Unsubscribe.ProjectileReachedTarget(OnProjectileReachedTargetHandler);
-                }
-
-                return CurrentStatus;
-            }
+            public ActionStatus OnUpdate(float deltaTime) => CurrentStatus;
 
             public void OnInterrupt()
             {
+                Cleanup();
+                
                 CurrentStatus = ActionStatus.Failure;
             }
 
             public IQueueAction Copy()
             {
-                return new WaitForBatchesToFinishAction(_targetBatches, _batchType);
+                return new WaitForBatchesToFinishAction(_targetBatches, _batchType, _hasBatchSpawned);
             }
             
             private void OnProjectileReachedTargetHandler(ProjectileSpawnerEvents.ProjectileReachedTarget input)
             {
                 if (input.IsLastFromBatch && _batchesLeft > 0)
                 {
+                    _batchesLeft--;
+                    Debug.Log($"Batch Spawned, Left: {_batchesLeft}");
                     ProjectileSpawner.Publish.RequestSpawn(_batchType);
                 }
             }
-            
+    
             private void OnBatchSpawnedHandler(ProjectileSpawnerEvents.BatchSpawned input)
             {
-                _batchesLeft--;
+                _activeBatches++;
+                Debug.Log($"Batch Added, Active: {_activeBatches}");
             }
-            
+    
             private void OnBatchFinishedHandler(ProjectileSpawnerEvents.BatchFinished input)
             {
-                if(_batchesLeft > 0) return;
+                _activeBatches--;
+        
+                Debug.Log($"Batch Removed, Active: {_activeBatches}");
                 
-                Debug.Log($"Ability Batch Finished");
-                CurrentStatus = ActionStatus.Success;
+                if (_batchesLeft <= 0 && _activeBatches <= 0)
+                {
+                    Debug.Log("Finished");
+                    Cleanup();
+                    CurrentStatus = ActionStatus.Success;
+                }
+            }
+            
+            private void Cleanup()
+            {
+                ToggleSubscriptions(false);
+            }
+            
+            private void ToggleSubscriptions(bool subscribe)
+            {
+                if (subscribe)
+                {
+                    ProjectileSpawner.Subscribe.BatchSpawned(OnBatchSpawnedHandler);
+                    ProjectileSpawner.Subscribe.BatchFinished(OnBatchFinishedHandler);
+                    ProjectileSpawner.Subscribe.ProjectileReachedTarget(OnProjectileReachedTargetHandler);
+                }
+                else
+                {
+                    ProjectileSpawner.Unsubscribe.BatchSpawned(OnBatchSpawnedHandler);
+                    ProjectileSpawner.Unsubscribe.BatchFinished(OnBatchFinishedHandler);
+                    ProjectileSpawner.Unsubscribe.ProjectileReachedTarget(OnProjectileReachedTargetHandler);
+                }
             }
         }
 
@@ -102,12 +131,12 @@ namespace MeteorMadness.Gameplay.Abilities
             {
                 _sequence = ActionBuilder.Start()
                     .Do(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
-                    .Then(new LogDebugAction("Shield Enabling"))
+                    //.Then(new LogDebugAction("Shield Enabling"))
                     .Then(new InstantAction(() => ShieldEventCaller.RequestEnableShieldType(_shieldType)))
                         .WrapLast(a => new WaitForSignalWrapperAction(a,
                         subscribe: callback => OnShieldTypeStarted += callback,
                         unsubscribe: callback => OnShieldTypeStarted -= callback))
-                    .Then(new LogDebugAction("Shield Enable"))
+                    //.Then(new LogDebugAction("Shield Enable"))
                     .Then(new InstantAction(()=> ShieldEventUnSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
                     .Build();
 
@@ -380,6 +409,9 @@ namespace MeteorMadness.Gameplay.Abilities
         private readonly IQueueAction _enableInputs;
         private readonly IQueueAction _disableInputs;
         
+        private readonly IQueueAction _enableUIInputs;
+        private readonly IQueueAction _disableUIInputs;
+
         private readonly IQueueAction _playSlowTimeSound;
         private readonly IQueueAction _playSpeedTimeSound;
 
@@ -399,6 +431,9 @@ namespace MeteorMadness.Gameplay.Abilities
             
             _enableInputs = new SetBoolAction(true,SetInputsEnable);
             _disableInputs = new SetBoolAction(false,SetInputsEnable);
+            
+            _enableUIInputs = new SetBoolAction(true,SetUIInputsEnable);
+            _disableUIInputs = new SetBoolAction(false,SetUIInputsEnable);
         }
         
         public void Initialize(IAbilityTimeConfigData data)
@@ -421,7 +456,7 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateShieldData(IAbilityTimeConfigData configData)
         {
-            var targetBatches = 10;
+            var targetBatches = 3;
             var selectedAbility = AbilityType.SuperShield;
             var shieldType = ShieldType.Super;
             var batchType = BatchType.Ring;
@@ -450,6 +485,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 .Then(_playSlowTimeSound)
                 .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
                 .Then(new WaitSecondsAction(timeData.ZoomIn))
+                .Then(_disableUIInputs)
                 .Then(_cameraZoomIn)
                 .Then(new WaitSecondsAction(timeData.StartAction))
                     
@@ -462,15 +498,16 @@ namespace MeteorMadness.Gameplay.Abilities
                 // - Zooms Out
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_cameraZoomOut)
+                .Then(_enableUIInputs)
                 .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 1))
-                .Then(new LogDebugAction("Super Shield Start Finish"))
+                //.Then(new LogDebugAction("Super Shield Start Finish"))
                 
                 // === Running ===
-                .Then(new LogDebugAction("Super Shield Running"))
-                .Then(new WaitForBatchesToFinishAction(targetBatches-1, batchType))
+                //.Then(new LogDebugAction("Super Shield Running"))
+                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
                 
                 // === Finish ===
-                .Then(new LogDebugAction("Super Shield Finishing"))
+                //.Then(new LogDebugAction("Super Shield Finishing"))
                 .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StopAction))
@@ -514,49 +551,30 @@ namespace MeteorMadness.Gameplay.Abilities
             
             IQueueAction GetSequence(float shieldMinTimeScale)
             {
-                // SlowDown
-                var setShieldTimeScale = new SetChannelTimeScaleAction(shieldMinTimeScale, new[]{UpdateGroup.Shield});
-            
-                var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                    targetValue: 0,  startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-                var slowDownEffects = new TimedTimeScaleUpdateAction(
-                    targetValue: 0,  startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
-
-                // SpeedUp
-                var speedUpGameplay = new TimedTimeScaleUpdateAction(
-                    targetValue: 1,  startValue: 0, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-                var speedUpEffects = new TimedTimeScaleUpdateAction(
-                    targetValue: 1,  startValue: 0, timeData.SpeedUp, UpdateGroup.Effects );
-            
-                var speedUpShield = new TimedTimeScaleUpdateAction(
-                    targetValue: 1f,  startValue: shieldMinTimeScale, timeData.SpeedUp, UpdateGroup.Shield );
-                
                 var actions = ActionBuilder.Start()
                 
                 // === Start ===
                 .Do(new LogDebugAction("Health Starting"))
-                .Then(new PublishAbilityActiveAction(selectedAbility, true))
-                .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
-                .Then(setShieldTimeScale)
-                .Then(new WaitSecondsAction(timeData.ZoomIn))
-                .Then(_cameraZoomIn)
-                .Then(new InstantAction(EarthEventCaller.DisableDamage))
                 .Then(_disableInputs)
+                .Then(new PublishAbilityActiveAction(selectedAbility, true))
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
+                .Then(_cameraZoomIn)
+                .Then(_disableUIInputs)
+                .Then(new InstantAction(EarthEventCaller.DisableDamage))
                 .Then(_playSlowTimeSound)
-                .Then(new WaitSecondsAction(timeData.StartAction))
-                .Then(new InstantAction(EarthEventCaller.Heal))
-                .Then(new WaitSecondsAction(timeData.ZoomOut))
                 
                 // === Running ===
+                .Then(new WaitSecondsAction(timeData.StartAction))
+                .Then(new InstantAction(EarthEventCaller.Heal))
                 
                 // === Finish ===
+                .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_cameraZoomOut)
-                .Then(new ParallelAction(new [] {speedUpGameplay,speedUpEffects,speedUpShield }))
+                .Then(_enableUIInputs)
+                .Then(_enableInputs)
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 1))
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(_playSpeedTimeSound)
-                .Then(_enableInputs)
                 .Then(new InstantAction(EarthEventCaller.EnableDamage))
                 .Then(new PublishAbilityActiveAction(selectedAbility, false))
                 .Then(new InstantAction(()=> OnSequenceEnd?.Invoke(selectedAbility)))
@@ -595,42 +613,14 @@ namespace MeteorMadness.Gameplay.Abilities
             
              IQueueAction GetSequence()
             {
-                // Slown Down
-                var slowDownShield = new TimedTimeScaleUpdateAction(
-                    targetValue: 0,  startValue:1, timeData.SlowDown, UpdateGroup.Shield );
-            
-                var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                    0, startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-                var slowDownEarth = new TimedTimeScaleUpdateAction(
-                    targetValue: 0.5f, startValue: 1, timeData.SlowDown, UpdateGroup.Earth );
-            
-                var slowDownEffects = new TimedTimeScaleUpdateAction(
-                    targetValue: 0.5f, startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
-                
-                // Speed Up
-                var speedUpShield = new TimedTimeScaleUpdateAction(
-                    targetValue: 1f,  startValue: 0, timeData.SpeedUp, UpdateGroup.Shield );
-            
-                var speedUpGameplay = new TimedTimeScaleUpdateAction(
-                    targetValue: 1f,  startValue: 0, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-                var speedUpEarth = new TimedTimeScaleUpdateAction(
-                    targetValue: 1f,  startValue: 0.5f, timeData.SpeedUp, UpdateGroup.Earth );
-            
-                var speedUpEffects= new TimedTimeScaleUpdateAction(
-                    targetValue: 1f,  startValue: 0.5f, timeData.SpeedUp, UpdateGroup.Effects );
-                
                 var actions = ActionBuilder.Start()
 
                 // === Start ===
                 .Do(new LogDebugAction("Slow Motion Starting"))
-                .Then(new PublishAbilityActiveAction(selectedAbility, true))
-                .Then(new ParallelAction(new []
-                {
-                    slowDownShield, slowDownGameplay, slowDownEarth,slowDownEffects
-                }))
                 .Then(_disableInputs)
+                .Then(new PublishAbilityActiveAction(selectedAbility, true))
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
+                .Then(_disableUIInputs)
                 .Then(_cameraZoomIn)
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.SlowDown))
@@ -639,10 +629,10 @@ namespace MeteorMadness.Gameplay.Abilities
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_enableInputs)
                 .Then(_cameraZoomOut)
+                .Then(_enableUIInputs)
                 .Then(new ParallelAction(new []
                 {
-                    speedUpShield, 
-                    speedUpGameplay, 
+                    new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 1),
                     _cameraZoomOut
                 }))
                 
@@ -653,7 +643,6 @@ namespace MeteorMadness.Gameplay.Abilities
                 // === Finish ===
                 .Then(_disableInputs)
                 .Then(_cameraZoomIn)
-                .Then(new ParallelAction(new [] { speedUpEarth,speedUpEffects }))
                 .Then(_playSpeedTimeSound)
                 .Then(new WaitSecondsAction(timeData.SlowDown))
                 .Then(new DisableShieldTypeAction(shieldType))
@@ -698,34 +687,24 @@ namespace MeteorMadness.Gameplay.Abilities
             
             IQueueAction GetSequence()
             {
-                var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                    targetValue: 0,  startValue:1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-                var slowDownEffects = new TimedTimeScaleUpdateAction(
-                    targetValue: 0,  startValue:1, timeData.SlowDown, UpdateGroup.Effects );
-            
-                var speedUpTime = new TimedTimeScaleUpdateAction(
-                    targetValue: 1f,  startValue: 0, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-                var speedUpEffects = new TimedTimeScaleUpdateAction(
-                    targetValue: 1f,  startValue: 0, timeData.SpeedUp, UpdateGroup.Effects );
-                
                 var actions = ActionBuilder.Start()
 
                 // === Start ===
                 .Do(new LogDebugAction("Slow Motion Starting"))
                 .Then(new PublishAbilityActiveAction(selectedAbility, true))
                 .Then(_disableInputs)
+                .Then(_disableUIInputs)
                 .Then(_cameraZoomIn)
-                .Then(new ParallelAction(new [] { slowDownGameplay,slowDownEffects }))
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
                 .Then(new WaitSecondsAction(timeData.SlowDown))
                 .Then(_playSlowTimeSound)
                 .Then(new EnableBatchTypeAction(batchType))
                 .Then(new EnableShieldTypeAction(shieldType))
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
                 .Then(_enableInputs)
+                .Then(_enableUIInputs)
                 .Then(_cameraZoomOut)
-                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 1))
                 .Then(_playSpeedTimeSound)
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 
@@ -790,14 +769,16 @@ namespace MeteorMadness.Gameplay.Abilities
 
                 // === Start ===
                 .Then(new LogDebugAction("Automatic Starting"))
+                .Then(_disableInputs)
                 .Then(new PublishAbilityActiveAction(selectedAbility, true))
                 .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
+                .Then(_disableUIInputs)
                 .Then(_cameraZoomIn)
-                .Then(_disableInputs)
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StartAction))
                 .Then(new EnableBatchTypeAction(batchType))
                 .Then(new EnableShieldTypeAction(shieldType))
+                .Then(_enableUIInputs)
                 .Then(_cameraZoomOut)
                 .Then(new LogDebugAction("Automatic Shield Active"))
                 .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
@@ -810,6 +791,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 // === Finish ===
                 .Then(new PublishAbilityActiveAction(selectedAbility, false))
                 .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
+                .Then(_disableUIInputs)
                 .Then(_cameraZoomIn)
                 .Then(_disableInputs)
                 .Then(_playSlowTimeSound)
@@ -817,6 +799,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
                 .Then(new EnableBatchTypeAction(BatchType.Default))
                 .Then(new DisableShieldTypeAction(shieldType))
+                .Then(_enableUIInputs)
                 .Then(_cameraZoomOut)
                 .Then(_enableInputs)
                 .Then(new InstantAction(()=> OnSequenceEnd?.Invoke(selectedAbility)))
@@ -837,6 +820,10 @@ namespace MeteorMadness.Gameplay.Abilities
         private void SetInputsEnable(bool isEnable)
         {
             InputsEventCaller.SetEnable(isEnable);
+        }
+        
+        private void SetUIInputsEnable(bool isEnable)
+        {
 #if UNITY_ANDROID || UNITY_IOS
             InputsEventCaller.SetUIEnable(isEnable);
 #endif

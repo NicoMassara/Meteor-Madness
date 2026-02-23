@@ -119,7 +119,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             _lastSelectedSlot = _currentBatch[0].Slot;
             _currentBatchIndex = selectedAmount - 1;
             
-            
             OnDebugBatchCreated?.Invoke(new BatchDebugData
             {
                 Amount = selectedAmount,
@@ -202,6 +201,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     Slot = currentSlot,
                     DistanceRatio = distanceRatio,
                     MovementSpeed = data.MovementSpeed,
+                    IsLast = (i == 0),
                     FinalValue = getProjectileValue.Invoke(i, data.SelectedAmount),
                     IsAbility = isAbility
                 };
@@ -254,6 +254,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     Slot = currentSlot,
                     DistanceRatio = (i == 0) ? data.NextBatchDistance : 0,
                     MovementSpeed = data.MovementSpeed,
+                    IsLast = (i == 0),
                     FinalValue = getProjectileValue.Invoke(i, data.SelectedAmount),
                     IsAbility = isAbility
                 };
@@ -302,6 +303,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     Slot = currentSlot,
                     DistanceRatio = (i == 0) ? data.NextBatchDistance : data.InnerBatchDistance,
                     MovementSpeed = data.MovementSpeed,
+                    IsLast = (i == 0),
                     FinalValue = getProjectileValue.Invoke(i, data.SelectedAmount),
                     IsAbility = isAbility
                 };
@@ -355,6 +357,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                     Slot = currentSlot,
                     DistanceRatio = (i == 0) ? data.NextBatchDistance : data.InnerBatchDistance,
                     MovementSpeed = data.MovementSpeed,
+                    IsLast = (i == 0),
                     FinalValue = getProjectileValue.Invoke(i, data.SelectedAmount),
                     IsAbility = isAbility
                 };
@@ -385,7 +388,8 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 Slot = data.SelectedSlot,
                 DistanceRatio = data.NextBatchDistance,
                 MovementSpeed = data.MovementSpeed,
-                FinalValue = getProjectileValue.Invoke(0,1)
+                FinalValue = getProjectileValue.Invoke(0,1),
+                IsLast = true
             };
 
             batchData[0] = slotData;
