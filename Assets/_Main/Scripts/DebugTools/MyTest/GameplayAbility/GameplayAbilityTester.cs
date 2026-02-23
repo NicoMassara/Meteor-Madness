@@ -5,7 +5,6 @@ using _Main.Scripts.EventBus;
 using _Main.Scripts.GameCamera;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
-using MeteorMadness.Debug._Main.Scripts.Debug.MyTest.Gameplay;
 using MeteorMadness.GlobalValues.Events;
 using MeteorMadness.Managers;
 using MeteorMadness.Managers.GameConfig;
@@ -19,7 +18,7 @@ using Random = UnityEngine.Random;
 
 namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
 {
-    public class GameplayAbilityTester : MonoBehaviour, IGameplayTester
+    public class GameplayAbilityTester : MonoBehaviour
     {
         [Header("Start Values")]
         [Range(0, LevelAmount-1)] [SerializeField] private int startLevel = 1;
@@ -54,13 +53,10 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         private void Awake()
         {
             RandomService.Initialize();
-            ProjectileEventSubscriber.RequestSpawn(EventBus_Projectile_RequestSpawn);
-            ProjectileEventSubscriber.BatchDeflected(EventBus_Projectile_BatchDeflected);
-        }
-
-        private void EventBus_Projectile_BatchDeflected(ProjectileEvents.BatchDeflected input)
-        {
-            IncreaseLevel();
+            ProjectileSpawner.Subscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
+            ProjectileSpawner.Subscribe.ProjectileReachedTarget(EventBus_Projectile_ProjectileReachedTarget);
+            ProjectileSpawner.Subscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
+            AbilitiesEventSubscriber.NotifyIsActive(EventBus_Ability_NotifyIsActive);
         }
 
         private void Start()
@@ -100,7 +96,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             EarthEventCaller.EnableDamage();
             InputsEventCaller.SetEnable(true);
             InputsEventCaller.SetUIEnable(true);
-            ProjectileEventCaller.UpdateLevel(_currentLevel);
+            //ProjectileEventCaller.UpdateLevel(_currentLevel);
             if (startMeteorsEnable)
             {
                 ToggleMeteorSpawn();
@@ -159,16 +155,23 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
 
         #region Meteor
 
+        public void ForceSpawn()
+        {
+            ProjectileSpawner.Publish.Enable();
+            ProjectileSpawner.Publish.RequestSpawn(BatchType.Default);
+            ProjectileSpawner.Publish.Disable();
+        }
+        
         public void ToggleMeteorSpawn()
         {
             MeteorActive = !MeteorActive;
             if (MeteorActive)
             {
-                UpdateLevel();
-                ProjectileEventCaller.EnableSpawn();
+                ProjectileSpawner.Publish.Enable();
+                ProjectileSpawner.Publish.RequestSpawn(BatchType.Default);
             }
             else
-                ProjectileEventCaller.DisableSpawn(true);
+                ProjectileSpawner.Publish.Disable();
         }
 
         public void SimulateDeflect()
@@ -199,23 +202,23 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         public void IncreaseLevel()
         {
             _currentLevel++;
-            _currentLevel = Mathf.Clamp(_currentLevel, 0, LevelAmount-1);
-            ProjectileEventCaller.UpdateLevel(_currentLevel);
+            _currentLevel = Mathf.Clamp(_currentLevel, 0, int.MaxValue);
+            ProjectileSpawner.Publish.SetLevel(_currentLevel);
             OnLevelUpdated?.Invoke(_currentLevel+1);
         }
 
         public void DecreaseLevel()
         {
             _currentLevel--;
-            _currentLevel = Mathf.Clamp(_currentLevel, 0, LevelAmount-1);
-            ProjectileEventCaller.UpdateLevel(_currentLevel);
+            _currentLevel = Mathf.Clamp(_currentLevel, 0, int.MaxValue);
+            ProjectileSpawner.Publish.SetLevel(_currentLevel);
             OnLevelUpdated?.Invoke(_currentLevel+1);
         }
 
         public void UpdateLevel()
         {
             _currentLevel = Mathf.Clamp(_currentLevel, 0, LevelAmount-1);
-            ProjectileEventCaller.UpdateLevel(_currentLevel);
+            ProjectileSpawner.Publish.SetLevel(_currentLevel);
             OnLevelUpdated?.Invoke(_currentLevel);
         }
 
@@ -233,17 +236,33 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
 
         #endregion
         
-        #region Event Bus
-
-        private void EventBus_Projectile_RequestSpawn(ProjectileEvents.RequestSpawn input)
+        private void EventBus_Projectile_ProjectileReachedTarget(ProjectileSpawnerEvents.ProjectileReachedTarget input)
         {
-            if (input.RequestType == EventRequestType.Requested)
+            if (input.IsLastFromBatch)
             {
-                ProjectileEventCaller.GrantSpawn(ProjectileType.Meteor);
+                ProjectileSpawner.Publish.RequestSpawn(BatchType.Default);
             }
         }
 
-        #endregion
+        private void EventBus_Projectile_BatchDeflected(ProjectileSpawnerEvents.BatchDeflected input)
+        {
+            if(doesIncreaseLevel)
+                IncreaseLevel();
+        }
+
+        private void EventBus_Ability_NotifyIsActive(AbilitiesEvents.NotifyIsActive input)
+        {
+            if (input.IsActive)
+            {
+                ProjectileSpawner.Unsubscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
+                ProjectileSpawner.Unsubscribe.ProjectileReachedTarget(EventBus_Projectile_ProjectileReachedTarget);
+            }
+            else
+            {
+                ProjectileSpawner.Subscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
+                ProjectileSpawner.Subscribe.ProjectileReachedTarget(EventBus_Projectile_ProjectileReachedTarget);
+            }
+        }
     }
     
 #if UNITY_EDITOR
@@ -261,6 +280,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             if (GUILayout.Button("Increase Level")) script.IncreaseLevel();
             if (GUILayout.Button("Decrease Level")) script.DecreaseLevel();
             if (GUILayout.Button("Toggle Meteor Spawn")) script.ToggleMeteorSpawn();
+            if (GUILayout.Button("Force Spawn")) script.ForceSpawn();
             
             GUILayout.Space(10f);
             if (GUILayout.Button("Simulate Deflect")) script.SimulateDeflect();

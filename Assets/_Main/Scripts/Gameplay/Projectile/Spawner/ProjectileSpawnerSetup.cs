@@ -1,104 +1,119 @@
 ﻿using System;
 using _Main.Scripts.EventBus;
-using _Main.Scripts.Gameplay.Projectile.SO;
+using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Events;
-using MeteorMadness.GlobalValues.Tools.Observer;
 using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 {
     internal class ProjectileSpawnerSetup : MonoBehaviour
     {
-        [SerializeField] private ProjectileSpawnDataSo spawnData;
-        [SerializeField] private ProjectileRingDataSo ringData;
-        private ProjectileSpawnerController.IProjectileSpawnerController _controller;
-        private ProjectileSpawnerView.IProjectileSpawnerView _view;
+        [SerializeField] private BatchTypeData data;
+
+        private IProjectileSpawnerView _view;
+        private ProjectileSpawnerController _controller;
 
         private void Awake()
         {
-            if (spawnData == null)
+            _view = GetComponent<IProjectileSpawnerView>();
+
+            if (_view == null)
             {
-                Debug.LogError($"Spawn Data So not selected.");
-                return;
+                throw new Exception("View component not attached.");
             }
 
-            var motor = new ProjectileSpawnerMotor(spawnData,ringData);
+            var motor = new ProjectileSpawnerMotor(data);
+            
+            motor.Subscribe(_view);
+
             _controller = new ProjectileSpawnerController(motor);
             
-            _view = GetComponentInChildren<ProjectileSpawnerView.IProjectileSpawnerView>();
-            motor.Subscribe((IObserver)_view);
-            
-            
             BootEvents.OnSubSystemRequestInitialize += Initialize;
-            
             SetEventBus();
+            SetViewHandlers();
         }
 
         private void Initialize()
         {
             BootEvents.OnSubSystemRequestInitialize -= Initialize;
-            _controller.InitializeSpawner();
             BootEvents.SubSystemInitialized();
-        }
-
-        private void Start()
-        {
-            SetViewHandlers();
+            _controller.Initialize();
         }
 
         private void SetViewHandlers()
         {
-            _view.OnBatchSpawned += () => _controller.NotifyBatchSpawned();
-            _view.OnProjectileReachedTargetRatio += () => _controller.NotifyProjectileHasReachedTargetRatio();
-            _view.OnRingStarted += () => _controller.SetHasToSpawnRingBatch(true);
-            _view.OnRingFinished += () =>
+            _view.OnProjectileReachedTarget += (isLast) =>
             {
-                _controller.SetIsRingActive(false);
-                _controller.SetHasToSpawnRingBatch(false);
+                if(isLast)
+                    _controller.NotifyLastProjectileReachedTarget();
+                else
+                    _controller.NotifyProjectileReachedTarget();
             };
         }
-
+        
+        #region Event Bus
 
         private void SetEventBus()
         {
-            ProjectileEventSubscriber.EnableSpawn(EventBus_Projectile_Enable);
-            ProjectileEventSubscriber.DisableSpawn(EventBus_Projectile_Disable);
-            ProjectileEventSubscriber.UpdateLevel(EventBus_Projectile_UpdateLevel);
-            ProjectileEventSubscriber.Deflected(EventBus_Projectile_Deflected);
+            ProjectileSpawner.Subscribe.Enable(EventBus_ProjectileSpawner_Enable);
+            ProjectileSpawner.Subscribe.Disable(EventBus_ProjectileSpawner_Disable);
+            ProjectileSpawner.Subscribe.Clear(EventBus_ProjectileSpawner_Clear);
+            ProjectileSpawner.Subscribe.RestartValues(EventBus_ProjectileSpawner_RestartValues);
+            ProjectileSpawner.Subscribe.RequestSpawn(EventBus_ProjectileSpawner_RequestSpawn);
+            ProjectileSpawner.Subscribe.SetLevel(EventBus_ProjectileSpawner_SetLevel);
             ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
-            //
-            MeteorEventSubscriber.SpawnRing(EnventBus_Meteor_SpawnRing);
+            ProjectileEventSubscriber.Deflected(EventBus_Projectile_Deflected);
         }
 
-        private void EnventBus_Meteor_SpawnRing(MeteorEvents.SpawnRing input)
+        #region Enable/Disable
+
+        private void EventBus_ProjectileSpawner_RestartValues(ProjectileSpawnerEvents.RestartValues input)
         {
-            _controller.SetIsRingActive(true);
+            _controller.RestartValues();
         }
 
-        private void EventBus_Projectile_Collision(ProjectileEvents.Collision input)
+        private void EventBus_ProjectileSpawner_Clear(ProjectileSpawnerEvents.Clear input)
         {
-            _controller.NotifyProjectileCollision();
+            _controller.Clear();
         }
 
+        private void EventBus_ProjectileSpawner_Disable(ProjectileSpawnerEvents.Disable input)
+        {
+            _controller.Disable();
+        }
+
+        private void EventBus_ProjectileSpawner_Enable(ProjectileSpawnerEvents.Enable input)
+        {
+            _controller.Enable();
+        }
+        
+        private void EventBus_ProjectileSpawner_SetLevel(ProjectileSpawnerEvents.SetLevel input)
+        {
+            _controller.UpdateLevel(input.Level);
+        }
+        
         private void EventBus_Projectile_Deflected(ProjectileEvents.Deflected input)
         {
             _controller.NotifyProjectileDeflected();
         }
 
-        private void EventBus_Projectile_UpdateLevel(ProjectileEvents.UpdateLevel input)
+        private void EventBus_Projectile_Collision(ProjectileEvents.Collision input)
         {
-            _controller.UpdateLevel(input.Level);
+            _controller.NotifyProjectileDestroyed();
         }
 
-        private void EventBus_Projectile_Enable(ProjectileEvents.EnableSpawn input)
+        #endregion
+
+        #region Spawned
+
+        private void EventBus_ProjectileSpawner_RequestSpawn(ProjectileSpawnerEvents.RequestSpawn input)
         {
-            _controller.EnableSpawn();
+            _controller.CreateBatch(input.BatchType);
         }
         
-        private void EventBus_Projectile_Disable(ProjectileEvents.DisableSpawn input)
-        {
-            _controller.DisableSpawn(input.DoesClearProjectiles);
-        }
+        #endregion
+        
+        #endregion
     }
 }

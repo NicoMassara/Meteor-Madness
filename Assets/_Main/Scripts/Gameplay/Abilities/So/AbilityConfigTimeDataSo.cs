@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.Common.MyRandom;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Managers.GameConfig.Game;
@@ -10,6 +11,20 @@ namespace MeteorMadness.Gameplay.Abilities.So
     [CreateAssetMenu(fileName = "SO_AbilityConfigTimeData_Name", menuName = "Scriptable Objects/Ability/Time Config Data", order = 0)]
     public class AbilityConfigTimeDataSo : ScriptableObject, IAbilityTimeConfigData
     {
+        [System.Serializable]
+        internal struct AmountRangeData
+        {
+            [Min(1)] 
+            [SerializeField] private int minAmount;
+            [Min(1)] 
+            [SerializeField] private int maxAmount;
+        
+            public Vector2Int GetRange() => new Vector2Int(minAmount, maxAmount);
+            public int GetRandomRange() => RandomService.Range(minAmount, maxAmount);
+        }
+
+        [SerializeField] private AmountRangeData batchAmount;
+        
         [SerializeField] private AbilityData[] abilities;
         
         public IAbilityTimeData GetAbilityTimeData(AbilityType abilityType)
@@ -24,6 +39,8 @@ namespace MeteorMadness.Gameplay.Abilities.So
             
             return null;
         }
+
+        public int GetBatchAmount() => batchAmount.GetRandomRange();
 
         [Serializable]
         private class AbilityData

@@ -85,7 +85,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AbilityCount: 2
+    - _AbilityCount: 0
     - _AbilityInUse: 1
     - _BumpScale: 1
     - _ColorMask: 15

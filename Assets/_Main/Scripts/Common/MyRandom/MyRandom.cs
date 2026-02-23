@@ -21,7 +21,7 @@ namespace _Main.Scripts.Common.MyRandom
 
         public int Range(int min, int max)
         {
-            if (min >= max)
+            if(min == max || min >= max)
                 return min;
 
             return (int)(NextUInt() % (uint)(max - min)) + min;

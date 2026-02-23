@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Main.Scripts.Common.SelectorByWeight;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.Projectile;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.Core.FlyingObject;
+using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Abilities;
 using MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile.AbilitySphere;
 using MeteorMadness.Gameplay.Abilities.So;
 using MeteorMadness.GlobalValues.Tools;
@@ -94,10 +96,11 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
         private readonly AbilitySelector _selector;
         private readonly Spawner _spawner;
         private readonly Func<bool> _doesDebugFunc;
+
         private bool _isStorageFull;
         private int _currentLevel;
         
-        public AbilitySphereFactory(AbilitySphereView prefab, AbilitySelectorDataSo selectorData, Func<bool> doesDebugFunc)
+        public AbilitySphereFactory(AbilitySphereView prefab, Func<bool> doesDebugFunc)
         {
             _doesDebugFunc = doesDebugFunc;
             _selector = new AbilitySelector();

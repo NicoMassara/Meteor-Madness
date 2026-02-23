@@ -1,7 +1,9 @@
 ﻿using System;
+using _Main.Scripts.Contracts.Events;
 using _Main.Scripts.Contracts.Interfaces;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
+using UnityEngine;
 
 namespace _Main.Scripts.EventBus
 {
@@ -9,16 +11,35 @@ namespace _Main.Scripts.EventBus
     {
         public static void Publish<T>(T eventData) where T : struct
         {
+            EventBusDebugEvents.TriggerOnEntryAdded(new EventBusDebugEntry
+            {
+                EventName = eventData.ToString(),
+                ActionType = EventBusActionType.Publish
+            });
+            
             EventBusManager.Instance.Publish(eventData);
         }
         
         public static void Subscribe<T>(Action<T> listener) where T : struct
         {
+            
+            EventBusDebugEvents.TriggerOnEntryAdded(new EventBusDebugEntry
+            {
+                EventName = typeof(T).ToString(),
+                ActionType = EventBusActionType.Subscribe
+            });
+            
             EventBusManager.Instance.Subscribe(listener);
         }
 
         public static void Unsubscribe<T>(Action<T> listener) where T : struct
         {
+            EventBusDebugEvents.TriggerOnEntryAdded(new EventBusDebugEntry
+            {
+                EventName = typeof(T).ToString(),
+                ActionType = EventBusActionType.Unsubscribe
+            });
+            
             EventBusManager.Instance.Unsubscribe(listener);
         }
     }
@@ -46,57 +67,33 @@ namespace _Main.Scripts.EventBus
     
     public static class GameModeEventCaller
     {
-        public static void InitializeValues()
-        {
-            EventBusCaller.Publish(new GameModeEvents.InitializeValues());
-        }
-        
-        public static void SetPause(bool isPaused)
-        {
-            EventBusCaller.Publish(new GameModeEvents.SetPause{IsPaused = isPaused});
-        }
 
-        public static void SetEnablePause(bool isEnable)
-        {
-            EventBusCaller.Publish(new GameModeEvents.SetEnablePause{CanPause = isEnable});
-        }
+        public static void SetPause(bool isPaused) 
+            => EventBusCaller.Publish(new GameModeEvents.SetPause{IsPaused = isPaused});
 
+        public static void SetEnablePause(bool isEnable) 
+            => EventBusCaller.Publish(new GameModeEvents.SetEnablePause{CanPause = isEnable});
+
+        public static void SetEnableUI(bool isEnable) 
+            => EventBusCaller.Publish(new GameModeEvents.SetEnableUI{IsEnable = isEnable});
     }
 
     public static class GameModeEventSubscriber
     {
-        public static void InitializeValues(Action<GameModeEvents.InitializeValues> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void SetPause(Action<GameModeEvents.SetPause> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
-        
-        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action)
-        {
-            EventBusCaller.Subscribe(action);
-        }
+        public static void SetPause(Action<GameModeEvents.SetPause> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action) 
+            => EventBusCaller.Subscribe(action);
+
+        public static void SetEnableUI(Action<GameModeEvents.SetEnableUI> action) 
+            => EventBusCaller.Subscribe(action);
     }
     
     public static class GameModeEventUnSubscriber
     {
-        public static void InitializeValues(Action<GameModeEvents.InitializeValues> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void SetPause(Action<GameModeEvents.SetPause> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
+        public static void SetEnablePause(Action<GameModeEvents.SetEnablePause> action) => EventBusCaller.Unsubscribe(action);
+        public static void SetEnableUI(Action<GameModeEvents.SetEnableUI> action) => EventBusCaller.Unsubscribe(action);
     }
     
     
@@ -311,40 +308,20 @@ namespace _Main.Scripts.EventBus
     
     public static class ShieldEventUnSubscriber
     {
-        public static void RequestEnableShieldType(Action<ShieldEvents.RequestEnableShieldType> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void RequestDisableShieldType(Action<ShieldEvents.RequestDisableShieldType> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void NotifyShieldTypeEnabled(Action<ShieldEvents.NotifyShieldTypeEnabled> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void NotifyShieldTypeDisabled(Action<ShieldEvents.NotifyShieldTypeDisabled> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void Enable(Action<ShieldEvents.Enable> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void Disable(Action<ShieldEvents.Disable> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
-        
-        public static void NotifyMovement(Action<ShieldEvents.NotifyMovement> action)
-        {
-            EventBusCaller.Unsubscribe(action);
-        }
+        public static void RequestEnableShieldType(Action<ShieldEvents.RequestEnableShieldType> action) 
+            => EventBusCaller.Unsubscribe(action);
+        public static void RequestDisableShieldType(Action<ShieldEvents.RequestDisableShieldType> action) 
+            => EventBusCaller.Unsubscribe(action);
+        public static void NotifyShieldTypeEnabled(Action<ShieldEvents.NotifyShieldTypeEnabled> action) 
+            => EventBusCaller.Unsubscribe(action);
+        public static void NotifyShieldTypeDisabled(Action<ShieldEvents.NotifyShieldTypeDisabled> action) 
+            => EventBusCaller.Unsubscribe(action);
+        public static void Enable(Action<ShieldEvents.Enable> action) 
+            => EventBusCaller.Unsubscribe(action);
+        public static void Disable(Action<ShieldEvents.Disable> action) 
+            => EventBusCaller.Unsubscribe(action);
+        public static void NotifyMovement(Action<ShieldEvents.NotifyMovement> action) 
+            => EventBusCaller.Unsubscribe(action);
     }
     
     #endregion
@@ -443,92 +420,18 @@ namespace _Main.Scripts.EventBus
                 Type = data.Type
             });
         }
-        
-        public static void BatchDeflected() => EventBusCaller.Publish(new ProjectileEvents.BatchDeflected());
-        public static void Add(IProjectile projectile) => EventBusCaller.Publish(new ProjectileEvents.Add{Projectile = projectile});
-
-        public static void RequestSpawn(ProjectileType projectileType)
-        {
-            EventBusCaller.Publish(new ProjectileEvents.RequestSpawn
-            {
-                ProjectileType = projectileType, 
-                RequestType = EventRequestType.Requested
-            });
-        }
-        
-        public static void GrantSpawn(ProjectileType projectileType)
-        {
-            EventBusCaller.Publish(new ProjectileEvents.RequestSpawn
-            {
-                ProjectileType = projectileType, 
-                RequestType = EventRequestType.Granted
-            });
-        }
-        
-        public static void ClearQueue() => EventBusCaller.Publish(new ProjectileEvents.ClearQueue());
-        public static void DisableSpawn(bool doesClear = false) => EventBusCaller.Publish(new ProjectileEvents.DisableSpawn{DoesClearProjectiles = doesClear});
-        public static void EnableSpawn() => EventBusCaller.Publish(new ProjectileEvents.EnableSpawn());
-        public static void UpdateLevel(int level) => EventBusCaller.Publish(new ProjectileEvents.UpdateLevel{Level = level});
-        public static void SetRingActive(bool isActive) => EventBusCaller.Publish(new ProjectileEvents.SetRingActive{IsActive = isActive});
-        
     }
     
     public static class ProjectileEventSubscriber
     {
         public static void Collision(Action<ProjectileEvents.Collision> action) => EventBusCaller.Subscribe(action);
         public static void Deflected(Action<ProjectileEvents.Deflected> action) => EventBusCaller.Subscribe(action);
-        public static void BatchDeflected(Action<ProjectileEvents.BatchDeflected> action) => EventBusCaller.Subscribe(action);
-        public static void Add(Action<ProjectileEvents.Add> action) => EventBusCaller.Subscribe(action);
-        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
-        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
-        public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action) => EventBusCaller.Subscribe(action);
-        public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Subscribe(action);
-        public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Subscribe(action);
-        public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action) => EventBusCaller.Subscribe(action);
-        public static void SetRingActive(Action<ProjectileEvents.SetRingActive> action) => EventBusCaller.Subscribe(action);
     }
     
     public static class ProjectileEventUnSubscriber
     {
         public static void Collision(Action<ProjectileEvents.Collision> action) => EventBusCaller.Unsubscribe(action);
         public static void Deflected(Action<ProjectileEvents.Deflected> action) => EventBusCaller.Unsubscribe(action);
-        public static void BatchDeflected(Action<ProjectileEvents.BatchDeflected> action) => EventBusCaller.Unsubscribe(action);
-        public static void Add(Action<ProjectileEvents.Add> action) => EventBusCaller.Unsubscribe(action);
-        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
-        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
-        public static void ClearQueue(Action<ProjectileEvents.ClearQueue> action) => EventBusCaller.Unsubscribe(action);
-        public static void DisableSpawn(Action<ProjectileEvents.DisableSpawn> action) => EventBusCaller.Unsubscribe(action);
-        public static void EnableSpawn(Action<ProjectileEvents.EnableSpawn> action) => EventBusCaller.Unsubscribe(action);
-        public static void UpdateLevel(Action<ProjectileEvents.UpdateLevel> action) => EventBusCaller.Unsubscribe(action);
-        public static void SetRingActive(Action<ProjectileEvents.SetRingActive> action) => EventBusCaller.Unsubscribe(action);
-    }
-    
-    #endregion
-    
-    #region Meteor
-
-    public static class MeteorEventCaller
-    {
-        public static void GrantSpawnSingle() => ProjectileEventCaller.GrantSpawn(ProjectileType.Meteor);
-        public static void RequestSpawnSingle() => ProjectileEventCaller.RequestSpawn(ProjectileType.Meteor);
-        public static void SpawnRing() => EventBusCaller.Publish(new MeteorEvents.SpawnRing());
-        public static void RingActive(bool isActive) => EventBusCaller.Publish(new MeteorEvents.RingActive{IsActive = isActive});
-    }
-    
-    public static class MeteorEventSubscriber
-    {
-        public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action) => ProjectileEventSubscriber.GrantSpawn(action);
-        public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action) => ProjectileEventSubscriber.RequestSpawn(action);
-        public static void SpawnRing(Action<MeteorEvents.SpawnRing> action) => EventBusCaller.Subscribe(action);
-        public static void RingActive(Action<MeteorEvents.RingActive> action) => EventBusCaller.Subscribe(action);
-    }
-    
-    public static class MeteorEventUnSubscriber
-    {
-        public static void GrantSpawnSingle(Action<ProjectileEvents.RequestSpawn> action) => ProjectileEventUnSubscriber.GrantSpawn(action);
-        public static void RequestSpawnSingle(Action<ProjectileEvents.RequestSpawn> action) => ProjectileEventUnSubscriber.RequestSpawn(action);
-        public static void SpawnRing(Action<MeteorEvents.SpawnRing> action) => EventBusCaller.Unsubscribe(action);
-        public static void RingActive(Action<MeteorEvents.RingActive> action) => EventBusCaller.Unsubscribe(action);
     }
     
     #endregion
@@ -659,8 +562,6 @@ namespace _Main.Scripts.EventBus
     public static class AbilitiesEventCaller
     {
         public static void SetCanUse(bool canUse) => EventBusCaller.Publish(new AbilitiesEvents.SetCanUse{CanUse = canUse});
-        public static void EnableUI() => EventBusCaller.Publish(new AbilitiesEvents.EnableUI());
-        public static void DisableUI() => EventBusCaller.Publish(new AbilitiesEvents.DisableUI());
 
         public static void Add(AbilityAddData data)
         {
@@ -670,7 +571,6 @@ namespace _Main.Scripts.EventBus
                 Position = data.Position
             });
         }
-        public static void SetStorageFull(bool isFull) => EventBusCaller.Publish(new AbilitiesEvents.SetStorageFull{IsFull = isFull});
         public static void NotifyIsActive(AbilityType type, bool isActive)
         {
             EventBusCaller.Publish(new AbilitiesEvents.NotifyIsActive
@@ -683,61 +583,22 @@ namespace _Main.Scripts.EventBus
         public static void Enable() => EventBusCaller.Publish(new AbilitiesEvents.Enable());
 
         public static void Disable() => EventBusCaller.Publish(new AbilitiesEvents.Disable());
-
-        public static void RunTimer() => EventBusCaller.Publish(new AbilitiesEvents.RunTimer());
-
-        public static void GrantSpawn()
-        {
-            EventBusCaller.Publish(new ProjectileEvents.RequestSpawn
-            {
-                ProjectileType = ProjectileType.AbilitySphere, 
-                RequestType = EventRequestType.Granted
-            });
-        }
-        
-        public static void RequestSpawn()
-        {
-            EventBusCaller.Publish(new ProjectileEvents.RequestSpawn
-            {
-                ProjectileType = ProjectileType.AbilitySphere, 
-                RequestType = EventRequestType.Requested
-            });
-        }
-
-        public static void SetNextSpawn(AbilityType type) => EventBusCaller.Publish(new AbilitiesEvents.SetNextSpawn{AbilityType = type});
-        public static void UiInitialized() => EventBusCaller.Publish(new AbilitiesEvents.UIInitialized());
     }
     public static class AbilitiesEventSubscriber
     {
         public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action) => EventBusCaller.Subscribe(action);
-        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action) => EventBusCaller.Subscribe(action);
-        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action) => EventBusCaller.Subscribe(action);
         public static void Add(Action<AbilitiesEvents.Add> action) => EventBusCaller.Subscribe(action);
-        public static void SetStorageFull(Action<AbilitiesEvents.SetStorageFull> action) => EventBusCaller.Subscribe(action);
         public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action) => EventBusCaller.Subscribe(action);
         public static void Enable(Action<AbilitiesEvents.Enable> action) => EventBusCaller.Subscribe(action);
         public static void Disable(Action<AbilitiesEvents.Disable> action) => EventBusCaller.Subscribe(action);
-        public static void RunTimer(Action<AbilitiesEvents.RunTimer> action) => EventBusCaller.Subscribe(action);
-        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
-        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
-        public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action) => EventBusCaller.Subscribe(action);
-        public static void UiInitialized(Action<AbilitiesEvents.UIInitialized> action) => EventBusCaller.Subscribe(action);
     }
     public static class AbilitiesEventUnSubscriber
     {
         public static void SetCanUse(Action<AbilitiesEvents.SetCanUse> action) => EventBusCaller.Unsubscribe(action);
-        public static void EnableUI(Action<AbilitiesEvents.EnableUI> action) => EventBusCaller.Unsubscribe(action);
-        public static void DisableUI(Action<AbilitiesEvents.DisableUI> action) => EventBusCaller.Unsubscribe(action);
         public static void Add(Action<AbilitiesEvents.Add> action) => EventBusCaller.Unsubscribe(action);
-        public static void SetStorageFull(Action<AbilitiesEvents.SetStorageFull> action) => EventBusCaller.Unsubscribe(action);
         public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action) => EventBusCaller.Unsubscribe(action);
         public static void Enable(Action<AbilitiesEvents.Enable> action) => EventBusCaller.Unsubscribe(action);
         public static void Disable(Action<AbilitiesEvents.Disable> action) => EventBusCaller.Unsubscribe(action);
-        public static void RunTimer(Action<AbilitiesEvents.RunTimer> action) => EventBusCaller.Unsubscribe(action);
-        public static void GrantSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
-        public static void RequestSpawn(Action<ProjectileEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
-        public static void SetNextSpawn(Action<AbilitiesEvents.SetNextSpawn> action) => EventBusCaller.Unsubscribe(action);
-        public static void UiInitialized(Action<AbilitiesEvents.UIInitialized> action) => EventBusCaller.Unsubscribe(action);
     }
 
     #endregion
@@ -840,6 +701,69 @@ namespace _Main.Scripts.EventBus
         public static void Disable(Action<CometSpawnEvents.Disable> action) => EventBusCaller.Unsubscribe(action);
         public static void Pause(Action<CometSpawnEvents.Pause> action) => EventBusCaller.Unsubscribe(action);
         public static void Resume(Action<CometSpawnEvents.Resume> action) => EventBusCaller.Unsubscribe(action);
+    }
+
+    #endregion
+
+    #region ProjectileSpawner
+
+    public abstract class ProjectileSpawner
+    {
+        public sealed class Publish
+        {
+            public static void Enable() => EventBusCaller.Publish(new ProjectileSpawnerEvents.Enable());
+            public static void Disable() => EventBusCaller.Publish(new ProjectileSpawnerEvents.Disable());
+            public static void Clear() => EventBusCaller.Publish(new ProjectileSpawnerEvents.Clear());
+            public static void RestartValues() => EventBusCaller.Publish(new ProjectileSpawnerEvents.RestartValues());
+            public static void SetLevel(int level) => EventBusCaller.Publish(new ProjectileSpawnerEvents.SetLevel{Level = level});
+            public static void RequestSpawn(BatchType batchType) 
+                => EventBusCaller.Publish(new ProjectileSpawnerEvents.RequestSpawn{BatchType = batchType});
+            public static void BatchCreated(BatchType batchType) 
+                => EventBusCaller.Publish(new ProjectileSpawnerEvents.BatchCreated{BatchType = batchType});
+            public static void ProjectileSpawned(BatchType batchType) 
+                => EventBusCaller.Publish(new ProjectileSpawnerEvents.ProjectileSpawned{BatchType = batchType});
+            public static void BatchSpawned(BatchType batchType) 
+                => EventBusCaller.Publish(new ProjectileSpawnerEvents.BatchSpawned{BatchType = batchType});
+            public static void BatchFinished(BatchType batchType) 
+                => EventBusCaller.Publish(new ProjectileSpawnerEvents.BatchFinished{BatchType = batchType});
+            public static void BatchDeflected() => EventBusCaller.Publish(new ProjectileSpawnerEvents.BatchDeflected());
+            public static void ProjectileReachedTarget(bool isLastFromBatch) 
+                => EventBusCaller.Publish(new ProjectileSpawnerEvents.ProjectileReachedTarget{IsLastFromBatch = isLastFromBatch});
+        }
+        
+        public sealed class Subscribe
+        {
+            public static void Enable(Action<ProjectileSpawnerEvents.Enable> action) => EventBusCaller.Subscribe(action);
+            public static void Disable(Action<ProjectileSpawnerEvents.Disable> action) => EventBusCaller.Subscribe(action);
+            public static void Clear(Action<ProjectileSpawnerEvents.Clear> action) => EventBusCaller.Subscribe(action);
+            public static void RestartValues(Action<ProjectileSpawnerEvents.RestartValues> action) => EventBusCaller.Subscribe(action);
+            public static void SetLevel(Action<ProjectileSpawnerEvents.SetLevel> action) => EventBusCaller.Subscribe(action);
+            
+            public static void RequestSpawn(Action<ProjectileSpawnerEvents.RequestSpawn> action) => EventBusCaller.Subscribe(action);
+            public static void BatchCreated(Action<ProjectileSpawnerEvents.BatchCreated> action) => EventBusCaller.Subscribe(action);
+            public static void ProjectileSpawned(Action<ProjectileSpawnerEvents.ProjectileSpawned> action) => EventBusCaller.Subscribe(action);
+            public static void BatchSpawned(Action<ProjectileSpawnerEvents.BatchSpawned> action) => EventBusCaller.Subscribe(action);
+            public static void BatchFinished(Action<ProjectileSpawnerEvents.BatchFinished> action) => EventBusCaller.Subscribe(action);
+            public static void BatchDeflected(Action<ProjectileSpawnerEvents.BatchDeflected> action) => EventBusCaller.Subscribe(action);
+            public static void ProjectileReachedTarget(Action<ProjectileSpawnerEvents.ProjectileReachedTarget> action) => EventBusCaller.Subscribe(action);
+        }
+        
+        public sealed class Unsubscribe
+        {
+            public static void Enable(Action<ProjectileSpawnerEvents.Enable> action) => EventBusCaller.Unsubscribe(action);
+            public static void Disable(Action<ProjectileSpawnerEvents.Disable> action) => EventBusCaller.Unsubscribe(action);
+            public static void Clear(Action<ProjectileSpawnerEvents.Clear> action) => EventBusCaller.Unsubscribe(action);
+            public static void RestartValues(Action<ProjectileSpawnerEvents.RestartValues> action) => EventBusCaller.Unsubscribe(action);
+            public static void SetLevel(Action<ProjectileSpawnerEvents.SetLevel> action) => EventBusCaller.Unsubscribe(action);
+            
+            public static void RequestSpawn(Action<ProjectileSpawnerEvents.RequestSpawn> action) => EventBusCaller.Unsubscribe(action);
+            public static void BatchCreated(Action<ProjectileSpawnerEvents.BatchCreated> action) => EventBusCaller.Unsubscribe(action);
+            public static void ProjectileSpawned(Action<ProjectileSpawnerEvents.ProjectileSpawned> action) => EventBusCaller.Unsubscribe(action);
+            public static void BatchSpawned(Action<ProjectileSpawnerEvents.BatchSpawned> action) => EventBusCaller.Unsubscribe(action);
+            public static void BatchFinished(Action<ProjectileSpawnerEvents.BatchFinished> action) => EventBusCaller.Unsubscribe(action);
+            public static void BatchDeflected(Action<ProjectileSpawnerEvents.BatchDeflected> action) => EventBusCaller.Unsubscribe(action);
+            public static void ProjectileReachedTarget(Action<ProjectileSpawnerEvents.ProjectileReachedTarget> action) => EventBusCaller.Unsubscribe(action);
+        }
     }
 
     #endregion

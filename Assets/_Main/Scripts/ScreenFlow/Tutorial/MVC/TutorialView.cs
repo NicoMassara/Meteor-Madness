@@ -163,8 +163,8 @@ namespace MeteorMadness.ScreenFlow.Tutorial
             if (hasPlayed == false || hasCompletedTutorial == false) FlagsManager.SaveFlags();
             
             GameManager.Instance.CanPlay = false;
-            ProjectileEventCaller.DisableSpawn();
-            ProjectileEventCaller.UpdateLevel(0);
+            /*ProjectileEventCaller.DisableSpawn();
+            ProjectileEventCaller.UpdateLevel(0);*/
             AbilitiesEventCaller.Disable();
             ShieldEventCaller.Disable();
             //CameraEventCaller.ZoomIn();
@@ -179,21 +179,21 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         {
             ShieldEventCaller.Enable();
             //CameraEventCaller.ZoomOut(ZoomOutTime);
-            AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
+            //AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
             AbilitiesEventCaller.Enable();
-            AbilitiesEventCaller.DisableUI();
+           //AbilitiesEventCaller.DisableUI();
             InputsEventCaller.SetEnable(true);
 #if UNITY_ANDROID || UNITY_IOS
             
             InputsEventCaller.SetUIEnable(true);
                     
 #endif
-            AbilitiesEventCaller.GrantSpawn();
+            //AbilitiesEventCaller.GrantSpawn();
         }
         
         private void HandleSphereDeflected()
         {
-            AbilitiesEventCaller.EnableUI();
+            //AbilitiesEventCaller.EnableUI();
         }
         
         private void HandleAdditionalProjectile(int index)
@@ -202,12 +202,12 @@ namespace MeteorMadness.ScreenFlow.Tutorial
 
             if (tempType == ProjectileType.Meteor)
             {
-                MeteorEventCaller.GrantSpawnSingle();
+               // MeteorEventCaller.GrantSpawnSingle();
             }
             else if (tempType == ProjectileType.AbilitySphere)
             {
-                AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
-                AbilitiesEventCaller.GrantSpawn();
+                //AbilitiesEventCaller.SetNextSpawn(AbilityType.SuperShield);
+                //AbilitiesEventCaller.GrantSpawn();
             }
         }
 
@@ -218,7 +218,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
         private void HandleMeteor()
         {
             //CameraEventCaller.ZoomOut(ZoomOutTime);
-            ProjectileEventCaller.UpdateLevel(0);
+            //ProjectileEventCaller.UpdateLevel(0);
             GameManager.Instance.CanPlay = true;
             ShieldEventCaller.Enable();
             InputsEventCaller.SetEnable(true);
@@ -231,7 +231,7 @@ namespace MeteorMadness.ScreenFlow.Tutorial
             
             for (int i = 0; i < 1; i++)
             {
-                MeteorEventCaller.GrantSpawnSingle();
+                //MeteorEventCaller.GrantSpawnSingle();
             }
         }
         

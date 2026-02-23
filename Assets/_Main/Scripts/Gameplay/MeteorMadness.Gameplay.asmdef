@@ -16,7 +16,8 @@
         "MeteorMadness.Core.FlyingObject",
         "MeteorMadness.GameCamera",
         "MeteorMadness.Common.ScriptableObjects",
-        "MeteorMadness.Common"
+        "MeteorMadness.Common",
+        "MeteorMadness.Common.MyRandom"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

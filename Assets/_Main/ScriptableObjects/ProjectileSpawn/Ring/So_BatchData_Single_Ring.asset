@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15d932050694431917e35648405322c, type: 3}
+  m_Name: So_BatchData_Single_Ring
+  m_EditorClassIdentifier: 
+  batchType: 1
+  projectileSpeed: 120
+  batchValues:
+    speedMultiplier:
+      minSpeed: 1
+      maxSpeed: 1
+    batchAmount:
+      minAmount: 7
+      maxAmount: 10
+    data:
+    - spawnType: 1
+      weight: 24
+      projectileAmount:
+        minAmount: 3
+        maxAmount: 5
+      innerBatchDistance:
+        minRange: 0.036
+        maxRange: 0.795
+      nextBatchDistance:
+        minRange: 0.371
+        maxRange: 0.219
+      nextBatchSlotRange:
+        minRange: 5
+        maxRange: 6
+      slotRange:
+        minRange: 12
+        maxRange: 12
+    - spawnType: 2
+      weight: 50
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.1
+        maxRange: 0.15
+      nextBatchDistance:
+        minRange: 0.242
+        maxRange: 0.192
+      nextBatchSlotRange:
+        minRange: 5
+        maxRange: 4
+      slotRange:
+        minRange: 1
+        maxRange: 1
+    - spawnType: 3
+      weight: 50
+      projectileAmount:
+        minAmount: 10
+        maxAmount: 15
+      innerBatchDistance:
+        minRange: 0.1
+        maxRange: 0.15
+      nextBatchDistance:
+        minRange: 0.401
+        maxRange: 0.43
+      nextBatchSlotRange:
+        minRange: 4
+        maxRange: 4
+      slotRange:
+        minRange: 1
+        maxRange: 1
+    - spawnType: 4
+      weight: 100
+      projectileAmount:
+        minAmount: 8
+        maxAmount: 32
+      innerBatchDistance:
+        minRange: 0
+        maxRange: 0
+      nextBatchDistance:
+        minRange: 0.75
+        maxRange: 1
+      nextBatchSlotRange:
+        minRange: 5
+        maxRange: 5
+      slotRange:
+        minRange: 1
+        maxRange: 1

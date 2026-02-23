@@ -29,8 +29,6 @@ namespace _Main.Scripts.Gameplay.Projectile.Test
         {
             _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
             _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
-            
-            _distanceTracker.OnTargetDistanceReached += DistanceTracker_OnTargetDistanceReachedHandler;
         }
 
         private void Update()
@@ -38,7 +36,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Test
             _distanceTracker.Execute();
         }
 
-        private void DistanceTracker_OnTargetDistanceReachedHandler()
+        private void DistanceTracker_OnTargetDistanceReachedHandler(bool isLast)
         {
             SpawnMeteor();
         }
@@ -69,7 +67,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Test
             
             if(projectile == null) return;
             
-            _distanceTracker.SetProjectile((IProjectile)projectile,ratio);
+            //_distanceTracker.SetProjectile((IProjectile)projectile,ratio, false);
 
             _currentAngle++;
             _currentAngle = (int)Mathf.Repeat(_currentAngle, 32);

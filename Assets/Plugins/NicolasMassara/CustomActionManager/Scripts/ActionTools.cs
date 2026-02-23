@@ -665,6 +665,75 @@ namespace NicolasMassara.CustomActionManager
         }
     }
 
+    public class WaitForSignalWrapperAction : IQueueAction
+    {
+        private readonly IQueueAction _inner;
+        protected readonly Action<Action> Subscribe;
+        protected readonly Action<Action> Unsubscribe;
+
+        private bool _triggered;
+        public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
+
+        public WaitForSignalWrapperAction(IQueueAction inner, Action<Action> subscribe, Action<Action> unsubscribe)
+        {
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+            Subscribe = subscribe ?? throw new ArgumentNullException(nameof(subscribe));
+            Unsubscribe = unsubscribe ?? throw new ArgumentNullException(nameof(unsubscribe));
+        }
+
+        public void OnStart()
+        {
+            _triggered = false;
+            Subscribe(OnEventTriggered);
+            _inner?.OnStart();
+            CurrentStatus = ActionStatus.Running;
+        }
+
+        private void OnEventTriggered()
+        {
+            _triggered = true;
+        }
+
+        public virtual ActionStatus OnUpdate(float deltaTime)
+        {
+            if (CurrentStatus != ActionStatus.Running)
+                return CurrentStatus;
+
+            var innerStatus = _inner.OnUpdate(deltaTime);
+
+            if (innerStatus == ActionStatus.Failure)
+            {
+                Unsubscribe(OnEventTriggered);
+                CurrentStatus = ActionStatus.Failure;
+                return CurrentStatus;
+            }
+
+            if (_triggered)
+            {
+                Unsubscribe(OnEventTriggered);
+                CurrentStatus = ActionStatus.Success;
+                return CurrentStatus;
+            }
+
+            return ActionStatus.Running;
+        }
+
+        public void OnInterrupt()
+        {
+            if (CurrentStatus != ActionStatus.Running)
+                return;
+
+            Unsubscribe(OnEventTriggered);
+            CurrentStatus = ActionStatus.Failure;
+            _inner.OnInterrupt();
+        }
+
+        public virtual IQueueAction Copy()
+        {
+            return new WaitForSignalWrapperAction(_inner.Copy(), Subscribe, Unsubscribe);
+        }
+    }
+
     #endregion
     
     // ==================== Control Wrappers ====================
@@ -755,6 +824,8 @@ namespace NicolasMassara.CustomActionManager
             _triggered = false;
             
             _externalActionSetter(() => _triggered = true);
+
+            CurrentStatus = ActionStatus.Running;
         }
 
         public ActionStatus OnUpdate(float deltaTime)
@@ -960,12 +1031,16 @@ namespace NicolasMassara.CustomActionManager
         }
     }
     
+    /// <summary>
+    /// Subscribes to an event and finished when that event is finished.
+    /// If you are triggering an event in the Queue, use 'WaitForSignalWrapperAction' cause this wont work.
+    /// </summary>
     public class WaitForEventAction : IQueueAction
     {
         protected readonly Action<Action> Subscribe;
         protected readonly Action<Action> Unsubscribe;
-        private bool _triggered;
 
+        private bool _triggered;
         public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
 
         public WaitForEventAction(Action<Action> subscribe, Action<Action> unsubscribe)
@@ -977,6 +1052,7 @@ namespace NicolasMassara.CustomActionManager
         public void OnStart()
         {
             _triggered = false;
+            CurrentStatus = ActionStatus.Running;
             Subscribe(OnEventTriggered);
         }
 
@@ -987,14 +1063,23 @@ namespace NicolasMassara.CustomActionManager
 
         public virtual ActionStatus OnUpdate(float deltaTime)
         {
+            if (CurrentStatus != ActionStatus.Running)
+                return CurrentStatus;
+
             if (_triggered)
+            {
+                Unsubscribe(OnEventTriggered);
                 CurrentStatus = ActionStatus.Success;
+            }
 
             return CurrentStatus;
         }
 
         public void OnInterrupt()
         {
+            if (CurrentStatus != ActionStatus.Running)
+                return;
+
             Unsubscribe(OnEventTriggered);
             CurrentStatus = ActionStatus.Failure;
         }

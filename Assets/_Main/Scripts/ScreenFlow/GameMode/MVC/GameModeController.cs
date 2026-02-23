@@ -25,7 +25,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             public void EnablePause();
             public void DisablePause();
             public void HandleMeteorDeflect(Vector2 position, float projectileValue);
-            public void GrantProjectileSpawn(int projectileTypeIndex);
             public void SetDoublePoints(bool isActive);
             public void IncreaseCollisionCount();
             public void IncreaseAbilityUseCount();
@@ -503,12 +502,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             if(_mainController.GetIsInGameplay())
                 _motor.HandleMeteorDeflect(position, projectileValue);
-        }
-
-        public void GrantProjectileSpawn(int projectileTypeIndex)
-        {
-            if(_mainController.GetIsInGameplay())
-                _motor.GrantProjectileSpawn(projectileTypeIndex);
         }
 
         public void SetDoublePoints(bool isActive) => _motor.SetDoublePoints(isActive);

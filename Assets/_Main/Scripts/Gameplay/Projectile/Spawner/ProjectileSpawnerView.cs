@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using _Main.Scripts.EventBus;
 using _Main.Scripts.Gameplay.Projectile.Components;
 using _Main.Scripts.Projectile;
@@ -15,20 +16,10 @@ using UnityEngine;
 
 namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 {
-    internal class ProjectileSpawnerView : ManagedBehavior, IObserver,
-        ProjectileSpawnerView.IProjectileSpawnerView,
+    internal class ProjectileSpawnerView : ManagedBehavior,
+        IProjectileSpawnerView,
         IUpdatable
     {
-        internal interface IProjectileSpawnerView
-        {
-            public event Action OnProjectileSpawned;
-            public event Action OnProjectileReachedTargetRatio;
-            public event Action OnBatchSpawned;
-            public event Action OnRingFinished;
-            public event Action OnRingStarted;
-        }
-
-
         [Header("Spawn Data")]
         [SerializeField] private Transform centerOfGravity;
         [SerializeField] private float spawnRadius;
@@ -37,7 +28,6 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         [SerializeField] private MeteorView meteorPrefab;
         [Header("Ability Factory")]
         [SerializeField] private AbilitySphereView abilityPrefab;
-        [SerializeField] private AbilitySelectorDataSo abilitySelectorData;
         [Header("Distance Tracker")]
         [SerializeField] private float centerOfGravityOffset;
 
@@ -46,15 +36,12 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private MeteorFactory _meteorFactory;
         private AbilitySphereFactory _abilityFactory;
         
+        
         #region IProjectileSpawnerView
         
-        public event Action OnBatchSpawned;
-        
-        public event Action OnProjectileReachedTargetRatio;
-        public event Action OnProjectileSpawned;
-        public event Action OnRingFinished;
-        public event Action OnRingStarted;
-        
+        public event Action<bool> OnProjectileReachedTarget;
+        public event Action OnBatchCreated;
+
         #endregion
 
         #region IUpdatable
@@ -73,55 +60,57 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             switch (message)
             {
-                case ProjectileSpawnerObserverMessage.InitializeFactory:
-                    HandleInitializeFactory();
+                case ProjectileSpawnerObserverMessage.Initialize:
+                    HandleInitialize();
                     break;
-                case ProjectileSpawnerObserverMessage.SpawnMeteor:
-                    HandleSpawnMeteor((SlotData)args[0]);
-                    break;
-                case ProjectileSpawnerObserverMessage.BatchSpawned:
-                    HandleBatchSpawned();
-                    break;
+                
                 case ProjectileSpawnerObserverMessage.Clear:
                     HandleClear();
                     break;
+                
+                case ProjectileSpawnerObserverMessage.SpawnProjectile:
+                    HandleSpawnProjectile((SlotData)args[0]);
+                    break;
+                
+                case ProjectileSpawnerObserverMessage.BatchCreated:
+                    HandleBatchCreated((BatchType)args[0]);
+                    break;
+                
+                case ProjectileSpawnerObserverMessage.ProjectileSpawned:
+                    HandleProjectileSpawned((BatchType)args[0]);
+                    break;
+                
                 case ProjectileSpawnerObserverMessage.BatchDeflected:
                     HandleBatchDeflected();
                     break;
                 
-                // === Ring === //
-                case ProjectileSpawnerObserverMessage.RingStarted:
-                    HandleRingStarted();
+                case ProjectileSpawnerObserverMessage.BatchFinished:
+                    HandleBatchFinished((BatchType)args[0]);
                     break;
-                case ProjectileSpawnerObserverMessage.RingFinished:
-                    HandleRingFinished();
+                
+                case ProjectileSpawnerObserverMessage.BatchSpawned:
+                    HandleBatchSpawned((BatchType)args[0]);
                     break;
             }
         }
 
-
-
         #region Observer Handlers
         
-        private void HandleInitializeFactory()
+        private void HandleInitialize()
         {
             _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
-            _abilityFactory = new AbilitySphereFactory(abilityPrefab, abilitySelectorData, ()=> doesDebug);
+            _abilityFactory = new AbilitySphereFactory(abilityPrefab, ()=> doesDebug);
             _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
-        }
-        
-        private void HandleBatchDeflected()
-        {
-            ProjectileEventCaller.BatchDeflected();
         }
         
         private void HandleClear()
         {
             _meteorFactory.RecycleAll();
             _abilityFactory.RecycleAll();
+            _distanceTracker.ClearProjectileSilently();
         }
 
-        private void HandleSpawnMeteor(SlotData slotData)
+        private void HandleSpawnProjectile(SlotData slotData)
         {
             var spawnPosition = GetSpawnPosition(slotData.Slot);
             var direction = (Vector2)centerOfGravity.position - spawnPosition;
@@ -134,45 +123,46 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
                 Value = slotData.FinalValue,
                 Slot = slotData.Slot
             });
-
+            
             if (projectile == null)
             {
                 Debug.LogError("Spawn Failed");
-                return;
             }
-
-            OnProjectileSpawned?.Invoke();
             
             if (slotData.DistanceRatio > 0)
             {
-                _distanceTracker.OnTargetDistanceReached += DistanceTracker_OnTargetDistanceReachedHandler;
-                _distanceTracker.SetProjectile(projectile,slotData.DistanceRatio);
+                _distanceTracker.SetProjectile(projectile,slotData.DistanceRatio,slotData.IsLast, OnTargetReached);
             }
             else
             {
-                //Debug.Log("Instant");
-                OnProjectileReachedTargetRatio?.Invoke();
+                OnTargetReached(slotData.IsLast);
             }
         }
         
-        private void HandleBatchSpawned()
+        private void HandleBatchCreated(BatchType batchType)
         {
-            OnBatchSpawned?.Invoke();
+            ProjectileSpawner.Publish.BatchCreated(batchType);
+            OnBatchCreated?.Invoke();
         }
         
-        private void HandleRingFinished()
+        private void HandleBatchSpawned(BatchType batchType)
         {
-            OnRingFinished?.Invoke();
-            MeteorEventCaller.RingActive(false);
-            
-            //Ability Setup should listen to RingActive and then start the timer
-            AbilitiesEventCaller.RunTimer();
+            ProjectileSpawner.Publish.BatchSpawned(batchType);
         }
-
-        private void HandleRingStarted()
+        
+        private void HandleProjectileSpawned(BatchType batchType)
         {
-            MeteorEventCaller.RingActive(true);
-            OnRingStarted?.Invoke();
+            ProjectileSpawner.Publish.ProjectileSpawned(batchType);
+        }
+        
+        private void HandleBatchDeflected()
+        {
+            ProjectileSpawner.Publish.BatchDeflected();
+        }
+        
+        private void HandleBatchFinished(BatchType batchType)
+        {
+            ProjectileSpawner.Publish.BatchFinished(batchType);
         }
         
         #endregion
@@ -188,7 +178,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             var slotAmount = GameParameters.GameplayValues.AngleSlots;
 
-            // I don't know why needs a 180 offset when the shield does not needed it, and I don't want to know it. 
+            // The offset is based on the shield position in the editor
             var angle = AngleCalculations.GetAngleFromSlot(selectedAngle, slotAmount, 180f);
             var position = AngleCalculations.GetPositionByAngle(angle, spawnRadius);
 
@@ -197,14 +187,25 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
 
         #region Handlers
 
-        private void DistanceTracker_OnTargetDistanceReachedHandler()
+        private void OnTargetReached(bool isLast)
         {
-            //Debug.Log("Target Distance Reached");
-            _distanceTracker.OnTargetDistanceReached -= DistanceTracker_OnTargetDistanceReachedHandler;
-            OnProjectileReachedTargetRatio?.Invoke();
+            // Avoids execution-order trap 
+            if (isLast)
+            {
+                OnProjectileReachedTarget?.Invoke(true);
+                ProjectileSpawner.Publish.ProjectileReachedTarget(true);
+            }
+            else
+            {
+                ProjectileSpawner.Publish.ProjectileReachedTarget(false);
+                OnProjectileReachedTarget?.Invoke(false);
+            }
+            
         }
-
+        
         #endregion
+        
+        
 
         private void OnDrawGizmos()
         {

@@ -43,7 +43,7 @@
         public const ulong GamePaused  = 0xA2009;
         public const ulong ExecuteDisable  = 0xA2010;
         public const ulong InitializeData  = 0xA2011;
-        public const ulong GrantProjectileSpawn = 0xA2012; 
+        public const ulong Empty = 0xA2012; 
         public const ulong SetCanPause = 0xA2013;
         public const ulong SaveScore = 0xA2014; 
         public const ulong GameResume = 0xA2015;
@@ -110,18 +110,18 @@
     public struct AbilityObserverMessage
     {
         public const ulong TriggerAbility = 0xA4001;
-        public const ulong FinishAbility = 0xA4002;
+        public const ulong Empty12 = 0xA4002;
         public const ulong AddAbility = 0xA4003;
         public const ulong SetCanUse = 0xA4004;
         public const ulong EnableUI = 0xA4005;
-        public const ulong SelectAbility = 0xA4006;
+        public const ulong Empty10 = 0xA4006;
         public const ulong ForceFinish = 0xA4007;
-        public const ulong RestartAbilities = 0xA4008;
-        public const ulong RunActiveTimer = 0xA4009;
+        public const ulong RestartValues = 0xA4008;
+        public const ulong Empty = 0xA4009;
         public const ulong SetStorageFull = 0xA4010;
         public const ulong DisableUI = 0xA4011;
-        public const ulong Initialize = 0xA4012;
-        public const ulong RemoveAbiltiyFromUI = 0xA4013;
+        public const ulong Empty2 = 0xA4012;
+        public const ulong Empty11 = 0xA4013;
         public const ulong Empty3 = 0xA4014;
         public const ulong Empty4 = 0xA4015;
         public const ulong Empty5 = 0xA4016;
@@ -314,16 +314,16 @@
 
     public struct ProjectileSpawnerObserverMessage
     {
-        public const ulong SpawnMeteor  = 0xA1601;
-        public const ulong InitializeFactory  = 0xA1602;
+        public const ulong ProjectileSpawned  = 0xA1601;
+        public const ulong SpawnProjectile  = 0xA1602;
         public const ulong BatchSpawned  = 0xA1603;
-        public const ulong Clear  = 0xA1604;
+        public const ulong Initialize  = 0xA1604;
         public const ulong BatchDeflected  = 0xA1605;
-        public const ulong RingFinished  = 0xA1606;
-        public const ulong RingStarted  = 0xA1607;
-        public const ulong Empty8  = 0xA1608;
-        public const ulong Empty9  = 0xA1609;
-        public const ulong Empty10 = 0xA160A;
+        public const ulong Clear  = 0xA1606;
+        public const ulong Empty2  = 0xA1607;
+        public const ulong BatchCreated  = 0xA1608;
+        public const ulong BatchFinished  = 0xA1609;
+        public const ulong Empty6 = 0xA160A;
     }
 
     public struct EmptyObserverMessage5

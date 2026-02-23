@@ -6,6 +6,7 @@ using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using NicolasMassara.CustomActionManager;
 using NicolasMassara.CustomUpdateManager;
+
 using UnityEngine;
 
 namespace MeteorMadness.Gameplay.Abilities
@@ -14,106 +15,307 @@ namespace MeteorMadness.Gameplay.Abilities
     {
         #region Commands
 
-        private class TriggerAbilitySequenceState : Command
+        private class WaitForBatchesToFinishAction : IQueueAction
         {
-            private readonly AbilityType _ability;
-            private readonly Action<AbilityType> _abilityEvent;
+            public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
+            private readonly int _targetBatches;
+            private readonly BatchType _batchType;
+            private readonly bool _hasBatchSpawned;
+            private int _batchesLeft;
+            private int _activeBatches;
 
-            public TriggerAbilitySequenceState(AbilityType ability,
-                Action<AbilityType> abilityEvent)
+            public WaitForBatchesToFinishAction(int targetBatches, BatchType batchType, bool hasBatchSpawned = true)
             {
-                _ability = ability;
-                _abilityEvent = abilityEvent;
+                // First batch is already spawned
+                _targetBatches = targetBatches;
+                _batchType = batchType;
+                _hasBatchSpawned = hasBatchSpawned;
             }
 
-            public override ActionStatus OnExecute(float deltaTime)
+            public void OnStart()
             {
-                _abilityEvent?.Invoke(_ability);
+                _batchesLeft = _hasBatchSpawned ? _targetBatches - 1 : _targetBatches;
+                _activeBatches = 0;
+
+                if (_hasBatchSpawned == false)
+                {
+                    ProjectileSpawner.Publish.RequestSpawn(_batchType);
+                }
+
+                ToggleSubscriptions(true);
                 
-                return ActionStatus.Success;
+                CurrentStatus = ActionStatus.Running;
             }
 
-            public override ICommand Copy()
+            public ActionStatus OnUpdate(float deltaTime) => CurrentStatus;
+
+            public void OnInterrupt()
             {
-                return new TriggerAbilitySequenceState(_ability, _abilityEvent);
+                Cleanup();
+                
+                CurrentStatus = ActionStatus.Failure;
+            }
+
+            public IQueueAction Copy()
+            {
+                return new WaitForBatchesToFinishAction(_targetBatches, _batchType, _hasBatchSpawned);
+            }
+            
+            private void OnProjectileReachedTargetHandler(ProjectileSpawnerEvents.ProjectileReachedTarget input)
+            {
+                if (input.IsLastFromBatch && _batchesLeft > 0)
+                {
+                    _batchesLeft--;
+                    //Debug.Log($"Batch Spawned, Left: {_batchesLeft}");
+                    ProjectileSpawner.Publish.RequestSpawn(_batchType);
+                }
+            }
+    
+            private void OnBatchSpawnedHandler(ProjectileSpawnerEvents.BatchSpawned input)
+            {
+                _activeBatches++;
+                //Debug.Log($"Batch Added, Active: {_activeBatches}");
+            }
+    
+            private void OnBatchFinishedHandler(ProjectileSpawnerEvents.BatchFinished input)
+            {
+                _activeBatches--;
+        
+                //Debug.Log($"Batch Removed, Active: {_activeBatches}");
+                
+                if (_batchesLeft <= 0 && _activeBatches <= 0)
+                {
+                    //Debug.Log("Finished");
+                    Cleanup();
+                    CurrentStatus = ActionStatus.Success;
+                }
+            }
+            
+            private void Cleanup()
+            {
+                ToggleSubscriptions(false);
+            }
+            
+            private void ToggleSubscriptions(bool subscribe)
+            {
+                if (subscribe)
+                {
+                    ProjectileSpawner.Subscribe.BatchSpawned(OnBatchSpawnedHandler);
+                    ProjectileSpawner.Subscribe.BatchFinished(OnBatchFinishedHandler);
+                    ProjectileSpawner.Subscribe.ProjectileReachedTarget(OnProjectileReachedTargetHandler);
+                }
+                else
+                {
+                    ProjectileSpawner.Unsubscribe.BatchSpawned(OnBatchSpawnedHandler);
+                    ProjectileSpawner.Unsubscribe.BatchFinished(OnBatchFinishedHandler);
+                    ProjectileSpawner.Unsubscribe.ProjectileReachedTarget(OnProjectileReachedTargetHandler);
+                }
             }
         }
+
+        private class EnableShieldTypeAction : IQueueAction
+        {
+            public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle; 
+            
+            private DynamicActionSequence _sequence;
+            private readonly ShieldType _shieldType;
+            private event Action OnShieldTypeStarted;
+
+            public EnableShieldTypeAction(ShieldType shieldType)
+            {
+                _shieldType = shieldType;
+            }
+
+            public void OnStart()
+            {
+                _sequence = ActionBuilder.Start()
+                    .Do(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
+                    //.Then(new LogDebugAction("Shield Enabling"))
+                    .Then(new InstantAction(() => ShieldEventCaller.RequestEnableShieldType(_shieldType)))
+                        .WrapLast(a => new WaitForSignalWrapperAction(a,
+                        subscribe: callback => OnShieldTypeStarted += callback,
+                        unsubscribe: callback => OnShieldTypeStarted -= callback))
+                    //.Then(new LogDebugAction("Shield Enable"))
+                    .Then(new InstantAction(()=> ShieldEventUnSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
+                    .Build();
+
+                CurrentStatus = ActionStatus.Running;
+            }
+
+            public ActionStatus OnUpdate(float deltaTime)
+            {
+                _sequence.OnUpdate(deltaTime);
+
+                if (_sequence.CurrentStatus == ActionStatus.Success)
+                {
+                    CurrentStatus = ActionStatus.Success;
+                }
+
+                return CurrentStatus;
+            }
+
+            public void OnInterrupt()
+            {
+                CurrentStatus = ActionStatus.Failure;
+            }
+
+            public IQueueAction Copy()
+            {
+                return new EnableShieldTypeAction(_shieldType);
+            }
+            
+            private void OnShieldTypeEnabled(ShieldEvents.NotifyShieldTypeEnabled input)
+            {
+                if (input.Type == _shieldType)
+                {
+                    OnShieldTypeStarted?.Invoke();
+                }
+            }
+        }
+        
+        private class DisableShieldTypeAction : IQueueAction
+        {
+            public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle; 
+            
+            private DynamicActionSequence _sequence;
+            private readonly ShieldType _shieldType;
+            private event Action OnShieldTypeFinished;
+
+            public DisableShieldTypeAction(ShieldType shieldType)
+            {
+                _shieldType = shieldType;
+            }
+
+            public void OnStart()
+            {
+                _sequence = ActionBuilder.Start()
+                    .Do(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeDisabled(OnShieldTypeDisabledHandler)))
+                    .Then(new InstantAction(() => ShieldEventCaller.RequestDisableShieldType(_shieldType)))
+                    .WrapLast(a => new WaitForSignalWrapperAction(a,
+                        subscribe: callback => OnShieldTypeFinished += callback,
+                        unsubscribe: callback => OnShieldTypeFinished -= callback))
+                    .Then(new InstantAction(()=> ShieldEventUnSubscriber.NotifyShieldTypeDisabled(OnShieldTypeDisabledHandler)))
+                    .Build();
+
+                CurrentStatus = ActionStatus.Running;
+            }
+
+            public ActionStatus OnUpdate(float deltaTime)
+            {
+                _sequence.OnUpdate(deltaTime);
+
+                if (_sequence.CurrentStatus == ActionStatus.Success)
+                {
+                    CurrentStatus = ActionStatus.Success;
+                }
+
+                return CurrentStatus;
+            }
+
+            public void OnInterrupt()
+            {
+                CurrentStatus = ActionStatus.Failure;
+            }
+
+            public IQueueAction Copy()
+            {
+                return new DisableShieldTypeAction(_shieldType);
+            }
+            
+            private void OnShieldTypeDisabledHandler(ShieldEvents.NotifyShieldTypeDisabled input)
+            {
+                if (input.Type == _shieldType)
+                {
+                    OnShieldTypeFinished?.Invoke();
+                }
+            }
+        }
+        
+        private class EnableBatchTypeAction : IQueueAction
+        {
+            public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle; 
+            
+            private DynamicActionSequence _sequence;
+            private readonly BatchType _batchType;
+            private event Action OnBatchTypeStarted;
+
+            public EnableBatchTypeAction(BatchType batchType)
+            {
+                _batchType = batchType;
+            }
+
+            public void OnStart()
+            {
+                _sequence = ActionBuilder.Start()
+                    .Do(new InstantAction(ProjectileSpawner.Publish.Clear))
+                    .Then(new InstantAction(ProjectileSpawner.Publish.Enable))
+                    .Then(new InstantAction(() => ProjectileSpawner.Subscribe.BatchCreated(OnBatchCreatedHandler)))
+                    .Then(new InstantAction(() => ProjectileSpawner.Publish.RequestSpawn(_batchType)))
+                        .WrapLast(a => new WaitForSignalWrapperAction(a,
+                        subscribe: callback => OnBatchTypeStarted += callback,
+                        unsubscribe: callback => OnBatchTypeStarted -= callback))
+                    .Then(new InstantAction(() => ProjectileSpawner.Unsubscribe.BatchCreated(OnBatchCreatedHandler)))
+                    .Build();
+
+                CurrentStatus = ActionStatus.Running;
+            }
+
+            public ActionStatus OnUpdate(float deltaTime)
+            {
+                _sequence.OnUpdate(deltaTime);
+
+                if (_sequence.CurrentStatus == ActionStatus.Success)
+                {
+                    CurrentStatus = ActionStatus.Success;
+                }
+                return CurrentStatus;
+            }
+
+            public void OnInterrupt()
+            {
+                CurrentStatus = ActionStatus.Failure;
+            }
+
+            public IQueueAction Copy()
+            {
+                return new EnableBatchTypeAction(_batchType);
+            }
+            
+            private void OnBatchCreatedHandler(ProjectileSpawnerEvents.BatchCreated input)
+            {
+                if (input.BatchType == _batchType)
+                {
+                    OnBatchTypeStarted?.Invoke();
+                }
+            }
+        }
+        
         private class SetChannelTimeScaleAction : IQueueAction
         {
-            private readonly float targetTimeScale;
+            private readonly float _targetTimeScale;
             private readonly UpdateGroup[] _updateGroup;
             
             public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
 
             public SetChannelTimeScaleAction(float targetTimeScale, UpdateGroup[] updateGroup)
             {
-                this.targetTimeScale = targetTimeScale;
+                this._targetTimeScale = targetTimeScale;
                 _updateGroup = updateGroup;
             }
 
             public void OnStart()
             {
-                CustomTime.SetChannelTimeScale(_updateGroup, targetTimeScale);
+                CustomTime.SetChannelTimeScale(_updateGroup, _targetTimeScale);
             }
 
             public ActionStatus OnUpdate(float deltaTime) => ActionStatus.Success;
             public void OnInterrupt() { }
             public IQueueAction Copy()
             {
-                return new SetChannelTimeScaleAction(targetTimeScale, _updateGroup);
+                return new SetChannelTimeScaleAction(_targetTimeScale, _updateGroup);
             }
         }
-        private class SetChannelPausedAction : IQueueAction
-        {
-            private readonly bool _isPaused;
-            private readonly UpdateGroup[] _updateGroup;
-            
-            public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
-
-            public SetChannelPausedAction(bool isPaused, UpdateGroup[] updateGroup)
-            {
-                _isPaused = isPaused;
-                _updateGroup = updateGroup;
-            }
-
-            public void OnStart()
-            {
-                CustomTime.SetChannelPaused(_updateGroup, _isPaused);
-            }
-
-            public ActionStatus OnUpdate(float deltaTime) => ActionStatus.Success;
-            public void OnInterrupt() { }
-            public IQueueAction Copy()
-            {
-                return new SetChannelPausedAction(_isPaused, _updateGroup);
-            }
-        }
-        private class RunAbilityTimerAction : IQueueAction
-        {
-            private AbilityType _ability;
-            private Action<AbilityType> _runAbilityTimer;
-            
-            public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
-
-            public RunAbilityTimerAction(AbilityType ability, Action<AbilityType> runAbilityTimer)
-            {
-                _ability = ability;
-                _runAbilityTimer = runAbilityTimer;
-            }
-
-            public void OnStart()
-            {
-                _runAbilityTimer?.Invoke(_ability);
-            }
-
-            public ActionStatus OnUpdate(float deltaTime) => ActionStatus.Success;
-
-            public void OnInterrupt() {}
-            public IQueueAction Copy()
-            {
-                return new RunAbilityTimerAction(_ability, _runAbilityTimer);
-            }
-        }
+        
         private class PublishAbilityActiveAction : IQueueAction
         {
             private readonly AbilityType _ability;
@@ -139,6 +341,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 return new PublishAbilityActiveAction(_ability, _isActive);
             }
         }
+        
         private class TimedTimeScaleUpdateAction : IQueueAction
         {
             private readonly float _startTimeScale;
@@ -192,84 +395,22 @@ namespace MeteorMadness.Gameplay.Abilities
                 return new TimedTimeScaleUpdateAction(_targetTimeScale,_startTimeScale, _duration, _updateGroup);
             }
         }
-        private class EnableShieldTypeAction : IQueueAction
-        {
-            private readonly ShieldType _shieldType;
-            public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
-
-            public EnableShieldTypeAction(ShieldType shieldType)
-            {
-                _shieldType = shieldType;
-            }
-
-            public void OnStart()
-            {
-                ShieldEventCaller.RequestEnableShieldType(_shieldType);
-            }
-
-            public ActionStatus OnUpdate(float deltaTime)
-            {
-                return CurrentStatus;
-            }
-
-            public void OnInterrupt() { }
-
-            public IQueueAction Copy()
-            {
-                return new EnableShieldTypeAction(_shieldType);
-            }
-        }
-        private class DisableShieldTypeAction : IQueueAction
-        {
-            private readonly ShieldType _shieldType;
-            public ActionStatus CurrentStatus { get; } = ActionStatus.Success;
-
-            public DisableShieldTypeAction(ShieldType shieldType)
-            {
-                _shieldType = shieldType;
-            }
-
-            public void OnStart()
-            {
-                ShieldEventCaller.RequestDisableShieldType(_shieldType);
-            }
-
-            public ActionStatus OnUpdate(float deltaTime)
-            {
-                return CurrentStatus;
-            }
-
-            public void OnInterrupt() { }
-
-            public IQueueAction Copy()
-            {
-                return new DisableShieldTypeAction(_shieldType);
-            }
-        }
 
         #endregion
         
         private readonly Dictionary<AbilityType, AbilityStoredData> _abilities = new Dictionary<AbilityType, AbilityStoredData>();
         
         public event Action<float> OnAbilityStarted;
-        public event Action<AbilityType> OnStartQueueStarted;
-        public event Action<AbilityType> OnStartQueueFinished;
-        public event Action<AbilityType> OnEndQueueStart;
-        public event Action<AbilityType> OnEndQueueFinished;
-        
-        private event Action OnSuperShieldFinished;
-        private event Action OnSuperShieldStarted;
-        
-        private event Action OnAutomaticShieldFinished;
-        private event Action OnAutomaticShieldStarted;
+        public event Action<AbilityType> OnSequenceEnd;
 
         #region Commands/Actions
 
         private readonly IQueueAction _enableInputs;
         private readonly IQueueAction _disableInputs;
-        private readonly IQueueAction _enableAbilityUI;
-        private readonly IQueueAction _disableAbilityUI;
         
+        private readonly IQueueAction _enableUIInputs;
+        private readonly IQueueAction _disableUIInputs;
+
         private readonly IQueueAction _playSlowTimeSound;
         private readonly IQueueAction _playSpeedTimeSound;
 
@@ -289,8 +430,9 @@ namespace MeteorMadness.Gameplay.Abilities
             
             _enableInputs = new SetBoolAction(true,SetInputsEnable);
             _disableInputs = new SetBoolAction(false,SetInputsEnable);
-            _enableAbilityUI = new SetBoolAction(true,SetEnableAbilityUI);
-            _disableAbilityUI = new SetBoolAction(false,SetEnableAbilityUI);
+            
+            _enableUIInputs = new SetBoolAction(true,SetUIInputsEnable);
+            _disableUIInputs = new SetBoolAction(false,SetUIInputsEnable);
         }
         
         public void Initialize(IAbilityTimeConfigData data)
@@ -313,308 +455,146 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateShieldData(IAbilityTimeConfigData configData)
         {
-            var minTimeScale = 0.001f;
+            var targetBatches = 3;
             var selectedAbility = AbilityType.SuperShield;
+            var shieldType = ShieldType.Super;
+            var batchType = BatchType.Ring;
             var timeData = configData.GetAbilityTimeData(selectedAbility);
 
             var shieldData = new AbilityStoredData
             {
                 ActiveTime = timeData.ActiveTime,
                 AbilityType = selectedAbility,
-                StartActions = GetShieldStartSequence(minTimeScale, timeData),
-                EndActions = GetShieldEndSequence(minTimeScale, timeData),
+                Sequence = GetSequence()
             };
 
             _abilities.Add(selectedAbility, shieldData);
-        }
-        
-        private IQueueAction GetShieldStartSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var start = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnStartQueueStarted);  
-            var end = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnStartQueueFinished);  
-            
-            var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-            var slowDownEffects = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
-            
-            var speedUpGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-            var speedUpEffects = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
-            
-            
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(start))
-                .Then(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
-                .Then(new PublishAbilityActiveAction(AbilityType.SuperShield, true))
+            return;
+
+            IQueueAction GetSequence()
+            {
+                var actions = ActionBuilder.Start()
+                    
+                // === Start ===
+                .Do(new LogDebugAction("Super Shield Starting"))
+                .Then(new PublishAbilityActiveAction(selectedAbility, true))
+                
+                // - Disables input, plays sounds, slows time, zooms in
                 .Then(_disableInputs)
-                .Then(_disableAbilityUI)
                 .Then(_playSlowTimeSound)
-                .Then(new ParallelAction(new []{slowDownGameplay,slowDownEffects}))
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
                 .Then(new WaitSecondsAction(timeData.ZoomIn))
+                .Then(_disableUIInputs)
                 .Then(_cameraZoomIn)
                 .Then(new WaitSecondsAction(timeData.StartAction))
-                .Then(new EnableShieldTypeAction(ShieldType.Super))
-                .Then(new WaitForEventAction(
-                    subscribe: callback => OnSuperShieldStarted += callback,
-                    unsubscribe: callback => OnSuperShieldStarted -= callback))
-                .Then(new InstantAction(()=> ShieldEventUnSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
+                    
+                // - Changes batch type and waits confirm
+                .Then(new EnableBatchTypeAction(batchType))
+                    
+                // - Sets Shield and Waits
+                .Then(new EnableShieldTypeAction(shieldType))
+                    
+                // - Zooms Out
                 .Then(new WaitSecondsAction(timeData.ZoomOut))
-                .Then(new InstantAction(MeteorEventCaller.SpawnRing))
                 .Then(_cameraZoomOut)
-                .Then(new ParallelAction(new []{speedUpGameplay,speedUpEffects}))
-                .Then(_enableAbilityUI)
-                .Then(new SimpleCommandAction(end))
-                .Then(new WaitFramesAction(1))
-                .Build();
-        }
-        private IQueueAction GetShieldEndSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var start = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnEndQueueStart);  
-            var end = new TriggerAbilitySequenceState(AbilityType.SuperShield, OnEndQueueFinished); 
-            
-            var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-            var slowDownEffects = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
-            
-            var speedUpGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-            var speedUpEffects = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
-
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(start))
-                .Then(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeDisabled(OnShieldTypeDisabled)))
-                .Then(new ParallelAction(new []{slowDownGameplay,slowDownEffects}))
+                .Then(_enableUIInputs)
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 1))
+                //.Then(new LogDebugAction("Super Shield Start Finish"))
+                
+                // === Running ===
+                //.Then(new LogDebugAction("Super Shield Running"))
+                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
+                
+                // === Finish ===
+                //.Then(new LogDebugAction("Super Shield Finishing"))
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
                 .Then(_playSlowTimeSound)
                 .Then(new WaitSecondsAction(timeData.StopAction))
-                .Then(new DisableShieldTypeAction(ShieldType.Super))
-                .Then(new WaitForEventAction(
-                    subscribe: callback => OnSuperShieldFinished += callback,
-                    unsubscribe: callback => OnSuperShieldFinished -= callback))
-                .Then(new InstantAction(()=> ShieldEventUnSubscriber.NotifyShieldTypeDisabled(OnShieldTypeDisabled)))
-                .Then(new ParallelAction(new []{speedUpGameplay,speedUpEffects}))
+                .Then(new EnableBatchTypeAction(BatchType.Default))
+                .Then(new DisableShieldTypeAction(shieldType))
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 1))
                 .Then(new WaitSecondsAction(timeData.SpeedUp))
                 .Then(_enableInputs)
-                .Then(new PublishAbilityActiveAction(AbilityType.SuperShield, false))
-                .Then(new SimpleCommandAction(end))
+                .Then(new PublishAbilityActiveAction(selectedAbility, false))
+                .Then(new InstantAction(()=> OnSequenceEnd?.Invoke(selectedAbility)))
+                
+                // === Build ===
+                .Then(new WaitFramesAction(1))
                 .Build();
-        }
-
-        private void OnShieldTypeDisabled(ShieldEvents.NotifyShieldTypeDisabled input)
-        {
-            switch (input.Type)
-            {
-                case ShieldType.Super:
-                    OnSuperShieldFinished?.Invoke();
-                    break;
-                case ShieldType.Automatic:
-                    OnAutomaticShieldFinished?.Invoke();
-                    break;
+                
+                return actions;
             }
         }
+
+
         
-        private void OnShieldTypeEnabled(ShieldEvents.NotifyShieldTypeEnabled input)
-        {
-            switch (input.Type)
-            {
-                case ShieldType.Super:
-                    OnSuperShieldStarted?.Invoke();
-                    break;
-                case ShieldType.Automatic:
-                    OnAutomaticShieldStarted?.Invoke();
-                    break;
-            }
-        }
-
         #endregion
 
         #region Heal
-
-        private IQueueAction GetHealStartSequence(float minTimeScale, float shieldMinTimeScale, IAbilityTimeData timeData)
-        {
-            var startSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueStarted);  
-            var endSequence = new TriggerAbilitySequenceState(AbilityType.Health, OnStartQueueFinished);
-            
-            // SlowDown
-            var setShieldTimeScale = new SetChannelTimeScaleAction(shieldMinTimeScale, new[]{UpdateGroup.Shield});
-            
-            var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-            var slowDownEffects = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
-
-            // SpeedUp
-            var speedUpGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-            var speedUpEffects = new TimedTimeScaleUpdateAction(
-                targetValue: 1,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
-            
-            var speedUpShield = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue: shieldMinTimeScale, timeData.SpeedUp, UpdateGroup.Shield );
-
-            var runAbilityTimer = new RunAbilityTimerAction(AbilityType.Health, RunActiveTimer);
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(startSequence))
-                .Then(new PublishAbilityActiveAction(AbilityType.Health, true))
-                .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
-                .Then(setShieldTimeScale)
-                //.Then(new WaitSecondsAction(timeData.ZoomIn))
-                .Then(_cameraZoomIn)
-                .Then(new InstantAction(EarthEventCaller.DisableDamage))
-                .Then(_disableAbilityUI)
-                .Then(_disableInputs)
-                .Then(_playSlowTimeSound)
-                .Then(new WaitSecondsAction(timeData.StartAction))
-                .Then(new InstantAction(EarthEventCaller.Heal))
-                .Then(new WaitSecondsAction(timeData.ZoomOut))
-                .Then(_cameraZoomOut)
-                .Then(new ParallelAction(new [] {speedUpGameplay,speedUpEffects,speedUpShield }))
-                .Then(new WaitSecondsAction(timeData.SpeedUp))
-                .Then(_playSpeedTimeSound)
-                .Then(_enableInputs)
-                .Then(_enableAbilityUI)
-                .Then(runAbilityTimer)
-                .Then(new SimpleCommandAction(endSequence))
-                .Build();
-        }
         
-        private IQueueAction GetHealEndSequence()
-        {
-            var start = new TriggerAbilitySequenceState(AbilityType.Health, OnEndQueueStart);  
-            var end = new TriggerAbilitySequenceState(AbilityType.Health, OnEndQueueFinished); 
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(start))
-                .Then(new InstantAction(EarthEventCaller.EnableDamage))
-                .Then(new SimpleCommandAction(end))
-                .Then(new PublishAbilityActiveAction(AbilityType.Health, false))
-                .Build();
-        }
-
         private void CreateHealData(IAbilityTimeConfigData configData)
         {
-            var minTimeScale = 0.025f;
             var shieldTimeScale = 0.75f;
             var selectedAbility = AbilityType.Health;
             var timeData = configData.GetAbilityTimeData(AbilityType.Health);
             
-            
             var healData = new AbilityStoredData
             {
                 AbilityType = selectedAbility,
-                StartActions = GetHealStartSequence(minTimeScale,shieldTimeScale,timeData),
-                EndActions = GetHealEndSequence(),
+                Sequence = GetSequence(shieldTimeScale),
             };
             
             _abilities.Add(selectedAbility, healData);
+            return;
+            
+            IQueueAction GetSequence(float shieldMinTimeScale)
+            {
+                var actions = ActionBuilder.Start()
+                
+                // === Start ===
+                .Do(new LogDebugAction("Health Starting"))
+                .Then(_disableInputs)
+                .Then(new PublishAbilityActiveAction(selectedAbility, true))
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
+                .Then(_cameraZoomIn)
+                .Then(_disableUIInputs)
+                .Then(new InstantAction(EarthEventCaller.DisableDamage))
+                .Then(_playSlowTimeSound)
+                
+                // === Running ===
+                .Then(new WaitSecondsAction(timeData.StartAction))
+                .Then(new InstantAction(EarthEventCaller.Heal))
+                
+                // === Finish ===
+                .Then(new WaitSecondsAction(timeData.ZoomOut))
+                .Then(_cameraZoomOut)
+                .Then(_enableUIInputs)
+                .Then(_enableInputs)
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 1))
+                .Then(new WaitSecondsAction(timeData.SpeedUp))
+                .Then(_playSpeedTimeSound)
+                .Then(new InstantAction(EarthEventCaller.EnableDamage))
+                .Then(new PublishAbilityActiveAction(selectedAbility, false))
+                .Then(new InstantAction(()=> OnSequenceEnd?.Invoke(selectedAbility)))
+                .Do(new LogDebugAction("Health Finished"))
+                
+                // === Build ===
+                .Then(new WaitFramesAction(1))
+                .Build();
+            
+                return actions;
+            }
         }
         
         #endregion
 
         #region SlowMotion
 
-        private IQueueAction GetSlowMotionStartSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var startSequence = new TriggerAbilitySequenceState(AbilityType.SlowMotion, OnStartQueueStarted);  
-            var endSequence = new TriggerAbilitySequenceState(AbilityType.SlowMotion, OnStartQueueFinished);
-            
-            var runAbilityTimer = new RunAbilityTimerAction(AbilityType.SlowMotion, RunActiveTimer);
-            
-            // Slow Down
-            
-            var slowDownShield = new TimedTimeScaleUpdateAction(
-                targetValue: 0.85f,  startValue:1, timeData.SlowDown, UpdateGroup.Shield );
-            
-            var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                minTimeScale, startValue: 1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-            var slowDownEarth = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale/2, startValue: 1, timeData.SlowDown, UpdateGroup.Earth );
-            
-            var slowDownEffects = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale/2, startValue: 1, timeData.SlowDown, UpdateGroup.Effects );
-            
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(startSequence))
-                .Then(new PublishAbilityActiveAction(AbilityType.SlowMotion, true))
-                .Then(new SetChannelPausedAction(true, new[]{UpdateGroup.Gameplay}))
-                .Then(new ParallelAction(new []
-                {
-                    slowDownShield, slowDownGameplay, slowDownEarth,slowDownEffects
-                }))
-                .Then(_disableAbilityUI)
-                .Then(_disableInputs)
-                .Then(_cameraZoomIn)
-                .Then(_playSlowTimeSound)
-                .Then(new WaitSecondsAction(timeData.SlowDown))
-                .Then(new EnableShieldTypeAction(ShieldType.Slow))
-                .Then(new WaitSecondsAction(timeData.ZoomOut))
-                .Then(_enableInputs)
-                .Then(_cameraZoomOut)
-                .Then(_enableAbilityUI)
-                .Then(new SetChannelPausedAction(false, new[]{UpdateGroup.Gameplay}))
-                .Then(runAbilityTimer)
-                .Then(new SimpleCommandAction(endSequence))
-                .Build();
-        }
-        
-        private IQueueAction GetSlowMotionEndSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var start = new TriggerAbilitySequenceState(AbilityType.SlowMotion, OnEndQueueStart);  
-            var end = new TriggerAbilitySequenceState(AbilityType.SlowMotion, OnEndQueueFinished); 
-            
-            // Speed Up
-            var speedUpShield = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue: 0.85f, timeData.SpeedUp, UpdateGroup.Shield );
-            
-            var speedUpGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-            var speedUpEarth = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue: minTimeScale/2, timeData.SpeedUp, UpdateGroup.Earth );
-            
-            var speedUpEffects= new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue: minTimeScale/2, timeData.SpeedUp, UpdateGroup.Effects );
-            
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(start))
-                .Then(_disableAbilityUI)
-                .Then(_disableInputs)
-                .Then(_cameraZoomIn)
-                .Then(new SetChannelPausedAction(true, new[]{UpdateGroup.Gameplay}))
-                .Then(new ParallelAction(new []
-                {
-                    speedUpShield, speedUpGameplay, speedUpEarth,speedUpEffects
-                }))
-                .Then(_playSpeedTimeSound)
-                .Then(new WaitSecondsAction(timeData.SlowDown))
-                .Then(new DisableShieldTypeAction(ShieldType.Slow))
-                .Then(new WaitSecondsAction(timeData.ZoomOut))
-                .Then(_cameraZoomOut)
-                .Then(_enableAbilityUI)
-                .Then(_enableInputs)
-                .Then(new SetChannelPausedAction(false, new[]{UpdateGroup.Gameplay}))
-                .Then(new PublishAbilityActiveAction(AbilityType.SlowMotion, false))
-                .Then(new SimpleCommandAction(end))
-                .Build();
-        }
-
         private void CreateSlowMotionData(IAbilityTimeConfigData configData)
         {
-            var minTimeScale = 0.1f;
+            var targetBatches = configData.GetBatchAmount();
+            var shieldType = ShieldType.Slow;
+            var batchType = BatchType.SlowedDown;
             var selectedAbility = AbilityType.SlowMotion;
             var timeData = configData.GetAbilityTimeData(selectedAbility);
 
@@ -622,73 +602,73 @@ namespace MeteorMadness.Gameplay.Abilities
             {
                 ActiveTime = timeData.ActiveTime,
                 AbilityType = selectedAbility,
-                StartActions = GetSlowMotionStartSequence(minTimeScale,timeData),
-                EndActions = GetSlowMotionEndSequence(minTimeScale,timeData)
+                Sequence = GetSequence(),
             };
 
             _abilities.Add(selectedAbility, abilityData);
+            return;
+            
+            
+             IQueueAction GetSequence()
+            {
+                var actions = ActionBuilder.Start()
+
+                // === Start ===
+                .Do(new LogDebugAction("Slow Motion Starting"))
+                .Then(_disableInputs)
+                .Then(new PublishAbilityActiveAction(selectedAbility, true))
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
+                .Then(_disableUIInputs)
+                .Then(_cameraZoomIn)
+                .Then(_playSlowTimeSound)
+                .Then(new WaitSecondsAction(timeData.SlowDown))
+                .Then(new EnableBatchTypeAction(batchType))
+                .Then(new EnableShieldTypeAction(shieldType))
+                .Then(new WaitSecondsAction(timeData.ZoomOut))
+                .Then(_enableInputs)
+                .Then(_cameraZoomOut)
+                .Then(_enableUIInputs)
+                .Then(new ParallelAction(new []
+                {
+                    new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 1),
+                    _cameraZoomOut
+                }))
+                
+                // === Running ===
+                .Then(new LogDebugAction("Slow Down Running"))
+                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
+                
+                // === Finish ===
+                .Then(_disableInputs)
+                .Then(_cameraZoomIn)
+                .Then(_playSpeedTimeSound)
+                .Then(new WaitSecondsAction(timeData.SlowDown))
+                .Then(new DisableShieldTypeAction(shieldType))
+                .Then(new WaitSecondsAction(timeData.ZoomOut))
+                .Then(_cameraZoomOut)
+                .Then(_enableInputs)
+                .Then(new PublishAbilityActiveAction(selectedAbility, false))
+                .Then(new InstantAction(()=> OnSequenceEnd?.Invoke(selectedAbility)))
+                .Then(new LogDebugAction("Slow Motion Finished"))
+                
+                // === Build ===
+                .Then(new WaitFramesAction(1))
+                .Build();
+
+                return actions;
+            }
+
         }
-        
+
         #endregion
 
         #region Double Points
-
-        private IQueueAction GetDoublePointsStartSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var startSequence = new TriggerAbilitySequenceState(AbilityType.DoublePoints, OnStartQueueStarted);  
-            var endSequence = new TriggerAbilitySequenceState(AbilityType.DoublePoints, OnStartQueueFinished);
-            
-            var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-            var slowDownEffects = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Effects );
-            
-            var speedUpTime = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-            var speedUpEffects = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue: minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
-            
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(startSequence))
-                .Then(new PublishAbilityActiveAction(AbilityType.DoublePoints, true))
-                .Then(_disableInputs)
-                .Then(_disableAbilityUI)
-                .Then(_cameraZoomIn)
-                .Then(new ParallelAction(new [] { slowDownGameplay,slowDownEffects }))
-                .Then(new WaitSecondsAction(timeData.SlowDown))
-                .Then(_playSlowTimeSound)
-                .Then(new EnableShieldTypeAction(ShieldType.Gold))
-                .Then(new WaitSecondsAction(timeData.ZoomOut))
-                .Then(_enableAbilityUI)
-                .Then(_enableInputs)
-                .Then(_cameraZoomOut)
-                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
-                .Then(_playSpeedTimeSound)
-                .Then(new WaitSecondsAction(timeData.SpeedUp))
-                .Then(new RunAbilityTimerAction(AbilityType.DoublePoints,RunActiveTimer))
-                .Then(new SimpleCommandAction(endSequence))
-                .Build();
-        }
         
-        private IQueueAction GetDoublePointsEndSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var startSequence = new TriggerAbilitySequenceState(AbilityType.DoublePoints, OnEndQueueStart);  
-            var endSequence = new TriggerAbilitySequenceState(AbilityType.DoublePoints, OnEndQueueFinished); 
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(startSequence))
-                .Then(new DisableShieldTypeAction(ShieldType.Slow))
-                .Then(new PublishAbilityActiveAction(AbilityType.DoublePoints, false))
-                .Then(new SimpleCommandAction(endSequence))
-                .Build();
-        }
-
         private void CreateDoublePointsData(IAbilityTimeConfigData configData)
         {
-            float targetTimeScale = 0.025f;
+            var targetBatches = configData.GetBatchAmount();
+            var shieldType = ShieldType.Gold;
+            var batchType = BatchType.Ring;
             var selectedAbility = AbilityType.DoublePoints;
             var timeData = configData.GetAbilityTimeData(selectedAbility);
             
@@ -697,97 +677,63 @@ namespace MeteorMadness.Gameplay.Abilities
             {
                 ActiveTime = timeData.ActiveTime,
                 AbilityType = selectedAbility,
-                StartActions = GetDoublePointsStartSequence(targetTimeScale,timeData),
-                EndActions = GetDoublePointsEndSequence(targetTimeScale,timeData)
+                Sequence = GetSequence()
             };
 
             _abilities.Add(selectedAbility, abilityData);
+            return;
+            
+            IQueueAction GetSequence()
+            {
+                var actions = ActionBuilder.Start()
+
+                // === Start ===
+                .Do(new LogDebugAction("Slow Motion Starting"))
+                .Then(new PublishAbilityActiveAction(selectedAbility, true))
+                .Then(_disableInputs)
+                .Then(_disableUIInputs)
+                .Then(_cameraZoomIn)
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 0))
+                .Then(new WaitSecondsAction(timeData.SlowDown))
+                .Then(_playSlowTimeSound)
+                .Then(new EnableBatchTypeAction(batchType))
+                .Then(new EnableShieldTypeAction(shieldType))
+                .Then(new WaitSecondsAction(timeData.ZoomOut))
+                .Then(_enableInputs)
+                .Then(_enableUIInputs)
+                .Then(_cameraZoomOut)
+                .Then(new InstantAction(()=> CustomTime.GlobalFixedTimeScale = 1))
+                .Then(_playSpeedTimeSound)
+                .Then(new WaitSecondsAction(timeData.SpeedUp))
+                
+                // === Running ===
+                .Then(new LogDebugAction("Gold Shield Running"))
+                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
+                
+                // === Finish ===\
+                .Then(new EnableBatchTypeAction(batchType))
+                .Then(new DisableShieldTypeAction(shieldType))
+                .Then(new PublishAbilityActiveAction(selectedAbility, false))
+                .Then(new LogDebugAction("Slow Motion Starting"))
+                .Then(new InstantAction(()=> OnSequenceEnd?.Invoke(selectedAbility)))
+                
+                // === Build ===
+                .Then(new WaitFramesAction(1))
+                .Build();
+
+                return actions;
+            }
         }
 
         #endregion
 
         #region Automatic
 
-        private IQueueAction GetAutomaticStartSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var startSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnStartQueueStarted);  
-            var endSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnStartQueueFinished);
-
-            var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-            var slowDownEffects = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Effects );
-            
-            var speedUpTime = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue:minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-            var speedUpEffects = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue:minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(startSequence))
-                .Then(new InstantAction(()=> ShieldEventSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
-                .Then(new PublishAbilityActiveAction(AbilityType.Automatic, true))
-                .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
-                .Then(_cameraZoomIn)
-                .Then(_disableInputs)
-                .Then(_disableAbilityUI)
-                .Then(_playSlowTimeSound)
-                .Then(new WaitSecondsAction(timeData.StartAction))
-                .Then(new EnableShieldTypeAction(ShieldType.Automatic))
-                .Then(_cameraZoomOut)
-                .Then(new WaitForEventAction(
-                    subscribe: callback => OnAutomaticShieldStarted += callback,
-                    unsubscribe: callback => OnAutomaticShieldStarted -= callback))
-                .Then(new InstantAction(()=> ShieldEventUnSubscriber.NotifyShieldTypeEnabled(OnShieldTypeEnabled)))
-                .Then(new LogDebugAction("Automatic Shield Active"))
-                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
-                .Then(_playSpeedTimeSound)
-                .Then(new RunAbilityTimerAction(AbilityType.Automatic, RunActiveTimer))
-                .Then(_enableAbilityUI)
-                .Then(new SimpleCommandAction(endSequence))
-                .Build();
-        }
-        
-        private IQueueAction GetAutomaticEndSequence(float minTimeScale, IAbilityTimeData timeData)
-        {
-            var startSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnEndQueueStart);  
-            var endSequence = new TriggerAbilitySequenceState(AbilityType.Automatic, OnEndQueueFinished); 
-            
-            var slowDownGameplay = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Gameplay );
-            
-            var slowDownEffects = new TimedTimeScaleUpdateAction(
-                targetValue: minTimeScale,  startValue:1, timeData.SlowDown, UpdateGroup.Effects );
-            
-            var speedUpTime = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue:minTimeScale, timeData.SpeedUp, UpdateGroup.Gameplay );
-            
-            var speedUpEffects = new TimedTimeScaleUpdateAction(
-                targetValue: 1f,  startValue:minTimeScale, timeData.SpeedUp, UpdateGroup.Effects );
-            
-            return ActionBuilder.Start()
-                .Do(new SimpleCommandAction(startSequence))
-                .Then(new PublishAbilityActiveAction(AbilityType.Automatic, false))
-                .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
-                .Then(_cameraZoomIn)
-                .Then(_disableInputs)
-                .Then(_disableAbilityUI)
-                .Then(_playSlowTimeSound)
-                .Then(new WaitSecondsAction(timeData.StopAction))
-                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
-                .Then(_cameraZoomOut)
-                .Then(_enableInputs)
-                .Then(_enableAbilityUI)
-                .Then(new DisableShieldTypeAction(ShieldType.Automatic))
-                .Then(new SimpleCommandAction(endSequence))
-                .Build();
-        }
-
         private void CreateAutomaticData(IAbilityTimeConfigData configData)
         {
-            float targetTimeScale = 0f;
+            var targetBatches = configData.GetBatchAmount();
+            var shieldType = ShieldType.Automatic;
+            var batchType = BatchType.Automatic;
             var selectedAbility = AbilityType.Automatic;
             var timeData = configData.GetAbilityTimeData(selectedAbility);
             
@@ -796,11 +742,73 @@ namespace MeteorMadness.Gameplay.Abilities
             {
                 ActiveTime = timeData.ActiveTime,
                 AbilityType = selectedAbility,
-                StartActions = GetAutomaticStartSequence(targetTimeScale,timeData),
-                EndActions = GetAutomaticEndSequence(targetTimeScale,timeData)
+                Sequence = GetSequence()
             };
 
             _abilities.Add(selectedAbility, abilityData);
+
+            IQueueAction GetSequence()
+            {
+                // Slow Down
+                var slowDownGameplay = new TimedTimeScaleUpdateAction(
+                    targetValue: 0,  startValue:1, timeData.SlowDown, UpdateGroup.Gameplay );
+            
+                var slowDownEffects = new TimedTimeScaleUpdateAction(
+                    targetValue: 0,  startValue:1, timeData.SlowDown, UpdateGroup.Effects );
+            
+                // Speed Up
+                var speedUpTime = new TimedTimeScaleUpdateAction(
+                    targetValue: 1f,  startValue:0, timeData.SpeedUp, UpdateGroup.Gameplay );
+            
+                var speedUpEffects = new TimedTimeScaleUpdateAction(
+                    targetValue: 1f,  startValue:0, timeData.SpeedUp, UpdateGroup.Effects );
+                
+                var actions = ActionBuilder.Start()
+
+                // === Start ===
+                .Then(new LogDebugAction("Automatic Starting"))
+                .Then(_disableInputs)
+                .Then(new PublishAbilityActiveAction(selectedAbility, true))
+                .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
+                .Then(_disableUIInputs)
+                .Then(_cameraZoomIn)
+                .Then(_playSlowTimeSound)
+                .Then(new WaitSecondsAction(timeData.StartAction))
+                .Then(new EnableBatchTypeAction(batchType))
+                .Then(new EnableShieldTypeAction(shieldType))
+                .Then(_enableUIInputs)
+                .Then(_cameraZoomOut)
+                .Then(new LogDebugAction("Automatic Shield Active"))
+                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
+                .Then(_playSpeedTimeSound)
+                
+                // === Running ===
+                .Then(new LogDebugAction("Automatic Running"))
+                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
+                
+                // === Finish ===
+                .Then(new PublishAbilityActiveAction(selectedAbility, false))
+                .Then(new ParallelAction(new [] {slowDownGameplay,slowDownEffects }))
+                .Then(_disableUIInputs)
+                .Then(_cameraZoomIn)
+                .Then(_disableInputs)
+                .Then(_playSlowTimeSound)
+                .Then(new WaitSecondsAction(timeData.StopAction))
+                .Then(new ParallelAction(new [] {speedUpTime,speedUpEffects }))
+                .Then(new EnableBatchTypeAction(BatchType.Default))
+                .Then(new DisableShieldTypeAction(shieldType))
+                .Then(_enableUIInputs)
+                .Then(_cameraZoomOut)
+                .Then(_enableInputs)
+                .Then(new InstantAction(()=> OnSequenceEnd?.Invoke(selectedAbility)))
+                .Then(new LogDebugAction("Automatic Finished"))
+                
+                // === Build ===
+                .Then(new WaitFramesAction(1))
+                .Build();
+
+                return actions;
+            }
         }
 
         #endregion
@@ -810,41 +818,23 @@ namespace MeteorMadness.Gameplay.Abilities
         private void SetInputsEnable(bool isEnable)
         {
             InputsEventCaller.SetEnable(isEnable);
+        }
+        
+        private void SetUIInputsEnable(bool isEnable)
+        {
 #if UNITY_ANDROID || UNITY_IOS
             InputsEventCaller.SetUIEnable(isEnable);
 #endif
-        }
-
-        private void SetEnableAbilityUI(bool isEnable)
-        {
-            if (isEnable)
-            {
-                AbilitiesEventCaller.EnableUI();
-            }
-            else
-            {
-                AbilitiesEventCaller.DisableUI();
-            }
         }
 
         public bool HasAbilityData(AbilityType abilityType)
         {
             return _abilities.ContainsKey(abilityType);
         }
-
-        public IQueueAction GetAbilityStartQueue(AbilityType abilityType)
-        {
-            return _abilities[abilityType].GetStartActionQueue();
-        }
         
-        public IQueueAction GetAbilityEndQueue(AbilityType abilityType)
+        public IQueueAction GetActionQueue(AbilityType abilityType)
         {
-            return _abilities[abilityType].GetEndActionQueue();
-        }
-
-        public bool GetHasInstantEffect(AbilityType abilityType)
-        {
-            return _abilities[abilityType].GetHasInstantEffect();
+            return _abilities[abilityType].GetActionQueue();
         }
 
         public void RunActiveTimer(AbilityType abilityType)
@@ -858,23 +848,12 @@ namespace MeteorMadness.Gameplay.Abilities
     {
         public float ActiveTime;
         public AbilityType AbilityType;
-        public IQueueAction StartActions;
-        public IQueueAction EndActions;
+        public IQueueAction Sequence;
         
 
-        public IQueueAction GetStartActionQueue()
+        public IQueueAction GetActionQueue()
         {
-            return (DynamicActionSequence)StartActions.Copy();
-        }
-
-        public IQueueAction GetEndActionQueue()
-        {
-            return (DynamicActionSequence)EndActions.Copy();
-        }
-
-        public bool GetHasInstantEffect()
-        {
-            return EndActions == null;
+            return (DynamicActionSequence)Sequence.Copy();
         }
     }
 }

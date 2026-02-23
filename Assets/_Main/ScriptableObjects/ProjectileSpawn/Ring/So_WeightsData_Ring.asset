@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8174060a41346bbbf6f6a3838b49a92, type: 3}
+  m_Name: So_WeightsData_Ring
+  m_EditorClassIdentifier: 
+  weights:
+    weights:
+    - itemType: 1
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 50
+      - key: 3
+        weight: 50
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 50
+    - itemType: 2
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 25
+      - key: 3
+        weight: 100
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 0
+    - itemType: 3
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 100
+      - key: 3
+        weight: 25
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 0
+    - itemType: 4
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 50
+      - key: 3
+        weight: 50
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 0
+    - itemType: 5
+      weights:
+      - key: 1
+        weight: 50
+      - key: 2
+        weight: 50
+      - key: 3
+        weight: 50
+      - key: 4
+        weight: 50
+      - key: 5
+        weight: 0

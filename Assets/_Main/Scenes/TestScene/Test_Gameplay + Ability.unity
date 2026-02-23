@@ -124,6 +124,50 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2705770297381544427, guid: 253be70ff159d50489646e85ba73e467, type: 3}
   m_PrefabInstance: {fileID: 8053096828551519380}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &126184825
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 126184827}
+  - component: {fileID: 126184826}
+  m_Layer: 0
+  m_Name: EventBusDebug
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &126184826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126184825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 646a290779ac4f2f98c22526442e677d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &126184827
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126184825}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &168416674
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,7 +517,7 @@ GameObject:
   m_Component:
   - component: {fileID: 322886392}
   - component: {fileID: 322886391}
-  - component: {fileID: 322886394}
+  - component: {fileID: 322886393}
   m_Layer: 0
   m_Name: TesterController
   m_TagString: Untagged
@@ -493,16 +537,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9cb7a7315bb4f23b15aab1f2b9ca59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startLevel: 4
-  startMeteorsEnable: 1
-  doesIncreaseLevel: 1
+  startLevel: 0
+  startMeteorsEnable: 0
+  doesIncreaseLevel: 0
   timeScale:
     isEnable: 0
     globalTimeScale: 1
     gameplayTimeScale: 1
     shieldTimeScale: 1
     effectsTimeScale: 1
-  gameplayZoom: {fileID: 11400000, guid: 25548d5d405373c479564880441a1fab, type: 2}
+  gameplayZoom: {fileID: 11400000, guid: 3d3383e51c3cee246a539218cc8d39ab, type: 2}
 --- !u!4 &322886392
 Transform:
   m_ObjectHideFlags: 0
@@ -518,7 +562,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &322886394
+--- !u!114 &322886393
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -537,8 +581,8 @@ MonoBehaviour:
     TitleSize: 30
     LineSize: 24
   guiPosition:
-    widthPos: 0
-    heightPos: 0
+    widthPos: 0.281
+    heightPos: 0.729
 --- !u!1 &356169429
 GameObject:
   m_ObjectHideFlags: 0
@@ -2119,7 +2163,7 @@ MonoBehaviour:
   meteorPrefab: {fileID: 4360489399066249571, guid: 5c4a05e91a7e912458f61ef8ff63028d, type: 3}
   abilityPrefab: {fileID: 3446774074668800784, guid: e298ba7d7c4799e4eb808ce05133f52e, type: 3}
   abilitySelectorData: {fileID: 11400000, guid: 4ecea22b7640c414dace2b0e8ec03413, type: 2}
-  centerOfGravityOffset: 0
+  centerOfGravityOffset: 2.5
 --- !u!114 &1339401651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2132,8 +2176,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bce433b7ea9248e3b05097e25480ce23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnData: {fileID: 11400000, guid: b3b14b2c721cb5e49a67c9255cecdf77, type: 2}
-  ringData: {fileID: 11400000, guid: 43477eaee10296649ae3b74157462b3f, type: 2}
+  data:
+    defaultData:
+      data: {fileID: 11400000, guid: d6673c1f5ba3bfe419c09d6b1551d788, type: 2}
+      weights: {fileID: 11400000, guid: 1e1774f7abce3d142a28fca3fcd1f870, type: 2}
+    ringData:
+      data: {fileID: 11400000, guid: f8441fe5f113c8a4080e437d9fb0df8f, type: 2}
+      weights: {fileID: 11400000, guid: 3bd3279d37f4782498d06599fdca8f9e, type: 2}
+    slowMotionData:
+      data: {fileID: 11400000, guid: 62b51dbdf13b0a74e9a1166523737666, type: 2}
+      weights: {fileID: 11400000, guid: f7453cf0b16ef5545a3eac5e87c5cd1e, type: 2}
+    automaticData:
+      data: {fileID: 11400000, guid: bb97e99c441cbfe429d0f140521e2ccd, type: 2}
+      weights: {fileID: 11400000, guid: 3ab9423d15ef8904ba44bc296529804b, type: 2}
 --- !u!4 &1339401652
 Transform:
   m_ObjectHideFlags: 0
@@ -3050,6 +3105,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 177872736500439817, guid: 253be70ff159d50489646e85ba73e467, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -25
+      objectReference: {fileID: 0}
     - target: {fileID: 5107775025369215878, guid: 253be70ff159d50489646e85ba73e467, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3166,10 +3225,22 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 6964405344004932698, guid: 253be70ff159d50489646e85ba73e467, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7526046675585299776, guid: 253be70ff159d50489646e85ba73e467, type: 3}
       propertyPath: m_Name
       value: M_Canvas_ControlPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 7526046675585299776, guid: 253be70ff159d50489646e85ba73e467, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8021037154627576251, guid: 253be70ff159d50489646e85ba73e467, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: a2e6210a1f1883745bb2b465dbbf9cb4, type: 2}
     - target: {fileID: 8523810754128572245, guid: 253be70ff159d50489646e85ba73e467, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3206,6 +3277,7 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 126184827}
   - {fileID: 1655363375}
   - {fileID: 322886392}
   - {fileID: 2108250637}

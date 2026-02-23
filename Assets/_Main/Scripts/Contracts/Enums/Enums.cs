@@ -178,4 +178,12 @@
         ZoomIn,
         ZoomOut
     }
+    
+    public enum BatchType
+    {
+        Default,
+        Ring,
+        SlowedDown,
+        Automatic
+    }
 }

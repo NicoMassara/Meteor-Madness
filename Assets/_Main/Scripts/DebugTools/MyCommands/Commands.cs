@@ -8,7 +8,7 @@ using MeteorMadness.Managers.Save;
 using NicolasMassara.CustomUpdateManager;
 using UnityEngine;
 
-namespace _Main.Scripts.MyCommands
+/*namespace _Main.Scripts.MyCommands
 {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     public static class GameModeCommands
@@ -27,7 +27,7 @@ namespace _Main.Scripts.MyCommands
         public static void GM_Init()
         {
             GameModeEventCaller.InitializeValues();
-        }*/
+        }#1#
 
         [ConsoleMethod("gm_pause", "Set pause (true/false)")]
         public static void GM_Pause(bool value)
@@ -325,31 +325,6 @@ namespace _Main.Scripts.MyCommands
             ProjectileEventCaller.UpdateLevel(level);
         }
     }
-    public static class MeteorCommand
-    {
-        [ConsoleMethod("meteor_help", "List of Meteor commands")]
-        public static void MeteorHelp()
-        {
-            Debug.Log(
-                "=== METEOR COMMANDS ===\n" +
-                "meteor_single\n" +
-                "meteor_ring"
-            );
-        }
-        
-                
-        [ConsoleMethod("meteor_single", "Spawns a meteor")]
-        public static void GrantProjectile()
-        {
-            MeteorEventCaller.GrantSpawnSingle();
-        }
-        
-        [ConsoleMethod("meteor_ring", "Spawns a meteor ring")]
-        public static void SpawnRing()
-        {
-            MeteorEventCaller.SpawnRing();
-        }
-    }
     public static class GameScreenCommand
     {
         [ConsoleMethod("screen_cmd_help", "List of Screen commands")]
@@ -553,7 +528,6 @@ namespace _Main.Scripts.MyCommands
                 "ability_cmd_cmd_help\n" +
                 "ability_cmd_help\n" +
                 "proj_cmd_help\n" +
-                "meteor_cmd_help\n" +
                 "screen_cmd_help\n" +
                 "screen_cmd_help\n" +
                 "skin_cmd_help\n" +
@@ -566,4 +540,4 @@ namespace _Main.Scripts.MyCommands
     }
     
 #endif
-}
+}*/

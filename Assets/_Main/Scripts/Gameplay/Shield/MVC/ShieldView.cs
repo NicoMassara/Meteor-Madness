@@ -191,7 +191,6 @@ namespace MeteorMadness.Gameplay.Shield
 
         private void OnAutomaticEnable()
         {
-            Debug.Log("OnAutomaticEnable");
             _shieldRotator.OnFinderFinish -= OnAutomaticEnable;
             OnDeflect += _shieldRotator.CheckForTarget;
             _shieldRotator.TransitionToAutomaticInput();

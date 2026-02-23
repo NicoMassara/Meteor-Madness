@@ -3,5 +3,6 @@
     public interface IAbilityTimeConfigData
     {
         public IAbilityTimeData GetAbilityTimeData(AbilityType abilityType);
+        public int GetBatchAmount();
     }
 }
