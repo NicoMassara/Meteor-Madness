@@ -76,7 +76,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
                     
                     case States.Rotating:
                         
-                        //_speeder.RotateObject(deltaTime);
+                        _speeder.RotateObject(deltaTime);
                         
                         break;
 
@@ -230,7 +230,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
             if (_totalDegrees >= _targetDegreesStep)
             {
                 _targetDegreesStep += _data.DegreesStep;
-                OnSpeedDecreased?.Invoke();
+                OnSpeedIncreased?.Invoke();
             }
             
             ClampAngularSpeed();
@@ -250,7 +250,7 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Shield.Rotation.Componen
             if (_totalDegrees >= _targetDegreesStep)
             {
                 _targetDegreesStep += _data.DegreesStep;
-                OnSpeedIncreased?.Invoke();
+                OnSpeedDecreased?.Invoke();
             }
             
             ClampAngularSpeed();

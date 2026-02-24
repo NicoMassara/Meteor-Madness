@@ -22,13 +22,12 @@ namespace _Main.Scripts.Common
 
         public void AddShake(ShakeData data)
         {
-            AddShake(data.Data,data.Direction, data.DirectionBias, data.Multiplier,_objectToShake.position);
+            AddShake(data.Data,data.Direction, data.DirectionBias, data.Multiplier,_objectToShake.localPosition);
         }
 
         public void AddShake(IShakerData shakeData, float multiplier = 1f)
         {
-            AddShake(shakeData,Vector2.zero, 0f, multiplier, _objectToShake.position);
+            AddShake(shakeData,Vector2.zero, 0f, multiplier, _objectToShake.localPosition);
         }
-        
     }
 }

@@ -69,12 +69,14 @@ namespace _Main.Scripts.Common.SelectorByWeight
         
                 foreach (var key in keys)
                 {
-                    var value = temp[key];
-                    var normalized = (int)Math.Round(
-                        (double)value / _currentHistoryCount,
-                        MidpointRounding.AwayFromZero);
-                    
-                    temp[key] = normalized;
+                    if (temp.TryGetValue(key, out var value))
+                    {
+                        var normalized = (int)Math.Round(
+                            (double)value / _currentHistoryCount,
+                            MidpointRounding.AwayFromZero);
+                        
+                        temp[key] = normalized;
+                    }
                 }
                 
                 return temp;

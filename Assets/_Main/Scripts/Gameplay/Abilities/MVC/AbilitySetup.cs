@@ -34,8 +34,6 @@ namespace MeteorMadness.Gameplay.Abilities
         {
             // View
             _view.OnAbilityFinished += () => _motor.FinishAbility();
-            // UI
-            _ui.OnTriggerButtonPressed += () => _motor.TryTriggerAbility();
         }
 
         #region Event Bus
@@ -46,6 +44,12 @@ namespace MeteorMadness.Gameplay.Abilities
             AbilitiesEventSubscriber.Disable(EventBus_Ability_Disable);
             AbilitiesEventSubscriber.SetCanUse(EventBus_Ability_CanUse);
             AbilitiesEventSubscriber.Add(EventBus_Ability_Add);
+            AbilitiesEventSubscriber.Trigger(EventBus_Ability_Trigger);
+        }
+
+        private void EventBus_Ability_Trigger(AbilitiesEvents.Trigger input)
+        {
+            _motor.TryTriggerAbility();
         }
 
         private void EventBus_Ability_Enable(AbilitiesEvents.Enable input)

@@ -18,24 +18,29 @@ namespace MeteorMadness.Gameplay.Abilities
         private class WaitForBatchesToFinishAction : IQueueAction
         {
             public ActionStatus CurrentStatus { get; private set; } = ActionStatus.Idle;
-            private readonly int _targetBatches;
             private readonly BatchType _batchType;
             private readonly bool _hasBatchSpawned;
+            private readonly Func<int> _getTargetBatchesFunc;
+            private int _targetBatches;
             private int _batchesLeft;
             private int _activeBatches;
 
-            public WaitForBatchesToFinishAction(int targetBatches, BatchType batchType, bool hasBatchSpawned = true)
+            public WaitForBatchesToFinishAction(Func<int> getTargetBatchesFunc, BatchType batchType, bool hasBatchSpawned = true)
             {
                 // First batch is already spawned
-                _targetBatches = targetBatches;
+                _getTargetBatchesFunc = getTargetBatchesFunc;
                 _batchType = batchType;
                 _hasBatchSpawned = hasBatchSpawned;
             }
 
             public void OnStart()
             {
-                _batchesLeft = _hasBatchSpawned ? _targetBatches - 1 : _targetBatches;
+                _targetBatches = _getTargetBatchesFunc.Invoke();
+                _batchesLeft = _targetBatches;
                 _activeBatches = 0;
+                
+                Debug.Log($"Target Batches: {_targetBatches}");
+                
 
                 if (_hasBatchSpawned == false)
                 {
@@ -58,7 +63,7 @@ namespace MeteorMadness.Gameplay.Abilities
 
             public IQueueAction Copy()
             {
-                return new WaitForBatchesToFinishAction(_targetBatches, _batchType, _hasBatchSpawned);
+                return new WaitForBatchesToFinishAction(_getTargetBatchesFunc, _batchType, _hasBatchSpawned);
             }
             
             private void OnProjectileReachedTargetHandler(ProjectileSpawnerEvents.ProjectileReachedTarget input)
@@ -455,7 +460,6 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateShieldData(IAbilityTimeConfigData configData)
         {
-            var targetBatches = 3;
             var selectedAbility = AbilityType.SuperShield;
             var shieldType = ShieldType.Super;
             var batchType = BatchType.Ring;
@@ -503,7 +507,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 
                 // === Running ===
                 //.Then(new LogDebugAction("Super Shield Running"))
-                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
+                .Then(new WaitForBatchesToFinishAction(configData.GetBatchAmount, batchType))
                 
                 // === Finish ===
                 //.Then(new LogDebugAction("Super Shield Finishing"))
@@ -592,7 +596,6 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateSlowMotionData(IAbilityTimeConfigData configData)
         {
-            var targetBatches = configData.GetBatchAmount();
             var shieldType = ShieldType.Slow;
             var batchType = BatchType.SlowedDown;
             var selectedAbility = AbilityType.SlowMotion;
@@ -636,7 +639,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 
                 // === Running ===
                 .Then(new LogDebugAction("Slow Down Running"))
-                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
+                .Then(new WaitForBatchesToFinishAction(configData.GetBatchAmount, batchType))
                 
                 // === Finish ===
                 .Then(_disableInputs)
@@ -666,9 +669,8 @@ namespace MeteorMadness.Gameplay.Abilities
         
         private void CreateDoublePointsData(IAbilityTimeConfigData configData)
         {
-            var targetBatches = configData.GetBatchAmount();
             var shieldType = ShieldType.Gold;
-            var batchType = BatchType.Ring;
+            var batchType = BatchType.Default;
             var selectedAbility = AbilityType.DoublePoints;
             var timeData = configData.GetAbilityTimeData(selectedAbility);
             
@@ -690,6 +692,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 // === Start ===
                 .Do(new LogDebugAction("Slow Motion Starting"))
                 .Then(new PublishAbilityActiveAction(selectedAbility, true))
+                .Then(new InstantAction(()=> ProjectileSpawner.Publish.SetEnableAbilitySpawn(false)))
                 .Then(_disableInputs)
                 .Then(_disableUIInputs)
                 .Then(_cameraZoomIn)
@@ -708,9 +711,10 @@ namespace MeteorMadness.Gameplay.Abilities
                 
                 // === Running ===
                 .Then(new LogDebugAction("Gold Shield Running"))
-                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
+                .Then(new WaitForBatchesToFinishAction(configData.GetBatchAmount, batchType))
                 
                 // === Finish ===\
+                .Then(new InstantAction(()=> ProjectileSpawner.Publish.SetEnableAbilitySpawn(false)))
                 .Then(new EnableBatchTypeAction(batchType))
                 .Then(new DisableShieldTypeAction(shieldType))
                 .Then(new PublishAbilityActiveAction(selectedAbility, false))
@@ -731,7 +735,6 @@ namespace MeteorMadness.Gameplay.Abilities
 
         private void CreateAutomaticData(IAbilityTimeConfigData configData)
         {
-            var targetBatches = configData.GetBatchAmount();
             var shieldType = ShieldType.Automatic;
             var batchType = BatchType.Automatic;
             var selectedAbility = AbilityType.Automatic;
@@ -784,7 +787,7 @@ namespace MeteorMadness.Gameplay.Abilities
                 
                 // === Running ===
                 .Then(new LogDebugAction("Automatic Running"))
-                .Then(new WaitForBatchesToFinishAction(targetBatches, batchType))
+                .Then(new WaitForBatchesToFinishAction(configData.GetBatchAmount, batchType))
                 
                 // === Finish ===
                 .Then(new PublishAbilityActiveAction(selectedAbility, false))
