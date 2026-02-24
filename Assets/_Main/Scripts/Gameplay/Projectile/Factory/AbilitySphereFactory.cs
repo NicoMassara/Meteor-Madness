@@ -67,26 +67,16 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
 
         private class AbilitySelector
         {
-            private Dictionary<AbilityType, int> _weightsDic;
+            private readonly IAbilitySelector _data;
+            private readonly RandomSelector<AbilityType, IAbilityWeightsData> _randomSelector;
 
-            public AbilitySelector()
+            public AbilitySelector(IAbilitySelector data)
             {
-                InitializeDic();
+                _data = data;
+                _randomSelector = new RandomSelector<AbilityType, IAbilityWeightsData>(5);
             }
-
-            private void InitializeDic()
-            {
-                _weightsDic = new Dictionary<AbilityType, int>
-                {
-                    {AbilityType.SuperShield, 50},
-                    {AbilityType.Health, 75},
-                    {AbilityType.SlowMotion, 100},
-                    {AbilityType.DoublePoints, 100},
-                    {AbilityType.Automatic, 50},
-                };
-            }
-
-            public AbilityType GetAbilityToAdd() => Roulette.Run(_weightsDic);
+            
+            public AbilityType GetAbilityToAdd() => _randomSelector.GetRandomItem(_data.GetBaseWeights(), _data.GetWeights());
         }
 
         #endregion
@@ -100,10 +90,10 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
         private bool _isStorageFull;
         private int _currentLevel;
         
-        public AbilitySphereFactory(AbilitySphereView prefab, Func<bool> doesDebugFunc)
+        public AbilitySphereFactory(AbilitySphereView prefab, IAbilitySelector selectorData, Func<bool> doesDebugFunc)
         {
             _doesDebugFunc = doesDebugFunc;
-            _selector = new AbilitySelector();
+            _selector = new AbilitySelector(selectorData);
             _spawner = new Spawner(prefab, 1);
         }
         

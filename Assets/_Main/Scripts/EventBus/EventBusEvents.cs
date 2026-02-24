@@ -274,5 +274,10 @@ namespace MeteorMadness.Contracts
         {
             public bool IsLastFromBatch;
         }
+
+        public struct SetEnableAbilitySpawn
+        {
+            public bool IsEnable;
+        }
     }
 }

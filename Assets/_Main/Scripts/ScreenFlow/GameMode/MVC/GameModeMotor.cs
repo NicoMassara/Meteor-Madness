@@ -62,6 +62,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             _levelController = new(milestoneData);
             _levelController.OnLevelChange += UpdateCurrentLevel;
+            _levelController.OnMinLevelReached += OnMinLevelReachedHandler;
             
             _stats = new GameplayStats();
             _stats.OnCheatDetected += OnCheatDetectedHandler;
@@ -70,6 +71,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             _streakNotifier = new StreakMilestoneNotifier();
             _streakNotifier.OnMilestoneReached += OnStreakMilestoneReached;
         }
+
         private void RestartValues()
         {
             _hasDoublePoints = false;
@@ -168,8 +170,20 @@ namespace MeteorMadness.ScreenFlow.GameMode
         
         public void NotifyBatchDeflected()
         {
-            _levelController.IncreaseStreak();
-            _levelController.CheckForNextLevel();
+            if (_levelController.HasReachedMinLevel == false)
+            {
+                _levelController.IncreaseStreak();
+                _levelController.CheckForNextLevel();
+            }
+        }
+        
+        public void NotifyBatchFinished()
+        {
+            if (_levelController.HasReachedMinLevel)
+            {
+                _levelController.IncreaseStreak();
+                _levelController.CheckForNextLevel();
+            }
         }
         
         public void HandleMeteorDeflect(Vector2 position, float projectileValue)
@@ -296,7 +310,10 @@ namespace MeteorMadness.ScreenFlow.GameMode
             => NotifyAll(GameModeObserverMessage.NotifyStreak, streak);
 
         #endregion
-
-
+        
+        private void OnMinLevelReachedHandler()
+        {
+            NotifyAll(GameModeObserverMessage.MinLevelReached, true);
+        }
     }
 }

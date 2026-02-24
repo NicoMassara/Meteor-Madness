@@ -32,6 +32,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             public event Action OnGameStarted;
             public event Action OnGameStopped;
             public event Action OnScoreSaved;
+            public event Action OnMinLevelReached;
             public event Action OnGameModeDisable;
         }
 
@@ -54,6 +55,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
         public event Action OnGameStopped;
         public event Action OnScoreSaved;
         public event Action OnGameModeDisable;
+        public event Action OnMinLevelReached;
         #endregion
 
         #region IGameModeSounds
@@ -152,6 +154,9 @@ namespace MeteorMadness.ScreenFlow.GameMode
                 case GameModeObserverMessage.UpdateGameLevel:
                     HandleUpdateGameLevel((int)args[0]);
                     break;
+                case GameModeObserverMessage.MinLevelReached:
+                    HandleMinLevelReached();
+                    break;
                 
                 //=== Finish ===//
                 case GameModeObserverMessage.StartFinish:
@@ -175,7 +180,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
                     break;
             }
         }
-        
+
         #region Streak
 
         private void HandleUpdateStreak(uint streakAmount) => OnStreakUpdated?.Invoke(streakAmount);
@@ -417,6 +422,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             ProjectileSpawner.Publish.SetLevel(currentLevel);
             OnLevelUpdate?.Invoke(currentLevel);
+        }
+        
+        private void HandleMinLevelReached()
+        {
+            ProjectileSpawner.Publish.SetEnableAbilitySpawn(true);
+            OnMinLevelReached?.Invoke();
         }
 
         #endregion

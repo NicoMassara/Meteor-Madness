@@ -17,7 +17,7 @@ namespace MeteorMadness.Contracts
             public const bool HasAllSkinsUnlocked = false;
             public const float BaseMeteorValue = 10f;
             public const int SpawnLevelAmount = 5;
-            public const int MinAbilityLevel = 3;
+            public const int MinLevel = 3;
         }
         
         public struct DevelopmentValues

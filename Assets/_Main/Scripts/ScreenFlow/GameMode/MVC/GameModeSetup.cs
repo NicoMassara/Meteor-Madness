@@ -125,9 +125,8 @@ namespace MeteorMadness.ScreenFlow.GameMode
             //
             ProjectileEventSubscriber.Deflected(EventBus_Meteor_Deflected);
             ProjectileSpawner.Subscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
+            ProjectileSpawner.Subscribe.BatchFinished(EventBus_Projectile_BatchFinished);
             ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
-            //
-
             //
             GameModeEventSubscriber.SetEnablePause(EventBus_GameMode_SetEnablePause);
             //
@@ -142,6 +141,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             //
             ProjectileEventUnSubscriber.Deflected(EventBus_Meteor_Deflected);
             ProjectileSpawner.Unsubscribe.BatchDeflected(EventBus_Projectile_BatchDeflected);
+            ProjectileSpawner.Unsubscribe.BatchFinished(EventBus_Projectile_BatchFinished);
             //
             GameModeEventUnSubscriber.SetEnablePause(EventBus_GameMode_SetEnablePause);
             //
@@ -149,7 +149,6 @@ namespace MeteorMadness.ScreenFlow.GameMode
             //
             GameModeEventSubscriber.SetEnableUI(EventBus_GameMode_SetEnableUI);
         }
-
 
 
         #region GameScreen
@@ -221,6 +220,11 @@ namespace MeteorMadness.ScreenFlow.GameMode
         #endregion
         
         #region Projectile
+        
+        private void EventBus_Projectile_BatchFinished(ProjectileSpawnerEvents.BatchFinished input)
+        {
+            _controller.NotifyBatchFinished();
+        }
         
         private void EventBus_Projectile_BatchDeflected(ProjectileSpawnerEvents.BatchDeflected input)
         {

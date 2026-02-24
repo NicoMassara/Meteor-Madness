@@ -126,6 +126,17 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
             _currentLevel = currentLevel;
         }
 
+        public void SetEnableAbilitySpawn(bool input)
+        {
+            var abilitySpawner = (IAbilitySpawnerBatchType)_batchTypeDic[BatchType.Default];
+            
+            if (abilitySpawner != null)
+            {
+                abilitySpawner.SetEnableAbility(input);
+            }
+            
+        }
+
         private void RestartByType(BatchType batchType) => _batchTypeDic[batchType].RestartValues();
 
         private BatchSpawnData GetBatchData() 

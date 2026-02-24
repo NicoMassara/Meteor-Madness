@@ -14,7 +14,9 @@ namespace MeteorMadness.ScreenFlow.GameMode
         private int _currentStreak;
         private int _currentMilestone;
 
+        public bool HasReachedMinLevel { get; private set; }
         public event Action OnLevelChange;
+        public event Action OnMinLevelReached;
 
         public GameLevelController(IProjectileMilestoneData data)
         {
@@ -58,7 +60,13 @@ namespace MeteorMadness.ScreenFlow.GameMode
             if (_currentStreak >= _currentMilestone)
             {
                 _currentLevel++;
-                
+
+                if (_currentLevel == GameParameters.GameplayValues.MinLevel)
+                {
+                    HasReachedMinLevel = true;
+                    OnMinLevelReached?.Invoke();
+                }
+
                 _currentLevel = Math.Clamp(_currentLevel, 0, LevelAmount);
                 _currentStreak = 0;
                 
@@ -87,6 +95,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
 
         public void ResetLevel()
         {
+            HasReachedMinLevel = false;
             _currentLevel = 0;
             _currentStreak = 0;
             OnLevelChange?.Invoke();

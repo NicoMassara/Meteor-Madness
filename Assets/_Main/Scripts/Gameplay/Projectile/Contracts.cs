@@ -36,6 +36,7 @@ namespace _Main.Scripts.Projectile
         public void NotifyProjectileDeflected();
         public void NotifyProjectileDestroyed();
 
+        public void SetEnableAbilitySpawn(bool input);
     }
 
 
@@ -228,6 +229,11 @@ namespace _Main.Scripts.Projectile
         public float GetProjectileValue(int index, int batchAmount);
 
         public void RestartValues();
+    }
+
+    public interface IAbilitySpawnerBatchType
+    {
+        public void SetEnableAbility(bool input);
     }
 
     public interface ILeveledBatchTypeCreator
