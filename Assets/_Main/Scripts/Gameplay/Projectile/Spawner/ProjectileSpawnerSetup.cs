@@ -62,11 +62,20 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             ProjectileSpawner.Subscribe.RestartValues(EventBus_ProjectileSpawner_RestartValues);
             ProjectileSpawner.Subscribe.RequestSpawn(EventBus_ProjectileSpawner_RequestSpawn);
             ProjectileSpawner.Subscribe.SetLevel(EventBus_ProjectileSpawner_SetLevel);
+            ProjectileSpawner.Subscribe.SetEnableAbilitySpawn(EventBus_ProjectileSpawner_SetEnableAbilitySpawn);
             ProjectileEventSubscriber.Collision(EventBus_Projectile_Collision);
+            ProjectileEventSubscriber.Deflected(EventBus_Projectile_Deflected);
             ProjectileEventSubscriber.Deflected(EventBus_Projectile_Deflected);
         }
 
+
+
         #region Enable/Disable
+        
+        private void EventBus_ProjectileSpawner_SetEnableAbilitySpawn(ProjectileSpawnerEvents.SetEnableAbilitySpawn input)
+        {
+            _controller.SetEnableAbilitySpawn(input.IsEnable);
+        }
 
         private void EventBus_ProjectileSpawner_RestartValues(ProjectileSpawnerEvents.RestartValues input)
         {

@@ -9,7 +9,7 @@ using UnityEngine;
 namespace _Main.Scripts.Gameplay.Projectile.Components
 {
     internal class DefaultBatchController : ProjectileBatchControllerBase<IDefaultBatchData>,
-        IBatchTypeCreator, ILeveledBatchTypeCreator
+        IBatchTypeCreator, ILeveledBatchTypeCreator, IAbilitySpawnerBatchType
     {
         private class AbilityCountdown
         {
@@ -42,6 +42,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         private readonly int _levelAmount;
         private readonly AbilityCountdown _abilityCountdown;
         private int _currentLevel;
+        private bool _canSpawnAbility;
 
         
         public DefaultBatchController(IDefaultBatchData data, ISpawnWeightsData spawnWeights, int levelAmount, float projectileBaseValue)
@@ -57,6 +58,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         {
             _currentLevel = 0;
             _abilityCountdown.Restart();
+            _canSpawnAbility = false;
         }
 
         public override float GetProjectileValue(int index, int batchAmount) => ProjectileBaseValue;
@@ -70,11 +72,26 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         {
             _currentLevel = level;
         }
+        
+        public void SetEnableAbility(bool input)
+        {
+            _canSpawnAbility = input;
+        }
 
         public override BatchSpawnData GetBatchSpawnData(SelectRandomSpawnDelegate selectRandomSpawn)
         {
-            var hasAbility = false;
-            
+            return _currentLevel < _levelAmount ? 
+                CreateBatchSpawnData(_currentLevel, GetIsAbilityBatch(), selectRandomSpawn) : 
+                CreateBatchSpawnData(_levelAmount-1, GetIsAbilityBatch(), selectRandomSpawn);
+        }
+
+        private bool GetIsAbilityBatch()
+        {
+            if (_canSpawnAbility == false)
+            {
+                return false;
+            }
+
             if (_abilityCountdown.IsActive == false)
             {
                 _abilityCountdown.CreateCountdown();
@@ -86,15 +103,13 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
                 if (_abilityCountdown.HasReachedTarget)
                 {
                     _abilityCountdown.Restart();
-                    hasAbility = true;
+                    return true;
                 }
             }
             
-            return _currentLevel < _levelAmount ? 
-                CreateBatchSpawnData(_currentLevel, hasAbility, selectRandomSpawn) : 
-                CreateBatchSpawnData(_levelAmount-1, hasAbility, selectRandomSpawn);
+            return false;
         }
-        
+
 
         private BatchSpawnData CreateBatchSpawnData(int index, bool hasAbility, 
             SelectRandomSpawnDelegate selectRandomSpawn)

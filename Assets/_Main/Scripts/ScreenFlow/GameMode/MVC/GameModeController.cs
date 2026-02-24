@@ -38,6 +38,7 @@ namespace MeteorMadness.ScreenFlow.GameMode
             public void NotifyAbilityActive(AbilityType abilityType);
             public void SetHasLoseFocus(bool hasFocus);
             public void NotifyBatchDeflected();
+            public void NotifyBatchFinished();
         }
         
         #region Private Classes
@@ -510,6 +511,12 @@ namespace MeteorMadness.ScreenFlow.GameMode
         {
             if (_mainController.GetIsInGameplay())
                 _motor.NotifyBatchDeflected();
+        }
+
+        public void NotifyBatchFinished()
+        {
+            if (_mainController.GetIsInGameplay())
+                _motor.NotifyBatchFinished();
         }
 
         #region Stats

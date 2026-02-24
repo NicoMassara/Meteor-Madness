@@ -43,7 +43,7 @@
         public const ulong GamePaused  = 0xA2009;
         public const ulong ExecuteDisable  = 0xA2010;
         public const ulong InitializeData  = 0xA2011;
-        public const ulong Empty = 0xA2012; 
+        public const ulong MinLevelReached = 0xA2012; 
         public const ulong SetCanPause = 0xA2013;
         public const ulong SaveScore = 0xA2014; 
         public const ulong GameResume = 0xA2015;

@@ -119,5 +119,10 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _motor.OnBatchFinished += NotifyBatchFinished;
             TrySpawnProjectile();
         }
+
+        public void SetEnableAbilitySpawn(bool input)
+        {
+            _motor.SetEnableAbilitySpawn(input);
+        }
     }
 }

@@ -47,6 +47,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
         private int _currentLevel;
 
         internal bool MeteorActive;
+        internal bool AbilityActive;
         public event Action<int> OnLevelUpdated;
         
         
@@ -173,6 +174,12 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             else
                 ProjectileSpawner.Publish.Disable();
         }
+        
+        public void ToggleAbilitySpawn()
+        {
+            AbilityActive = !AbilityActive;
+            ProjectileSpawner.Publish.SetEnableAbilitySpawn(AbilityActive);
+        }
 
         public void SimulateDeflect()
         {
@@ -280,6 +287,7 @@ namespace MeteorMadness.Debug._Main.Scripts.Debug.MyTest.GameplayAbility
             if (GUILayout.Button("Increase Level")) script.IncreaseLevel();
             if (GUILayout.Button("Decrease Level")) script.DecreaseLevel();
             if (GUILayout.Button("Toggle Meteor Spawn")) script.ToggleMeteorSpawn();
+            if (GUILayout.Button("Toggle Ability Spawn")) script.ToggleAbilitySpawn();
             if (GUILayout.Button("Force Spawn")) script.ForceSpawn();
             
             GUILayout.Space(10f);

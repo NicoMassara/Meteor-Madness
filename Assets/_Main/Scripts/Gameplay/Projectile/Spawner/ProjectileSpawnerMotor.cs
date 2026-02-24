@@ -46,6 +46,12 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
             _batchSelector.RestartData();
         }
         
+        
+        public void SetEnableAbilitySpawn(bool input)
+        {
+            _batchSelector.SetEnableAbilitySpawn(input);
+        }
+        
         #endregion
 
         public void NotifyProjectileDeflected()
@@ -57,7 +63,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         {
             _tracker.NotifyProjectileDestroyed();
         }
-        
+
         public void CreateBatch(BatchType batchType)
         {
             var batchAmount = _batchSelector.CreateBatch(batchType);

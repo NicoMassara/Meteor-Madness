@@ -28,6 +28,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         [SerializeField] private MeteorView meteorPrefab;
         [Header("Ability Factory")]
         [SerializeField] private AbilitySphereView abilityPrefab;
+        [SerializeField] private AbilitySelectorDataSo abiltiySelectorData;
         [Header("Distance Tracker")]
         [SerializeField] private float centerOfGravityOffset;
 
@@ -37,7 +38,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private AbilitySphereFactory _abilityFactory;
         
         
-        #region IProjectileSpawnerView
+        #region IProjectileSpawnerViewa
         
         public event Action<bool> OnProjectileReachedTarget;
         public event Action OnBatchCreated;
@@ -99,7 +100,7 @@ namespace _Main.Scripts.Gameplay.Projecitle.Spawner
         private void HandleInitialize()
         {
             _meteorFactory = new MeteorFactory(meteorPrefab, ()=> doesDebug);
-            _abilityFactory = new AbilitySphereFactory(abilityPrefab, ()=> doesDebug);
+            _abilityFactory = new AbilitySphereFactory(abilityPrefab, abiltiySelectorData,()=> doesDebug);
             _distanceTracker = new ProjectileDistanceTracker(centerOfGravity, centerOfGravityOffset);
         }
         

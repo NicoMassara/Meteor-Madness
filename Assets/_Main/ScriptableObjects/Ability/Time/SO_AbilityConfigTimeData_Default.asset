@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85ec99909bdb49f893463a7a37c14d02, type: 3}
   m_Name: SO_AbilityConfigTimeData_Default
   m_EditorClassIdentifier: 
+  batchAmount:
+    minAmount: 7
+    maxAmount: 10
   abilities:
   - type: 1
     timeData: {fileID: 11400000, guid: 93a2d5163598a8e4ebe621ac9878f0c4, type: 2}

@@ -729,6 +729,8 @@ namespace _Main.Scripts.EventBus
             public static void BatchDeflected() => EventBusCaller.Publish(new ProjectileSpawnerEvents.BatchDeflected());
             public static void ProjectileReachedTarget(bool isLastFromBatch) 
                 => EventBusCaller.Publish(new ProjectileSpawnerEvents.ProjectileReachedTarget{IsLastFromBatch = isLastFromBatch});
+            public static void SetEnableAbilitySpawn(bool isEnable) 
+                => EventBusCaller.Publish(new ProjectileSpawnerEvents.SetEnableAbilitySpawn{IsEnable = isEnable});
         }
         
         public sealed class Subscribe
@@ -746,6 +748,7 @@ namespace _Main.Scripts.EventBus
             public static void BatchFinished(Action<ProjectileSpawnerEvents.BatchFinished> action) => EventBusCaller.Subscribe(action);
             public static void BatchDeflected(Action<ProjectileSpawnerEvents.BatchDeflected> action) => EventBusCaller.Subscribe(action);
             public static void ProjectileReachedTarget(Action<ProjectileSpawnerEvents.ProjectileReachedTarget> action) => EventBusCaller.Subscribe(action);
+            public static void SetEnableAbilitySpawn(Action<ProjectileSpawnerEvents.SetEnableAbilitySpawn> action) => EventBusCaller.Subscribe(action);
         }
         
         public sealed class Unsubscribe
@@ -763,6 +766,7 @@ namespace _Main.Scripts.EventBus
             public static void BatchFinished(Action<ProjectileSpawnerEvents.BatchFinished> action) => EventBusCaller.Unsubscribe(action);
             public static void BatchDeflected(Action<ProjectileSpawnerEvents.BatchDeflected> action) => EventBusCaller.Unsubscribe(action);
             public static void ProjectileReachedTarget(Action<ProjectileSpawnerEvents.ProjectileReachedTarget> action) => EventBusCaller.Unsubscribe(action);
+            public static void EnableAbilitySpawn(Action<ProjectileSpawnerEvents.SetEnableAbilitySpawn> action) => EventBusCaller.Unsubscribe(action);
         }
     }
 
