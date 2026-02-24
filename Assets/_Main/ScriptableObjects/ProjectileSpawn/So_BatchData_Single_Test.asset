@@ -12,10 +12,95 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c15d932050694431917e35648405322c, type: 3}
   m_Name: So_BatchData_Single_Test
   m_EditorClassIdentifier: 
-  batchType: 0
-  projectileSpeed: 0
+  batchType: 1
+  projectileSpeed: 120
   batchValues:
     speedMultiplier:
-      minSpeed: 0
-      maxSpeed: 0
-    data: []
+      minSpeed: 1
+      maxSpeed: 1
+    data:
+    - spawnType: 1
+      weight: 100
+      projectileAmount:
+        minAmount: 5
+        maxAmount: 10
+      innerBatchDistance:
+        minRange: 0.329
+        maxRange: 0.724
+      nextBatchDistance:
+        minRange: 0.224
+        maxRange: 0.724
+      nextBatchSlotRange:
+        minRange: 1
+        maxRange: 16
+      slotRange:
+        minRange: 2
+        maxRange: 10
+    - spawnType: 2
+      weight: 100
+      projectileAmount:
+        minAmount: 5
+        maxAmount: 10
+      innerBatchDistance:
+        minRange: 0.329
+        maxRange: 0.724
+      nextBatchDistance:
+        minRange: 0.224
+        maxRange: 0.724
+      nextBatchSlotRange:
+        minRange: 1
+        maxRange: 16
+      slotRange:
+        minRange: 2
+        maxRange: 10
+    - spawnType: 3
+      weight: 100
+      projectileAmount:
+        minAmount: 5
+        maxAmount: 10
+      innerBatchDistance:
+        minRange: 0.329
+        maxRange: 0.724
+      nextBatchDistance:
+        minRange: 0.224
+        maxRange: 0.724
+      nextBatchSlotRange:
+        minRange: 1
+        maxRange: 16
+      slotRange:
+        minRange: 2
+        maxRange: 10
+    - spawnType: 4
+      weight: 100
+      projectileAmount:
+        minAmount: 8
+        maxAmount: 16
+      innerBatchDistance:
+        minRange: 0.329
+        maxRange: 0.724
+      nextBatchDistance:
+        minRange: 0.224
+        maxRange: 0.724
+      nextBatchSlotRange:
+        minRange: 1
+        maxRange: 16
+      slotRange:
+        minRange: 2
+        maxRange: 10
+    - spawnType: 5
+      weight: 100
+      projectileAmount:
+        minAmount: 5
+        maxAmount: 10
+      innerBatchDistance:
+        minRange: 0.329
+        maxRange: 0.724
+      nextBatchDistance:
+        minRange: 0.224
+        maxRange: 0.724
+      nextBatchSlotRange:
+        minRange: 1
+        maxRange: 16
+      slotRange:
+        minRange: 2
+        maxRange: 10

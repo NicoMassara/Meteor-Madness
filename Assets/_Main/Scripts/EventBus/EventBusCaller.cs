@@ -583,6 +583,7 @@ namespace _Main.Scripts.EventBus
         public static void Enable() => EventBusCaller.Publish(new AbilitiesEvents.Enable());
 
         public static void Disable() => EventBusCaller.Publish(new AbilitiesEvents.Disable());
+        public static void Trigger() => EventBusCaller.Publish(new AbilitiesEvents.Trigger());
     }
     public static class AbilitiesEventSubscriber
     {
@@ -591,6 +592,7 @@ namespace _Main.Scripts.EventBus
         public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action) => EventBusCaller.Subscribe(action);
         public static void Enable(Action<AbilitiesEvents.Enable> action) => EventBusCaller.Subscribe(action);
         public static void Disable(Action<AbilitiesEvents.Disable> action) => EventBusCaller.Subscribe(action);
+        public static void Trigger(Action<AbilitiesEvents.Trigger> action) => EventBusCaller.Subscribe(action);
     }
     public static class AbilitiesEventUnSubscriber
     {
@@ -599,6 +601,7 @@ namespace _Main.Scripts.EventBus
         public static void NotifyIsActive(Action<AbilitiesEvents.NotifyIsActive> action) => EventBusCaller.Unsubscribe(action);
         public static void Enable(Action<AbilitiesEvents.Enable> action) => EventBusCaller.Unsubscribe(action);
         public static void Disable(Action<AbilitiesEvents.Disable> action) => EventBusCaller.Unsubscribe(action);
+        public static void Trigger(Action<AbilitiesEvents.Trigger> action) => EventBusCaller.Unsubscribe(action);
     }
 
     #endregion

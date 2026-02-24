@@ -15,4 +15,4 @@ MonoBehaviour:
   maxSpeed: 5000
   degreesStep: 180
   accelerateTurnsAmount: 5
-  deAccelerateTurnsAmount: 1
+  deAccelerateTurnsAmount: 5

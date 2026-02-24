@@ -76,7 +76,14 @@ namespace MeteorMadness.Gameplay._Main.Scripts.Gameplay.Projectile
                 _randomSelector = new RandomSelector<AbilityType, IAbilityWeightsData>(5);
             }
             
-            public AbilityType GetAbilityToAdd() => _randomSelector.GetRandomItem(_data.GetBaseWeights(), _data.GetWeights());
+            public AbilityType GetAbilityToAdd()
+            {
+                var temp = _randomSelector.GetRandomItem(_data.GetBaseWeights(), _data.GetWeights());
+                
+                UnityEngine.Debug.Log(temp);
+                
+                return temp;
+            }
         }
 
         #endregion

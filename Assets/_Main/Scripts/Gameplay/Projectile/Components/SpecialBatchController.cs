@@ -16,6 +16,7 @@ namespace _Main.Scripts.Gameplay.Projectile.Components
         public override BatchSpawnData GetBatchSpawnData(SelectRandomSpawnDelegate selectRandomSpawn)
         {
             var itemData = BatchData.BatchValues;
+
             var initialSpawnType = selectRandomSpawn.Invoke(itemData.GetWeights(), SpawnWeights.GetWeights());
             
             if (itemData.GetSpawnDataByType(initialSpawnType, out var spawnData) == false)

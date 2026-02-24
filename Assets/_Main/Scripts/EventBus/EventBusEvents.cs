@@ -193,6 +193,7 @@ namespace MeteorMadness.Contracts
         
         public struct Enable { }
         public struct Disable { }
+        public struct Trigger { }
     }
 
     public struct FloatingTextEvents

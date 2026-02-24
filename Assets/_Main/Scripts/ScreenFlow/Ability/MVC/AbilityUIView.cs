@@ -1,4 +1,5 @@
 ﻿using System;
+using _Main.Scripts.EventBus;
 using MeteorMadness.Contracts;
 using MeteorMadness.Contracts.Interfaces;
 using MeteorMadness.GlobalValues.Tools.Observer;
@@ -53,7 +54,7 @@ namespace MeteorMadness.Gameplay.Abilities
         
         private void OnTriggerButtonPressedHandler()
         {
-            OnTriggerButtonPressed?.Invoke();
+            AbilitiesEventCaller.Trigger();
         }
     }
 }

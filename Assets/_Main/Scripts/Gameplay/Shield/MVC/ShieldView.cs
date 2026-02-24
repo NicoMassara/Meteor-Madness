@@ -15,6 +15,35 @@ using UnityEngine;
 
 namespace MeteorMadness.Gameplay.Shield
 {
+    internal class ShieldShakerController : BaseShaker, IShaker
+    {
+        private readonly Func<Transform> _getObjectToShakeFunc;
+        private Transform _objectToShake;
+        
+        public ShieldShakerController(Func<Transform> objectToShakeFunc, IShakerCap capData) : base(capData)
+        {
+            _getObjectToShakeFunc = objectToShakeFunc;
+        }
+
+        public void Execute(float deltaTime)
+        {
+            if(DoesShake())
+                _objectToShake.localPosition = GetShakePosition(deltaTime);
+        }
+
+        public void AddShake(ShakeData data)
+        {
+            _objectToShake = _getObjectToShakeFunc.Invoke();
+            AddShake(data.Data,data.Direction, data.DirectionBias, data.Multiplier,_objectToShake.localPosition);
+        }
+
+        public void AddShake(IShakerData shakeData, float multiplier = 1f)
+        {
+            _objectToShake = _getObjectToShakeFunc.Invoke();
+            AddShake(shakeData,Vector2.zero, 0f, multiplier, _objectToShake.localPosition);
+        }
+    }
+
     public class ShieldView : ManagedBehavior, 
         IObserver,
         IUpdatable, 
@@ -22,10 +51,16 @@ namespace MeteorMadness.Gameplay.Shield
         IAbilityShield, 
         IShieldVibration
     {
+        
+        [Header("Rotation Components")]
+        [SerializeField] private Transform normalShieldPivot;
+        [Space]
+        [Header("Shale Components")]
+        [SerializeField] private Transform normalShieldSprite;
+        [SerializeField] private Transform superShieldSprite;
+        [Space]
         [Header("Components")] 
-        [SerializeField] private GameObject spriteContainer;
-        [SerializeField] private GameObject normalShieldSprite;
-        [SerializeField] private GameObject superShieldSprite;
+        [SerializeField] private GameObject shieldContainer;
         [SerializeField] private CapsuleCollider2D shieldCollider;
         [SerializeField] private Collider2D superShieldCollider;
 
@@ -40,7 +75,6 @@ namespace MeteorMadness.Gameplay.Shield
         [SerializeField] private ParticleDataSo deflectParticleData;
         [Header("Movement")] 
         [SerializeField] private RotatorDataSo rotatorData;
-        [SerializeField] private Transform normalShieldContainer;
         [SerializeField] private LayerMask projectileLayerMask;
         
         private IShaker _shakerController;
@@ -66,11 +100,11 @@ namespace MeteorMadness.Gameplay.Shield
 
         private void Awake()
         {
-            spriteContainer.SetActive(false);
+            shieldContainer.SetActive(false);
             superShieldCollider.enabled = false;
-            _shakerController = new ShakerController(spriteContainer.transform,shakerCapData);
+            _shakerController = new ShieldShakerController(GetSpriteToShake,shakerCapData);
             _colliderExtender = new ShieldColliderExtender(shieldCollider);
-            _shieldRotator = new ShieldRotator(normalShieldContainer, rotatorData);
+            _shieldRotator = new ShieldRotator(normalShieldPivot, rotatorData);
         }
 
         private void Start()
@@ -126,7 +160,7 @@ namespace MeteorMadness.Gameplay.Shield
         
         private void HandleSetActiveShield(bool isActive)
         {
-            spriteContainer.SetActive(isActive);
+            shieldContainer.SetActive(isActive);
             
             OnShieldActivated?.Invoke(isActive);
             if (isActive)
@@ -308,7 +342,7 @@ namespace MeteorMadness.Gameplay.Shield
         
         private Transform GetSpriteToShake()
         {
-            return _isSuperShieldSpriteActive ? superShieldSprite.transform : normalShieldSprite.transform;
+            return _isSuperShieldSpriteActive ? superShieldSprite : normalShieldSprite;
         }
         
         #region Handlers
